@@ -1,0 +1,55 @@
+name: picPics
+description: A new Flutter application.
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.3.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^0.1.2
+  provider: ^4.0.4
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - lib/images/
+  fonts:
+    - family: Lato
+      fonts:
+        - asset: lib/fonts/Lato-Bold.ttf
+          weight: 700
+        - asset: lib/fonts/Lato-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: lib/fonts/Lato-Black.ttf
+          weight: 900
+        - asset: lib/fonts/Lato-BlackItalic.ttf
+          style: italic
+          weight: 900
+        - asset: lib/fonts/Lato-Light.ttf
+          weight: 300
+        - asset: lib/fonts/Lato-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: lib/fonts/Lato-Thin.ttf
+          weight: 100
+        - asset: lib/fonts/Lato-ThinItalic.ttf
+          weight: 100
+          style: italic
+        - asset: lib/fonts/Lato-Regular.ttf
+          weight: 400
+        - asset: lib/fonts/Lato-Italic.ttf
+          weight: 400
+          style: italic
+    - family: NotoSans
+      fonts:
+        - asset: lib/fonts/NotoSans-Light.ttf
+          weight: 300
+        - asset: lib/fonts/NotoSans-Regular.ttf
+          weight: 400
