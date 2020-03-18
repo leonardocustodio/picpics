@@ -39,5 +39,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Precisamos de acesso a sua galeria para organizar suas fotos.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Precisamos de acesso para adicionar, editar e deletar fotos da sua galeria.</string>
 </dict>
 </plist>

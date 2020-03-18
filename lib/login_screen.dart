@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/constants.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter/cupertino.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -42,22 +44,33 @@ class _LoginScreenState extends State<LoginScreen> {
                 Spacer(
                   flex: 2,
                 ),
-                Container(
-                  height: 44.0,
-                  decoration: BoxDecoration(
-                    gradient: kBlueGradient,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Center(
-                    child: Text(
-                      "Entrar",
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xfff5fafa),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                        letterSpacing: -0.4099999964237213,
+                CupertinoButton(
+                  onPressed: () async {
+                    var result = await PhotoManager.requestPermission();
+                    if (result) {
+                      // success
+                    } else {
+                      // fail
+                      /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
+                    }
+                  },
+                  child: Container(
+                    height: 44.0,
+                    decoration: BoxDecoration(
+                      gradient: kBlueGradient,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Entrar",
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xfff5fafa),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
                       ),
                     ),
                   ),
