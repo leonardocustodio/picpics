@@ -45,6 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   flex: 2,
                 ),
                 CupertinoButton(
+                  padding: const EdgeInsets.all(0),
                   onPressed: () async {
                     var result = await PhotoManager.requestPermission();
                     if (result) {
