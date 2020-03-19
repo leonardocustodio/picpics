@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:picPics/constants.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/pic_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -50,6 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     var result = await PhotoManager.requestPermission();
                     if (result) {
                       // success
+                      Navigator.pushNamed(context, PicScreen.id);
                     } else {
                       // fail
                       /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
@@ -58,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Container(
                     height: 44.0,
                     decoration: BoxDecoration(
-                      gradient: kBlueGradient,
+                      gradient: kPrimaryGradient,
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Center(

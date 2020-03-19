@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:picPics/pic_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/login_screen.dart';
@@ -53,6 +54,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
         initialRoute: widget.initialRoute,
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
+          PicScreen.id: (context) => PicScreen(),
         },
       ),
     );
