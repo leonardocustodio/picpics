@@ -16,6 +16,7 @@ class PicScreen extends StatefulWidget {
 
 class _PicScreenState extends State<PicScreen> {
   int currentIndex;
+  bool showTutorial = true;
 
   int swiperIndex = 0;
   SwiperController swiperController = new SwiperController();
@@ -263,165 +264,170 @@ class _PicScreenState extends State<PicScreen> {
             ],
           ),
         ),
-        Container(
-          color: Colors.black.withOpacity(0.4),
-        ),
-        Material(
-          color: Colors.transparent,
-          child: Center(
-            child: Container(
-              height: 609.0,
-              width: 343.0,
-              decoration: BoxDecoration(
-                color: kWhiteColor,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Text(
-                      "Bem-vindo",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff979a9b),
-                        fontSize: 24,
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        letterSpacing: -0.4099999964237213,
+        if (showTutorial == true)
+          Container(
+            color: Colors.black.withOpacity(0.4),
+          ),
+        if (showTutorial == true)
+          Material(
+            color: Colors.transparent,
+            child: Center(
+              child: Container(
+                height: 609.0,
+                width: 343.0,
+                decoration: BoxDecoration(
+                  color: kWhiteColor,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: <Widget>[
+                      Text(
+                        "Bem-vindo",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff979a9b),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                    Expanded(
-                      child: new Swiper(
-                        itemBuilder: (BuildContext context, int index) {
-                          String text = '';
-                          Image image;
+                      SizedBox(
+                        height: 40.0,
+                      ),
+                      Expanded(
+                        child: new Swiper(
+                          itemBuilder: (BuildContext context, int index) {
+                            String text = '';
+                            Image image;
 
-                          if (index == 0) {
-                            text = 'Trazemos diariamente um pacote para você organizar aos poucos sua biblioteca.';
-                            image = Image.asset('lib/images/tutorialfirstimage.png');
-                          } else if (index == 1) {
-                            text = 'Organize suas fotos adicionando tags, como “família”, “pets” ou o quê você quiser.';
-                            image = Image.asset('lib/images/tutorialsecondimage.png');
-                          } else {
-                            text = 'Depois de adicionar as tags na sua foto, basta fazer um swipe para ir para a próxima';
-                            image = Image.asset('lib/images/tutorialthirdimage.png');
-                          }
+                            if (index == 0) {
+                              text = 'Trazemos diariamente um pacote para você organizar aos poucos sua biblioteca.';
+                              image = Image.asset('lib/images/tutorialfirstimage.png');
+                            } else if (index == 1) {
+                              text = 'Organize suas fotos adicionando tags, como “família”, “pets” ou o quê você quiser.';
+                              image = Image.asset('lib/images/tutorialsecondimage.png');
+                            } else {
+                              text = 'Depois de adicionar as tags na sua foto, basta fazer um swipe para ir para a próxima';
+                              image = Image.asset('lib/images/tutorialthirdimage.png');
+                            }
 
-                          return Column(
-                            children: <Widget>[
-                              image,
-                              SizedBox(
-                                height: 28.0,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text(
-                                  text,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff707070),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.normal,
+                            return Column(
+                              children: <Widget>[
+                                image,
+                                SizedBox(
+                                  height: 28.0,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Text(
+                                    text,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff707070),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          );
-                        },
-                        itemCount: 3,
-                        controller: swiperController,
-                        onIndexChanged: (index) {
-                          setState(() {
-                            swiperIndex = index;
-                          });
-                        },
-                        pagination: new SwiperCustomPagination(
-                          builder: (BuildContext context, SwiperPluginConfig config) {
-                            return Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    height: 8.0,
-                                    width: 8.0,
-                                    decoration: BoxDecoration(
-                                      color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
-                                      borderRadius: BorderRadius.circular(4.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 8.0,
-                                    width: 8.0,
-                                    margin: const EdgeInsets.only(left: 24.0, right: 24.0),
-                                    decoration: BoxDecoration(
-                                      color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
-                                      borderRadius: BorderRadius.circular(4.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    height: 8.0,
-                                    width: 8.0,
-                                    decoration: BoxDecoration(
-                                      color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
-                                      borderRadius: BorderRadius.circular(4.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              ],
                             );
                           },
+                          itemCount: 3,
+                          controller: swiperController,
+                          onIndexChanged: (index) {
+                            setState(() {
+                              swiperIndex = index;
+                            });
+                          },
+                          pagination: new SwiperCustomPagination(
+                            builder: (BuildContext context, SwiperPluginConfig config) {
+                              return Align(
+                                alignment: Alignment.bottomCenter,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Container(
+                                      height: 8.0,
+                                      width: 8.0,
+                                      decoration: BoxDecoration(
+                                        color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
+                                        borderRadius: BorderRadius.circular(4.0),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 8.0,
+                                      width: 8.0,
+                                      margin: const EdgeInsets.only(left: 24.0, right: 24.0),
+                                      decoration: BoxDecoration(
+                                        color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
+                                        borderRadius: BorderRadius.circular(4.0),
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 8.0,
+                                      width: 8.0,
+                                      decoration: BoxDecoration(
+                                        color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
+                                        borderRadius: BorderRadius.circular(4.0),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 17.0,
-                    ),
-                    CupertinoButton(
-                      onPressed: () {
-                        if (swiperIndex == 2) {
-                          return;
-                        }
-                        swiperController.next(animation: true);
-                      },
-                      padding: const EdgeInsets.all(0),
-                      child: Container(
-                        height: 44.0,
-                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                        decoration: BoxDecoration(
-                          gradient: kPrimaryGradient,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            swiperIndex == 2 ? 'Fechar' : 'Próximo',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: kWhiteColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
+                      SizedBox(
+                        height: 17.0,
+                      ),
+                      CupertinoButton(
+                        onPressed: () {
+                          if (swiperIndex == 2) {
+                            setState(() {
+                              showTutorial = false;
+                            });
+                            return;
+                          }
+                          swiperController.next(animation: true);
+                        },
+                        padding: const EdgeInsets.all(0),
+                        child: Container(
+                          height: 44.0,
+                          margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                          decoration: BoxDecoration(
+                            gradient: kPrimaryGradient,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              swiperIndex == 2 ? 'Fechar' : 'Próximo',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    )
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
       ],
     );
   }
