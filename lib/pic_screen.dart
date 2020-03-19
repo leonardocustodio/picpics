@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
+import 'package:flutter/services.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -26,10 +27,54 @@ class _PicScreenState extends State<PicScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Teste'),
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Container(
+          constraints: BoxConstraints.expand(),
+          decoration: new BoxDecoration(
+            image: DecorationImage(
+              colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+              image: AssetImage('lib/images/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: SafeArea(
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Image.asset('lib/images/picpicssmallred.png'),
+                      Image.asset('lib/images/settings.png'),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                    decoration: BoxDecoration(
+                      color: kWhiteColor,
+                      borderRadius: BorderRadius.circular(12.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          offset: Offset(0, 2),
+                          blurRadius: 8,
+                          spreadRadius: 0,
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
       bottomNavigationBar: BubbleBottomBar(
+        backgroundColor: kWhiteColor,
         hasNotch: true,
         opacity: 1.0,
         currentIndex: currentIndex,
