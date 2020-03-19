@@ -10,6 +10,13 @@ class DatabaseManager extends ChangeNotifier {
     return _instance ??= DatabaseManager._();
   }
 
+//  int swiperIndex = 0;
+//
+//  void changeSwiperIndex(int index) {
+//    swiperIndex = index;
+//    notifyListeners();
+//  }
+
 //  Future<String> sendUser(String uid) {
 //    return Firestore.instance.collection('User').add({
 //      'uid': uid,

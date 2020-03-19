@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:picPics/database_manager.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -12,6 +16,14 @@ class PicScreen extends StatefulWidget {
 
 class _PicScreenState extends State<PicScreen> {
   int currentIndex;
+
+  int swiperIndex = 0;
+  SwiperController swiperController = new SwiperController();
+
+  void changeIndex() {
+    print('teste');
+  }
+
   @override
   void initState() {
     super.initState();
@@ -281,74 +293,125 @@ class _PicScreenState extends State<PicScreen> {
                         letterSpacing: -0.4099999964237213,
                       ),
                     ),
-                    Spacer(),
-                    Image.asset('lib/images/tutorialfirstimage.png'),
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        "Trazemos diariamente um pacote para você organizar aos poucos sua biblioteca.",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff707070),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
+                    SizedBox(
+                      height: 40.0,
+                    ),
+                    Expanded(
+                      child: new Swiper(
+                        itemBuilder: (BuildContext context, int index) {
+                          String text = '';
+                          Image image;
+
+                          if (index == 0) {
+                            text = 'Trazemos diariamente um pacote para você organizar aos poucos sua biblioteca.';
+                            image = Image.asset('lib/images/tutorialfirstimage.png');
+                          } else if (index == 1) {
+                            text = 'Organize suas fotos adicionando tags, como “família”, “pets” ou o quê você quiser.';
+                            image = Image.asset('lib/images/tutorialsecondimage.png');
+                          } else {
+                            text = 'Depois de adicionar as tags na sua foto, basta fazer um swipe para ir para a próxima';
+                            image = Image.asset('lib/images/tutorialthirdimage.png');
+                          }
+
+                          return Column(
+                            children: <Widget>[
+                              image,
+                              SizedBox(
+                                height: 28.0,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text(
+                                  text,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff707070),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                        itemCount: 3,
+                        controller: swiperController,
+                        onIndexChanged: (index) {
+                          setState(() {
+                            swiperIndex = index;
+                          });
+                        },
+                        pagination: new SwiperCustomPagination(
+                          builder: (BuildContext context, SwiperPluginConfig config) {
+                            return Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    height: 8.0,
+                                    width: 8.0,
+                                    decoration: BoxDecoration(
+                                      color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 8.0,
+                                    width: 8.0,
+                                    margin: const EdgeInsets.only(left: 24.0, right: 24.0),
+                                    decoration: BoxDecoration(
+                                      color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                  ),
+                                  Container(
+                                    height: 8.0,
+                                    width: 8.0,
+                                    decoration: BoxDecoration(
+                                      color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
+                                      borderRadius: BorderRadius.circular(4.0),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 17.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Container(
-                            height: 8.0,
-                            width: 8.0,
-                            decoration: BoxDecoration(
-                              color: kSecondaryColor,
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                          ),
-                          Container(
-                            height: 8.0,
-                            width: 8.0,
-                            margin: const EdgeInsets.only(left: 24.0, right: 24.0),
-                            decoration: BoxDecoration(
-                              color: kGrayColor,
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                          ),
-                          Container(
-                            height: 8.0,
-                            width: 8.0,
-                            decoration: BoxDecoration(
-                              color: kGrayColor,
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                          ),
-                        ],
-                      ),
+                    SizedBox(
+                      height: 17.0,
                     ),
-                    Container(
-                      height: 44.0,
-                      margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                      decoration: BoxDecoration(
-                        gradient: kPrimaryGradient,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Center(
-                        child: Text(
-                          "Próximo",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: kWhiteColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
+                    CupertinoButton(
+                      onPressed: () {
+                        if (swiperIndex == 2) {
+                          return;
+                        }
+                        swiperController.next(animation: true);
+                      },
+                      padding: const EdgeInsets.all(0),
+                      child: Container(
+                        height: 44.0,
+                        margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                        decoration: BoxDecoration(
+                          gradient: kPrimaryGradient,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Center(
+                          child: Text(
+                            swiperIndex == 2 ? 'Fechar' : 'Próximo',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: kWhiteColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: -0.4099999964237213,
+                            ),
                           ),
                         ),
                       ),
@@ -358,7 +421,7 @@ class _PicScreenState extends State<PicScreen> {
               ),
             ),
           ),
-        )
+        ),
       ],
     );
   }
