@@ -26,6 +26,7 @@ class _PicScreenState extends State<PicScreen> {
 
   double topOffset = 64.0;
   bool hideSubtitle = false;
+  bool noTaggedPhoto = true;
 
   void changeIndex() {
     print('teste');
@@ -343,6 +344,130 @@ class _PicScreenState extends State<PicScreen> {
                               ),
                             ),
                           )
+                        ],
+                      ),
+                    ),
+                  ),
+                if (currentIndex == 2)
+                  Container(
+                    constraints: BoxConstraints.expand(),
+                    color: kWhiteColor,
+                    child: SafeArea(
+                      child: Stack(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Image.asset('lib/images/settings.png'),
+                              ],
+                            ),
+                          ),
+                          if (noTaggedPhoto)
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Image.asset('lib/images/notaggedphotos.png'),
+                                  SizedBox(
+                                    height: 21.0,
+                                  ),
+                                  Text(
+                                    "Você ainda não tem nenhuma foto\ntaggeada.",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff979a9b),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 17.0,
+                                  ),
+                                  Container(
+                                    width: 201.0,
+                                    height: 44.0,
+                                    decoration: BoxDecoration(
+                                      gradient: kPrimaryGradient,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "Começar a taggear",
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: kWhiteColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          fontStyle: FontStyle.normal,
+                                          letterSpacing: -0.4099999964237213,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          if (!noTaggedPhoto)
+                            Positioned(
+                              left: 16.0,
+                              top: topOffset,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    "Galeria de fotos",
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff979a9b),
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w700,
+                                      fontStyle: FontStyle.normal,
+                                    ),
+                                  ),
+                                  if (!hideSubtitle)
+                                    SizedBox(
+                                      height: 8.0,
+                                    ),
+                                  if (!hideSubtitle)
+                                    Text(
+                                      "Fotos ainda não organizadas",
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff606566),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          if (!noTaggedPhoto)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 48.0),
+                              child: GridView.builder(
+                                padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+                                controller: scrollController,
+                                scrollDirection: Axis.vertical,
+                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                                itemCount: 20,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.all(4.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.black,
+                                        borderRadius: BorderRadius.circular(5.0),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
                         ],
                       ),
                     ),
