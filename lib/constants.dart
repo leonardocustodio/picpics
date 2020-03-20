@@ -27,3 +27,12 @@ const kSecondaryGradient = LinearGradient(
     const Color(0xFFFF7878),
   ],
 );
+
+const kYellowGradient = LinearGradient(
+  begin: Alignment(-0.07, -0.3),
+  end: Alignment(1.2, 1.05),
+  colors: [
+    const Color.fromRGBO(232, 191, 27, 0.7),
+    const Color.fromRGBO(242, 206, 59, 0.7),
+  ],
+);

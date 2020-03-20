@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/photo_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
@@ -15,20 +16,46 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> {
+  ScrollController scrollController = ScrollController(initialScrollOffset: 0);
+
   int currentIndex;
   bool showTutorial = true;
 
   int swiperIndex = 0;
   SwiperController swiperController = new SwiperController();
 
+  double topOffset = 64.0;
+  bool hideSubtitle = false;
+
   void changeIndex() {
     print('teste');
+  }
+
+  void movedGridPosition() {
+    var offset = scrollController.offset;
+
+    if (offset >= 117) {
+      setState(() {
+        topOffset = 0;
+        hideSubtitle = true;
+      });
+    } else if (offset >= 52) {
+      setState(() {
+        topOffset = 64.0 - (offset - 52.0);
+        hideSubtitle = false;
+      });
+    }
+
+    print(scrollController.offset);
   }
 
   @override
   void initState() {
     super.initState();
-    currentIndex = 0;
+    currentIndex = 1;
+    scrollController.addListener(() {
+      movedGridPosition();
+    });
   }
 
   void changePage(int index) {
@@ -44,90 +71,188 @@ class _PicScreenState extends State<PicScreen> {
         Scaffold(
           body: AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle.dark,
-            child: Container(
-              constraints: BoxConstraints.expand(),
-              decoration: new BoxDecoration(
-                image: DecorationImage(
-                  colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
-                  image: AssetImage('lib/images/background.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: SafeArea(
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Stack(
+              children: <Widget>[
+                if (currentIndex == 0)
+                  Container(
+                    constraints: BoxConstraints.expand(),
+                    color: kWhiteColor,
+                    child: SafeArea(
+                      child: Stack(
                         children: <Widget>[
-                          Image.asset('lib/images/picpicssmallred.png'),
-                          Image.asset('lib/images/settings.png'),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Image.asset('lib/images/settings.png'),
+                              ],
+                            ),
+                          ),
+                          Positioned(
+                            left: 16.0,
+                            top: topOffset,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  "Galeria de fotos",
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff979a9b),
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.w700,
+                                    fontStyle: FontStyle.normal,
+                                  ),
+                                ),
+                                if (!hideSubtitle)
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                if (!hideSubtitle)
+                                  Text(
+                                    "Fotos ainda não organizadas",
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff606566),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 48.0),
+                            child: GridView.builder(
+                              padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+                              controller: scrollController,
+                              scrollDirection: Axis.vertical,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                              itemCount: 20,
+                              itemBuilder: (BuildContext context, int index) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.black,
+                                      borderRadius: BorderRadius.circular(5.0),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          color: kWhiteColor,
-                          borderRadius: BorderRadius.circular(12.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              offset: Offset(0, 2),
-                              blurRadius: 8,
-                              spreadRadius: 0,
+                  ),
+                if (currentIndex == 1)
+                  Container(
+                    constraints: BoxConstraints.expand(),
+                    decoration: new BoxDecoration(
+                      image: DecorationImage(
+                        colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+                        image: AssetImage('lib/images/background.png'),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: SafeArea(
+                      child: Column(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Image.asset('lib/images/picpicssmallred.png'),
+                                Image.asset('lib/images/settings.png'),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Expanded(
-                              child: Stack(
-                                children: <Widget>[
-                                  Container(
-                                    decoration: new BoxDecoration(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(12.0),
-                                        topRight: Radius.circular(12.0),
-                                      ),
-                                      image: DecorationImage(
-                                        image: AssetImage('lib/images/foto.png'),
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 8.0,
-                                    right: 16.0,
-                                    child: Image.asset('lib/images/expandphotoico.png'),
+                          ),
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                              decoration: BoxDecoration(
+                                color: kWhiteColor,
+                                borderRadius: BorderRadius.circular(12.0),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.1),
+                                    offset: Offset(0, 2),
+                                    blurRadius: 8,
+                                    spreadRadius: 0,
                                   ),
                                 ],
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 29.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  RichText(
-                                    text: new TextSpan(
-                                      children: [
-                                        new TextSpan(
-                                          text: "Local da foto",
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: Color(0xff606566),
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
+                                  Expanded(
+                                    child: Stack(
+                                      children: <Widget>[
+                                        Container(
+                                          decoration: new BoxDecoration(
+                                            borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(12.0),
+                                              topRight: Radius.circular(12.0),
+                                            ),
+                                            image: DecorationImage(
+                                              image: AssetImage('lib/images/foto.png'),
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
-                                        new TextSpan(
-                                          text: "  estado",
+                                        Positioned(
+                                          bottom: 0.0,
+                                          right: 6.0,
+                                          child: CupertinoButton(
+                                            padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+                                            onPressed: () {
+                                              Navigator.pushNamed(context, PhotoScreen.id);
+                                            },
+                                            child: Image.asset('lib/images/expandphotoico.png'),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 29.0),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        RichText(
+                                          text: new TextSpan(
+                                            children: [
+                                              new TextSpan(
+                                                text: "Local da foto",
+                                                style: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  color: Color(0xff606566),
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontStyle: FontStyle.normal,
+                                                  letterSpacing: -0.4099999964237213,
+                                                ),
+                                              ),
+                                              new TextSpan(
+                                                text: "  estado",
+                                                style: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  color: Color(0xff606566),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w300,
+                                                  fontStyle: FontStyle.normal,
+                                                  letterSpacing: -0.4099999964237213,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          "Ontem",
                                           style: TextStyle(
                                             fontFamily: 'Lato',
                                             color: Color(0xff606566),
@@ -136,105 +261,93 @@ class _PicScreenState extends State<PicScreen> {
                                             fontStyle: FontStyle.normal,
                                             letterSpacing: -0.4099999964237213,
                                           ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Container(
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(
+                                                "Add Tag",
+                                                style: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  color: Color(0xffff6666),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontStyle: FontStyle.normal,
+                                                  letterSpacing: -0.4099999964237213,
+                                                ),
+                                              ),
+                                              Image.asset('lib/images/plusredico.png'),
+                                            ],
+                                          ),
+                                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(19.0),
+                                            border: Border.all(color: kSecondaryColor, width: 1.0),
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                  Text(
-                                    "Ontem",
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff606566),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w300,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
+                                  SizedBox(
+                                    height: 8.0,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Text(
+                                      "Tags recentes",
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff979a9b),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w300,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Container(
+                                          child: Text(
+                                            "Ursos",
+                                            style: TextStyle(
+                                              fontFamily: 'Lato',
+                                              color: Color(0xff979a9b),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              fontStyle: FontStyle.normal,
+                                              letterSpacing: -0.4099999964237213,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(19.0),
+                                            border: Border.all(
+                                              color: Color(0xff979a9b),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   )
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          "Add Tag",
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: Color(0xffff6666),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w700,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                        Image.asset('lib/images/plusredico.png'),
-                                      ],
-                                    ),
-                                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(19.0),
-                                      border: Border.all(color: kSecondaryColor, width: 1.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            SizedBox(
-                              height: 8.0,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text(
-                                "Tags recentes",
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff979a9b),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                              child: Row(
-                                children: <Widget>[
-                                  Container(
-                                    child: Text(
-                                      "Ursos",
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff979a9b),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(19.0),
-                                      border: Border.all(
-                                        color: Color(0xff979a9b),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ),
+                  ),
+              ],
             ),
           ),
           bottomNavigationBar: BubbleBottomBar(
