@@ -10,6 +10,8 @@ class DatabaseManager extends ChangeNotifier {
     return _instance ??= DatabaseManager._();
   }
 
+  bool hasGalleryPermission = false;
+
 //  int swiperIndex = 0;
 //
 //  void changeSwiperIndex(int index) {

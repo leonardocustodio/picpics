@@ -58,7 +58,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () async {
                       var result = await PhotoManager.requestPermission();
                       if (result) {
-                        // success
                         Navigator.pushNamed(context, PicScreen.id);
                       } else {
                         // fail

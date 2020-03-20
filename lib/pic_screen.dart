@@ -4,9 +4,11 @@ import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/photo_screen.dart';
+import 'package:picPics/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -19,7 +21,7 @@ class _PicScreenState extends State<PicScreen> {
   ScrollController scrollController = ScrollController(initialScrollOffset: 0);
 
   int currentIndex;
-  bool showTutorial = true;
+  bool showTutorial = false;
 
   int swiperIndex = 0;
   SwiperController swiperController = new SwiperController();
@@ -74,7 +76,7 @@ class _PicScreenState extends State<PicScreen> {
             value: SystemUiOverlayStyle.dark,
             child: Stack(
               children: <Widget>[
-                if (currentIndex == 0)
+                if (!Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
                     constraints: BoxConstraints.expand(),
                     color: kWhiteColor,
@@ -86,7 +88,94 @@ class _PicScreenState extends State<PicScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Image.asset('lib/images/settings.png'),
+                                CupertinoButton(
+                                  padding: const EdgeInsets.all(0),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, SettingsScreen.id);
+                                  },
+                                  child: Image.asset('lib/images/settings.png'),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 30.0),
+                                  child: Image.asset('lib/images/nogalleryauth.png'),
+                                ),
+                                SizedBox(
+                                  height: 21.0,
+                                ),
+                                Text(
+                                  "Para começarmos a organizar suas fotos, precismos de autorização para acessá-las",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff979a9b),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 17.0,
+                                ),
+                                CupertinoButton(
+                                  padding: const EdgeInsets.all(0),
+                                  onPressed: () {
+                                    PhotoManager.openSetting();
+                                  },
+                                  child: Container(
+                                    width: 201.0,
+                                    height: 44.0,
+                                    decoration: BoxDecoration(
+                                      gradient: kPrimaryGradient,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        "Permissões de acesso",
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: kWhiteColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          fontStyle: FontStyle.normal,
+                                          letterSpacing: -0.4099999964237213,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                if (currentIndex == 0 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                  Container(
+                    constraints: BoxConstraints.expand(),
+                    color: kWhiteColor,
+                    child: SafeArea(
+                      child: Stack(
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                CupertinoButton(
+                                  padding: const EdgeInsets.all(0),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, SettingsScreen.id);
+                                  },
+                                  child: Image.asset('lib/images/settings.png'),
+                                ),
                               ],
                             ),
                           ),
@@ -149,7 +238,7 @@ class _PicScreenState extends State<PicScreen> {
                       ),
                     ),
                   ),
-                if (currentIndex == 1)
+                if (currentIndex == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
                     constraints: BoxConstraints.expand(),
                     decoration: new BoxDecoration(
@@ -168,7 +257,13 @@ class _PicScreenState extends State<PicScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
                                 Image.asset('lib/images/picpicssmallred.png'),
-                                Image.asset('lib/images/settings.png'),
+                                CupertinoButton(
+                                  padding: const EdgeInsets.all(0),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, SettingsScreen.id);
+                                  },
+                                  child: Image.asset('lib/images/settings.png'),
+                                ),
                               ],
                             ),
                           ),
@@ -348,7 +443,7 @@ class _PicScreenState extends State<PicScreen> {
                       ),
                     ),
                   ),
-                if (currentIndex == 2)
+                if (currentIndex == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
                     constraints: BoxConstraints.expand(),
                     color: kWhiteColor,
@@ -360,7 +455,13 @@ class _PicScreenState extends State<PicScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Image.asset('lib/images/settings.png'),
+                                CupertinoButton(
+                                  padding: const EdgeInsets.all(0),
+                                  onPressed: () {
+                                    Navigator.pushNamed(context, SettingsScreen.id);
+                                  },
+                                  child: Image.asset('lib/images/settings.png'),
+                                ),
                               ],
                             ),
                           ),
