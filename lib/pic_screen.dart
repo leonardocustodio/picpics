@@ -369,6 +369,9 @@ class _PicScreenState extends State<PicScreen> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
+                                  SizedBox(
+                                    height: 40.0,
+                                  ),
                                   Image.asset('lib/images/notaggedphotos.png'),
                                   SizedBox(
                                     height: 21.0,
