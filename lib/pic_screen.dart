@@ -9,6 +9,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/asset_provider.dart';
+import 'package:picPics/lru_cache.dart';
+import 'dart:typed_data';
+
+part 'image_item.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -59,12 +64,71 @@ class _PicScreenState extends State<PicScreen> {
     scrollController.addListener(() {
       movedGridPosition();
     });
+
+    setupPathList();
+  }
+
+  void setupPathList() async {
+    List<AssetPathEntity> pathList;
+
+    pathList = await PhotoManager.getAssetPathList(hasAll: true, type: RequestType.image);
+    print('pathList: $pathList');
+
+    DatabaseManager.instance.assetProvider.current = pathList[0];
   }
 
   void changePage(int index) {
     setState(() {
       currentIndex = index;
     });
+  }
+
+  Widget _buildGridView() {
+    final noMore = DatabaseManager.instance.assetProvider.noMore;
+    final count = DatabaseManager.instance.assetProvider.count + (noMore ? 0 : 1);
+
+    print('noMore: $noMore - count: $count');
+
+    return GridView.builder(
+      padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+      controller: scrollController,
+      scrollDirection: Axis.vertical,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+      itemCount: count,
+      itemBuilder: _buildItem,
+    );
+  }
+
+  Widget _buildItem(BuildContext context, int index) {
+    final noMore = DatabaseManager.instance.assetProvider.noMore;
+    if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
+      print('loading more');
+      _loadMore();
+//      return _buildLoading();
+    }
+
+    var data = DatabaseManager.instance.assetProvider.data[index];
+
+    return ImageItem(
+      entity: data,
+    );
+
+//    return Padding(
+//      padding: const EdgeInsets.all(4.0),
+//      child: Container(
+//        decoration: BoxDecoration(
+//          color: Colors.black,
+//          borderRadius: BorderRadius.circular(5.0),
+//        ),
+//      ),
+//    );
+  }
+
+  _loadMore() async {
+    print('calling db loadmore');
+    await DatabaseManager.instance.loadMore();
+    print('calling set state');
+    setState(() {});
   }
 
   @override
@@ -215,24 +279,7 @@ class _PicScreenState extends State<PicScreen> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 48.0),
-                            child: GridView.builder(
-                              padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
-                              controller: scrollController,
-                              scrollDirection: Axis.vertical,
-                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-                              itemCount: 20,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(4.0),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                            child: _buildGridView(),
                           ),
                         ],
                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/asset_provider.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 class DatabaseManager extends ChangeNotifier {
@@ -10,7 +11,15 @@ class DatabaseManager extends ChangeNotifier {
     return _instance ??= DatabaseManager._();
   }
 
-  bool hasGalleryPermission = false;
+  bool hasGalleryPermission = true;
+  AssetProvider assetProvider = AssetProvider();
+
+  loadMore() async {
+    print('calling asset provider loadmore');
+    await assetProvider.loadMore();
+    print('calling notify listeners');
+    notifyListeners();
+  }
 
 //  int swiperIndex = 0;
 //
