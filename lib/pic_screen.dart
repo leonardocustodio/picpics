@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/components/bubble_bottom_bar.dart';
@@ -10,7 +13,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/lru_cache.dart';
-import 'dart:typed_data';
+import 'package:picPics/throttle.dart';
 
 part 'image_item.dart';
 
@@ -34,6 +37,8 @@ class _PicScreenState extends State<PicScreen> {
   bool hideSubtitle = false;
   bool noTaggedPhoto = true;
 
+  Throttle _changeThrottle;
+
   void changeIndex() {
     print('teste');
   }
@@ -51,6 +56,11 @@ class _PicScreenState extends State<PicScreen> {
         topOffset = 64.0 - (offset - 52.0);
         hideSubtitle = false;
       });
+    } else if (offset <= 0) {
+      setState(() {
+        topOffset = 64;
+        hideSubtitle = false;
+      });
     }
 
     print(scrollController.offset);
@@ -64,13 +74,34 @@ class _PicScreenState extends State<PicScreen> {
       movedGridPosition();
     });
 
+    _changeThrottle = Throttle(onCall: _onAssetChange);
+    PhotoManager.addChangeCallback(_changeThrottle.call);
+    PhotoManager.startChangeNotify();
     setupPathList();
+  }
+
+  @override
+  void dispose() {
+    PhotoManager.removeChangeCallback(_changeThrottle.call);
+    PhotoManager.stopChangeNotify();
+    _changeThrottle.dispose();
+    super.dispose();
+  }
+
+  void _onAssetChange() {
+    print('asset changed');
+//    _onPhotoRefresh();
   }
 
   void setupPathList() async {
     List<AssetPathEntity> pathList;
 
-    pathList = await PhotoManager.getAssetPathList(hasAll: true, type: RequestType.image);
+    pathList = await PhotoManager.getAssetPathList(
+      hasAll: true,
+      onlyAll: true,
+      type: RequestType.image,
+    );
+
     print('pathList: $pathList');
 
     DatabaseManager.instance.assetProvider.current = pathList[0];
@@ -132,7 +163,7 @@ class _PicScreenState extends State<PicScreen> {
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
-          color: Colors.black,
+          color: Colors.grey[400],
         ),
       ),
     );
