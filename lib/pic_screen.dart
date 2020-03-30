@@ -104,24 +104,25 @@ class _PicScreenState extends State<PicScreen> {
     if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
       print('loading more');
       _loadMore();
+      return Container();
 //      return _buildLoading();
     }
 
+    print('loading photo index: $index');
+
+    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     var data = DatabaseManager.instance.assetProvider.data[index];
 
-    return ImageItem(
-      entity: data,
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5.0),
+        child: ImageItem(
+          entity: data,
+          size: thumbWidth.toInt(),
+        ),
+      ),
     );
-
-//    return Padding(
-//      padding: const EdgeInsets.all(4.0),
-//      child: Container(
-//        decoration: BoxDecoration(
-//          color: Colors.black,
-//          borderRadius: BorderRadius.circular(5.0),
-//        ),
-//      ),
-//    );
   }
 
   _loadMore() async {
