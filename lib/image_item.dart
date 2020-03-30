@@ -2,22 +2,14 @@ part of 'pic_screen.dart';
 
 class ImageItem extends StatelessWidget {
   final AssetEntity entity;
-
-  final Color themeColor;
-
+  final Color backgroundColor;
   final int size;
-
-//  final LoadingDelegate loadingDelegate;
-
-//  final BadgeDelegate badgeDelegate;
 
   const ImageItem({
     Key key,
     this.entity,
-    this.themeColor,
+    this.backgroundColor,
     this.size = 64,
-//    this.loadingDelegate,
-//    this.badgeDelegate,
   }) : super(key: key);
 
   @override
@@ -35,14 +27,9 @@ class ImageItem extends StatelessWidget {
           ImageLruCache.setData(entity, size, futureData);
           return _buildImageItem(context, futureData);
         }
-        return Container();
-//        return Center(
-//          child: loadingDelegate.buildPreviewLoading(
-//            context,
-//            entity,
-//            themeColor,
-//          ),
-//        );
+        return Container(
+          color: backgroundColor,
+        );
       },
     );
   }
@@ -54,21 +41,7 @@ class ImageItem extends StatelessWidget {
       height: double.infinity,
       fit: BoxFit.cover,
     );
-//    var badge;
-//    final badgeBuilder = badgeDelegate?.buildBadge(context, entity.type, entity.videoDuration);
-//    if (badgeBuilder == null) {
-//      badge = Container();
-//    } else {
-//      badge = badgeBuilder;
-//    }
 
-    return Stack(
-      children: <Widget>[
-        image,
-//        IgnorePointer(
-//          child: badge,
-//        ),
-      ],
-    );
+    return image;
   }
 }

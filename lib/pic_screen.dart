@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:picPics/lru_cache.dart';
 import 'dart:typed_data';
 
@@ -104,22 +103,36 @@ class _PicScreenState extends State<PicScreen> {
     if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
       print('loading more');
       _loadMore();
-      return Container();
-//      return _buildLoading();
+      return _buildLoading();
     }
+
+//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
+    var data = DatabaseManager.instance.assetProvider.data[index];
 
     print('loading photo index: $index');
 
-    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-    var data = DatabaseManager.instance.assetProvider.data[index];
+    return RepaintBoundary(
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5.0),
+          child: ImageItem(
+            entity: data,
+            size: 150,
+            backgroundColor: Colors.grey[400],
+          ),
+        ),
+      ),
+    );
+  }
 
+  Widget _buildLoading() {
     return Padding(
       padding: const EdgeInsets.all(5.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(5.0),
-        child: ImageItem(
-          entity: data,
-          size: thumbWidth.toInt(),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.0),
+          color: Colors.black,
         ),
       ),
     );
