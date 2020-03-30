@@ -178,6 +178,8 @@ class _PicScreenState extends State<PicScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+
     return Stack(
       children: <Widget>[
         Scaffold(
@@ -535,13 +537,13 @@ class _PicScreenState extends State<PicScreen> {
                                 );
                               },
                               layout: SwiperLayout.CUSTOM,
-                              itemWidth: MediaQuery.of(context).size.width,
-                              customLayoutOption: new CustomLayoutOption(startIndex: -1, stateCount: 3)
-                                  .addRotate([-45.0 / 180, 0.0, 45.0 / 180]).addTranslate(
+                              itemWidth: screenWidth,
+                              customLayoutOption:
+                                  CustomLayoutOption(startIndex: -1, stateCount: 3).addRotate([-45.0 / 180, 0.0, 45.0 / 180]).addTranslate(
                                 [
-                                  new Offset(-370.0, -40.0),
-                                  new Offset(0.0, 0.0),
-                                  new Offset(370.0, -40.0),
+                                  Offset(-screenWidth - screenWidth / 2, -40.0),
+                                  Offset(0.0, 0.0),
+                                  Offset(screenWidth + screenWidth / 2, -40.0),
                                 ],
                               ),
                             ),
