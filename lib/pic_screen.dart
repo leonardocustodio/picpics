@@ -130,6 +130,14 @@ class _PicScreenState extends State<PicScreen> {
   }
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
+    final noMore = DatabaseManager.instance.assetProvider.noMore;
+    if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
+      print('loading more');
+      _loadMore();
+      return Container();
+      return _buildLoading();
+    }
+
     print('photo slides index: $index');
     var data = DatabaseManager.instance.assetProvider.data[index];
 
@@ -544,7 +552,7 @@ class _PicScreenState extends State<PicScreen> {
                           Expanded(
                             child: Swiper(
                               loop: true,
-                              itemCount: count,
+                              itemCount: count == 0 ? 1 : count,
                               itemBuilder: (BuildContext context, int index) {
                                 return _buildPhotoSlider(context, index);
                               },
