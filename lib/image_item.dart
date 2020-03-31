@@ -4,12 +4,14 @@ class ImageItem extends StatelessWidget {
   final AssetEntity entity;
   final Color backgroundColor;
   final int size;
+  final BoxFit fit;
 
   const ImageItem({
     Key key,
     this.entity,
     this.backgroundColor,
     this.size = 64,
+    this.fit = BoxFit.cover,
   }) : super(key: key);
 
   @override
@@ -39,7 +41,7 @@ class ImageItem extends StatelessWidget {
       data,
       width: double.infinity,
       height: double.infinity,
-      fit: BoxFit.cover,
+      fit: fit,
     );
 
     return image;

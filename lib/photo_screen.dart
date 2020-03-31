@@ -19,6 +19,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
           ImageItem(
             entity: DatabaseManager.instance.selectedPhoto,
             size: MediaQuery.of(context).size.height.toInt(),
+            fit: BoxFit.contain,
+            backgroundColor: Colors.black,
           ),
           Container(
             constraints: BoxConstraints.expand(),
