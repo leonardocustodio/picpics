@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/asset_provider.dart';
+import 'package:photo_manager/photo_manager.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 
 class DatabaseManager extends ChangeNotifier {
@@ -13,6 +14,7 @@ class DatabaseManager extends ChangeNotifier {
 
   bool hasGalleryPermission = true;
   AssetProvider assetProvider = AssetProvider();
+  AssetEntity selectedPhoto;
 
   loadMore() async {
     print('calling asset provider loadmore');

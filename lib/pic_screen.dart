@@ -169,6 +169,7 @@ class _PicScreenState extends State<PicScreen> {
                   child: CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
                     onPressed: () {
+                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },
                     child: Image.asset('lib/images/expandphotoico.png'),
