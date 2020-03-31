@@ -130,6 +130,7 @@ class _PicScreenState extends State<PicScreen> {
   }
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
+    print('photo slides index: $index');
     var data = DatabaseManager.instance.assetProvider.data[index];
 
     return Container(
@@ -354,7 +355,7 @@ class _PicScreenState extends State<PicScreen> {
   @override
   Widget build(BuildContext context) {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
-    final count = DatabaseManager.instance.assetProvider.count + (noMore ? 0 : 1);
+    final count = DatabaseManager.instance.assetProvider.count;
     print('noMore: $noMore - count: $count');
 
     var screenWidth = MediaQuery.of(context).size.width;
@@ -542,6 +543,7 @@ class _PicScreenState extends State<PicScreen> {
                           ),
                           Expanded(
                             child: Swiper(
+                              loop: true,
                               itemCount: count,
                               itemBuilder: (BuildContext context, int index) {
                                 return _buildPhotoSlider(context, index);
