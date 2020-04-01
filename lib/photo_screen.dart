@@ -11,6 +11,16 @@ class PhotoScreen extends StatefulWidget {
 }
 
 class _PhotoScreenState extends State<PhotoScreen> {
+  DateTime createdDate;
+  String dateString;
+
+  @override
+  void initState() {
+    super.initState();
+    createdDate = DatabaseManager.instance.selectedPhoto.createDateTime;
+    dateString = DatabaseManager.instance.formatDate(createdDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,7 +88,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                             ),
                           ),
                           Text(
-                            "18 de novembro de 1990",
+                            dateString,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kWhiteColor,

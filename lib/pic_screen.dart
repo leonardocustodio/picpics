@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/add_location.dart';
 import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
@@ -141,6 +142,24 @@ class _PicScreenState extends State<PicScreen> {
     print('photo slides index: $index');
     var data = DatabaseManager.instance.assetProvider.data[index];
 
+    DateTime createdDate = data.createDateTime;
+    String dateString = DatabaseManager.instance.formatDate(createdDate);
+
+    double latitude = data.latitude;
+    double longitude = data.longitude;
+
+    print('lat: $latitude - long: $longitude');
+
+//    if (latitude == 0.0 && longitude == 0.0) {
+//      DatabaseManager.instance.currentPhotoCity = 'Local da foto';
+//      DatabaseManager.instance.currentPhotoState = ' estado';
+//    } else if (DatabaseManager.instance.lastLocationRequest[0] == latitude &&
+//        DatabaseManager.instance.lastLocationRequest[1] == longitude) {
+//      print('skipping location request');
+//    } else {
+//      DatabaseManager.instance.findLocation(latitude, longitude);
+//    }
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       decoration: BoxDecoration(
@@ -192,36 +211,44 @@ class _PicScreenState extends State<PicScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                RichText(
-                  text: new TextSpan(
-                    children: [
-                      new TextSpan(
-                        text: "Local da foto",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff606566),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
+                CupertinoButton(
+                  onPressed: () {
+                    DatabaseManager.instance.selectedPhoto = data;
+                    Navigator.pushNamed(context, AddLocationScreen.id);
+                  },
+                  child: RichText(
+                    text: new TextSpan(
+                      children: [
+                        new TextSpan(
+                          text: 'Local da foto',
+//                        text: Provider.of<DatabaseManager>(context).currentPhotoCity,
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff606566),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
                         ),
-                      ),
-                      new TextSpan(
-                        text: "  estado",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff606566),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
+                        new TextSpan(
+                          text: ' estado',
+//                        text: ' ${Provider.of<DatabaseManager>(context).currentPhotoState}',
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff606566),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w300,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 Text(
-                  "Ontem",
+                  dateString,
                   style: TextStyle(
                     fontFamily: 'Lato',
                     color: Color(0xff606566),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:picPics/add_location.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/settings_screen.dart';
@@ -59,6 +60,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
           PicScreen.id: (context) => PicScreen(),
           PhotoScreen.id: (context) => PhotoScreen(),
           SettingsScreen.id: (context) => SettingsScreen(),
+          AddLocationScreen.id: (context) => AddLocationScreen(),
         },
       ),
     );
