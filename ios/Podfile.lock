@@ -16,6 +16,10 @@ PODS:
     - GoogleMaps/Base
   - location_permissions (2.0.5):
     - Flutter
+  - path_provider (0.0.1):
+    - Flutter
+  - path_provider_macos (0.0.1):
+    - Flutter
   - photo_manager (0.0.1):
     - Flutter
 
@@ -26,6 +30,8 @@ DEPENDENCIES:
   - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
   - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
 
 SPEC REPOS:
@@ -45,6 +51,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
   location_permissions:
     :path: ".symlinks/plugins/location_permissions/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_macos:
+    :path: ".symlinks/plugins/path_provider_macos/ios"
   photo_manager:
     :path: ".symlinks/plugins/photo_manager/ios"
 
@@ -56,6 +66,8 @@ SPEC CHECKSUMS:
   google_maps_flutter: d0dd62f5a7d39bae61057eb9f52dd778d99c7c6c
   GoogleMaps: 7c8d66d70e4e8c300f43a7219d8fdaad7b325a9a
   location_permissions: 4a49d4e5bec5b653643e551ab77963cc99bb0e4a
+  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
   photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
 
 PODFILE CHECKSUM: 9ec0b926d741f3b13993aceabf2687bc78d2468b

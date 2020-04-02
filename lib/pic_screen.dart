@@ -30,6 +30,7 @@ class _PicScreenState extends State<PicScreen> {
 
   int currentIndex;
   bool showTutorial = false;
+  bool edittingTags = false;
 
   int swiperIndex = 0;
   SwiperController swiperController = new SwiperController();
@@ -142,6 +143,8 @@ class _PicScreenState extends State<PicScreen> {
     print('photo slides index: $index');
     var data = DatabaseManager.instance.assetProvider.data[index];
 
+    print('photo id: ${data.id}');
+
     DateTime createdDate = data.createDateTime;
     String dateString = DatabaseManager.instance.formatDate(createdDate);
 
@@ -206,135 +209,157 @@ class _PicScreenState extends State<PicScreen> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 29.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          if (edittingTags == false)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                CupertinoButton(
-                  onPressed: () {
-                    DatabaseManager.instance.selectedPhoto = data;
-                    Navigator.pushNamed(context, AddLocationScreen.id);
-                  },
-                  child: RichText(
-                    text: new TextSpan(
-                      children: [
-                        new TextSpan(
-                          text: 'Local da foto',
-//                        text: Provider.of<DatabaseManager>(context).currentPhotoCity,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff606566),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
-                          ),
-                        ),
-                        new TextSpan(
-                          text: ' estado',
-//                        text: ' ${Provider.of<DatabaseManager>(context).currentPhotoState}',
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff606566),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w300,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Text(
-                  dateString,
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    color: Color(0xff606566),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w300,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: -0.4099999964237213,
-                  ),
-                )
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Row(
-              children: <Widget>[
-                Container(
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 29.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
+                      CupertinoButton(
+                        padding: const EdgeInsets.all(0),
+                        onPressed: () {
+                          DatabaseManager.instance.selectedPhoto = data;
+                          Navigator.pushNamed(context, AddLocationScreen.id);
+                        },
+                        child: RichText(
+                          text: new TextSpan(
+                            children: [
+                              new TextSpan(
+                                text: 'Local da foto',
+//                        text: Provider.of<DatabaseManager>(context).currentPhotoCity,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
+                              ),
+                              new TextSpan(
+                                text: ' estado',
+//                        text: ' ${Provider.of<DatabaseManager>(context).currentPhotoState}',
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                       Text(
-                        "Add Tag",
+                        dateString,
                         style: TextStyle(
                           fontFamily: 'Lato',
-                          color: Color(0xffff6666),
+                          color: Color(0xff606566),
                           fontSize: 12,
-                          fontWeight: FontWeight.w700,
+                          fontWeight: FontWeight.w300,
                           fontStyle: FontStyle.normal,
                           letterSpacing: -0.4099999964237213,
                         ),
-                      ),
-                      Image.asset('lib/images/plusredico.png'),
+                      )
                     ],
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(19.0),
-                    border: Border.all(color: kSecondaryColor, width: 1.0),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: <Widget>[
+                      CupertinoButton(
+                        padding: const EdgeInsets.all(0),
+                        onPressed: () {
+                          print('add tag');
+                          setState(() {
+                            edittingTags = true;
+                          });
+                        },
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                "Add Tag",
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xffff6666),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w700,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
+                              ),
+                              Image.asset('lib/images/plusredico.png'),
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(19.0),
+                            border: Border.all(color: kSecondaryColor, width: 1.0),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              "Tags recentes",
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff979a9b),
-                fontSize: 12,
-                fontWeight: FontWeight.w300,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-            child: Row(
-              children: <Widget>[
-                Container(
+                SizedBox(
+                  height: 8.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Text(
-                    "Ursos",
+                    "Tags recentes",
                     style: TextStyle(
                       fontFamily: 'Lato',
                       color: Color(0xff979a9b),
                       fontSize: 12,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w300,
                       fontStyle: FontStyle.normal,
                       letterSpacing: -0.4099999964237213,
                     ),
                   ),
-                  padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(19.0),
-                    border: Border.all(
-                      color: Color(0xff979a9b),
-                    ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        child: Text(
+                          "Ursos",
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff979a9b),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(19.0),
+                          border: Border.all(
+                            color: Color(0xff979a9b),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          )
+          if (edittingTags == true)
+            Column(
+              children: <Widget>[
+                Container(),
+              ],
+            ),
         ],
       ),
     );
