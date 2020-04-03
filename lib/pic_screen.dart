@@ -361,6 +361,7 @@ class _PicScreenState extends State<PicScreen> {
                         Expanded(
                           child: Center(
                             child: TextField(
+                              autofocus: true,
                               onEditingComplete: () {
                                 print('return');
                                 setState(() {
