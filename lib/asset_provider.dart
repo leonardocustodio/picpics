@@ -51,9 +51,10 @@ class AssetPaging {
       return;
     }
     var data = await path.getAssetListPaged(page, pageCount);
+    print('asset count: ${path.assetCount}');
     print('loaded assets paged');
-    print('data length: ${data.length} - pagecount: $pageCount');
-    if (data.length == 0 || data.length <= pageCount) {
+    print('data length: ${data.length} - pageCount $pageCount');
+    if (data.length == 0) {
       print('added everything');
       noMore = true;
     }
