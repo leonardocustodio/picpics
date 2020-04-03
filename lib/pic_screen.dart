@@ -790,23 +790,29 @@ class _PicScreenState extends State<PicScreen> {
                                   SizedBox(
                                     height: 17.0,
                                   ),
-                                  Container(
-                                    width: 201.0,
-                                    height: 44.0,
-                                    decoration: BoxDecoration(
-                                      gradient: kPrimaryGradient,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        "Começar a taggear",
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          color: kWhiteColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                          fontStyle: FontStyle.normal,
-                                          letterSpacing: -0.4099999964237213,
+                                  CupertinoButton(
+                                    padding: const EdgeInsets.all(0),
+                                    onPressed: () {
+                                      changePage(1);
+                                    },
+                                    child: Container(
+                                      width: 201.0,
+                                      height: 44.0,
+                                      decoration: BoxDecoration(
+                                        gradient: kPrimaryGradient,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          "Começar a taggear",
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: kWhiteColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
+                                            fontStyle: FontStyle.normal,
+                                            letterSpacing: -0.4099999964237213,
+                                          ),
                                         ),
                                       ),
                                     ),
