@@ -3,6 +3,9 @@ import 'package:picPics/asset_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:picPics/model/tag.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -20,6 +23,45 @@ class DatabaseManager extends ChangeNotifier {
 
   String currentPhotoCity;
   String currentPhotoState;
+
+  List<String> allTags = [];
+
+  loadTags() {
+    var tagsBox = Hive.box('tags');
+
+    for (Tag tag in tagsBox.values) {
+      allTags.add(tag.name);
+    }
+    print('loaded all tags in memory: $allTags');
+  }
+
+  addTag(String tag, String photoId) {
+    print('Adding tag: $tag');
+
+    var tagsBox = Hive.box('tags');
+
+    if (allTags.contains(tag)) {
+      print('user already has this tag');
+
+      int indexOfTag = allTags.indexOf(tag);
+
+      Tag getTag = tagsBox.getAt(indexOfTag);
+
+      if (getTag.photoId.contains(photoId)) {
+        print('this tag is already in this picture');
+        return;
+      }
+
+      getTag.photoId.add(photoId);
+      tagsBox.putAt(indexOfTag, getTag);
+      print('updated pictures in tag');
+      return;
+    }
+
+    print('adding tag to database...');
+    tagsBox.add(Tag(tag, [photoId]));
+    allTags.add(tag);
+  }
 
   loadFirstPhotos() async {
     await assetProvider.loadMore();

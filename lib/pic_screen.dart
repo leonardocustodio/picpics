@@ -15,6 +15,8 @@ import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/lru_cache.dart';
 import 'package:picPics/throttle.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 part 'image_item.dart';
 
@@ -362,8 +364,11 @@ class _PicScreenState extends State<PicScreen> {
                           child: Center(
                             child: TextField(
                               autofocus: true,
-                              onEditingComplete: () {
+                              onSubmitted: (text) {
                                 print('return');
+
+                                DatabaseManager.instance.addTag(text, data.id);
+
                                 setState(() {
                                   edittingTags = false;
                                 });

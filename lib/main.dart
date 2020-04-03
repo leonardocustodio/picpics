@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
+import 'package:picPics/model/pic.dart';
+import 'package:picPics/model/tag.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/settings_screen.dart';
@@ -9,11 +11,24 @@ import 'package:flutter/services.dart';
 import 'package:picPics/login_screen.dart';
 import 'package:picPics/database_manager.dart';
 //import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  Hive.registerAdapter(PicAdapter());
+  Hive.registerAdapter(TagAdapter());
+
+  var pics = await Hive.openBox('pics');
+  var tags = await Hive.openBox('tags');
+
+  DatabaseManager.instance.loadTags();
+
+  // Open boxes
+//  var pics = await Hive.openBox('Pictures');
+//  var tags = await Hive.openBox('Tags');
 
   void setupPathList() async {
     List<AssetPathEntity> pathList;
