@@ -21,6 +21,11 @@ class DatabaseManager extends ChangeNotifier {
   String currentPhotoCity;
   String currentPhotoState;
 
+  loadFirstPhotos() async {
+    await assetProvider.loadMore();
+    print('loaded first photos');
+  }
+
   loadMore() async {
     print('calling asset provider loadmore');
     await assetProvider.loadMore();

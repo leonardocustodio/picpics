@@ -72,6 +72,7 @@ class _PicScreenState extends State<PicScreen> {
   void initState() {
     super.initState();
     currentIndex = 1;
+
     scrollController.addListener(() {
       movedGridPosition();
     });
@@ -79,7 +80,11 @@ class _PicScreenState extends State<PicScreen> {
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);
     PhotoManager.startChangeNotify();
-    setupPathList();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
   }
 
   @override
@@ -93,20 +98,6 @@ class _PicScreenState extends State<PicScreen> {
   void _onAssetChange() {
     print('asset changed');
 //    _onPhotoRefresh();
-  }
-
-  void setupPathList() async {
-    List<AssetPathEntity> pathList;
-
-    pathList = await PhotoManager.getAssetPathList(
-      hasAll: true,
-      onlyAll: true,
-      type: RequestType.image,
-    );
-
-    print('pathList: $pathList');
-
-    DatabaseManager.instance.assetProvider.current = pathList[0];
   }
 
   void changePage(int index) {
@@ -133,9 +124,12 @@ class _PicScreenState extends State<PicScreen> {
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
+    print('No More: $noMore - index $index - Count ${DatabaseManager.instance.assetProvider.count}');
+
     if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
       print('loading more');
       _loadMore();
+      print('returning container');
       return Container();
       return _buildLoading();
     }
@@ -210,12 +204,12 @@ class _PicScreenState extends State<PicScreen> {
             ),
           ),
           if (edittingTags == false)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 24.0, bottom: 29.0),
-                  child: Row(
+            Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       CupertinoButton(
@@ -265,16 +259,13 @@ class _PicScreenState extends State<PicScreen> {
                           fontStyle: FontStyle.normal,
                           letterSpacing: -0.4099999964237213,
                         ),
-                      )
+                      ),
                     ],
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
+                  Row(
                     children: <Widget>[
                       CupertinoButton(
-                        padding: const EdgeInsets.all(0),
+                        padding: const EdgeInsets.all(0.0),
                         onPressed: () {
                           print('add tag');
                           setState(() {
@@ -307,13 +298,10 @@ class _PicScreenState extends State<PicScreen> {
                       ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 8.0,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Text(
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Text(
                     "Tags recentes",
                     style: TextStyle(
                       fontFamily: 'Lato',
@@ -324,10 +312,10 @@ class _PicScreenState extends State<PicScreen> {
                       letterSpacing: -0.4099999964237213,
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                  child: Row(
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Row(
                     children: <Widget>[
                       Container(
                         child: Text(
@@ -351,8 +339,8 @@ class _PicScreenState extends State<PicScreen> {
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           if (edittingTags == true)
             Padding(
@@ -534,7 +522,8 @@ class _PicScreenState extends State<PicScreen> {
   Widget build(BuildContext context) {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
     final count = DatabaseManager.instance.assetProvider.count;
-    print('noMore: $noMore - count: $count');
+    print('first build!!!');
+    print('!!!! noMore: $noMore - count: $count');
 
     var screenWidth = MediaQuery.of(context).size.width;
 
@@ -724,6 +713,7 @@ class _PicScreenState extends State<PicScreen> {
                               loop: true,
                               itemCount: count == 0 ? 1 : count,
                               itemBuilder: (BuildContext context, int index) {
+                                print('calling index $index');
                                 return _buildPhotoSlider(context, index);
                               },
                               layout: SwiperLayout.CUSTOM,

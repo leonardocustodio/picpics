@@ -10,9 +10,27 @@ import 'package:picPics/login_screen.dart';
 import 'package:picPics/database_manager.dart';
 //import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  void setupPathList() async {
+    List<AssetPathEntity> pathList;
+
+    pathList = await PhotoManager.getAssetPathList(
+      hasAll: true,
+      onlyAll: true,
+      type: RequestType.image,
+    );
+
+    print('pathList: $pathList');
+
+    DatabaseManager.instance.assetProvider.current = pathList[0];
+    DatabaseManager.instance.loadFirstPhotos();
+  }
+
+  setupPathList();
 
 //  Crashlytics.instance.enableInDevMode = true;
 //  FlutterError.onError = Crashlytics.instance.recordFlutterError;
