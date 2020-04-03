@@ -25,6 +25,7 @@ void main() async {
   var tags = await Hive.openBox('tags');
 
   DatabaseManager.instance.loadTags();
+  DatabaseManager.instance.loadPics();
 
   // Open boxes
 //  var pics = await Hive.openBox('Pictures');

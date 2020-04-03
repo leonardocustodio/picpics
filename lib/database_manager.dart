@@ -5,6 +5,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 
 class DatabaseManager extends ChangeNotifier {
@@ -25,6 +26,16 @@ class DatabaseManager extends ChangeNotifier {
   String currentPhotoState;
 
   List<String> allTags = [];
+  List<String> allPics = [];
+
+  loadPics() {
+    var picsBox = Hive.box('pics');
+
+    for (Pic pic in picsBox.values) {
+      allPics.add(pic.photoId);
+    }
+    print('loaded all pics in memory: $allPics');
+  }
 
   loadTags() {
     var tagsBox = Hive.box('tags');
@@ -33,6 +44,27 @@ class DatabaseManager extends ChangeNotifier {
       allTags.add(tag.name);
     }
     print('loaded all tags in memory: $allTags');
+  }
+
+  addTagToPic(String tag, String photoId) {
+    var picsBox = Hive.box('pics');
+
+    if (allPics.contains(photoId)) {
+      print('this picture is in db going to update');
+
+      int indexOfPic = allPics.indexOf(photoId);
+      Pic getPic = picsBox.getAt(indexOfPic);
+      getPic.tags.add(tag);
+      picsBox.putAt(indexOfPic, getPic);
+      print('updated picture');
+
+      return;
+    }
+
+    print('this picture is not in db, adding it...');
+    Pic pic = Pic(photoId, DateTime.now(), 0.0, 0.0, 'No Location', [tag]);
+    picsBox.add(pic);
+    allPics.add(photoId);
   }
 
   addTag(String tag, String photoId) {
@@ -44,7 +76,6 @@ class DatabaseManager extends ChangeNotifier {
       print('user already has this tag');
 
       int indexOfTag = allTags.indexOf(tag);
-
       Tag getTag = tagsBox.getAt(indexOfTag);
 
       if (getTag.photoId.contains(photoId)) {
@@ -54,12 +85,14 @@ class DatabaseManager extends ChangeNotifier {
 
       getTag.photoId.add(photoId);
       tagsBox.putAt(indexOfTag, getTag);
+      addTagToPic(tag, photoId);
       print('updated pictures in tag');
       return;
     }
 
     print('adding tag to database...');
     tagsBox.add(Tag(tag, [photoId]));
+    addTagToPic(tag, photoId);
     allTags.add(tag);
   }
 
