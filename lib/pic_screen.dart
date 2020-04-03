@@ -373,6 +373,13 @@ class _PicScreenState extends State<PicScreen> {
                         Expanded(
                           child: Center(
                             child: TextField(
+                              onEditingComplete: () {
+                                print('return');
+                                setState(() {
+                                  edittingTags = false;
+                                });
+                              },
+                              keyboardType: TextInputType.multiline,
                               textAlignVertical: TextAlignVertical.center,
                               maxLines: 1,
                               style: TextStyle(

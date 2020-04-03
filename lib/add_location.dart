@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:async';
@@ -53,40 +54,38 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
               child: Container(
                 height: 48.0,
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(
                       width: 19.0,
                     ),
-                    Container(
-                      width: 9.333307266235352,
-                      height: 18.66599464416504,
-                      decoration: new BoxDecoration(
-                        color: Colors.grey,
-                      ),
+                    CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Image.asset('lib/images/backarrowgray.png'),
                     ),
-                    SizedBox(
-                      width: 21.0,
-                    ),
-                    Container(
-                      width: 18.0002498626709,
-                      height: 18,
-                      decoration: new BoxDecoration(
-                        color: kSecondaryColor,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10.0,
-                    ),
-                    Text(
-                      "Ilha bela",
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff606566),
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                        letterSpacing: -0.4099999964237213,
+                    Expanded(
+                      child: TextField(
+                        textAlignVertical: TextAlignVertical.center,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff606566),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.all(0),
+                          prefixIcon: Image.asset('lib/images/searchico.png'),
+                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                        ),
                       ),
                     ),
                   ],
