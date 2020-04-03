@@ -355,10 +355,121 @@ class _PicScreenState extends State<PicScreen> {
               ],
             ),
           if (edittingTags == true)
-            Column(
-              children: <Widget>[
-                Container(),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    height: 40,
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(241, 243, 245, 1.0),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Expanded(
+                          child: Center(
+                            child: TextField(
+                              textAlignVertical: TextAlignVertical.center,
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff606566),
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
+                              decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.only(right: 2.0),
+                                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                border: OutlineInputBorder(borderSide: BorderSide.none),
+                                prefixIcon: Image.asset('lib/images/typetagnameico.png'),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Text(
+                    "Tags ativas",
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      color: Color(0xff979a9b),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                      fontStyle: FontStyle.normal,
+                      letterSpacing: -0.4099999964237213,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Container(
+                    height: 30.0,
+                    width: 71.0,
+                    decoration: BoxDecoration(
+                      color: kSecondaryColor,
+                      borderRadius: BorderRadius.circular(19.0),
+                    ),
+                    child: Center(
+                      child: Text(
+                        "Comida",
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: kWhiteColor,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 16.0,
+                  ),
+                  Text(
+                    "Sugestões de tags",
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      color: Color(0xff979a9b),
+                      fontSize: 12,
+                      fontWeight: FontWeight.w300,
+                      fontStyle: FontStyle.normal,
+                      letterSpacing: -0.4099999964237213,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  Container(
+                    child: Text(
+                      "Ursos",
+                      style: TextStyle(
+                        fontFamily: 'Lato',
+                        color: Color(0xff979a9b),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        fontStyle: FontStyle.normal,
+                        letterSpacing: -0.4099999964237213,
+                      ),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(19.0),
+                      border: Border.all(
+                        color: Color(0xff979a9b),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
         ],
       ),
