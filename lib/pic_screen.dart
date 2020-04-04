@@ -123,10 +123,12 @@ class _PicScreenState extends State<PicScreen> {
     );
   }
 
-  Widget _buildTagsWidget(BuildContext context) {
+  Widget _buildTagsWidget(Pic picInfo) {
     List<Widget> tagsWidgets = [];
 
-    for (var tag in Provider.of<DatabaseManager>(context).selectedPic.tags) {
+    print('Tags: ${picInfo.tags}');
+
+    for (var tag in picInfo.tags) {
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -212,7 +214,11 @@ class _PicScreenState extends State<PicScreen> {
     print('photo slides index: $index');
     var data = DatabaseManager.instance.assetProvider.data[index];
 
-    DatabaseManager.instance.getPicInfo(data.id);
+    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+
+    if (picInfo == null) {
+      picInfo = Pic(data.id, data.createDateTime, data.latitude, data.longitude, '', []);
+    }
 
     print('photo id: ${data.id}');
 
@@ -339,7 +345,7 @@ class _PicScreenState extends State<PicScreen> {
                       ),
                     ],
                   ),
-                  _buildTagsWidget(context),
+                  _buildTagsWidget(picInfo),
                   SizedBox(
                     height: 8.0,
                   ),
