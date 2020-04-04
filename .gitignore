@@ -72,3 +72,6 @@
 !**/ios/**/default.pbxuser
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
+Runner.app.dSYM.zip
+Runner.ipa
+ios/fastlane/report.xml
