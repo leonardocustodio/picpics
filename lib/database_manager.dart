@@ -28,6 +28,21 @@ class DatabaseManager extends ChangeNotifier {
   List<String> allTags = [];
   List<String> allPics = [];
 
+  Pic selectedPic;
+
+  void getPicInfo(String photoId) {
+    var picsBox = Hive.box('pics');
+
+    if (allPics.contains(photoId)) {
+      int indexOfPic = allPics.indexOf(photoId);
+      Pic getPic = picsBox.getAt(indexOfPic);
+      selectedPic = getPic;
+      return;
+    }
+
+    return;
+  }
+
   loadPics() {
     var picsBox = Hive.box('pics');
 

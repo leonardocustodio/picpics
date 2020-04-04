@@ -15,8 +15,7 @@ import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/lru_cache.dart';
 import 'package:picPics/throttle.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:picPics/model/pic.dart';
 
 part 'image_item.dart';
 
@@ -124,6 +123,80 @@ class _PicScreenState extends State<PicScreen> {
     );
   }
 
+  Widget _buildTagsWidget(BuildContext context) {
+    List<Widget> tagsWidgets = [];
+
+    for (var tag in Provider.of<DatabaseManager>(context).selectedPic.tags) {
+      tagsWidgets.add(
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          height: 30.0,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(19.0),
+            gradient: kYellowGradient,
+          ),
+          child: Text(
+            tag,
+            style: TextStyle(
+              height: 1.88,
+              fontFamily: 'Lato',
+              color: kWhiteColor,
+              fontSize: 12.0,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
+          ),
+        ),
+      );
+    }
+
+    tagsWidgets.add(CupertinoButton(
+      padding: const EdgeInsets.all(0.0),
+      minSize: 0,
+      onPressed: () {
+        print('add tag');
+        setState(() {
+          edittingTags = true;
+        });
+      },
+      child: Container(
+        height: 30.0,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Text(
+              "Add Tag",
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xffff6666),
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
+            ),
+            SizedBox(
+              width: 8.0,
+            ),
+            Image.asset('lib/images/plusredico.png'),
+          ],
+        ),
+        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(19.0),
+          border: Border.all(color: kSecondaryColor, width: 1.0),
+        ),
+      ),
+    ));
+
+    return Wrap(
+      spacing: 5.0,
+      runSpacing: 5.0,
+      children: tagsWidgets,
+    );
+  }
+
   Widget _buildPhotoSlider(BuildContext context, int index) {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
     print('No More: $noMore - index $index - Count ${DatabaseManager.instance.assetProvider.count}');
@@ -138,6 +211,8 @@ class _PicScreenState extends State<PicScreen> {
 
     print('photo slides index: $index');
     var data = DatabaseManager.instance.assetProvider.data[index];
+
+    DatabaseManager.instance.getPicInfo(data.id);
 
     print('photo id: ${data.id}');
 
@@ -264,42 +339,7 @@ class _PicScreenState extends State<PicScreen> {
                       ),
                     ],
                   ),
-                  Row(
-                    children: <Widget>[
-                      CupertinoButton(
-                        padding: const EdgeInsets.all(0.0),
-                        onPressed: () {
-                          print('add tag');
-                          setState(() {
-                            edittingTags = true;
-                          });
-                        },
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                "Add Tag",
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xffff6666),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                              Image.asset('lib/images/plusredico.png'),
-                            ],
-                          ),
-                          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(19.0),
-                            border: Border.all(color: kSecondaryColor, width: 1.0),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  _buildTagsWidget(context),
                   SizedBox(
                     height: 8.0,
                   ),
@@ -317,7 +357,9 @@ class _PicScreenState extends State<PicScreen> {
                   SizedBox(
                     height: 8.0,
                   ),
-                  Row(
+                  Wrap(
+                    spacing: 5.0,
+                    runSpacing: 5.0,
                     children: <Widget>[
                       Container(
                         child: Text(
