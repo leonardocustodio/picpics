@@ -123,6 +123,57 @@ class _PicScreenState extends State<PicScreen> {
     );
   }
 
+  Widget _buildRecentTagsWidget() {
+    List<String> recentTags = DatabaseManager.instance.getRecentTags();
+    print('Recent tags: $recentTags');
+
+    return Column(children: <Widget>[
+      SizedBox(
+        height: 8.0,
+      ),
+      Text(
+        "Tags recentes",
+        style: TextStyle(
+          fontFamily: 'Lato',
+          color: Color(0xff979a9b),
+          fontSize: 12,
+          fontWeight: FontWeight.w300,
+          fontStyle: FontStyle.normal,
+          letterSpacing: -0.4099999964237213,
+        ),
+      ),
+      SizedBox(
+        height: 8.0,
+      ),
+      Wrap(
+        spacing: 5.0,
+        runSpacing: 5.0,
+        children: <Widget>[
+          Container(
+            child: Text(
+              "Ursos",
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff979a9b),
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(19.0),
+              border: Border.all(
+                color: Color(0xff979a9b),
+              ),
+            ),
+          ),
+        ],
+      ),
+    ]);
+  }
+
   Widget _buildTagsWidget(Pic picInfo, {bool activeTags = false}) {
     List<Widget> tagsWidgets = [];
 
@@ -348,49 +399,7 @@ class _PicScreenState extends State<PicScreen> {
                     ],
                   ),
                   _buildTagsWidget(picInfo),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  Text(
-                    "Tags recentes",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff979a9b),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.normal,
-                      letterSpacing: -0.4099999964237213,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  Wrap(
-                    spacing: 5.0,
-                    runSpacing: 5.0,
-                    children: <Widget>[
-                      Container(
-                        child: Text(
-                          "Ursos",
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff979a9b),
-                            fontSize: 12,
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
-                          ),
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(19.0),
-                          border: Border.all(
-                            color: Color(0xff979a9b),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  _buildRecentTagsWidget(),
                 ],
               ),
             ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
+import 'package:picPics/model/user.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/settings_screen.dart';
@@ -18,11 +19,19 @@ import 'package:hive_flutter/hive_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
   Hive.registerAdapter(TagAdapter());
 
-  var pics = await Hive.openBox('pics');
-  var tags = await Hive.openBox('tags');
+  var userBox = await Hive.openBox('user');
+  var picsBox = await Hive.openBox('pics');
+  var tagsBox = await Hive.openBox('tags');
+
+  if (userBox.length == 0) {
+    print('creating user entry...');
+    User user = User('userId', 'leonardo@custodio.me', 'pass', true, 20, 21, 30, true, []);
+    userBox.add(user);
+  }
 
   DatabaseManager.instance.loadTags();
   DatabaseManager.instance.loadPics();

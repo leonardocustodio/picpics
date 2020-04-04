@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
+import 'package:picPics/model/user.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -16,6 +17,8 @@ class DatabaseManager extends ChangeNotifier {
   static DatabaseManager get instance {
     return _instance ??= DatabaseManager._();
   }
+
+  static const maxNumOfRecentTags = 5;
 
   bool hasGalleryPermission = true;
   AssetProvider assetProvider = AssetProvider();
@@ -27,6 +30,7 @@ class DatabaseManager extends ChangeNotifier {
 
   List<String> allTags = [];
   List<String> allPics = [];
+  List<String> recentTags = [];
 
 //  Pic selectedPic;
 
@@ -59,6 +63,27 @@ class DatabaseManager extends ChangeNotifier {
       allTags.add(tag.name);
     }
     print('loaded all tags in memory: $allTags');
+  }
+
+  List<String> getRecentTags() {
+    var userBox = Hive.box('user');
+
+    User getUser = userBox.getAt(0);
+    if (getUser == null) {
+      print('no user returning no tags');
+      return [];
+    }
+    return getUser.recentTags ?? [];
+  }
+
+  addTagToRecent(String tag) {
+    var userBox = Hive.box('user');
+
+    User getUser = userBox.getAt(0);
+    if (getUser.recentTags.length >= maxNumOfRecentTags) {
+      getUser.recentTags.removeLast();
+    }
+    getUser.recentTags.insert(0, tag);
   }
 
   addTagToPic(String tag, String photoId) {

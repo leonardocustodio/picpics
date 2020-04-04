@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 
 part 'user.g.dart';
 
-@HiveType(typeId: 0)
+@HiveType(typeId: 2)
 class User {
   @HiveField(0)
   final String id;
@@ -21,13 +21,17 @@ class User {
   final int goal;
 
   @HiveField(5)
-  final TimeOfDay timeOfDay;
+  final int hourOfDay;
 
   @HiveField(6)
-  final bool isPremium;
+  final int minutesOfDay;
 
   @HiveField(7)
+  final bool isPremium;
+
+  @HiveField(8)
   final List<String> recentTags;
 
-  User(this.id, this.email, this.password, this.dailyChallenges, this.goal, this.timeOfDay, this.isPremium, this.recentTags);
+  User(this.id, this.email, this.password, this.dailyChallenges, this.goal, this.hourOfDay, this.minutesOfDay, this.isPremium,
+      this.recentTags);
 }
