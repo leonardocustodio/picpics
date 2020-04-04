@@ -80,6 +80,13 @@ class DatabaseManager extends ChangeNotifier {
     var userBox = Hive.box('user');
 
     User getUser = userBox.getAt(0);
+
+    if (getUser.recentTags.contains(tag)) {
+      getUser.recentTags.remove(tag);
+      getUser.recentTags.insert(0, tag);
+      return;
+    }
+
     if (getUser.recentTags.length >= maxNumOfRecentTags) {
       getUser.recentTags.removeLast();
     }
@@ -126,6 +133,7 @@ class DatabaseManager extends ChangeNotifier {
       getTag.photoId.add(photoId);
       tagsBox.putAt(indexOfTag, getTag);
       addTagToPic(tag, photoId);
+      addTagToRecent(tag);
       print('updated pictures in tag');
       return;
     }
@@ -133,6 +141,7 @@ class DatabaseManager extends ChangeNotifier {
     print('adding tag to database...');
     tagsBox.add(Tag(tag, [photoId]));
     addTagToPic(tag, photoId);
+    addTagToRecent(tag);
     allTags.add(tag);
   }
 
