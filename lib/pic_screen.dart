@@ -123,7 +123,7 @@ class _PicScreenState extends State<PicScreen> {
     );
   }
 
-  Widget _buildTagsWidget(Pic picInfo) {
+  Widget _buildTagsWidget(Pic picInfo, {bool activeTags = false}) {
     List<Widget> tagsWidgets = [];
 
     print('Tags: ${picInfo.tags}');
@@ -135,7 +135,7 @@ class _PicScreenState extends State<PicScreen> {
           height: 30.0,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(19.0),
-            gradient: kYellowGradient,
+            gradient: activeTags ? kSecondaryGradient : kYellowGradient,
           ),
           child: Text(
             tag,
@@ -153,44 +153,46 @@ class _PicScreenState extends State<PicScreen> {
       );
     }
 
-    tagsWidgets.add(CupertinoButton(
-      padding: const EdgeInsets.all(0.0),
-      minSize: 0,
-      onPressed: () {
-        print('add tag');
-        setState(() {
-          edittingTags = true;
-        });
-      },
-      child: Container(
-        height: 30.0,
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Text(
-              "Add Tag",
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xffff6666),
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
+    if (activeTags == false) {
+      tagsWidgets.add(CupertinoButton(
+        padding: const EdgeInsets.all(0.0),
+        minSize: 0,
+        onPressed: () {
+          print('add tag');
+          setState(() {
+            edittingTags = true;
+          });
+        },
+        child: Container(
+          height: 30.0,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text(
+                "Add Tag",
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xffff6666),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  fontStyle: FontStyle.normal,
+                  letterSpacing: -0.4099999964237213,
+                ),
               ),
-            ),
-            SizedBox(
-              width: 8.0,
-            ),
-            Image.asset('lib/images/plusredico.png'),
-          ],
+              SizedBox(
+                width: 8.0,
+              ),
+              Image.asset('lib/images/plusredico.png'),
+            ],
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(19.0),
+            border: Border.all(color: kSecondaryColor, width: 1.0),
+          ),
         ),
-        padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(19.0),
-          border: Border.all(color: kSecondaryColor, width: 1.0),
-        ),
-      ),
-    ));
+      ));
+    }
 
     return Wrap(
       spacing: 5.0,
@@ -459,27 +461,7 @@ class _PicScreenState extends State<PicScreen> {
                   SizedBox(
                     height: 8.0,
                   ),
-                  Container(
-                    height: 30.0,
-                    width: 71.0,
-                    decoration: BoxDecoration(
-                      color: kSecondaryColor,
-                      borderRadius: BorderRadius.circular(19.0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Comida",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: kWhiteColor,
-                          fontSize: 12,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
-                        ),
-                      ),
-                    ),
-                  ),
+                  _buildTagsWidget(picInfo, activeTags: true),
                   SizedBox(
                     height: 16.0,
                   ),
