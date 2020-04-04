@@ -101,14 +101,20 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Spacer(),
-                  Container(
-                    width: 140.0,
-                    height: 140.0,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: ImageItem(
-                        entity: DatabaseManager.instance.selectedPhoto,
-                        size: 140,
+                  CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 140.0,
+                      height: 140.0,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12.0),
+                        child: ImageItem(
+                          entity: DatabaseManager.instance.selectedPhoto,
+                          size: 140,
+                        ),
                       ),
                     ),
                   ),
