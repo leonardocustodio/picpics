@@ -185,8 +185,11 @@ class _PicScreenState extends State<PicScreen> {
   }
 
   Widget _buildTagsWidget(Pic picInfo, {bool activeTags = false}) {
-    List<Widget> tagsWidgets = [];
+    if (picInfo.tags.isEmpty && activeTags) {
+      return Container();
+    }
 
+    List<Widget> tagsWidgets = [];
     print('Tags: ${picInfo.tags}');
 
     for (var tag in picInfo.tags) {
@@ -258,17 +261,18 @@ class _PicScreenState extends State<PicScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        Text(
-          "Tags ativas",
-          style: TextStyle(
-            fontFamily: 'Lato',
-            color: Color(0xff979a9b),
-            fontSize: 12,
-            fontWeight: FontWeight.w300,
-            fontStyle: FontStyle.normal,
-            letterSpacing: -0.4099999964237213,
+        if (activeTags)
+          Text(
+            "Tags ativas",
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff979a9b),
+              fontSize: 12,
+              fontWeight: FontWeight.w300,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
           ),
-        ),
         SizedBox(
           height: 8.0,
         ),

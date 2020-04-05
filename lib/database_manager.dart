@@ -81,18 +81,16 @@ class DatabaseManager extends ChangeNotifier {
     print('Recent tags: $allRecentTags');
   }
 
+  // allRecentTags = getUser.recentTags (diferent do loadTags e loadPics ** prestar atencao)
   addTagToRecent(String tag) {
     print('adding tag to recent: $tag');
 
     var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
 
     if (allRecentTags.contains(tag)) {
       allRecentTags.remove(tag);
       allRecentTags.insert(0, tag);
-
-      User getUser = userBox.getAt(0);
-      getUser.recentTags.remove(tag);
-      getUser.recentTags.insert(0, tag);
       userBox.putAt(0, getUser);
       return;
     }
@@ -100,17 +98,10 @@ class DatabaseManager extends ChangeNotifier {
     if (allRecentTags.length >= maxNumOfRecentTags) {
       print('removing last');
       allRecentTags.removeLast();
-
-      User getUser = userBox.getAt(0);
-      getUser.recentTags.removeLast();
     }
 
     allRecentTags.insert(0, tag);
-
-    User getUser = userBox.getAt(0);
-    getUser.recentTags.insert(0, tag);
     userBox.putAt(0, getUser);
-
     print('final tags in recent: $allRecentTags');
   }
 
