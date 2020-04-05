@@ -461,8 +461,9 @@ class _PicScreenState extends State<PicScreen> {
                               autofocus: true,
                               onSubmitted: (text) {
                                 print('return');
-
-                                DatabaseManager.instance.addTag(text, data.id);
+                                if (text != '') {
+                                  DatabaseManager.instance.addTag(text, data.id);
+                                }
 
                                 setState(() {
                                   edittingTags = false;
