@@ -124,16 +124,13 @@ class _PicScreenState extends State<PicScreen> {
   }
 
   Widget _buildRecentTagsWidget() {
-    List<String> recentTags = DatabaseManager.instance.getRecentTags();
-    print('Recent tags: $recentTags');
-
-    if (recentTags.isEmpty) {
+    if (DatabaseManager.instance.allRecentTags.isEmpty) {
       return Container();
     }
 
     List<Widget> tagsWidgets = [];
 
-    for (var tag in recentTags) {
+    for (var tag in DatabaseManager.instance.allRecentTags) {
       tagsWidgets.add(
         Container(
           child: Text(

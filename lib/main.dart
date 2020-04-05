@@ -33,6 +33,7 @@ void main() async {
     userBox.add(user);
   }
 
+  DatabaseManager.instance.loadRecentTags();
   DatabaseManager.instance.loadTags();
   DatabaseManager.instance.loadPics();
 

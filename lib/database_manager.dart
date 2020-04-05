@@ -30,7 +30,7 @@ class DatabaseManager extends ChangeNotifier {
 
   List<String> allTags = [];
   List<String> allPics = [];
-  List<String> recentTags = [];
+  List<String> allRecentTags = [];
 
 //  Pic selectedPic;
 
@@ -65,32 +65,53 @@ class DatabaseManager extends ChangeNotifier {
     print('loaded all tags in memory: $allTags');
   }
 
-  List<String> getRecentTags() {
+  void loadRecentTags() {
     var userBox = Hive.box('user');
 
     User getUser = userBox.getAt(0);
     if (getUser == null) {
       print('no user returning no tags');
-      return [];
-    }
-    return getUser.recentTags ?? [];
-  }
-
-  addTagToRecent(String tag) {
-    var userBox = Hive.box('user');
-
-    User getUser = userBox.getAt(0);
-
-    if (getUser.recentTags.contains(tag)) {
-      getUser.recentTags.remove(tag);
-      getUser.recentTags.insert(0, tag);
+      allRecentTags = [];
       return;
     }
 
-    if (getUser.recentTags.length >= maxNumOfRecentTags) {
+    print('${getUser.recentTags}');
+
+    allRecentTags = getUser.recentTags ?? [];
+    print('Recent tags: $allRecentTags');
+  }
+
+  addTagToRecent(String tag) {
+    print('adding tag to recent: $tag');
+
+    var userBox = Hive.box('user');
+
+    if (allRecentTags.contains(tag)) {
+      allRecentTags.remove(tag);
+      allRecentTags.insert(0, tag);
+
+      User getUser = userBox.getAt(0);
+      getUser.recentTags.remove(tag);
+      getUser.recentTags.insert(0, tag);
+      userBox.putAt(0, getUser);
+      return;
+    }
+
+    if (allRecentTags.length >= maxNumOfRecentTags) {
+      print('removing last');
+      allRecentTags.removeLast();
+
+      User getUser = userBox.getAt(0);
       getUser.recentTags.removeLast();
     }
+
+    allRecentTags.insert(0, tag);
+
+    User getUser = userBox.getAt(0);
     getUser.recentTags.insert(0, tag);
+    userBox.putAt(0, getUser);
+
+    print('final tags in recent: $allRecentTags');
   }
 
   addTagToPic(String tag, String photoId) {
