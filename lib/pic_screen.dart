@@ -255,10 +255,32 @@ class _PicScreenState extends State<PicScreen> {
       ));
     }
 
-    return Wrap(
-      spacing: 5.0,
-      runSpacing: 5.0,
-      children: tagsWidgets,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          "Tags ativas",
+          style: TextStyle(
+            fontFamily: 'Lato',
+            color: Color(0xff979a9b),
+            fontSize: 12,
+            fontWeight: FontWeight.w300,
+            fontStyle: FontStyle.normal,
+            letterSpacing: -0.4099999964237213,
+          ),
+        ),
+        SizedBox(
+          height: 8.0,
+        ),
+        Wrap(
+          spacing: 5.0,
+          runSpacing: 5.0,
+          children: tagsWidgets,
+        ),
+        SizedBox(
+          height: 16.0,
+        ),
+      ],
     );
   }
 
@@ -466,24 +488,7 @@ class _PicScreenState extends State<PicScreen> {
                       ],
                     ),
                   ),
-                  Text(
-                    "Tags ativas",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff979a9b),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.normal,
-                      letterSpacing: -0.4099999964237213,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
                   _buildTagsWidget(picInfo, activeTags: true),
-                  SizedBox(
-                    height: 16.0,
-                  ),
                   Text(
                     "Sugestões de tags",
                     style: TextStyle(
