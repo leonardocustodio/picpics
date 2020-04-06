@@ -119,6 +119,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                       ListOfTags(
                         picInfo: picInfo,
                         activeTags: false,
+                        fullScreen: true,
                       ),
                     ],
                   ),

@@ -7,10 +7,12 @@ import 'package:picPics/database_manager.dart';
 class ListOfTags extends StatelessWidget {
   final Pic picInfo;
   final bool activeTags;
+  final bool fullScreen;
 
   const ListOfTags({
     @required this.picInfo,
     @required this.activeTags,
+    this.fullScreen = false,
   });
 
   Widget _buildTagsWidget() {
@@ -51,6 +53,10 @@ class ListOfTags extends StatelessWidget {
         padding: const EdgeInsets.all(0.0),
         minSize: 0,
         onPressed: () {
+          if (fullScreen) {
+            print('in full screen mode!');
+            return;
+          }
           DatabaseManager.instance.switchEditingTags();
         },
         child: Container(
