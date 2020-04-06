@@ -147,6 +147,7 @@ class DatabaseManager extends ChangeNotifier {
       addTagToPic(tag, photoId);
       addTagToRecent(tag);
       print('updated pictures in tag');
+      notifyListeners();
       return;
     }
 
@@ -155,6 +156,7 @@ class DatabaseManager extends ChangeNotifier {
     addTagToPic(tag, photoId);
     addTagToRecent(tag);
     allTags.add(tag);
+    notifyListeners();
   }
 
   loadFirstPhotos() async {

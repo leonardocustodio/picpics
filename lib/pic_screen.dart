@@ -123,7 +123,7 @@ class _PicScreenState extends State<PicScreen> {
     );
   }
 
-  Widget _buildRecentTagsWidget() {
+  Widget _buildRecentTagsWidget(String photoId) {
     if (DatabaseManager.instance.allRecentTags.isEmpty) {
       return Container();
     }
@@ -132,23 +132,30 @@ class _PicScreenState extends State<PicScreen> {
 
     for (var tag in DatabaseManager.instance.allRecentTags) {
       tagsWidgets.add(
-        Container(
-          child: Text(
-            tag,
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: Color(0xff979a9b),
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.normal,
-              letterSpacing: -0.4099999964237213,
+        CupertinoButton(
+          padding: const EdgeInsets.all(0),
+          onPressed: () {
+            print('adding recent tags');
+            DatabaseManager.instance.addTag(tag, photoId);
+          },
+          child: Container(
+            child: Text(
+              tag,
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff979a9b),
+                fontSize: 12,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
             ),
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(19.0),
-            border: Border.all(
-              color: Color(0xff979a9b),
+            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(19.0),
+              border: Border.all(
+                color: Color(0xff979a9b),
+              ),
             ),
           ),
         ),
@@ -195,8 +202,9 @@ class _PicScreenState extends State<PicScreen> {
     for (var tag in picInfo.tags) {
       tagsWidgets.add(
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          height: 30.0,
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+//          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//          height: 30.0,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(19.0),
             gradient: activeTags ? kSecondaryGradient : kYellowGradient,
@@ -204,7 +212,6 @@ class _PicScreenState extends State<PicScreen> {
           child: Text(
             tag,
             style: TextStyle(
-              height: 1.88,
               fontFamily: 'Lato',
               color: kWhiteColor,
               fontSize: 12.0,
@@ -435,7 +442,7 @@ class _PicScreenState extends State<PicScreen> {
                     ],
                   ),
                   _buildTagsWidget(picInfo),
-                  _buildRecentTagsWidget(),
+                  _buildRecentTagsWidget(picInfo.photoId),
                 ],
               ),
             ),
