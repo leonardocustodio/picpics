@@ -80,7 +80,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                             text: new TextSpan(
                               children: [
                                 new TextSpan(
-                                    text: "Ilha Bela",
+                                    text: 'Local da foto',
                                     style: TextStyle(
                                       fontFamily: 'NotoSans',
                                       color: kWhiteColor,
@@ -90,7 +90,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       letterSpacing: -0.4099999964237213,
                                     )),
                                 new TextSpan(
-                                  text: "  Brasil - SP",
+                                  text: '  estado',
                                   style: TextStyle(
                                     fontFamily: 'NotoSans',
                                     color: kWhiteColor,

@@ -309,7 +309,7 @@ class _PicScreenState extends State<PicScreen> {
                                 ),
                               ),
                               new TextSpan(
-                                text: ' estado',
+                                text: '  estado',
 //                        text: ' ${Provider.of<DatabaseManager>(context).currentPhotoState}',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
