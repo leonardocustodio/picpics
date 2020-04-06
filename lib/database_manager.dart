@@ -21,6 +21,8 @@ class DatabaseManager extends ChangeNotifier {
   static const maxNumOfRecentTags = 5;
 
   bool hasGalleryPermission = true;
+  bool editingTags = false;
+
   AssetProvider assetProvider = AssetProvider();
   AssetEntity selectedPhoto;
   List<double> lastLocationRequest = [0.0, 0.0];
@@ -33,6 +35,11 @@ class DatabaseManager extends ChangeNotifier {
   List<String> allRecentTags = [];
 
 //  Pic selectedPic;
+
+  void switchEditingTags() {
+    editingTags = !editingTags;
+    notifyListeners();
+  }
 
   Pic getPicInfo(String photoId) {
     print('loading pic info from: $photoId');

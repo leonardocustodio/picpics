@@ -16,6 +16,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/lru_cache.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/widgets/list_of_tags.dart';
 
 part 'image_item.dart';
 
@@ -31,7 +32,6 @@ class _PicScreenState extends State<PicScreen> {
 
   int currentIndex;
   bool showTutorial = false;
-  bool edittingTags = false;
 
   int swiperIndex = 0;
   SwiperController swiperController = new SwiperController();
@@ -191,110 +191,6 @@ class _PicScreenState extends State<PicScreen> {
     );
   }
 
-  Widget _buildTagsWidget(Pic picInfo, {bool activeTags = false}) {
-    if (picInfo.tags.isEmpty && activeTags) {
-      return Container();
-    }
-
-    List<Widget> tagsWidgets = [];
-    print('Tags: ${picInfo.tags}');
-
-    for (var tag in picInfo.tags) {
-      tagsWidgets.add(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-//          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-//          height: 30.0,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(19.0),
-            gradient: activeTags ? kSecondaryGradient : kYellowGradient,
-          ),
-          child: Text(
-            tag,
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: kWhiteColor,
-              fontSize: 12.0,
-              fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.normal,
-              letterSpacing: -0.4099999964237213,
-            ),
-          ),
-        ),
-      );
-    }
-
-    if (activeTags == false) {
-      tagsWidgets.add(CupertinoButton(
-        padding: const EdgeInsets.all(0.0),
-        minSize: 0,
-        onPressed: () {
-          print('add tag');
-          setState(() {
-            edittingTags = true;
-          });
-        },
-        child: Container(
-          height: 30.0,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Text(
-                "Add Tag",
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xffff6666),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: -0.4099999964237213,
-                ),
-              ),
-              SizedBox(
-                width: 8.0,
-              ),
-              Image.asset('lib/images/plusredico.png'),
-            ],
-          ),
-          padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(19.0),
-            border: Border.all(color: kSecondaryColor, width: 1.0),
-          ),
-        ),
-      ));
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        if (activeTags)
-          Text(
-            "Tags ativas",
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: Color(0xff979a9b),
-              fontSize: 12,
-              fontWeight: FontWeight.w300,
-              fontStyle: FontStyle.normal,
-              letterSpacing: -0.4099999964237213,
-            ),
-          ),
-        SizedBox(
-          height: 8.0,
-        ),
-        Wrap(
-          spacing: 5.0,
-          runSpacing: 5.0,
-          children: tagsWidgets,
-        ),
-        SizedBox(
-          height: 16.0,
-        ),
-      ],
-    );
-  }
-
   Widget _buildPhotoSlider(BuildContext context, int index) {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
     print('No More: $noMore - index $index - Count ${DatabaseManager.instance.assetProvider.count}');
@@ -382,7 +278,7 @@ class _PicScreenState extends State<PicScreen> {
               ],
             ),
           ),
-          if (edittingTags == false)
+          if (Provider.of<DatabaseManager>(context).editingTags == false)
             Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
               child: Column(
@@ -441,12 +337,12 @@ class _PicScreenState extends State<PicScreen> {
                       ),
                     ],
                   ),
-                  _buildTagsWidget(picInfo),
+                  ListOfTags(picInfo: picInfo, activeTags: false),
                   _buildRecentTagsWidget(picInfo.photoId),
                 ],
               ),
             ),
-          if (edittingTags == true)
+          if (Provider.of<DatabaseManager>(context).editingTags == true)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
               child: Column(
@@ -471,10 +367,7 @@ class _PicScreenState extends State<PicScreen> {
                                 if (text != '') {
                                   DatabaseManager.instance.addTag(text, data.id);
                                 }
-
-                                setState(() {
-                                  edittingTags = false;
-                                });
+                                DatabaseManager.instance.switchEditingTags();
                               },
                               keyboardType: TextInputType.multiline,
                               textAlignVertical: TextAlignVertical.center,
@@ -500,7 +393,7 @@ class _PicScreenState extends State<PicScreen> {
                       ],
                     ),
                   ),
-                  _buildTagsWidget(picInfo, activeTags: true),
+                  ListOfTags(picInfo: picInfo, activeTags: true),
                   Text(
                     "Sugestões de tags",
                     style: TextStyle(
