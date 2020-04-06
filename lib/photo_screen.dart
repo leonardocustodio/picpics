@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/pic_screen.dart';
+import 'package:picPics/widgets/list_of_tags.dart';
+import 'package:picPics/model/pic.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
@@ -13,12 +15,26 @@ class PhotoScreen extends StatefulWidget {
 class _PhotoScreenState extends State<PhotoScreen> {
   DateTime createdDate;
   String dateString;
+  Pic picInfo;
 
   @override
   void initState() {
     super.initState();
     createdDate = DatabaseManager.instance.selectedPhoto.createDateTime;
     dateString = DatabaseManager.instance.formatDate(createdDate);
+
+    picInfo = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
+
+    if (picInfo == null) {
+      picInfo = Pic(
+        DatabaseManager.instance.selectedPhoto.id,
+        DatabaseManager.instance.selectedPhoto.createDateTime,
+        DatabaseManager.instance.selectedPhoto.latitude,
+        DatabaseManager.instance.selectedPhoto.longitude,
+        '',
+        [],
+      );
+    }
   }
 
   @override
@@ -100,34 +116,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
                           ),
                         ],
                       ),
-                      SizedBox(
-                        height: 16.0,
+                      ListOfTags(
+                        picInfo: picInfo,
+                        activeTags: false,
                       ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            width: 61.0,
-                            height: 30.0,
-                            decoration: BoxDecoration(
-                              gradient: kYellowGradient,
-                              borderRadius: BorderRadius.circular(19.0),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Ursos',
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kWhiteColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
                     ],
                   ),
                 ),
