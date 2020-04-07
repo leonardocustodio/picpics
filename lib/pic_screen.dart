@@ -19,6 +19,7 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:after_layout/after_layout.dart';
 
 part 'image_item.dart';
 
@@ -29,10 +30,13 @@ class PicScreen extends StatefulWidget {
   _PicScreenState createState() => _PicScreenState();
 }
 
-class _PicScreenState extends State<PicScreen> {
+class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
   SwiperController swiperController = SwiperController();
+
+  TextEditingController tagsEditingController = TextEditingController();
+  FocusNode tagsFocusNode = FocusNode();
 
   int currentIndex;
   int swiperIndex = 0;
@@ -114,6 +118,21 @@ class _PicScreenState extends State<PicScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+
+    print('#!#!#!#!#!# DID CHANGE DEPENDENCIES');
+    if (DatabaseManager.instance.editingTags == true) {
+      tagsFocusNode.requestFocus();
+    }
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // Calling the same function "after layout" to resolve the issue.
+
+//    print('#!#!#!#!#!# AFTER LAYOUT');
+//    if (DatabaseManager.instance.editingTags == true) {
+//      tagsFocusNode.requestFocus();
+//    }
   }
 
   @override
@@ -441,11 +460,13 @@ class _PicScreenState extends State<PicScreen> {
                         Expanded(
                           child: Center(
                             child: TextField(
-                              autofocus: true,
+                              controller: tagsEditingController,
+                              focusNode: tagsFocusNode,
                               onSubmitted: (text) {
                                 print('return');
                                 if (text != '') {
                                   DatabaseManager.instance.addTag(text, data.id, index);
+                                  tagsEditingController.clear();
                                 }
                                 DatabaseManager.instance.switchEditingTags();
                               },
