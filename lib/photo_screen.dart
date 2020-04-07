@@ -28,6 +28,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
     if (picInfo == null) {
       picInfo = Pic(
         DatabaseManager.instance.selectedPhoto.id,
+        0,
         DatabaseManager.instance.selectedPhoto.createDateTime,
         DatabaseManager.instance.selectedPhoto.latitude,
         DatabaseManager.instance.selectedPhoto.longitude,

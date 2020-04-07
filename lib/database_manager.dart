@@ -34,11 +34,19 @@ class DatabaseManager extends ChangeNotifier {
   List<String> allPics = [];
   List<String> allRecentTags = [];
 
+  double scale = 1.0;
+
 //  Pic selectedPic;
 
   void switchEditingTags() {
     editingTags = !editingTags;
     notifyListeners();
+  }
+
+  void gridScale(double multiplier) {
+    scale = scale;
+    print('new scale value: $scale');
+//    notifyListeners();
   }
 
   Pic getPicInfo(String photoId) {
@@ -112,7 +120,7 @@ class DatabaseManager extends ChangeNotifier {
     print('final tags in recent: $allRecentTags');
   }
 
-  addTagToPic(String tag, String photoId) {
+  addTagToPic(String tag, String photoId, int photoIndex) {
     var picsBox = Hive.box('pics');
 
     if (allPics.contains(photoId)) {
@@ -128,12 +136,12 @@ class DatabaseManager extends ChangeNotifier {
     }
 
     print('this picture is not in db, adding it...');
-    Pic pic = Pic(photoId, DateTime.now(), 0.0, 0.0, 'No Location', [tag]);
+    Pic pic = Pic(photoId, photoIndex, DateTime.now(), 0.0, 0.0, 'No Location', [tag]);
     picsBox.add(pic);
     allPics.add(photoId);
   }
 
-  addTag(String tag, String photoId) {
+  addTag(String tag, String photoId, int photoIndex) {
     print('Adding tag: $tag');
 
     var tagsBox = Hive.box('tags');
@@ -151,7 +159,7 @@ class DatabaseManager extends ChangeNotifier {
 
       getTag.photoId.add(photoId);
       tagsBox.putAt(indexOfTag, getTag);
-      addTagToPic(tag, photoId);
+      addTagToPic(tag, photoId, photoIndex);
       addTagToRecent(tag);
       print('updated pictures in tag');
       notifyListeners();
@@ -160,7 +168,7 @@ class DatabaseManager extends ChangeNotifier {
 
     print('adding tag to database...');
     tagsBox.add(Tag(tag, [photoId]));
-    addTagToPic(tag, photoId);
+    addTagToPic(tag, photoId, photoIndex);
     addTagToRecent(tag);
     allTags.add(tag);
     notifyListeners();

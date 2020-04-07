@@ -17,6 +17,8 @@ import 'package:picPics/lru_cache.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/widgets/list_of_tags.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 part 'image_item.dart';
 
@@ -28,7 +30,8 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> {
-  ScrollController scrollController = ScrollController(initialScrollOffset: 0);
+  ScrollController scrollControllerFirstTab;
+  ScrollController scrollControllerThirdTab;
 
   int currentIndex;
   bool showTutorial = false;
@@ -36,9 +39,15 @@ class _PicScreenState extends State<PicScreen> {
   int swiperIndex = 0;
   SwiperController swiperController = new SwiperController();
 
-  double topOffset = 64.0;
-  bool hideSubtitle = false;
-  bool noTaggedPhoto = true;
+  double offsetFirstTab = 0.0;
+  double topOffsetFirstTab = 64.0;
+  bool hideSubtitleFirstTab = false;
+
+  double offsetThirdTab = 0.0;
+  double topOffsetThirdTab = 64.0;
+  bool hideSubtitleThirdTab = false;
+
+  bool noTaggedPhoto = false;
 
   Throttle _changeThrottle;
 
@@ -46,37 +55,58 @@ class _PicScreenState extends State<PicScreen> {
     print('teste');
   }
 
-  void movedGridPosition() {
-    var offset = scrollController.offset;
+  void movedGridPositionFirstTab() {
+    var offset = scrollControllerFirstTab.offset;
 
     if (offset >= 117) {
       setState(() {
-        topOffset = 0;
-        hideSubtitle = true;
+        topOffsetFirstTab = 0;
+        hideSubtitleFirstTab = true;
       });
     } else if (offset >= 52) {
       setState(() {
-        topOffset = 64.0 - (offset - 52.0);
-        hideSubtitle = false;
+        topOffsetFirstTab = 64.0 - (offset - 52.0);
+        hideSubtitleFirstTab = false;
       });
     } else if (offset <= 0) {
       setState(() {
-        topOffset = 64;
-        hideSubtitle = false;
+        topOffsetFirstTab = 64;
+        hideSubtitleFirstTab = false;
       });
     }
 
-    print(scrollController.offset);
+    offsetFirstTab = scrollControllerFirstTab.offset;
+    print(scrollControllerFirstTab.offset);
+  }
+
+  void movedGridPositionThirdTab() {
+    var offset = scrollControllerThirdTab.offset;
+
+    if (offset >= 117) {
+      setState(() {
+        topOffsetThirdTab = 0;
+        hideSubtitleThirdTab = true;
+      });
+    } else if (offset >= 52) {
+      setState(() {
+        topOffsetThirdTab = 64.0 - (offset - 52.0);
+        hideSubtitleThirdTab = false;
+      });
+    } else if (offset <= 0) {
+      setState(() {
+        topOffsetThirdTab = 64;
+        hideSubtitleThirdTab = false;
+      });
+    }
+
+    offsetThirdTab = scrollControllerThirdTab.offset;
+    print(scrollControllerThirdTab.offset);
   }
 
   @override
   void initState() {
     super.initState();
     currentIndex = 1;
-
-    scrollController.addListener(() {
-      movedGridPosition();
-    });
 
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);
@@ -107,15 +137,63 @@ class _PicScreenState extends State<PicScreen> {
     });
   }
 
+  Widget _buildTaggedGridView() {
+    var picsBox = Hive.box('pics');
+
+    scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
+    scrollControllerThirdTab.addListener(() {
+      movedGridPositionThirdTab();
+    });
+
+//    final noMore = DatabaseManager.instance.assetProvider.noMore;
+//    if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
+//      print('loading more');
+//      _loadMore();
+//      return _buildLoading();
+//    }
+
+    return GridView.builder(
+      padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+      controller: scrollControllerThirdTab,
+      scrollDirection: Axis.vertical,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+      itemCount: picsBox.length,
+      itemBuilder: (BuildContext context, int index) {
+        Pic getPic = picsBox.getAt(index);
+        var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
+        print('loading photo index: ${getPic.photoIndex}');
+
+        return RepaintBoundary(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5.0),
+              child: ImageItem(
+                entity: data,
+                size: 150,
+                backgroundColor: Colors.grey[400],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildGridView() {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
     final count = DatabaseManager.instance.assetProvider.count + (noMore ? 0 : 1);
 
     print('noMore: $noMore - count: $count');
 
+    scrollControllerFirstTab = ScrollController(initialScrollOffset: offsetFirstTab);
+    scrollControllerFirstTab.addListener(() {
+      movedGridPositionFirstTab();
+    });
+
     return GridView.builder(
       padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
-      controller: scrollController,
+      controller: scrollControllerFirstTab,
       scrollDirection: Axis.vertical,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
       itemCount: count,
@@ -123,7 +201,7 @@ class _PicScreenState extends State<PicScreen> {
     );
   }
 
-  Widget _buildRecentTagsWidget(String photoId) {
+  Widget _buildRecentTagsWidget(String photoId, int index) {
     if (DatabaseManager.instance.allRecentTags.isEmpty) {
       return Container();
     }
@@ -136,7 +214,7 @@ class _PicScreenState extends State<PicScreen> {
           padding: const EdgeInsets.all(0),
           onPressed: () {
             print('adding recent tags');
-            DatabaseManager.instance.addTag(tag, photoId);
+            DatabaseManager.instance.addTag(tag, photoId, index);
           },
           child: Container(
             child: Text(
@@ -209,7 +287,7 @@ class _PicScreenState extends State<PicScreen> {
     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
 
     if (picInfo == null) {
-      picInfo = Pic(data.id, data.createDateTime, data.latitude, data.longitude, '', []);
+      picInfo = Pic(data.id, index, data.createDateTime, data.latitude, data.longitude, '', []);
     }
 
     print('photo id: ${data.id}');
@@ -338,7 +416,7 @@ class _PicScreenState extends State<PicScreen> {
                     ],
                   ),
                   ListOfTags(picInfo: picInfo, activeTags: false),
-                  _buildRecentTagsWidget(picInfo.photoId),
+                  _buildRecentTagsWidget(picInfo.photoId, index),
                 ],
               ),
             ),
@@ -365,7 +443,7 @@ class _PicScreenState extends State<PicScreen> {
                               onSubmitted: (text) {
                                 print('return');
                                 if (text != '') {
-                                  DatabaseManager.instance.addTag(text, data.id);
+                                  DatabaseManager.instance.addTag(text, data.id, index);
                                 }
                                 DatabaseManager.instance.switchEditingTags();
                               },
@@ -604,7 +682,7 @@ class _PicScreenState extends State<PicScreen> {
                           ),
                           Positioned(
                             left: 16.0,
-                            top: topOffset,
+                            top: topOffsetFirstTab,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
@@ -618,11 +696,11 @@ class _PicScreenState extends State<PicScreen> {
                                     fontStyle: FontStyle.normal,
                                   ),
                                 ),
-                                if (!hideSubtitle)
+                                if (!hideSubtitleFirstTab)
                                   SizedBox(
                                     height: 8.0,
                                   ),
-                                if (!hideSubtitle)
+                                if (!hideSubtitleFirstTab)
                                   Text(
                                     "Fotos ainda não organizadas",
                                     style: TextStyle(
@@ -638,7 +716,13 @@ class _PicScreenState extends State<PicScreen> {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 48.0),
-                            child: _buildGridView(),
+                            child: GestureDetector(
+                              onScaleUpdate: (update) {
+                                print(update.scale);
+                                DatabaseManager.instance.gridScale(update.scale);
+                              },
+                              child: _buildGridView(),
+                            ),
                           ),
                         ],
                       ),
@@ -778,12 +862,12 @@ class _PicScreenState extends State<PicScreen> {
                           if (!noTaggedPhoto)
                             Positioned(
                               left: 16.0,
-                              top: topOffset,
+                              top: topOffsetThirdTab,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    "Galeria de fotos",
+                                    "Fotos organizadas",
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff979a9b),
@@ -792,13 +876,13 @@ class _PicScreenState extends State<PicScreen> {
                                       fontStyle: FontStyle.normal,
                                     ),
                                   ),
-                                  if (!hideSubtitle)
+                                  if (!hideSubtitleThirdTab)
                                     SizedBox(
                                       height: 8.0,
                                     ),
-                                  if (!hideSubtitle)
+                                  if (!hideSubtitleThirdTab)
                                     Text(
-                                      "Fotos ainda não organizadas",
+                                      "Fotos que já foram taggeadas",
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: Color(0xff606566),
@@ -813,24 +897,7 @@ class _PicScreenState extends State<PicScreen> {
                           if (!noTaggedPhoto)
                             Padding(
                               padding: const EdgeInsets.only(top: 48.0),
-                              child: GridView.builder(
-                                padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
-                                controller: scrollController,
-                                scrollDirection: Axis.vertical,
-                                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-                                itemCount: 20,
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(4.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.black,
-                                        borderRadius: BorderRadius.circular(5.0),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
+                              child: _buildTaggedGridView(),
                             ),
                         ],
                       ),
