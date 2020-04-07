@@ -32,12 +32,12 @@ class PicScreen extends StatefulWidget {
 class _PicScreenState extends State<PicScreen> {
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
+  SwiperController swiperController = SwiperController();
 
   int currentIndex;
-  bool showTutorial = false;
-
   int swiperIndex = 0;
-  SwiperController swiperController = new SwiperController();
+  int picSwiper = 0;
+  bool showTutorial = false;
 
   double offsetFirstTab = 0.0;
   double topOffsetFirstTab = 64.0;
@@ -46,8 +46,6 @@ class _PicScreenState extends State<PicScreen> {
   double offsetThirdTab = 0.0;
   double topOffsetThirdTab = 64.0;
   bool hideSubtitleThirdTab = false;
-
-  bool noTaggedPhoto = false;
 
   Throttle _changeThrottle;
 
@@ -135,6 +133,10 @@ class _PicScreenState extends State<PicScreen> {
     setState(() {
       currentIndex = index;
     });
+//    if (index == 1) {
+//      print('#### moving to picture.... $picSwiper');
+//      swiperController.move(picSwiper, animation: false);
+//    }
   }
 
   Widget _buildTaggedGridView() {
@@ -759,8 +761,13 @@ class _PicScreenState extends State<PicScreen> {
                           ),
                           Expanded(
                             child: Swiper(
+                              controller: swiperController,
                               loop: true,
                               itemCount: count == 0 ? 1 : count,
+                              onIndexChanged: (index) {
+                                picSwiper = index;
+                                print('picSwiper = $index');
+                              },
                               itemBuilder: (BuildContext context, int index) {
                                 print('calling index $index');
                                 return _buildPhotoSlider(context, index);
@@ -789,10 +796,49 @@ class _PicScreenState extends State<PicScreen> {
                       child: Stack(
                         children: <Widget>[
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.only(right: 16.0, left: 2.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
+                                if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
+                                  Expanded(
+                                    child: TextField(
+                                      onSubmitted: (text) {
+                                        print('return');
+//                                        if (text != '') {
+//                                          DatabaseManager.instance.addTag(text, data.id, index);
+//                                        }
+//                                        DatabaseManager.instance.switchEditingTags();
+                                      },
+                                      keyboardType: TextInputType.multiline,
+//                                      textAlignVertical: TextAlignVertical.center,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff606566),
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                      decoration: InputDecoration(
+                                        contentPadding: const EdgeInsets.only(right: 2.0),
+                                        enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                        focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                        border: OutlineInputBorder(borderSide: BorderSide.none),
+                                        prefixIcon: Image.asset('lib/images/searchico.png'),
+                                        hintText: 'Pesquisar...',
+                                        hintStyle: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: kGrayColor,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                          letterSpacing: -0.4099999964237213,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 CupertinoButton(
                                   padding: const EdgeInsets.all(0),
                                   onPressed: () {
@@ -803,7 +849,7 @@ class _PicScreenState extends State<PicScreen> {
                               ],
                             ),
                           ),
-                          if (noTaggedPhoto)
+                          if (Provider.of<DatabaseManager>(context).noTaggedPhoto)
                             Center(
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -859,7 +905,7 @@ class _PicScreenState extends State<PicScreen> {
                                 ],
                               ),
                             ),
-                          if (!noTaggedPhoto)
+                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                             Positioned(
                               left: 16.0,
                               top: topOffsetThirdTab,
@@ -894,7 +940,7 @@ class _PicScreenState extends State<PicScreen> {
                                 ],
                               ),
                             ),
-                          if (!noTaggedPhoto)
+                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                             Padding(
                               padding: const EdgeInsets.only(top: 48.0),
                               child: _buildTaggedGridView(),

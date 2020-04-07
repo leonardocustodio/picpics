@@ -21,6 +21,7 @@ class DatabaseManager extends ChangeNotifier {
   static const maxNumOfRecentTags = 5;
 
   bool hasGalleryPermission = true;
+  bool noTaggedPhoto = true;
   bool editingTags = false;
 
   AssetProvider assetProvider = AssetProvider();
@@ -67,6 +68,12 @@ class DatabaseManager extends ChangeNotifier {
 
     for (Pic pic in picsBox.values) {
       allPics.add(pic.photoId);
+    }
+
+    if (allPics.length == 0) {
+      noTaggedPhoto = true;
+    } else {
+      noTaggedPhoto = false;
     }
     print('loaded all pics in memory: $allPics');
   }
@@ -143,6 +150,7 @@ class DatabaseManager extends ChangeNotifier {
 
   addTag(String tag, String photoId, int photoIndex) {
     print('Adding tag: $tag');
+    noTaggedPhoto = false;
 
     var tagsBox = Hive.box('tags');
 
