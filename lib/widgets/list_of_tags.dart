@@ -7,23 +7,29 @@ import 'package:picPics/database_manager.dart';
 class ListOfTags extends StatelessWidget {
   final Pic picInfo;
   final bool activeTags;
+  final List<String> showActiveTags;
   final bool fullScreen;
 
   const ListOfTags({
-    @required this.picInfo,
-    @required this.activeTags,
+    this.picInfo,
+    this.activeTags,
     this.fullScreen = false,
+    this.showActiveTags,
   });
 
   Widget _buildTagsWidget() {
-    if (picInfo.tags.isEmpty && activeTags) {
-      return Container();
+    var listOfTags = (picInfo != null && showActiveTags == null) ? picInfo.tags : showActiveTags;
+
+    if (picInfo != null) {
+      if (picInfo.tags.isEmpty && activeTags) {
+        return Container();
+      }
     }
 
     List<Widget> tagsWidgets = [];
-    print('Tags: ${picInfo.tags}');
+    print('Tags: $listOfTags');
 
-    for (var tag in picInfo.tags) {
+    for (var tag in listOfTags) {
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),

@@ -23,6 +23,7 @@ class DatabaseManager extends ChangeNotifier {
   bool hasGalleryPermission = true;
   bool noTaggedPhoto = true;
   bool editingTags = false;
+  bool searchingTags = false;
 
   AssetProvider assetProvider = AssetProvider();
   AssetEntity selectedPhoto;
@@ -40,6 +41,11 @@ class DatabaseManager extends ChangeNotifier {
 //  Pic selectedPic;
 
   void findPicsByTag(String tag) {}
+
+  void switchSearchingTags() {
+    searchingTags = !searchingTags;
+    notifyListeners();
+  }
 
   void switchEditingTags() {
     editingTags = !editingTags;

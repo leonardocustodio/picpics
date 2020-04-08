@@ -40,6 +40,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   TextEditingController tagsEditingController = TextEditingController();
   FocusNode tagsFocusNode = FocusNode();
 
+  TextEditingController searchEditingController = TextEditingController();
+  FocusNode searchFocusNode = FocusNode();
+
   int currentIndex;
   int swiperIndex = 0;
   int picSwiper = 0;
@@ -177,9 +180,22 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       movedGridPositionThirdTab();
     });
 
+    double newPadding = 0.0;
+    if (DatabaseManager.instance.searchingTags == true) {
+      newPadding = 140 - offsetThirdTab;
+      if (newPadding > 140) {
+        newPadding = 140.0;
+      }
+      if (newPadding < 0) {
+        newPadding = 0;
+      }
+    }
+
+    print('New Padding: $newPadding');
+
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,
-      padding: EdgeInsets.only(top: 140.0, right: 6.0, left: 6.0),
+      padding: EdgeInsets.only(top: 140 - newPadding, right: 6.0, left: 6.0),
       crossAxisCount: 3,
       itemCount: 30, // picsBox.length + 1,
       itemBuilder: (BuildContext context, int index) {
@@ -947,39 +963,46 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   children: <Widget>[
                                     if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                                       Expanded(
-                                        child: TextField(
-                                          onSubmitted: (text) {
-                                            print('return');
+                                        child: FocusScope(
+                                          child: Focus(
+                                            onFocusChange: (focus) => DatabaseManager.instance.switchSearchingTags(),
+                                            child: TextField(
+                                              controller: searchEditingController,
+                                              focusNode: searchFocusNode,
+                                              onSubmitted: (text) {
+                                                print('return');
 //                                        if (text != '') {
 //                                          DatabaseManager.instance.addTag(text, data.id, index);
 //                                        }
 //                                        DatabaseManager.instance.switchEditingTags();
-                                          },
-                                          keyboardType: TextInputType.multiline,
+                                              },
+                                              keyboardType: TextInputType.multiline,
 //                                      textAlignVertical: TextAlignVertical.center,
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: Color(0xff606566),
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w400,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                          decoration: InputDecoration(
-                                            contentPadding: const EdgeInsets.only(right: 2.0),
-                                            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                            focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                            border: OutlineInputBorder(borderSide: BorderSide.none),
-                                            prefixIcon: Image.asset('lib/images/searchico.png'),
-                                            hintText: 'Pesquisar...',
-                                            hintStyle: TextStyle(
-                                              fontFamily: 'Lato',
-                                              color: kGrayColor,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                              fontStyle: FontStyle.normal,
-                                              letterSpacing: -0.4099999964237213,
+                                              maxLines: 1,
+                                              style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                color: Color(0xff606566),
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w400,
+                                                fontStyle: FontStyle.normal,
+                                                letterSpacing: -0.4099999964237213,
+                                              ),
+                                              decoration: InputDecoration(
+                                                contentPadding: const EdgeInsets.only(right: 2.0),
+                                                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                                focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                                border: OutlineInputBorder(borderSide: BorderSide.none),
+                                                prefixIcon: Image.asset('lib/images/searchico.png'),
+                                                hintText: 'Pesquisar...',
+                                                hintStyle: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  color: kGrayColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontStyle: FontStyle.normal,
+                                                  letterSpacing: -0.4099999964237213,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -994,6 +1017,23 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   ],
                                 ),
                               ),
+                              if (Provider.of<DatabaseManager>(context).searchingTags)
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      child: ListOfTags(
+                                        activeTags: true,
+                                        showActiveTags: ['Abc', 'cde', 'fgh'],
+                                      ),
+                                    ),
+                                    Container(
+                                      height: 1,
+                                      color: kLightGrayColor,
+                                    ),
+                                  ],
+                                ),
                               if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                                 Expanded(
                                   child: _buildTaggedGridView(),
@@ -1056,42 +1096,43 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //                            ),
                             ],
                           ),
-                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
-                            if (!hideTitleThirdTab)
-                              Positioned(
-                                left: 19.0,
-                                top: topOffsetThirdTab,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
+                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto &&
+                              !hideTitleThirdTab &&
+                              !Provider.of<DatabaseManager>(context).searchingTags)
+                            Positioned(
+                              left: 19.0,
+                              top: topOffsetThirdTab,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    "Fotos organizadas",
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff979a9b),
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w700,
+                                      fontStyle: FontStyle.normal,
+                                    ),
+                                  ),
+                                  if (!hideSubtitleThirdTab)
+                                    SizedBox(
+                                      height: 8.0,
+                                    ),
+                                  if (!hideSubtitleThirdTab)
                                     Text(
-                                      "Fotos organizadas",
+                                      "Fotos que já foram taggeadas",
                                       style: TextStyle(
                                         fontFamily: 'Lato',
-                                        color: Color(0xff979a9b),
-                                        fontSize: 28,
-                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xff606566),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
                                         fontStyle: FontStyle.normal,
                                       ),
                                     ),
-                                    if (!hideSubtitleThirdTab)
-                                      SizedBox(
-                                        height: 8.0,
-                                      ),
-                                    if (!hideSubtitleThirdTab)
-                                      Text(
-                                        "Fotos que já foram taggeadas",
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          color: Color(0xff606566),
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w400,
-                                          fontStyle: FontStyle.normal,
-                                        ),
-                                      ),
-                                  ],
-                                ),
+                                ],
                               ),
+                            ),
                         ],
                       ),
                     ),
