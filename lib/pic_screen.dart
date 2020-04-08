@@ -20,6 +20,8 @@ import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:after_layout/after_layout.dart';
+//import 'package:sticky_headers/sticky_headers.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 part 'image_item.dart';
 
@@ -49,6 +51,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   double offsetThirdTab = 0.0;
   double topOffsetThirdTab = 64.0;
+  bool hideTitleThirdTab = false;
   bool hideSubtitleThirdTab = false;
 
   Throttle _changeThrottle;
@@ -84,19 +87,25 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   void movedGridPositionThirdTab() {
     var offset = scrollControllerThirdTab.offset;
 
-    if (offset >= 117) {
+    if (offset >= 98) {
       setState(() {
-        topOffsetThirdTab = 0;
-        hideSubtitleThirdTab = true;
+        hideTitleThirdTab = true;
       });
     } else if (offset >= 52) {
       setState(() {
-        topOffsetThirdTab = 64.0 - (offset - 52.0);
+        hideTitleThirdTab = false;
+        hideSubtitleThirdTab = true;
+      });
+    } else if (offset >= 40) {
+      setState(() {
+        topOffsetThirdTab = 64 - (offset - 40);
+        hideTitleThirdTab = false;
         hideSubtitleThirdTab = false;
       });
-    } else if (offset <= 0) {
+    } else if (offset < 40) {
       setState(() {
         topOffsetThirdTab = 64;
+        hideTitleThirdTab = false;
         hideSubtitleThirdTab = false;
       });
     }
@@ -166,20 +175,30 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       movedGridPositionThirdTab();
     });
 
-//    final noMore = DatabaseManager.instance.assetProvider.noMore;
-//    if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
-//      print('loading more');
-//      _loadMore();
-//      return _buildLoading();
-//    }
-
-    return GridView.builder(
-      padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+    return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,
-      scrollDirection: Axis.vertical,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-      itemCount: picsBox.length,
+      padding: EdgeInsets.only(top: 140.0, right: 6.0, left: 6.0),
+      crossAxisCount: 3,
+      itemCount: 30,
       itemBuilder: (BuildContext context, int index) {
+        if (index == 0) {
+          return Container(
+            padding: const EdgeInsets.only(left: 2.0),
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Pets",
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff606566),
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
+            ),
+          );
+        }
+        index = 0;
         Pic getPic = picsBox.getAt(index);
         var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
         print('loading photo index: ${getPic.photoIndex}');
@@ -198,8 +217,108 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           ),
         );
       },
+      staggeredTileBuilder: (int index) {
+        if (index == 0) {
+          return StaggeredTile.fit(3);
+        }
+        return StaggeredTile.count(1, 1);
+      },
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
     );
   }
+
+//    final noMore = DatabaseManager.instance.assetProvider.noMore;
+//    if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
+//      print('loading more');
+//      _loadMore();
+//      return _buildLoading();
+//    }
+
+//    return ListView.builder(
+//      controller: scrollControllerThirdTab,
+//      itemCount: 2,
+//      padding: EdgeInsets.only(top: 140.0, right: 6.0, left: 6.0),
+//      itemBuilder: (context, index) {
+//        return StickyHeader(
+//          header: Container(
+//            padding: const EdgeInsets.only(left: 2.0),
+//            color: kWhiteColor,
+////            width: double.infinity,
+//            alignment: Alignment.centerLeft,
+//            child: Text(
+//              "Pets",
+//              style: TextStyle(
+//                fontFamily: 'Lato',
+//                color: Color(0xff606566),
+//                fontSize: 24,
+//                fontWeight: FontWeight.w400,
+//                fontStyle: FontStyle.normal,
+//                letterSpacing: -0.4099999964237213,
+//              ),
+//            ),
+//          ),
+//          content: Container(
+//            child: GridView.builder(
+//              shrinkWrap: true,
+//              physics: NeverScrollableScrollPhysics(),
+//              itemCount: 30,
+//              // picsBox.length,
+//              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+//              itemBuilder: (context, index) {
+//                index = 0;
+//                Pic getPic = picsBox.getAt(index);
+//                var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
+//                print('loading photo index: ${getPic.photoIndex}');
+//
+//                return RepaintBoundary(
+//                  child: Padding(
+//                    padding: const EdgeInsets.all(5.0),
+//                    child: ClipRRect(
+//                      borderRadius: BorderRadius.circular(5.0),
+//                      child: ImageItem(
+//                        entity: data,
+//                        size: 150,
+//                        backgroundColor: Colors.grey[400],
+//                      ),
+//                    ),
+//                  ),
+//                );
+//              },
+//            ),
+//          ),
+//        );
+//      },
+//      shrinkWrap: true,
+//    );
+//  }
+
+//    return GridView.builder(
+//      padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+//      controller: scrollControllerThirdTab,
+//      scrollDirection: Axis.vertical,
+//      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+//      itemCount: picsBox.length,
+//      itemBuilder: (BuildContext context, int index) {
+//        Pic getPic = picsBox.getAt(index);
+//        var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
+//        print('loading photo index: ${getPic.photoIndex}');
+//
+//        return RepaintBoundary(
+//          child: Padding(
+//            padding: const EdgeInsets.all(5.0),
+//            child: ClipRRect(
+//              borderRadius: BorderRadius.circular(5.0),
+//              child: ImageItem(
+//                entity: data,
+//                size: 150,
+//                backgroundColor: Colors.grey[400],
+//              ),
+//            ),
+//          ),
+//        );
+//      },
+//    );
 
   Widget _buildGridView() {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
@@ -927,40 +1046,41 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               ),
                             ),
                           if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
-                            Positioned(
-                              left: 16.0,
-                              top: topOffsetThirdTab,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  Text(
-                                    "Fotos organizadas",
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff979a9b),
-                                      fontSize: 28,
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.normal,
-                                    ),
-                                  ),
-                                  if (!hideSubtitleThirdTab)
-                                    SizedBox(
-                                      height: 8.0,
-                                    ),
-                                  if (!hideSubtitleThirdTab)
+                            if (!hideTitleThirdTab)
+                              Positioned(
+                                left: 16.0,
+                                top: topOffsetThirdTab,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
                                     Text(
-                                      "Fotos que já foram taggeadas",
+                                      "Fotos organizadas",
                                       style: TextStyle(
                                         fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
+                                        color: Color(0xff979a9b),
+                                        fontSize: 28,
+                                        fontWeight: FontWeight.w700,
                                         fontStyle: FontStyle.normal,
                                       ),
                                     ),
-                                ],
+                                    if (!hideSubtitleThirdTab)
+                                      SizedBox(
+                                        height: 8.0,
+                                      ),
+                                    if (!hideSubtitleThirdTab)
+                                      Text(
+                                        "Fotos que já foram taggeadas",
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff606566),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                        ),
+                                      ),
+                                  ],
+                                ),
                               ),
-                            ),
                           if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                             Padding(
                               padding: const EdgeInsets.only(top: 48.0),

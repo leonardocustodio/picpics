@@ -39,6 +39,8 @@ class DatabaseManager extends ChangeNotifier {
 
 //  Pic selectedPic;
 
+  void findPicsByTag(String tag) {}
+
   void switchEditingTags() {
     editingTags = !editingTags;
     notifyListeners();
