@@ -170,6 +170,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   Widget _buildTaggedGridView() {
     var picsBox = Hive.box('pics');
 
+    print('Number of tagged pics: ${picsBox.length}');
+
     scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
     scrollControllerThirdTab.addListener(() {
       movedGridPositionThirdTab();
@@ -179,7 +181,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       controller: scrollControllerThirdTab,
       padding: EdgeInsets.only(top: 140.0, right: 6.0, left: 6.0),
       crossAxisCount: 3,
-      itemCount: 30,
+      itemCount: 30, // picsBox.length + 1,
       itemBuilder: (BuildContext context, int index) {
         if (index == 0) {
           return Container(
@@ -198,8 +200,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             ),
           );
         }
-        index = 0;
-        Pic getPic = picsBox.getAt(index);
+        index = 1;
+        Pic getPic = picsBox.getAt(index - 1);
         var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
         print('loading photo index: ${getPic.photoIndex}');
 
@@ -930,125 +932,134 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   ),
                 if (currentIndex == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
-                    constraints: BoxConstraints.expand(),
-                    color: kWhiteColor,
+//                    constraints: BoxConstraints.expand(),
+//                    color: kWhiteColor,
                     child: SafeArea(
                       child: Stack(
                         children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(right: 16.0, left: 2.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
-                                  Expanded(
-                                    child: TextField(
-                                      onSubmitted: (text) {
-                                        print('return');
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.only(right: 16.0, left: 2.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
+                                      Expanded(
+                                        child: TextField(
+                                          onSubmitted: (text) {
+                                            print('return');
 //                                        if (text != '') {
 //                                          DatabaseManager.instance.addTag(text, data.id, index);
 //                                        }
 //                                        DatabaseManager.instance.switchEditingTags();
-                                      },
-                                      keyboardType: TextInputType.multiline,
+                                          },
+                                          keyboardType: TextInputType.multiline,
 //                                      textAlignVertical: TextAlignVertical.center,
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                      decoration: InputDecoration(
-                                        contentPadding: const EdgeInsets.only(right: 2.0),
-                                        enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                        focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                        border: OutlineInputBorder(borderSide: BorderSide.none),
-                                        prefixIcon: Image.asset('lib/images/searchico.png'),
-                                        hintText: 'Pesquisar...',
-                                        hintStyle: TextStyle(
-                                          fontFamily: 'Lato',
-                                          color: kGrayColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                          fontStyle: FontStyle.normal,
-                                          letterSpacing: -0.4099999964237213,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                CupertinoButton(
-                                  padding: const EdgeInsets.all(0),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, SettingsScreen.id);
-                                  },
-                                  child: Image.asset('lib/images/settings.png'),
-                                ),
-                              ],
-                            ),
-                          ),
-                          if (Provider.of<DatabaseManager>(context).noTaggedPhoto)
-                            Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  SizedBox(
-                                    height: 40.0,
-                                  ),
-                                  Image.asset('lib/images/notaggedphotos.png'),
-                                  SizedBox(
-                                    height: 21.0,
-                                  ),
-                                  Text(
-                                    "Você ainda não tem nenhuma foto\ntaggeada.",
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff979a9b),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 17.0,
-                                  ),
-                                  CupertinoButton(
-                                    padding: const EdgeInsets.all(0),
-                                    onPressed: () {
-                                      changePage(1);
-                                    },
-                                    child: Container(
-                                      width: 201.0,
-                                      height: 44.0,
-                                      decoration: BoxDecoration(
-                                        gradient: kPrimaryGradient,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          "Começar a taggear",
+                                          maxLines: 1,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
-                                            color: kWhiteColor,
+                                            color: Color(0xff606566),
                                             fontSize: 16,
-                                            fontWeight: FontWeight.w700,
+                                            fontWeight: FontWeight.w400,
                                             fontStyle: FontStyle.normal,
                                             letterSpacing: -0.4099999964237213,
                                           ),
+                                          decoration: InputDecoration(
+                                            contentPadding: const EdgeInsets.only(right: 2.0),
+                                            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                            focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                                            border: OutlineInputBorder(borderSide: BorderSide.none),
+                                            prefixIcon: Image.asset('lib/images/searchico.png'),
+                                            hintText: 'Pesquisar...',
+                                            hintStyle: TextStyle(
+                                              fontFamily: 'Lato',
+                                              color: kGrayColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w400,
+                                              fontStyle: FontStyle.normal,
+                                              letterSpacing: -0.4099999964237213,
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.all(0),
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, SettingsScreen.id);
+                                      },
+                                      child: Image.asset('lib/images/settings.png'),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
+                              if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
+                                Expanded(
+                                  child: _buildTaggedGridView(),
+                                ),
+//                          if (Provider.of<DatabaseManager>(context).noTaggedPhoto)
+//                            Center(
+//                              child: Column(
+//                                mainAxisAlignment: MainAxisAlignment.center,
+//                                children: <Widget>[
+//                                  SizedBox(
+//                                    height: 40.0,
+//                                  ),
+//                                  Image.asset('lib/images/notaggedphotos.png'),
+//                                  SizedBox(
+//                                    height: 21.0,
+//                                  ),
+//                                  Text(
+//                                    "Você ainda não tem nenhuma foto\ntaggeada.",
+//                                    textAlign: TextAlign.center,
+//                                    style: TextStyle(
+//                                      fontFamily: 'Lato',
+//                                      color: Color(0xff979a9b),
+//                                      fontSize: 18,
+//                                      fontWeight: FontWeight.w400,
+//                                      fontStyle: FontStyle.normal,
+//                                    ),
+//                                  ),
+//                                  SizedBox(
+//                                    height: 17.0,
+//                                  ),
+//                                  CupertinoButton(
+//                                    padding: const EdgeInsets.all(0),
+//                                    onPressed: () {
+//                                      changePage(1);
+//                                    },
+//                                    child: Container(
+//                                      width: 201.0,
+//                                      height: 44.0,
+//                                      decoration: BoxDecoration(
+//                                        gradient: kPrimaryGradient,
+//                                        borderRadius: BorderRadius.circular(8),
+//                                      ),
+//                                      child: Center(
+//                                        child: Text(
+//                                          "Começar a taggear",
+//                                          style: TextStyle(
+//                                            fontFamily: 'Lato',
+//                                            color: kWhiteColor,
+//                                            fontSize: 16,
+//                                            fontWeight: FontWeight.w700,
+//                                            fontStyle: FontStyle.normal,
+//                                            letterSpacing: -0.4099999964237213,
+//                                          ),
+//                                        ),
+//                                      ),
+//                                    ),
+//                                  ),
+//                                ],
+//                              ),
+//                            ),
+                            ],
+                          ),
                           if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                             if (!hideTitleThirdTab)
                               Positioned(
-                                left: 16.0,
+                                left: 19.0,
                                 top: topOffsetThirdTab,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1081,11 +1092,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   ],
                                 ),
                               ),
-                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 48.0),
-                              child: _buildTaggedGridView(),
-                            ),
                         ],
                       ),
                     ),
