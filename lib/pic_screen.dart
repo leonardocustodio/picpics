@@ -969,6 +969,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             child: TextField(
                                               controller: searchEditingController,
                                               focusNode: searchFocusNode,
+                                              onChanged: (text) {
+                                                print('searching: $text');
+                                                DatabaseManager.instance.searchResultsTags(text);
+                                              },
                                               onSubmitted: (text) {
                                                 print('return');
 //                                        if (text != '') {
@@ -1025,9 +1029,47 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                       child: ListOfTags(
                                         activeTags: true,
-                                        showActiveTags: ['Abc', 'cde', 'fgh'],
+                                        showActiveTags: Provider.of<DatabaseManager>(context).searchActiveTags,
                                       ),
                                     ),
+                                    if (Provider.of<DatabaseManager>(context).searchResults != null)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        child: Text(
+                                          "Resultados da busca",
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: Color(0xff979a9b),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                            fontStyle: FontStyle.normal,
+                                            letterSpacing: -0.4099999964237213,
+                                          ),
+                                        ),
+                                      ),
+                                    if (Provider.of<DatabaseManager>(context).searchResults != null)
+                                      if (Provider.of<DatabaseManager>(context).searchResults.isNotEmpty)
+                                        ListOfTags(
+                                          activeTags: false,
+                                          showActiveTags: Provider.of<DatabaseManager>(context).searchResults,
+                                        ),
+                                    if (Provider.of<DatabaseManager>(context).searchResults != null)
+                                      if (Provider.of<DatabaseManager>(context).searchResults.isEmpty)
+                                        Container(
+                                          padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
+                                          child: Text(
+                                            "Nenhuma tag foi encontrada",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontFamily: 'Lato',
+                                              color: Color(0xff979a9b),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w700,
+                                              fontStyle: FontStyle.normal,
+                                              letterSpacing: -0.4099999964237213,
+                                            ),
+                                          ),
+                                        ),
                                     Container(
                                       height: 1,
                                       color: kLightGrayColor,

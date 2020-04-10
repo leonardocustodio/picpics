@@ -25,6 +25,9 @@ class DatabaseManager extends ChangeNotifier {
   bool editingTags = false;
   bool searchingTags = false;
 
+  List<String> searchActiveTags = ['Abc', 'cde', 'fgh'];
+  List<String> searchResults;
+
   AssetProvider assetProvider = AssetProvider();
   AssetEntity selectedPhoto;
   List<double> lastLocationRequest = [0.0, 0.0];
@@ -41,6 +44,19 @@ class DatabaseManager extends ChangeNotifier {
 //  Pic selectedPic;
 
   void findPicsByTag(String tag) {}
+
+  void searchResultsTags(String text) {
+    if (text == '') {
+      searchResults = null;
+      notifyListeners();
+      return;
+    }
+
+    var tags = allTags.where((e) => e.toLowerCase().startsWith(text.toLowerCase()));
+    searchResults = [];
+    searchResults.addAll(tags);
+    notifyListeners();
+  }
 
   void switchSearchingTags() {
     searchingTags = !searchingTags;
