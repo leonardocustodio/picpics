@@ -9,6 +9,7 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:picPics/widgets/tags_list.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
@@ -607,7 +608,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 }
                                 DatabaseManager.instance.switchEditingTags();
                               },
-                              keyboardType: TextInputType.multiline,
+                              keyboardType: TextInputType.text,
                               textAlignVertical: TextAlignVertical.center,
                               maxLines: 1,
                               style: TextStyle(
@@ -1049,9 +1050,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)
                                       if (Provider.of<DatabaseManager>(context).searchResults.isNotEmpty)
-                                        ListOfTags(
-                                          activeTags: false,
-                                          showActiveTags: Provider.of<DatabaseManager>(context).searchResults,
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
+                                          child: TagsList(
+                                            tags: Provider.of<DatabaseManager>(context).searchResults,
+                                          ),
                                         ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)
                                       if (Provider.of<DatabaseManager>(context).searchResults.isEmpty)

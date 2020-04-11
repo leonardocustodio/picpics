@@ -37,3 +37,19 @@ const kYellowGradient = LinearGradient(
     const Color.fromRGBO(242, 206, 59, 0.7),
   ],
 );
+
+var kGrayBoxDecoration = BoxDecoration(
+  borderRadius: BorderRadius.circular(19.0),
+  border: Border.all(
+    color: Color(0xff979a9b),
+  ),
+);
+
+const kGrayTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  color: Color(0xff979a9b),
+  fontSize: 12,
+  fontWeight: FontWeight.w700,
+  fontStyle: FontStyle.normal,
+  letterSpacing: -0.4099999964237213,
+);
