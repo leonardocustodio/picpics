@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "782873848258",
+    "firebase_url": "https://picpics.firebaseio.com",
+    "project_id": "picpics",
+    "storage_bucket": "picpics.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:782873848258:android:9c6e970f39f436db1f8e5b",
+        "android_client_info": {
+          "package_name": "br.com.inovatso.picPics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "782873848258-a4id31vl8pvcebi63rfgtg36vd4mrphn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOi_EL0ROIiKFpFqqzGm6FnREYTMdhiwY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "782873848258-a4id31vl8pvcebi63rfgtg36vd4mrphn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

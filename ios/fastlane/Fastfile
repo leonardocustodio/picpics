@@ -18,14 +18,14 @@ default_platform(:ios)
 platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
-    changelog = prompt(
-      text: "Changelog: ",
-      multi_line_end_keyword: "END"
-    )
+    #changelog = prompt(
+    #  text: "Changelog: ",
+    #  multi_line_end_keyword: "END"
+    #)
 
     # build app
     build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
     
-    upload_to_testflight(changelog: changelog)
+    upload_to_testflight(changelog: "New beta build")
   end
 end
