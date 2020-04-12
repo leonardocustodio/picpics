@@ -33,14 +33,14 @@ platform :android do
     build_android_app(task: "assembleRelease")
 
     # changelog from a txt file is passed as the release note
-    changelog = File.read("../changelog.txt")
+    #changelog = File.read("../changelog.txt")
 
     # submit build to firebase app distribution
     firebase_app_distribution(
         app: "1:782873848258:android:9c6e970f39f436db1f8e5b",
         release_notes: "New beta build",
-        groups: "picpics"
-        firebase_cli_path: "/absolute/path/to/firebase/cli/binary"
+        groups: "picpics",
+        firebase_cli_path: "/absolute/path/to/firebase/cli/binary",
     )
   end
 

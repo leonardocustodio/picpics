@@ -981,7 +981,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //                                        }
 //                                        DatabaseManager.instance.switchEditingTags();
                                               },
-                                              keyboardType: TextInputType.multiline,
+                                              keyboardType: TextInputType.text,
 //                                      textAlignVertical: TextAlignVertical.center,
                                               maxLines: 1,
                                               style: TextStyle(
