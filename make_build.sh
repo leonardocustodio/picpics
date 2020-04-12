@@ -1,5 +1,5 @@
 cd android
-flutter build appbundle
+flutter build apk
 bundle exec fastlane beta
 cd ../ios
 flutter build ios --release --no-codesign
