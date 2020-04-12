@@ -40,7 +40,7 @@ platform :android do
         app: "1:782873848258:android:9c6e970f39f436db1f8e5b",
         release_notes: "New beta build",
         groups: "picpics",
-        firebase_cli_path: "/absolute/path/to/firebase/cli/binary",
+        firebase_cli_path: "/Users/custodio/FlutterProjects/picpics/android/fastlane/firebase-tools",
     )
   end
 
