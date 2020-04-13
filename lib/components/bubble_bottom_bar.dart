@@ -91,7 +91,6 @@ class _BottomNavigationTile extends StatelessWidget {
               highlightColor: Colors.transparent,
               child: Container(
                 height: 48.0,
-//                width: 100.0,
                 decoration: BoxDecoration(
                     color: selected ? item.backgroundColor.withOpacity(opacity) : Colors.transparent,
                     borderRadius: BorderRadius.horizontal(
