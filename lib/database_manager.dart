@@ -41,6 +41,9 @@ class DatabaseManager extends ChangeNotifier {
 
   double scale = 1.0;
 
+  String addingTagId = '';
+  int addingTagIndex = 0;
+
 //  Pic selectedPic;
 
   void findPicsByTag(String tag) {}

@@ -63,6 +63,8 @@ class ListOfTags extends StatelessWidget {
             print('in full screen mode!');
             return;
           }
+          DatabaseManager.instance.addingTagId = picInfo.photoId;
+          DatabaseManager.instance.addingTagIndex = picInfo.photoIndex;
           DatabaseManager.instance.switchEditingTags();
         },
         child: Container(

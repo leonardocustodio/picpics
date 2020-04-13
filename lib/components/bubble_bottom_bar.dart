@@ -73,7 +73,6 @@ class _BottomNavigationTile extends StatelessWidget {
     );
 
     return Expanded(
-      flex: size,
       child: Semantics(
         container: true,
         header: true,
@@ -91,6 +90,7 @@ class _BottomNavigationTile extends StatelessWidget {
               highlightColor: Colors.transparent,
               child: Container(
                 height: 48,
+                width: 100,
                 decoration: BoxDecoration(
                     color: selected ? item.backgroundColor.withOpacity(opacity) : Colors.transparent,
                     borderRadius: BorderRadius.horizontal(
@@ -99,7 +99,7 @@ class _BottomNavigationTile extends StatelessWidget {
                     )),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: selected ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
+                  mainAxisAlignment: selected ? MainAxisAlignment.spaceAround : MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   children: <Widget>[
                     _TileIcon(
@@ -294,13 +294,26 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
         ),
       );
     }
-    if (widget.fabLocation == BubbleBottomBarFabLocation.center) {
-      children.insert(
-          1,
-          Spacer(
-            flex: 1500,
-          ));
-    }
+////    if (widget.fabLocation == BubbleBottomBarFabLocation.center) {
+//    children.add(
+//      Spacer(flex: 1),
+//    );
+//    children.insert(
+//        2,
+//        Spacer(
+//          flex: 1,
+//        ));
+//    children.insert(
+//        1,
+//        Spacer(
+//          flex: 1,
+//        ));
+//    children.insert(
+//        0,
+//        Spacer(
+//          flex: 1,
+//        ));
+////    }
     return children;
   }
 

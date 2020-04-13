@@ -7,6 +7,7 @@ import 'package:picPics/add_location.dart';
 import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/model/tag.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -173,8 +174,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   Widget _buildTaggedGridView() {
     var picsBox = Hive.box('pics');
-
-    print('Number of tagged pics: ${picsBox.length}');
+    var tagsBox = Hive.box('tags');
 
     scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
     scrollControllerThirdTab.addListener(() {
@@ -192,37 +192,37 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       }
     }
 
-    print('New Padding: $newPadding');
+    int totalTags = 0;
+    int totalPics = 0;
 
-    return StaggeredGridView.countBuilder(
-      controller: scrollControllerThirdTab,
-      padding: EdgeInsets.only(top: 140 - newPadding, right: 6.0, left: 6.0),
-      crossAxisCount: 3,
-      itemCount: 30, // picsBox.length + 1,
-      itemBuilder: (BuildContext context, int index) {
-        if (index == 0) {
-          return Container(
-            padding: const EdgeInsets.only(left: 2.0),
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Pets",
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
-            ),
-          );
-        }
-        index = 1;
-        Pic getPic = picsBox.getAt(index - 1);
+    List<Widget> widgetsArray = [];
+    List<bool> isTitleWidget = [];
+
+    for (Tag tag in tagsBox.values) {
+      totalTags += 1;
+      isTitleWidget.add(true);
+      widgetsArray.add(Container(
+        padding: const EdgeInsets.only(left: 2.0),
+        alignment: Alignment.centerLeft,
+        child: Text(
+          tag.name,
+          style: TextStyle(
+            fontFamily: 'Lato',
+            color: Color(0xff606566),
+            fontSize: 24,
+            fontWeight: FontWeight.w400,
+            fontStyle: FontStyle.normal,
+            letterSpacing: -0.4099999964237213,
+          ),
+        ),
+      ));
+      for (String photoId in tag.photoId) {
+        totalPics += 1;
+        isTitleWidget.add(false);
+        Pic getPic = picsBox.getAt(DatabaseManager.instance.allPics.indexOf(photoId));
         var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
         print('loading photo index: ${getPic.photoIndex}');
-
-        return RepaintBoundary(
+        widgetsArray.add(RepaintBoundary(
           child: Padding(
             padding: const EdgeInsets.all(5.0),
             child: ClipRRect(
@@ -234,10 +234,25 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               ),
             ),
           ),
-        );
+        ));
+      }
+    }
+
+    print('Number of pics: ${DatabaseManager.instance.allPics.length}');
+    print('Number of tags: ${DatabaseManager.instance.allTags.length}');
+
+    print('New Padding: $newPadding');
+
+    return StaggeredGridView.countBuilder(
+      controller: scrollControllerThirdTab,
+      padding: EdgeInsets.only(top: 140 - newPadding, right: 6.0, left: 6.0),
+      crossAxisCount: 3,
+      itemCount: totalTags + totalPics, // picsBox.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        return widgetsArray[index];
       },
       staggeredTileBuilder: (int index) {
-        if (index == 0) {
+        if (isTitleWidget[index]) {
           return StaggeredTile.fit(3);
         }
         return StaggeredTile.count(1, 1);
@@ -373,6 +388,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           padding: const EdgeInsets.all(0),
           onPressed: () {
             print('adding recent tags');
+            print('text: $tag - data.id: $photoId - index: $index');
             DatabaseManager.instance.addTag(tag, photoId, index);
           },
           child: Container(
@@ -603,7 +619,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               onSubmitted: (text) {
                                 print('return');
                                 if (text != '') {
-                                  DatabaseManager.instance.addTag(text, data.id, index);
+//                                  print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+                                  DatabaseManager.instance.addTag(
+                                    text,
+                                    DatabaseManager.instance.addingTagId,
+                                    DatabaseManager.instance.addingTagIndex,
+                                  );
                                   tagsEditingController.clear();
                                 }
                                 DatabaseManager.instance.switchEditingTags();
@@ -1083,62 +1104,61 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 Expanded(
                                   child: _buildTaggedGridView(),
                                 ),
-//                          if (Provider.of<DatabaseManager>(context).noTaggedPhoto)
-//                            Center(
-//                              child: Column(
-//                                mainAxisAlignment: MainAxisAlignment.center,
-//                                children: <Widget>[
-//                                  SizedBox(
-//                                    height: 40.0,
-//                                  ),
-//                                  Image.asset('lib/images/notaggedphotos.png'),
-//                                  SizedBox(
-//                                    height: 21.0,
-//                                  ),
-//                                  Text(
-//                                    "Você ainda não tem nenhuma foto\ntaggeada.",
-//                                    textAlign: TextAlign.center,
-//                                    style: TextStyle(
-//                                      fontFamily: 'Lato',
-//                                      color: Color(0xff979a9b),
-//                                      fontSize: 18,
-//                                      fontWeight: FontWeight.w400,
-//                                      fontStyle: FontStyle.normal,
-//                                    ),
-//                                  ),
-//                                  SizedBox(
-//                                    height: 17.0,
-//                                  ),
-//                                  CupertinoButton(
-//                                    padding: const EdgeInsets.all(0),
-//                                    onPressed: () {
-//                                      changePage(1);
-//                                    },
-//                                    child: Container(
-//                                      width: 201.0,
-//                                      height: 44.0,
-//                                      decoration: BoxDecoration(
-//                                        gradient: kPrimaryGradient,
-//                                        borderRadius: BorderRadius.circular(8),
-//                                      ),
-//                                      child: Center(
-//                                        child: Text(
-//                                          "Começar a taggear",
-//                                          style: TextStyle(
-//                                            fontFamily: 'Lato',
-//                                            color: kWhiteColor,
-//                                            fontSize: 16,
-//                                            fontWeight: FontWeight.w700,
-//                                            fontStyle: FontStyle.normal,
-//                                            letterSpacing: -0.4099999964237213,
-//                                          ),
-//                                        ),
-//                                      ),
-//                                    ),
-//                                  ),
-//                                ],
-//                              ),
-//                            ),
+                              if (Provider.of<DatabaseManager>(context).noTaggedPhoto)
+                                Expanded(
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Image.asset('lib/images/notaggedphotos.png'),
+                                        SizedBox(
+                                          height: 21.0,
+                                        ),
+                                        Text(
+                                          "Você ainda não tem nenhuma foto\ntaggeada.",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: Color(0xff979a9b),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400,
+                                            fontStyle: FontStyle.normal,
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 17.0,
+                                        ),
+                                        CupertinoButton(
+                                          padding: const EdgeInsets.all(0),
+                                          onPressed: () {
+                                            changePage(1);
+                                          },
+                                          child: Container(
+                                            width: 201.0,
+                                            height: 44.0,
+                                            decoration: BoxDecoration(
+                                              gradient: kPrimaryGradient,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Center(
+                                              child: Text(
+                                                "Começar a taggear",
+                                                style: TextStyle(
+                                                  fontFamily: 'Lato',
+                                                  color: kWhiteColor,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontStyle: FontStyle.normal,
+                                                  letterSpacing: -0.4099999964237213,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                             ],
                           ),
                           if (!Provider.of<DatabaseManager>(context).noTaggedPhoto &&
