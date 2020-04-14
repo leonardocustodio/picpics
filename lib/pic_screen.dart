@@ -245,7 +245,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,
-      padding: EdgeInsets.only(top: 140 - newPadding, right: 6.0, left: 6.0),
+      padding: EdgeInsets.only(
+        top: 140 - newPadding,
+        right: 6.0,
+        left: 6.0,
+      ),
       crossAxisCount: 3,
       itemCount: totalTags + totalPics, // picsBox.length + 1,
       itemBuilder: (BuildContext context, int index) {
@@ -772,7 +776,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 CupertinoButton(
-                                  padding: const EdgeInsets.all(0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
                                     Navigator.pushNamed(context, SettingsScreen.id);
                                   },
@@ -853,7 +857,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 CupertinoButton(
-                                  padding: const EdgeInsets.all(0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
                                     Navigator.pushNamed(context, SettingsScreen.id);
                                   },
@@ -930,7 +934,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               children: <Widget>[
                                 Image.asset('lib/images/picpicssmallred.png'),
                                 CupertinoButton(
-                                  padding: const EdgeInsets.all(0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
                                     Navigator.pushNamed(context, SettingsScreen.id);
                                   },
@@ -1034,7 +1038,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         ),
                                       ),
                                     CupertinoButton(
-                                      padding: const EdgeInsets.all(0),
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
                                       onPressed: () {
                                         Navigator.pushNamed(context, SettingsScreen.id);
                                       },
@@ -1047,13 +1051,14 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                      child: ListOfTags(
-                                        activeTags: true,
-                                        showActiveTags: Provider.of<DatabaseManager>(context).searchActiveTags,
+                                    if (Provider.of<DatabaseManager>(context).searchActiveTags.isNotEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        child: ListOfTags(
+                                          activeTags: true,
+                                          showActiveTags: Provider.of<DatabaseManager>(context).searchActiveTags,
+                                        ),
                                       ),
-                                    ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),

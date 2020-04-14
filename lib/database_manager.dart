@@ -25,7 +25,7 @@ class DatabaseManager extends ChangeNotifier {
   bool editingTags = false;
   bool searchingTags = false;
 
-  List<String> searchActiveTags = ['Abc', 'cde', 'fgh'];
+  List<String> searchActiveTags = [];
   List<String> searchResults;
 
   AssetProvider assetProvider = AssetProvider();
