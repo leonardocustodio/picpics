@@ -101,12 +101,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         hideTitleThirdTab = false;
         hideSubtitleThirdTab = true;
       });
-    } else if (offset >= 40) {
-      setState(() {
-        topOffsetThirdTab = 64 - (offset - 40);
-        hideTitleThirdTab = false;
-        hideSubtitleThirdTab = false;
-      });
     } else if (offset < 40) {
       setState(() {
         topOffsetThirdTab = 64;
@@ -991,7 +985,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       Expanded(
                                         child: FocusScope(
                                           child: Focus(
-                                            onFocusChange: (focus) => DatabaseManager.instance.switchSearchingTags(),
+                                            onFocusChange: (focus) {
+                                              print('hasFocus: ${searchFocusNode.hasFocus}');
+                                              if (searchFocusNode.hasFocus == true) {
+                                                DatabaseManager.instance.switchSearchingTags();
+                                              } else if (searchFocusNode.hasFocus == false &&
+                                                  DatabaseManager.instance.searchActiveTags.isEmpty) {
+                                                DatabaseManager.instance.switchSearchingTags();
+                                              }
+                                            },
                                             child: TextField(
                                               controller: searchEditingController,
                                               focusNode: searchFocusNode,
@@ -1001,13 +1003,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                               },
                                               onSubmitted: (text) {
                                                 print('return');
-//                                        if (text != '') {
-//                                          DatabaseManager.instance.addTag(text, data.id, index);
-//                                        }
-//                                        DatabaseManager.instance.switchEditingTags();
+                                                searchEditingController.clear();
+                                                DatabaseManager.instance.searchResults = null;
                                               },
                                               keyboardType: TextInputType.text,
-//                                      textAlignVertical: TextAlignVertical.center,
                                               maxLines: 1,
                                               style: TextStyle(
                                                 fontFamily: 'Lato',
