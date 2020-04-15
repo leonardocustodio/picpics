@@ -8,6 +8,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
+import 'dart:math';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -18,6 +19,7 @@ class DatabaseManager extends ChangeNotifier {
     return _instance ??= DatabaseManager._();
   }
 
+  static const maxNumOfSuggestions = 8;
   static const maxNumOfRecentTags = 5;
 
   bool hasGalleryPermission = true;
@@ -37,6 +39,8 @@ class DatabaseManager extends ChangeNotifier {
 
   List<String> allTags = [];
   List<String> allPics = [];
+
+  List<String> suggestionsTags = [];
   List<String> allRecentTags = [];
 
   double scale = 1.0;
@@ -47,6 +51,39 @@ class DatabaseManager extends ChangeNotifier {
 //  Pic selectedPic;
 
   void findPicsByTag(String tag) {}
+
+  void tagsSuggestions(String text, {List<String> excludeTags, bool notify: true}) {
+    suggestionsTags.clear();
+
+    if (excludeTags == null) {
+      excludeTags = [];
+    }
+
+    if (text == '') {
+      for (var recent in allRecentTags) {
+        if (excludeTags.contains(recent)) {
+          continue;
+        }
+        suggestionsTags.add(recent);
+      }
+
+      print('Sugestion Length: ${suggestionsTags.length} - Num of Suggestions: $maxNumOfSuggestions');
+
+      while (suggestionsTags.length < maxNumOfSuggestions) {
+//          if (excludeTags.contains('Hey}')) {
+//            continue;
+//          }
+        suggestionsTags.add('Hey ${Random().nextInt(10)}');
+      }
+    } else {
+      var tags = allTags.where((e) => e.toLowerCase().startsWith(text.toLowerCase()));
+      suggestionsTags.addAll(tags);
+    }
+
+    if (notify) {
+      notifyListeners();
+    }
+  }
 
   void searchResultsTags(String text) {
     if (text == '') {

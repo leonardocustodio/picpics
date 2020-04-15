@@ -38,9 +38,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
   SwiperController swiperController = SwiperController();
-
-  TextEditingController tagsEditingController = TextEditingController();
 //  FocusNode tagsFocusNode = FocusNode();
+  TextEditingController tagsEditingController = TextEditingController();
 
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
@@ -483,6 +482,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //      DatabaseManager.instance.findLocation(latitude, longitude);
 //    }
 
+    // Buildar tags da primeira foto
+    if (index == 0) {
+      DatabaseManager.instance.tagsSuggestions(
+        '',
+        excludeTags: picInfo.tags,
+        notify: false,
+      );
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       decoration: BoxDecoration(
@@ -594,6 +602,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   textEditingController: tagsEditingController,
                   onChanged: (text) {
                     print('new text: $text');
+                    DatabaseManager.instance.tagsSuggestions(
+                      text,
+                      excludeTags: picInfo.tags,
+                    );
                   },
                   onSubmitted: (text) {
                     print('return');
@@ -612,7 +624,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TagsList(
                     title: 'Suggestions',
-                    tags: ['Bears', 'Friends', 'Trip', 'Food', 'Yoga', 'Family', 'Sea', 'Island'],
+                    tags: Provider.of<DatabaseManager>(context).suggestionsTags,
                   ),
                 ),
 

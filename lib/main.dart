@@ -34,6 +34,7 @@ void main() async {
   }
 
   DatabaseManager.instance.loadRecentTags();
+//  DatabaseManager.instance.tagsSuggestions('');
   DatabaseManager.instance.loadTags();
   DatabaseManager.instance.loadPics();
 
