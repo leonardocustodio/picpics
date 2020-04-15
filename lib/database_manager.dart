@@ -22,7 +22,7 @@ class DatabaseManager extends ChangeNotifier {
 
   bool hasGalleryPermission = true;
   bool noTaggedPhoto = true;
-  bool editingTags = false;
+//  bool editingTags = false;
   bool searchingTags = false;
 
   List<String> searchActiveTags = [];
@@ -66,10 +66,10 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void switchEditingTags() {
-    editingTags = !editingTags;
-    notifyListeners();
-  }
+//  void switchEditingTags() {
+//    editingTags = !editingTags;
+//    notifyListeners();
+//  }
 
   void gridScale(double multiplier) {
     scale = scale;

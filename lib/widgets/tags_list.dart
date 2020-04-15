@@ -12,15 +12,21 @@ enum TagStyle {
 
 class TagsList extends StatelessWidget {
   final List<String> tags;
-  final bool addTagButton;
+  final TextEditingController textEditingController;
+  final bool addTagField;
   final String title;
   final TagStyle tagStyle;
+  final Function onSubmitted;
+  final Function onChanged;
 //  final bool
 
   const TagsList({
     @required this.tags,
     this.tagStyle = TagStyle.MultiColored,
-    this.addTagButton = false,
+    this.textEditingController,
+    this.addTagField = false,
+    this.onSubmitted,
+    this.onChanged,
     this.title,
   });
 
@@ -52,47 +58,91 @@ class TagsList extends StatelessWidget {
       );
     }
 
-    if (addTagButton) {
+    if (addTagField) {
       tagsWidgets.add(
-        CupertinoButton(
-          padding: const EdgeInsets.all(0.0),
-          minSize: 0,
-          onPressed: () {
-//          if (fullScreen) {
-//            print('in full screen mode!');
-//            return;
-//          }
-//            DatabaseManager.instance.switchEditingTags();
-          },
-          child: Container(
-            height: 30.0,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                Text(
-                  "Add Tag",
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    color: Color(0xffff6666),
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: -0.4099999964237213,
-                  ),
-                ),
-                SizedBox(
-                  width: 8.0,
-                ),
-                Image.asset('lib/images/plusredico.png'),
-              ],
+        Container(
+          margin: const EdgeInsets.only(top: 5.0),
+          height: 30.0,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            color: Color(0xFFF1F3F5),
+            border: Border.all(color: kLightGrayColor, width: 1.0),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: TextField(
+            controller: textEditingController,
+            onChanged: onChanged,
+            onSubmitted: onSubmitted,
+            keyboardType: TextInputType.text,
+            textAlignVertical: TextAlignVertical.center,
+            maxLines: 1,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff606566),
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
             ),
-            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(19.0),
-              border: Border.all(color: kSecondaryColor, width: 1.0),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.only(right: 2.0),
+              enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+              focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+              border: OutlineInputBorder(borderSide: BorderSide.none),
+              prefixIcon: Image.asset('lib/images/smalladdtag.png'),
+              prefixIconConstraints: BoxConstraints.tight(Size(30.0, 30.0)),
+              hintText: 'Add tags',
+              hintStyle: TextStyle(
+                fontFamily: 'Lato',
+                color: kGrayColor,
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
             ),
           ),
         ),
+
+//        CupertinoButton(
+//          padding: const EdgeInsets.all(0.0),
+//          minSize: 0,
+//          onPressed: () {
+////          if (fullScreen) {
+////            print('in full screen mode!');
+////            return;
+////          }
+////            DatabaseManager.instance.switchEditingTags();
+//          },
+//          child: Container(
+//            height: 30.0,
+//            child: Row(
+//              mainAxisSize: MainAxisSize.min,
+//              children: <Widget>[
+//                Text(
+//                  "Add Tag",
+//                  style: TextStyle(
+//                    fontFamily: 'Lato',
+//                    color: Color(0xffff6666),
+//                    fontSize: 12,
+//                    fontWeight: FontWeight.w700,
+//                    fontStyle: FontStyle.normal,
+//                    letterSpacing: -0.4099999964237213,
+//                  ),
+//                ),
+//                SizedBox(
+//                  width: 8.0,
+//                ),
+//                Image.asset('lib/images/plusredico.png'),
+//              ],
+//            ),
+//            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+//            decoration: BoxDecoration(
+//              borderRadius: BorderRadius.circular(19.0),
+//              border: Border.all(color: kSecondaryColor, width: 1.0),
+//            ),
+//          ),
+//        ),
       );
     }
 
@@ -115,8 +165,10 @@ class TagsList extends StatelessWidget {
             ),
           ),
         Wrap(
+          direction: Axis.horizontal,
           spacing: 5.0,
           runSpacing: 5.0,
+          runAlignment: WrapAlignment.start,
           children: tagsWidgets,
         ),
       ],

@@ -65,7 +65,7 @@ class ListOfTags extends StatelessWidget {
           }
           DatabaseManager.instance.addingTagId = picInfo.photoId;
           DatabaseManager.instance.addingTagIndex = picInfo.photoIndex;
-          DatabaseManager.instance.switchEditingTags();
+//          DatabaseManager.instance.switchEditingTags();
         },
         child: Container(
           height: 30.0,

@@ -40,7 +40,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   SwiperController swiperController = SwiperController();
 
   TextEditingController tagsEditingController = TextEditingController();
-  FocusNode tagsFocusNode = FocusNode();
+//  FocusNode tagsFocusNode = FocusNode();
 
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
@@ -128,9 +128,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     super.didChangeDependencies();
 
     print('#!#!#!#!#!# DID CHANGE DEPENDENCIES');
-    if (DatabaseManager.instance.editingTags == true) {
-      tagsFocusNode.requestFocus();
-    }
+//    if (DatabaseManager.instance.editingTags == true) {
+//      tagsFocusNode.requestFocus();
+//    }
   }
 
   @override
@@ -529,166 +529,194 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               ],
             ),
           ),
-          if (Provider.of<DatabaseManager>(context).editingTags == false)
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      CupertinoButton(
-                        padding: const EdgeInsets.all(0),
-                        onPressed: () {
-                          DatabaseManager.instance.selectedPhoto = data;
-                          Navigator.pushNamed(context, AddLocationScreen.id);
-                        },
-                        child: RichText(
-                          text: new TextSpan(
-                            children: [
-                              new TextSpan(
-                                text: 'Local da foto',
+//          if (Provider.of<DatabaseManager>(context).editingTags == false)
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        DatabaseManager.instance.selectedPhoto = data;
+                        Navigator.pushNamed(context, AddLocationScreen.id);
+                      },
+                      child: RichText(
+                        text: new TextSpan(
+                          children: [
+                            new TextSpan(
+                              text: 'Local da foto',
 //                        text: Provider.of<DatabaseManager>(context).currentPhotoCity,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                              new TextSpan(
-                                text: '  estado',
-//                        text: ' ${Provider.of<DatabaseManager>(context).currentPhotoState}',
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Text(
-                        dateString,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff606566),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w300,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
-                        ),
-                      ),
-                    ],
-                  ),
-                  ListOfTags(picInfo: picInfo, activeTags: false),
-                  _buildRecentTagsWidget(picInfo.photoId, index),
-                ],
-              ),
-            ),
-          if (Provider.of<DatabaseManager>(context).editingTags == true)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Container(
-                    height: 40,
-                    margin: const EdgeInsets.only(bottom: 8.0),
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(241, 243, 245, 1.0),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Expanded(
-                          child: Center(
-                            child: TextField(
-                              controller: tagsEditingController,
-                              focusNode: tagsFocusNode,
-                              onSubmitted: (text) {
-                                print('return');
-                                if (text != '') {
-//                                  print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
-                                  DatabaseManager.instance.addTag(
-                                    text,
-                                    DatabaseManager.instance.addingTagId,
-                                    DatabaseManager.instance.addingTagIndex,
-                                  );
-                                  tagsEditingController.clear();
-                                }
-                                DatabaseManager.instance.switchEditingTags();
-                              },
-                              keyboardType: TextInputType.text,
-                              textAlignVertical: TextAlignVertical.center,
-                              maxLines: 1,
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff606566),
-                                fontSize: 16,
+                                fontSize: 18,
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.normal,
                                 letterSpacing: -0.4099999964237213,
                               ),
-                              decoration: InputDecoration(
-                                contentPadding: const EdgeInsets.only(right: 2.0),
-                                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                border: OutlineInputBorder(borderSide: BorderSide.none),
-                                prefixIcon: Image.asset('lib/images/typetagnameico.png'),
+                            ),
+                            new TextSpan(
+                              text: '  estado',
+//                        text: ' ${Provider.of<DatabaseManager>(context).currentPhotoState}',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff606566),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w300,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                  ListOfTags(picInfo: picInfo, activeTags: true),
-                  Text(
-                    "Sugestões de tags",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff979a9b),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w300,
-                      fontStyle: FontStyle.normal,
-                      letterSpacing: -0.4099999964237213,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 8.0,
-                  ),
-                  Container(
-                    child: Text(
-                      "Ursos",
+                    Text(
+                      dateString,
                       style: TextStyle(
                         fontFamily: 'Lato',
-                        color: Color(0xff979a9b),
+                        color: Color(0xff606566),
                         fontSize: 12,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w300,
                         fontStyle: FontStyle.normal,
                         letterSpacing: -0.4099999964237213,
                       ),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(19.0),
-                      border: Border.all(
-                        color: Color(0xff979a9b),
-                      ),
-                    ),
+                  ],
+                ),
+                TagsList(
+                  tags: picInfo.tags,
+                  addTagField: true,
+                  textEditingController: tagsEditingController,
+                  onChanged: (text) {
+                    print('new text: $text');
+                  },
+                  onSubmitted: (text) {
+                    print('return');
+                    if (text != '') {
+                      print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+                      DatabaseManager.instance.addTag(
+                        text,
+                        data.id,
+                        index,
+                      );
+                      tagsEditingController.clear();
+                    }
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: TagsList(
+                    title: 'Suggestions',
+                    tags: ['Bears', 'Friends', 'Trip', 'Food', 'Yoga', 'Family', 'Sea', 'Island'],
                   ),
-                ],
-              ),
+                ),
+
+//                ListOfTags(picInfo: picInfo, activeTags: false),
+//                _buildRecentTagsWidget(picInfo.photoId, index),
+              ],
             ),
+          ),
+//          if (Provider.of<DatabaseManager>(context).editingTags == true)
+//            Padding(
+//              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+//              child: Column(
+//                crossAxisAlignment: CrossAxisAlignment.start,
+//                children: <Widget>[
+//                  Container(
+//                    height: 40,
+//                    margin: const EdgeInsets.only(bottom: 8.0),
+//                    decoration: BoxDecoration(
+//                      color: Color.fromRGBO(241, 243, 245, 1.0),
+//                      borderRadius: BorderRadius.circular(12),
+//                    ),
+//                    child: Row(
+//                      crossAxisAlignment: CrossAxisAlignment.center,
+//                      children: <Widget>[
+//                        Expanded(
+//                          child: Center(
+//                            child: TextField(
+//                              controller: tagsEditingController,
+//                              focusNode: tagsFocusNode,
+//                              onSubmitted: (text) {
+//                                print('return');
+//                                if (text != '') {
+////                                  print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+//                                  DatabaseManager.instance.addTag(
+//                                    text,
+//                                    DatabaseManager.instance.addingTagId,
+//                                    DatabaseManager.instance.addingTagIndex,
+//                                  );
+//                                  tagsEditingController.clear();
+//                                }
+//                                DatabaseManager.instance.switchEditingTags();
+//                              },
+//                              keyboardType: TextInputType.text,
+//                              textAlignVertical: TextAlignVertical.center,
+//                              maxLines: 1,
+//                              style: TextStyle(
+//                                fontFamily: 'Lato',
+//                                color: Color(0xff606566),
+//                                fontSize: 16,
+//                                fontWeight: FontWeight.w400,
+//                                fontStyle: FontStyle.normal,
+//                                letterSpacing: -0.4099999964237213,
+//                              ),
+//                              decoration: InputDecoration(
+//                                contentPadding: const EdgeInsets.only(right: 2.0),
+//                                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+//                                focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+//                                border: OutlineInputBorder(borderSide: BorderSide.none),
+//                                prefixIcon: Image.asset('lib/images/typetagnameico.png'),
+//                              ),
+//                            ),
+//                          ),
+//                        ),
+//                      ],
+//                    ),
+//                  ),
+//                  ListOfTags(picInfo: picInfo, activeTags: true),
+//                  Text(
+//                    "Sugestões de tags",
+//                    style: TextStyle(
+//                      fontFamily: 'Lato',
+//                      color: Color(0xff979a9b),
+//                      fontSize: 12,
+//                      fontWeight: FontWeight.w300,
+//                      fontStyle: FontStyle.normal,
+//                      letterSpacing: -0.4099999964237213,
+//                    ),
+//                  ),
+//                  SizedBox(
+//                    height: 8.0,
+//                  ),
+//                  Container(
+//                    child: Text(
+//                      "Ursos",
+//                      style: TextStyle(
+//                        fontFamily: 'Lato',
+//                        color: Color(0xff979a9b),
+//                        fontSize: 12,
+//                        fontWeight: FontWeight.w700,
+//                        fontStyle: FontStyle.normal,
+//                        letterSpacing: -0.4099999964237213,
+//                      ),
+//                    ),
+//                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
+//                    decoration: BoxDecoration(
+//                      borderRadius: BorderRadius.circular(19.0),
+//                      border: Border.all(
+//                        color: Color(0xff979a9b),
+//                      ),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//            ),
         ],
       ),
     );
