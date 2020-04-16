@@ -40,7 +40,8 @@ class DatabaseManager extends ChangeNotifier {
   List<String> allTags = [];
   List<String> allPics = [];
 
-  List<String> suggestionsTags = [];
+  Map<String, List<String>> suggestionTags = Map();
+//  List<String> suggestionTags = [];
   List<String> allRecentTags = [];
 
   double scale = 1.0;
@@ -52,8 +53,9 @@ class DatabaseManager extends ChangeNotifier {
 
   void findPicsByTag(String tag) {}
 
-  void tagsSuggestions(String text, {List<String> excludeTags, bool notify: true}) {
-    suggestionsTags.clear();
+  void tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
+    List<String> suggestions = [];
+//    suggestionTags.clear();
 
     if (excludeTags == null) {
       excludeTags = [];
@@ -64,21 +66,26 @@ class DatabaseManager extends ChangeNotifier {
         if (excludeTags.contains(recent)) {
           continue;
         }
-        suggestionsTags.add(recent);
+        suggestions.add(recent);
       }
 
-      print('Sugestion Length: ${suggestionsTags.length} - Num of Suggestions: $maxNumOfSuggestions');
+      print('Sugestion Length: ${suggestions.length} - Num of Suggestions: $maxNumOfSuggestions');
 
-      while (suggestionsTags.length < maxNumOfSuggestions) {
+      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
 //            continue;
 //          }
-        suggestionsTags.add('Hey ${Random().nextInt(10)}');
+        suggestions.add('Hey ${Random().nextInt(10)}');
       }
     } else {
       var tags = allTags.where((e) => e.toLowerCase().startsWith(text.toLowerCase()));
-      suggestionsTags.addAll(tags);
+      suggestions.addAll(tags);
     }
+    print('find suggestions: $text - exclude: $excludeTags');
+//
+
+    suggestionTags[photoId] = suggestions;
+    print(suggestionTags);
 
     if (notify) {
       notifyListeners();

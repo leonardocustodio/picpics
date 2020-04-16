@@ -38,8 +38,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
   SwiperController swiperController = SwiperController();
-//  FocusNode tagsFocusNode = FocusNode();
+
   TextEditingController tagsEditingController = TextEditingController();
+//  Map<String, List<String>> suggestions;
+
+//  FocusNode tagsFocusNode = FocusNode();
 
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
@@ -125,11 +128,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
-    print('#!#!#!#!#!# DID CHANGE DEPENDENCIES');
-//    if (DatabaseManager.instance.editingTags == true) {
-//      tagsFocusNode.requestFocus();
-//    }
   }
 
   @override
@@ -482,14 +480,26 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //      DatabaseManager.instance.findLocation(latitude, longitude);
 //    }
 
-    // Buildar tags da primeira foto
-    if (index == 0) {
+//    if (suggestions == null) {
+//      suggestions = DatabaseManager.instance.tagsSuggestions(
+//        '',
+//        picInfo.photoId,
+//        excludeTags: picInfo.tags,
+//      );
+//    }
+
+    print('using picSwiper id: $picSwiper');
+
+    if (DatabaseManager.instance.suggestionTags[picInfo.photoId] == null) {
       DatabaseManager.instance.tagsSuggestions(
         '',
+        picInfo.photoId,
         excludeTags: picInfo.tags,
         notify: false,
       );
     }
+
+    Pic currentPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[picSwiper].id);
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -601,11 +611,17 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   addTagField: true,
                   textEditingController: tagsEditingController,
                   onChanged: (text) {
-                    print('new text: $text');
-                    DatabaseManager.instance.tagsSuggestions(
-                      text,
-                      excludeTags: picInfo.tags,
-                    );
+                    print('photo Index: $index - photo Swipe : $picSwiper');
+                    if (index == picSwiper) {
+                      print('calling tag suggestions');
+                      DatabaseManager.instance.tagsSuggestions(
+                        text,
+                        picInfo.photoId,
+                        excludeTags: picInfo.tags,
+                      );
+                    } else {
+                      print('skipping');
+                    }
                   },
                   onSubmitted: (text) {
                     print('return');
@@ -624,7 +640,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TagsList(
                     title: 'Suggestions',
-                    tags: Provider.of<DatabaseManager>(context).suggestionsTags,
+                    tags: DatabaseManager.instance.suggestionTags[picInfo.photoId],
                   ),
                 ),
 
@@ -633,102 +649,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               ],
             ),
           ),
-//          if (Provider.of<DatabaseManager>(context).editingTags == true)
-//            Padding(
-//              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-//              child: Column(
-//                crossAxisAlignment: CrossAxisAlignment.start,
-//                children: <Widget>[
-//                  Container(
-//                    height: 40,
-//                    margin: const EdgeInsets.only(bottom: 8.0),
-//                    decoration: BoxDecoration(
-//                      color: Color.fromRGBO(241, 243, 245, 1.0),
-//                      borderRadius: BorderRadius.circular(12),
-//                    ),
-//                    child: Row(
-//                      crossAxisAlignment: CrossAxisAlignment.center,
-//                      children: <Widget>[
-//                        Expanded(
-//                          child: Center(
-//                            child: TextField(
-//                              controller: tagsEditingController,
-//                              focusNode: tagsFocusNode,
-//                              onSubmitted: (text) {
-//                                print('return');
-//                                if (text != '') {
-////                                  print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
-//                                  DatabaseManager.instance.addTag(
-//                                    text,
-//                                    DatabaseManager.instance.addingTagId,
-//                                    DatabaseManager.instance.addingTagIndex,
-//                                  );
-//                                  tagsEditingController.clear();
-//                                }
-//                                DatabaseManager.instance.switchEditingTags();
-//                              },
-//                              keyboardType: TextInputType.text,
-//                              textAlignVertical: TextAlignVertical.center,
-//                              maxLines: 1,
-//                              style: TextStyle(
-//                                fontFamily: 'Lato',
-//                                color: Color(0xff606566),
-//                                fontSize: 16,
-//                                fontWeight: FontWeight.w400,
-//                                fontStyle: FontStyle.normal,
-//                                letterSpacing: -0.4099999964237213,
-//                              ),
-//                              decoration: InputDecoration(
-//                                contentPadding: const EdgeInsets.only(right: 2.0),
-//                                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-//                                focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-//                                border: OutlineInputBorder(borderSide: BorderSide.none),
-//                                prefixIcon: Image.asset('lib/images/typetagnameico.png'),
-//                              ),
-//                            ),
-//                          ),
-//                        ),
-//                      ],
-//                    ),
-//                  ),
-//                  ListOfTags(picInfo: picInfo, activeTags: true),
-//                  Text(
-//                    "Sugestões de tags",
-//                    style: TextStyle(
-//                      fontFamily: 'Lato',
-//                      color: Color(0xff979a9b),
-//                      fontSize: 12,
-//                      fontWeight: FontWeight.w300,
-//                      fontStyle: FontStyle.normal,
-//                      letterSpacing: -0.4099999964237213,
-//                    ),
-//                  ),
-//                  SizedBox(
-//                    height: 8.0,
-//                  ),
-//                  Container(
-//                    child: Text(
-//                      "Ursos",
-//                      style: TextStyle(
-//                        fontFamily: 'Lato',
-//                        color: Color(0xff979a9b),
-//                        fontSize: 12,
-//                        fontWeight: FontWeight.w700,
-//                        fontStyle: FontStyle.normal,
-//                        letterSpacing: -0.4099999964237213,
-//                      ),
-//                    ),
-//                    padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-//                    decoration: BoxDecoration(
-//                      borderRadius: BorderRadius.circular(19.0),
-//                      border: Border.all(
-//                        color: Color(0xff979a9b),
-//                      ),
-//                    ),
-//                  ),
-//                ],
-//              ),
-//            ),
         ],
       ),
     );
