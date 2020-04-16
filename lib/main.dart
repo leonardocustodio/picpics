@@ -13,7 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:picPics/login_screen.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-//import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -62,8 +62,8 @@ void main() async {
 
   setupPathList();
 
-//  Crashlytics.instance.enableInDevMode = true;
-//  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+  Crashlytics.instance.enableInDevMode = true;
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
 //
 //  SharedPreferences prefs = await SharedPreferences.getInstance();
 //  String uid = prefs.getString('uid');
@@ -75,16 +75,18 @@ void main() async {
 //  DatabaseManager.instance.getCards();
 //  DatabaseManager.instance.getAreas();
 
-//  runZoned(() {
   DatabaseManager.instance.analytics = FirebaseAnalytics();
   DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
 
-  runApp(
-    PicPicsApp(
-      initialRoute: LoginScreen.id,
-    ),
-  );
-//  }, onError: Crashlytics.instance.recordError);
+  runZonedGuarded(() {
+    runApp(
+      PicPicsApp(
+        initialRoute: LoginScreen.id,
+      ),
+    );
+  }, (Object error, StackTrace stack) {
+    Crashlytics.instance.recordError(error, stack);
+  });
 }
 
 class PicPicsApp extends StatefulWidget {
