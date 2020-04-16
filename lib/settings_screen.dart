@@ -5,6 +5,7 @@ import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -18,6 +19,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
     googlePlayIdentifier: 'br.com.inovatso.picPics',
     appStoreIdentifier: '1503352127',
   );
+
+  void shareApp() {
+//    Share.share('Veja esse aplicativo da para organizar todas suas fotos https://appsto.re/picpics', subject: 'Teste');
+    Share.text(
+      'Da uma olhada nesse app!',
+      'Veja esse aplicativo da para organizar todas suas fotos https://appsto.re/picpics',
+      'text/plain',
+    );
+  }
 
   void rateDialog() {
     rateMyApp.init().then((_) async {
@@ -165,7 +175,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         children: <Widget>[
                           CupertinoButton(
                             onPressed: () {
-                              print('test');
+                              shareApp();
                             },
                             child: Container(
                               width: 166.0,
