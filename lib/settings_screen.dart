@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
+import 'package:rate_my_app/rate_my_app.dart';
+import 'dart:io';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -12,6 +14,25 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  RateMyApp rateMyApp = RateMyApp(
+    googlePlayIdentifier: 'br.com.inovatso.picPics',
+    appStoreIdentifier: '1503352127',
+  );
+
+  void rateDialog() {
+    rateMyApp.init().then((_) async {
+      if (Platform.isAndroid) {
+        await rateMyApp.launchStore();
+      } else {
+        rateMyApp.showStarRateDialog(
+          context,
+          ignoreIOS: false,
+          onDismissed: () => rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -172,7 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ),
                           CupertinoButton(
                             onPressed: () {
-                              print('test');
+                              rateDialog();
                             },
                             child: Container(
                               width: 166.0,
