@@ -22,8 +22,8 @@ import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:after_layout/after_layout.dart';
-//import 'package:sticky_headers/sticky_headers.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:firebase_analytics/observer.dart';
 
 part 'image_item.dart';
 
@@ -65,6 +65,23 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   void changeIndex() {
     print('teste');
+  }
+
+  void _sendCurrentTabToAnalytics(index) {
+    print('#### sending to analytics!');
+
+    var tabName = '';
+    if (index == 0) {
+      tabName = 'gallery';
+    } else if (index == 1) {
+      tabName = 'pics';
+    } else if (index == 2) {
+      tabName = 'tagged';
+    }
+
+    DatabaseManager.instance.observer.analytics.setCurrentScreen(
+      screenName: 'pic_screen/$tabName',
+    );
   }
 
   void movedGridPositionFirstTab() {
@@ -119,6 +136,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   void initState() {
     super.initState();
     currentIndex = 1;
+    _sendCurrentTabToAnalytics(currentIndex);
 
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);
@@ -154,6 +172,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   void changePage(int index) {
+    _sendCurrentTabToAnalytics(index);
     setState(() {
       currentIndex = index;
     });

@@ -9,6 +9,8 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'dart:math';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_analytics/observer.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -26,6 +28,9 @@ class DatabaseManager extends ChangeNotifier {
   bool noTaggedPhoto = true;
 //  bool editingTags = false;
   bool searchingTags = false;
+
+  FirebaseAnalytics analytics;
+  FirebaseAnalyticsObserver observer;
 
   List<String> searchActiveTags = [];
   List<String> searchResults;

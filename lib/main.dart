@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
 import 'package:picPics/model/pic.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/login_screen.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 //import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:hive/hive.dart';
@@ -18,6 +20,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
@@ -73,6 +76,9 @@ void main() async {
 //  DatabaseManager.instance.getAreas();
 
 //  runZoned(() {
+  DatabaseManager.instance.analytics = FirebaseAnalytics();
+  DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
+
   runApp(
     PicPicsApp(
       initialRoute: LoginScreen.id,
@@ -100,6 +106,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         initialRoute: widget.initialRoute,
+        navigatorObservers: [DatabaseManager.instance.observer],
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           PicScreen.id: (context) => PicScreen(),
