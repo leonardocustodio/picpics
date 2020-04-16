@@ -490,16 +490,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     print('using picSwiper id: $picSwiper');
 
-    if (DatabaseManager.instance.suggestionTags[picInfo.photoId] == null) {
-      DatabaseManager.instance.tagsSuggestions(
-        '',
-        picInfo.photoId,
-        excludeTags: picInfo.tags,
-        notify: false,
-      );
-    }
-
-    Pic currentPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[picSwiper].id);
+    DatabaseManager.instance.tagsSuggestions(
+      tagsEditingController.text,
+      picInfo.photoId,
+      excludeTags: picInfo.tags,
+      notify: false,
+    );
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
@@ -633,6 +629,34 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                         index,
                       );
                       tagsEditingController.clear();
+
+                      // Refatorar essa gambi dps
+
+                      var indexPicBefore = picSwiper - 1;
+                      var indexPicAfter = picSwiper + 1;
+
+                      if (indexPicBefore < 0) {
+                        indexPicBefore = DatabaseManager.instance.assetProvider.data.length - 1;
+                      }
+                      if (indexPicAfter == DatabaseManager.instance.assetProvider.data.length) {
+                        indexPicAfter = 0;
+                      }
+
+                      Pic picBefore = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicBefore].id);
+                      Pic picAfter = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicAfter].id);
+
+                      DatabaseManager.instance.tagsSuggestions(
+                        '',
+                        picBefore.photoId,
+                        excludeTags: picBefore.tags,
+                      );
+                      DatabaseManager.instance.tagsSuggestions(
+                        '',
+                        picAfter.photoId,
+                        excludeTags: picAfter.tags,
+                      );
+                      ////////////////////////
+
                     }
                   },
                 ),
