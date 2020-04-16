@@ -75,4 +75,5 @@
 Runner.app.dSYM.zip
 Runner.ipa
 ios/fastlane/report.xml
+android/fastlane/report.xml
 firebase-tools
