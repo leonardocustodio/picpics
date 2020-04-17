@@ -1,31 +1,26 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/add_location.dart';
 import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/model/tag.dart';
-import 'package:picPics/photo_screen.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/lru_cache.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:firebase_analytics/observer.dart';
-
-part 'image_item.dart';
+import 'package:picPics/image_item.dart';
+import 'package:flutter/gestures.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -60,6 +55,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   double topOffsetThirdTab = 64.0;
   bool hideTitleThirdTab = false;
   bool hideSubtitleThirdTab = false;
+
+  bool modalPhotoCard = false;
+  AssetEntity selectedPhotoData;
+  Pic selectedPhotoPicInfo;
+  int selectedPhotoIndex;
+  String selectedPhotoDateString;
 
   Throttle _changeThrottle;
 
@@ -516,186 +517,25 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       notify: false,
     );
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      decoration: BoxDecoration(
-        color: kWhiteColor,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            offset: Offset(0, 2),
-            blurRadius: 8,
-            spreadRadius: 0,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Expanded(
-            child: Stack(
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12.0),
-                    topRight: Radius.circular(12.0),
-                  ),
-                  child: ImageItem(
-                    entity: data,
-                    size: 600,
-                    backgroundColor: Colors.grey[400],
-                  ),
-                ),
-                Positioned(
-                  bottom: 0.0,
-                  right: 6.0,
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
-                    onPressed: () {
-                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
-                      Navigator.pushNamed(context, PhotoScreen.id);
-                    },
-                    child: Image.asset('lib/images/expandphotoico.png'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-//          if (Provider.of<DatabaseManager>(context).editingTags == false)
-          Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        DatabaseManager.instance.selectedPhoto = data;
-                        Navigator.pushNamed(context, AddLocationScreen.id);
-                      },
-                      child: RichText(
-                        text: new TextSpan(
-                          children: [
-                            new TextSpan(
-                              text: 'Local da foto',
-//                        text: Provider.of<DatabaseManager>(context).currentPhotoCity,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
-                            ),
-                            new TextSpan(
-                              text: '  estado',
-//                        text: ' ${Provider.of<DatabaseManager>(context).currentPhotoState}',
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Text(
-                      dateString,
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff606566),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w300,
-                        fontStyle: FontStyle.normal,
-                        letterSpacing: -0.4099999964237213,
-                      ),
-                    ),
-                  ],
-                ),
-                TagsList(
-                  tags: picInfo.tags,
-                  addTagField: true,
-                  textEditingController: tagsEditingController,
-                  onChanged: (text) {
-                    print('photo Index: $index - photo Swipe : $picSwiper');
-                    if (index == picSwiper) {
-                      print('calling tag suggestions');
-                      DatabaseManager.instance.tagsSuggestions(
-                        text,
-                        picInfo.photoId,
-                        excludeTags: picInfo.tags,
-                      );
-                    } else {
-                      print('skipping');
-                    }
-                  },
-                  onSubmitted: (text) {
-                    print('return');
-                    if (text != '') {
-                      print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
-                      DatabaseManager.instance.addTag(
-                        text,
-                        data.id,
-                        index,
-                      );
-                      tagsEditingController.clear();
-
-                      // Refatorar essa gambi dps
-
-                      var indexPicBefore = picSwiper - 1;
-                      var indexPicAfter = picSwiper + 1;
-
-                      if (indexPicBefore < 0) {
-                        indexPicBefore = DatabaseManager.instance.assetProvider.data.length - 1;
-                      }
-                      if (indexPicAfter == DatabaseManager.instance.assetProvider.data.length) {
-                        indexPicAfter = 0;
-                      }
-
-                      Pic picBefore = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicBefore].id);
-                      Pic picAfter = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicAfter].id);
-
-                      DatabaseManager.instance.tagsSuggestions(
-                        '',
-                        picBefore.photoId,
-                        excludeTags: picBefore.tags,
-                      );
-                      DatabaseManager.instance.tagsSuggestions(
-                        '',
-                        picAfter.photoId,
-                        excludeTags: picAfter.tags,
-                      );
-                      ////////////////////////
-
-                    }
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: TagsList(
-                    title: 'Suggestions',
-                    tags: DatabaseManager.instance.suggestionTags[picInfo.photoId],
-                    tagStyle: TagStyle.GrayOutlined,
-                  ),
-                ),
-
-//                ListOfTags(picInfo: picInfo, activeTags: false),
-//                _buildRecentTagsWidget(picInfo.photoId, index),
-              ],
-            ),
-          ),
-        ],
-      ),
+    return PhotoCard(
+      data: data,
+      picInfo: picInfo,
+      picSwiper: picSwiper,
+      index: index,
+      tagsEditingController: tagsEditingController,
+      dateString: dateString,
     );
+  }
+
+  void dismissPhotoCard() {
+    selectedPhotoData = null;
+    selectedPhotoPicInfo = null;
+    selectedPhotoIndex = null;
+    selectedPhotoDateString = null;
+
+    setState(() {
+      modalPhotoCard = false;
+    });
   }
 
   Widget _buildItem(BuildContext context, int index) {
@@ -716,10 +556,30 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         padding: const EdgeInsets.all(5.0),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5.0),
-          child: ImageItem(
-            entity: data,
-            size: 150,
-            backgroundColor: Colors.grey[400],
+          child: CupertinoButton(
+            padding: const EdgeInsets.all(0),
+            onPressed: () {
+              Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+              if (picInfo == null) {
+                picInfo = Pic(data.id, index, data.createDateTime, data.latitude, data.longitude, '', []);
+              }
+              DateTime createdDate = data.createDateTime;
+              String dateString = DatabaseManager.instance.formatDate(createdDate);
+
+              selectedPhotoData = data;
+              selectedPhotoPicInfo = picInfo;
+              selectedPhotoIndex = index;
+              selectedPhotoDateString = dateString;
+
+              setState(() {
+                modalPhotoCard = true;
+              });
+            },
+            child: ImageItem(
+              entity: data,
+              size: 150,
+              backgroundColor: Colors.grey[400],
+            ),
           ),
         ),
       ),
@@ -753,6 +613,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     print('!!!! noMore: $noMore - count: $count');
 
     var screenWidth = MediaQuery.of(context).size.width;
+    var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    print('Bottom inset: $bottomInsets');
 
     return Stack(
       children: <Widget>[
@@ -1239,6 +1101,41 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             ],
           ),
         ),
+        if (modalPhotoCard)
+          Material(
+            color: Colors.transparent,
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  dismissPhotoCard();
+                },
+                child: Container(
+                  color: Colors.black.withOpacity(0.4),
+                  child: SafeArea(
+                    child: GestureDetector(
+                      onTap: () {
+                        print('ignore');
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(
+                          bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
+                          top: bottomInsets > 0 ? 5 : 46.0,
+                        ),
+                        child: PhotoCard(
+                          data: selectedPhotoData,
+                          picInfo: selectedPhotoPicInfo,
+                          picSwiper: picSwiper,
+                          index: selectedPhotoIndex,
+                          tagsEditingController: tagsEditingController,
+                          dateString: selectedPhotoDateString,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         if (showTutorial == true)
           Container(
             color: Colors.black.withOpacity(0.4),
@@ -1405,5 +1302,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           ),
       ],
     );
+  }
+}
+
+class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
+  @override
+  void rejectGesture(int pointer) {
+    acceptGesture(pointer);
   }
 }

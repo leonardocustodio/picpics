@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:search_map_place/search_map_place.dart';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
+import 'package:picPics/image_item.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 //GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
@@ -54,6 +55,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 //    }
 
   void getCurrentPosition() async {
+    print('getting current location');
+
     Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
     final geolocation = LatLng(position.latitude, position.longitude);
@@ -76,6 +79,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     });
 
     controller.animateCamera(CameraUpdate.newLatLng(geolocation));
+    print('finished');
   }
 
   @override

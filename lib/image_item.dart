@@ -1,4 +1,7 @@
-part of 'pic_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/lru_cache.dart';
+import 'dart:typed_data';
 
 class ImageItem extends StatelessWidget {
   final AssetEntity entity;

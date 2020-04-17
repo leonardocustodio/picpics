@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
-import 'package:picPics/pic_screen.dart';
 import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/image_item.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
