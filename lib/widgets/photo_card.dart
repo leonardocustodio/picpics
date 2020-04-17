@@ -17,8 +17,17 @@ class PhotoCard extends StatelessWidget {
   final int picSwiper;
   final String dateString;
   final TextEditingController tagsEditingController;
+  final Function showEditTagModal;
 
-  PhotoCard({this.data, this.index, this.picInfo, this.picSwiper, this.dateString, this.tagsEditingController});
+  PhotoCard({
+    this.data,
+    this.index,
+    this.picInfo,
+    this.picSwiper,
+    this.dateString,
+    this.tagsEditingController,
+    this.showEditTagModal,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -131,6 +140,7 @@ class PhotoCard extends StatelessWidget {
                   tags: picInfo.tags,
                   addTagField: true,
                   textEditingController: tagsEditingController,
+                  showEditTagModal: showEditTagModal,
                   onChanged: (text) {
                     print('photo Index: $index - photo Swipe : $picSwiper');
                     if (index == picSwiper) {
@@ -191,6 +201,7 @@ class PhotoCard extends StatelessWidget {
                     title: 'Suggestions',
                     tags: DatabaseManager.instance.suggestionTags[picInfo.photoId],
                     tagStyle: TagStyle.GrayOutlined,
+                    showEditTagModal: showEditTagModal,
                   ),
                 ),
 

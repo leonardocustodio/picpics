@@ -21,6 +21,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/image_item.dart';
 import 'package:flutter/gestures.dart';
+import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -181,6 +182,43 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //      print('#### moving to picture.... $picSwiper');
 //      swiperController.move(picSwiper, animation: false);
 //    }
+  }
+
+  showEditTagModal() {
+    print('showModal');
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return PlatformAlertDialog(
+          title: Text('Edit tag'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Material(
+                  child: TextField(),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            PlatformDialogAction(
+              child: Text('Delete'),
+              actionType: ActionType.Destructive,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            PlatformDialogAction(
+              child: Text('OK'),
+              actionType: ActionType.Preferred,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget _buildTaggedGridView() {
@@ -524,6 +562,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       index: index,
       tagsEditingController: tagsEditingController,
       dateString: dateString,
+      showEditTagModal: showEditTagModal,
     );
   }
 
@@ -944,7 +983,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         Padding(
                                           padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                           child: TagsList(
-                                              tags: Provider.of<DatabaseManager>(context).searchResults, tagStyle: TagStyle.GrayOutlined),
+                                            tags: Provider.of<DatabaseManager>(context).searchResults,
+                                            tagStyle: TagStyle.GrayOutlined,
+                                            showEditTagModal: showEditTagModal,
+                                          ),
                                         ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)
                                       if (Provider.of<DatabaseManager>(context).searchResults.isEmpty)

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 enum TagStyle {
   MultiColored,
@@ -19,6 +20,7 @@ class TagsList extends StatelessWidget {
   final TagStyle tagStyle;
   final Function onSubmitted;
   final Function onChanged;
+  final Function showEditTagModal;
 //  final bool
 
   const TagsList({
@@ -30,6 +32,7 @@ class TagsList extends StatelessWidget {
     this.onSubmitted,
     this.onChanged,
     this.title,
+    @required this.showEditTagModal,
   });
 
   Widget _buildTagsWidget() {
@@ -82,17 +85,27 @@ class TagsList extends StatelessWidget {
       index++;
 
       tagsWidgets.add(
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          decoration: tagStyle == TagStyle.MultiColored
-              ? BoxDecoration(
-                  gradient: getGradient(mod),
-                  borderRadius: BorderRadius.circular(19.0),
-                )
-              : kGrayBoxDecoration,
-          child: Text(
-            tag,
-            style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+        GestureDetector(
+          onTap: () {
+            print('remove tag');
+          },
+          onTapDown: (_) {
+            var _type = FeedbackType.selection;
+            Vibrate.feedback(_type);
+          },
+          onLongPress: showEditTagModal,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            decoration: tagStyle == TagStyle.MultiColored
+                ? BoxDecoration(
+                    gradient: getGradient(mod),
+                    borderRadius: BorderRadius.circular(19.0),
+                  )
+                : kGrayBoxDecoration,
+            child: Text(
+              tag,
+              style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+            ),
           ),
         ),
       );

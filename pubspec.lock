@@ -305,6 +305,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_vibrate:
+    dependency: "direct main"
+    description:
+      name: flutter_vibrate
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -562,6 +569,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.2.1"
+  platform_alert_dialog:
+    dependency: "direct main"
+    description:
+      name: platform_alert_dialog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+2"
   plugin_platform_interface:
     dependency: transitive
     description:

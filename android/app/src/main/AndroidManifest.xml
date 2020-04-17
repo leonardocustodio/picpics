@@ -51,4 +51,5 @@
             android:value="AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw"/>
     </application>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 </manifest>
