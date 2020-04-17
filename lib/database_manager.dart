@@ -53,6 +53,7 @@ class DatabaseManager extends ChangeNotifier {
 
   String addingTagId = '';
   int addingTagIndex = 0;
+  String selectedEditTag;
 
 //  Pic selectedPic;
 
@@ -179,6 +180,49 @@ class DatabaseManager extends ChangeNotifier {
     print('Recent tags: $allRecentTags');
   }
 
+  void editTag(String oldName, String newName) {
+    var tagsBox = Hive.box('tags');
+    var picsBox = Hive.box('pics');
+    var userBox = Hive.box('user');
+
+    if (allTags.contains(oldName)) {
+      print('found tag with this name');
+
+      int indexOfTag = allTags.indexOf(oldName);
+      Tag getTag = tagsBox.getAt(indexOfTag);
+
+      Tag newTag = Tag(newName, getTag.photoId);
+      tagsBox.putAt(indexOfTag, newTag);
+      allTags[indexOfTag] = newName;
+
+      print('updated tag');
+
+      for (String photoId in newTag.photoId) {
+        int indexOfPic = allPics.indexOf(photoId);
+
+        Pic pic = picsBox.getAt(indexOfPic);
+        int indexOfOldTag = pic.tags.indexOf(oldName);
+
+        print('Tags in this picture: ${pic.tags}');
+        pic.tags[indexOfOldTag] = newName;
+        picsBox.putAt(indexOfPic, pic);
+        print('updated tag in pic ${pic.photoId}');
+      }
+
+      User getUser = userBox.getAt(0);
+      if (getUser.recentTags.contains(oldName)) {
+        print('updating tag name in recent tags');
+        int indexOfRecentTag = allRecentTags.indexOf(oldName);
+        getUser.recentTags[indexOfRecentTag] = newName;
+        userBox.putAt(0, getUser);
+        allRecentTags[indexOfRecentTag] = newName;
+      }
+
+      print('finished updating all tags');
+      notifyListeners();
+    }
+  }
+
   // allRecentTags = getUser.recentTags (diferent do loadTags e loadPics ** prestar atencao)
   addTagToRecent(String tag) {
     print('adding tag to recent: $tag');
@@ -212,6 +256,7 @@ class DatabaseManager extends ChangeNotifier {
       int indexOfPic = allPics.indexOf(photoId);
       Pic getPic = picsBox.getAt(indexOfPic);
       getPic.tags.add(tag);
+      print('photoId: ${getPic.photoId} - tags: ${getPic.tags}');
       picsBox.putAt(indexOfPic, getPic);
       print('updated picture');
 

@@ -4,6 +4,7 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 
 enum TagStyle {
   MultiColored,
@@ -90,10 +91,12 @@ class TagsList extends StatelessWidget {
             print('remove tag');
           },
           onTapDown: (_) {
-            var _type = FeedbackType.selection;
-            Vibrate.feedback(_type);
+            Vibrate.feedback(FeedbackType.success);
           },
-          onLongPress: showEditTagModal,
+          onLongPress: () {
+            DatabaseManager.instance.selectedEditTag = tag;
+            showEditTagModal();
+          },
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             decoration: tagStyle == TagStyle.MultiColored

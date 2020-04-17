@@ -58,6 +58,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   bool hideSubtitleThirdTab = false;
 
   bool modalPhotoCard = false;
+
   AssetEntity selectedPhotoData;
   Pic selectedPhotoPicInfo;
   int selectedPhotoIndex;
@@ -185,40 +186,72 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   showEditTagModal() {
-    print('showModal');
-    showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return PlatformAlertDialog(
-          title: Text('Edit tag'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Material(
-                  child: TextField(),
+    if (DatabaseManager.instance.selectedEditTag != '') {
+      TextEditingController alertInputController = TextEditingController();
+      alertInputController.text = DatabaseManager.instance.selectedEditTag;
+
+      print('showModal');
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return PlatformAlertDialog(
+            title: Text('Edit tag'),
+            content: Material(
+              color: Colors.transparent,
+              child: Container(
+                margin: const EdgeInsets.only(top: 10.0),
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                height: 30.0,
+                decoration: BoxDecoration(
+                  border: Border.all(color: kLightGrayColor, width: 1.0),
+                  borderRadius: BorderRadius.circular(12.0),
                 ),
-              ],
+                child: Row(
+                  children: <Widget>[
+                    Image.asset('lib/images/smalladdtag.png'),
+                    Expanded(
+                      child: TextField(
+                        controller: alertInputController,
+                        autofocus: true,
+                        style: TextStyle(
+                          color: Color(0xff606566),
+                          fontSize: 16,
+                          fontFamily: 'Lato',
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: const EdgeInsets.only(left: 6.0),
+                          enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                          focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-          actions: <Widget>[
-            PlatformDialogAction(
-              child: Text('Delete'),
-              actionType: ActionType.Destructive,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            PlatformDialogAction(
-              child: Text('OK'),
-              actionType: ActionType.Preferred,
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+            actions: <Widget>[
+              PlatformDialogAction(
+                child: Text('Delete'),
+                actionType: ActionType.Destructive,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              PlatformDialogAction(
+                child: Text('OK'),
+                actionType: ActionType.Preferred,
+                onPressed: () {
+                  print('Editing tag - Old name: ${DatabaseManager.instance.selectedEditTag} - New name: ${alertInputController.text}');
+                  DatabaseManager.instance.editTag(DatabaseManager.instance.selectedEditTag, alertInputController.text);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
 
   Widget _buildTaggedGridView() {
