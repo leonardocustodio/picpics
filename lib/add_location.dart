@@ -9,6 +9,7 @@ import 'package:picPics/pic_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:search_map_place/search_map_place.dart';
 import 'dart:math';
+import 'package:geolocator/geolocator.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 //GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
@@ -51,6 +52,31 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 //
 //      _goToPosition(lat, lng);
 //    }
+
+  void getCurrentPosition() async {
+    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+
+    final geolocation = LatLng(position.latitude, position.longitude);
+
+    final destination = Marker(
+      markerId: MarkerId('user-destination'),
+      icon: await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(
+          devicePixelRatio: 2.5,
+        ),
+        'lib/images/pin.png',
+      ),
+      position: geolocation,
+    );
+
+    final GoogleMapController controller = await _mapController.future;
+    _markers.clear();
+    setState(() {
+      _markers.add(destination);
+    });
+
+    controller.animateCamera(CameraUpdate.newLatLng(geolocation));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -128,22 +154,35 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     Spacer(),
-                    CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Container(
-                        width: 140.0,
-                        height: 140.0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: ImageItem(
-                            entity: DatabaseManager.instance.selectedPhoto,
-                            size: 140,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: <Widget>[
+                        CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Container(
+                            width: 140.0,
+                            height: 140.0,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: ImageItem(
+                                entity: DatabaseManager.instance.selectedPhoto,
+                                size: 140,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
+                        CupertinoButton(
+                          padding: const EdgeInsets.only(left: 14.0, right: 0, bottom: 0.0, top: 14.0),
+                          onPressed: () {
+                            getCurrentPosition();
+                          },
+                          child: Image.asset('lib/images/getcurrentlocationico.png'),
+                        ),
+                      ],
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 16.0),
@@ -190,6 +229,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                   );
 
                   final GoogleMapController controller = await _mapController.future;
+                  _markers.clear();
                   setState(() {
                     _markers.add(destination);
                   });

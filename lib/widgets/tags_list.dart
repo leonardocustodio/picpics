@@ -47,17 +47,52 @@ class TagsList extends StatelessWidget {
 //      gradient: kSecondaryGradient,
 //    ),
 
+    LinearGradient getGradient(int num) {
+      switch (num) {
+        case 0:
+          {
+            return kPrimaryGradient;
+          }
+          break;
+        case 1:
+          {
+            return kSecondaryGradient;
+          }
+          break;
+        case 2:
+          {
+            return kPinkGradient;
+          }
+          break;
+        default:
+          {
+            return kCardYellowGradient;
+          }
+          break;
+      }
+    }
+
     List<Widget> tagsWidgets = [];
     print('Tags in TagsList: $tags');
 
+    var index = 0;
+
     for (var tag in tags) {
+      var mod = index % 4;
+      index++;
+
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          decoration: kGrayBoxDecoration,
+          decoration: tagStyle == TagStyle.MultiColored
+              ? BoxDecoration(
+                  gradient: getGradient(mod),
+                  borderRadius: BorderRadius.circular(19.0),
+                )
+              : kGrayBoxDecoration,
           child: Text(
             tag,
-            style: kGrayTextStyle,
+            style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
           ),
         ),
       );

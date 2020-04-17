@@ -12,8 +12,8 @@ const kGrayColor = const Color(0xffbfc2c3);
 const kLightGrayColor = const Color(0xffe2e4e5);
 
 const kPrimaryGradient = LinearGradient(
-  begin: Alignment.topCenter,
-  end: Alignment.bottomCenter,
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
   colors: [
     const Color(0xFF52CECE),
     const Color(0xFF6BC9DB),
@@ -21,11 +21,29 @@ const kPrimaryGradient = LinearGradient(
 );
 
 const kSecondaryGradient = LinearGradient(
-  begin: Alignment.topCenter,
-  end: Alignment.bottomCenter,
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
   colors: [
     const Color(0xFFFF6666),
     const Color(0xFFFF7878),
+  ],
+);
+
+const kCardYellowGradient = LinearGradient(
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
+  colors: [
+    const Color(0xFFDFB300),
+    const Color(0xFFFFD93F),
+  ],
+);
+
+const kPinkGradient = LinearGradient(
+  begin: Alignment.centerLeft,
+  end: Alignment.centerRight,
+  colors: [
+    const Color(0xFFEC56A1),
+    const Color(0xFFED74B1),
   ],
 );
 
@@ -43,6 +61,15 @@ var kGrayBoxDecoration = BoxDecoration(
   border: Border.all(
     color: Color(0xff979a9b),
   ),
+);
+
+const kWhiteTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  color: kWhiteColor,
+  fontSize: 12,
+  fontWeight: FontWeight.w700,
+  fontStyle: FontStyle.normal,
+  letterSpacing: -0.4099999964237213,
 );
 
 const kGrayTextStyle = TextStyle(

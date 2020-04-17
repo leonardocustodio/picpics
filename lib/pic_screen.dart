@@ -684,6 +684,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   child: TagsList(
                     title: 'Suggestions',
                     tags: DatabaseManager.instance.suggestionTags[picInfo.photoId],
+                    tagStyle: TagStyle.GrayOutlined,
                   ),
                 ),
 
@@ -1081,8 +1082,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         Padding(
                                           padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                           child: TagsList(
-                                            tags: Provider.of<DatabaseManager>(context).searchResults,
-                                          ),
+                                              tags: Provider.of<DatabaseManager>(context).searchResults, tagStyle: TagStyle.GrayOutlined),
                                         ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)
                                       if (Provider.of<DatabaseManager>(context).searchResults.isEmpty)

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
+import 'package:picPics/premium_screen.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
@@ -239,7 +240,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child: CupertinoButton(
                         onPressed: () {
-                          print('test');
+                          Navigator.pushNamed(context, PremiumScreen.id);
                         },
                         padding: const EdgeInsets.all(0),
                         child: OutlineGradientButton(
