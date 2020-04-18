@@ -35,6 +35,9 @@ void main() async {
     print('creating user entry...');
     User user = User('userId', 'leonardo@custodio.me', 'pass', true, 20, 21, 30, true, []);
     userBox.add(user);
+    DatabaseManager.instance.userSettings = user;
+  } else {
+    DatabaseManager.instance.loadUserSettings();
   }
 
   DatabaseManager.instance.loadRecentTags();

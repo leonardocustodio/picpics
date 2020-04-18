@@ -15,16 +15,16 @@ class User {
   final String password;
 
   @HiveField(3)
-  final bool dailyChallenges;
+  bool dailyChallenges;
 
   @HiveField(4)
-  final int goal;
+  int goal;
 
   @HiveField(5)
-  final int hourOfDay;
+  int hourOfDay;
 
   @HiveField(6)
-  final int minutesOfDay;
+  int minutesOfDay;
 
   @HiveField(7)
   final bool isPremium;

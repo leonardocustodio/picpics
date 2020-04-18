@@ -235,6 +235,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                 child: Text('Delete'),
                 actionType: ActionType.Destructive,
                 onPressed: () {
+                  DatabaseManager.instance.removeTag(DatabaseManager.instance.selectedEditTag);
                   Navigator.of(context).pop();
                 },
               ),

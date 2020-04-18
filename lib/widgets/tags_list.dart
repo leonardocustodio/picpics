@@ -4,7 +4,6 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 
 enum TagStyle {
   MultiColored,
@@ -19,6 +18,7 @@ class TagsList extends StatelessWidget {
   final bool addButtonVisible;
   final String title;
   final TagStyle tagStyle;
+  final Function onTap;
   final Function onSubmitted;
   final Function onChanged;
   final Function showEditTagModal;
@@ -30,6 +30,7 @@ class TagsList extends StatelessWidget {
     this.textEditingController,
     this.addTagField = false,
     this.addButtonVisible = true,
+    @required this.onTap,
     this.onSubmitted,
     this.onChanged,
     this.title,
@@ -88,7 +89,8 @@ class TagsList extends StatelessWidget {
       tagsWidgets.add(
         GestureDetector(
           onTap: () {
-            print('remove tag');
+            DatabaseManager.instance.selectedEditTag = tag;
+            onTap();
           },
           onTapDown: (_) {
             Vibrate.feedback(FeedbackType.success);

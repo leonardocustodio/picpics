@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 //import 'package:shared_preferences/shared_preferences.dart';
@@ -55,7 +56,37 @@ class DatabaseManager extends ChangeNotifier {
   int addingTagIndex = 0;
   String selectedEditTag;
 
+  User userSettings;
+
 //  Pic selectedPic;
+
+  void loadUserSettings() {
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+    userSettings = getUser;
+  }
+
+  void changeUserGoal(int goal) {
+    var userBox = Hive.box('user');
+    userSettings.goal = goal;
+    userBox.putAt(0, userSettings);
+    notifyListeners();
+  }
+
+  void changeUserTimeOfDay(int hour, int minute) {
+    var userBox = Hive.box('user');
+    userSettings.hourOfDay = hour;
+    userSettings.minutesOfDay = minute;
+    userBox.putAt(0, userSettings);
+    notifyListeners();
+  }
+
+  void changeDailyChallenges() {
+    var userBox = Hive.box('user');
+    userSettings.dailyChallenges = !userSettings.dailyChallenges;
+    userBox.putAt(0, userSettings);
+    notifyListeners();
+  }
 
   void findPicsByTag(String tag) {}
 
@@ -178,6 +209,76 @@ class DatabaseManager extends ChangeNotifier {
 
     allRecentTags = getUser.recentTags ?? [];
     print('Recent tags: $allRecentTags');
+  }
+
+  void removeTagFromPic(String tag, String photoId) {
+    print('removing tag: $tag from pic $photoId');
+    var tagsBox = Hive.box('tags');
+    var picsBox = Hive.box('pics');
+
+    int indexOfTag = allTags.indexOf(tag);
+    Tag getTag = tagsBox.getAt(indexOfTag);
+
+    int indexOfPicInTag = getTag.photoId.indexOf(photoId);
+    if (indexOfPicInTag != null) {
+      getTag.photoId.removeAt(indexOfPicInTag);
+      tagsBox.putAt(indexOfTag, getTag);
+      print('removed pic from tag');
+    }
+
+    int indexOfPic = allPics.indexOf(photoId);
+    Pic getPic = picsBox.getAt(indexOfPic);
+
+    int indexOfTagInPic = getPic.tags.indexOf(tag);
+    if (indexOfTagInPic != null) {
+      getPic.tags.removeAt(indexOfTagInPic);
+      picsBox.putAt(indexOfPic, getPic);
+      print('removed tag from pic');
+    }
+    notifyListeners();
+  }
+
+  void removeTag(String tag) {
+    var tagsBox = Hive.box('tags');
+    var picsBox = Hive.box('pics');
+    var userBox = Hive.box('user');
+
+    if (allTags.contains(tag)) {
+      print('found tag going to delete it');
+
+      int indexOfTag = allTags.indexOf(tag);
+      Tag getTag = tagsBox.getAt(indexOfTag);
+
+      for (String photoId in getTag.photoId) {
+        int indexOfPic = allPics.indexOf(photoId);
+
+        Pic pic = picsBox.getAt(indexOfPic);
+        int indexOfTagInPic = pic.tags.indexOf(tag);
+        print('getting pic: $photoId');
+
+        if (indexOfTagInPic != null) {
+          pic.tags.removeAt(indexOfTagInPic);
+          picsBox.putAt(indexOfPic, pic);
+          print('removed tag from pic');
+        }
+      }
+
+      User getUser = userBox.getAt(0);
+      if (getUser.recentTags.contains(tag)) {
+        print('recent tags: $allRecentTags');
+        print('removing from recent tags');
+        int indexOfRecentTag = allRecentTags.indexOf(tag);
+        getUser.recentTags.removeAt(indexOfRecentTag);
+        userBox.putAt(0, getUser);
+        allRecentTags.removeAt(indexOfRecentTag);
+        print('recent tags after removed: $allRecentTags');
+      }
+
+      tagsBox.deleteAt(indexOfTag);
+      allTags.removeAt(indexOfTag);
+      print('deleted from tags db');
+      notifyListeners();
+    }
   }
 
   void editTag(String oldName, String newName) {

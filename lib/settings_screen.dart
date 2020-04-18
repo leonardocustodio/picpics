@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
+import 'package:picPics/database_manager.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:provider/provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -16,10 +18,6 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  int userGoal = 15;
-  TimeOfDay userTime = TimeOfDay(hour: 21, minute: 00);
-  bool userChallenges = true;
-
   RateMyApp rateMyApp = RateMyApp(
     googlePlayIdentifier: 'br.com.inovatso.picPics',
     appStoreIdentifier: '1503352127',
@@ -49,12 +47,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void showGoalPicker(BuildContext context) {
-    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: userGoal - 1);
+    int goalIndex = DatabaseManager.instance.userSettings.goal - 1;
+
+    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: goalIndex);
 
     showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        int goal = userGoal - 1;
+        int temporaryGoal = goalIndex;
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -91,9 +91,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      setState(() {
-                        userGoal = goal;
-                      });
+                      DatabaseManager.instance.changeUserGoal(temporaryGoal);
                       Navigator.pop(context);
                     },
                     child: Container(
@@ -120,9 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   magnification: 1.2,
                   onSelectedItemChanged: (int index) {
                     if (mounted) {
-                      setState(() {
-                        goal = index + 1;
-                      });
+                      temporaryGoal = index + 1;
                     }
                   },
                   itemBuilder: (BuildContext context, int index) {
@@ -142,7 +138,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       context: context,
       builder: (BuildContext builder) {
         DateTime now = DateTime.now();
-        DateTime time = DateTime(now.year, now.month, now.day, userTime.hour, userTime.minute);
+        DateTime time = DateTime(now.year, now.month, now.day, DatabaseManager.instance.userSettings.hourOfDay,
+            DatabaseManager.instance.userSettings.minutesOfDay);
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -179,9 +176,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      setState(() {
-                        userTime = TimeOfDay(hour: time.hour, minute: time.minute);
-                      });
+                      DatabaseManager.instance.changeUserTimeOfDay(time.hour, time.minute);
+                      Navigator.pop(context);
                     },
                     child: Container(
                       width: 50.0,
@@ -246,9 +242,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
                           onPressed: () {
-                            setState(() {
-                              userChallenges = !userChallenges;
-                            });
+                            DatabaseManager.instance.changeDailyChallenges();
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -265,12 +259,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               CupertinoSwitch(
-                                value: userChallenges,
+                                value: Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
                                 activeColor: kSecondaryColor,
                                 onChanged: (value) {
-                                  setState(() {
-                                    userChallenges = !userChallenges;
-                                  });
+                                  DatabaseManager.instance.changeDailyChallenges();
                                 },
                               ),
                             ],
@@ -306,7 +298,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               Text(
-                                '$userGoal',
+                                '${Provider.of<DatabaseManager>(context).userSettings.goal}',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -348,7 +340,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               Text(
-                                '${'${userTime.hour}'.padLeft(2, '0')}: ${'${userTime.minute}'.padLeft(2, '0')}',
+                                '${'${Provider.of<DatabaseManager>(context).userSettings.hourOfDay}'.padLeft(2, '0')}: ${'${Provider.of<DatabaseManager>(context).userSettings.minutesOfDay}'.padLeft(2, '0')}',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),

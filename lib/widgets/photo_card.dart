@@ -141,6 +141,9 @@ class PhotoCard extends StatelessWidget {
                   addTagField: true,
                   textEditingController: tagsEditingController,
                   showEditTagModal: showEditTagModal,
+                  onTap: () {
+                    DatabaseManager.instance.removeTagFromPic(DatabaseManager.instance.selectedEditTag, picInfo.photoId);
+                  },
                   onChanged: (text) {
                     print('photo Index: $index - photo Swipe : $picSwiper');
                     if (index == picSwiper) {
