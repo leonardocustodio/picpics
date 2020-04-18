@@ -7,6 +7,7 @@ import 'package:picPics/premium_screen.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+//import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -69,26 +70,31 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Container(
                         height: 60.0,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "Desafios diários",
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
+                        child: CupertinoButton(
+                          onPressed: () {
+                            print('test');
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Desafios diários",
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
                               ),
-                            ),
-                            CupertinoSwitch(
-                              value: true,
-                              activeColor: kSecondaryColor,
-                              onChanged: (value) {},
-                            ),
-                          ],
+                              CupertinoSwitch(
+                                value: true,
+                                activeColor: kSecondaryColor,
+                                onChanged: (value) {},
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -100,31 +106,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       height: 60.0,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "Quantidade de fotos",
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () {
+                            print('test');
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Quantidade de fotos",
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "15",
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
+                              Text(
+                                "15",
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -136,31 +148,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       height: 60.0,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Text(
-                              "Horário da notificação",
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () {
+                            print('test');
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                "Horário da notificação",
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
                               ),
-                            ),
-                            Text(
-                              "21:00",
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
+                              Text(
+                                "21:00",
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
