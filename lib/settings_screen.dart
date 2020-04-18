@@ -18,6 +18,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen> {
   int userGoal = 15;
   TimeOfDay userTime = TimeOfDay(hour: 21, minute: 00);
+  bool userChallenges = true;
 
   RateMyApp rateMyApp = RateMyApp(
     googlePlayIdentifier: 'br.com.inovatso.picPics',
@@ -245,7 +246,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
                           onPressed: () {
-                            print('test');
+                            setState(() {
+                              userChallenges = !userChallenges;
+                            });
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -262,9 +265,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               CupertinoSwitch(
-                                value: true,
+                                value: userChallenges,
                                 activeColor: kSecondaryColor,
-                                onChanged: (value) {},
+                                onChanged: (value) {
+                                  setState(() {
+                                    userChallenges = !userChallenges;
+                                  });
+                                },
                               ),
                             ],
                           ),
