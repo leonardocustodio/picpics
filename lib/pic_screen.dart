@@ -476,79 +476,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     );
   }
 
-  Widget _buildRecentTagsWidget(String photoId, int index) {
-    if (DatabaseManager.instance.allRecentTags.isEmpty) {
-      return Container();
-    }
-
-    List<Widget> tagsWidgets = [];
-
-    for (var tag in DatabaseManager.instance.allRecentTags) {
-      tagsWidgets.add(
-        CupertinoButton(
-          padding: const EdgeInsets.all(0),
-          onPressed: () {
-            print('adding recent tags');
-            print('text: $tag - data.id: $photoId - index: $index');
-            DatabaseManager.instance.addTag(
-              tag,
-              photoId,
-//              index,
-            );
-          },
-          child: Container(
-            child: Text(
-              tag,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff979a9b),
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
-            ),
-            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(19.0),
-              border: Border.all(
-                color: Color(0xff979a9b),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          height: 8.0,
-        ),
-        Text(
-          "Tags recentes",
-          style: TextStyle(
-            fontFamily: 'Lato',
-            color: Color(0xff979a9b),
-            fontSize: 12,
-            fontWeight: FontWeight.w300,
-            fontStyle: FontStyle.normal,
-            letterSpacing: -0.4099999964237213,
-          ),
-        ),
-        SizedBox(
-          height: 8.0,
-        ),
-        Wrap(
-          spacing: 5.0,
-          runSpacing: 5.0,
-          children: tagsWidgets,
-        ),
-      ],
-    );
-  }
-
   Widget _buildPhotoSlider(BuildContext context, int index) {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
     print('No More: $noMore - index $index - Count ${DatabaseManager.instance.assetProvider.count}');
@@ -659,6 +586,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             padding: const EdgeInsets.all(0),
             onPressed: () {
               Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+              tagsEditingController.text = '';
+
               if (picInfo == null) {
                 picInfo = Pic(
                   data.id,
@@ -670,6 +599,14 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   [],
                 );
               }
+
+              DatabaseManager.instance.tagsSuggestions(
+                tagsEditingController.text,
+                data.id,
+                excludeTags: picInfo.tags,
+                notify: false,
+              );
+
               DateTime createdDate = data.createDateTime;
               String dateString = DatabaseManager.instance.formatDate(createdDate);
 
@@ -1235,7 +1172,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                         child: PhotoCard(
                           data: selectedPhotoData,
                           picInfo: selectedPhotoPicInfo,
-                          picSwiper: picSwiper,
+                          picSwiper: -1,
                           index: selectedPhotoIndex,
                           tagsEditingController: tagsEditingController,
                           dateString: selectedPhotoDateString,

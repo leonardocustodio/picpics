@@ -146,7 +146,7 @@ class PhotoCard extends StatelessWidget {
                   },
                   onChanged: (text) {
                     print('photo Index: $index - photo Swipe : $picSwiper');
-                    if (index == picSwiper) {
+                    if (index == picSwiper || picSwiper == -1) {
                       print('calling tag suggestions');
                       DatabaseManager.instance.tagsSuggestions(
                         text,
