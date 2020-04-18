@@ -164,7 +164,7 @@ class PhotoCard extends StatelessWidget {
                       DatabaseManager.instance.addTag(
                         text,
                         data.id,
-                        index,
+//                        index,
                       );
                       tagsEditingController.clear();
 
@@ -205,6 +205,9 @@ class PhotoCard extends StatelessWidget {
                     tags: DatabaseManager.instance.suggestionTags[picInfo.photoId],
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: showEditTagModal,
+                    onTap: () {
+                      DatabaseManager.instance.addTag(DatabaseManager.instance.selectedEditTag, picInfo.photoId);
+                    },
                   ),
                 ),
 

@@ -15,7 +15,7 @@ import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/model/pic.dart';
-import 'package:picPics/widgets/list_of_tags.dart';
+//import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:hive/hive.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -302,22 +302,36 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       for (String photoId in tag.photoId) {
         totalPics += 1;
         isTitleWidget.add(false);
-        Pic getPic = picsBox.getAt(DatabaseManager.instance.allPics.indexOf(photoId));
-        var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
-        print('loading photo index: ${getPic.photoIndex}');
-        widgetsArray.add(RepaintBoundary(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
-              child: ImageItem(
-                entity: data,
-                size: 150,
-                backgroundColor: Colors.grey[400],
+        var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: null);
+
+        if (data != null) {
+          widgetsArray.add(RepaintBoundary(
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: ImageItem(
+                  entity: data,
+                  size: 150,
+                  backgroundColor: Colors.grey[400],
+                ),
               ),
             ),
-          ),
-        ));
+          ));
+        } else {
+          print('Did not find picture: $photoId');
+          widgetsArray.add(
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Container(
+                  color: Colors.grey[400],
+                ),
+              ),
+            ),
+          );
+        }
       }
     }
 
@@ -476,7 +490,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           onPressed: () {
             print('adding recent tags');
             print('text: $tag - data.id: $photoId - index: $index');
-            DatabaseManager.instance.addTag(tag, photoId, index);
+            DatabaseManager.instance.addTag(
+              tag,
+              photoId,
+//              index,
+            );
           },
           child: Container(
             child: Text(
@@ -549,7 +567,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
 
     if (picInfo == null) {
-      picInfo = Pic(data.id, index, data.createDateTime, data.latitude, data.longitude, '', []);
+      picInfo = Pic(
+        data.id,
+//        index,
+        data.createDateTime,
+        data.latitude,
+        data.longitude,
+        '',
+        [],
+      );
     }
 
     print('photo id: ${data.id}');
@@ -634,7 +660,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             onPressed: () {
               Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
               if (picInfo == null) {
-                picInfo = Pic(data.id, index, data.createDateTime, data.latitude, data.longitude, '', []);
+                picInfo = Pic(
+                  data.id,
+//                  index,
+                  data.createDateTime,
+                  data.latitude,
+                  data.longitude,
+                  '',
+                  [],
+                );
               }
               DateTime createdDate = data.createDateTime;
               String dateString = DatabaseManager.instance.formatDate(createdDate);
@@ -992,10 +1026,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     if (Provider.of<DatabaseManager>(context).searchActiveTags.isNotEmpty)
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: ListOfTags(
-                                          activeTags: true,
-                                          showActiveTags: Provider.of<DatabaseManager>(context).searchActiveTags,
-                                        ),
+                                        child: Container(),
+//                                        ListOfTags(
+//                                          activeTags: true,
+//                                          showActiveTags: Provider.of<DatabaseManager>(context).searchActiveTags,
+//                                        ),
                                       ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)
                                       Padding(

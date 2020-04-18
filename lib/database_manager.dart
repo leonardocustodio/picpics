@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -146,11 +145,6 @@ class DatabaseManager extends ChangeNotifier {
     searchingTags = !searchingTags;
     notifyListeners();
   }
-
-//  void switchEditingTags() {
-//    editingTags = !editingTags;
-//    notifyListeners();
-//  }
 
   void gridScale(double multiplier) {
     scale = scale;
@@ -348,7 +342,7 @@ class DatabaseManager extends ChangeNotifier {
     print('final tags in recent: $allRecentTags');
   }
 
-  addTagToPic(String tag, String photoId, int photoIndex) {
+  void addTagToPic(String tag, String photoId) {
     var picsBox = Hive.box('pics');
 
     if (allPics.contains(photoId)) {
@@ -356,6 +350,12 @@ class DatabaseManager extends ChangeNotifier {
 
       int indexOfPic = allPics.indexOf(photoId);
       Pic getPic = picsBox.getAt(indexOfPic);
+
+      if (getPic.tags.contains(tag)) {
+        print('this tag is already in this picture');
+        return;
+      }
+
       getPic.tags.add(tag);
       print('photoId: ${getPic.photoId} - tags: ${getPic.tags}');
       picsBox.putAt(indexOfPic, getPic);
@@ -365,12 +365,20 @@ class DatabaseManager extends ChangeNotifier {
     }
 
     print('this picture is not in db, adding it...');
-    Pic pic = Pic(photoId, photoIndex, DateTime.now(), 0.0, 0.0, 'No Location', [tag]);
+    Pic pic = Pic(
+      photoId,
+//      photoIndex,
+      DateTime.now(),
+      0.0,
+      0.0,
+      'No Location',
+      [tag],
+    );
     picsBox.add(pic);
     allPics.add(photoId);
   }
 
-  addTag(String tag, String photoId, int photoIndex) {
+  void addTag(String tag, String photoId) {
     print('Adding tag: $tag');
     noTaggedPhoto = false;
 
@@ -389,7 +397,11 @@ class DatabaseManager extends ChangeNotifier {
 
       getTag.photoId.add(photoId);
       tagsBox.putAt(indexOfTag, getTag);
-      addTagToPic(tag, photoId, photoIndex);
+      addTagToPic(
+        tag,
+        photoId,
+//        photoIndex,
+      );
       addTagToRecent(tag);
       print('updated pictures in tag');
       notifyListeners();
@@ -398,7 +410,11 @@ class DatabaseManager extends ChangeNotifier {
 
     print('adding tag to database...');
     tagsBox.add(Tag(tag, [photoId]));
-    addTagToPic(tag, photoId, photoIndex);
+    addTagToPic(
+      tag,
+      photoId,
+//      photoIndex,
+    );
     addTagToRecent(tag);
     allTags.add(tag);
     notifyListeners();

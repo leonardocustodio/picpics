@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
-import 'package:picPics/widgets/list_of_tags.dart';
+//import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/image_item.dart';
 
@@ -28,7 +28,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
     if (picInfo == null) {
       picInfo = Pic(
         DatabaseManager.instance.selectedPhoto.id,
-        0,
+//        0,
         DatabaseManager.instance.selectedPhoto.createDateTime,
         DatabaseManager.instance.selectedPhoto.latitude,
         DatabaseManager.instance.selectedPhoto.longitude,
@@ -117,11 +117,11 @@ class _PhotoScreenState extends State<PhotoScreen> {
                           ),
                         ],
                       ),
-                      ListOfTags(
-                        picInfo: picInfo,
-                        activeTags: false,
-                        fullScreen: true,
-                      ),
+//                      ListOfTags(
+//                        picInfo: picInfo,
+//                        activeTags: false,
+//                        fullScreen: true,
+//                      ),
                     ],
                   ),
                 ),
