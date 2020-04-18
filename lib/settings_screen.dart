@@ -7,7 +7,6 @@ import 'package:picPics/premium_screen.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
-//import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -17,6 +16,9 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  int userGoal = 15;
+  TimeOfDay userTime = TimeOfDay(hour: 21, minute: 00);
+
   RateMyApp rateMyApp = RateMyApp(
     googlePlayIdentifier: 'br.com.inovatso.picPics',
     appStoreIdentifier: '1503352127',
@@ -45,6 +47,175 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  void showGoalPicker(BuildContext context) {
+    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: userGoal - 1);
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        int goal = userGoal - 1;
+
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height / 3,
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 50.0,
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Color(0xff707070),
+                          fontSize: 16,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'How many pics',
+                    style: TextStyle(
+                      color: Color(0xff707070),
+                      fontSize: 24,
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  CupertinoButton(
+                    onPressed: () {
+                      setState(() {
+                        userGoal = goal;
+                      });
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 50.0,
+                      child: Text(
+                        'OK',
+                        style: TextStyle(
+                          color: Color(0xff707070),
+                          fontSize: 16,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: CupertinoPicker.builder(
+                  scrollController: extentScrollController,
+                  childCount: 200,
+                  itemExtent: 36.0,
+                  useMagnifier: true,
+                  magnification: 1.2,
+                  onSelectedItemChanged: (int index) {
+                    if (mounted) {
+                      setState(() {
+                        goal = index + 1;
+                      });
+                    }
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(child: Text('${index + 1}'));
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void showTimePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        DateTime now = DateTime.now();
+        DateTime time = DateTime(now.year, now.month, now.day, userTime.hour, userTime.minute);
+
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height / 3,
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 50.0,
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Color(0xff707070),
+                          fontSize: 16,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Time',
+                    style: TextStyle(
+                      color: Color(0xff707070),
+                      fontSize: 24,
+                      fontFamily: 'Lato',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  ),
+                  CupertinoButton(
+                    onPressed: () {
+                      setState(() {
+                        userTime = TimeOfDay(hour: time.hour, minute: time.minute);
+                      });
+                    },
+                    child: Container(
+                      width: 50.0,
+                      child: Text(
+                        'OK',
+                        style: TextStyle(
+                          color: Color(0xff707070),
+                          fontSize: 16,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: CupertinoDatePicker(
+                  initialDateTime: time,
+                  onDateTimeChanged: (DateTime newDate) {
+                    print(newDate);
+                    time = newDate;
+                  },
+                  use24hFormat: true,
+                  minuteInterval: 1,
+                  mode: CupertinoDatePickerMode.time,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,6 +242,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       child: Container(
                         height: 60.0,
                         child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          pressedOpacity: 1.0,
                           onPressed: () {
                             print('test');
                           },
@@ -109,7 +282,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
-                            print('test');
+                            showGoalPicker(context);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -126,7 +299,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               Text(
-                                "15",
+                                '$userGoal',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -151,7 +324,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
-                            print('test');
+                            showTimePicker(context);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -168,7 +341,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 ),
                               ),
                               Text(
-                                "21:00",
+                                '${'${userTime.hour}'.padLeft(2, '0')}: ${'${userTime.minute}'.padLeft(2, '0')}',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
