@@ -1260,6 +1260,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           itemCount: 3,
                           controller: swiperController,
                           onIndexChanged: (index) {
+                            if (index == 1) {
+                              DatabaseManager.instance.requestNotification();
+                            }
                             setState(() {
                               swiperIndex = index;
                             });

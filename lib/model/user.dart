@@ -13,30 +13,34 @@ class User {
   final String password;
 
   @HiveField(3)
-  bool dailyChallenges;
+  bool notifications;
 
   @HiveField(4)
-  int goal;
+  bool dailyChallenges;
 
   @HiveField(5)
-  int hourOfDay;
+  int goal;
 
   @HiveField(6)
-  int minutesOfDay;
+  int hourOfDay;
 
   @HiveField(7)
-  final bool isPremium;
+  int minutesOfDay;
 
   @HiveField(8)
-  final List<String> recentTags;
+  final bool isPremium;
 
   @HiveField(9)
+  final List<String> recentTags;
+
+  @HiveField(10)
   bool tutorialCompleted;
 
   User({
     this.id,
     this.email,
     this.password,
+    this.notifications,
     this.dailyChallenges,
     this.goal,
     this.hourOfDay,

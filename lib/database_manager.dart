@@ -12,6 +12,8 @@ import 'dart:math';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'dart:io';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -59,6 +61,29 @@ class DatabaseManager extends ChangeNotifier {
   User userSettings;
 
 //  Pic selectedPic;
+  void requestNotification() {
+    var userBox = Hive.box('user');
+
+    if (Platform.isIOS) {
+      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+      _firebaseMessaging.requestNotificationPermissions(const IosNotificationSettings(sound: true, badge: true, alert: true));
+      _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+        print("Settings registered: $settings");
+      });
+      _firebaseMessaging.getToken().then((String token) {
+        assert(token != null);
+        print('got token this mean it did accept notification');
+        userSettings.notifications = true;
+        userSettings.dailyChallenges = true;
+        userBox.putAt(0, userSettings);
+      });
+    } else {
+      print('its android!!!');
+      userSettings.notifications = true;
+      userSettings.dailyChallenges = true;
+      userBox.putAt(0, userSettings);
+    }
+  }
 
   void finishedTutorial() {
     var userBox = Hive.box('user');

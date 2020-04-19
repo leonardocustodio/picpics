@@ -20,20 +20,21 @@ class UserAdapter extends TypeAdapter<User> {
       id: fields[0] as String,
       email: fields[1] as String,
       password: fields[2] as String,
-      dailyChallenges: fields[3] as bool,
-      goal: fields[4] as int,
-      hourOfDay: fields[5] as int,
-      minutesOfDay: fields[6] as int,
-      isPremium: fields[7] as bool,
-      recentTags: (fields[8] as List)?.cast<String>(),
-      tutorialCompleted: fields[9] as bool,
+      notifications: fields[3] as bool,
+      dailyChallenges: fields[4] as bool,
+      goal: fields[5] as int,
+      hourOfDay: fields[6] as int,
+      minutesOfDay: fields[7] as int,
+      isPremium: fields[8] as bool,
+      recentTags: (fields[9] as List)?.cast<String>(),
+      tutorialCompleted: fields[10] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -41,18 +42,20 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(2)
       ..write(obj.password)
       ..writeByte(3)
-      ..write(obj.dailyChallenges)
+      ..write(obj.notifications)
       ..writeByte(4)
-      ..write(obj.goal)
+      ..write(obj.dailyChallenges)
       ..writeByte(5)
-      ..write(obj.hourOfDay)
+      ..write(obj.goal)
       ..writeByte(6)
-      ..write(obj.minutesOfDay)
+      ..write(obj.hourOfDay)
       ..writeByte(7)
-      ..write(obj.isPremium)
+      ..write(obj.minutesOfDay)
       ..writeByte(8)
-      ..write(obj.recentTags)
+      ..write(obj.isPremium)
       ..writeByte(9)
+      ..write(obj.recentTags)
+      ..writeByte(10)
       ..write(obj.tutorialCompleted);
   }
 }
