@@ -15,7 +15,6 @@ import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/model/pic.dart';
-//import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:hive/hive.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -46,7 +45,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   int currentIndex;
   int swiperIndex = 0;
   int picSwiper = 0;
-  bool showTutorial = false;
 
   double offsetFirstTab = 0.0;
   double topOffsetFirstTab = 64.0;
@@ -1184,11 +1182,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               ),
             ),
           ),
-        if (showTutorial == true)
+        if (Provider.of<DatabaseManager>(context).userSettings.tutorialCompleted == false)
           Container(
             color: Colors.black.withOpacity(0.4),
           ),
-        if (showTutorial == true)
+        if (Provider.of<DatabaseManager>(context).userSettings.tutorialCompleted == false)
           Material(
             color: Colors.transparent,
             child: Center(
@@ -1311,9 +1309,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       CupertinoButton(
                         onPressed: () {
                           if (swiperIndex == 2) {
-                            setState(() {
-                              showTutorial = false;
-                            });
+                            DatabaseManager.instance.finishedTutorial();
                             return;
                           }
                           swiperController.next(animation: true);

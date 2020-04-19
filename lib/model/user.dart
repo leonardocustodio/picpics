@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-
 part 'user.g.dart';
 
 @HiveType(typeId: 2)
@@ -33,7 +31,7 @@ class User {
   final List<String> recentTags;
 
   @HiveField(9)
-  final bool tutorialCompleted;
+  bool tutorialCompleted;
 
   User({
     this.id,

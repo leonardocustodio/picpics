@@ -60,6 +60,13 @@ class DatabaseManager extends ChangeNotifier {
 
 //  Pic selectedPic;
 
+  void finishedTutorial() {
+    var userBox = Hive.box('user');
+    userSettings.tutorialCompleted = true;
+    userBox.putAt(0, userSettings);
+    notifyListeners();
+  }
+
   void loadRemoteConfig() async {
     print('loading remote config....');
     final RemoteConfig remoteConfig = await RemoteConfig.instance;
