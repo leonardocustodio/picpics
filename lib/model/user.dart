@@ -32,6 +32,19 @@ class User {
   @HiveField(8)
   final List<String> recentTags;
 
-  User(this.id, this.email, this.password, this.dailyChallenges, this.goal, this.hourOfDay, this.minutesOfDay, this.isPremium,
-      this.recentTags);
+  @HiveField(9)
+  final bool tutorialCompleted;
+
+  User({
+    this.id,
+    this.email,
+    this.password,
+    this.dailyChallenges,
+    this.goal,
+    this.hourOfDay,
+    this.minutesOfDay,
+    this.isPremium,
+    this.recentTags,
+    this.tutorialCompleted,
+  });
 }

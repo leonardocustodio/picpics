@@ -22,6 +22,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  Crashlytics.instance.enableInDevMode = true;
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
+  DatabaseManager.instance.analytics = FirebaseAnalytics();
+  DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
+
   await Hive.initFlutter();
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
@@ -33,7 +39,20 @@ void main() async {
 
   if (userBox.length == 0) {
     print('creating user entry...');
-    User user = User('userId', 'leonardo@custodio.me', 'pass', true, 20, 21, 30, true, []);
+
+    User user = User(
+      id: 'userId',
+      email: 'leonardo@custodio.me',
+      password: 'pass',
+      dailyChallenges: false,
+      goal: 20,
+      hourOfDay: 21,
+      minutesOfDay: 30,
+      isPremium: false,
+      recentTags: [],
+      tutorialCompleted: false,
+    );
+
     userBox.add(user);
     DatabaseManager.instance.userSettings = user;
   } else {
@@ -41,14 +60,9 @@ void main() async {
   }
 
   DatabaseManager.instance.loadRecentTags();
-//  DatabaseManager.instance.tagsSuggestions('');
   DatabaseManager.instance.loadTags();
   DatabaseManager.instance.loadPics();
   DatabaseManager.instance.loadRemoteConfig();
-
-  // Open boxes
-//  var pics = await Hive.openBox('Pictures');
-//  var tags = await Hive.openBox('Tags');
 
   void setupPathList() async {
     List<AssetPathEntity> pathList;
@@ -66,22 +80,6 @@ void main() async {
   }
 
   setupPathList();
-
-  Crashlytics.instance.enableInDevMode = true;
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
-//
-//  SharedPreferences prefs = await SharedPreferences.getInstance();
-//  String uid = prefs.getString('uid');
-//
-//  if (uid != null) {
-//    await DatabaseManager.instance.getUser(uid: uid);
-//  }
-//
-//  DatabaseManager.instance.getCards();
-//  DatabaseManager.instance.getAreas();
-
-  DatabaseManager.instance.analytics = FirebaseAnalytics();
-  DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
 
   runZonedGuarded(() {
     runApp(

@@ -17,22 +17,23 @@ class UserAdapter extends TypeAdapter<User> {
       for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return User(
-      fields[0] as String,
-      fields[1] as String,
-      fields[2] as String,
-      fields[3] as bool,
-      fields[4] as int,
-      fields[5] as int,
-      fields[6] as int,
-      fields[7] as bool,
-      (fields[8] as List)?.cast<String>(),
+      id: fields[0] as String,
+      email: fields[1] as String,
+      password: fields[2] as String,
+      dailyChallenges: fields[3] as bool,
+      goal: fields[4] as int,
+      hourOfDay: fields[5] as int,
+      minutesOfDay: fields[6] as int,
+      isPremium: fields[7] as bool,
+      recentTags: (fields[8] as List)?.cast<String>(),
+      tutorialCompleted: fields[9] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -50,6 +51,8 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(7)
       ..write(obj.isPremium)
       ..writeByte(8)
-      ..write(obj.recentTags);
+      ..write(obj.recentTags)
+      ..writeByte(9)
+      ..write(obj.tutorialCompleted);
   }
 }
