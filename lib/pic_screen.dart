@@ -544,7 +544,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     return PhotoCard(
       data: data,
-      picInfo: picInfo,
+      photoId: picInfo.photoId,
       picSwiper: picSwiper,
       index: index,
       tagsEditingController: tagsEditingController,
@@ -574,8 +574,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     var data = DatabaseManager.instance.assetProvider.data[index];
-
-    print('loading photo index: $index');
+    print('Build Item: $index');
 
     return RepaintBoundary(
       child: Padding(
@@ -591,7 +590,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               if (picInfo == null) {
                 picInfo = Pic(
                   data.id,
-//                  index,
                   data.createDateTime,
                   data.latitude,
                   data.longitude,
@@ -609,6 +607,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
               DateTime createdDate = data.createDateTime;
               String dateString = DatabaseManager.instance.formatDate(createdDate);
+
+              print('PicTags: ${picInfo.tags}');
 
               selectedPhotoData = data;
               selectedPhotoPicInfo = picInfo;
@@ -1171,7 +1171,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                         ),
                         child: PhotoCard(
                           data: selectedPhotoData,
-                          picInfo: selectedPhotoPicInfo,
+                          photoId: selectedPhotoPicInfo.photoId,
                           picSwiper: -1,
                           index: selectedPhotoIndex,
                           tagsEditingController: tagsEditingController,
@@ -1350,12 +1350,5 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           ),
       ],
     );
-  }
-}
-
-class AllowMultipleGestureRecognizer extends TapGestureRecognizer {
-  @override
-  void rejectGesture(int pointer) {
-    acceptGesture(pointer);
   }
 }

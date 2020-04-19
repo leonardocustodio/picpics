@@ -13,7 +13,7 @@ import 'package:picPics/model/pic.dart';
 class PhotoCard extends StatelessWidget {
   final AssetEntity data;
   final int index;
-  final Pic picInfo;
+  final String photoId;
   final int picSwiper;
   final String dateString;
   final TextEditingController tagsEditingController;
@@ -22,7 +22,7 @@ class PhotoCard extends StatelessWidget {
   PhotoCard({
     this.data,
     this.index,
-    this.picInfo,
+    this.photoId,
     this.picSwiper,
     this.dateString,
     this.tagsEditingController,
@@ -31,6 +31,19 @@ class PhotoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Pic picInfo = DatabaseManager.instance.getPicInfo(photoId);
+
+    if (picInfo == null) {
+      picInfo = Pic(
+        data.id,
+        data.createDateTime,
+        data.latitude,
+        data.longitude,
+        '',
+        [],
+      );
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
       decoration: BoxDecoration(
@@ -164,37 +177,42 @@ class PhotoCard extends StatelessWidget {
                       DatabaseManager.instance.addTag(
                         text,
                         data.id,
-//                        index,
                       );
                       tagsEditingController.clear();
 
-                      // Refatorar essa gambi dps
+                      if (picSwiper != -1) {
+                        // Refatorar essa gambi dps
+                        var indexPicBefore = picSwiper - 1;
+                        var indexPicAfter = picSwiper + 1;
 
-                      var indexPicBefore = picSwiper - 1;
-                      var indexPicAfter = picSwiper + 1;
+                        if (indexPicBefore < 0) {
+                          indexPicBefore = DatabaseManager.instance.assetProvider.data.length - 1;
+                        }
+                        if (indexPicAfter == DatabaseManager.instance.assetProvider.data.length) {
+                          indexPicAfter = 0;
+                        }
 
-                      if (indexPicBefore < 0) {
-                        indexPicBefore = DatabaseManager.instance.assetProvider.data.length - 1;
+                        Pic picBefore = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicBefore].id);
+                        Pic picAfter = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicAfter].id);
+
+                        DatabaseManager.instance.tagsSuggestions(
+                          '',
+                          picBefore.photoId,
+                          excludeTags: picBefore.tags,
+                        );
+                        DatabaseManager.instance.tagsSuggestions(
+                          '',
+                          picAfter.photoId,
+                          excludeTags: picAfter.tags,
+                        );
+                        ////////////////////////
+                      } else {
+                        DatabaseManager.instance.tagsSuggestions(
+                          '',
+                          data.id,
+                          excludeTags: picInfo.tags,
+                        );
                       }
-                      if (indexPicAfter == DatabaseManager.instance.assetProvider.data.length) {
-                        indexPicAfter = 0;
-                      }
-
-                      Pic picBefore = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicBefore].id);
-                      Pic picAfter = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicAfter].id);
-
-                      DatabaseManager.instance.tagsSuggestions(
-                        '',
-                        picBefore.photoId,
-                        excludeTags: picBefore.tags,
-                      );
-                      DatabaseManager.instance.tagsSuggestions(
-                        '',
-                        picAfter.photoId,
-                        excludeTags: picAfter.tags,
-                      );
-                      ////////////////////////
-
                     }
                   },
                 ),

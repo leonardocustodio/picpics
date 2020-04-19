@@ -11,6 +11,7 @@ import 'package:picPics/model/user.dart';
 import 'dart:math';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -58,6 +59,20 @@ class DatabaseManager extends ChangeNotifier {
   User userSettings;
 
 //  Pic selectedPic;
+
+  void loadRemoteConfig() async {
+    print('loading remote config....');
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    // Enable developer mode to relax fetch throttling
+    remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
+    remoteConfig.setDefaults(<String, dynamic>{
+      'daily_pics_for_ads': 50,
+    });
+
+    await remoteConfig.fetch(expiration: const Duration(hours: 5));
+    await remoteConfig.activateFetched();
+    print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
+  }
 
   void loadUserSettings() {
     var userBox = Hive.box('user');

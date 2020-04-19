@@ -44,6 +44,7 @@ void main() async {
 //  DatabaseManager.instance.tagsSuggestions('');
   DatabaseManager.instance.loadTags();
   DatabaseManager.instance.loadPics();
+  DatabaseManager.instance.loadRemoteConfig();
 
   // Open boxes
 //  var pics = await Hive.openBox('Pictures');
