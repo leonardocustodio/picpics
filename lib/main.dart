@@ -44,6 +44,7 @@ void main() async {
       id: 'userId',
       email: 'leonardo@custodio.me',
       password: 'pass',
+      notifications: false,
       dailyChallenges: false,
       goal: 20,
       hourOfDay: 21,

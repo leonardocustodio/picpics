@@ -7,10 +7,10 @@ class User {
   final String id;
 
   @HiveField(1)
-  final String email;
+  String email;
 
   @HiveField(2)
-  final String password;
+  String password;
 
   @HiveField(3)
   bool notifications;
@@ -28,7 +28,7 @@ class User {
   int minutesOfDay;
 
   @HiveField(8)
-  final bool isPremium;
+  bool isPremium;
 
   @HiveField(9)
   final List<String> recentTags;
