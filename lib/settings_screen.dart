@@ -9,6 +9,9 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
+import 'package:picPics/push_notifications_manager.dart';
+import 'package:notification_permissions/notification_permissions.dart';
+import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -213,6 +216,48 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
+  void changeDailyChallenges(bool value) async {
+    if (value == false) {
+      DatabaseManager.instance.changeDailyChallenges();
+    } else if (value == true && DatabaseManager.instance.userSettings.notifications == false) {
+      showDialog<void>(
+        context: context,
+        builder: (BuildContext context) {
+          return PlatformAlertDialog(
+            title: Text('Notificações'),
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                      'Para que a gente possa enviar seus desafios diários precisamos de autorização para enviar notificações, dessa maneira, é necessário que você autorize as notificações nas opções do seu celular'),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              PlatformDialogAction(
+                child: Text('Okay'),
+                actionType: ActionType.Preferred,
+                onPressed: () {
+                  NotificationPermissions.requestNotificationPermissions(
+                          iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true))
+                      .then((_) {});
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      DatabaseManager.instance.changeDailyChallenges();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -262,7 +307,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                                 value: Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
                                 activeColor: kSecondaryColor,
                                 onChanged: (value) {
-                                  DatabaseManager.instance.changeDailyChallenges();
+                                  changeDailyChallenges(value);
                                 },
                               ),
                             ],

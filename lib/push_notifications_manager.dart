@@ -20,39 +20,61 @@ class PushNotificationsManager {
 
       // For testing purposes print the Firebase Messaging token
       String token = await _firebaseMessaging.getToken();
+
       print("FirebaseMessaging token: $token");
 
       _initialized = true;
 
-      _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-        print("Settings registered: $settings");
+//      _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+//        print("Settings registered: $settings");
+//
+//        var userBox = Hive.box('user');
+//        DatabaseManager.instance.userSettings.notifications = settings.alert;
+//        DatabaseManager.instance.userSettings.dailyChallenges = settings.alert;
+//        userBox.putAt(0, DatabaseManager.instance.userSettings);
+//      });
+    }
+  }
 
-        var userBox = Hive.box('user');
-        DatabaseManager.instance.userSettings.notifications = settings.alert;
-        DatabaseManager.instance.userSettings.dailyChallenges = settings.alert;
-        userBox.putAt(0, DatabaseManager.instance.userSettings);
-      });
+  void register() async {
+    if (!_initialized) {
+      init();
+
+      print('subscribed');
+      var userBox = Hive.box('user');
+      DatabaseManager.instance.userSettings.dailyChallenges = true;
+      userBox.putAt(0, DatabaseManager.instance.userSettings);
+
+      return;
+    }
+
+    _firebaseMessaging.requestNotificationPermissions();
+    String token = await _firebaseMessaging.getToken();
+    print("FirebaseMessaging token: $token");
+
+    print('subscribed');
+    var userBox = Hive.box('user');
+    DatabaseManager.instance.userSettings.dailyChallenges = true;
+    userBox.putAt(0, DatabaseManager.instance.userSettings);
+  }
+
+//  void register() {
+//    _firebaseMessaging.subscribeToTopic('all_users');
+//    print('subscribed to topic: all_users');
+//  }
+
+  void deregister() {
+    try {
+      _firebaseMessaging.deleteInstanceID();
+      print('unsubscribed');
+      var userBox = Hive.box('user');
+      DatabaseManager.instance.userSettings.dailyChallenges = false;
+      userBox.putAt(0, DatabaseManager.instance.userSettings);
+
+      print(
+          'User settings: notification: ${DatabaseManager.instance.userSettings.notifications} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
+    } catch (error) {
+      print(error);
     }
   }
 }
-
-//var userBox = Hive.box('user');
-//print('requesting notification...');
-//print('dailyChallenges: ${DatabaseManager.instance.userSettings.dailyChallenges}');
-//
-//if (Platform.isIOS) {
-//_firebaseMessaging.requestNotificationPermissions(const IosNotificationSettings(
-//sound: true,
-//badge: true,
-//alert: true,
-//));
-//_firebaseMessaging.getToken().then((String token) {
-//assert(token != null);
-//print('got token: $token');
-//});
-//} else {
-//print('its android!!!');
-//DatabaseManager.instance.userSettings.notifications = true;
-//DatabaseManager.instance.userSettings.dailyChallenges = true;
-//userBox.putAt(0, DatabaseManager.instance.userSettings);
-//}

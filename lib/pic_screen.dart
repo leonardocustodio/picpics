@@ -146,7 +146,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     PhotoManager.addChangeCallback(_changeThrottle.call);
     PhotoManager.startChangeNotify();
 
-    if (DatabaseManager.instance.userSettings.tutorialCompleted == true) {
+    if (DatabaseManager.instance.userSettings.tutorialCompleted == true && DatabaseManager.instance.userSettings.notifications == true) {
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
     }
@@ -1280,7 +1280,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 PushNotificationsManager push = PushNotificationsManager();
                                 push.init();
                               }
+                            } else if (index == 2) {
+                              DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
                             }
+
                             setState(() {
                               swiperIndex = index;
                             });

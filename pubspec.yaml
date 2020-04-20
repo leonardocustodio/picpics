@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.0.0+40
+version: 1.0.0+41
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -31,6 +31,7 @@ dependencies:
   esys_flutter_share: ^1.0.2
   flutter_vibrate: ^1.0.0
   platform_alert_dialog: ^1.0.0+2
+  notification_permissions: ^0.4.4
 
 dependency_overrides:
   dartx: ^0.3.0

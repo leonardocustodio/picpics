@@ -14,6 +14,8 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
+import 'package:picPics/push_notifications_manager.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -29,6 +31,7 @@ class DatabaseManager extends ChangeNotifier {
 
   bool hasGalleryPermission = true;
   bool noTaggedPhoto = true;
+
 //  bool editingTags = false;
   bool searchingTags = false;
 
@@ -49,6 +52,7 @@ class DatabaseManager extends ChangeNotifier {
   List<String> allPics = [];
 
   Map<String, List<String>> suggestionTags = Map();
+
 //  List<String> suggestionTags = [];
   List<String> allRecentTags = [];
 
@@ -132,9 +136,13 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void changeDailyChallenges() {
-    var userBox = Hive.box('user');
-    userSettings.dailyChallenges = !userSettings.dailyChallenges;
-    userBox.putAt(0, userSettings);
+    PushNotificationsManager push = PushNotificationsManager();
+
+    if (userSettings.dailyChallenges) {
+      push.deregister();
+    } else {
+      push.register();
+    }
     notifyListeners();
   }
 
@@ -621,5 +629,26 @@ class DatabaseManager extends ChangeNotifier {
     currentPhotoState = placemark.first.administrativeArea;
     lastLocationRequest = [latitude, longitude];
 //    notifyListeners();
+  }
+
+  void checkNotificationPermission({bool firstPermissionCheck = false}) async {
+    return NotificationPermissions.getNotificationPermissionStatus().then((status) {
+      var userBox = Hive.box('user');
+      if (status == PermissionStatus.denied) {
+        print('user has no notification permission');
+        DatabaseManager.instance.userSettings.notifications = false;
+        if (firstPermissionCheck) {
+          DatabaseManager.instance.userSettings.dailyChallenges = false;
+        }
+        userBox.putAt(0, DatabaseManager.instance.userSettings);
+      } else {
+        print('user has notification permission');
+        DatabaseManager.instance.userSettings.notifications = true;
+        if (firstPermissionCheck) {
+          DatabaseManager.instance.userSettings.dailyChallenges = true;
+        }
+        userBox.putAt(0, DatabaseManager.instance.userSettings);
+      }
+    });
   }
 }

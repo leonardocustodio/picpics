@@ -18,6 +18,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,6 +59,7 @@ void main() async {
     DatabaseManager.instance.userSettings = user;
   } else {
     DatabaseManager.instance.loadUserSettings();
+    DatabaseManager.instance.checkNotificationPermission();
   }
 
   DatabaseManager.instance.loadRecentTags();
@@ -81,7 +83,6 @@ void main() async {
   }
 
   setupPathList();
-
   runZonedGuarded(() {
     runApp(
       PicPicsApp(
