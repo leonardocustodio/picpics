@@ -9,7 +9,6 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
-import 'package:picPics/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 
@@ -20,7 +19,7 @@ class SettingsScreen extends StatefulWidget {
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   RateMyApp rateMyApp = RateMyApp(
     googlePlayIdentifier: 'br.com.inovatso.picPics',
     appStoreIdentifier: '1503352127',
@@ -256,6 +255,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      DatabaseManager.instance.checkNotificationPermission();
+    }
   }
 
   @override
