@@ -3,14 +3,14 @@ part of search_map_place;
 class SearchMapPlaceWidget extends StatefulWidget {
   SearchMapPlaceWidget({
     @required this.apiKey,
-    this.placeholder = 'Search',
+    this.placeholder = 'Procurar',
     this.icon = Icons.search,
     this.hasClearButton = true,
     this.clearIcon = Icons.clear,
-    this.iconColor = Colors.blue,
+    this.iconColor = kSecondaryColor,
     this.onSelected,
     this.onSearch,
-    this.language = 'en',
+    this.language = 'pt',
     this.location,
     this.radius,
     this.strictBounds = false,
@@ -99,7 +99,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   void initState() {
     geocode = Geocoding(apiKey: widget.apiKey, language: widget.language);
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    _containerHeight = Tween<double>(begin: 55, end: 364).animate(
+    _containerHeight = Tween<double>(begin: 96, end: 420).animate(
       CurvedAnimation(
         curve: Interval(0.0, 0.5, curve: Curves.easeInOut),
         parent: _animationController,
@@ -133,7 +133,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
 
   @override
   Widget build(BuildContext context) => Container(
-        width: MediaQuery.of(context).size.width * 0.9,
+        width: MediaQuery.of(context).size.width,
         child: _searchContainer(
           child: _searchInput(context),
         ),
@@ -147,21 +147,18 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
         animation: _animationController,
         builder: (context, _) {
           return Container(
+            color: kWhiteColor,
             height: _containerHeight.value,
-            decoration: _containerDecoration(),
+//            decoration: _containerDecoration(),
             child: Column(
               children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0, right: 12.0, top: 4),
-                  child: child,
-                ),
+                child,
                 if (_placePredictions.length > 0)
                   Opacity(
                     opacity: _listOpacity.value,
                     child: Column(
                       children: <Widget>[
-                        for (var prediction in _placePredictions)
-                          _placeOption(Place.fromJSON(prediction, geocode)),
+                        for (var prediction in _placePredictions) _placeOption(Place.fromJSON(prediction, geocode)),
                       ],
                     ),
                   ),
@@ -172,39 +169,72 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   }
 
   Widget _searchInput(BuildContext context) {
-    return Center(
-      child: Row(
-        children: <Widget>[
-          Expanded(
-            child: TextField(
-              decoration: _inputStyle(),
-              controller: _textEditingController,
-              onSubmitted: (_) => _selectPlace(),
-              onEditingComplete: _selectPlace,
-              autofocus: false,
-              focusNode: _fn,
-              style: TextStyle(
-                fontSize: MediaQuery.of(context).size.width * 0.04,
-                color: widget.darkMode ? Colors.grey[100] : Colors.grey[850],
-              ),
+    return Container(
+      color: kWhiteColor,
+      child: SafeArea(
+        bottom: false,
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.only(right: 10.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                CupertinoButton(
+                  padding: const EdgeInsets.only(left: 5.0, right: 10.0),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Image.asset('lib/images/backarrowgray.png'),
+                ),
+                Image.asset('lib/images/searchico.png'),
+                SizedBox(
+                  width: 10.0,
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: _textEditingController,
+                    onSubmitted: (_) => _selectPlace(),
+                    onEditingComplete: _selectPlace,
+                    autofocus: false,
+                    focusNode: _fn,
+                    textAlignVertical: TextAlignVertical.center,
+                    maxLines: 1,
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      color: Color(0xff606566),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      letterSpacing: -0.4099999964237213,
+                    ),
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.all(0),
+                      border: OutlineInputBorder(borderSide: BorderSide.none),
+                      enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                      focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                    ),
+                  ),
+                ),
+                Container(width: 15.0),
+                if (widget.hasClearButton)
+                  GestureDetector(
+                    onTap: () {
+                      if (_crossFadeState == CrossFadeState.showSecond) _textEditingController.clear();
+                    },
+                    // child: Icon(_inputIcon, color: this.widget.iconColor),
+                    child: AnimatedCrossFade(
+                      crossFadeState: _crossFadeState,
+                      duration: Duration(milliseconds: 300),
+                      firstChild: Container(),
+                      secondChild: Icon(Icons.clear, color: widget.iconColor),
+                    ),
+                  ),
+                if (!widget.hasClearButton) Container()
+              ],
             ),
           ),
-          Container(width: 15),
-          if (widget.hasClearButton)
-            GestureDetector(
-              onTap: () {
-                if (_crossFadeState == CrossFadeState.showSecond) _textEditingController.clear();
-              },
-              // child: Icon(_inputIcon, color: this.widget.iconColor),
-              child: AnimatedCrossFade(
-                crossFadeState: _crossFadeState,
-                duration: Duration(milliseconds: 300),
-                firstChild: Icon(widget.icon, color: widget.iconColor),
-                secondChild: Icon(Icons.clear, color: widget.iconColor),
-              ),
-            ),
-          if (!widget.hasClearButton) Icon(widget.icon, color: widget.iconColor)
-        ],
+        ),
       ),
     );
   }

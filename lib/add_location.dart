@@ -100,56 +100,6 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 _mapController.complete(controller);
               },
             ),
-//            Container(
-//              color: kWhiteColor,
-//              child: SafeArea(
-//                bottom: false,
-//                child: Container(
-//                  height: 48.0,
-//                  child: Row(
-//                    crossAxisAlignment: CrossAxisAlignment.center,
-//                    mainAxisAlignment: MainAxisAlignment.start,
-//                    children: <Widget>[
-//                      SizedBox(
-//                        width: 19.0,
-//                      ),
-//                      CupertinoButton(
-//                        padding: const EdgeInsets.all(0),
-//                        onPressed: () {
-//                          Navigator.pop(context);
-//                        },
-//                        child: Image.asset('lib/images/backarrowgray.png'),
-//                      ),
-//                      Expanded(
-//                        child: TextField(
-//                          onSubmitted: (text) {
-//                            print('text: $text');
-////                            makePredictions();
-//                          },
-//                          textAlignVertical: TextAlignVertical.center,
-//                          maxLines: 1,
-//                          style: TextStyle(
-//                            fontFamily: 'Lato',
-//                            color: Color(0xff606566),
-//                            fontSize: 16,
-//                            fontWeight: FontWeight.w400,
-//                            fontStyle: FontStyle.normal,
-//                            letterSpacing: -0.4099999964237213,
-//                          ),
-//                          decoration: InputDecoration(
-//                            contentPadding: const EdgeInsets.all(0),
-//                            prefixIcon: Image.asset('lib/images/searchico.png'),
-//                            border: OutlineInputBorder(borderSide: BorderSide.none),
-//                            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-//                            focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-//                          ),
-//                        ),
-//                      ),
-//                    ],
-//                  ),
-//                ),
-//              ),
-//            ),
             SafeArea(
               top: false,
               child: Padding(
@@ -213,35 +163,31 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 ),
               ),
             ),
-            Positioned(
-              top: 60,
-              left: MediaQuery.of(context).size.width * 0.05,
-              child: SearchMapPlaceWidget(
-                apiKey: kGoogleApiKey,
-                onSelected: (place) async {
-                  final geolocation = await place.geolocation;
+            SearchMapPlaceWidget(
+              apiKey: kGoogleApiKey,
+              onSelected: (place) async {
+                final geolocation = await place.geolocation;
 
-                  final destination = Marker(
-                    markerId: MarkerId('user-destination'),
-                    icon: await BitmapDescriptor.fromAssetImage(
-                      ImageConfiguration(
-                        devicePixelRatio: 2.5,
-                      ),
-                      'lib/images/pin.png',
+                final destination = Marker(
+                  markerId: MarkerId('user-destination'),
+                  icon: await BitmapDescriptor.fromAssetImage(
+                    ImageConfiguration(
+                      devicePixelRatio: 2.5,
                     ),
-                    position: geolocation.coordinates,
-                  );
+                    'lib/images/pin.png',
+                  ),
+                  position: geolocation.coordinates,
+                );
 
-                  final GoogleMapController controller = await _mapController.future;
-                  _markers.clear();
-                  setState(() {
-                    _markers.add(destination);
-                  });
+                final GoogleMapController controller = await _mapController.future;
+                _markers.clear();
+                setState(() {
+                  _markers.add(destination);
+                });
 
-                  controller.animateCamera(CameraUpdate.newLatLng(geolocation.coordinates));
-                  controller.animateCamera(CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
-                },
-              ),
+                controller.animateCamera(CameraUpdate.newLatLng(geolocation.coordinates));
+                controller.animateCamera(CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
+              },
             ),
           ],
         ),
