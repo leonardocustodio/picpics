@@ -63,6 +63,8 @@ class DatabaseManager extends ChangeNotifier {
 //  Pic selectedPic;
   void requestNotification() {
     var userBox = Hive.box('user');
+    print('requesting notification...');
+    print('dailyChallenges: ${userSettings.dailyChallenges}');
 
     if (Platform.isIOS) {
       final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
@@ -70,13 +72,15 @@ class DatabaseManager extends ChangeNotifier {
       _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
         print("Settings registered: $settings");
       });
-      _firebaseMessaging.getToken().then((String token) {
-        assert(token != null);
-        print('got token this mean it did accept notification');
-        userSettings.notifications = true;
-        userSettings.dailyChallenges = true;
-        userBox.putAt(0, userSettings);
-      });
+//      _firebaseMessaging.getToken().then((String token) {
+//        assert(token != null);
+//        print('got token this mean it did accept notification');
+//        userSettings.notifications = true;
+//        userSettings.dailyChallenges = true;
+//        userBox.putAt(0, userSettings);
+//      });
+//
+//      _firebaseMessaging.onIosSettingsRegistered.
     } else {
       print('its android!!!');
       userSettings.notifications = true;

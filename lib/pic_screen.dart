@@ -6,6 +6,7 @@ import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/model/tag.dart';
+import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -21,6 +22,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/image_item.dart';
 import 'package:flutter/gestures.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
+import 'dart:io';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -33,6 +35,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
   SwiperController swiperController = SwiperController();
+  SwiperController tutorialSwiperController = SwiperController();
 
   TextEditingController tagsEditingController = TextEditingController();
 //  Map<String, List<String>> suggestions;
@@ -142,6 +145,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);
     PhotoManager.startChangeNotify();
+
+    if (DatabaseManager.instance.userSettings.tutorialCompleted == true) {
+      PushNotificationsManager push = PushNotificationsManager();
+      push.init();
+    }
   }
 
   @override
@@ -1258,10 +1266,20 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             );
                           },
                           itemCount: 3,
-                          controller: swiperController,
+                          controller: tutorialSwiperController,
                           onIndexChanged: (index) {
                             if (index == 1) {
-                              DatabaseManager.instance.requestNotification();
+                              print('Requesting notification....');
+
+                              if (Platform.isAndroid) {
+                                var userBox = Hive.box('user');
+                                DatabaseManager.instance.userSettings.notifications = true;
+                                DatabaseManager.instance.userSettings.dailyChallenges = true;
+                                userBox.putAt(0, DatabaseManager.instance.userSettings);
+                              } else {
+                                PushNotificationsManager push = PushNotificationsManager();
+                                push.init();
+                              }
                             }
                             setState(() {
                               swiperIndex = index;
@@ -1315,7 +1333,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             DatabaseManager.instance.finishedTutorial();
                             return;
                           }
-                          swiperController.next(animation: true);
+                          tutorialSwiperController.next(animation: true);
                         },
                         padding: const EdgeInsets.all(0),
                         child: Container(
