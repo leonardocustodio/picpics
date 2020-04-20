@@ -261,7 +261,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      DatabaseManager.instance.checkNotificationPermission();
+      DatabaseManager.instance.checkNotificationPermission(shouldNotify: true);
     }
   }
 

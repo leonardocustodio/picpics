@@ -631,15 +631,15 @@ class DatabaseManager extends ChangeNotifier {
 //    notifyListeners();
   }
 
-  void checkNotificationPermission({bool firstPermissionCheck = false}) async {
+  void checkNotificationPermission({bool firstPermissionCheck = false, bool shouldNotify = false}) async {
     return NotificationPermissions.getNotificationPermissionStatus().then((status) {
       var userBox = Hive.box('user');
       if (status == PermissionStatus.denied) {
         print('user has no notification permission');
         DatabaseManager.instance.userSettings.notifications = false;
-        if (firstPermissionCheck) {
-          DatabaseManager.instance.userSettings.dailyChallenges = false;
-        }
+//        if (firstPermissionCheck) {
+        DatabaseManager.instance.userSettings.dailyChallenges = false;
+//        }
         userBox.putAt(0, DatabaseManager.instance.userSettings);
       } else {
         print('user has notification permission');
@@ -648,6 +648,9 @@ class DatabaseManager extends ChangeNotifier {
           DatabaseManager.instance.userSettings.dailyChallenges = true;
         }
         userBox.putAt(0, DatabaseManager.instance.userSettings);
+      }
+      if (shouldNotify) {
+        notifyListeners();
       }
     });
   }
