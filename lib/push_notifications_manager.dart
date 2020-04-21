@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/database_manager.dart';
 
@@ -10,6 +11,8 @@ class PushNotificationsManager {
   static final PushNotificationsManager _instance = PushNotificationsManager._();
 
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   bool _initialized = false;
 
   Future<void> init() async {
@@ -33,6 +36,13 @@ class PushNotificationsManager {
 //        DatabaseManager.instance.userSettings.dailyChallenges = settings.alert;
 //        userBox.putAt(0, DatabaseManager.instance.userSettings);
 //      });
+
+      var initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
+      var initializationSettingsIOS = IOSInitializationSettings();
+      var initializationSettings = InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+      await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
+      print('scheduling notification');
+      scheduleNotification();
     }
   }
 
@@ -56,6 +66,8 @@ class PushNotificationsManager {
     var userBox = Hive.box('user');
     DatabaseManager.instance.userSettings.dailyChallenges = true;
     userBox.putAt(0, DatabaseManager.instance.userSettings);
+
+    scheduleNotification();
   }
 
 //  void register() {
@@ -63,7 +75,7 @@ class PushNotificationsManager {
 //    print('subscribed to topic: all_users');
 //  }
 
-  void deregister() {
+  void deregister() async {
     try {
       _firebaseMessaging.deleteInstanceID();
       print('unsubscribed');
@@ -73,8 +85,39 @@ class PushNotificationsManager {
 
       print(
           'User settings: notification: ${DatabaseManager.instance.userSettings.notifications} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
+
+      await _flutterLocalNotificationsPlugin.cancel(0);
     } catch (error) {
       print(error);
     }
+  }
+
+  void scheduleNotification() async {
+    var time = Time(
+      DatabaseManager.instance.userSettings.hourOfDay,
+      DatabaseManager.instance.userSettings.minutesOfDay,
+      0,
+    );
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'repeatDailyAtTime channel id',
+      'repeatDailyAtTime channel name',
+      'repeatDailyAtTime description',
+    );
+
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+
+    var platformChannelSpecifics = NotificationDetails(
+      androidPlatformChannelSpecifics,
+      iOSPlatformChannelSpecifics,
+    );
+
+    await _flutterLocalNotificationsPlugin.showDailyAtTime(
+      0,
+      'Desafio diário',
+      'Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!',
+      time,
+      platformChannelSpecifics,
+    );
   }
 }
