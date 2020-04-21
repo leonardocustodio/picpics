@@ -22,10 +22,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
   final List<String> _subscriptionsLists = Platform.isAndroid
       ? [
-          'android.test.purchased',
-          'point_1000',
-          '5000_point',
-          'android.test.canceled',
+          'rs9_90_monthly_subscription',
+          'rs99_90_yearly_subscription',
         ]
       : [
           'rs9_90_monthly_subscription',
@@ -130,8 +128,136 @@ class _PremiumScreenState extends State<PremiumScreen> {
   }
 
   List<Widget> _renderInApps() {
+    List<Widget> widgets = [
+      Spacer(
+        flex: 1,
+      ),
+      Image.asset('lib/images/bigpremiumlogo.png'),
+      Text(
+        "Get Premium",
+        style: TextStyle(
+          fontFamily: 'Lato',
+          color: kPrimaryColor,
+          fontSize: 24,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+          letterSpacing: -0.4099999964237213,
+        ),
+      ),
+      Text(
+        "ONE-YEAR PREMIUM ACCOUNT",
+        style: TextStyle(
+          fontFamily: 'Lato',
+          color: kPrimaryColor,
+          fontSize: 12,
+          fontWeight: FontWeight.w400,
+          fontStyle: FontStyle.normal,
+        ),
+      ),
+      Spacer(
+        flex: 3,
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
+        child: Row(
+          children: <Widget>[
+            Image.asset('lib/images/starrateapp.png'),
+            SizedBox(
+              width: 16.0,
+            ),
+            Text(
+              "No Ads!",
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff707070),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
+        child: Row(
+          children: <Widget>[
+            Image.asset('lib/images/starrateapp.png'),
+            SizedBox(
+              width: 16.0,
+            ),
+            Text(
+              "Export all galery",
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff707070),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
+        child: Row(
+          children: <Widget>[
+            Image.asset('lib/images/starrateapp.png'),
+            SizedBox(
+              width: 16.0,
+            ),
+            Text(
+              "Infinite Tags",
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff707070),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.only(left: 18.0),
+        child: Row(
+          children: <Widget>[
+            Image.asset('lib/images/starrateapp.png'),
+            SizedBox(
+              width: 16.0,
+            ),
+            Text(
+              "Multiple select to tag",
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff707070),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ],
+        ),
+      ),
+      Spacer(
+        flex: 5,
+      ),
+      // Add buttons (position 10)
+      Spacer(
+        flex: 1,
+      ),
+    ];
+
     if (_items.length == 0) {
-      return [Container()];
+      widgets.insert(
+          10,
+          CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+          ));
+
+      return widgets;
     }
 
     var yearSubs = _items.firstWhere((e) => e.subscriptionPeriodUnitIOS == 'YEAR');
@@ -142,251 +268,123 @@ class _PremiumScreenState extends State<PremiumScreen> {
     double save = 100 - (yearPrice / (monthPrice * 12) * 100);
     print('Save: $save');
 
-    return [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Spacer(
-              flex: 1,
-            ),
-            Image.asset('lib/images/bigpremiumlogo.png'),
-            Text(
-              "Get Premium",
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: kPrimaryColor,
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
-            ),
-            Text(
-              "ONE-YEAR PREMIUM ACCOUNT",
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: kPrimaryColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-              ),
-            ),
-            Spacer(
-              flex: 3,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
-              child: Row(
+    widgets.insert(
+      10,
+      Column(
+        children: <Widget>[
+          CupertinoButton(
+            padding: const EdgeInsets.all(0),
+            onPressed: () {
+              this._requestPurchase(yearSubs);
+            },
+            child: Container(
+              height: 63.0,
+              child: Stack(
                 children: <Widget>[
-                  Image.asset('lib/images/starrateapp.png'),
-                  SizedBox(
-                    width: 16.0,
-                  ),
-                  Text(
-                    "No Ads!",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff707070),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
-              child: Row(
-                children: <Widget>[
-                  Image.asset('lib/images/starrateapp.png'),
-                  SizedBox(
-                    width: 16.0,
-                  ),
-                  Text(
-                    "Export all galery",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff707070),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
-              child: Row(
-                children: <Widget>[
-                  Image.asset('lib/images/starrateapp.png'),
-                  SizedBox(
-                    width: 16.0,
-                  ),
-                  Text(
-                    "Infinite Tags",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff707070),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0),
-              child: Row(
-                children: <Widget>[
-                  Image.asset('lib/images/starrateapp.png'),
-                  SizedBox(
-                    width: 16.0,
-                  ),
-                  Text(
-                    "Multiple select to tag",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff707070),
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Spacer(
-              flex: 5,
-            ),
-            CupertinoButton(
-              padding: const EdgeInsets.all(0),
-              onPressed: () {
-                this._requestPurchase(yearSubs);
-              },
-              child: Container(
-                height: 63.0,
-                child: Stack(
-                  children: <Widget>[
-                    Positioned(
-                      top: 19,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        height: 44.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          border: Border.all(color: kPinkColor, width: 1.0),
+                  Positioned(
+                    top: 19,
+                    left: 0,
+                    right: 0,
+                    child: Container(
+                      height: 44.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: kPinkColor, width: 1.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Sign ${yearSubs.localizedPrice}/year",
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: kPinkColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
                         ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 0,
+                    right: 6,
+                    child: CustomPaint(
+                      painter: ArrowPainter(
+                        strokeColor: kYellowColor,
+                        strokeWidth: 10,
+                        paintingStyle: PaintingStyle.fill,
+                      ),
+                      child: Container(
+                        width: 69.0,
+                        height: 24.0,
                         child: Center(
                           child: Text(
-                            "Sign ${yearSubs.localizedPrice}/year",
+                            "   save ${save.round()}%",
                             style: TextStyle(
                               fontFamily: 'Lato',
-                              color: kPinkColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
+                              color: Color(0xff606566),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    Positioned(
-                      top: 0,
-                      right: 6,
-                      child: CustomPaint(
-                        painter: ArrowPainter(
-                          strokeColor: kYellowColor,
-                          strokeWidth: 10,
-                          paintingStyle: PaintingStyle.fill,
-                        ),
-                        child: Container(
-                          width: 69.0,
-                          height: 24.0,
-                          child: Center(
-                            child: Text(
-                              "   save ${save.round()}%",
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
-            SizedBox(
-              height: 16.0,
-            ),
-            CupertinoButton(
-              padding: const EdgeInsets.all(0),
-              onPressed: () {
-                this._requestPurchase(monthSubs);
-              },
-              child: Container(
-                height: 44.0,
-                decoration: BoxDecoration(
-                  gradient: kPrimaryGradient,
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Center(
-                  child: Text(
-                    "Sign ${monthSubs.localizedPrice}/month",
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: kWhiteColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      fontStyle: FontStyle.normal,
-                      letterSpacing: -0.4099999964237213,
-                    ),
+          ),
+          SizedBox(
+            height: 16.0,
+          ),
+          CupertinoButton(
+            padding: const EdgeInsets.all(0),
+            onPressed: () {
+              this._requestPurchase(monthSubs);
+            },
+            child: Container(
+              height: 44.0,
+              decoration: BoxDecoration(
+                gradient: kPrimaryGradient,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Center(
+                child: Text(
+                  "Sign ${monthSubs.localizedPrice}/month",
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: kWhiteColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: -0.4099999964237213,
                   ),
                 ),
               ),
             ),
-            SizedBox(
-              height: 16.0,
+          ),
+          SizedBox(
+            height: 16.0,
+          ),
+          Text(
+            "Restaurar compra",
+            style: const TextStyle(
+              fontWeight: FontWeight.w700,
+              color: kPrimaryColor,
+              decoration: TextDecoration.underline,
+              fontFamily: "Lato",
+              fontStyle: FontStyle.normal,
+              fontSize: 14.0,
             ),
-            Text(
-              "Restaurar compra",
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: kPrimaryColor,
-                decoration: TextDecoration.underline,
-                fontFamily: "Lato",
-                fontStyle: FontStyle.normal,
-                fontSize: 14.0,
-              ),
-            ),
-            Spacer(
-              flex: 1,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
-      Positioned(
-        right: 0,
-        child: CupertinoButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: Image.asset('lib/images/closegrayico.png'),
-        ),
-      ),
-    ];
+    );
+
+    return widgets;
   }
 
   @override
@@ -411,7 +409,24 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 borderRadius: BorderRadius.circular(8.0),
               ),
               child: Stack(
-                children: this._renderInApps(),
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: this._renderInApps(),
+                    ),
+                  ),
+                  Positioned(
+                    right: 0,
+                    child: CupertinoButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: Image.asset('lib/images/closegrayico.png'),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
