@@ -86,13 +86,15 @@ class PushNotificationsManager {
       print(
           'User settings: notification: ${DatabaseManager.instance.userSettings.notifications} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
 
-      await _flutterLocalNotificationsPlugin.cancel(0);
+      await _flutterLocalNotificationsPlugin.cancelAll();
     } catch (error) {
       print(error);
     }
   }
 
   void scheduleNotification() async {
+    await _flutterLocalNotificationsPlugin.cancelAll();
+
     var time = Time(
       DatabaseManager.instance.userSettings.hourOfDay,
       DatabaseManager.instance.userSettings.minutesOfDay,

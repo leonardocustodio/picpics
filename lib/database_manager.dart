@@ -133,6 +133,12 @@ class DatabaseManager extends ChangeNotifier {
     userSettings.minutesOfDay = minute;
     userBox.putAt(0, userSettings);
     notifyListeners();
+
+    if (userSettings.dailyChallenges == true) {
+      PushNotificationsManager push = PushNotificationsManager();
+      push.scheduleNotification();
+      print('rescheduling notifications....');
+    }
   }
 
   void changeDailyChallenges() {
