@@ -33,3 +33,10 @@
 
 ## flutter_local_notification plugin rules
 -keep class com.dexterous.** { *; }
+
+#In app Purchase
+-keep class com.amazon.** {*;}
+-keep class com.dooboolab.** { *; }
+-keep class com.android.vending.billing.**
+-dontwarn com.amazon.**
+-keepattributes *Annotation*
