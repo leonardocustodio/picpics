@@ -504,7 +504,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       height: 40.0,
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                      padding: const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 80.0),
                       child: CupertinoButton(
                         onPressed: () async {
                           String result = await Navigator.push(
