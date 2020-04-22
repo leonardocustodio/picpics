@@ -56,12 +56,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     });
   }
 
-  void showGoalPicker(BuildContext context) {
+  void showGoalPicker(BuildContext context) async {
     int goalIndex = DatabaseManager.instance.userSettings.goal - 1;
 
     FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: goalIndex);
 
-    showModalBottomSheet(
+    Ads.setScreen(HideAdScreen);
+
+    await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
         int temporaryGoal = goalIndex;
@@ -141,10 +143,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         );
       },
     );
+
+    Ads.setScreen(SettingsScreen.id);
   }
 
-  void showTimePicker(BuildContext context) {
-    showModalBottomSheet(
+  void showTimePicker(BuildContext context) async {
+    Ads.setScreen(HideAdScreen);
+
+    await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
         DateTime now = DateTime.now();
@@ -221,6 +227,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         );
       },
     );
+
+    Ads.setScreen(SettingsScreen.id);
   }
 
   void changeDailyChallenges(bool value) async {

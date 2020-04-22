@@ -24,6 +24,7 @@ import 'package:flutter/gestures.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'dart:io';
 import 'package:picPics/admob_manager.dart';
+import 'package:keyboard_visibility/keyboard_visibility.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -68,6 +69,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   String selectedPhotoDateString;
 
   Throttle _changeThrottle;
+
+  bool isAdVisible = true;
 
   void changeIndex() {
     print('teste');
@@ -146,6 +149,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
 
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
+
+    KeyboardVisibilityNotification().addNewListener(
+      onChange: (bool visible) {
+        print('keyboard: $visible');
+        setState(() {
+          isAdVisible = !visible;
+        });
+      },
+    );
 
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);
@@ -766,7 +778,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 48.0, bottom: 60.0),
+                            padding: isAdVisible
+                                ? const EdgeInsets.only(top: 48.0, bottom: 60.0)
+                                : const EdgeInsets.only(top: 48.0, bottom: 0.0),
                             child: GestureDetector(
 //                              onScaleUpdate: (update) {
 //                                print(update.scale);
@@ -781,7 +795,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   ),
                 if (Provider.of<DatabaseManager>(context).currentTab == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
-                    padding: const EdgeInsets.only(bottom: 60.0),
+                    padding: isAdVisible ? const EdgeInsets.only(bottom: 60.0) : const EdgeInsets.only(bottom: 0.0),
                     constraints: BoxConstraints.expand(),
                     decoration: new BoxDecoration(
                       image: DecorationImage(
@@ -841,7 +855,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   ),
                 if (Provider.of<DatabaseManager>(context).currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
-                    padding: const EdgeInsets.only(bottom: 60.0),
+                    padding: isAdVisible ? const EdgeInsets.only(bottom: 60.0) : const EdgeInsets.only(bottom: 0.0),
 //                    constraints: BoxConstraints.expand(),
 //                    color: kWhiteColor,
                     child: SafeArea(

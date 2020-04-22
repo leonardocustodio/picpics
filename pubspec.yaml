@@ -33,6 +33,7 @@ dependencies:
   notification_permissions: ^0.4.4
   flutter_inapp_purchase: ^2.2.0
   firebase_admob: ^0.9.3+2
+  keyboard_visibility: ^0.5.6
 
 dependency_overrides:
   dartx: ^0.3.0
