@@ -263,6 +263,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   Widget _buildTaggedGridView() {
+    bool isFiltered = DatabaseManager.instance.searchActiveTags.isNotEmpty;
+
     var picsBox = Hive.box('pics');
     var tagsBox = Hive.box('tags');
 
@@ -288,27 +290,63 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     List<Widget> widgetsArray = [];
     List<bool> isTitleWidget = [];
 
-    for (Tag tag in tagsBox.values) {
-      totalTags += 1;
-      isTitleWidget.add(true);
-      widgetsArray.add(Container(
-        padding: const EdgeInsets.only(left: 2.0),
-        alignment: Alignment.centerLeft,
-        child: Text(
-          tag.name,
-          style: TextStyle(
-            fontFamily: 'Lato',
-            color: Color(0xff606566),
-            fontSize: 24,
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            letterSpacing: -0.4099999964237213,
+    if (!isFiltered) {
+      for (Tag tag in tagsBox.values) {
+        totalTags += 1;
+        isTitleWidget.add(true);
+        widgetsArray.add(Container(
+          padding: const EdgeInsets.only(left: 2.0),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            tag.name,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff606566),
+              fontSize: 24,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
           ),
-        ),
-      ));
-      for (String photoId in tag.photoId) {
+        ));
+        for (String photoId in tag.photoId) {
+          totalPics += 1;
+          isTitleWidget.add(false);
+          var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: null);
+
+          if (data != null) {
+            widgetsArray.add(RepaintBoundary(
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: ImageItem(
+                    entity: data,
+                    size: 150,
+                    backgroundColor: Colors.grey[400],
+                  ),
+                ),
+              ),
+            ));
+          } else {
+            print('Did not find picture: $photoId');
+            widgetsArray.add(
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: Container(
+                    color: Colors.grey[400],
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+      }
+    } else {
+      for (var photoId in DatabaseManager.instance.searchPhotosIds) {
         totalPics += 1;
-        isTitleWidget.add(false);
         var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: null);
 
         if (data != null) {
@@ -355,11 +393,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         left: 6.0,
       ),
       crossAxisCount: 3,
-      itemCount: totalTags + totalPics, // picsBox.length + 1,
+      itemCount: isFiltered ? totalPics : totalTags + totalPics, // picsBox.length + 1,
       itemBuilder: (BuildContext context, int index) {
         return widgetsArray[index];
       },
       staggeredTileBuilder: (int index) {
+        if (isFiltered) return StaggeredTile.count(1, 1);
+
         if (isTitleWidget[index]) {
           return StaggeredTile.fit(3);
         }
@@ -369,98 +409,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       crossAxisSpacing: 4.0,
     );
   }
-
-//    final noMore = DatabaseManager.instance.assetProvider.noMore;
-//    if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
-//      print('loading more');
-//      _loadMore();
-//      return _buildLoading();
-//    }
-
-//    return ListView.builder(
-//      controller: scrollControllerThirdTab,
-//      itemCount: 2,
-//      padding: EdgeInsets.only(top: 140.0, right: 6.0, left: 6.0),
-//      itemBuilder: (context, index) {
-//        return StickyHeader(
-//          header: Container(
-//            padding: const EdgeInsets.only(left: 2.0),
-//            color: kWhiteColor,
-////            width: double.infinity,
-//            alignment: Alignment.centerLeft,
-//            child: Text(
-//              "Pets",
-//              style: TextStyle(
-//                fontFamily: 'Lato',
-//                color: Color(0xff606566),
-//                fontSize: 24,
-//                fontWeight: FontWeight.w400,
-//                fontStyle: FontStyle.normal,
-//                letterSpacing: -0.4099999964237213,
-//              ),
-//            ),
-//          ),
-//          content: Container(
-//            child: GridView.builder(
-//              shrinkWrap: true,
-//              physics: NeverScrollableScrollPhysics(),
-//              itemCount: 30,
-//              // picsBox.length,
-//              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-//              itemBuilder: (context, index) {
-//                index = 0;
-//                Pic getPic = picsBox.getAt(index);
-//                var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
-//                print('loading photo index: ${getPic.photoIndex}');
-//
-//                return RepaintBoundary(
-//                  child: Padding(
-//                    padding: const EdgeInsets.all(5.0),
-//                    child: ClipRRect(
-//                      borderRadius: BorderRadius.circular(5.0),
-//                      child: ImageItem(
-//                        entity: data,
-//                        size: 150,
-//                        backgroundColor: Colors.grey[400],
-//                      ),
-//                    ),
-//                  ),
-//                );
-//              },
-//            ),
-//          ),
-//        );
-//      },
-//      shrinkWrap: true,
-//    );
-//  }
-
-//    return GridView.builder(
-//      padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
-//      controller: scrollControllerThirdTab,
-//      scrollDirection: Axis.vertical,
-//      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-//      itemCount: picsBox.length,
-//      itemBuilder: (BuildContext context, int index) {
-//        Pic getPic = picsBox.getAt(index);
-//        var data = DatabaseManager.instance.assetProvider.data[getPic.photoIndex];
-//        print('loading photo index: ${getPic.photoIndex}');
-//
-//        return RepaintBoundary(
-//          child: Padding(
-//            padding: const EdgeInsets.all(5.0),
-//            child: ClipRRect(
-//              borderRadius: BorderRadius.circular(5.0),
-//              child: ImageItem(
-//                entity: data,
-//                size: 150,
-//                backgroundColor: Colors.grey[400],
-//              ),
-//            ),
-//          ),
-//        );
-//      },
-//    );
 
   Widget _buildGridView() {
     final noMore = DatabaseManager.instance.assetProvider.noMore;
@@ -973,12 +921,16 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   children: <Widget>[
                                     if (Provider.of<DatabaseManager>(context).searchActiveTags.isNotEmpty)
                                       Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: Container(),
-//                                        ListOfTags(
-//                                          activeTags: true,
-//                                          showActiveTags: Provider.of<DatabaseManager>(context).searchActiveTags,
-//                                        ),
+                                        padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+                                        child: TagsList(
+                                            tags: Provider.of<DatabaseManager>(context).searchActiveTags,
+                                            tagStyle: TagStyle.MultiColored,
+                                            onTap: () {
+                                              DatabaseManager.instance.removeTagFromSearchFilter();
+                                            },
+                                            showEditTagModal: () {
+                                              print('outro nada por enquanto');
+                                            }),
                                       ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)
                                       Padding(
@@ -1003,6 +955,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             tags: Provider.of<DatabaseManager>(context).searchResults,
                                             tagStyle: TagStyle.GrayOutlined,
                                             showEditTagModal: showEditTagModal,
+                                            onTap: () {
+                                              DatabaseManager.instance.addTagToSearchFilter();
+                                            },
                                           ),
                                         ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)

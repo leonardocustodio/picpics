@@ -40,6 +40,7 @@ class DatabaseManager extends ChangeNotifier {
 
   List<String> searchActiveTags = [];
   List<String> searchResults;
+  List<String> searchPhotosIds = [];
 
   AssetProvider assetProvider = AssetProvider();
   AssetEntity selectedPhoto;
@@ -159,8 +160,6 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void findPicsByTag(String tag) {}
-
   void tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
     List<String> suggestions = [];
 //    suggestionTags.clear();
@@ -198,6 +197,67 @@ class DatabaseManager extends ChangeNotifier {
     if (notify) {
       notifyListeners();
     }
+  }
+
+  void addTagToSearchFilter() {
+    String tag = selectedEditTag;
+
+    if (searchActiveTags.contains(tag)) {
+      return;
+    }
+
+    searchActiveTags.add(tag);
+    print('search tags: $searchActiveTags');
+    searchPicsWithTags();
+  }
+
+  void removeTagFromSearchFilter() {
+    String tag = selectedEditTag;
+
+    if (searchActiveTags.contains(tag)) {
+      searchActiveTags.remove(tag);
+      print('search tags: $searchActiveTags');
+      searchPicsWithTags();
+    }
+  }
+
+  void searchPicsWithTags() {
+    var tagsBox = Hive.box('tags');
+
+    searchPhotosIds.clear();
+    List<String> tempPhotosIds = [];
+    bool firstInteraction = true;
+
+    for (var tag in searchActiveTags) {
+      print('filtering tag: $tag');
+      int indexOfTag = allTags.indexOf(tag);
+      print('index of $tag: $indexOfTag');
+      Tag getTag = tagsBox.getAt(indexOfTag);
+      List<String> photosIds = getTag.photoId;
+      print('photos Ids in this tag: $photosIds');
+
+      if (firstInteraction) {
+        print('adding all photos because it is firt interaction');
+        tempPhotosIds.addAll(photosIds);
+        firstInteraction = false;
+      } else {
+        print('tempPhotoId: $tempPhotosIds');
+        List<String> auxArray = [];
+        auxArray.addAll(tempPhotosIds);
+
+        for (var photoId in tempPhotosIds) {
+          print('checking if photoId is there: $photoId');
+          if (!photosIds.contains(photoId)) {
+            auxArray.remove(photoId);
+            print('removing $photoId because doesnt have $tag');
+          }
+        }
+        tempPhotosIds = auxArray;
+      }
+    }
+    searchPhotosIds = tempPhotosIds;
+    print('Search Photos Ids: $searchPhotosIds');
+    notifyListeners();
   }
 
   void searchResultsTags(String text) {
