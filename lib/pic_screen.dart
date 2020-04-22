@@ -142,6 +142,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   void initState() {
     super.initState();
     DatabaseManager.instance.currentTab = 1;
+    DatabaseManager.instance.setCurrentTab(1);
+    Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
 
     _changeThrottle = Throttle(onCall: _onAssetChange);
