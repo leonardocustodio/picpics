@@ -24,7 +24,7 @@ import 'package:flutter/gestures.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'dart:io';
 import 'package:picPics/admob_manager.dart';
-import 'package:keyboard_visibility/keyboard_visibility.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -150,14 +150,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
 
-    KeyboardVisibilityNotification().addNewListener(
-      onChange: (bool visible) {
-        print('keyboard: $visible');
-        setState(() {
-          isAdVisible = !visible;
-        });
-      },
-    );
+    KeyboardVisibility.onChange.listen((bool visible) {
+      print('keyboard: $visible');
+      setState(() {
+        isAdVisible = !visible;
+      });
+    });
 
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);
