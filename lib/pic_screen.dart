@@ -46,12 +46,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
-  int currentIndex;
+//  int currentIndex;
   int swiperIndex = 0;
   int picSwiper = 0;
 
   double offsetFirstTab = 0.0;
-  double topOffsetFirstTab = 64.0;
+//  double topOffsetFirstTab = 64.0;
+  double topOffsetFirstTab = 112.0;
   bool hideSubtitleFirstTab = false;
 
   double offsetThirdTab = 0.0;
@@ -140,8 +141,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   @override
   void initState() {
     super.initState();
-    currentIndex = 1;
-    _sendCurrentTabToAnalytics(currentIndex);
+    DatabaseManager.instance.currentTab = 1;
+    _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
 
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);
@@ -183,9 +184,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   void changePage(int index) {
     _sendCurrentTabToAnalytics(index);
-    setState(() {
-      currentIndex = index;
-    });
+    DatabaseManager.instance.setCurrentTab(index);
+    Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
 //    if (index == 1) {
 //      print('#### moving to picture.... $picSwiper');
 //      swiperController.move(picSwiper, animation: false);
@@ -689,9 +689,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
-                                    Navigator.pushNamed(context, SettingsScreen.id).then((value) {
-                                      Ads.showBannerAd();
-                                    });
+                                    Ads.setScreen(SettingsScreen.id);
+                                    Navigator.pushNamed(context, SettingsScreen.id);
                                   },
                                   child: Image.asset('lib/images/settings.png'),
                                 ),
@@ -757,7 +756,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       ),
                     ),
                   ),
-                if (currentIndex == 0 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                if (Provider.of<DatabaseManager>(context).currentTab == 0 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
                     constraints: BoxConstraints.expand(),
                     color: kWhiteColor,
@@ -772,9 +771,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
-                                    Navigator.pushNamed(context, SettingsScreen.id).then((value) {
-                                      Ads.showBannerAd();
-                                    });
+                                    Ads.setScreen(SettingsScreen.id);
+                                    Navigator.pushNamed(context, SettingsScreen.id);
                                   },
                                   child: Image.asset('lib/images/settings.png'),
                                 ),
@@ -818,10 +816,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           Padding(
                             padding: const EdgeInsets.only(top: 48.0),
                             child: GestureDetector(
-                              onScaleUpdate: (update) {
-                                print(update.scale);
-                                DatabaseManager.instance.gridScale(update.scale);
-                              },
+//                              onScaleUpdate: (update) {
+//                                print(update.scale);
+//                                DatabaseManager.instance.gridScale(update.scale);
+//                              },
                               child: _buildGridView(),
                             ),
                           ),
@@ -829,7 +827,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       ),
                     ),
                   ),
-                if (currentIndex == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                if (Provider.of<DatabaseManager>(context).currentTab == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
                     constraints: BoxConstraints.expand(),
                     decoration: new BoxDecoration(
@@ -851,9 +849,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
-                                    Navigator.pushNamed(context, SettingsScreen.id).then((value) {
-                                      Ads.showBannerAd();
-                                    });
+                                    Ads.setScreen(SettingsScreen.id);
+                                    Navigator.pushNamed(context, SettingsScreen.id);
                                   },
                                   child: Image.asset('lib/images/settings.png'),
                                 ),
@@ -889,7 +886,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       ),
                     ),
                   ),
-                if (currentIndex == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                if (Provider.of<DatabaseManager>(context).currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
 //                    constraints: BoxConstraints.expand(),
 //                    color: kWhiteColor,
@@ -962,9 +959,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     CupertinoButton(
                                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                                       onPressed: () {
-                                        Navigator.pushNamed(context, SettingsScreen.id).then((value) {
-                                          Ads.showBannerAd();
-                                        });
+                                        Ads.setScreen(SettingsScreen.id);
+                                        Navigator.pushNamed(context, SettingsScreen.id);
                                       },
                                       child: Image.asset('lib/images/settings.png'),
                                     ),
@@ -1141,7 +1137,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             backgroundColor: kWhiteColor,
             hasNotch: true,
             opacity: 1.0,
-            currentIndex: currentIndex,
+            currentIndex: Provider.of<DatabaseManager>(context).currentTab,
             onTap: changePage,
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)), //border radius doesn't work when the notch is enabled.
             elevation: 8,

@@ -1,5 +1,9 @@
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:picPics/pic_screen.dart';
+import 'package:picPics/premium_screen.dart';
 import 'dart:io';
+
+import 'package:picPics/settings_screen.dart';
 
 const String androidAppId = 'ca-app-pub-5152146538991892~2540164868';
 const String iosAppId = 'ca-app-pub-5152146538991892~4542623621';
@@ -27,8 +31,8 @@ class Ads {
   static BannerAd _createBannerAd() {
     return BannerAd(
       adUnitId: BannerAd.testAdUnitId,
-//      size: AdSize.banner,
-      size: AdSize.smartBanner,
+      size: AdSize.banner,
+//      size: AdSize.smartBanner,
       targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
         print("BannerAd event $event");
@@ -36,15 +40,50 @@ class Ads {
     );
   }
 
-  static void showBannerAd() {
+  static void showBannerAd(AnchorType position) {
     if (_bannerAd == null) _bannerAd = _createBannerAd();
+
     _bannerAd
       ..load()
-      ..show(anchorOffset: 0.0, anchorType: AnchorType.bottom);
+      ..show(anchorOffset: position == AnchorType.top ? 48.0 : 0.0, anchorType: position);
   }
 
   static void hideBannerAd() async {
+    if (_bannerAd == null) {
+      return;
+    }
     await _bannerAd.dispose();
     _bannerAd = null;
+  }
+
+  static void setScreen(String screen, [int tab]) {
+    switch (screen) {
+      case SettingsScreen.id:
+        {
+          showBannerAd(AnchorType.bottom);
+        }
+        break;
+      case PremiumScreen.id:
+        {
+          hideBannerAd();
+        }
+        break;
+      case PicScreen.id:
+        {
+          if (tab == 0) {
+            showBannerAd(AnchorType.top);
+          } else if (tab == 1) {
+            hideBannerAd();
+          } else {
+            hideBannerAd();
+          }
+        }
+        break;
+      default:
+        {
+          hideBannerAd();
+        }
+        break;
+    }
   }
 }

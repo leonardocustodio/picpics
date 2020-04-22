@@ -19,6 +19,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notification_permissions/notification_permissions.dart';
+import 'package:picPics/admob_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,6 +27,7 @@ void main() async {
   Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
+  Ads.initialize();
   DatabaseManager.instance.analytics = FirebaseAnalytics();
   DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
 

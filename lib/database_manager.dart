@@ -64,6 +64,8 @@ class DatabaseManager extends ChangeNotifier {
 
   User userSettings;
 
+  int currentTab = 1;
+
 //  Pic selectedPic;
   void requestNotification() {
     var userBox = Hive.box('user');
@@ -91,6 +93,11 @@ class DatabaseManager extends ChangeNotifier {
       userSettings.dailyChallenges = true;
       userBox.putAt(0, userSettings);
     }
+  }
+
+  void setCurrentTab(int tab) {
+    currentTab = tab;
+    notifyListeners();
   }
 
   void finishedTutorial() {

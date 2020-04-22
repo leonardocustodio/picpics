@@ -13,6 +13,7 @@ import 'package:notification_permissions/notification_permissions.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:picPics/admob_manager.dart';
+import 'package:picPics/pic_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -263,7 +264,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    Ads.showBannerAd();
+    print('#### INIT!!!!');
   }
 
   @override
@@ -303,6 +304,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               CupertinoButton(
                 padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                 onPressed: () {
+                  print('Current tab in picScreen: ${DatabaseManager.instance.currentTab}');
+                  Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
                   Navigator.pop(context);
                 },
                 child: Image.asset('lib/images/backarrowgray.png'),
@@ -506,16 +509,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     Padding(
                       padding: const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 80.0),
                       child: CupertinoButton(
-                        onPressed: () async {
-                          String result = await Navigator.push(
-                              context,
-                              new MaterialPageRoute(
-                                builder: (BuildContext context) => new PremiumScreen(),
-                              ));
-
-                          if (result != null) {
-                            Ads.showBannerAd();
-                          }
+                        onPressed: () {
+                          Ads.setScreen(PremiumScreen.id);
+                          Navigator.pushNamed(context, PremiumScreen.id);
                         },
                         padding: const EdgeInsets.all(0),
                         child: OutlineGradientButton(
