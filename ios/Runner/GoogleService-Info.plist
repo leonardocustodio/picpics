@@ -19,18 +19,20 @@
 	<key>STORAGE_BUCKET</key>
 	<string>picpics.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
-	<false></false>
+	<true/>
 	<key>IS_ANALYTICS_ENABLED</key>
-	<false></false>
+	<true/>
 	<key>IS_APPINVITE_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_GCM_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>IS_SIGNIN_ENABLED</key>
-	<true></true>
+	<true/>
 	<key>GOOGLE_APP_ID</key>
 	<string>1:782873848258:ios:7db595160b6b6e9e1f8e5b</string>
 	<key>DATABASE_URL</key>
 	<string>https://picpics.firebaseio.com</string>
+	<key>ADMOB_APP_ID</key>
+	<string>ca-app-pub-5152146538991892~4542623621</string>
 </dict>
 </plist>

@@ -11,6 +11,8 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
+import 'package:after_layout/after_layout.dart';
+import 'package:picPics/admob_manager.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -19,7 +21,12 @@ class SettingsScreen extends StatefulWidget {
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
+class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver, AfterLayoutMixin<SettingsScreen> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   RateMyApp rateMyApp = RateMyApp(
     googlePlayIdentifier: 'br.com.inovatso.picPics',
     appStoreIdentifier: '1503352127',
@@ -256,6 +263,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    Ads.showBannerAd();
   }
 
   @override
@@ -263,6 +271,23 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     if (state == AppLifecycleState.resumed) {
       DatabaseManager.instance.checkNotificationPermission(shouldNotify: true);
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('#!#!#!#! did change dependencies');
+
+//    if (myBanner == null) {
+//      startBanner();
+//      displayBanner();
+//    }
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    // Calling the same function "after layout" to resolve the issue.
+    print('after layout');
   }
 
   @override
@@ -481,8 +506,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 32.0),
                       child: CupertinoButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, PremiumScreen.id);
+                        onPressed: () async {
+                          String result = await Navigator.push(
+                              context,
+                              new MaterialPageRoute(
+                                builder: (BuildContext context) => new PremiumScreen(),
+                              ));
+
+                          if (result != null) {
+                            Ads.showBannerAd();
+                          }
                         },
                         padding: const EdgeInsets.all(0),
                         child: OutlineGradientButton(

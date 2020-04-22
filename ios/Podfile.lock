@@ -4,6 +4,9 @@ PODS:
   - esys_flutter_share (0.0.1):
     - Flutter
   - Fabric (1.10.2)
+  - Firebase/AdMob (6.13.0):
+    - Firebase/CoreOnly
+    - Google-Mobile-Ads-SDK (~> 7.50)
   - Firebase/Analytics (6.13.0):
     - Firebase/Core
   - Firebase/Core (6.13.0):
@@ -17,6 +20,10 @@ PODS:
   - Firebase/RemoteConfig (6.13.0):
     - Firebase/CoreOnly
     - FirebaseRemoteConfig (~> 4.4.5)
+  - firebase_admob (0.0.1):
+    - Firebase/AdMob
+    - Firebase/Core
+    - Flutter
   - firebase_analytics (0.0.1):
     - Firebase/Analytics (~> 6.0)
     - Firebase/Core
@@ -96,6 +103,8 @@ PODS:
     - Flutter
   - geolocator (5.3.1):
     - Flutter
+  - Google-Mobile-Ads-SDK (7.58.0):
+    - GoogleAppMeasurement (~> 6.0)
   - google_api_availability (2.0.4):
     - Flutter
   - google_maps_flutter (0.0.1):
@@ -161,6 +170,7 @@ PODS:
 
 DEPENDENCIES:
   - esys_flutter_share (from `.symlinks/plugins/esys_flutter_share/ios`)
+  - firebase_admob (from `.symlinks/plugins/firebase_admob/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_core_web (from `.symlinks/plugins/firebase_core_web/ios`)
@@ -199,6 +209,7 @@ SPEC REPOS:
     - FirebaseInstanceID
     - FirebaseMessaging
     - FirebaseRemoteConfig
+    - Google-Mobile-Ads-SDK
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
@@ -210,6 +221,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   esys_flutter_share:
     :path: ".symlinks/plugins/esys_flutter_share/ios"
+  firebase_admob:
+    :path: ".symlinks/plugins/firebase_admob/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_core:
@@ -262,6 +275,7 @@ SPEC CHECKSUMS:
   esys_flutter_share: 403498dab005b36ce1f8d7aff377e81f0621b0b4
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   Firebase: 458d109512200d1aca2e1b9b6cf7d68a869a4a46
+  firebase_admob: d8c2bc95b5e0069406280ce6adb816cdee6aa595
   firebase_analytics: dacdcfc524d722fff13dcff942f0dfa47e6be567
   firebase_core: 0d8be0e0d14c4902953aeb5ac5d7316d1fe4b978
   firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
@@ -283,6 +297,7 @@ SPEC CHECKSUMS:
   flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
   flutter_vibrate: c0ca4ac994ff97c3f147f69865458bbc0cc3508b
   geolocator: 460cc8e850b616f8c0e90944c86517d91ccbb686
+  Google-Mobile-Ads-SDK: 7052557293c75c676db55feb707ace9b790f32c1
   google_api_availability: 15fa42a8cd83c0a6738507ffe6e87096f12abcb8
   google_maps_flutter: d0dd62f5a7d39bae61057eb9f52dd778d99c7c6c
   GoogleAppMeasurement: dfe55efa543e899d906309eaaac6ca26d249862f

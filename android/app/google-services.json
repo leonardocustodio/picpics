@@ -30,10 +30,19 @@
             {
               "client_id": "782873848258-a4id31vl8pvcebi63rfgtg36vd4mrphn.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "782873848258-1r809shqf1tg3n1hpabgmlqfngtf41bk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "br.com.inovatso.picPics",
+                "app_store_id": "1503352127"
+              }
             }
           ]
         }
-      }
+      },
+      "admob_app_id": "ca-app-pub-5152146538991892~2540164868"
     }
   ],
   "configuration_version": "1"

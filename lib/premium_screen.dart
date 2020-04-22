@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/services.dart';
+import 'admob_manager.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -38,6 +38,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   void initState() {
     super.initState();
     asyncInitState();
+    Ads.hideBannerAd();
   }
 
   @override
@@ -421,7 +422,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     right: 0,
                     child: CupertinoButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        print('oi');
+                        Navigator.pop(context, 'show ads');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
