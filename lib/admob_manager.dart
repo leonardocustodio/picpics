@@ -7,7 +7,8 @@ import 'package:picPics/settings_screen.dart';
 
 const String androidAppId = 'ca-app-pub-5152146538991892~2540164868';
 const String iosAppId = 'ca-app-pub-5152146538991892~4542623621';
-const String testDevice = 'YOUR_DEVICE_ID';
+const String iosBannerId = 'ca-app-pub-5152146538991892/7863578075';
+const String androidBannerId = 'ca-app-pub-5152146538991892/1911525195';
 
 class Ads {
   static BannerAd _bannerAd;
@@ -21,26 +22,31 @@ class Ads {
   }
 
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    testDevices: testDevice != null ? <String>[testDevice] : null,
     keywords: <String>['foo', 'bar'],
     contentUrl: 'http://foo.com/bar.html',
     childDirected: false,
     nonPersonalizedAds: false,
+    testDevices: <String>[],
   );
 
   static BannerAd _createBannerAd() {
     return BannerAd(
       adUnitId: BannerAd.testAdUnitId,
-      size: AdSize.banner,
-//      size: AdSize.smartBanner,
+      size: AdSize.fullBanner,
       targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
         print("BannerAd event $event");
+//        print(_bannerAd.size);
       },
     );
   }
 
   static void showBannerAd(AnchorType position) {
+    if (_bannerAd != null) {
+      _bannerAd.show(anchorOffset: position == AnchorType.top ? 48.0 : 0.0, anchorType: position);
+      return;
+    }
+
     if (_bannerAd == null) _bannerAd = _createBannerAd();
 
     _bannerAd
