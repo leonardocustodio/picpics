@@ -9,6 +9,7 @@ const String androidAppId = 'ca-app-pub-5152146538991892~2540164868';
 const String iosAppId = 'ca-app-pub-5152146538991892~4542623621';
 const String iosBannerId = 'ca-app-pub-5152146538991892/7863578075';
 const String androidBannerId = 'ca-app-pub-5152146538991892/1911525195';
+const String HideAdScreen = 'HideAd';
 
 class Ads {
   static BannerAd _bannerAd;
@@ -102,6 +103,11 @@ class Ads {
           } else {
             showBannerAd(48.0);
           }
+        }
+        break;
+      case HideAdScreen:
+        {
+          hideBannerAd();
         }
         break;
       default:

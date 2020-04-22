@@ -539,6 +539,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           child: CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
+              Ads.setScreen(HideAdScreen);
               Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
               tagsEditingController.text = '';
 
@@ -1123,6 +1124,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             child: Center(
               child: GestureDetector(
                 onTap: () {
+                  Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
                   dismissPhotoCard();
                 },
                 child: Container(
