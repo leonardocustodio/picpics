@@ -1,8 +1,8 @@
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:picPics/database_manager.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/premium_screen.dart';
 import 'dart:io';
-
 import 'package:picPics/settings_screen.dart';
 
 const String androidAppId = 'ca-app-pub-5152146538991892~2540164868';
@@ -41,17 +41,36 @@ class Ads {
     );
   }
 
-  static void showBannerAd(AnchorType position) {
-    if (_bannerAd != null) {
-      _bannerAd.show(anchorOffset: position == AnchorType.top ? 48.0 : 0.0, anchorType: position);
+  static void showBannerAd(double offset) async {
+    if (_bannerAd == null) {
+      DatabaseManager.instance.adOffset = offset;
+
+      _bannerAd = _createBannerAd();
+
+      _bannerAd
+        ..load()
+        ..show(anchorOffset: offset, anchorType: AnchorType.bottom);
+
       return;
     }
 
-    if (_bannerAd == null) _bannerAd = _createBannerAd();
+    if (DatabaseManager.instance.adOffset != offset) {
+      DatabaseManager.instance.adOffset = offset;
 
-    _bannerAd
-      ..load()
-      ..show(anchorOffset: position == AnchorType.top ? 48.0 : 0.0, anchorType: position);
+      await _bannerAd.dispose();
+      _bannerAd = null;
+
+      _bannerAd = _createBannerAd();
+      _bannerAd
+        ..load()
+        ..show(anchorOffset: offset, anchorType: AnchorType.bottom);
+      return;
+    }
+
+    if (_bannerAd != null) {
+      _bannerAd.show(anchorOffset: offset, anchorType: AnchorType.bottom);
+      return;
+    }
   }
 
   static void hideBannerAd() async {
@@ -66,7 +85,7 @@ class Ads {
     switch (screen) {
       case SettingsScreen.id:
         {
-          showBannerAd(AnchorType.bottom);
+          showBannerAd(0.0);
         }
         break;
       case PremiumScreen.id:
@@ -77,11 +96,11 @@ class Ads {
       case PicScreen.id:
         {
           if (tab == 0) {
-            showBannerAd(AnchorType.top);
+            showBannerAd(48.0);
           } else if (tab == 1) {
-            hideBannerAd();
+            showBannerAd(48.0);
           } else {
-            hideBannerAd();
+            showBannerAd(48.0);
           }
         }
         break;

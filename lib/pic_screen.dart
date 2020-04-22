@@ -51,8 +51,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   int picSwiper = 0;
 
   double offsetFirstTab = 0.0;
-//  double topOffsetFirstTab = 64.0;
-  double topOffsetFirstTab = 112.0;
+  double topOffsetFirstTab = 64.0;
+//  double topOffsetFirstTab = 112.0;
   bool hideSubtitleFirstTab = false;
 
   double offsetThirdTab = 0.0;
@@ -762,7 +762,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(top: 48.0),
+                            padding: const EdgeInsets.only(top: 48.0, bottom: 60.0),
                             child: GestureDetector(
 //                              onScaleUpdate: (update) {
 //                                print(update.scale);
@@ -777,6 +777,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   ),
                 if (Provider.of<DatabaseManager>(context).currentTab == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
+                    padding: const EdgeInsets.only(bottom: 60.0),
                     constraints: BoxConstraints.expand(),
                     decoration: new BoxDecoration(
                       image: DecorationImage(
@@ -836,6 +837,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   ),
                 if (Provider.of<DatabaseManager>(context).currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
+                    padding: const EdgeInsets.only(bottom: 60.0),
 //                    constraints: BoxConstraints.expand(),
 //                    color: kWhiteColor,
                     child: SafeArea(

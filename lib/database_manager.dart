@@ -67,6 +67,8 @@ class DatabaseManager extends ChangeNotifier {
 
   int currentTab = 1;
 
+  double adOffset = 48.0;
+
 //  Pic selectedPic;
   void requestNotification() {
     var userBox = Hive.box('user');
