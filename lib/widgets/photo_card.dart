@@ -9,6 +9,7 @@ import 'package:picPics/image_item.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/admob_manager.dart';
 
 class PhotoCard extends StatelessWidget {
   final AssetEntity data;
@@ -81,6 +82,7 @@ class PhotoCard extends StatelessWidget {
                   child: CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
                     onPressed: () {
+                      Ads.setScreen(PhotoScreen.id);
                       DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },

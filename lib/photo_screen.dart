@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:picPics/admob_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
-//import 'package:picPics/widgets/list_of_tags.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/image_item.dart';
+import 'package:picPics/widgets/tags_list.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
@@ -20,6 +21,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
   @override
   void initState() {
     super.initState();
+    Ads.setScreen(PhotoScreen.id);
+
     createdDate = DatabaseManager.instance.selectedPhoto.createDateTime;
     dateString = DatabaseManager.instance.formatDate(createdDate);
 
@@ -28,7 +31,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
     if (picInfo == null) {
       picInfo = Pic(
         DatabaseManager.instance.selectedPhoto.id,
-//        0,
         DatabaseManager.instance.selectedPhoto.createDateTime,
         DatabaseManager.instance.selectedPhoto.latitude,
         DatabaseManager.instance.selectedPhoto.longitude,
@@ -117,11 +119,19 @@ class _PhotoScreenState extends State<PhotoScreen> {
                           ),
                         ],
                       ),
-//                      ListOfTags(
-//                        picInfo: picInfo,
-//                        activeTags: false,
-//                        fullScreen: true,
-//                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: TagsList(
+                          tags: picInfo.tags,
+                          tagStyle: TagStyle.MultiColored,
+                          onTap: () {
+                            print('ignore click');
+                          },
+                          showEditTagModal: () {
+                            print('ignore');
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),

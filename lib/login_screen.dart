@@ -86,28 +86,28 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   SizedBox(
-                    height: 16.0,
+                    height: 40.0,
                   ),
-                  Container(
-                    height: 44.0,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: kWhiteColor, width: 1.0),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Center(
-                      child: Text(
-                        "Criar conta",
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: kWhiteColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
-                        ),
-                      ),
-                    ),
-                  ),
+//                  Container(
+//                    height: 44.0,
+//                    decoration: BoxDecoration(
+//                      border: Border.all(color: kWhiteColor, width: 1.0),
+//                      borderRadius: BorderRadius.circular(8.0),
+//                    ),
+//                    child: Center(
+//                      child: Text(
+//                        "Criar conta",
+//                        style: TextStyle(
+//                          fontFamily: 'Lato',
+//                          color: kWhiteColor,
+//                          fontSize: 16,
+//                          fontWeight: FontWeight.w700,
+//                          fontStyle: FontStyle.normal,
+//                          letterSpacing: -0.4099999964237213,
+//                        ),
+//                      ),
+//                    ),
+//                  ),
                 ],
               ),
             ),

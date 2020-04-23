@@ -312,18 +312,28 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         totalTags += 1;
         isTitleWidget.add(true);
         widgetsArray.add(Container(
-          padding: const EdgeInsets.only(left: 2.0),
-          alignment: Alignment.centerLeft,
-          child: Text(
-            tag.name,
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: Color(0xff606566),
-              fontSize: 24,
-              fontWeight: FontWeight.w400,
-              fontStyle: FontStyle.normal,
-              letterSpacing: -0.4099999964237213,
-            ),
+          padding: const EdgeInsets.only(left: 2.0, right: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                tag.name,
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff606566),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                  letterSpacing: -0.4099999964237213,
+                ),
+              ),
+              CupertinoButton(
+                onPressed: () {
+                  print('share pics');
+                },
+                child: Image.asset('lib/images/sharepicsico.png'),
+              ),
+            ],
           ),
         ));
         for (String photoId in tag.photoId) {

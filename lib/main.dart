@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
+import 'package:picPics/login_screen.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
@@ -11,7 +12,6 @@ import 'package:picPics/premium_screen.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/login_screen.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -46,6 +46,8 @@ void main() async {
     await Purchases.setup("FccxPqqfiDFQRbkTkvorJKTrokkeNUMu");
   }
 
+  String initialRoute = PicScreen.id;
+
   if (userBox.length == 0) {
     print('creating user entry...');
 
@@ -65,6 +67,7 @@ void main() async {
 
     userBox.add(user);
     DatabaseManager.instance.userSettings = user;
+    initialRoute = LoginScreen.id;
   } else {
     DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
@@ -95,7 +98,7 @@ void main() async {
   runZonedGuarded(() {
     runApp(
       PicPicsApp(
-        initialRoute: LoginScreen.id,
+        initialRoute: initialRoute,
       ),
     );
   }, (Object error, StackTrace stack) {
