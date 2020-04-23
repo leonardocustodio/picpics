@@ -20,6 +20,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:picPics/admob_manager.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,11 @@ void main() async {
   var userBox = await Hive.openBox('user');
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
+
+  Future<void> initPlatformState() async {
+    Purchases.setDebugLogsEnabled(true);
+    await Purchases.setup("FccxPqqfiDFQRbkTkvorJKTrokkeNUMu");
+  }
 
   if (userBox.length == 0) {
     print('creating user entry...');
@@ -68,6 +74,7 @@ void main() async {
   DatabaseManager.instance.loadTags();
   DatabaseManager.instance.loadPics();
   DatabaseManager.instance.loadRemoteConfig();
+  initPlatformState();
 
   void setupPathList() async {
     List<AssetPathEntity> pathList;

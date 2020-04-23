@@ -3,11 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:picPics/components/arrow_painter.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+//import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:picPics/admob_manager.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -17,64 +18,99 @@ class PremiumScreen extends StatefulWidget {
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
-  StreamSubscription _purchaseUpdatedSubscription;
-  StreamSubscription _purchaseErrorSubscription;
-  StreamSubscription _conectionSubscription;
+//  StreamSubscription _purchaseUpdatedSubscription;
+//  StreamSubscription _purchaseErrorSubscription;
+//  StreamSubscription _conectionSubscription;
+//
+//  final List<String> _subscriptionsLists = Platform.isAndroid
+//      ? [
+//          'rs9_90_monthly_subscription',
+//          'rs99_90_yearly_subscription',
+//        ]
+//      : [
+//          'rs9_90_monthly_subscription',
+//          'rs99_90_yearly_subscription',
+//        ];
+//
+//  String _platformVersion = 'Unknown';
 
-  final List<String> _subscriptionsLists = Platform.isAndroid
-      ? [
-          'rs9_90_monthly_subscription',
-          'rs99_90_yearly_subscription',
-        ]
-      : [
-          'rs9_90_monthly_subscription',
-          'rs99_90_yearly_subscription',
-        ];
+//  List<PurchasedItem> _purchases = [];
 
-  String _platformVersion = 'Unknown';
-  List<IAPItem> _items = [];
-  List<PurchasedItem> _purchases = [];
+  List<Package> _items = [];
+
+  void getOffers() async {
+    try {
+      Offerings offerings = await Purchases.getOfferings();
+      if (offerings.current != null && offerings.current.availablePackages.isNotEmpty) {
+        print(offerings.current.availablePackages);
+//        showPaywall(offerings.current);
+        setState(() {
+          _items = offerings.current.availablePackages;
+        });
+      }
+    } on PlatformException catch (e) {
+      // optional error handling
+    }
+  }
+
+  void makePurchase(Package package) async {
+    try {
+      PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
+      if (purchaserInfo.entitlements.all["Premium"].isActive) {
+        // Unlock that great "pro" content
+        print('know you are fucking pro!');
+      }
+    } on PlatformException catch (e) {
+      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        print(e);
+//        showError(e);
+      }
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    asyncInitState();
+    getOffers();
+
+//    asyncInitState();
   }
 
   @override
   void dispose() {
     super.dispose();
-    if (_conectionSubscription != null) {
-      _conectionSubscription.cancel();
-      _conectionSubscription = null;
-    }
+//    if (_conectionSubscription != null) {
+//      _conectionSubscription.cancel();
+//      _conectionSubscription = null;
+//    }
   }
 
-  void asyncInitState() async {
-    String platformVersion;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    try {
-      platformVersion = await FlutterInappPurchase.instance.platformVersion;
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
-    }
+//  void asyncInitState() async {
+//    String platformVersion;
+//    // Platform messages may fail, so we use a try/catch PlatformException.
+//    try {
+//      platformVersion = await FlutterInappPurchase.instance.platformVersion;
+//    } on PlatformException {
+//      platformVersion = 'Failed to get platform version.';
+//    }
+//
+//    // prepare
+//    var result = await FlutterInappPurchase.instance.initConnection;
+//    print('result: $result');
+//
+//    // If the widget was removed from the tree while the asynchronous platform
+//    // message was in flight, we want to discard the reply rather than calling
+//    // setState to update our non-existent appearance.
+//    if (!mounted) return;
+//
+//    setState(() {
+//      _platformVersion = platformVersion;
+//    });
+//
+//    _getSubscriptions();
 
-    // prepare
-    var result = await FlutterInappPurchase.instance.initConnection;
-    print('result: $result');
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
-
-    setState(() {
-      _platformVersion = platformVersion;
-    });
-
-    _getSubscriptions();
-
-    // refresh items for android
+  // refresh items for android
 //    try {
 //      String msg = await FlutterInappPurchase.instance.consumeAllItems;
 //      print('find items: $msg');
@@ -85,48 +121,48 @@ class _PremiumScreenState extends State<PremiumScreen> {
 //      print('consumeAllItems error: $err');
 //    }
 
-    _conectionSubscription = FlutterInappPurchase.connectionUpdated.listen((connected) {
-      print('connected: $connected');
-    });
+//    _conectionSubscription = FlutterInappPurchase.connectionUpdated.listen((connected) {
+//      print('connected: $connected');
+//    });
+//
+//    _purchaseUpdatedSubscription = FlutterInappPurchase.purchaseUpdated.listen((productItem) {
+//      print('purchase-updated: $productItem');
+//    });
+//
+//    _purchaseErrorSubscription = FlutterInappPurchase.purchaseError.listen((purchaseError) {
+//      print('purchase-error: $purchaseError');
+//    });
+//  }
 
-    _purchaseUpdatedSubscription = FlutterInappPurchase.purchaseUpdated.listen((productItem) {
-      print('purchase-updated: $productItem');
-    });
+//  Future _getSubscriptions() async {
+//    List<IAPItem> items = await FlutterInappPurchase.instance.getSubscriptions(_subscriptionsLists);
+//    for (var item in items) {
+//      print('${item.toString()}');
+//      this._items.add(item);
+//    }
+//
+//    setState(() {
+//      this._items = items;
+//      this._purchases = [];
+//    });
+//  }
 
-    _purchaseErrorSubscription = FlutterInappPurchase.purchaseError.listen((purchaseError) {
-      print('purchase-error: $purchaseError');
-    });
-  }
+//  Future _getPurchaseHistory() async {
+//    List<PurchasedItem> items = await FlutterInappPurchase.instance.getPurchaseHistory();
+//    for (var item in items) {
+//      print('${item.toString()}');
+//      this._purchases.add(item);
+//    }
+//
+//    setState(() {
+//      this._items = [];
+//      this._purchases = items;
+//    });
+//  }
 
-  Future _getSubscriptions() async {
-    List<IAPItem> items = await FlutterInappPurchase.instance.getSubscriptions(_subscriptionsLists);
-    for (var item in items) {
-      print('${item.toString()}');
-      this._items.add(item);
-    }
-
-    setState(() {
-      this._items = items;
-      this._purchases = [];
-    });
-  }
-
-  Future _getPurchaseHistory() async {
-    List<PurchasedItem> items = await FlutterInappPurchase.instance.getPurchaseHistory();
-    for (var item in items) {
-      print('${item.toString()}');
-      this._purchases.add(item);
-    }
-
-    setState(() {
-      this._items = [];
-      this._purchases = items;
-    });
-  }
-
-  void _requestPurchase(IAPItem item) {
-    FlutterInappPurchase.instance.requestPurchase(item.productId);
-  }
+//  void _requestPurchase(IAPItem item) {
+//    FlutterInappPurchase.instance.requestPurchase(item.productId);
+//  }
 
   List<Widget> _renderInApps() {
     List<Widget> widgets = [
@@ -261,12 +297,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
       return widgets;
     }
 
-    var yearSubs = _items.firstWhere((e) => e.subscriptionPeriodUnitIOS == 'YEAR');
-    var monthSubs = _items.firstWhere((e) => e.subscriptionPeriodUnitIOS == 'MONTH');
+    var yearSubs = _items.firstWhere((e) => e.packageType == PackageType.annual, orElse: null);
+    var monthSubs = _items.firstWhere((e) => e.packageType == PackageType.monthly, orElse: null);
 
-    double monthPrice = double.parse(monthSubs.price);
-    double yearPrice = double.parse(yearSubs.price);
-    double save = 100 - (yearPrice / (monthPrice * 12) * 100);
+    double save = 100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
     print('Save: $save');
 
     widgets.insert(
@@ -276,7 +310,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
-              this._requestPurchase(yearSubs);
+              makePurchase(yearSubs);
             },
             child: Container(
               height: 63.0,
@@ -294,7 +328,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          "Sign ${yearSubs.localizedPrice}/year",
+                          "Sign ${yearSubs.product.priceString}/year",
                           style: TextStyle(
                             fontFamily: 'Lato',
                             color: kPinkColor,
@@ -344,7 +378,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
-              this._requestPurchase(monthSubs);
+              makePurchase(monthSubs);
             },
             child: Container(
               height: 44.0,
@@ -354,7 +388,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               ),
               child: Center(
                 child: Text(
-                  "Sign ${monthSubs.localizedPrice}/month",
+                  "Sign ${monthSubs.product.priceString}/month",
                   style: TextStyle(
                     fontFamily: 'Lato',
                     color: kWhiteColor,

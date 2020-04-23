@@ -305,6 +305,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     if (!isFiltered) {
       for (Tag tag in tagsBox.values) {
+        if (tag.photoId.length == 0) {
+          print('skipping because tag has no pictures...');
+          continue;
+        }
         totalTags += 1;
         isTitleWidget.add(true);
         widgetsArray.add(Container(
@@ -333,10 +337,40 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                 padding: const EdgeInsets.all(5.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(5.0),
-                  child: ImageItem(
-                    entity: data,
-                    size: 150,
-                    backgroundColor: Colors.grey[400],
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      Ads.setScreen(HideAdScreen);
+                      Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+                      int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+                      tagsEditingController.text = '';
+
+                      DatabaseManager.instance.tagsSuggestions(
+                        tagsEditingController.text,
+                        data.id,
+                        excludeTags: picInfo.tags,
+                        notify: false,
+                      );
+
+                      DateTime createdDate = data.createDateTime;
+                      String dateString = DatabaseManager.instance.formatDate(createdDate);
+
+                      print('PicTags: ${picInfo.tags}');
+
+                      selectedPhotoData = data;
+                      selectedPhotoPicInfo = picInfo;
+                      selectedPhotoIndex = indexOfPic;
+                      selectedPhotoDateString = dateString;
+
+                      setState(() {
+                        modalPhotoCard = true;
+                      });
+                    },
+                    child: ImageItem(
+                      entity: data,
+                      size: 150,
+                      backgroundColor: Colors.grey[400],
+                    ),
                   ),
                 ),
               ),
@@ -368,10 +402,40 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               padding: const EdgeInsets.all(5.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5.0),
-                child: ImageItem(
-                  entity: data,
-                  size: 150,
-                  backgroundColor: Colors.grey[400],
+                child: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () {
+                    Ads.setScreen(HideAdScreen);
+                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+                    tagsEditingController.text = '';
+
+                    DatabaseManager.instance.tagsSuggestions(
+                      tagsEditingController.text,
+                      data.id,
+                      excludeTags: picInfo.tags,
+                      notify: false,
+                    );
+
+                    DateTime createdDate = data.createDateTime;
+                    String dateString = DatabaseManager.instance.formatDate(createdDate);
+
+                    print('PicTags: ${picInfo.tags}');
+
+                    selectedPhotoData = data;
+                    selectedPhotoPicInfo = picInfo;
+                    selectedPhotoIndex = indexOfPic;
+                    selectedPhotoDateString = dateString;
+
+                    setState(() {
+                      modalPhotoCard = true;
+                    });
+                  },
+                  child: ImageItem(
+                    entity: data,
+                    size: 150,
+                    backgroundColor: Colors.grey[400],
+                  ),
                 ),
               ),
             ),

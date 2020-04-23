@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.0.0+51
+version: 1.0.0+53
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -31,9 +31,10 @@ dependencies:
   flutter_vibrate: ^1.0.0
   platform_alert_dialog: ^1.0.0+2
   notification_permissions: ^0.4.4
-  flutter_inapp_purchase: ^2.2.0
+  #flutter_inapp_purchase: ^2.2.0
   firebase_admob: ^0.9.3+2
   flutter_keyboard_visibility: ^2.0.0
+  purchases_flutter: ^1.1.0
 
 dependency_overrides:
   dartx: ^0.3.0
