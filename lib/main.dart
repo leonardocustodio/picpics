@@ -71,6 +71,7 @@ void main() async {
   } else {
     DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
+    DatabaseManager.instance.setupPathList();
   }
 
   DatabaseManager.instance.loadRecentTags();
@@ -79,22 +80,6 @@ void main() async {
   DatabaseManager.instance.loadRemoteConfig();
   initPlatformState();
 
-  void setupPathList() async {
-    List<AssetPathEntity> pathList;
-
-    pathList = await PhotoManager.getAssetPathList(
-      hasAll: true,
-      onlyAll: true,
-      type: RequestType.image,
-    );
-
-    print('pathList: $pathList');
-
-    DatabaseManager.instance.assetProvider.current = pathList[0];
-    DatabaseManager.instance.loadFirstPhotos();
-  }
-
-  setupPathList();
   runZonedGuarded(() {
     runApp(
       PicPicsApp(

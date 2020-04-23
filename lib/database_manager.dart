@@ -554,6 +554,21 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
+  void setupPathList() async {
+    List<AssetPathEntity> pathList;
+
+    pathList = await PhotoManager.getAssetPathList(
+      hasAll: true,
+      onlyAll: true,
+      type: RequestType.image,
+    );
+
+    print('pathList: $pathList');
+
+    DatabaseManager.instance.assetProvider.current = pathList[0];
+    DatabaseManager.instance.loadFirstPhotos();
+  }
+
   loadFirstPhotos() async {
     await assetProvider.loadMore();
     print('loaded first photos');

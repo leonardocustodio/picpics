@@ -4,6 +4,7 @@ import 'package:picPics/constants.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/pic_screen.dart';
+import 'package:picPics/database_manager.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -58,6 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     onPressed: () async {
                       var result = await PhotoManager.requestPermission();
                       if (result) {
+                        DatabaseManager.instance.setupPathList();
                         Navigator.pushNamed(context, PicScreen.id);
                       } else {
                         // fail
