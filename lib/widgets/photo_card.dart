@@ -77,6 +77,17 @@ class PhotoCard extends StatelessWidget {
                   ),
                 ),
                 Positioned(
+                  top: 0.0,
+                  right: 6.0,
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
+                    onPressed: () {
+                      print('trash');
+                    },
+                    child: Image.asset('lib/images/pictrashicon.png'),
+                  ),
+                ),
+                Positioned(
                   bottom: 0.0,
                   right: 6.0,
                   child: CupertinoButton(

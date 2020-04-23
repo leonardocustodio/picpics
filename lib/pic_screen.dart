@@ -70,7 +70,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   Throttle _changeThrottle;
 
-  bool isAdVisible = true;
+  bool isAdVisible = false;
 
   void changeIndex() {
     print('teste');
@@ -144,10 +144,14 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   @override
   void initState() {
     super.initState();
+
+    if (DatabaseManager.instance.userSettings.tutorialCompleted == true) {
+      isAdVisible = true;
+      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+    }
+
     DatabaseManager.instance.currentTab = 1;
     DatabaseManager.instance.setCurrentTab(1);
-    Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
-
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
 
     KeyboardVisibility.onChange.listen((bool visible) {
@@ -1386,6 +1390,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       CupertinoButton(
                         onPressed: () {
                           if (swiperIndex == 2) {
+                            setState(() {
+                              isAdVisible = true;
+                            });
+                            Ads.setScreen(PicScreen.id, 1);
                             DatabaseManager.instance.finishedTutorial();
                             return;
                           }

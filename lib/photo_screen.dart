@@ -124,6 +124,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         child: TagsList(
                           tags: picInfo.tags,
                           tagStyle: TagStyle.MultiColored,
+                          addTagButton: true,
                           onTap: () {
                             print('ignore click');
                           },

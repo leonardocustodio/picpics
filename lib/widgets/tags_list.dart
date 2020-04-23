@@ -15,6 +15,7 @@ class TagsList extends StatelessWidget {
   final List<String> tags;
   final TextEditingController textEditingController;
   final bool addTagField;
+  final bool addTagButton;
   final bool addButtonVisible;
   final String title;
   final TagStyle tagStyle;
@@ -30,6 +31,7 @@ class TagsList extends StatelessWidget {
     this.textEditingController,
     this.addTagField = false,
     this.addButtonVisible = true,
+    this.addTagButton = false,
     @required this.onTap,
     this.onSubmitted,
     this.onChanged,
@@ -114,6 +116,45 @@ class TagsList extends StatelessWidget {
           ),
         ),
       );
+    }
+
+    if (addTagButton) {
+      tagsWidgets.add(CupertinoButton(
+        minSize: 30,
+        padding: const EdgeInsets.all(0),
+        onPressed: () {
+          print('test');
+        },
+        child: Container(
+          height: 30.0,
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          decoration: BoxDecoration(
+            color: Color(0xFFF1F3F5),
+            border: Border.all(color: kLightGrayColor, width: 1.0),
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Image.asset('lib/images/smalladdtag.png'),
+              SizedBox(
+                width: 4.0,
+              ),
+              Text(
+                "Add Tag",
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: kGrayColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                  letterSpacing: -0.4099999964237213,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ));
     }
 
     if (addTagField) {
