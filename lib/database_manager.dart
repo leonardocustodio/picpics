@@ -101,6 +101,27 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void deletedPic(AssetEntity entity) {
+    var picsBox = Hive.box('pics');
+    var tagsBox = Hive.box('tags');
+
+    int indexOfPic = allPics.indexOf(entity.id);
+
+    Pic getPic = picsBox.getAt(indexOfPic);
+    if (getPic != null) {
+      print('found pic');
+
+      for (var tag in getPic.tags) {
+        int indexOfTag = allTags.indexOf(tag);
+        Tag getTag = tagsBox.getAt(indexOfTag);
+        getTag.photoId.remove(entity.id);
+        print('removed ${entity.id} from $tag');
+        tagsBox.putAt(indexOfTag, getTag);
+      }
+      print('removed ${entity.id} from database');
+      picsBox.deleteAt(indexOfPic);
+      allPics.removeAt(indexOfPic);
+    }
+
     DatabaseManager.instance.assetProvider.data.remove(entity);
     notifyListeners();
   }

@@ -878,7 +878,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             ),
                           ),
                           Padding(
-                            padding: isAdVisible
+                            padding: isAdVisible && !DatabaseManager.instance.userSettings.isPremium
                                 ? const EdgeInsets.only(top: 48.0, bottom: 60.0)
                                 : const EdgeInsets.only(top: 48.0, bottom: 0.0),
                             child: GestureDetector(
@@ -895,7 +895,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   ),
                 if (Provider.of<DatabaseManager>(context).currentTab == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
-                    padding: isAdVisible ? const EdgeInsets.only(bottom: 60.0) : const EdgeInsets.only(bottom: 0.0),
+                    padding: isAdVisible && !DatabaseManager.instance.userSettings.isPremium
+                        ? const EdgeInsets.only(bottom: 60.0)
+                        : const EdgeInsets.only(bottom: 0.0),
                     constraints: BoxConstraints.expand(),
                     decoration: new BoxDecoration(
                       image: DecorationImage(
@@ -955,7 +957,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   ),
                 if (Provider.of<DatabaseManager>(context).currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   Container(
-                    padding: isAdVisible ? const EdgeInsets.only(bottom: 60.0) : const EdgeInsets.only(bottom: 0.0),
+                    padding: isAdVisible && !DatabaseManager.instance.userSettings.isPremium
+                        ? const EdgeInsets.only(bottom: 60.0)
+                        : const EdgeInsets.only(bottom: 0.0),
 //                    constraints: BoxConstraints.expand(),
 //                    color: kWhiteColor,
                     child: SafeArea(
