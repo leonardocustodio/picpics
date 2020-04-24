@@ -159,12 +159,14 @@ class DatabaseManager extends ChangeNotifier {
     var userBox = Hive.box('user');
     userSettings.isPremium = true;
     userBox.putAt(0, userSettings);
+    notifyListeners();
   }
 
   void setUserAsNotPremium() {
     var userBox = Hive.box('user');
     userSettings.isPremium = false;
     userBox.putAt(0, userSettings);
+    notifyListeners();
   }
 
   void loadRemoteConfig() async {

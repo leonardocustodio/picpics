@@ -1,9 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/image_item.dart';
+import 'package:picPics/pic_screen.dart';
 import 'package:picPics/widgets/tags_list.dart';
 
 class PhotoScreen extends StatefulWidget {
@@ -57,6 +59,17 @@ class _PhotoScreenState extends State<PhotoScreen> {
           ),
           Column(
             children: <Widget>[
+              Row(
+                children: <Widget>[
+                  CupertinoButton(
+                    onPressed: () {
+                      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+                      Navigator.pop(context);
+                    },
+                    child: Image.asset('lib/images/backarrowwithdropshadow.png'),
+                  )
+                ],
+              ),
               Spacer(),
               Container(
                 height: 184.0,
