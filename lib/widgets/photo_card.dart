@@ -19,6 +19,7 @@ class PhotoCard extends StatelessWidget {
   final String dateString;
   final TextEditingController tagsEditingController;
   final Function showEditTagModal;
+  final Function onPressedTrash;
 
   PhotoCard({
     this.data,
@@ -28,6 +29,7 @@ class PhotoCard extends StatelessWidget {
     this.dateString,
     this.tagsEditingController,
     this.showEditTagModal,
+    this.onPressedTrash,
   });
 
   @override
@@ -81,9 +83,7 @@ class PhotoCard extends StatelessWidget {
                   right: 6.0,
                   child: CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
-                    onPressed: () {
-                      print('trash');
-                    },
+                    onPressed: onPressedTrash,
                     child: Image.asset('lib/images/pictrashicon.png'),
                   ),
                 ),

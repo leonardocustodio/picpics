@@ -76,6 +76,23 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     print('teste');
   }
 
+  void trashPic(AssetEntity entity) async {
+    print('trashing pic');
+    final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+    if (result.isNotEmpty) {
+      DatabaseManager.instance.deletedPic(entity);
+      if (modalPhotoCard) {
+        setState(() {
+          selectedPhotoPicInfo = null;
+          selectedPhotoDateString = null;
+          selectedPhotoIndex = null;
+          selectedPhotoData = null;
+          modalPhotoCard = false;
+        });
+      }
+    }
+  }
+
   void _sendCurrentTabToAnalytics(index) {
     print('#### sending to analytics!');
 
@@ -600,6 +617,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       tagsEditingController: tagsEditingController,
       dateString: dateString,
       showEditTagModal: showEditTagModal,
+      onPressedTrash: () {
+        trashPic(data);
+      },
     );
   }
 
@@ -1243,6 +1263,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           index: selectedPhotoIndex,
                           tagsEditingController: tagsEditingController,
                           dateString: selectedPhotoDateString,
+                          onPressedTrash: () {
+                            trashPic(selectedPhotoData);
+                          },
                         ),
                       ),
                     ),

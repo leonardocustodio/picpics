@@ -100,6 +100,11 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
+  void deletedPic(AssetEntity entity) {
+    DatabaseManager.instance.assetProvider.data.remove(entity);
+    notifyListeners();
+  }
+
   void setCurrentTab(int tab) {
     currentTab = tab;
     notifyListeners();
