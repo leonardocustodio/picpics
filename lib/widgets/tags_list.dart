@@ -15,7 +15,7 @@ class TagsList extends StatelessWidget {
   final List<String> tags;
   final TextEditingController textEditingController;
   final bool addTagField;
-  final bool addTagButton;
+  final Function addTagButton;
   final bool addButtonVisible;
   final String title;
   final TagStyle tagStyle;
@@ -32,7 +32,7 @@ class TagsList extends StatelessWidget {
     this.textEditingController,
     this.addTagField = false,
     this.addButtonVisible = true,
-    this.addTagButton = false,
+    this.addTagButton,
     @required this.onTap,
     @required this.onDoubleTap,
     this.onSubmitted,
@@ -123,13 +123,11 @@ class TagsList extends StatelessWidget {
       );
     }
 
-    if (addTagButton) {
+    if (addTagButton != null) {
       tagsWidgets.add(CupertinoButton(
         minSize: 30,
         padding: const EdgeInsets.all(0),
-        onPressed: () {
-          print('test');
-        },
+        onPressed: addTagButton,
         child: Container(
           height: 30.0,
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
