@@ -57,100 +57,103 @@ class _PhotoScreenState extends State<PhotoScreen> {
               backgroundColor: Colors.black,
             ),
           ),
-          Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  CupertinoButton(
-                    onPressed: () {
-                      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
-                      Navigator.pop(context);
-                    },
-                    child: Image.asset('lib/images/backarrowwithdropshadow.png'),
-                  )
-                ],
-              ),
-              Spacer(),
-              Container(
-                height: 184.0,
-                decoration: new BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                      Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
-                    ],
-                    stops: [0, 0.40625],
-                  ),
+          SafeArea(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                CupertinoButton(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                  onPressed: () {
+                    Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+                    Navigator.pop(context);
+                  },
+                  child: Image.asset('lib/images/backarrowwithdropshadow.png'),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          RichText(
-                            text: new TextSpan(
-                              children: [
-                                new TextSpan(
-                                    text: 'Local da foto',
+                Spacer(),
+                Container(
+                  height: 184.0,
+                  decoration: new BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
+                        Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                      ],
+                      stops: [0, 0.40625],
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            RichText(
+                              text: new TextSpan(
+                                children: [
+                                  new TextSpan(
+                                      text: 'Local da foto',
+                                      style: TextStyle(
+                                        fontFamily: 'NotoSans',
+                                        color: kWhiteColor,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      )),
+                                  new TextSpan(
+                                    text: '  estado',
                                     style: TextStyle(
                                       fontFamily: 'NotoSans',
                                       color: kWhiteColor,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w300,
                                       fontStyle: FontStyle.normal,
                                       letterSpacing: -0.4099999964237213,
-                                    )),
-                                new TextSpan(
-                                  text: '  estado',
-                                  style: TextStyle(
-                                    fontFamily: 'NotoSans',
-                                    color: kWhiteColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                          Text(
-                            dateString,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: kWhiteColor,
-                              fontSize: 12,
-                              fontWeight: FontWeight.w300,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
+                            Text(
+                              dateString,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w300,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: TagsList(
-                          tags: picInfo.tags,
-                          tagStyle: TagStyle.MultiColored,
-                          addTagButton: true,
-                          onTap: () {
-                            print('ignore click');
-                          },
-                          showEditTagModal: () {
-                            print('ignore');
-                          },
+                          ],
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: const EdgeInsets.only(top: 16.0),
+                          child: TagsList(
+                            tags: picInfo.tags,
+                            tagStyle: TagStyle.MultiColored,
+                            addTagButton: true,
+                            onTap: () {
+                              print('ignore click');
+                            },
+                            onDoubleTap: () {
+                              print('ignore click');
+                            },
+                            showEditTagModal: () {
+                              print('ignore');
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ],
       ),

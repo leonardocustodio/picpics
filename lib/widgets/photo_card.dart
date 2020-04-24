@@ -168,6 +168,9 @@ class PhotoCard extends StatelessWidget {
                   textEditingController: tagsEditingController,
                   showEditTagModal: showEditTagModal,
                   onTap: () {
+                    print('do nothing');
+                  },
+                  onDoubleTap: () {
                     DatabaseManager.instance.removeTagFromPic(DatabaseManager.instance.selectedEditTag, picInfo.photoId);
                   },
                   onChanged: (text) {
@@ -238,6 +241,9 @@ class PhotoCard extends StatelessWidget {
                     showEditTagModal: showEditTagModal,
                     onTap: () {
                       DatabaseManager.instance.addTag(DatabaseManager.instance.selectedEditTag, picInfo.photoId);
+                    },
+                    onDoubleTap: () {
+                      print('do nothing');
                     },
                   ),
                 ),

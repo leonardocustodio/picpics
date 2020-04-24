@@ -20,6 +20,7 @@ class TagsList extends StatelessWidget {
   final String title;
   final TagStyle tagStyle;
   final Function onTap;
+  final Function onDoubleTap;
   final Function onSubmitted;
   final Function onChanged;
   final Function showEditTagModal;
@@ -33,6 +34,7 @@ class TagsList extends StatelessWidget {
     this.addButtonVisible = true,
     this.addTagButton = false,
     @required this.onTap,
+    @required this.onDoubleTap,
     this.onSubmitted,
     this.onChanged,
     this.title,
@@ -91,11 +93,14 @@ class TagsList extends StatelessWidget {
       tagsWidgets.add(
         GestureDetector(
           onTap: () {
+            Vibrate.feedback(FeedbackType.success);
             DatabaseManager.instance.selectedEditTag = tag;
             onTap();
           },
-          onTapDown: (_) {
+          onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
+            DatabaseManager.instance.selectedEditTag = tag;
+            onDoubleTap();
           },
           onLongPress: () {
             DatabaseManager.instance.selectedEditTag = tag;

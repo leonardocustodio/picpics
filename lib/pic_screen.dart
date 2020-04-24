@@ -1050,6 +1050,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             tags: Provider.of<DatabaseManager>(context).searchActiveTags,
                                             tagStyle: TagStyle.MultiColored,
                                             onTap: () {
+                                              print('do nothing');
+                                            },
+                                            onDoubleTap: () {
                                               DatabaseManager.instance.removeTagFromSearchFilter();
                                             },
                                             showEditTagModal: () {
@@ -1081,6 +1084,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             showEditTagModal: showEditTagModal,
                                             onTap: () {
                                               DatabaseManager.instance.addTagToSearchFilter();
+                                            },
+                                            onDoubleTap: () {
+                                              print('do nothing');
                                             },
                                           ),
                                         ),
