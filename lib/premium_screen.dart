@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:picPics/admob_manager.dart';
+import 'package:picPics/database_manager.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
@@ -43,7 +44,6 @@ class _PremiumScreenState extends State<PremiumScreen> {
       Offerings offerings = await Purchases.getOfferings();
       if (offerings.current != null && offerings.current.availablePackages.isNotEmpty) {
         print(offerings.current.availablePackages);
-//        showPaywall(offerings.current);
         setState(() {
           _items = offerings.current.availablePackages;
         });
@@ -53,12 +53,15 @@ class _PremiumScreenState extends State<PremiumScreen> {
     }
   }
 
-  void makePurchase(Package package) async {
+  void makePurchase(BuildContext context, Package package) async {
     try {
       PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
       if (purchaserInfo.entitlements.all["Premium"].isActive) {
         // Unlock that great "pro" content
         print('know you are fucking pro!');
+        DatabaseManager.instance.setUserAsPremium();
+        Ads.setScreen(SettingsScreen.id);
+        Navigator.pop(context);
       }
     } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
@@ -164,7 +167,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
 //    FlutterInappPurchase.instance.requestPurchase(item.productId);
 //  }
 
-  List<Widget> _renderInApps() {
+  List<Widget> _renderInApps(BuildContext context) {
     List<Widget> widgets = [
       Spacer(
         flex: 1,
@@ -310,7 +313,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
-              makePurchase(yearSubs);
+              makePurchase(context, yearSubs);
             },
             child: Container(
               height: 63.0,
@@ -378,7 +381,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
-              makePurchase(monthSubs);
+              makePurchase(context, monthSubs);
             },
             child: Container(
               height: 44.0,
@@ -449,7 +452,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: this._renderInApps(),
+                      children: this._renderInApps(context),
                     ),
                   ),
                   Positioned(

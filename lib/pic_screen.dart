@@ -169,6 +169,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
     }
+
+    if (DatabaseManager.instance.userSettings.isPremium) {
+      DatabaseManager.instance.checkPremiumStatus();
+    }
   }
 
   @override

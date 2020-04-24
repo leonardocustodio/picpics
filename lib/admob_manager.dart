@@ -83,6 +83,10 @@ class Ads {
   }
 
   static void setScreen(String screen, [int tab]) {
+    if (DatabaseManager.instance.userSettings.isPremium) {
+      hideBannerAd();
+    }
+
     switch (screen) {
       case SettingsScreen.id:
         {

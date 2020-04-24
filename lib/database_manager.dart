@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,6 +17,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -108,6 +110,35 @@ class DatabaseManager extends ChangeNotifier {
     userSettings.tutorialCompleted = true;
     userBox.putAt(0, userSettings);
     notifyListeners();
+  }
+
+  void checkPremiumStatus() async {
+    try {
+      PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
+      if (purchaserInfo.entitlements.all["Premium"].isActive) {
+        // Grant user "pro" access
+        print('you are still premium');
+      } else {
+        print('not premium anymore');
+        setUserAsNotPremium();
+      }
+
+      // access latest purchaserInfo
+    } on PlatformException catch (e) {
+      // Error fetching purchaser info
+    }
+  }
+
+  void setUserAsPremium() {
+    var userBox = Hive.box('user');
+    userSettings.isPremium = true;
+    userBox.putAt(0, userSettings);
+  }
+
+  void setUserAsNotPremium() {
+    var userBox = Hive.box('user');
+    userSettings.isPremium = false;
+    userBox.putAt(0, userSettings);
   }
 
   void loadRemoteConfig() async {
