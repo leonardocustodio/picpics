@@ -25,6 +25,7 @@ import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'dart:io';
 import 'package:picPics/admob_manager.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:picPics/widgets/edit_tag_modal.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -238,62 +239,19 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       print('showModal');
       showDialog<void>(
         context: context,
-        builder: (BuildContext context) {
-          return PlatformAlertDialog(
-            title: Text('Edit tag'),
-            content: Material(
-              color: Colors.transparent,
-              child: Container(
-                margin: const EdgeInsets.only(top: 10.0),
-                padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                height: 30.0,
-                decoration: BoxDecoration(
-                  border: Border.all(color: kLightGrayColor, width: 1.0),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Image.asset('lib/images/smalladdtag.png'),
-                    Expanded(
-                      child: TextField(
-                        controller: alertInputController,
-                        autofocus: true,
-                        style: TextStyle(
-                          color: Color(0xff606566),
-                          fontSize: 16,
-                          fontFamily: 'Lato',
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(left: 6.0),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                          border: OutlineInputBorder(borderSide: BorderSide.none),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            actions: <Widget>[
-              PlatformDialogAction(
-                child: Text('Delete'),
-                actionType: ActionType.Destructive,
-                onPressed: () {
-                  DatabaseManager.instance.removeTag(DatabaseManager.instance.selectedEditTag);
-                  Navigator.of(context).pop();
-                },
-              ),
-              PlatformDialogAction(
-                child: Text('OK'),
-                actionType: ActionType.Preferred,
-                onPressed: () {
-                  print('Editing tag - Old name: ${DatabaseManager.instance.selectedEditTag} - New name: ${alertInputController.text}');
-                  DatabaseManager.instance.editTag(DatabaseManager.instance.selectedEditTag, alertInputController.text);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
+        barrierDismissible: true,
+        builder: (BuildContext buildContext) {
+          return EditTagModal(
+            alertInputController: alertInputController,
+            onPressedDelete: () {
+              DatabaseManager.instance.removeTag(DatabaseManager.instance.selectedEditTag);
+              Navigator.of(context).pop();
+            },
+            onPressedOk: () {
+              print('Editing tag - Old name: ${DatabaseManager.instance.selectedEditTag} - New name: ${alertInputController.text}');
+              DatabaseManager.instance.editTag(DatabaseManager.instance.selectedEditTag, alertInputController.text);
+              Navigator.of(context).pop();
+            },
           );
         },
       );
@@ -1047,17 +1005,16 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       Padding(
                                         padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                                         child: TagsList(
-                                            tags: Provider.of<DatabaseManager>(context).searchActiveTags,
-                                            tagStyle: TagStyle.MultiColored,
-                                            onTap: () {
-                                              print('do nothing');
-                                            },
-                                            onDoubleTap: () {
-                                              DatabaseManager.instance.removeTagFromSearchFilter();
-                                            },
-                                            showEditTagModal: () {
-                                              print('outro nada por enquanto');
-                                            }),
+                                          tags: Provider.of<DatabaseManager>(context).searchActiveTags,
+                                          tagStyle: TagStyle.MultiColored,
+                                          onTap: () {
+                                            print('do nothing');
+                                          },
+                                          onDoubleTap: () {
+                                            DatabaseManager.instance.removeTagFromSearchFilter();
+                                          },
+                                          showEditTagModal: showEditTagModal,
+                                        ),
                                       ),
                                     if (Provider.of<DatabaseManager>(context).searchResults != null)
                                       Padding(
@@ -1273,6 +1230,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           index: selectedPhotoIndex,
                           tagsEditingController: tagsEditingController,
                           dateString: selectedPhotoDateString,
+                          showEditTagModal: showEditTagModal,
                           onPressedTrash: () {
                             trashPic(selectedPhotoData);
                           },

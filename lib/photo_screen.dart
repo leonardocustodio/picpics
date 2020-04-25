@@ -8,6 +8,7 @@ import 'package:picPics/image_item.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:picPics/widgets/edit_tag_modal.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
@@ -49,6 +50,33 @@ class _PhotoScreenState extends State<PhotoScreen> {
     setState(() {
       overlay = !overlay;
     });
+  }
+
+  showEditTagModal() {
+    if (DatabaseManager.instance.selectedEditTag != '') {
+      TextEditingController alertInputController = TextEditingController();
+      alertInputController.text = DatabaseManager.instance.selectedEditTag;
+
+      print('showModal');
+      showDialog<void>(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext buildContext) {
+          return EditTagModal(
+            alertInputController: alertInputController,
+            onPressedDelete: () {
+              DatabaseManager.instance.removeTag(DatabaseManager.instance.selectedEditTag);
+              Navigator.of(context).pop();
+            },
+            onPressedOk: () {
+              print('Editing tag - Old name: ${DatabaseManager.instance.selectedEditTag} - New name: ${alertInputController.text}');
+              DatabaseManager.instance.editTag(DatabaseManager.instance.selectedEditTag, alertInputController.text);
+              Navigator.of(context).pop();
+            },
+          );
+        },
+      );
+    }
   }
 
   @override
@@ -165,9 +193,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                               onDoubleTap: () {
                                 print('ignore click');
                               },
-                              showEditTagModal: () {
-                                print('ignore');
-                              },
+                              showEditTagModal: showEditTagModal,
                             ),
                           ),
                         ],
