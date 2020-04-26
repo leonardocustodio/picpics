@@ -514,42 +514,44 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     SizedBox(
                       height: 40.0,
                     ),
-                    if (!Provider.of<DatabaseManager>(context).userSettings.isPremium)
-                      Padding(
-                        padding: const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 80.0),
-                        child: CupertinoButton(
-                          onPressed: () {
-                            Ads.setScreen(PremiumScreen.id);
-                            Navigator.pushNamed(context, PremiumScreen.id);
-                          },
-                          padding: const EdgeInsets.all(0),
-                          child: OutlineGradientButton(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Image.asset('lib/images/logopremium.png'),
-                                SizedBox(
-                                  width: 16.0,
+                    Padding(
+                      padding: const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 80.0),
+                      child: CupertinoButton(
+                        onPressed: () {
+                          if (DatabaseManager.instance.userSettings.isPremium) {
+                            return;
+                          }
+                          Ads.setScreen(PremiumScreen.id);
+                          Navigator.pushNamed(context, PremiumScreen.id);
+                        },
+                        padding: const EdgeInsets.all(0),
+                        child: OutlineGradientButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image.asset('lib/images/logopremium.png'),
+                              SizedBox(
+                                width: 16.0,
+                              ),
+                              Text(
+                                Provider.of<DatabaseManager>(context).userSettings.isPremium ? 'You Are Premium!' : 'Get Premium Now!',
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kSecondaryColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
                                 ),
-                                Text(
-                                  "Get Premium now!",
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: kSecondaryColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            gradient: LinearGradient(colors: [Color(0xFFFFA4D1), Color(0xFFFFCC00)]),
-                            strokeWidth: 2.0,
-                            radius: Radius.circular(8.0),
+                              ),
+                            ],
                           ),
+                          gradient: LinearGradient(colors: [Color(0xFFFFA4D1), Color(0xFFFFCC00)]),
+                          strokeWidth: 2.0,
+                          radius: Radius.circular(8.0),
                         ),
                       ),
+                    ),
 //                    Spacer(
 //                      flex: 1,
 //                    ),

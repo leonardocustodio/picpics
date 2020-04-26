@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:picPics/admob_manager.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 class PremiumScreen extends StatefulWidget {
@@ -69,6 +70,51 @@ class _PremiumScreenState extends State<PremiumScreen> {
         print(e);
 //        showError(e);
       }
+    }
+  }
+
+  void restorePurchase() async {
+    try {
+      PurchaserInfo restoredInfo = await Purchases.restoreTransactions();
+      // ... check restored purchaserInfo to see if entitlement is now active
+      if (restoredInfo.entitlements.all["Premium"].isActive) {
+        // Unlock that great "pro" content
+        print('know you are fucking pro!');
+        DatabaseManager.instance.setUserAsPremium();
+        Ads.setScreen(SettingsScreen.id);
+        Navigator.pop(context);
+      } else {
+        showDialog<void>(
+          context: context,
+          builder: (BuildContext context) {
+            return PlatformAlertDialog(
+              title: Text('No Previous Purchase'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10.0),
+                      child: Text('Could not find a valid subscription purchase.'),
+                    ),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                PlatformDialogAction(
+                  child: Text('OK'),
+                  actionType: ActionType.Preferred,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } on PlatformException catch (e) {
+      // Error restoring purchases
+      print(e);
     }
   }
 
@@ -168,6 +214,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
 //  }
 
   List<Widget> _renderInApps(BuildContext context) {
+    var isPremium = DatabaseManager.instance.userSettings.isPremium;
+
     List<Widget> widgets = [
       Spacer(
         flex: 1,
@@ -405,17 +453,22 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
           ),
           SizedBox(
-            height: 16.0,
+            height: 8.0,
           ),
-          Text(
-            "Restaurar compra",
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-              color: kPrimaryColor,
-              decoration: TextDecoration.underline,
-              fontFamily: "Lato",
-              fontStyle: FontStyle.normal,
-              fontSize: 14.0,
+          CupertinoButton(
+            onPressed: () {
+              restorePurchase();
+            },
+            child: Text(
+              "Restaurar compra",
+              style: const TextStyle(
+                fontWeight: FontWeight.w700,
+                color: kPrimaryColor,
+                decoration: TextDecoration.underline,
+                fontFamily: "Lato",
+                fontStyle: FontStyle.normal,
+                fontSize: 14.0,
+              ),
             ),
           ),
         ],
