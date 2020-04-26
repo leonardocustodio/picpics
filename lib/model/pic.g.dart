@@ -21,26 +21,35 @@ class PicAdapter extends TypeAdapter<Pic> {
       fields[1] as DateTime,
       fields[2] as double,
       fields[3] as double,
-      fields[4] as String,
-      (fields[5] as List)?.cast<String>(),
+      fields[4] as double,
+      fields[5] as String,
+      fields[6] as String,
+      fields[7] as String,
+      (fields[8] as List)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, Pic obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.photoId)
       ..writeByte(1)
       ..write(obj.createdAt)
       ..writeByte(2)
-      ..write(obj.latitude)
+      ..write(obj.originalLatitude)
       ..writeByte(3)
-      ..write(obj.longitude)
+      ..write(obj.originalLongitude)
       ..writeByte(4)
-      ..write(obj.location)
+      ..write(obj.latitude)
       ..writeByte(5)
+      ..write(obj.longitude)
+      ..writeByte(6)
+      ..write(obj.specificLocation)
+      ..writeByte(7)
+      ..write(obj.generalLocation)
+      ..writeByte(8)
       ..write(obj.tags);
   }
 }

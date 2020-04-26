@@ -10,24 +10,35 @@ class Pic {
   final DateTime createdAt;
 
   @HiveField(2)
-  final double latitude;
+  final double originalLatitude;
 
   @HiveField(3)
-  final double longitude;
+  final double originalLongitude;
 
   @HiveField(4)
-  final String location;
+  final double latitude;
 
   @HiveField(5)
+  final String longitude;
+
+  @HiveField(6)
+  final String specificLocation;
+
+  @HiveField(7)
+  final String generalLocation;
+
+  @HiveField(8)
   final List<String> tags;
 
   Pic(
     this.photoId,
-//    this.photoIndex,
     this.createdAt,
+    this.originalLatitude,
+    this.originalLongitude,
     this.latitude,
     this.longitude,
-    this.location,
+    this.specificLocation,
+    this.generalLocation,
     this.tags,
   );
 }

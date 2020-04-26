@@ -28,6 +28,7 @@ final searchScaffoldKey = GlobalKey<ScaffoldState>();
 class _AddLocationScreenState extends State<AddLocationScreen> {
   Completer<GoogleMapController> _mapController = Completer();
   Set<Marker> _markers = {};
+  Geolocation selectedGeolocation;
 
   static final CameraPosition _initialCamera = CameraPosition(
     target: LatLng(37.42796133580664, -122.085749655962),
@@ -53,6 +54,42 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 //
 //      _goToPosition(lat, lng);
 //    }
+
+  void saveLocation() {
+    if (selectedGeolocation != null) {
+      print(selectedGeolocation.fullJSON.toString());
+
+      String location;
+      String city;
+      String state;
+      String country;
+
+      for (var components in selectedGeolocation.fullJSON["address_components"]) {
+        var types = components["types"];
+        if (types.contains("establishment")) {
+          print('find establishment: ${components["long_name"]}');
+          location = components["long_name"];
+          continue;
+        } else if (types.contains("locality")) {
+          print('locality: ${components["long_name"]}');
+          city = components["long_name"];
+          continue;
+        } else if (types.contains("administrative_area_level_2")) {
+          print('find administrative_area_level_2: ${components["long_name"]}');
+          city = components["long_name"];
+          continue;
+        } else if (types.contains("administrative_area_level_1")) {
+          print('find administrative_area_level_1: ${components["long_name"]}');
+          state = components["long_name"];
+          continue;
+        } else if (types.contains("country")) {
+          print('country: ${components["long_name"]}');
+          country = components["long_name"];
+          break;
+        }
+      }
+    }
+  }
 
   void getCurrentPosition() async {
     print('getting current location');
@@ -138,23 +175,30 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         ),
                       ],
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 16.0),
-                      decoration: BoxDecoration(
-                        gradient: kPrimaryGradient,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      height: 44.0,
-                      child: Center(
-                        child: Text(
-                          "Confirmar localização",
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: kWhiteColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
+                    CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        print('saving location...');
+                        saveLocation();
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 16.0),
+                        decoration: BoxDecoration(
+                          gradient: kPrimaryGradient,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        height: 44.0,
+                        child: Center(
+                          child: Text(
+                            "Confirmar localização",
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: kWhiteColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: -0.4099999964237213,
+                            ),
                           ),
                         ),
                       ),
@@ -167,6 +211,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
               apiKey: kGoogleApiKey,
               onSelected: (place) async {
                 final geolocation = await place.geolocation;
+                selectedGeolocation = geolocation;
 
                 final destination = Marker(
                   markerId: MarkerId('user-destination'),
