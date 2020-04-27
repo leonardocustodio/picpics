@@ -93,154 +93,62 @@ class _PhotoScreenState extends State<PhotoScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          GestureDetector(
-            onTap: () {
-              changeOverlay();
-            },
-            child: Container(
-              constraints: BoxConstraints.expand(),
-              color: Color(0xff101010),
-              child: PhotoView.customChild(
-                initialScale: 1.0,
-                minScale: 1.0,
-                child: ImageItem(
-                  entity: DatabaseManager.instance.selectedPhoto,
-                  size: MediaQuery.of(context).size.height.toInt(),
-                  fit: BoxFit.contain,
-                  backgroundColor: Colors.black,
+      body: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: Stack(
+          children: <Widget>[
+            GestureDetector(
+              onTap: () {
+                changeOverlay();
+              },
+              child: Container(
+                constraints: BoxConstraints.expand(),
+                color: Color(0xff101010),
+                child: PhotoView.customChild(
+                  initialScale: 1.0,
+                  minScale: 1.0,
+                  child: ImageItem(
+                    entity: DatabaseManager.instance.selectedPhoto,
+                    size: MediaQuery.of(context).size.height.toInt(),
+                    fit: BoxFit.contain,
+                    backgroundColor: Colors.black,
+                  ),
                 ),
               ),
             ),
-          ),
-          if (overlay)
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 2.0,
-                      sigmaY: 2.0,
-                    ),
-                    child: Container(
-                      decoration: new BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                            Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
-                          ],
-                          stops: [0, 0.40625],
-                        ),
+            if (overlay)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 2.0,
+                        sigmaY: 2.0,
                       ),
-                      child: SafeArea(
-                        bottom: false,
-                        child: Row(
-                          children: <Widget>[
-                            CupertinoButton(
-                              padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-                              onPressed: () {
-                                Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
-                                Navigator.pop(context);
-                              },
-                              child: Image.asset('lib/images/backarrowwithdropshadow.png'),
-                            ),
-                          ],
+                      child: Container(
+                        decoration: new BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
+                              Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                            ],
+                            stops: [0, 0.40625],
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ),
-                Spacer(),
-                ClipRect(
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(
-                      sigmaX: 2.0,
-                      sigmaY: 2.0,
-                    ),
-                    child: Container(
-                      height: 184.0,
-                      decoration: new BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                            Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
-                          ],
-                          stops: [0, 0.40625],
-                        ),
-                      ),
-                      child: SafeArea(
-                        top: false,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                        child: SafeArea(
+                          bottom: false,
+                          child: Row(
                             children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  RichText(
-                                    text: new TextSpan(
-                                      children: [
-                                        new TextSpan(
-                                            text: 'Local da foto',
-                                            style: TextStyle(
-                                              fontFamily: 'NotoSans',
-                                              color: kWhiteColor,
-                                              fontSize: 17,
-                                              fontWeight: FontWeight.w400,
-                                              fontStyle: FontStyle.normal,
-                                              letterSpacing: -0.4099999964237213,
-                                            )),
-                                        new TextSpan(
-                                          text: '  estado',
-                                          style: TextStyle(
-                                            fontFamily: 'NotoSans',
-                                            color: kWhiteColor,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Text(
-                                    dateString,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: kWhiteColor,
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w300,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 16.0),
-                                child: TagsList(
-                                  tags: picInfo.tags,
-                                  tagStyle: TagStyle.MultiColored,
-                                  addTagButton: () {
-                                    Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
-                                    Navigator.pop(context, 'show_keyboard');
-                                  },
-                                  onTap: () {
-                                    print('ignore click');
-                                  },
-                                  onDoubleTap: () {
-                                    print('ignore click');
-                                  },
-                                  showEditTagModal: showEditTagModal,
-                                ),
+                              CupertinoButton(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                                onPressed: () {
+                                  Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+                                  Navigator.pop(context);
+                                },
+                                child: Image.asset('lib/images/backarrowwithdropshadow.png'),
                               ),
                             ],
                           ),
@@ -248,10 +156,105 @@ class _PhotoScreenState extends State<PhotoScreen> {
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-        ],
+                  Spacer(),
+                  ClipRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(
+                        sigmaX: 2.0,
+                        sigmaY: 2.0,
+                      ),
+                      child: Container(
+                        height: 184.0,
+                        decoration: new BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
+                              Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                            ],
+                            stops: [0, 0.40625],
+                          ),
+                        ),
+                        child: SafeArea(
+                          top: false,
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: <Widget>[
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    RichText(
+                                      text: new TextSpan(
+                                        children: [
+                                          new TextSpan(
+                                              text: 'Local da foto',
+                                              style: TextStyle(
+                                                fontFamily: 'NotoSans',
+                                                color: kWhiteColor,
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w400,
+                                                fontStyle: FontStyle.normal,
+                                                letterSpacing: -0.4099999964237213,
+                                              )),
+                                          new TextSpan(
+                                            text: '  estado',
+                                            style: TextStyle(
+                                              fontFamily: 'NotoSans',
+                                              color: kWhiteColor,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300,
+                                              fontStyle: FontStyle.normal,
+                                              letterSpacing: -0.4099999964237213,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      dateString,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: kWhiteColor,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w300,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16.0),
+                                  child: TagsList(
+                                    tags: picInfo.tags,
+                                    tagStyle: TagStyle.MultiColored,
+                                    addTagButton: () {
+                                      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+                                      Navigator.pop(context, 'show_keyboard');
+                                    },
+                                    onTap: () {
+                                      print('ignore click');
+                                    },
+                                    onDoubleTap: () {
+                                      print('ignore click');
+                                    },
+                                    showEditTagModal: showEditTagModal,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }

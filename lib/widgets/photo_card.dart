@@ -4,7 +4,6 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/add_location.dart';
 import 'package:picPics/photo_screen.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -16,6 +15,8 @@ class PhotoCard extends StatelessWidget {
   final int index;
   final String photoId;
   final int picSwiper;
+  final String specificLocation;
+  final String generalLocation;
   final String dateString;
   final TextEditingController tagsEditingController;
   final Function showEditTagModal;
@@ -26,6 +27,8 @@ class PhotoCard extends StatelessWidget {
     this.index,
     this.photoId,
     this.picSwiper,
+    this.specificLocation,
+    this.generalLocation,
     this.dateString,
     this.tagsEditingController,
     this.showEditTagModal,
@@ -125,8 +128,7 @@ class PhotoCard extends StatelessWidget {
                         text: new TextSpan(
                           children: [
                             new TextSpan(
-                              text: 'Local da foto',
-//                        text: Provider.of<DatabaseManager>(context).currentPhotoCity,
+                              text: specificLocation != null ? specificLocation : 'Local da foto',
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff606566),
@@ -137,8 +139,7 @@ class PhotoCard extends StatelessWidget {
                               ),
                             ),
                             new TextSpan(
-                              text: '  estado',
-//                        text: ' ${Provider.of<DatabaseManager>(context).currentPhotoState}',
+                              text: generalLocation != null ? '  $generalLocation' : '  país',
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff606566),
@@ -250,9 +251,6 @@ class PhotoCard extends StatelessWidget {
                     },
                   ),
                 ),
-
-//                ListOfTags(picInfo: picInfo, activeTags: false),
-//                _buildRecentTagsWidget(picInfo.photoId, index),
               ],
             ),
           ),

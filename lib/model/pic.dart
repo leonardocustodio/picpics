@@ -16,16 +16,16 @@ class Pic {
   final double originalLongitude;
 
   @HiveField(4)
-  final double latitude;
+  double latitude;
 
   @HiveField(5)
-  final double longitude;
+  double longitude;
 
   @HiveField(6)
-  final String specificLocation;
+  String specificLocation;
 
   @HiveField(7)
-  final String generalLocation;
+  String generalLocation;
 
   @HiveField(8)
   final List<String> tags;

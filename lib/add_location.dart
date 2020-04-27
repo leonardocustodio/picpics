@@ -11,6 +11,7 @@ import 'package:picPics/search/search_map_place.dart';
 import 'dart:math';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/image_item.dart';
+import 'package:picPics/model/pic.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 //GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
@@ -31,31 +32,11 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   Geolocation selectedGeolocation;
 
   static final CameraPosition _initialCamera = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
+    target: LatLng(0.0, 0.0),
+    zoom: 0,
   );
 
-//  Future<void> _goToPosition(double lat, double long) async {
-//    final CameraPosition position =
-//        CameraPosition(bearing: 192.8334901395799, target: LatLng(lat, long), tilt: 59.440717697143555, zoom: 19.151926040649414);
-//
-//    final GoogleMapController controller = await _controller.future;
-//    controller.animateCamera(CameraUpdate.newCameraPosition(position));
-//  }
-
-//  Future<void> displayPrediction(Prediction p) async {
-//    if (p != null) {
-//      // get detail (lat/lng)
-//      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId);
-//      final lat = detail.result.geometry.location.lat;
-//      final lng = detail.result.geometry.location.lng;
-//
-//      print('lat $lat - long $lng');
-//
-//      _goToPosition(lat, lng);
-//    }
-
-  void saveLocation() {
+  void saveLocation(BuildContext context) {
     if (selectedGeolocation != null) {
       print(selectedGeolocation.fullJSON.toString());
 
@@ -88,7 +69,27 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
           break;
         }
       }
+
+      if (location != null) {
+        LatLng latLng = selectedGeolocation.coordinates;
+        DatabaseManager.instance.saveLocationToPic(
+            lat: latLng.latitude,
+            long: latLng.longitude,
+            specifLocation: location,
+            generalLocation: city,
+            photoId: DatabaseManager.instance.selectedPhoto.id);
+      } else {
+        LatLng latLng = selectedGeolocation.coordinates;
+        DatabaseManager.instance.saveLocationToPic(
+            lat: latLng.latitude,
+            long: latLng.longitude,
+            specifLocation: city,
+            generalLocation: country,
+            photoId: DatabaseManager.instance.selectedPhoto.id);
+      }
     }
+
+    Navigator.pop(context);
   }
 
   void getCurrentPosition() async {
@@ -116,7 +117,60 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     });
 
     controller.animateCamera(CameraUpdate.newLatLng(geolocation));
+
     print('finished');
+  }
+
+  void findInitialCamera() async {
+    LatLng latLng;
+
+    Pic getPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
+    if (getPic != null) {
+      if (getPic.latitude != null && getPic.longitude != null) {
+        latLng = LatLng(getPic.latitude, getPic.longitude);
+      } else if (getPic.originalLatitude != null && getPic.originalLongitude != null) {
+        latLng = LatLng(getPic.originalLatitude, getPic.originalLongitude);
+      }
+    } else {
+      if (DatabaseManager.instance.selectedPhoto.latitude != null && DatabaseManager.instance.selectedPhoto.latitude != null) {
+        latLng = LatLng(DatabaseManager.instance.selectedPhoto.latitude, DatabaseManager.instance.selectedPhoto.longitude);
+      }
+    }
+
+    print('### testing....');
+
+    if (latLng != null) {
+      final destination = Marker(
+        markerId: MarkerId('user-destination'),
+        icon: await BitmapDescriptor.fromAssetImage(
+          ImageConfiguration(
+            devicePixelRatio: 2.5,
+          ),
+          'lib/images/pin.png',
+        ),
+        position: latLng,
+      );
+
+      final GoogleMapController controller = await _mapController.future;
+      _markers.clear();
+      setState(() {
+        _markers.add(destination);
+      });
+
+      print(latLng);
+
+      final CameraPosition position = CameraPosition(
+        target: latLng,
+        zoom: 14.0,
+      );
+      controller.animateCamera(CameraUpdate.newCameraPosition(position));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    findInitialCamera();
   }
 
   @override
@@ -179,7 +233,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
                         print('saving location...');
-                        saveLocation();
+                        saveLocation(context);
                       },
                       child: Container(
                         margin: const EdgeInsets.only(top: 16.0),

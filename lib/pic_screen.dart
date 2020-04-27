@@ -575,6 +575,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       picSwiper: picSwiper,
       index: index,
       tagsEditingController: tagsEditingController,
+      specificLocation: picInfo.specificLocation,
+      generalLocation: picInfo.generalLocation,
       dateString: dateString,
       showEditTagModal: showEditTagModal,
       onPressedTrash: () {
@@ -1235,6 +1237,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           index: selectedPhotoIndex,
                           tagsEditingController: tagsEditingController,
                           dateString: selectedPhotoDateString,
+                          specificLocation: selectedPhotoPicInfo.specificLocation,
+                          generalLocation: selectedPhotoPicInfo.generalLocation,
                           showEditTagModal: showEditTagModal,
                           onPressedTrash: () {
                             trashPic(selectedPhotoData);

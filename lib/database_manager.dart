@@ -100,6 +100,26 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
+  void saveLocationToPic({double lat, double long, String specifLocation, String generalLocation, String photoId}) {
+    var picsBox = Hive.box('pics');
+
+    int indexOfPic = allPics.indexOf(photoId);
+    Pic getPic = picsBox.getAt(indexOfPic);
+
+    if (getPic != null) {
+      print('found pic');
+
+      getPic.latitude = lat;
+      getPic.longitude = long;
+      getPic.specificLocation = specifLocation;
+      getPic.generalLocation = generalLocation;
+
+      picsBox.putAt(indexOfPic, getPic);
+      print('updated pic with new values');
+    }
+    notifyListeners();
+  }
+
   void deletedPic(AssetEntity entity) {
     var picsBox = Hive.box('pics');
     var tagsBox = Hive.box('tags');
