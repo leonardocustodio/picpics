@@ -43,7 +43,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
         DatabaseManager.instance.selectedPhoto.createDateTime,
         DatabaseManager.instance.selectedPhoto.latitude,
         DatabaseManager.instance.selectedPhoto.longitude,
-        '',
+        DatabaseManager.instance.selectedPhoto.latitude,
+        DatabaseManager.instance.selectedPhoto.longitude,
+        null,
+        null,
         [],
       );
     }

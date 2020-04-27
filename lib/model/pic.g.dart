@@ -22,7 +22,7 @@ class PicAdapter extends TypeAdapter<Pic> {
       fields[2] as double,
       fields[3] as double,
       fields[4] as double,
-      fields[5] as String,
+      fields[5] as double,
       fields[6] as String,
       fields[7] as String,
       (fields[8] as List)?.cast<String>(),

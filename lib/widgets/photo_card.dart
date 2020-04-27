@@ -42,7 +42,10 @@ class PhotoCard extends StatelessWidget {
         data.createDateTime,
         data.latitude,
         data.longitude,
-        '',
+        data.latitude,
+        data.longitude,
+        null,
+        null,
         [],
       );
     }

@@ -521,10 +521,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     if (picInfo == null) {
       picInfo = Pic(
         data.id,
-//        index,
         data.createDateTime,
         data.latitude,
         data.longitude,
+        data.latitude,
+        data.longitude,
+        '',
         '',
         [],
       );
@@ -622,7 +624,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   data.createDateTime,
                   data.latitude,
                   data.longitude,
-                  '',
+                  data.latitude,
+                  data.longitude,
+                  null,
+                  null,
                   [],
                 );
               }

@@ -19,7 +19,7 @@ class Pic {
   final double latitude;
 
   @HiveField(5)
-  final String longitude;
+  final double longitude;
 
   @HiveField(6)
   final String specificLocation;
