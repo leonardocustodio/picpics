@@ -9,6 +9,7 @@ import 'package:picPics/database_manager.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/admob_manager.dart';
+import 'package:picPics/generated/l10n.dart';
 
 class PhotoCard extends StatelessWidget {
   final AssetEntity data;
@@ -128,7 +129,7 @@ class PhotoCard extends StatelessWidget {
                         text: new TextSpan(
                           children: [
                             new TextSpan(
-                              text: specificLocation != null ? specificLocation : 'Local da foto',
+                              text: specificLocation != null ? specificLocation : S.of(context).photo_location,
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff606566),
@@ -139,7 +140,7 @@ class PhotoCard extends StatelessWidget {
                               ),
                             ),
                             new TextSpan(
-                              text: generalLocation != null ? '  $generalLocation' : '  país',
+                              text: generalLocation != null ? '  $generalLocation' : '  ${S.of(context).country}',
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff606566),
@@ -239,7 +240,7 @@ class PhotoCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TagsList(
-                    title: 'Suggestions',
+                    title: S.of(context).suggestions,
                     tags: DatabaseManager.instance.suggestionTags[picInfo.photoId],
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: showEditTagModal,

@@ -1,12 +1,14 @@
 name: picPics
 description: picPics application.
-version: 1.0.0+62
+version: 1.0.0+64
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
 
 dependencies:
   flutter:
+    sdk: flutter
+  flutter_localizations:
     sdk: flutter
   cupertino_icons: ^0.1.2
   provider: ^4.0.5
@@ -82,3 +84,6 @@ flutter:
           weight: 300
         - asset: lib/fonts/NotoSans-Regular.ttf
           weight: 400
+
+flutter_intl:
+  enabled: true

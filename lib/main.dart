@@ -21,6 +21,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:picPics/generated/l10n.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -108,6 +110,17 @@ class _PicPicsAppState extends State<PicPicsApp> {
     return ChangeNotifierProvider<DatabaseManager>(
       create: (context) => DatabaseManager.instance,
       child: MaterialApp(
+        localizationsDelegates: [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+//        supportedLocales: [
+//          const Locale('en'),
+//          const Locale('pt'),
+//        ],
         debugShowCheckedModeBanner: false,
         initialRoute: widget.initialRoute,
         navigatorObservers: [DatabaseManager.instance.observer],

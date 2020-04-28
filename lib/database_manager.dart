@@ -354,8 +354,8 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void switchSearchingTags() {
-    searchingTags = !searchingTags;
+  void switchSearchingTags(bool searching) {
+    searchingTags = searching;
     notifyListeners();
   }
 

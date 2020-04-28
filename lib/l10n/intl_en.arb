@@ -1,0 +1,67 @@
+{
+  "welcome": "Welcome!",
+  "photos_always_organized": "Now your photos will be always organized",
+
+  "continue_string": "Continue",
+  "gallery_access_reason": "To organize your photos we need access to your photo gallery",
+
+  "tutorial_daily_package": "We bring a daily package for you to gradually organize your library.",
+  "next": "Next",
+  "tutorial_however_you_want": "Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want.",
+  "close": "Close",
+  "tutorial_just_swipe": "After adding the tags to your photo, just swipe to go to the next one.",
+
+  "settings": "Settings",
+  "suggestions": "Suggestions",
+  "photo_location": "Photo location",
+  "country": "country",
+  "add_tag": "Add tag",
+  "add_tags": "Add tags",
+  "delete": "Delete",
+  "full_screen": "Full Screen",
+
+  "photo_gallery_title": "Photo Gallery",
+  "photo_gallery_description": "Photos not yet organized",
+
+  "organized_photos_title": "Organized Photos",
+  "organized_photos_description": "Photos that have already been tagged",
+
+  "search": "Pesquisar...",
+
+
+  "no_tagged_photos": "You don't have any tagged photos yet",
+  "start_tagging": "Start tagging",
+
+  "no_tags_found": "No tags found",
+  "search_results": "Search results",
+
+  "daily_challenge": "Daily challenge",
+  "daily_goal": "Daily goal",
+  "notification_time": "Notification time",
+  "share_with_friends": "Share with friends",
+  "rate_this_app": "Rate this app",
+
+
+
+  "you_are_premium": "You are premium!",
+  "get_premium_now": "Get premium now!",
+
+
+  "get_premium_title": "Get Premium",
+  "get_premium_description": "TO HAVE ALL THESE FEATURES",
+
+
+  "no_ads": "No Ads",
+  "export_all_gallery": "Export all gallery",
+  "infinite_tags": "Infinite tags",
+  "tag_multiple_photos_at_once": "Tag multiple photos at once",
+
+  "sign": "Sign",
+  "year": "year",
+  "month": "month",
+
+  "restore_purchase": "Restore purchase",
+  "save": "save",
+
+  "save_location": "Save location"
+}

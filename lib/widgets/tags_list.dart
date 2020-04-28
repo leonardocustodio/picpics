@@ -4,6 +4,7 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:picPics/generated/l10n.dart';
 
 enum TagStyle {
   MultiColored,
@@ -41,7 +42,7 @@ class TagsList extends StatelessWidget {
     @required this.showEditTagModal,
   });
 
-  Widget _buildTagsWidget() {
+  Widget _buildTagsWidget(BuildContext context) {
     if (tags == null) {
       return Container();
     }
@@ -144,7 +145,7 @@ class TagsList extends StatelessWidget {
                 width: 4.0,
               ),
               Text(
-                "Add Tag",
+                S.of(context).add_tag,
                 style: TextStyle(
                   fontFamily: 'Lato',
                   color: kGrayColor,
@@ -196,7 +197,7 @@ class TagsList extends StatelessWidget {
                     enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                     focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
                     border: OutlineInputBorder(borderSide: BorderSide.none),
-                    hintText: 'Add tags',
+                    hintText: S.of(context).add_tags,
                     hintStyle: TextStyle(
                       fontFamily: 'Lato',
                       color: kGrayColor,
@@ -296,6 +297,6 @@ class TagsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return _buildTagsWidget();
+    return _buildTagsWidget(context);
   }
 }

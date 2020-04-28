@@ -5,6 +5,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:picPics/generated/l10n.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -42,7 +43,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     flex: 1,
                   ),
                   Text(
-                    "Bem-vindo!\nAgora suas fotos estarão sempre organizadas",
+                    S.of(context).welcome,
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      color: kWhiteColor,
+                      fontSize: 28,
+                      fontWeight: FontWeight.w700,
+                      fontStyle: FontStyle.normal,
+                    ),
+                  ),
+                  Text(
+                    S.of(context).photos_always_organized,
                     style: TextStyle(
                       fontFamily: 'Lato',
                       color: kWhiteColor,
@@ -74,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          "Entrar",
+                          S.of(context).continue_string,
                           style: TextStyle(
                             fontFamily: 'Lato',
                             color: Color(0xfff5fafa),

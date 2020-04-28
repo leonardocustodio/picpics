@@ -11,6 +11,7 @@ import 'package:picPics/database_manager.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:picPics/generated/l10n.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -20,24 +21,6 @@ class PremiumScreen extends StatefulWidget {
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
-//  StreamSubscription _purchaseUpdatedSubscription;
-//  StreamSubscription _purchaseErrorSubscription;
-//  StreamSubscription _conectionSubscription;
-//
-//  final List<String> _subscriptionsLists = Platform.isAndroid
-//      ? [
-//          'rs9_90_monthly_subscription',
-//          'rs99_90_yearly_subscription',
-//        ]
-//      : [
-//          'rs9_90_monthly_subscription',
-//          'rs99_90_yearly_subscription',
-//        ];
-//
-//  String _platformVersion = 'Unknown';
-
-//  List<PurchasedItem> _purchases = [];
-
   List<Package> _items = [];
 
   void getOffers() async {
@@ -122,96 +105,12 @@ class _PremiumScreenState extends State<PremiumScreen> {
   void initState() {
     super.initState();
     getOffers();
-
-//    asyncInitState();
   }
 
   @override
   void dispose() {
     super.dispose();
-//    if (_conectionSubscription != null) {
-//      _conectionSubscription.cancel();
-//      _conectionSubscription = null;
-//    }
   }
-
-//  void asyncInitState() async {
-//    String platformVersion;
-//    // Platform messages may fail, so we use a try/catch PlatformException.
-//    try {
-//      platformVersion = await FlutterInappPurchase.instance.platformVersion;
-//    } on PlatformException {
-//      platformVersion = 'Failed to get platform version.';
-//    }
-//
-//    // prepare
-//    var result = await FlutterInappPurchase.instance.initConnection;
-//    print('result: $result');
-//
-//    // If the widget was removed from the tree while the asynchronous platform
-//    // message was in flight, we want to discard the reply rather than calling
-//    // setState to update our non-existent appearance.
-//    if (!mounted) return;
-//
-//    setState(() {
-//      _platformVersion = platformVersion;
-//    });
-//
-//    _getSubscriptions();
-
-  // refresh items for android
-//    try {
-//      String msg = await FlutterInappPurchase.instance.consumeAllItems;
-//      print('find items: $msg');
-//
-////      await FlutterInappPurchase.instance.getSubscriptions(skus)
-//
-//    } catch (err) {
-//      print('consumeAllItems error: $err');
-//    }
-
-//    _conectionSubscription = FlutterInappPurchase.connectionUpdated.listen((connected) {
-//      print('connected: $connected');
-//    });
-//
-//    _purchaseUpdatedSubscription = FlutterInappPurchase.purchaseUpdated.listen((productItem) {
-//      print('purchase-updated: $productItem');
-//    });
-//
-//    _purchaseErrorSubscription = FlutterInappPurchase.purchaseError.listen((purchaseError) {
-//      print('purchase-error: $purchaseError');
-//    });
-//  }
-
-//  Future _getSubscriptions() async {
-//    List<IAPItem> items = await FlutterInappPurchase.instance.getSubscriptions(_subscriptionsLists);
-//    for (var item in items) {
-//      print('${item.toString()}');
-//      this._items.add(item);
-//    }
-//
-//    setState(() {
-//      this._items = items;
-//      this._purchases = [];
-//    });
-//  }
-
-//  Future _getPurchaseHistory() async {
-//    List<PurchasedItem> items = await FlutterInappPurchase.instance.getPurchaseHistory();
-//    for (var item in items) {
-//      print('${item.toString()}');
-//      this._purchases.add(item);
-//    }
-//
-//    setState(() {
-//      this._items = [];
-//      this._purchases = items;
-//    });
-//  }
-
-//  void _requestPurchase(IAPItem item) {
-//    FlutterInappPurchase.instance.requestPurchase(item.productId);
-//  }
 
   List<Widget> _renderInApps(BuildContext context) {
     var isPremium = DatabaseManager.instance.userSettings.isPremium;
@@ -222,7 +121,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       ),
       Image.asset('lib/images/bigpremiumlogo.png'),
       Text(
-        "Get Premium",
+        S.of(context).get_premium_title,
         style: TextStyle(
           fontFamily: 'Lato',
           color: kPrimaryColor,
@@ -233,7 +132,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ),
       ),
       Text(
-        "ONE-YEAR PREMIUM ACCOUNT",
+        S.of(context).get_premium_description,
         style: TextStyle(
           fontFamily: 'Lato',
           color: kPrimaryColor,
@@ -254,7 +153,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               width: 16.0,
             ),
             Text(
-              "No Ads!",
+              S.of(context).no_ads,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff707070),
@@ -275,7 +174,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               width: 16.0,
             ),
             Text(
-              "Export all galery",
+              S.of(context).export_all_gallery,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff707070),
@@ -296,7 +195,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               width: 16.0,
             ),
             Text(
-              "Infinite Tags",
+              S.of(context).infinite_tags,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff707070),
@@ -317,7 +216,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               width: 16.0,
             ),
             Text(
-              "Multiple select to tag",
+              S.of(context).tag_multiple_photos_at_once,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff707070),
@@ -379,7 +278,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          "Sign ${yearSubs.product.priceString}/year",
+                          "${S.of(context).sign} ${yearSubs.product.priceString}/${S.of(context).year}",
                           style: TextStyle(
                             fontFamily: 'Lato',
                             color: kPinkColor,
@@ -406,7 +305,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         height: 24.0,
                         child: Center(
                           child: Text(
-                            "   save ${save.round()}%",
+                            "   ${S.of(context).save} ${save.round()}%",
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: Color(0xff606566),
@@ -439,7 +338,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               ),
               child: Center(
                 child: Text(
-                  "Sign ${monthSubs.product.priceString}/month",
+                  "${S.of(context).sign} ${monthSubs.product.priceString}/${S.of(context).month}",
                   style: TextStyle(
                     fontFamily: 'Lato',
                     color: kWhiteColor,
@@ -460,7 +359,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               restorePurchase();
             },
             child: Text(
-              "Restaurar compra",
+              S.of(context).restore_purchase,
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 color: kPrimaryColor,

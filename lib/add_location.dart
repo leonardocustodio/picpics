@@ -12,6 +12,7 @@ import 'dart:math';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/generated/l10n.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 //GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);

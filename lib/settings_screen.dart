@@ -14,6 +14,7 @@ import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:picPics/pic_screen.dart';
+import 'package:picPics/generated/l10n.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -336,7 +337,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "Desafios diários",
+                                S.of(context).daily_challenge,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -375,7 +376,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "Quantidade de fotos",
+                                S.of(context).daily_goal,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -417,7 +418,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                "Horário da notificação",
+                                S.of(context).notification_time,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -466,7 +467,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                     width: 15.0,
                                   ),
                                   Text(
-                                    "Share with friends",
+                                    S.of(context).share_with_friends,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff979a9b),
@@ -494,7 +495,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                     width: 15.0,
                                   ),
                                   Text(
-                                    "Rate this app",
+                                    S.of(context).rate_this_app,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff979a9b),
@@ -534,7 +535,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 width: 16.0,
                               ),
                               Text(
-                                Provider.of<DatabaseManager>(context).userSettings.isPremium ? 'You Are Premium!' : 'Get Premium Now!',
+                                Provider.of<DatabaseManager>(context).userSettings.isPremium
+                                    ? S.of(context).you_are_premium
+                                    : S.of(context).get_premium_now,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: kSecondaryColor,

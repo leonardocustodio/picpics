@@ -12,6 +12,7 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/generated/l10n.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';

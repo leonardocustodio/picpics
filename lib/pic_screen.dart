@@ -26,6 +26,7 @@ import 'dart:io';
 import 'package:picPics/admob_manager.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
+import 'package:picPics/generated/l10n.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -815,7 +816,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: <Widget>[
                                 Text(
-                                  "Galeria de fotos",
+                                  S.of(context).photo_gallery_title,
                                   style: TextStyle(
                                     fontFamily: 'Lato',
                                     color: Color(0xff979a9b),
@@ -830,7 +831,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   ),
                                 if (!hideSubtitleFirstTab)
                                   Text(
-                                    "Fotos ainda não organizadas",
+                                    S.of(context).photo_gallery_description,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff606566),
@@ -945,10 +946,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             onFocusChange: (focus) {
                                               print('hasFocus: ${searchFocusNode.hasFocus}');
                                               if (searchFocusNode.hasFocus == true) {
-                                                DatabaseManager.instance.switchSearchingTags();
+                                                DatabaseManager.instance.switchSearchingTags(true);
                                               } else if (searchFocusNode.hasFocus == false &&
                                                   DatabaseManager.instance.searchActiveTags.isEmpty) {
-                                                DatabaseManager.instance.switchSearchingTags();
+                                                DatabaseManager.instance.switchSearchingTags(false);
                                               }
                                             },
                                             child: TextField(
@@ -1019,6 +1020,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                           },
                                           onDoubleTap: () {
                                             DatabaseManager.instance.removeTagFromSearchFilter();
+                                            if (DatabaseManager.instance.searchActiveTags.isEmpty && searchFocusNode.hasFocus == false) {
+                                              DatabaseManager.instance.switchSearchingTags(false);
+                                            }
                                           },
                                           showEditTagModal: showEditTagModal,
                                         ),
@@ -1027,7 +1031,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                         child: Text(
-                                          "Resultados da busca",
+                                          S.of(context).search_results,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
                                             color: Color(0xff979a9b),
@@ -1059,7 +1063,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         Container(
                                           padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
                                           child: Text(
-                                            "Nenhuma tag foi encontrada",
+                                            S.of(context).no_tags_found,
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily: 'Lato',
@@ -1092,7 +1096,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                           height: 21.0,
                                         ),
                                         Text(
-                                          "Você ainda não tem nenhuma foto\ntaggeada.",
+                                          S.of(context).no_tagged_photos,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
@@ -1119,7 +1123,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             ),
                                             child: Center(
                                               child: Text(
-                                                "Começar a taggear",
+                                                S.of(context).start_tagging,
                                                 style: TextStyle(
                                                   fontFamily: 'Lato',
                                                   color: kWhiteColor,
@@ -1148,7 +1152,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   Text(
-                                    "Fotos organizadas",
+                                    S.of(context).organized_photos_title,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff979a9b),
@@ -1163,7 +1167,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     ),
                                   if (!hideSubtitleThirdTab)
                                     Text(
-                                      "Fotos que já foram taggeadas",
+                                      S.of(context).organized_photos_description,
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: Color(0xff606566),
@@ -1272,7 +1276,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       Text(
-                        "Bem-vindo",
+                        S.of(context).welcome,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -1293,13 +1297,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             Image image;
 
                             if (index == 0) {
-                              text = 'Trazemos diariamente um pacote para você organizar aos poucos sua biblioteca.';
+                              text = S.of(context).tutorial_daily_package;
                               image = Image.asset('lib/images/tutorialfirstimage.png');
                             } else if (index == 1) {
-                              text = 'Organize suas fotos adicionando tags, como “família”, “pets” ou o quê você quiser.';
+                              text = S.of(context).tutorial_however_you_want;
                               image = Image.asset('lib/images/tutorialsecondimage.png');
                             } else {
-                              text = 'Depois de adicionar as tags na sua foto, basta fazer um swipe para ir para a próxima';
+                              text = S.of(context).tutorial_just_swipe;
                               image = Image.asset('lib/images/tutorialthirdimage.png');
                             }
 
@@ -1413,7 +1417,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           ),
                           child: Center(
                             child: Text(
-                              swiperIndex == 2 ? 'Fechar' : 'Próximo',
+                              swiperIndex == 2 ? S.of(context).close : S.of(context).next,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',
