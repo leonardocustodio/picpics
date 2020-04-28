@@ -191,7 +191,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       text: new TextSpan(
                                         children: [
                                           new TextSpan(
-                                              text: 'Local da foto',
+                                              text: S.of(context).photo_location,
                                               style: TextStyle(
                                                 fontFamily: 'NotoSans',
                                                 color: kWhiteColor,
@@ -201,7 +201,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                                 letterSpacing: -0.4099999964237213,
                                               )),
                                           new TextSpan(
-                                            text: '  estado',
+                                            text: '  ${S.of(context).country}',
                                             style: TextStyle(
                                               fontFamily: 'NotoSans',
                                               color: kWhiteColor,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/generated/l10n.dart';
 
 class EditTagModal extends StatelessWidget {
   final String tag;
@@ -35,7 +36,7 @@ class EditTagModal extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 19.0, bottom: 10.0),
               child: Text(
-                'Edit tag',
+                S.of(context).edit_tag,
                 style: TextStyle(
                   color: Color(0xff606566),
                   fontSize: 16,
@@ -86,7 +87,7 @@ class EditTagModal extends StatelessWidget {
                       height: 48.0,
                       child: Center(
                         child: Text(
-                          'Delete',
+                          S.of(context).delete,
                           style: TextStyle(
                             color: Color(0xFFE01717),
                             fontSize: 16,
@@ -107,7 +108,7 @@ class EditTagModal extends StatelessWidget {
                       height: 48.0,
                       child: Center(
                         child: Text(
-                          'OK',
+                          S.of(context).ok,
                           style: TextStyle(
                             color: Color(0xFF606566),
                             fontSize: 16,

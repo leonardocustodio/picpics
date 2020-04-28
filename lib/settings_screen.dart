@@ -83,7 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     child: Container(
                       width: 50.0,
                       child: Text(
-                        'Cancel',
+                        S.of(context).cancel,
                         style: TextStyle(
                           color: Color(0xff707070),
                           fontSize: 16,
@@ -94,7 +94,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     ),
                   ),
                   Text(
-                    'How many pics',
+                    S.of(context).how_many_pics,
                     style: TextStyle(
                       color: Color(0xff707070),
                       fontSize: 24,
@@ -110,7 +110,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     child: Container(
                       width: 50.0,
                       child: Text(
-                        'OK',
+                        S.of(context).ok,
                         style: TextStyle(
                           color: Color(0xff707070),
                           fontSize: 16,
@@ -172,7 +172,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     child: Container(
                       width: 50.0,
                       child: Text(
-                        'Cancel',
+                        S.of(context).cancel,
                         style: TextStyle(
                           color: Color(0xff707070),
                           fontSize: 16,
@@ -183,7 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     ),
                   ),
                   Text(
-                    'Time',
+                    S.of(context).time,
                     style: TextStyle(
                       color: Color(0xff707070),
                       fontSize: 24,
@@ -199,7 +199,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     child: Container(
                       width: 50.0,
                       child: Text(
-                        'OK',
+                        S.of(context).ok,
                         style: TextStyle(
                           color: Color(0xff707070),
                           fontSize: 16,

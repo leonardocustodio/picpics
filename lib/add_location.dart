@@ -245,7 +245,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         height: 44.0,
                         child: Center(
                           child: Text(
-                            "Confirmar localização",
+                            S.of(context).save_location,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kWhiteColor,
@@ -264,6 +264,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
             ),
             SearchMapPlaceWidget(
               apiKey: kGoogleApiKey,
+              placeholder: S.of(context).search,
               onSelected: (place) async {
                 final geolocation = await place.geolocation;
                 selectedGeolocation = geolocation;

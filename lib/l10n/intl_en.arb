@@ -1,4 +1,10 @@
 {
+  "ok": "OK",
+  "delete": "Delete",
+  "edit_tag": "Edit tag",
+  "cancel": "Cancel",
+
+
   "welcome": "Welcome!",
   "photos_always_organized": "Now your photos will be always organized",
 
@@ -40,7 +46,8 @@
   "notification_time": "Notification time",
   "share_with_friends": "Share with friends",
   "rate_this_app": "Rate this app",
-
+  "how_many_pics": "How many pics",
+  "time": "Time",
 
 
   "you_are_premium": "You are premium!",

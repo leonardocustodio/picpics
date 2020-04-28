@@ -27,6 +27,42 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  String get ok {
+    return Intl.message(
+      'OK',
+      name: 'ok',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get delete {
+    return Intl.message(
+      'Delete',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get edit_tag {
+    return Intl.message(
+      'Edit tag',
+      name: 'edit_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get cancel {
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get welcome {
     return Intl.message(
       'Welcome!',
@@ -162,15 +198,6 @@ class S {
     );
   }
 
-  String get delete {
-    return Intl.message(
-      'Delete',
-      name: 'delete',
-      desc: '',
-      args: [],
-    );
-  }
-
   String get full_screen {
     return Intl.message(
       'Full Screen',
@@ -301,6 +328,24 @@ class S {
     return Intl.message(
       'Rate this app',
       name: 'rate_this_app',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get how_many_pics {
+    return Intl.message(
+      'How many pics',
+      name: 'how_many_pics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get time {
+    return Intl.message(
+      'Time',
+      name: 'time',
       desc: '',
       args: [],
     );
