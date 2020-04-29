@@ -32,8 +32,7 @@ class DatabaseManager extends ChangeNotifier {
   static const maxNumOfRecentTags = 5;
 
   bool hasGalleryPermission = true;
-  bool noTaggedPhoto = true;
-
+//  bool noTaggedPhoto = true;
 //  bool editingTags = false;
   bool searchingTags = false;
 
@@ -51,8 +50,8 @@ class DatabaseManager extends ChangeNotifier {
   String currentPhotoCity;
   String currentPhotoState;
 
-  List<String> allTags = [];
-  List<String> allPics = [];
+//  List<String> allTags = [];
+//  List<String> allPics = [];
 
   Map<String, List<String>> suggestionTags = Map();
 
@@ -382,14 +381,19 @@ class DatabaseManager extends ChangeNotifier {
     var picsBox = Hive.box('pics');
 
     for (Pic pic in picsBox.values) {
+      if (pic.tags.length == 0) {
+        print('Pic: ${pic.photoId} has no tag cannot load it to allPics!!!');
+        continue;
+      }
+
       allPics.add(pic.photoId);
     }
 
-    if (allPics.length == 0) {
-      noTaggedPhoto = true;
-    } else {
-      noTaggedPhoto = false;
-    }
+//    if (allPics.length == 0) {
+//      noTaggedPhoto = true;
+//    } else {
+//      noTaggedPhoto = false;
+//    }
     print('loaded all pics in memory: $allPics');
   }
 
@@ -441,6 +445,11 @@ class DatabaseManager extends ChangeNotifier {
       getPic.tags.removeAt(indexOfTagInPic);
       picsBox.putAt(indexOfPic, getPic);
       print('removed tag from pic');
+
+      if (getPic.tags.length == 0) {
+        print('pic has no tags anymore!!!! removing from all pics!!!!');
+        allPics.removeAt(indexOfPic);
+      }
     }
     notifyListeners();
   }
@@ -595,7 +604,6 @@ class DatabaseManager extends ChangeNotifier {
 
   void addTag(String tag, String photoId) {
     print('Adding tag: $tag');
-    noTaggedPhoto = false;
 
     var tagsBox = Hive.box('tags');
 

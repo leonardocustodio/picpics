@@ -10,6 +10,7 @@ import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
+import 'package:picPics/widgets/top_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
@@ -931,161 +932,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                     child: SafeArea(
                       child: Stack(
                         children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.only(right: 16.0, left: 2.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
-                                      Expanded(
-                                        child: FocusScope(
-                                          child: Focus(
-                                            onFocusChange: (focus) {
-                                              print('hasFocus: ${searchFocusNode.hasFocus}');
-                                              if (searchFocusNode.hasFocus == true) {
-                                                DatabaseManager.instance.switchSearchingTags(true);
-                                              } else if (searchFocusNode.hasFocus == false &&
-                                                  DatabaseManager.instance.searchActiveTags.isEmpty) {
-                                                DatabaseManager.instance.switchSearchingTags(false);
-                                              }
-                                            },
-                                            child: TextField(
-                                              controller: searchEditingController,
-                                              focusNode: searchFocusNode,
-                                              onChanged: (text) {
-                                                print('searching: $text');
-                                                DatabaseManager.instance.searchResultsTags(text);
-                                              },
-                                              onSubmitted: (text) {
-                                                print('return');
-                                                searchEditingController.clear();
-                                                DatabaseManager.instance.searchResults = null;
-                                              },
-                                              keyboardType: TextInputType.text,
-                                              maxLines: 1,
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: Color(0xff606566),
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                              decoration: InputDecoration(
-                                                contentPadding: const EdgeInsets.only(right: 2.0),
-                                                enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                                focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                                                border: OutlineInputBorder(borderSide: BorderSide.none),
-                                                prefixIcon: Image.asset('lib/images/searchico.png'),
-                                                hintText: S.of(context).search,
-                                                hintStyle: TextStyle(
-                                                  fontFamily: 'Lato',
-                                                  color: kGrayColor,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w400,
-                                                  fontStyle: FontStyle.normal,
-                                                  letterSpacing: -0.4099999964237213,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    CupertinoButton(
-                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                      onPressed: () {
-                                        Ads.setScreen(SettingsScreen.id);
-                                        Navigator.pushNamed(context, SettingsScreen.id);
-                                      },
-                                      child: Image.asset('lib/images/settings.png'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (Provider.of<DatabaseManager>(context).searchingTags)
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    if (Provider.of<DatabaseManager>(context).searchActiveTags.isNotEmpty)
-                                      Padding(
-                                        padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-                                        child: TagsList(
-                                          tags: Provider.of<DatabaseManager>(context).searchActiveTags,
-                                          tagStyle: TagStyle.MultiColored,
-                                          onTap: () {
-                                            print('do nothing');
-                                          },
-                                          onDoubleTap: () {
-                                            DatabaseManager.instance.removeTagFromSearchFilter();
-                                            if (DatabaseManager.instance.searchActiveTags.isEmpty && searchFocusNode.hasFocus == false) {
-                                              DatabaseManager.instance.switchSearchingTags(false);
-                                            }
-                                          },
-                                          showEditTagModal: showEditTagModal,
-                                        ),
-                                      ),
-                                    if (Provider.of<DatabaseManager>(context).searchResults != null)
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                        child: Text(
-                                          S.of(context).search_results,
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: Color(0xff979a9b),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                      ),
-                                    if (Provider.of<DatabaseManager>(context).searchResults != null)
-                                      if (Provider.of<DatabaseManager>(context).searchResults.isNotEmpty)
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
-                                          child: TagsList(
-                                            tags: Provider.of<DatabaseManager>(context).searchResults,
-                                            tagStyle: TagStyle.GrayOutlined,
-                                            showEditTagModal: showEditTagModal,
-                                            onTap: () {
-                                              DatabaseManager.instance.addTagToSearchFilter();
-                                            },
-                                            onDoubleTap: () {
-                                              print('do nothing');
-                                            },
-                                          ),
-                                        ),
-                                    if (Provider.of<DatabaseManager>(context).searchResults != null)
-                                      if (Provider.of<DatabaseManager>(context).searchResults.isEmpty)
-                                        Container(
-                                          padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
-                                          child: Text(
-                                            S.of(context).no_tags_found,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontFamily: 'Lato',
-                                              color: Color(0xff979a9b),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w700,
-                                              fontStyle: FontStyle.normal,
-                                              letterSpacing: -0.4099999964237213,
-                                            ),
-                                          ),
-                                        ),
-                                    Container(
-                                      height: 1,
-                                      color: kLightGrayColor,
-                                    ),
-                                  ],
-                                ),
-                              if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
-                                Expanded(
-                                  child: _buildTaggedGridView(),
-                                ),
-                              if (Provider.of<DatabaseManager>(context).noTaggedPhoto)
+                          if (Provider.of<DatabaseManager>(context).allPics.length == 0)
+                            TopBar(
+                              children: <Widget>[
                                 Expanded(
                                   child: Center(
                                     child: Column(
@@ -1140,9 +989,96 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     ),
                                   ),
                                 ),
-                            ],
-                          ),
-                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto &&
+                              ],
+                            ),
+                          if (Provider.of<DatabaseManager>(context).allPics.length != 0)
+                            TopBar(
+                              searchEditingController: searchEditingController,
+                              searchFocusNode: searchFocusNode,
+                              children: <Widget>[
+                                if (Provider.of<DatabaseManager>(context).searchingTags)
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      if (Provider.of<DatabaseManager>(context).searchActiveTags.isNotEmpty)
+                                        Padding(
+                                          padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+                                          child: TagsList(
+                                            tags: Provider.of<DatabaseManager>(context).searchActiveTags,
+                                            tagStyle: TagStyle.MultiColored,
+                                            onTap: () {
+                                              print('do nothing');
+                                            },
+                                            onDoubleTap: () {
+                                              DatabaseManager.instance.removeTagFromSearchFilter();
+                                              if (DatabaseManager.instance.searchActiveTags.isEmpty && searchFocusNode.hasFocus == false) {
+                                                DatabaseManager.instance.switchSearchingTags(false);
+                                              }
+                                            },
+                                            showEditTagModal: showEditTagModal,
+                                          ),
+                                        ),
+                                      if (Provider.of<DatabaseManager>(context).searchResults != null)
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                          child: Text(
+                                            S.of(context).search_results,
+                                            style: TextStyle(
+                                              fontFamily: 'Lato',
+                                              color: Color(0xff979a9b),
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300,
+                                              fontStyle: FontStyle.normal,
+                                              letterSpacing: -0.4099999964237213,
+                                            ),
+                                          ),
+                                        ),
+                                      if (Provider.of<DatabaseManager>(context).searchResults != null)
+                                        if (Provider.of<DatabaseManager>(context).searchResults.isNotEmpty)
+                                          Padding(
+                                            padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
+                                            child: TagsList(
+                                              tags: Provider.of<DatabaseManager>(context).searchResults,
+                                              tagStyle: TagStyle.GrayOutlined,
+                                              showEditTagModal: showEditTagModal,
+                                              onTap: () {
+                                                DatabaseManager.instance.addTagToSearchFilter();
+                                              },
+                                              onDoubleTap: () {
+                                                print('do nothing');
+                                              },
+                                            ),
+                                          ),
+                                      if (Provider.of<DatabaseManager>(context).searchResults != null)
+                                        if (Provider.of<DatabaseManager>(context).searchResults.isEmpty)
+                                          Container(
+                                            padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
+                                            child: Text(
+                                              S.of(context).no_tags_found,
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                color: Color(0xff979a9b),
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w700,
+                                                fontStyle: FontStyle.normal,
+                                                letterSpacing: -0.4099999964237213,
+                                              ),
+                                            ),
+                                          ),
+                                      Container(
+                                        height: 1,
+                                        color: kLightGrayColor,
+                                      ),
+                                    ],
+                                  ),
+                                if (Provider.of<DatabaseManager>(context).allPics != 0)
+                                  Expanded(
+                                    child: _buildTaggedGridView(),
+                                  ),
+                              ],
+                            ),
+                          if (Provider.of<DatabaseManager>(context).allPics.length != 0 &&
                               !hideTitleThirdTab &&
                               !Provider.of<DatabaseManager>(context).searchingTags)
                             Positioned(
