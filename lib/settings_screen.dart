@@ -81,7 +81,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       Navigator.pop(context);
                     },
                     child: Container(
-                      width: 50.0,
+                      width: 80.0,
                       child: Text(
                         S.of(context).cancel,
                         style: TextStyle(
@@ -108,9 +108,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       Navigator.pop(context);
                     },
                     child: Container(
-                      width: 50.0,
+                      width: 80.0,
                       child: Text(
                         S.of(context).ok,
+                        textAlign: TextAlign.end,
                         style: TextStyle(
                           color: Color(0xff707070),
                           fontSize: 16,
@@ -170,7 +171,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       Navigator.pop(context);
                     },
                     child: Container(
-                      width: 50.0,
+                      width: 80.0,
                       child: Text(
                         S.of(context).cancel,
                         style: TextStyle(
@@ -197,9 +198,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       Navigator.pop(context);
                     },
                     child: Container(
-                      width: 50.0,
+                      width: 80.0,
                       child: Text(
                         S.of(context).ok,
+                        textAlign: TextAlign.end,
                         style: TextStyle(
                           color: Color(0xff707070),
                           fontSize: 16,
