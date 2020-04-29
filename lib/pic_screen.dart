@@ -739,7 +739,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   height: 21.0,
                                 ),
                                 Text(
-                                  "Para começarmos a organizar suas fotos, precismos de autorização para acessá-las",
+                                  S.of(context).gallery_access_permission_description,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'Lato',
@@ -766,7 +766,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     ),
                                     child: Center(
                                       child: Text(
-                                        "Permissões de acesso",
+                                        S.of(context).gallery_access_permission,
                                         style: TextStyle(
                                           fontFamily: 'Lato',
                                           color: kWhiteColor,
@@ -980,7 +980,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                                 focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
                                                 border: OutlineInputBorder(borderSide: BorderSide.none),
                                                 prefixIcon: Image.asset('lib/images/searchico.png'),
-                                                hintText: 'Pesquisar...',
+                                                hintText: S.of(context).search,
                                                 hintStyle: TextStyle(
                                                   fontFamily: 'Lato',
                                                   color: kGrayColor,

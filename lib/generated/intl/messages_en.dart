@@ -19,6 +19,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static m0(url) => "To organize all your photos go to ${url}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Add tag"),
@@ -28,11 +30,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "continue_string" : MessageLookupByLibrary.simpleMessage("Continue"),
     "country" : MessageLookupByLibrary.simpleMessage("country"),
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
+    "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone"),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("Daily goal"),
     "delete" : MessageLookupByLibrary.simpleMessage("Delete"),
     "edit_tag" : MessageLookupByLibrary.simpleMessage("Edit tag"),
     "export_all_gallery" : MessageLookupByLibrary.simpleMessage("Export all gallery"),
+    "export_library" : MessageLookupByLibrary.simpleMessage("Export Library"),
     "full_screen" : MessageLookupByLibrary.simpleMessage("Full Screen"),
+    "gallery_access_permission" : MessageLookupByLibrary.simpleMessage("Access permissions"),
+    "gallery_access_permission_description" : MessageLookupByLibrary.simpleMessage("To start organizing your photos, we need authorization to access them"),
     "gallery_access_reason" : MessageLookupByLibrary.simpleMessage("To organize your photos we need access to your photo gallery"),
     "get_premium_description" : MessageLookupByLibrary.simpleMessage("TO HAVE ALL THESE FEATURES"),
     "get_premium_now" : MessageLookupByLibrary.simpleMessage("Get premium now!"),
@@ -42,9 +48,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "month" : MessageLookupByLibrary.simpleMessage("month"),
     "next" : MessageLookupByLibrary.simpleMessage("Next"),
     "no_ads" : MessageLookupByLibrary.simpleMessage("No Ads"),
+    "no_previous_purchase" : MessageLookupByLibrary.simpleMessage("No Previous Purchase"),
     "no_tagged_photos" : MessageLookupByLibrary.simpleMessage("You don\'t have any tagged photos yet"),
     "no_tags_found" : MessageLookupByLibrary.simpleMessage("No tags found"),
+    "no_valid_subscription" : MessageLookupByLibrary.simpleMessage("Could not find a valid subscription purchase."),
     "notification_time" : MessageLookupByLibrary.simpleMessage("Notification time"),
+    "notifications" : MessageLookupByLibrary.simpleMessage("Notifications"),
     "ok" : MessageLookupByLibrary.simpleMessage("OK"),
     "organized_photos_description" : MessageLookupByLibrary.simpleMessage("Photos that have already been tagged"),
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("Organized Photos"),
@@ -56,7 +65,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Restore purchase"),
     "save" : MessageLookupByLibrary.simpleMessage("save"),
     "save_location" : MessageLookupByLibrary.simpleMessage("Save location"),
-    "search" : MessageLookupByLibrary.simpleMessage("Pesquisar..."),
+    "search" : MessageLookupByLibrary.simpleMessage("Search..."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Search results"),
     "settings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "share_with_friends" : MessageLookupByLibrary.simpleMessage("Share with friends"),
@@ -64,6 +73,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "start_tagging" : MessageLookupByLibrary.simpleMessage("Start tagging"),
     "suggestions" : MessageLookupByLibrary.simpleMessage("Suggestions"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Tag multiple photos at once"),
+    "take_a_look" : MessageLookupByLibrary.simpleMessage("Take a look at this app!"),
+    "take_a_look_description" : m0,
     "time" : MessageLookupByLibrary.simpleMessage("Time"),
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("We bring a daily package for you to gradually organize your library."),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want."),

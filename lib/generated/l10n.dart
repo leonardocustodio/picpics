@@ -63,6 +63,15 @@ class S {
     );
   }
 
+  String get notifications {
+    return Intl.message(
+      'Notifications',
+      name: 'notifications',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get welcome {
     return Intl.message(
       'Welcome!',
@@ -245,7 +254,7 @@ class S {
 
   String get search {
     return Intl.message(
-      'Pesquisar...',
+      'Search...',
       name: 'search',
       desc: '',
       args: [],
@@ -346,6 +355,33 @@ class S {
     return Intl.message(
       'Time',
       name: 'time',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get take_a_look {
+    return Intl.message(
+      'Take a look at this app!',
+      name: 'take_a_look',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String take_a_look_description(Object url) {
+    return Intl.message(
+      'To organize all your photos go to $url',
+      name: 'take_a_look_description',
+      desc: '',
+      args: [url],
+    );
+  }
+
+  String get daily_challenge_permission_description {
+    return Intl.message(
+      'For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone',
+      name: 'daily_challenge_permission_description',
       desc: '',
       args: [],
     );
@@ -459,6 +495,24 @@ class S {
     );
   }
 
+  String get no_previous_purchase {
+    return Intl.message(
+      'No Previous Purchase',
+      name: 'no_previous_purchase',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get no_valid_subscription {
+    return Intl.message(
+      'Could not find a valid subscription purchase.',
+      name: 'no_valid_subscription',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get save {
     return Intl.message(
       'save',
@@ -476,6 +530,33 @@ class S {
       args: [],
     );
   }
+
+  String get gallery_access_permission {
+    return Intl.message(
+      'Access permissions',
+      name: 'gallery_access_permission',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get gallery_access_permission_description {
+    return Intl.message(
+      'To start organizing your photos, we need authorization to access them',
+      name: 'gallery_access_permission_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get export_library {
+    return Intl.message(
+      'Export Library',
+      name: 'export_library',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -484,6 +565,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   List<Locale> get supportedLocales {
     return const <Locale>[
       Locale.fromSubtags(languageCode: 'en'),
+      Locale.fromSubtags(languageCode: 'pt', countryCode: 'BR'),
     ];
   }
 

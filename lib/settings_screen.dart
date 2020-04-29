@@ -34,11 +34,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     appStoreIdentifier: '1503352127',
   );
 
-  void shareApp() {
+  void shareApp(BuildContext context) {
 //    Share.share('Veja esse aplicativo da para organizar todas suas fotos https://appsto.re/picpics', subject: 'Teste');
     Share.text(
-      'Da uma olhada nesse app!',
-      'Veja esse aplicativo da para organizar todas suas fotos https://appsto.re/picpics',
+      S.of(context).take_a_look,
+      S.of(context).take_a_look_description('https://appsto.re/picpics'),
       'text/plain',
     );
   }
@@ -232,7 +232,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     Ads.setScreen(SettingsScreen.id);
   }
 
-  void changeDailyChallenges(bool value) async {
+  void changeDailyChallenges(BuildContext context, bool value) async {
     if (value == false) {
       DatabaseManager.instance.changeDailyChallenges();
     } else if (value == true && DatabaseManager.instance.userSettings.notifications == false) {
@@ -240,18 +240,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         context: context,
         builder: (BuildContext context) {
           return PlatformAlertDialog(
-            title: Text('Notificações'),
+            title: Text(S.of(context).notifications),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(
-                      'Para que a gente possa enviar seus desafios diários precisamos de autorização para enviar notificações, dessa maneira, é necessário que você autorize as notificações nas opções do seu celular'),
+                  Text(S.of(context).daily_challenge_permission_description),
                 ],
               ),
             ),
             actions: <Widget>[
               PlatformDialogAction(
-                child: Text('Okay'),
+                child: Text(S.of(context).ok),
                 actionType: ActionType.Preferred,
                 onPressed: () {
                   NotificationPermissions.requestNotificationPermissions(
@@ -351,7 +350,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 value: Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
                                 activeColor: kSecondaryColor,
                                 onChanged: (value) {
-                                  changeDailyChallenges(value);
+                                  changeDailyChallenges(context, value);
                                 },
                               ),
                             ],
@@ -455,7 +454,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         children: <Widget>[
                           CupertinoButton(
                             onPressed: () {
-                              shareApp();
+                              shareApp(context);
                             },
                             child: Container(
                               width: 166.0,

@@ -71,20 +71,20 @@ class _PremiumScreenState extends State<PremiumScreen> {
           context: context,
           builder: (BuildContext context) {
             return PlatformAlertDialog(
-              title: Text('No Previous Purchase'),
+              title: Text(S.of(context).no_previous_purchase),
               content: SingleChildScrollView(
                 child: ListBody(
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(top: 10.0),
-                      child: Text('Could not find a valid subscription purchase.'),
+                      child: Text(S.of(context).no_valid_subscription),
                     ),
                   ],
                 ),
               ),
               actions: <Widget>[
                 PlatformDialogAction(
-                  child: Text('OK'),
+                  child: Text(S.of(context).ok),
                   actionType: ActionType.Preferred,
                   onPressed: () {
                     Navigator.of(context).pop();

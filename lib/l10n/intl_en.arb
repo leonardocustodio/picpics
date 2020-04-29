@@ -3,6 +3,7 @@
   "delete": "Delete",
   "edit_tag": "Edit tag",
   "cancel": "Cancel",
+  "notifications": "Notifications",
 
 
   "welcome": "Welcome!",
@@ -32,7 +33,7 @@
   "organized_photos_title": "Organized Photos",
   "organized_photos_description": "Photos that have already been tagged",
 
-  "search": "Pesquisar...",
+  "search": "Search...",
 
 
   "no_tagged_photos": "You don't have any tagged photos yet",
@@ -48,6 +49,11 @@
   "rate_this_app": "Rate this app",
   "how_many_pics": "How many pics",
   "time": "Time",
+
+  "take_a_look": "Take a look at this app!",
+  "take_a_look_description": "To organize all your photos go to {url}",
+
+  "daily_challenge_permission_description": "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone",
 
 
   "you_are_premium": "You are premium!",
@@ -68,7 +74,16 @@
   "month": "month",
 
   "restore_purchase": "Restore purchase",
+  "no_previous_purchase": "No Previous Purchase",
+  "no_valid_subscription": "Could not find a valid subscription purchase.",
   "save": "save",
 
-  "save_location": "Save location"
+  "save_location": "Save location",
+
+
+  "gallery_access_permission": "Access permissions",
+  "gallery_access_permission_description": "To start organizing your photos, we need authorization to access them",
+
+  "export_library": "Export Library"
+
 }
