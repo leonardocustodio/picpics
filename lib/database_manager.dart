@@ -5,7 +5,6 @@ import 'package:picPics/asset_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
@@ -18,6 +17,7 @@ import 'dart:io';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:encrypt/encrypt.dart' as E;
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -28,11 +28,11 @@ class DatabaseManager extends ChangeNotifier {
     return _instance ??= DatabaseManager._();
   }
 
-  static const maxNumOfSuggestions = 8;
+  static const maxNumOfSuggestions = 6;
   static const maxNumOfRecentTags = 5;
 
   bool hasGalleryPermission = true;
-//  bool noTaggedPhoto = true;
+  bool noTaggedPhoto = false;
 //  bool editingTags = false;
   bool searchingTags = false;
 
@@ -50,19 +50,13 @@ class DatabaseManager extends ChangeNotifier {
   String currentPhotoCity;
   String currentPhotoState;
 
-//  List<String> allTags = [];
-//  List<String> allPics = [];
-
   Map<String, List<String>> suggestionTags = Map();
-
-//  List<String> suggestionTags = [];
-  List<String> allRecentTags = [];
 
   double scale = 1.0;
 
   String addingTagId = '';
   int addingTagIndex = 0;
-  String selectedEditTag;
+  String selectedTagKey;
 
   User userSettings;
 
@@ -99,11 +93,38 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
+  String getTagName(String tagKey) {
+    var tagsBox = Hive.box('tags');
+    Tag getTag = tagsBox.get(tagKey);
+
+    // Verificar isso aqui pois tem a ver com as sugestões!!!!
+    print('TagKey: $tagKey');
+
+    if (getTag != null) {
+      print('Returning name');
+      return getTag.name;
+    } else {
+      print('### ERROR ### Returning key');
+      return tagKey;
+    }
+  }
+
+  void checkHasTaggedPhotos() {
+    var picsBox = Hive.box('pics');
+
+    noTaggedPhoto = true;
+    for (Pic pic in picsBox.values) {
+      if (pic.tags.length > 0) {
+        noTaggedPhoto = false;
+        break;
+      }
+    }
+  }
+
   void saveLocationToPic({double lat, double long, String specifLocation, String generalLocation, String photoId}) {
     var picsBox = Hive.box('pics');
 
-    int indexOfPic = allPics.indexOf(photoId);
-    Pic getPic = picsBox.getAt(indexOfPic);
+    Pic getPic = picsBox.get(photoId);
 
     if (getPic != null) {
       print('found pic');
@@ -113,7 +134,7 @@ class DatabaseManager extends ChangeNotifier {
       getPic.specificLocation = specifLocation;
       getPic.generalLocation = generalLocation;
 
-      picsBox.putAt(indexOfPic, getPic);
+      picsBox.put(photoId, getPic);
       print('updated pic with new values');
     }
     notifyListeners();
@@ -123,22 +144,21 @@ class DatabaseManager extends ChangeNotifier {
     var picsBox = Hive.box('pics');
     var tagsBox = Hive.box('tags');
 
-    int indexOfPic = allPics.indexOf(entity.id);
-
-    Pic getPic = picsBox.getAt(indexOfPic);
+    Pic getPic = picsBox.get(entity.id);
     if (getPic != null) {
       print('found pic');
 
       for (var tag in getPic.tags) {
-        int indexOfTag = allTags.indexOf(tag);
-        Tag getTag = tagsBox.getAt(indexOfTag);
+//        int indexOfTag = allTags.indexOf(tag);
+        String tagKey = stripTag(tag);
+
+        Tag getTag = tagsBox.get(tagKey);
         getTag.photoId.remove(entity.id);
         print('removed ${entity.id} from $tag');
-        tagsBox.putAt(indexOfTag, getTag);
+        tagsBox.put(tagKey, getTag);
       }
       print('removed ${entity.id} from database');
-      picsBox.deleteAt(indexOfPic);
-      allPics.removeAt(indexOfPic);
+      picsBox.delete(entity.id);
     }
 
     DatabaseManager.instance.assetProvider.data.remove(entity);
@@ -241,6 +261,10 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
+    var userBox = Hive.box('user');
+    var tagsBox = Hive.box('tags');
+    User getUser = userBox.getAt(0);
+
     List<String> suggestions = [];
 //    suggestionTags.clear();
 
@@ -249,7 +273,7 @@ class DatabaseManager extends ChangeNotifier {
     }
 
     if (text == '') {
-      for (var recent in allRecentTags) {
+      for (var recent in getUser.recentTags) {
         if (excludeTags.contains(recent)) {
           continue;
         }
@@ -258,18 +282,31 @@ class DatabaseManager extends ChangeNotifier {
 
       print('Sugestion Length: ${suggestions.length} - Num of Suggestions: $maxNumOfSuggestions');
 
-      while (suggestions.length < maxNumOfSuggestions) {
+//      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
 //            continue;
 //          }
-        suggestions.add('Hey ${Random().nextInt(10)}');
+      if (suggestions.length < maxNumOfSuggestions) {
+        for (var tagKey in tagsBox.keys) {
+          if (suggestions.length == maxNumOfSuggestions) {
+            break;
+          }
+          if (excludeTags.contains(tagKey) || suggestions.contains(tagKey)) {
+            continue;
+          }
+          suggestions.add(tagKey);
+        }
       }
+//      }
     } else {
-      var tags = allTags.where((e) => e.toLowerCase().startsWith(text.toLowerCase()));
-      suggestions.addAll(tags);
+      for (var tagKey in tagsBox.keys) {
+        String tagName = decryptTag(tagKey);
+        if (tagName.startsWith(text.toLowerCase())) {
+          suggestions.add(tagKey);
+        }
+      }
     }
     print('find suggestions: $text - exclude: $excludeTags');
-//
 
     suggestionTags[photoId] = suggestions;
     print(suggestionTags);
@@ -280,22 +317,17 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void addTagToSearchFilter() {
-    String tag = selectedEditTag;
-
-    if (searchActiveTags.contains(tag)) {
+    if (searchActiveTags.contains(selectedTagKey)) {
       return;
     }
-
-    searchActiveTags.add(tag);
+    searchActiveTags.add(selectedTagKey);
     print('search tags: $searchActiveTags');
     searchPicsWithTags();
   }
 
   void removeTagFromSearchFilter() {
-    String tag = selectedEditTag;
-
-    if (searchActiveTags.contains(tag)) {
-      searchActiveTags.remove(tag);
+    if (searchActiveTags.contains(selectedTagKey)) {
+      searchActiveTags.remove(selectedTagKey);
       print('search tags: $searchActiveTags');
       searchPicsWithTags();
     }
@@ -308,11 +340,9 @@ class DatabaseManager extends ChangeNotifier {
     List<String> tempPhotosIds = [];
     bool firstInteraction = true;
 
-    for (var tag in searchActiveTags) {
-      print('filtering tag: $tag');
-      int indexOfTag = allTags.indexOf(tag);
-      print('index of $tag: $indexOfTag');
-      Tag getTag = tagsBox.getAt(indexOfTag);
+    for (var tagKey in searchActiveTags) {
+      print('filtering tag: $tagKey');
+      Tag getTag = tagsBox.get(tagKey);
       List<String> photosIds = getTag.photoId;
       print('photos Ids in this tag: $photosIds');
 
@@ -329,7 +359,7 @@ class DatabaseManager extends ChangeNotifier {
           print('checking if photoId is there: $photoId');
           if (!photosIds.contains(photoId)) {
             auxArray.remove(photoId);
-            print('removing $photoId because doesnt have $tag');
+            print('removing $photoId because doesnt have $tagKey');
           }
         }
         tempPhotosIds = auxArray;
@@ -341,15 +371,23 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void searchResultsTags(String text) {
+    var tagsBox = Hive.box('tags');
+
     if (text == '') {
       searchResults = null;
       notifyListeners();
       return;
     }
 
-    var tags = allTags.where((e) => e.toLowerCase().startsWith(text.toLowerCase()));
     searchResults = [];
-    searchResults.addAll(tags);
+
+    for (var tagKey in tagsBox.keys) {
+      String tagName = decryptTag(tagKey);
+      if (tagName.startsWith(text.toLowerCase())) {
+        searchResults.add(tagKey);
+      }
+    }
+
     notifyListeners();
   }
 
@@ -368,171 +406,116 @@ class DatabaseManager extends ChangeNotifier {
     print('loading pic info from: $photoId');
     var picsBox = Hive.box('pics');
 
-    if (allPics.contains(photoId)) {
-      int indexOfPic = allPics.indexOf(photoId);
-      Pic getPic = picsBox.getAt(indexOfPic);
+    if (picsBox.containsKey(photoId)) {
+      Pic getPic = picsBox.get(photoId);
       return getPic;
     }
 
     return null;
   }
 
-  loadPics() {
-    var picsBox = Hive.box('pics');
-
-    for (Pic pic in picsBox.values) {
-      if (pic.tags.length == 0) {
-        print('Pic: ${pic.photoId} has no tag cannot load it to allPics!!!');
-        continue;
-      }
-
-      allPics.add(pic.photoId);
-    }
-
-//    if (allPics.length == 0) {
-//      noTaggedPhoto = true;
-//    } else {
-//      noTaggedPhoto = false;
-//    }
-    print('loaded all pics in memory: $allPics');
-  }
-
-  loadTags() {
-    var tagsBox = Hive.box('tags');
-
-    for (Tag tag in tagsBox.values) {
-      allTags.add(tag.name);
-    }
-    print('loaded all tags in memory: $allTags');
-  }
-
-  void loadRecentTags() {
-    var userBox = Hive.box('user');
-
-    User getUser = userBox.getAt(0);
-    if (getUser == null) {
-      print('no user returning no tags');
-      allRecentTags = [];
-      return;
-    }
-
-    print('${getUser.recentTags}');
-
-    allRecentTags = getUser.recentTags ?? [];
-    print('Recent tags: $allRecentTags');
-  }
-
-  void removeTagFromPic(String tag, String photoId) {
-    print('removing tag: $tag from pic $photoId');
+  void removeTagFromPic({String tagKey, String photoId}) {
+    print('removing tag: $tagKey from pic $photoId');
     var tagsBox = Hive.box('tags');
     var picsBox = Hive.box('pics');
 
-    int indexOfTag = allTags.indexOf(tag);
-    Tag getTag = tagsBox.getAt(indexOfTag);
+    Tag getTag = tagsBox.get(tagKey);
 
     int indexOfPicInTag = getTag.photoId.indexOf(photoId);
     if (indexOfPicInTag != null) {
       getTag.photoId.removeAt(indexOfPicInTag);
-      tagsBox.putAt(indexOfTag, getTag);
+      tagsBox.put(tagKey, getTag);
       print('removed pic from tag');
     }
 
-    int indexOfPic = allPics.indexOf(photoId);
-    Pic getPic = picsBox.getAt(indexOfPic);
+    Pic getPic = picsBox.get(photoId);
 
-    int indexOfTagInPic = getPic.tags.indexOf(tag);
+    int indexOfTagInPic = getPic.tags.indexOf(tagKey);
     if (indexOfTagInPic != null) {
       getPic.tags.removeAt(indexOfTagInPic);
-      picsBox.putAt(indexOfPic, getPic);
+      picsBox.put(photoId, getPic);
       print('removed tag from pic');
 
       if (getPic.tags.length == 0) {
-        print('pic has no tags anymore!!!! removing from all pics!!!!');
-        allPics.removeAt(indexOfPic);
+        print('pic has no tags anymore!!!!');
       }
     }
+    checkHasTaggedPhotos();
     notifyListeners();
   }
 
-  void removeTag(String tag) {
+  void deleteTag({String tagKey}) {
     var tagsBox = Hive.box('tags');
     var picsBox = Hive.box('pics');
     var userBox = Hive.box('user');
 
-    if (allTags.contains(tag)) {
+    if (tagsBox.containsKey(tagKey)) {
       print('found tag going to delete it');
 
-      int indexOfTag = allTags.indexOf(tag);
-      Tag getTag = tagsBox.getAt(indexOfTag);
+      Tag getTag = tagsBox.get(tagKey);
 
       for (String photoId in getTag.photoId) {
-        int indexOfPic = allPics.indexOf(photoId);
-
-        Pic pic = picsBox.getAt(indexOfPic);
-        int indexOfTagInPic = pic.tags.indexOf(tag);
+        Pic pic = picsBox.get(photoId);
+        int indexOfTagInPic = pic.tags.indexOf(tagKey);
         print('getting pic: $photoId');
 
         if (indexOfTagInPic != null) {
           pic.tags.removeAt(indexOfTagInPic);
-          picsBox.putAt(indexOfPic, pic);
+          picsBox.put(photoId, pic);
           print('removed tag from pic');
         }
       }
 
       User getUser = userBox.getAt(0);
-      if (getUser.recentTags.contains(tag)) {
-        print('recent tags: $allRecentTags');
+      if (getUser.recentTags.contains(tagKey)) {
+        print('recent tags: ${getUser.recentTags}');
         print('removing from recent tags');
-        int indexOfRecentTag = allRecentTags.indexOf(tag);
-        getUser.recentTags.removeAt(indexOfRecentTag);
+        getUser.recentTags.remove(tagKey);
         userBox.putAt(0, getUser);
-        allRecentTags.removeAt(indexOfRecentTag);
-        print('recent tags after removed: $allRecentTags');
+        print('recent tags after removed: ${getUser.recentTags}');
       }
 
-      tagsBox.deleteAt(indexOfTag);
-      allTags.removeAt(indexOfTag);
+      tagsBox.delete(tagKey);
+      checkHasTaggedPhotos();
       print('deleted from tags db');
       notifyListeners();
     }
   }
 
-  void editTag(String oldName, String newName) {
+  void editTag({String oldTagKey, String newName}) {
     var tagsBox = Hive.box('tags');
     var picsBox = Hive.box('pics');
     var userBox = Hive.box('user');
 
-    if (allTags.contains(oldName)) {
+    String newTagKey = encryptTag(newName);
+
+    if (tagsBox.containsKey(oldTagKey)) {
       print('found tag with this name');
 
-      int indexOfTag = allTags.indexOf(oldName);
-      Tag getTag = tagsBox.getAt(indexOfTag);
+      Tag getTag = tagsBox.get(oldTagKey);
 
       Tag newTag = Tag(newName, getTag.photoId);
-      tagsBox.putAt(indexOfTag, newTag);
-      allTags[indexOfTag] = newName;
+      tagsBox.put(newTagKey, newTag);
+      tagsBox.delete(oldTagKey);
 
       print('updated tag');
 
       for (String photoId in newTag.photoId) {
-        int indexOfPic = allPics.indexOf(photoId);
+        Pic pic = picsBox.get(photoId);
 
-        Pic pic = picsBox.getAt(indexOfPic);
-        int indexOfOldTag = pic.tags.indexOf(oldName);
-
+        int indexOfOldTag = pic.tags.indexOf(oldTagKey);
         print('Tags in this picture: ${pic.tags}');
-        pic.tags[indexOfOldTag] = newName;
-        picsBox.putAt(indexOfPic, pic);
+        pic.tags[indexOfOldTag] = newTagKey;
+        picsBox.put(photoId, pic);
         print('updated tag in pic ${pic.photoId}');
       }
 
       User getUser = userBox.getAt(0);
-      if (getUser.recentTags.contains(oldName)) {
+      if (getUser.recentTags.contains(oldTagKey)) {
         print('updating tag name in recent tags');
-        int indexOfRecentTag = allRecentTags.indexOf(oldName);
-        getUser.recentTags[indexOfRecentTag] = newName;
+        int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
+        getUser.recentTags[indexOfRecentTag] = newTagKey;
         userBox.putAt(0, getUser);
-        allRecentTags[indexOfRecentTag] = newName;
       }
 
       print('finished updating all tags');
@@ -540,47 +523,49 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  // allRecentTags = getUser.recentTags (diferent do loadTags e loadPics ** prestar atencao)
-  addTagToRecent(String tag) {
-    print('adding tag to recent: $tag');
+  void addTagToRecent({String tagKey}) {
+    print('adding tag to recent: $tagKey');
 
     var userBox = Hive.box('user');
     User getUser = userBox.getAt(0);
 
-    if (allRecentTags.contains(tag)) {
-      allRecentTags.remove(tag);
-      allRecentTags.insert(0, tag);
+    if (getUser.recentTags.contains(tagKey)) {
+      getUser.recentTags.remove(tagKey);
+      getUser.recentTags.insert(0, tagKey);
       userBox.putAt(0, getUser);
       return;
     }
 
-    if (allRecentTags.length >= maxNumOfRecentTags) {
+    if (getUser.recentTags.length >= maxNumOfRecentTags) {
       print('removing last');
-      allRecentTags.removeLast();
+      getUser.recentTags.removeLast();
     }
 
-    allRecentTags.insert(0, tag);
+    getUser.recentTags.insert(0, tagKey);
     userBox.putAt(0, getUser);
-    print('final tags in recent: $allRecentTags');
+    print('final tags in recent: ${getUser.recentTags}');
   }
 
-  void addTagToPic(String tag, String photoId) {
+  void addTagToPic({String tagKey, String photoId}) {
     var picsBox = Hive.box('pics');
 
-    if (allPics.contains(photoId)) {
+    if (picsBox.containsKey(photoId)) {
       print('this picture is in db going to update');
 
-      int indexOfPic = allPics.indexOf(photoId);
-      Pic getPic = picsBox.getAt(indexOfPic);
+      Pic getPic = picsBox.get(photoId);
 
-      if (getPic.tags.contains(tag)) {
+      if (getPic.tags.contains(tagKey)) {
         print('this tag is already in this picture');
         return;
       }
 
-      getPic.tags.add(tag);
+      if (noTaggedPhoto == true) {
+        noTaggedPhoto = false;
+      }
+
+      getPic.tags.add(tagKey);
       print('photoId: ${getPic.photoId} - tags: ${getPic.tags}');
-      picsBox.putAt(indexOfPic, getPic);
+      picsBox.put(photoId, getPic);
       print('updated picture');
 
       return;
@@ -596,22 +581,57 @@ class DatabaseManager extends ChangeNotifier {
       null,
       null,
       null,
-      [tag],
+      [tagKey],
     );
-    picsBox.add(pic);
-    allPics.add(photoId);
+    picsBox.put(photoId, pic);
+
+    if (noTaggedPhoto == true) {
+      noTaggedPhoto = false;
+    }
   }
 
-  void addTag(String tag, String photoId) {
-    print('Adding tag: $tag');
+  String stripTag(String tag) {
+    return tag.toLowerCase();
+  }
 
+  String encryptTag(String tag) {
+    final plainText = stripTag(tag);
+
+    final key = E.Key.fromUtf8('picpics key for encrypting tags!');
+    final iv = E.IV.fromLength(16);
+    final encrypter = E.Encrypter(E.AES(key));
+    final encrypted = encrypter.encrypt(plainText, iv: iv);
+
+    print('Stripped tag: $tag');
+//    print(encrypted.bytes);
+    print('Encrypted tag: ${encrypted.base16}');
+//    print(encrypted.base64);
+
+    return encrypted.base16;
+  }
+
+  String decryptTag(String encrypted) {
+    final key = E.Key.fromUtf8('picpics key for encrypting tags!');
+    final iv = E.IV.fromLength(16);
+    final encrypter = E.Encrypter(E.AES(key));
+    var encrypt = E.Encrypted.fromBase16(encrypted);
+    final decrypted = encrypter.decrypt(encrypt, iv: iv);
+
+    print('Decrypted tag: $decrypted');
+    return decrypted;
+  }
+
+  void addTag({String tagName, String photoId}) {
     var tagsBox = Hive.box('tags');
+    print(tagsBox.keys);
 
-    if (allTags.contains(tag)) {
+    String tagKey = encryptTag(tagName);
+    print('Adding tag: $tagName');
+
+    if (tagsBox.containsKey(tagKey)) {
       print('user already has this tag');
 
-      int indexOfTag = allTags.indexOf(tag);
-      Tag getTag = tagsBox.getAt(indexOfTag);
+      Tag getTag = tagsBox.get(tagKey);
 
       if (getTag.photoId.contains(photoId)) {
         print('this tag is already in this picture');
@@ -619,27 +639,24 @@ class DatabaseManager extends ChangeNotifier {
       }
 
       getTag.photoId.add(photoId);
-      tagsBox.putAt(indexOfTag, getTag);
+      tagsBox.put(tagKey, getTag);
       addTagToPic(
-        tag,
-        photoId,
-//        photoIndex,
+        tagKey: tagKey,
+        photoId: photoId,
       );
-      addTagToRecent(tag);
+      addTagToRecent(tagKey: tagKey);
       print('updated pictures in tag');
       notifyListeners();
       return;
     }
 
     print('adding tag to database...');
-    tagsBox.add(Tag(tag, [photoId]));
+    tagsBox.put(tagKey, Tag(tagName, [photoId]));
     addTagToPic(
-      tag,
-      photoId,
-//      photoIndex,
+      tagKey: tagKey,
+      photoId: photoId,
     );
-    addTagToRecent(tag);
-    allTags.add(tag);
+    addTagToRecent(tagKey: tagKey);
     notifyListeners();
   }
 

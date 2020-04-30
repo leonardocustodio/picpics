@@ -169,7 +169,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       isAdVisible = true;
       Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
     }
-
     DatabaseManager.instance.currentTab = 1;
     DatabaseManager.instance.setCurrentTab(1);
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
@@ -193,6 +192,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     if (DatabaseManager.instance.userSettings.isPremium) {
       DatabaseManager.instance.checkPremiumStatus();
     }
+
+    DatabaseManager.instance.checkHasTaggedPhotos();
   }
 
   @override
@@ -234,9 +235,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   showEditTagModal() {
-    if (DatabaseManager.instance.selectedEditTag != '') {
+    if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
-      alertInputController.text = DatabaseManager.instance.selectedEditTag;
+      alertInputController.text = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
 
       print('showModal');
       showDialog<void>(
@@ -246,12 +247,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           return EditTagModal(
             alertInputController: alertInputController,
             onPressedDelete: () {
-              DatabaseManager.instance.removeTag(DatabaseManager.instance.selectedEditTag);
+              DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
             onPressedOk: () {
-              print('Editing tag - Old name: ${DatabaseManager.instance.selectedEditTag} - New name: ${alertInputController.text}');
-              DatabaseManager.instance.editTag(DatabaseManager.instance.selectedEditTag, alertInputController.text);
+              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+              DatabaseManager.instance.editTag(
+                oldTagKey: DatabaseManager.instance.selectedTagKey,
+                newName: alertInputController.text,
+              );
               Navigator.of(context).pop();
             },
           );
@@ -337,7 +341,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                     onPressed: () {
                       Ads.setScreen(HideAdScreen);
                       Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-                      int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+//                      int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
                       tagsEditingController.text = '';
 
                       DatabaseManager.instance.tagsSuggestions(
@@ -354,7 +358,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
                       selectedPhotoData = data;
                       selectedPhotoPicInfo = picInfo;
-                      selectedPhotoIndex = indexOfPic;
+//                      selectedPhotoIndex = indexOfPic;
                       selectedPhotoDateString = dateString;
 
                       setState(() {
@@ -402,7 +406,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   onPressed: () {
                     Ads.setScreen(HideAdScreen);
                     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+//                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
                     tagsEditingController.text = '';
 
                     DatabaseManager.instance.tagsSuggestions(
@@ -419,7 +423,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
                     selectedPhotoData = data;
                     selectedPhotoPicInfo = picInfo;
-                    selectedPhotoIndex = indexOfPic;
+//                    selectedPhotoIndex = indexOfPic;
                     selectedPhotoDateString = dateString;
 
                     setState(() {
@@ -452,8 +456,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       }
     }
 
-    print('Number of pics: ${DatabaseManager.instance.allPics.length}');
-    print('Number of tags: ${DatabaseManager.instance.allTags.length}');
+//    print('Number of pics: ${DatabaseManager.instance.allPics.length}');
+//    print('Number of tags: ${DatabaseManager.instance.allTags.length}');
 
     print('New Padding: $newPadding');
 
@@ -932,7 +936,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                     child: SafeArea(
                       child: Stack(
                         children: <Widget>[
-                          if (Provider.of<DatabaseManager>(context).allPics.length == 0)
+                          if (Provider.of<DatabaseManager>(context).noTaggedPhoto)
                             TopBar(
                               children: <Widget>[
                                 Expanded(
@@ -991,7 +995,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 ),
                               ],
                             ),
-                          if (Provider.of<DatabaseManager>(context).allPics.length != 0)
+                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                             TopBar(
                               searchEditingController: searchEditingController,
                               searchFocusNode: searchFocusNode,
@@ -1004,7 +1008,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         Padding(
                                           padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                                           child: TagsList(
-                                            tags: Provider.of<DatabaseManager>(context).searchActiveTags,
+                                            tagsKeys: Provider.of<DatabaseManager>(context).searchActiveTags,
                                             tagStyle: TagStyle.MultiColored,
                                             onTap: () {
                                               print('do nothing');
@@ -1038,10 +1042,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                           Padding(
                                             padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                             child: TagsList(
-                                              tags: Provider.of<DatabaseManager>(context).searchResults,
+                                              tagsKeys: Provider.of<DatabaseManager>(context).searchResults,
                                               tagStyle: TagStyle.GrayOutlined,
                                               showEditTagModal: showEditTagModal,
-                                              onTap: () {
+                                              onTap: (tagName) {
                                                 DatabaseManager.instance.addTagToSearchFilter();
                                               },
                                               onDoubleTap: () {
@@ -1072,13 +1076,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       ),
                                     ],
                                   ),
-                                if (Provider.of<DatabaseManager>(context).allPics != 0)
+                                if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                                   Expanded(
                                     child: _buildTaggedGridView(),
                                   ),
                               ],
                             ),
-                          if (Provider.of<DatabaseManager>(context).allPics.length != 0 &&
+                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto &&
                               !hideTitleThirdTab &&
                               !Provider.of<DatabaseManager>(context).searchingTags)
                             Positioned(

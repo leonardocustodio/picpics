@@ -168,7 +168,7 @@ class PhotoCard extends StatelessWidget {
                   ],
                 ),
                 TagsList(
-                  tags: picInfo.tags,
+                  tagsKeys: picInfo.tags,
                   addTagField: true,
                   textEditingController: tagsEditingController,
                   showEditTagModal: showEditTagModal,
@@ -176,7 +176,10 @@ class PhotoCard extends StatelessWidget {
                     print('do nothing');
                   },
                   onDoubleTap: () {
-                    DatabaseManager.instance.removeTagFromPic(DatabaseManager.instance.selectedEditTag, picInfo.photoId);
+                    DatabaseManager.instance.removeTagFromPic(
+                      tagKey: DatabaseManager.instance.selectedTagKey,
+                      photoId: picInfo.photoId,
+                    );
                   },
                   onChanged: (text) {
                     print('photo Index: $index - photo Swipe : $picSwiper');
@@ -196,8 +199,8 @@ class PhotoCard extends StatelessWidget {
                     if (text != '') {
                       print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
                       DatabaseManager.instance.addTag(
-                        text,
-                        data.id,
+                        tagName: text,
+                        photoId: data.id,
                       );
                       tagsEditingController.clear();
 
@@ -241,11 +244,14 @@ class PhotoCard extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TagsList(
                     title: S.of(context).suggestions,
-                    tags: DatabaseManager.instance.suggestionTags[picInfo.photoId],
+                    tagsKeys: DatabaseManager.instance.suggestionTags[picInfo.photoId],
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: showEditTagModal,
-                    onTap: () {
-                      DatabaseManager.instance.addTag(DatabaseManager.instance.selectedEditTag, picInfo.photoId);
+                    onTap: (tagName) {
+                      DatabaseManager.instance.addTag(
+                        tagName: tagName,
+                        photoId: picInfo.photoId,
+                      );
                     },
                     onDoubleTap: () {
                       print('do nothing');

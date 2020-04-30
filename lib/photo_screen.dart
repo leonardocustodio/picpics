@@ -65,9 +65,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   showEditTagModal() {
-    if (DatabaseManager.instance.selectedEditTag != '') {
+    if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
-      alertInputController.text = DatabaseManager.instance.selectedEditTag;
+      alertInputController.text = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
 
       print('showModal');
       showDialog<void>(
@@ -77,12 +77,15 @@ class _PhotoScreenState extends State<PhotoScreen> {
           return EditTagModal(
             alertInputController: alertInputController,
             onPressedDelete: () {
-              DatabaseManager.instance.removeTag(DatabaseManager.instance.selectedEditTag);
+              DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
             onPressedOk: () {
-              print('Editing tag - Old name: ${DatabaseManager.instance.selectedEditTag} - New name: ${alertInputController.text}');
-              DatabaseManager.instance.editTag(DatabaseManager.instance.selectedEditTag, alertInputController.text);
+              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+              DatabaseManager.instance.editTag(
+                oldTagKey: DatabaseManager.instance.selectedTagKey,
+                newName: alertInputController.text,
+              );
               Navigator.of(context).pop();
             },
           );
@@ -230,7 +233,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 16.0),
                                   child: TagsList(
-                                    tags: picInfo.tags,
+                                    tagsKeys: picInfo.tags,
                                     tagStyle: TagStyle.MultiColored,
                                     addTagButton: () {
                                       Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);

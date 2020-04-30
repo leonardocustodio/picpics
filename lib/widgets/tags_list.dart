@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -13,7 +12,7 @@ enum TagStyle {
 }
 
 class TagsList extends StatelessWidget {
-  final List<String> tags;
+  final List<String> tagsKeys;
   final TextEditingController textEditingController;
   final bool addTagField;
   final Function addTagButton;
@@ -25,10 +24,9 @@ class TagsList extends StatelessWidget {
   final Function onSubmitted;
   final Function onChanged;
   final Function showEditTagModal;
-//  final bool
 
   const TagsList({
-    @required this.tags,
+    @required this.tagsKeys,
     this.tagStyle = TagStyle.MultiColored,
     this.textEditingController,
     this.addTagField = false,
@@ -43,19 +41,9 @@ class TagsList extends StatelessWidget {
   });
 
   Widget _buildTagsWidget(BuildContext context) {
-    if (tags == null) {
+    if (tagsKeys == null) {
       return Container();
     }
-//    if (picInfo != null) {
-//      if (picInfo.tags.isEmpty && activeTags) {
-//        return Container();
-//      }
-//    }
-
-//    BoxDecoration(
-//      borderRadius: BorderRadius.circular(19.0),
-//      gradient: kSecondaryGradient,
-//    ),
 
     LinearGradient getGradient(int num) {
       switch (num) {
@@ -83,28 +71,30 @@ class TagsList extends StatelessWidget {
     }
 
     List<Widget> tagsWidgets = [];
-    print('Tags in TagsList: $tags');
+    print('Tags in TagsList: $tagsKeys');
 
     var index = 0;
 
-    for (var tag in tags) {
+    for (var tagKey in tagsKeys) {
       var mod = index % 4;
       index++;
+
+      String tagName = DatabaseManager.instance.getTagName(tagKey);
 
       tagsWidgets.add(
         GestureDetector(
           onTap: () {
             Vibrate.feedback(FeedbackType.success);
-            DatabaseManager.instance.selectedEditTag = tag;
-            onTap();
+            DatabaseManager.instance.selectedTagKey = tagKey;
+            onTap(tagName);
           },
           onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
-            DatabaseManager.instance.selectedEditTag = tag;
+            DatabaseManager.instance.selectedTagKey = tagKey;
             onDoubleTap();
           },
           onLongPress: () {
-            DatabaseManager.instance.selectedEditTag = tag;
+            DatabaseManager.instance.selectedTagKey = tagKey;
             showEditTagModal();
           },
           child: Container(
@@ -116,7 +106,7 @@ class TagsList extends StatelessWidget {
                   )
                 : kGrayBoxDecoration,
             child: Text(
-              tag,
+              tagName,
               style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
             ),
           ),
