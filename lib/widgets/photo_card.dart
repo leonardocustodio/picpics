@@ -172,7 +172,7 @@ class PhotoCard extends StatelessWidget {
                   addTagField: true,
                   textEditingController: tagsEditingController,
                   showEditTagModal: showEditTagModal,
-                  onTap: () {
+                  onTap: (tagName) {
                     print('do nothing');
                   },
                   onDoubleTap: () {

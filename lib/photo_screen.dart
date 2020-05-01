@@ -67,7 +67,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
-      alertInputController.text = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
+      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
+      alertInputController.text = tagName;
 
       print('showModal');
       showDialog<void>(
@@ -82,10 +83,12 @@ class _PhotoScreenState extends State<PhotoScreen> {
             },
             onPressedOk: () {
               print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
-              DatabaseManager.instance.editTag(
-                oldTagKey: DatabaseManager.instance.selectedTagKey,
-                newName: alertInputController.text,
-              );
+              if (tagName != alertInputController.text) {
+                DatabaseManager.instance.editTag(
+                  oldTagKey: DatabaseManager.instance.selectedTagKey,
+                  newName: alertInputController.text,
+                );
+              }
               Navigator.of(context).pop();
             },
           );
