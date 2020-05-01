@@ -37,6 +37,7 @@ dependencies:
   flutter_keyboard_visibility: ^2.0.0
   purchases_flutter: ^1.1.0
   encrypt: ^4.0.0
+  diacritic: ^0.1.1
 
 dependency_overrides:
   dartx: ^0.3.0

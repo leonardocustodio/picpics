@@ -18,6 +18,7 @@ import 'package:picPics/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
+import 'package:diacritic/diacritic.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -301,7 +302,7 @@ class DatabaseManager extends ChangeNotifier {
     } else {
       for (var tagKey in tagsBox.keys) {
         String tagName = decryptTag(tagKey);
-        if (tagName.startsWith(text.toLowerCase())) {
+        if (tagName.startsWith(stripTag(text))) {
           suggestions.add(tagKey);
         }
       }
@@ -383,7 +384,7 @@ class DatabaseManager extends ChangeNotifier {
 
     for (var tagKey in tagsBox.keys) {
       String tagName = decryptTag(tagKey);
-      if (tagName.startsWith(text.toLowerCase())) {
+      if (tagName.startsWith(stripTag(text))) {
         searchResults.add(tagKey);
       }
     }
@@ -591,7 +592,7 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   String stripTag(String tag) {
-    return tag.toLowerCase();
+    return removeDiacritics(tag.toLowerCase());
   }
 
   String encryptTag(String tag) {

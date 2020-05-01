@@ -242,7 +242,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
                                       Navigator.pop(context, 'show_keyboard');
                                     },
-                                    onTap: () {
+                                    onTap: (tagName) {
                                       print('ignore click');
                                     },
                                     onDoubleTap: () {
