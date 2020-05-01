@@ -1013,7 +1013,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                           child: TagsList(
                                             tagsKeys: Provider.of<DatabaseManager>(context).searchActiveTags,
                                             tagStyle: TagStyle.MultiColored,
-                                            onTap: () {
+                                            onTap: (tagName) {
                                               print('do nothing');
                                             },
                                             onDoubleTap: () {
