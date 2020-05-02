@@ -165,20 +165,22 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   void initState() {
     super.initState();
 
-    if (DatabaseManager.instance.userSettings.tutorialCompleted == true) {
-      isAdVisible = true;
-      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
-    }
+    isAdVisible = false;
+
+//    if (DatabaseManager.instance.userSettings.tutorialCompleted == true) {
+//      isAdVisible = true;
+//      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+//    }
     DatabaseManager.instance.currentTab = 1;
     DatabaseManager.instance.setCurrentTab(1);
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
 
-    KeyboardVisibility.onChange.listen((bool visible) {
-      print('keyboard: $visible');
-      setState(() {
-        isAdVisible = !visible;
-      });
-    });
+//    KeyboardVisibility.onChange.listen((bool visible) {
+//      print('keyboard: $visible');
+//      setState(() {
+//        isAdVisible = !visible;
+//      });
+//    });
 
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);

@@ -91,7 +91,8 @@ class Ads {
     switch (screen) {
       case SettingsScreen.id:
         {
-          showBannerAd(0.0);
+          hideBannerAd();
+          //showBannerAd(0.0);
         }
         break;
       case PremiumScreen.id:
@@ -101,13 +102,14 @@ class Ads {
         break;
       case PicScreen.id:
         {
-          if (tab == 0) {
-            showBannerAd(48.0);
-          } else if (tab == 1) {
-            showBannerAd(48.0);
-          } else {
-            showBannerAd(48.0);
-          }
+          hideBannerAd();
+//          if (tab == 0) {
+//            showBannerAd(48.0);
+//          } else if (tab == 1) {
+//            showBannerAd(48.0);
+//          } else {
+//            showBannerAd(48.0);
+//          }
         }
         break;
       case HideAdScreen:
