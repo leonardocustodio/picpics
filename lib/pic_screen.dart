@@ -113,9 +113,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   void movedGridPositionFirstTab() {
     var offset = scrollControllerFirstTab.offset;
 
-    if (offset >= 117) {
+    if (offset >= 112) {
       setState(() {
-        topOffsetFirstTab = 0;
+        topOffsetFirstTab = 5;
         hideSubtitleFirstTab = true;
       });
     } else if (offset >= 52) {
