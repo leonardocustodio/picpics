@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.0.0+70
+version: 1.0.0+71
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -38,6 +38,7 @@ dependencies:
   purchases_flutter: ^1.1.0
   encrypt: ^4.0.0
   diacritic: ^0.1.1
+  intl: ^0.16.1
 
 dependency_overrides:
   dartx: ^0.3.0

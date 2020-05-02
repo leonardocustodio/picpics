@@ -10,6 +10,7 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:intl/intl.dart';
 
 class PhotoCard extends StatelessWidget {
   final AssetEntity data;
@@ -18,7 +19,6 @@ class PhotoCard extends StatelessWidget {
   final int picSwiper;
   final String specificLocation;
   final String generalLocation;
-  final String dateString;
   final TextEditingController tagsEditingController;
   final Function showEditTagModal;
   final Function onPressedTrash;
@@ -30,11 +30,15 @@ class PhotoCard extends StatelessWidget {
     this.picSwiper,
     this.specificLocation,
     this.generalLocation,
-    this.dateString,
     this.tagsEditingController,
     this.showEditTagModal,
     this.onPressedTrash,
   });
+
+  String dateFormat(DateTime dateTime) {
+    var formatter = DateFormat.yMMMEd();
+    return formatter.format(dateTime);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +159,7 @@ class PhotoCard extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      dateString,
+                      dateFormat(data.createDateTime),
                       style: TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff606566),

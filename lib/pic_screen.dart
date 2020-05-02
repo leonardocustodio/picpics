@@ -69,8 +69,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   AssetEntity selectedPhotoData;
   Pic selectedPhotoPicInfo;
   int selectedPhotoIndex;
-  String selectedPhotoDateString;
-
   Throttle _changeThrottle;
 
   bool isAdVisible = false;
@@ -87,7 +85,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       if (modalPhotoCard) {
         setState(() {
           selectedPhotoPicInfo = null;
-          selectedPhotoDateString = null;
           selectedPhotoIndex = null;
           selectedPhotoData = null;
           modalPhotoCard = false;
@@ -356,15 +353,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                         notify: false,
                       );
 
-                      DateTime createdDate = data.createDateTime;
-                      String dateString = DatabaseManager.instance.formatDate(createdDate);
-
                       print('PicTags: ${picInfo.tags}');
 
                       selectedPhotoData = data;
                       selectedPhotoPicInfo = picInfo;
 //                      selectedPhotoIndex = indexOfPic;
-                      selectedPhotoDateString = dateString;
 
                       setState(() {
                         modalPhotoCard = true;
@@ -421,15 +414,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       notify: false,
                     );
 
-                    DateTime createdDate = data.createDateTime;
-                    String dateString = DatabaseManager.instance.formatDate(createdDate);
-
                     print('PicTags: ${picInfo.tags}');
 
                     selectedPhotoData = data;
                     selectedPhotoPicInfo = picInfo;
-//                    selectedPhotoIndex = indexOfPic;
-                    selectedPhotoDateString = dateString;
 
                     setState(() {
                       modalPhotoCard = true;
@@ -544,10 +532,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     }
 
     print('photo id: ${data.id}');
-
-    DateTime createdDate = data.createDateTime;
-    String dateString = DatabaseManager.instance.formatDate(createdDate);
-
     double latitude = data.latitude;
     double longitude = data.longitude;
 
@@ -588,7 +572,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       tagsEditingController: tagsEditingController,
       specificLocation: picInfo.specificLocation,
       generalLocation: picInfo.generalLocation,
-      dateString: dateString,
       showEditTagModal: showEditTagModal,
       onPressedTrash: () {
         trashPic(data);
@@ -600,7 +583,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     selectedPhotoData = null;
     selectedPhotoPicInfo = null;
     selectedPhotoIndex = null;
-    selectedPhotoDateString = null;
 
     setState(() {
       modalPhotoCard = false;
@@ -652,15 +634,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                 notify: false,
               );
 
-              DateTime createdDate = data.createDateTime;
-              String dateString = DatabaseManager.instance.formatDate(createdDate);
-
               print('PicTags: ${picInfo.tags}');
 
               selectedPhotoData = data;
               selectedPhotoPicInfo = picInfo;
               selectedPhotoIndex = index;
-              selectedPhotoDateString = dateString;
 
               setState(() {
                 modalPhotoCard = true;
@@ -1185,7 +1163,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           picSwiper: -1,
                           index: selectedPhotoIndex,
                           tagsEditingController: tagsEditingController,
-                          dateString: selectedPhotoDateString,
                           specificLocation: selectedPhotoPicInfo.specificLocation,
                           generalLocation: selectedPhotoPicInfo.generalLocation,
                           showEditTagModal: showEditTagModal,

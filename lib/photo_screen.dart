@@ -13,6 +13,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:intl/intl.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
@@ -23,7 +24,6 @@ class PhotoScreen extends StatefulWidget {
 
 class _PhotoScreenState extends State<PhotoScreen> {
   DateTime createdDate;
-  String dateString;
   Pic picInfo;
 
   bool overlay = true;
@@ -34,8 +34,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
     Ads.setScreen(PhotoScreen.id);
 
     createdDate = DatabaseManager.instance.selectedPhoto.createDateTime;
-    dateString = DatabaseManager.instance.formatDate(createdDate);
-
     picInfo = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
 
     if (picInfo == null) {
@@ -95,6 +93,11 @@ class _PhotoScreenState extends State<PhotoScreen> {
         },
       );
     }
+  }
+
+  String dateFormat(DateTime dateTime) {
+    var formatter = DateFormat.yMMMEd();
+    return formatter.format(dateTime);
   }
 
   @override
@@ -221,7 +224,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       ),
                                     ),
                                     Text(
-                                      dateString,
+                                      dateFormat(DatabaseManager.instance.selectedPhoto.createDateTime),
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: kWhiteColor,
