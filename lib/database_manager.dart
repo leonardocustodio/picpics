@@ -408,9 +408,12 @@ class DatabaseManager extends ChangeNotifier {
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
+      print('found pic!!!');
       Pic getPic = picsBox.get(photoId);
+      print('@@@ Lat: ${getPic.latitude} - Long ${getPic.longitude} - PhotoId: $photoId');
       return getPic;
     }
+    print('did not found pic!!!');
 
     return null;
   }
@@ -597,6 +600,9 @@ class DatabaseManager extends ChangeNotifier {
     }
 
     print('this picture is not in db, adding it...');
+    print('Photo Id: $photoId');
+    print('Pic Info Localization: ${selectedPhoto.latitude} - ${selectedPhoto.longitude} - ${selectedPhoto.createDateTime}');
+
     Pic pic = Pic(
       photoId,
       selectedPhoto.createDateTime,
@@ -608,6 +614,7 @@ class DatabaseManager extends ChangeNotifier {
       null,
       [tagKey],
     );
+
     picsBox.put(photoId, pic);
 
     if (noTaggedPhoto == true) {

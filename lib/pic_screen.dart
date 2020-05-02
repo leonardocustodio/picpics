@@ -1320,9 +1320,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       CupertinoButton(
                         onPressed: () {
                           if (swiperIndex == 2) {
-                            setState(() {
-                              isAdVisible = true;
-                            });
+//                            setState(() {
+//                              isAdVisible = true;
+//                            });
                             Ads.setScreen(PicScreen.id, 1);
                             DatabaseManager.instance.finishedTutorial();
                             return;

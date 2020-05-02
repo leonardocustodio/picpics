@@ -46,22 +46,13 @@ class PhotoCard extends StatelessWidget {
       return [specificLocation, generalLocation];
     }
 
-    if ((picInfo.latitude == null || picInfo.longitude == null) || (picInfo.latitude == 0 && picInfo.longitude == 0)) {
-      print('Lat ${picInfo.latitude} - Long ${picInfo.longitude}');
+    if ((picInfo.originalLatitude == null || picInfo.originalLongitude == null) ||
+        (picInfo.originalLatitude == 0 && picInfo.originalLongitude == 0)) {
+      print('### Lat ${picInfo.latitude} - Long ${picInfo.longitude}');
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
     List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(data.latitude, data.longitude);
-
-//    if (specificLocation == null) {
-//      if (picInfo.latitude == null || picInfo.longitude == null || picInfo.latitude == 0 && picInfo.longitude != 0) {
-//        print('Pic latitude & longitude: ${picInfo.latitude} - ${picInfo.longitude}');
-//      } else {
-//        return [S.of(context).photo_location, '  ${S.of(context).country}'];
-//      }
-//    } else {
-//      return [S.of(context).photo_location, '  ${S.of(context).country}'];
-//    }
 
     print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -69,46 +60,9 @@ class PhotoCard extends StatelessWidget {
     }
 
     if (placemark.isNotEmpty) {
-      return ['Teste', 'país'];
+      return [placemark[0].locality, placemark[0].country];
     }
-
-//    placemark[0].locality - placemark[0].country
-
-//    Future findLocation(double latitude, double longitude) async {
-//      print('Finding location...');
-//      List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(latitude, longitude, localeIdentifier: 'pt_BR');
-//      print('Placemark: ${placemark.first.locality}');
-//      currentPhotoCity = placemark.first.locality;
-//      currentPhotoState = placemark.first.administrativeArea;
-//      lastLocationRequest = [latitude, longitude];
-////    notifyListeners();
-//    }
   }
-
-//  for (var components in selectedGeolocation.fullJSON["address_components"]) {
-//  var types = components["types"];
-//  if (types.contains("establishment")) {
-//  print('find establishment: ${components["long_name"]}');
-//  location = components["long_name"];
-//  continue;
-//  } else if (types.contains("locality")) {
-//  print('locality: ${components["long_name"]}');
-//  city = components["long_name"];
-//  continue;
-//  } else if (types.contains("administrative_area_level_2")) {
-//  print('find administrative_area_level_2: ${components["long_name"]}');
-//  city = components["long_name"];
-//  continue;
-//  } else if (types.contains("administrative_area_level_1")) {
-//  print('find administrative_area_level_1: ${components["long_name"]}');
-//  state = components["long_name"];
-//  continue;
-//  } else if (types.contains("country")) {
-//  print('country: ${components["long_name"]}');
-//  country = components["long_name"];
-//  break;
-//  }
-//  }
 
   @override
   Widget build(BuildContext context) {
