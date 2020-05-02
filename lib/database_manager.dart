@@ -519,6 +519,30 @@ class DatabaseManager extends ChangeNotifier {
         userBox.putAt(0, getUser);
       }
 
+      print('updating in all suggestions');
+      for (var suggestionTag in suggestionTags.values) {
+        if (suggestionTag.contains(oldTagKey)) {
+          int indexOfSuggestionTag = suggestionTag.indexOf(oldTagKey);
+          suggestionTag[indexOfSuggestionTag] = newTagKey;
+        }
+      }
+
+      if (searchResults.isNotEmpty) {
+        print('fixing in search result');
+        if (searchResults.contains(oldTagKey)) {
+          int indexOfSearchResultTag = searchResults.indexOf(oldTagKey);
+          searchResults[indexOfSearchResultTag] = newTagKey;
+        }
+      }
+
+      if (searchActiveTags.isNotEmpty) {
+        print('fixing in search active tags');
+        if (searchActiveTags.contains(oldTagKey)) {
+          int indexOfSearchActiveTags = searchActiveTags.indexOf(oldTagKey);
+          searchActiveTags[indexOfSearchActiveTags] = newTagKey;
+        }
+      }
+
       print('finished updating all tags');
       notifyListeners();
     }
