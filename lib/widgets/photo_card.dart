@@ -11,6 +11,7 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
+import 'package:geolocator/geolocator.dart';
 
 class PhotoCard extends StatelessWidget {
   final AssetEntity data;
@@ -39,6 +40,75 @@ class PhotoCard extends StatelessWidget {
     var formatter = DateFormat.yMMMEd();
     return formatter.format(dateTime);
   }
+
+  Future<List<String>> reverseGeocoding(BuildContext context, Pic picInfo) async {
+    if (specificLocation != null && generalLocation != null) {
+      return [specificLocation, generalLocation];
+    }
+
+    if ((picInfo.latitude == null || picInfo.longitude == null) || (picInfo.latitude == 0 && picInfo.longitude == 0)) {
+      print('Lat ${picInfo.latitude} - Long ${picInfo.longitude}');
+      return [S.of(context).photo_location, '  ${S.of(context).country}'];
+    }
+
+    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(data.latitude, data.longitude);
+
+//    if (specificLocation == null) {
+//      if (picInfo.latitude == null || picInfo.longitude == null || picInfo.latitude == 0 && picInfo.longitude != 0) {
+//        print('Pic latitude & longitude: ${picInfo.latitude} - ${picInfo.longitude}');
+//      } else {
+//        return [S.of(context).photo_location, '  ${S.of(context).country}'];
+//      }
+//    } else {
+//      return [S.of(context).photo_location, '  ${S.of(context).country}'];
+//    }
+
+    print('Placemark: ${placemark.length}');
+    for (var place in placemark) {
+      print('${place.name} - ${place.locality} - ${place.country}');
+    }
+
+    if (placemark.isNotEmpty) {
+      return ['Teste', 'país'];
+    }
+
+//    placemark[0].locality - placemark[0].country
+
+//    Future findLocation(double latitude, double longitude) async {
+//      print('Finding location...');
+//      List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(latitude, longitude, localeIdentifier: 'pt_BR');
+//      print('Placemark: ${placemark.first.locality}');
+//      currentPhotoCity = placemark.first.locality;
+//      currentPhotoState = placemark.first.administrativeArea;
+//      lastLocationRequest = [latitude, longitude];
+////    notifyListeners();
+//    }
+  }
+
+//  for (var components in selectedGeolocation.fullJSON["address_components"]) {
+//  var types = components["types"];
+//  if (types.contains("establishment")) {
+//  print('find establishment: ${components["long_name"]}');
+//  location = components["long_name"];
+//  continue;
+//  } else if (types.contains("locality")) {
+//  print('locality: ${components["long_name"]}');
+//  city = components["long_name"];
+//  continue;
+//  } else if (types.contains("administrative_area_level_2")) {
+//  print('find administrative_area_level_2: ${components["long_name"]}');
+//  city = components["long_name"];
+//  continue;
+//  } else if (types.contains("administrative_area_level_1")) {
+//  print('find administrative_area_level_1: ${components["long_name"]}');
+//  state = components["long_name"];
+//  continue;
+//  } else if (types.contains("country")) {
+//  print('country: ${components["long_name"]}');
+//  country = components["long_name"];
+//  break;
+//  }
+//  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,34 +199,42 @@ class PhotoCard extends StatelessWidget {
                         DatabaseManager.instance.selectedPhoto = data;
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
-                      child: RichText(
-                        text: new TextSpan(
-                          children: [
-                            new TextSpan(
-                              text: specificLocation != null ? specificLocation : S.of(context).photo_location,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
-                            ),
-                            new TextSpan(
-                              text: generalLocation != null ? '  $generalLocation' : '  ${S.of(context).country}',
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff606566),
-                                fontSize: 12,
-                                fontWeight: FontWeight.w300,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      child: FutureBuilder(
+                          future: reverseGeocoding(context, picInfo),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return RichText(
+                                text: new TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: snapshot.data[0],
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff606566),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '  ${snapshot.data[1]}',
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff606566),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w300,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return Container();
+                            }
+                          }),
                     ),
                     Text(
                       dateFormat(data.createDateTime),
@@ -202,6 +280,7 @@ class PhotoCard extends StatelessWidget {
                     print('return');
                     if (text != '') {
                       print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
                       DatabaseManager.instance.addTag(
                         tagName: text,
                         photoId: data.id,
@@ -252,6 +331,7 @@ class PhotoCard extends StatelessWidget {
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: showEditTagModal,
                     onTap: (tagName) {
+                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
                       DatabaseManager.instance.addTag(
                         tagName: tagName,
                         photoId: picInfo.photoId,

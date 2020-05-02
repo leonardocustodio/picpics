@@ -599,9 +599,9 @@ class DatabaseManager extends ChangeNotifier {
     print('this picture is not in db, adding it...');
     Pic pic = Pic(
       photoId,
-      DateTime.now(),
-      null,
-      null,
+      selectedPhoto.createDateTime,
+      selectedPhoto.latitude,
+      selectedPhoto.longitude,
       null,
       null,
       null,
