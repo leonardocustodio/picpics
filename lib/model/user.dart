@@ -36,6 +36,12 @@ class User {
   @HiveField(10)
   bool tutorialCompleted;
 
+  @HiveField(11)
+  int picsTaggedToday;
+
+  @HiveField(12)
+  DateTime lastTaggedPicDate;
+
   User({
     this.id,
     this.email,
@@ -48,5 +54,7 @@ class User {
     this.isPremium,
     this.recentTags,
     this.tutorialCompleted,
+    this.picsTaggedToday,
+    this.lastTaggedPicDate,
   });
 }

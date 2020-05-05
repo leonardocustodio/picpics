@@ -28,13 +28,15 @@ class UserAdapter extends TypeAdapter<User> {
       isPremium: fields[8] as bool,
       recentTags: (fields[9] as List)?.cast<String>(),
       tutorialCompleted: fields[10] as bool,
+      picsTaggedToday: fields[11] as int,
+      lastTaggedPicDate: fields[12] as DateTime,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -56,6 +58,10 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(9)
       ..write(obj.recentTags)
       ..writeByte(10)
-      ..write(obj.tutorialCompleted);
+      ..write(obj.tutorialCompleted)
+      ..writeByte(11)
+      ..write(obj.picsTaggedToday)
+      ..writeByte(12)
+      ..write(obj.lastTaggedPicDate);
   }
 }

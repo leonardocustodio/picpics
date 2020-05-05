@@ -14,6 +14,7 @@ import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
@@ -32,23 +33,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
   void initState() {
     super.initState();
     Ads.setScreen(PhotoScreen.id);
-
-    createdDate = DatabaseManager.instance.selectedPhoto.createDateTime;
-    picInfo = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-
-    if (picInfo == null) {
-      picInfo = Pic(
-        DatabaseManager.instance.selectedPhoto.id,
-        DatabaseManager.instance.selectedPhoto.createDateTime,
-        DatabaseManager.instance.selectedPhoto.latitude,
-        DatabaseManager.instance.selectedPhoto.longitude,
-        DatabaseManager.instance.selectedPhoto.latitude,
-        DatabaseManager.instance.selectedPhoto.longitude,
-        null,
-        null,
-        [],
-      );
-    }
   }
 
   void changeOverlay() {
@@ -102,6 +86,23 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
+    createdDate = Provider.of<DatabaseManager>(context).selectedPhoto.createDateTime;
+    picInfo = Provider.of<DatabaseManager>(context).getPicInfo(DatabaseManager.instance.selectedPhoto.id);
+
+    if (picInfo == null) {
+      picInfo = Pic(
+        DatabaseManager.instance.selectedPhoto.id,
+        DatabaseManager.instance.selectedPhoto.createDateTime,
+        DatabaseManager.instance.selectedPhoto.latitude,
+        DatabaseManager.instance.selectedPhoto.longitude,
+        DatabaseManager.instance.selectedPhoto.latitude,
+        DatabaseManager.instance.selectedPhoto.longitude,
+        null,
+        null,
+        [],
+      );
+    }
+
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -174,7 +175,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         sigmaY: 2.0,
                       ),
                       child: Container(
-                        height: 184.0,
+                        constraints: BoxConstraints(
+                          minHeight: 184.0,
+                        ),
                         decoration: new BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -249,7 +252,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       print('ignore click');
                                     },
                                     onDoubleTap: () {
-                                      print('ignore click');
+                                      DatabaseManager.instance.removeTagFromPic(
+                                        tagKey: DatabaseManager.instance.selectedTagKey,
+                                        photoId: picInfo.photoId,
+                                      );
                                     },
                                     showEditTagModal: showEditTagModal,
                                   ),

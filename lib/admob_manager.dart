@@ -9,6 +9,8 @@ const String androidAppId = 'ca-app-pub-5152146538991892~2540164868';
 const String iosAppId = 'ca-app-pub-5152146538991892~4542623621';
 const String iosBannerId = 'ca-app-pub-5152146538991892/7863578075';
 const String androidBannerId = 'ca-app-pub-5152146538991892/1911525195';
+const String iosRewardedId = 'ca-app-pub-5152146538991892/3698742406';
+const String androidRewardedId = 'ca-app-pub-5152146538991892/6096647360';
 const String HideAdScreen = 'HideAd';
 
 class Ads {
@@ -17,8 +19,10 @@ class Ads {
   static void initialize() {
     if (Platform.isAndroid) {
       FirebaseAdMob.instance.initialize(appId: androidAppId);
+      RewardedVideoAd.instance.load(adUnitId: androidAppId, targetingInfo: targetingInfo);
     } else {
       FirebaseAdMob.instance.initialize(appId: iosAppId);
+      RewardedVideoAd.instance.load(adUnitId: iosAppId, targetingInfo: targetingInfo);
     }
   }
 
