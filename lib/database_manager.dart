@@ -19,6 +19,7 @@ import 'package:notification_permissions/notification_permissions.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
+import 'package:date_utils/date_utils.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -196,6 +197,30 @@ class DatabaseManager extends ChangeNotifier {
     } on PlatformException catch (e) {
       // Error fetching purchaser info
     }
+  }
+
+  void increaseTodayTaggedPics() {
+    var userBox = Hive.box('user');
+
+    User userInfo = userBox.getAt(0);
+
+    DateTime lastTaggedPicDate = userInfo.lastTaggedPicDate;
+    DateTime dateNow = DateTime.now();
+
+    if (lastTaggedPicDate == null) {
+      print('date is null....');
+      userInfo.picsTaggedToday = 1;
+      userInfo.lastTaggedPicDate = dateNow;
+    } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
+      print('same day... increasing number of tagged photos today');
+      userInfo.picsTaggedToday += 1;
+      userInfo.lastTaggedPicDate = dateNow;
+    } else {
+      print('not same day... resetting counter....');
+      userInfo.picsTaggedToday = 1;
+      userInfo.lastTaggedPicDate = dateNow;
+    }
+    userBox.putAt(0, userInfo);
   }
 
   void setUserAsPremium() {

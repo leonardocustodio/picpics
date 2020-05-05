@@ -890,6 +890,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               onIndexChanged: (index) {
                                 picSwiper = index;
                                 print('picSwiper = $index');
+                                DatabaseManager.instance.increaseTodayTaggedPics();
                               },
                               itemBuilder: (BuildContext context, int index) {
                                 print('calling index $index');

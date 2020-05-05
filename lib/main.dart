@@ -65,6 +65,8 @@ void main() async {
       isPremium: false,
       recentTags: [],
       tutorialCompleted: false,
+      picsTaggedToday: 0,
+      lastTaggedPicDate: DateTime.now(),
     );
 
     userBox.add(user);
