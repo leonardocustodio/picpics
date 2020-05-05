@@ -20,6 +20,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:date_utils/date_utils.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -199,7 +200,7 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void increaseTodayTaggedPics() {
+  Future<bool> increaseTodayTaggedPics() async {
     var userBox = Hive.box('user');
 
     User userInfo = userBox.getAt(0);
@@ -212,15 +213,23 @@ class DatabaseManager extends ChangeNotifier {
       userInfo.picsTaggedToday = 1;
       userInfo.lastTaggedPicDate = dateNow;
     } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
-      print('same day... increasing number of tagged photos today');
       userInfo.picsTaggedToday += 1;
       userInfo.lastTaggedPicDate = dateNow;
+      print('same day... increasing number of tagged photos today, now it is: ${userInfo.picsTaggedToday}');
+
+      final RemoteConfig remoteConfig = await RemoteConfig.instance;
+      int dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
+      if (userInfo.picsTaggedToday >= dailyPicsForAds) {
+        print('### CALL ADS!!!');
+        return true;
+      }
     } else {
       print('not same day... resetting counter....');
       userInfo.picsTaggedToday = 1;
       userInfo.lastTaggedPicDate = dateNow;
     }
     userBox.putAt(0, userInfo);
+    return false;
   }
 
   void setUserAsPremium() {

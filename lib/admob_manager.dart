@@ -18,12 +18,13 @@ class Ads {
 
   static void initialize() {
     if (Platform.isAndroid) {
+      RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo);
       FirebaseAdMob.instance.initialize(appId: androidAppId);
-      RewardedVideoAd.instance.load(adUnitId: androidAppId, targetingInfo: targetingInfo);
     } else {
+      RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo);
       FirebaseAdMob.instance.initialize(appId: iosAppId);
-      RewardedVideoAd.instance.load(adUnitId: iosAppId, targetingInfo: targetingInfo);
     }
+    print('Ads did initialize!!!');
   }
 
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(

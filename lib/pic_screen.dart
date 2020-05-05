@@ -28,6 +28,7 @@ import 'package:picPics/admob_manager.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:firebase_admob/firebase_admob.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -191,6 +192,20 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     if (DatabaseManager.instance.userSettings.isPremium) {
       DatabaseManager.instance.checkPremiumStatus();
     }
+
+    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+      if (event == RewardedVideoAdEvent.loaded) {
+        print('@@@ loaded');
+      }
+
+      if (event == RewardedVideoAdEvent.rewarded) {
+        print('@@@ rewarded');
+//        setState(() {
+        // Here, apps should update state to reflect the reward.
+//          _goldCoins += rewardAmount;
+//        });
+      }
+    };
 
     DatabaseManager.instance.checkHasTaggedPhotos();
   }
@@ -887,10 +902,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               controller: swiperController,
                               loop: true,
                               itemCount: count == 0 ? 1 : count,
-                              onIndexChanged: (index) {
+                              onIndexChanged: (index) async {
                                 picSwiper = index;
                                 print('picSwiper = $index');
-                                DatabaseManager.instance.increaseTodayTaggedPics();
+                                bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
+                                if (shouldShowAds) {
+                                  RewardedVideoAd.instance.show();
+                                }
                               },
                               itemBuilder: (BuildContext context, int index) {
                                 print('calling index $index');

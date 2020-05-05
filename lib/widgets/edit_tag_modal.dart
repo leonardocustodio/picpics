@@ -4,13 +4,11 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 
 class EditTagModal extends StatelessWidget {
-  final String tag;
   final Function onPressedDelete;
   final Function onPressedOk;
   final TextEditingController alertInputController;
 
   EditTagModal({
-    @required this.tag,
     @required this.onPressedDelete,
     @required this.onPressedOk,
     @required this.alertInputController,
