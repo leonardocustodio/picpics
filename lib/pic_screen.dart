@@ -330,7 +330,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         for (String photoId in tag.photoId) {
           totalPics += 1;
           isTitleWidget.add(false);
-          var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: null);
+
+          print('Asset Provider Length: ${DatabaseManager.instance.assetProvider.data.length}');
+          var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: () => null);
 
           if (data != null) {
             widgetsArray.add(RepaintBoundary(
@@ -391,7 +393,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     } else {
       for (var photoId in DatabaseManager.instance.searchPhotosIds) {
         totalPics += 1;
-        var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: null);
+        var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: () => null);
 
         if (data != null) {
           widgetsArray.add(RepaintBoundary(

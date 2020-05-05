@@ -43,12 +43,11 @@ class PhotoCard extends StatelessWidget {
 
   Future<List<String>> reverseGeocoding(BuildContext context, Pic picInfo) async {
     if (specificLocation != null && generalLocation != null) {
-      return [specificLocation, generalLocation];
+      return [specificLocation, '  $generalLocation'];
     }
 
     if ((picInfo.originalLatitude == null || picInfo.originalLongitude == null) ||
         (picInfo.originalLatitude == 0 && picInfo.originalLongitude == 0)) {
-      print('### Lat ${picInfo.latitude} - Long ${picInfo.longitude}');
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
@@ -60,7 +59,16 @@ class PhotoCard extends StatelessWidget {
     }
 
     if (placemark.isNotEmpty) {
-      return [placemark[0].locality, placemark[0].country];
+      print('Saving pic!!!');
+      DatabaseManager.instance.saveLocationToPic(
+        lat: picInfo.originalLatitude,
+        long: picInfo.originalLongitude,
+        specifLocation: placemark[0].locality,
+        generalLocation: placemark[0].country,
+        photoId: picInfo.photoId,
+        notify: false,
+      );
+      return [placemark[0].locality, '  ${placemark[0].country}'];
     }
   }
 
@@ -138,7 +146,6 @@ class PhotoCard extends StatelessWidget {
               ],
             ),
           ),
-//          if (Provider.of<DatabaseManager>(context).editingTags == false)
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
             child: Column(
@@ -155,6 +162,7 @@ class PhotoCard extends StatelessWidget {
                       },
                       child: FutureBuilder(
                           future: reverseGeocoding(context, picInfo),
+                          initialData: [S.of(context).photo_location, '  ${S.of(context).country}'],
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return RichText(
@@ -185,8 +193,69 @@ class PhotoCard extends StatelessWidget {
                                   ],
                                 ),
                               );
+                            } else if (snapshot.hasError) {
+                              return RichText(
+                                text: new TextSpan(
+                                  children: [
+                                    TextSpan(
+                                      text: S.of(context).photo_location,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff606566),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                    TextSpan(
+                                      text: '  ${S.of(context).country}',
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff606566),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w300,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
                             } else {
-                              return Container();
+                              return Row(
+                                children: <Widget>[
+                                  RichText(
+                                    text: new TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: snapshot.data[0],
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: Color(0xff606566),
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400,
+                                            fontStyle: FontStyle.normal,
+                                            letterSpacing: -0.4099999964237213,
+                                          ),
+                                        ),
+                                        TextSpan(
+                                          text: '  ${snapshot.data[1]}',
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: Color(0xff606566),
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                            fontStyle: FontStyle.normal,
+                                            letterSpacing: -0.4099999964237213,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+//                                  CircularProgressIndicator(),
+                                ],
+                              );
                             }
                           }),
                     ),

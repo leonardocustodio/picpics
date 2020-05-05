@@ -122,7 +122,7 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void saveLocationToPic({double lat, double long, String specifLocation, String generalLocation, String photoId}) {
+  void saveLocationToPic({double lat, double long, String specifLocation, String generalLocation, String photoId, bool notify = true}) {
     var picsBox = Hive.box('pics');
 
     Pic getPic = picsBox.get(photoId);
@@ -138,7 +138,10 @@ class DatabaseManager extends ChangeNotifier {
       picsBox.put(photoId, getPic);
       print('updated pic with new values');
     }
-    notifyListeners();
+
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   void deletedPic(AssetEntity entity) {
