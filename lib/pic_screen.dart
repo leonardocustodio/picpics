@@ -29,6 +29,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:picPics/widgets/watch_ad_modal.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -246,6 +247,16 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //      print('#### moving to picture.... $picSwiper');
 //      swiperController.move(picSwiper, animation: false);
 //    }
+  }
+
+  showWatchAdModal() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return WatchAdModal();
+      },
+    );
   }
 
   showEditTagModal() {
@@ -906,8 +917,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 picSwiper = index;
                                 print('picSwiper = $index');
                                 bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
-                                if (shouldShowAds) {
-                                  RewardedVideoAd.instance.show();
+                                if (!shouldShowAds) {
+                                  showWatchAdModal();
+//                                  RewardedVideoAd.instance.show();
                                 }
                               },
                               itemBuilder: (BuildContext context, int index) {

@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:picPics/constants.dart';
+import 'package:picPics/generated/l10n.dart';
+import 'package:outline_gradient_button/outline_gradient_button.dart';
+
+class WatchAdModal extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      child: Stack(
+        children: <Widget>[
+          Container(
+            width: 343.0,
+            height: 379.0,
+            decoration: BoxDecoration(
+              color: kWhiteColor,
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: Column(
+              children: <Widget>[
+                Spacer(),
+                Image.asset('lib/images/bigpremiumlogo.png'),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 52.0, vertical: 32.0),
+                  child: Text(
+                    'Your done with your 50 daily pics goal, do you want to continue? ',
+                    style: TextStyle(
+                      color: kSecondaryColor,
+                      fontSize: 16,
+                      fontFamily: 'Lato',
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      print('test');
+                    },
+                    child: Container(
+                      height: 44.0,
+                      decoration: BoxDecoration(
+                        gradient: kPrimaryGradient,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          "Watch add video to continue",
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: kWhiteColor,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0, top: 17.0),
+                  child: CupertinoButton(
+                    onPressed: () {
+                      print('test');
+                    },
+                    padding: const EdgeInsets.all(0),
+                    child: OutlineGradientButton(
+                      child: Container(
+                        height: 44.0,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Get Premium account",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w400,
+                                fontFamily: "Lato",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 6.0,
+                            ),
+                            Text(
+                              'ONE-YEAR WITHOUT ADDS',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: kPrimaryColor,
+                                fontSize: 12,
+                                fontFamily: 'Lato',
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      gradient: LinearGradient(colors: [Color(0xFFFFA4D1), Color(0xFFFFCC00)]),
+                      strokeWidth: 2.0,
+                      radius: Radius.circular(8.0),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            right: 0,
+            child: CupertinoButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Image.asset('lib/images/closegrayico.png'),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
