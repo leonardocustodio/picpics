@@ -5,6 +5,10 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 
 class WatchAdModal extends StatelessWidget {
+  final Function rewardedFunction;
+
+  WatchAdModal({this.rewardedFunction});
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -37,9 +41,7 @@ class WatchAdModal extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
-                    onPressed: () {
-                      print('test');
-                    },
+                    onPressed: rewardedFunction,
                     child: Container(
                       height: 44.0,
                       decoration: BoxDecoration(

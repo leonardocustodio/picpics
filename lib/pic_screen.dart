@@ -254,7 +254,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       context: context,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
-        return WatchAdModal();
+        return WatchAdModal(
+          rewardedFunction: () {
+            RewardedVideoAd.instance.show();
+          },
+        );
       },
     );
   }
@@ -919,7 +923,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
                                 if (!shouldShowAds) {
                                   showWatchAdModal();
-//                                  RewardedVideoAd.instance.show();
                                 }
                               },
                               itemBuilder: (BuildContext context, int index) {
