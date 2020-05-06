@@ -99,6 +99,7 @@ class DatabaseManager extends ChangeNotifier {
   bool canTagToday() {
     var userBox = Hive.box('user');
     User getUser = userBox.getAt(0);
+    print('User can tag today: ${getUser.canTagToday}');
     return getUser.canTagToday ?? true;
   }
 
@@ -107,6 +108,7 @@ class DatabaseManager extends ChangeNotifier {
     User getUser = userBox.getAt(0);
     getUser.canTagToday = canTag;
     userBox.putAt(0, getUser);
+    print('Setting user can tag today to: $canTag');
   }
 
   String getTagName(String tagKey) {

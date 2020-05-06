@@ -203,6 +203,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       if (event == RewardedVideoAdEvent.rewarded) {
         print('@@@ rewarded');
         DatabaseManager.instance.setCanTagToday(true);
+        Ads.loadRewarded();
+      }
+
+      if (event == RewardedVideoAdEvent.closed || event == RewardedVideoAdEvent.failedToLoad) {
+        Ads.loadRewarded();
       }
     };
 
@@ -255,10 +260,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       builder: (BuildContext buildContext) {
         return WatchAdModal(
           onPressedWatchAdd: () {
+            Navigator.pop(context);
             RewardedVideoAd.instance.show();
           },
           onPressedGetPremium: () {
-            Navigator.pushNamed(context, PremiumScreen.id);
+            Navigator.popAndPushNamed(context, PremiumScreen.id);
           },
         );
       },
@@ -643,6 +649,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           child: CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
+              if (!DatabaseManager.instance.canTagToday()) {
+                showWatchAdModal(context);
+                return;
+              }
+
               Ads.setScreen(HideAdScreen);
               Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
               tagsEditingController.text = '';
