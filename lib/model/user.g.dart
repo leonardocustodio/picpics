@@ -30,13 +30,14 @@ class UserAdapter extends TypeAdapter<User> {
       tutorialCompleted: fields[10] as bool,
       picsTaggedToday: fields[11] as int,
       lastTaggedPicDate: fields[12] as DateTime,
+      canTagToday: fields[13] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -62,6 +63,8 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(11)
       ..write(obj.picsTaggedToday)
       ..writeByte(12)
-      ..write(obj.lastTaggedPicDate);
+      ..write(obj.lastTaggedPicDate)
+      ..writeByte(13)
+      ..write(obj.canTagToday);
   }
 }

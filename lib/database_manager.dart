@@ -96,6 +96,19 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
+  bool canTagToday() {
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+    return getUser.canTagToday ?? true;
+  }
+
+  void setCanTagToday(bool canTag) {
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+    getUser.canTagToday = canTag;
+    userBox.putAt(0, getUser);
+  }
+
   String getTagName(String tagKey) {
     var tagsBox = Hive.box('tags');
     Tag getTag = tagsBox.get(tagKey);
@@ -219,7 +232,9 @@ class DatabaseManager extends ChangeNotifier {
 
       final RemoteConfig remoteConfig = await RemoteConfig.instance;
       int dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
-      if (userInfo.picsTaggedToday >= dailyPicsForAds) {
+      int mod = userInfo.picsTaggedToday % dailyPicsForAds;
+
+      if (mod == 0) {
         print('### CALL ADS!!!');
         return true;
       }

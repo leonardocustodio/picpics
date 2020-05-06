@@ -67,6 +67,7 @@ void main() async {
       tutorialCompleted: false,
       picsTaggedToday: 0,
       lastTaggedPicDate: DateTime.now(),
+      canTagToday: true,
     );
 
     userBox.add(user);

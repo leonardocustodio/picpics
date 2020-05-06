@@ -5,9 +5,13 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 
 class WatchAdModal extends StatelessWidget {
-  final Function rewardedFunction;
+  final Function onPressedWatchAdd;
+  final Function onPressedGetPremium;
 
-  WatchAdModal({this.rewardedFunction});
+  WatchAdModal({
+    this.onPressedWatchAdd,
+    this.onPressedGetPremium,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +45,7 @@ class WatchAdModal extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
-                    onPressed: rewardedFunction,
+                    onPressed: onPressedWatchAdd,
                     child: Container(
                       height: 44.0,
                       decoration: BoxDecoration(
@@ -67,9 +71,7 @@ class WatchAdModal extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0, top: 17.0),
                   child: CupertinoButton(
-                    onPressed: () {
-                      print('test');
-                    },
+                    onPressed: onPressedGetPremium,
                     padding: const EdgeInsets.all(0),
                     child: OutlineGradientButton(
                       child: Container(

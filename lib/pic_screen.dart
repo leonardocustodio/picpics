@@ -6,6 +6,7 @@ import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/model/tag.dart';
+import 'package:picPics/premium_screen.dart';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:picPics/widgets/photo_card.dart';
@@ -201,10 +202,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
       if (event == RewardedVideoAdEvent.rewarded) {
         print('@@@ rewarded');
-//        setState(() {
-        // Here, apps should update state to reflect the reward.
-//          _goldCoins += rewardAmount;
-//        });
+        DatabaseManager.instance.setCanTagToday(true);
       }
     };
 
@@ -249,14 +247,18 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //    }
   }
 
-  showWatchAdModal() {
+  showWatchAdModal(BuildContext context) {
+    DatabaseManager.instance.setCanTagToday(false);
     showDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return WatchAdModal(
-          rewardedFunction: () {
+          onPressedWatchAdd: () {
             RewardedVideoAd.instance.show();
+          },
+          onPressedGetPremium: () {
+            Navigator.pushNamed(context, PremiumScreen.id);
           },
         );
       },
@@ -921,8 +923,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 picSwiper = index;
                                 print('picSwiper = $index');
                                 bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
-                                if (!shouldShowAds) {
-                                  showWatchAdModal();
+                                if (shouldShowAds) {
+                                  showWatchAdModal(context);
                                 }
                               },
                               itemBuilder: (BuildContext context, int index) {

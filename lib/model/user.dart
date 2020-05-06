@@ -42,6 +42,9 @@ class User {
   @HiveField(12)
   DateTime lastTaggedPicDate;
 
+  @HiveField(13)
+  bool canTagToday;
+
   User({
     this.id,
     this.email,
@@ -56,5 +59,6 @@ class User {
     this.tutorialCompleted,
     this.picsTaggedToday,
     this.lastTaggedPicDate,
+    this.canTagToday,
   });
 }
