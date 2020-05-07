@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.0.0+78
+version: 1.0.0+79
 
 environment:
   sdk: ">=2.3.0 <3.0.0"

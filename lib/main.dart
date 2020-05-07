@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
+import 'package:picPics/asset_provider.dart';
 import 'package:picPics/login_screen.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
@@ -129,8 +130,15 @@ class _PicPicsAppState extends State<PicPicsApp> {
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-    return ChangeNotifierProvider<DatabaseManager>(
-      create: (context) => DatabaseManager.instance,
+    return MultiProvider(
+      providers: [
+        Provider<DatabaseManager>(
+          create: (_) => DatabaseManager.instance,
+        ),
+        Provider<PhotoProvider>(
+          create: (_) => PhotoProvider(),
+        ),
+      ],
       child: MaterialApp(
         localizationsDelegates: [
           S.delegate,

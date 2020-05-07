@@ -171,8 +171,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //      isAdVisible = true;
 //      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
 //    }
-    DatabaseManager.instance.currentTab = 1;
-    DatabaseManager.instance.setCurrentTab(1);
+    DatabaseManager.instance.setCurrentTab(1, notify: false);
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
 
 //    KeyboardVisibility.onChange.listen((bool visible) {

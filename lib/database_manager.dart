@@ -46,7 +46,7 @@ class DatabaseManager extends ChangeNotifier {
   List<String> searchResults;
   List<String> searchPhotosIds = [];
 
-  AssetProvider assetProvider = AssetProvider();
+//  AssetProvider assetProvider = AssetProvider();
   AssetEntity selectedPhoto;
   List<double> lastLocationRequest = [0.0, 0.0];
 
@@ -186,9 +186,11 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentTab(int tab) {
+  void setCurrentTab(int tab, {bool notify = true}) {
     currentTab = tab;
-    notifyListeners();
+    if (notify) {
+      notifyListeners();
+    }
   }
 
   void finishedTutorial() {

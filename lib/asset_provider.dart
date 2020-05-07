@@ -1,65 +1,347 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 
-class AssetProvider {
-  Map<AssetPathEntity, AssetPaging> _dataMap = {};
+class PhotoProvider extends ChangeNotifier {
+  List<AssetPathEntity> list = [];
 
-  AssetPathEntity _current;
+  RequestType type = RequestType.common;
 
-  AssetPathEntity get current => _current;
+  var hasAll = true;
 
-  set current(AssetPathEntity current) {
-    _current = current;
-    if (_dataMap[current] == null) {
-      final paging = AssetPaging(current);
-      _dataMap[current] = paging;
-    }
+  var onlyAll = false;
+
+  Map<AssetPathEntity, AssetPathProvider> pathProviderMap = {};
+
+  bool _notifying = false;
+
+  bool _needTitle = false;
+
+  bool get needTitle => _needTitle;
+
+  set needTitle(bool needTitle) {
+    _needTitle = needTitle;
+    notifyListeners();
   }
 
-  List<AssetEntity> get data => _dataMap[current]?.data ?? [];
+  DateTime _startDt = DateTime.now().subtract(Duration(days: 365 * 8)); // Default Before 8 years
 
-  Future<void> loadMore() async {
-    final paging = getPaging();
-    if (paging != null) {
-      await paging.loadMore();
-    }
+  DateTime get startDt => _startDt;
+
+  set startDt(DateTime startDt) {
+    _startDt = startDt;
+    notifyListeners();
   }
 
-  AssetPaging getPaging() => _dataMap[current];
+  DateTime _endDt = DateTime.now();
 
-  bool get noMore => getPaging()?.noMore ?? false;
+  DateTime get endDt => _endDt;
 
-  int get count => data?.length ?? 0;
-}
+  set endDt(DateTime endDt) {
+    _endDt = endDt;
+    notifyListeners();
+  }
 
-class AssetPaging {
-  int page = 0;
+  bool _asc = false;
 
-  List<AssetEntity> data = [];
+  bool get asc => _asc;
 
-  final AssetPathEntity path;
+  set asc(bool asc) {
+    _asc = asc;
+    notifyListeners();
+  }
 
-  final int pageCount;
+  var _thumbFormat = ThumbFormat.png;
 
-  bool noMore = false;
+  ThumbFormat get thumbFormat => _thumbFormat;
 
-  AssetPaging(this.path, {this.pageCount = 50});
+  set thumbFormat(thumbFormat) {
+    _thumbFormat = thumbFormat;
+    notifyListeners();
+  }
 
-  Future<void> loadMore() async {
-    if (noMore == true) {
+  bool get notifying => _notifying;
+
+  String minWidth = "0";
+  String maxWidth = "10000";
+  String minHeight = "0";
+  String maxHeight = "10000";
+  bool _ignoreSize = false;
+
+  bool get ignoreSize => _ignoreSize;
+
+  set ignoreSize(bool ignoreSize) {
+    _ignoreSize = ignoreSize;
+    notifyListeners();
+  }
+
+  Duration _minDuration = Duration.zero;
+
+  Duration get minDuration => _minDuration;
+
+  set minDuration(Duration minDuration) {
+    _minDuration = minDuration;
+    notifyListeners();
+  }
+
+  Duration _maxDuration = Duration(hours: 1);
+
+  Duration get maxDuration => _maxDuration;
+
+  set maxDuration(Duration maxDuration) {
+    _maxDuration = maxDuration;
+    notifyListeners();
+  }
+
+  set notifying(bool notifying) {
+    _notifying = notifying;
+    notifyListeners();
+  }
+
+  void changeType(RequestType type) {
+    this.type = type;
+    notifyListeners();
+  }
+
+  void changeHasAll(bool value) {
+    this.hasAll = value;
+    notifyListeners();
+  }
+
+  void changeOnlyAll(bool value) {
+    this.onlyAll = value;
+    notifyListeners();
+  }
+
+  void reset() {
+    this.list.clear();
+    pathProviderMap.clear();
+  }
+
+  Future<void> refreshGalleryList() async {
+    final option = makeOption();
+
+    if (option == null) {
+      assert(option != null);
       return;
     }
-    var data = await path.getAssetListPaged(page, pageCount);
-    print('asset count: ${path.assetCount}');
-    print('loaded assets paged');
-    print('data length: ${data.length} - pageCount $pageCount');
-    if (data.length == 0) {
-      print('added everything');
-      noMore = true;
+
+    reset();
+    var galleryList = await PhotoManager.getAssetPathList(
+      type: type,
+      hasAll: hasAll,
+      onlyAll: onlyAll,
+      filterOption: option,
+    );
+
+    galleryList.sort((s1, s2) {
+      return s2.assetCount.compareTo(s1.assetCount);
+    });
+
+    this.list.clear();
+    this.list.addAll(galleryList);
+  }
+
+  AssetPathProvider getOrCreatePathProvider(AssetPathEntity pathEntity) {
+    pathProviderMap[pathEntity] ??= AssetPathProvider(pathEntity);
+    return pathProviderMap[pathEntity];
+  }
+
+  FilterOptionGroup makeOption() {
+    SizeConstraint sizeConstraint;
+    try {
+      final minW = int.tryParse(minWidth);
+      final maxW = int.tryParse(maxWidth);
+      final minH = int.tryParse(minHeight);
+      final maxH = int.tryParse(maxHeight);
+      sizeConstraint = SizeConstraint(
+        minWidth: minW,
+        maxWidth: maxW,
+        minHeight: minH,
+        maxHeight: maxH,
+        ignoreSize: ignoreSize,
+      );
+    } catch (e) {
+//      showToast("Cannot convert your size.");
+      return null;
     }
-    print('added page');
-    page++;
-    this.data.addAll(data);
+
+    DurationConstraint durationConstraint = DurationConstraint(
+      min: minDuration,
+      max: maxDuration,
+    );
+
+    final option = FilterOption(
+      sizeConstraint: sizeConstraint,
+      durationConstraint: durationConstraint,
+      needTitle: needTitle,
+    );
+
+    final dtCond = DateTimeCond(
+      min: startDt,
+      max: endDt,
+      asc: asc,
+    );
+
+    return FilterOptionGroup()
+      ..setOption(AssetType.video, option)
+      ..setOption(AssetType.image, option)
+      ..setOption(AssetType.audio, option)
+      ..dateTimeCond = dtCond;
+  }
+
+  Future<void> refreshAllGalleryProperties() async {
+    for (var gallery in list) {
+      await gallery.refreshPathProperties();
+    }
+    notifyListeners();
+  }
+
+  void changeThumbFormat() {
+    if (thumbFormat == ThumbFormat.jpeg) {
+      thumbFormat = ThumbFormat.png;
+    } else {
+      thumbFormat = ThumbFormat.jpeg;
+    }
   }
 }
+
+class AssetPathProvider extends ChangeNotifier {
+  static const loadCount = 50;
+
+  bool isInit = false;
+
+  final AssetPathEntity path;
+  AssetPathProvider(this.path);
+
+  List<AssetEntity> list = [];
+
+  var page = 0;
+
+  int get showItemCount {
+    if (list.length == path.assetCount) {
+      return path.assetCount;
+    } else {
+      return path.assetCount;
+    }
+  }
+
+  Future onRefresh() async {
+    await path.refreshPathProperties();
+    final list = await path.getAssetListPaged(0, loadCount);
+    page = 0;
+    this.list.clear();
+    this.list.addAll(list);
+    isInit = true;
+    notifyListeners();
+    printListLength("onRefresh");
+  }
+
+  Future<void> onLoadMore() async {
+    if (showItemCount > path.assetCount) {
+      print("already max");
+      return;
+    }
+    final list = await path.getAssetListPaged(page + 1, loadCount);
+    page = page + 1;
+    this.list.addAll(list);
+    notifyListeners();
+    printListLength("loadmore");
+  }
+
+//  void delete(AssetEntity entity) async {
+//    final result = await PhotoManager.editor.deleteWithIds([entity.id]);
+//    if (result.isNotEmpty) {
+//      final rangeEnd = this.list.length;
+//      await provider.refreshAllGalleryProperties();
+//      final list = await path.getAssetListRange(start: 0, end: rangeEnd);
+//      this.list.clear();
+//      this.list.addAll(list);
+//      printListLength("deleted");
+//    }
+//  }
+//
+//  void removeInAlbum(AssetEntity entity) async {
+//    if (await PhotoManager.editor.iOS.removeInAlbum(entity, path)) {
+//      final rangeEnd = this.list.length;
+//      await provider.refreshAllGalleryProperties();
+//      final list = await path.getAssetListRange(start: 0, end: rangeEnd);
+//      this.list.clear();
+//      this.list.addAll(list);
+//      printListLength("removeInAlbum");
+//    }
+//  }
+
+  void printListLength(String tag) {
+    print("$tag length : ${list.length}");
+  }
+}
+
+//class AssetProvider extends ChangeNotifier {
+//  Map<AssetPathEntity, AssetPaging> _dataMap = {};
+//
+//  AssetPathEntity _current;
+//
+//  AssetPathEntity get current => _current;
+//
+//  set current(AssetPathEntity current) {
+//    _current = current;
+//    if (_dataMap[current] == null) {
+//      final paging = AssetPaging(current);
+//      _dataMap[current] = paging;
+//    }
+//  }
+//
+//  List<AssetEntity> get data => _dataMap[current]?.data ?? [];
+//
+//  Future<void> loadMore() async {
+//    final paging = getPaging();
+//    if (paging != null) {
+//      await paging.loadMore();
+//    }
+//  }
+//
+//  AssetPaging getPaging() => _dataMap[current];
+//
+//  bool get noMore => getPaging()?.noMore ?? false;
+//
+//  int get count => data?.length ?? 0;
+//}
+//
+//class AssetPaging extends ChangeNotifier {
+//  int page = 0;
+//
+//  List<AssetEntity> data = [];
+//
+//  final AssetPathEntity path;
+//
+//  final int pageCount;
+//
+//  bool isLoading = false;
+//
+//  bool noMore = false;
+//
+//  AssetPaging(this.path, {this.pageCount = 50});
+//
+//  Future<void> loadMore() async {
+//    if (noMore == true || isLoading == true) {
+//      print('NoMore or IsLoading!!!');
+//      return;
+//    }
+//    isLoading = true;
+//    var data = await path.getAssetListPaged(page, pageCount);
+//    print('asset count: ${path.assetCount}');
+//    print('loaded assets paged');
+//    print('data length: ${data.length} - pageCount $pageCount');
+//    if (data.length == 0) {
+//      print('added everything');
+//      noMore = true;
+//    }
+//    print('added page');
+//    page++;
+//    this.data.addAll(data);
+//    print('### all data: ${this.data.length}');
+//    isLoading = false;
+//  }
+//}
