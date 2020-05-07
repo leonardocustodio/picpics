@@ -31,6 +31,7 @@ void main() async {
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   Ads.initialize();
+  Ads.loadRewarded();
   DatabaseManager.instance.analytics = FirebaseAnalytics();
   DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
 
