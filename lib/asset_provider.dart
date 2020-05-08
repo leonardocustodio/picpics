@@ -4,6 +4,14 @@ import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class PhotoProvider extends ChangeNotifier {
+  PhotoProvider._();
+
+  static PhotoProvider _instance;
+
+  static PhotoProvider get instance {
+    return _instance ??= PhotoProvider._();
+  }
+
   List<AssetPathEntity> list = [];
 
   RequestType type = RequestType.image;
@@ -260,7 +268,9 @@ class AssetPathProvider extends ChangeNotifier {
   }
 
   Future<void> loadAllPics() async {
+    print('Loading all pics');
     if (isLoaded) {
+      print('Already loaded');
       return;
     }
 
@@ -272,44 +282,44 @@ class AssetPathProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadPaths({int start, int end}) async {
-    if (isLoaded) {
-      return;
-    }
-
-    // Verificar essa parte
-//    int useThisEnd = end;
-//
-//    if (end > path.assetCount) {
-//      useThisEnd = path.assetCount;
+//  Future<void> loadPaths({int start, int end}) async {
+//    if (isLoaded) {
+//      return;
 //    }
 //
-//    if (this.orderedList[useThisEnd - 1] != null) {
-//      int newEnd = useThisEnd - 3;
-//      while (this.orderedList[newEnd] != null) {
-//        newEnd -= 3;
-//        if (newEnd <= start) {
-//          break;
-//        }
-//      }
-//      useThisEnd = newEnd;
-//    }
 //    // Verificar essa parte
+////    int useThisEnd = end;
+////
+////    if (end > path.assetCount) {
+////      useThisEnd = path.assetCount;
+////    }
+////
+////    if (this.orderedList[useThisEnd - 1] != null) {
+////      int newEnd = useThisEnd - 3;
+////      while (this.orderedList[newEnd] != null) {
+////        newEnd -= 3;
+////        if (newEnd <= start) {
+////          break;
+////        }
+////      }
+////      useThisEnd = newEnd;
+////    }
+////    // Verificar essa parte
+////
+////    print('Loading from range: $start to $useThisEnd');
+//    final list = await path.getAssetListRange(start: 0, end: path.assetCount);
+//    this.orderedList = list;
+//    isLoaded = true;
 //
-//    print('Loading from range: $start to $useThisEnd');
-    final list = await path.getAssetListRange(start: 0, end: path.assetCount);
-    this.orderedList = list;
-    isLoaded = true;
-
-//    int x = start;
-//    for (AssetEntity entity in list) {
-//      this.orderedList[x] = entity;
-//      x++;
-//    }
-//    print(this.orderedList);
-    print('LOADED ALL PHOTOS!!!!');
-    notifyListeners();
-  }
+////    int x = start;
+////    for (AssetEntity entity in list) {
+////      this.orderedList[x] = entity;
+////      x++;
+////    }
+////    print(this.orderedList);
+//    print('LOADED ALL PHOTOS!!!!');
+//    notifyListeners();
+//  }
 
 //  void delete(AssetEntity entity) async {
 //    final result = await PhotoManager.editor.deleteWithIds([entity.id]);

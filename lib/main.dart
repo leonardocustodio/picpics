@@ -135,7 +135,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
           create: (_) => DatabaseManager.instance,
         ),
         ChangeNotifierProvider<PhotoProvider>(
-          create: (_) => PhotoProvider(),
+          create: (_) => PhotoProvider.instance,
         ),
       ],
       child: MaterialApp(

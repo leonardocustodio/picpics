@@ -167,8 +167,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   @override
   void initState() {
     super.initState();
+    _loadPhotos();
     isAdVisible = false;
-    photoManager.pathProviderMap[photoManager.list[0]].loadAllPics();
 
 //    if (DatabaseManager.instance.userSettings.tutorialCompleted == true) {
 //      isAdVisible = true;
@@ -219,17 +219,24 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    await photoManager.refreshGalleryList();
   }
 
   @override
-  void afterFirstLayout(BuildContext context) {
-    // Calling the same function "after layout" to resolve the issue.
+  void afterFirstLayout(BuildContext context) async {
+    // Calling the same function "layout" to resolve the issue.
 
 //    print('#!#!#!#!#!# AFTER LAYOUT');
 //    if (DatabaseManager.instance.editingTags == true) {
 //      tagsFocusNode.requestFocus();
 //    }
+
+    print('###### AFTER LAYOUT!!!');
+//    await photoManager.refreshGalleryList();
+
+//    photoManager.getOrCreatePathProvider(photoManager.list[0]);
+//
+//    await photoManager.pathProviderMap[photoManager.list[0]].loadAllPics();
+//    setState(() {});
   }
 
   @override
@@ -535,15 +542,17 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       movedGridPositionFirstTab();
     });
 
-    photoManager.getOrCreatePathProvider(photoManager.list[0]);
 //    print();
+
+    AssetPathProvider pathProvider = photoManager.pathProviderMap[photoManager.list[0]];
+    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
 
     return GridView.builder(
       padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
       controller: scrollControllerFirstTab,
       scrollDirection: Axis.vertical,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-      itemCount: photoManager.list[0].assetCount, // count,
+      itemCount: itemCount, // count,
       itemBuilder: _buildItem,
     );
   }
@@ -552,38 +561,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     AssetPathProvider pathProvider = photoManager.pathProviderMap[photoManager.list[0]];
     print('pathProvider itemcount: ${pathProvider.list.length}');
 
-    print(pathProvider.orderedList[2]);
-
-    if (pathProvider.orderedList[index] == null) {
-      print('needs to load more pics');
-      _loadMore(start: index, end: index + 30);
-//      _loadPhoto(index);
-      return _buildLoading();
-    }
-
-    var data = pathProvider.orderedList[index];
-    print('maybe?');
-
-//    i
-//
-//    final noMore = DatabaseManager.instance.assetProvider.noMore;
-//    if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
-//      print('loading more');
-//      _loadMore();
+//    if (pathProvider.orderedList[index] == null) {
+//      print('needs to load more pics');
+//      _loadMore(start: index, end: index + 30);
 //      return _buildLoading();
 //    }
-//
+
+    var data = pathProvider.orderedList[index];
+
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-
-//    var data = DatabaseManager.instance.assetProvider.data[index];
-
-//    var data = photoManager.pathProviderMap
-
-//    return Container(
-//      margin: const EdgeInsets.all(5.0),
-//      color: Colors.black,
-//    );
-
     print('Build Item: $index');
 
     return RepaintBoundary(
@@ -746,26 +732,25 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     );
   }
 
-  _loadMore({int start, int end}) async {
-    print('calling db loadmore');
-    await photoManager.pathProviderMap[photoManager.list[0]].loadPaths(start: start, end: end);
-//    print('calling set state');
-    setState(() {});
-  }
+  void _loadPhotos() async {
+    if (PhotoProvider.instance.list.isEmpty) {
+      await PhotoProvider.instance.refreshGalleryList();
+      print('LISTA: ${PhotoProvider.instance.list}');
 
-//  _loadPhoto(int index) async {
-//    print('load index $index');
-//    await photoManager.pathProviderMap[photoManager.list[0]].loadPaths(start: index, end: index);
-////    print('calling set state');
-//    setState(() {});
-//  }
+      PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
+      await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
+      setState(() {});
+    } else {
+      print('Already loaded');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-//    final noMore = DatabaseManager.instance.assetProvider.noMore;
-//    final count = DatabaseManager.instance.assetProvider.count;
-//    print('first build!!!');
-//    print('!!!! noMore: $noMore - count: $count');
+    AssetPathProvider pathProvider;
+    if (PhotoProvider.instance.list.isNotEmpty) {
+      pathProvider = photoManager.pathProviderMap[PhotoProvider.instance.list[0]];
+    }
 
     var screenWidth = MediaQuery.of(context).size.width;
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
@@ -883,7 +868,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               ],
                             ),
                           ),
-                          if (photoManager.list.isNotEmpty && photoManager.list[0].assetCount > 0)
+                          if (pathProvider != null && pathProvider.isLoaded != null)
                             Positioned(
                               left: 16.0,
                               top: topOffsetFirstTab,
@@ -918,7 +903,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 ],
                               ),
                             ),
-                          if (photoManager.list.isNotEmpty && photoManager.list[0].assetCount > 0)
+                          if (pathProvider != null && pathProvider.isLoaded != null)
                             Padding(
                               padding: isAdVisible && !DatabaseManager.instance.userSettings.isPremium
                                   ? const EdgeInsets.only(top: 48.0, bottom: 60.0)
