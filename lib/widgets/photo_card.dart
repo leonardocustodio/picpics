@@ -12,6 +12,7 @@ import 'package:picPics/admob_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:picPics/asset_provider.dart';
 
 class PhotoCard extends StatelessWidget {
   final AssetEntity data;
@@ -137,7 +138,8 @@ class PhotoCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
                     onPressed: () {
                       Ads.setScreen(PhotoScreen.id);
-//                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
+                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },
                     child: Image.asset('lib/images/expandphotoico.png'),
@@ -300,50 +302,52 @@ class PhotoCard extends StatelessWidget {
                     }
                   },
                   onSubmitted: (text) {
-//                    print('return');
-//                    if (text != '') {
-//                      print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
-//                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
-//                      DatabaseManager.instance.addTag(
-//                        tagName: text,
-//                        photoId: data.id,
-//                      );
-//                      tagsEditingController.clear();
-//
-//                      if (picSwiper != -1) {
-//                        // Refatorar essa gambi dps
-//                        var indexPicBefore = picSwiper - 1;
-//                        var indexPicAfter = picSwiper + 1;
-//
-//                        if (indexPicBefore < 0) {
-//                          indexPicBefore = DatabaseManager.instance.assetProvider.data.length - 1;
-//                        }
-//                        if (indexPicAfter == DatabaseManager.instance.assetProvider.data.length) {
-//                          indexPicAfter = 0;
-//                        }
-//
-//                        Pic picBefore = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicBefore].id);
-//                        Pic picAfter = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicAfter].id);
-//
-//                        DatabaseManager.instance.tagsSuggestions(
-//                          '',
-//                          picBefore.photoId,
-//                          excludeTags: picBefore.tags,
-//                        );
-//                        DatabaseManager.instance.tagsSuggestions(
-//                          '',
-//                          picAfter.photoId,
-//                          excludeTags: picAfter.tags,
-//                        );
-//                        ////////////////////////
-//                      } else {
-//                        DatabaseManager.instance.tagsSuggestions(
-//                          '',
-//                          data.id,
-//                          excludeTags: picInfo.tags,
-//                        );
-//                      }
-//                    }
+                    print('return');
+                    if (text != '') {
+                      print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+                      DatabaseManager.instance.addTag(
+                        tagName: text,
+                        photoId: data.id,
+                      );
+                      tagsEditingController.clear();
+
+                      if (picSwiper != -1) {
+                        // Refatorar essa gambi dps
+                        var indexPicBefore = picSwiper - 1;
+                        var indexPicAfter = picSwiper + 1;
+
+                        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                        if (indexPicBefore < 0) {
+                          indexPicBefore = pathProvider.orderedList.length - 1;
+                        }
+                        if (indexPicAfter == pathProvider.orderedList.length) {
+                          indexPicAfter = 0;
+                        }
+
+                        Pic picBefore = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicBefore].id);
+                        Pic picAfter = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicAfter].id);
+
+                        DatabaseManager.instance.tagsSuggestions(
+                          '',
+                          picBefore.photoId,
+                          excludeTags: picBefore.tags,
+                        );
+                        DatabaseManager.instance.tagsSuggestions(
+                          '',
+                          picAfter.photoId,
+                          excludeTags: picAfter.tags,
+                        );
+                        ////////////////////////
+                      } else {
+                        DatabaseManager.instance.tagsSuggestions(
+                          '',
+                          data.id,
+                          excludeTags: picInfo.tags,
+                        );
+                      }
+                    }
                   },
                 ),
                 Padding(
@@ -354,11 +358,12 @@ class PhotoCard extends StatelessWidget {
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: showEditTagModal,
                     onTap: (tagName) {
-//                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
-//                      DatabaseManager.instance.addTag(
-//                        tagName: tagName,
-//                        photoId: picInfo.photoId,
-//                      );
+                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+                      DatabaseManager.instance.addTag(
+                        tagName: tagName,
+                        photoId: picInfo.photoId,
+                      );
                     },
                     onDoubleTap: () {
                       print('do nothing');

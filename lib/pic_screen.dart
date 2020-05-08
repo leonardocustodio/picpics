@@ -41,8 +41,6 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
-  PhotoProvider get photoManager => Provider.of<PhotoProvider>(context);
-
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
   SwiperController swiperController = SwiperController();
@@ -223,20 +221,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   @override
   void afterFirstLayout(BuildContext context) async {
-    // Calling the same function "layout" to resolve the issue.
-
 //    print('#!#!#!#!#!# AFTER LAYOUT');
 //    if (DatabaseManager.instance.editingTags == true) {
 //      tagsFocusNode.requestFocus();
 //    }
-
-    print('###### AFTER LAYOUT!!!');
-//    await photoManager.refreshGalleryList();
-
-//    photoManager.getOrCreatePathProvider(photoManager.list[0]);
-//
-//    await photoManager.pathProviderMap[photoManager.list[0]].loadAllPics();
-//    setState(() {});
   }
 
   @override
@@ -315,236 +303,229 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   Widget _buildTaggedGridView() {
-//    bool isFiltered = DatabaseManager.instance.searchActiveTags.isNotEmpty;
-//
-//    var picsBox = Hive.box('pics');
-//    var tagsBox = Hive.box('tags');
-//
-//    scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
-//    scrollControllerThirdTab.addListener(() {
-//      movedGridPositionThirdTab();
-//    });
-//
-//    double newPadding = 0.0;
-//    if (DatabaseManager.instance.searchingTags == true) {
-//      newPadding = 140 - offsetThirdTab;
-//      if (newPadding > 140) {
-//        newPadding = 140.0;
-//      }
-//      if (newPadding < 0) {
-//        newPadding = 0;
-//      }
-//    }
-//
-//    int totalTags = 0;
-//    int totalPics = 0;
-//
-//    List<Widget> widgetsArray = [];
-//    List<bool> isTitleWidget = [];
-//
-//    if (!isFiltered) {
-//      for (Tag tag in tagsBox.values) {
-//        if (tag.photoId.length == 0) {
-//          print('skipping because tag has no pictures...');
-//          continue;
-//        }
-//        totalTags += 1;
-//        isTitleWidget.add(true);
-//        widgetsArray.add(Container(
-//          padding: const EdgeInsets.only(left: 2.0, right: 8.0),
-//          child: Row(
-//            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//            children: <Widget>[
-//              Text(
-//                tag.name,
-//                style: TextStyle(
-//                  fontFamily: 'Lato',
-//                  color: Color(0xff606566),
-//                  fontSize: 24,
-//                  fontWeight: FontWeight.w400,
-//                  fontStyle: FontStyle.normal,
-//                  letterSpacing: -0.4099999964237213,
-//                ),
-//              ),
-//              CupertinoButton(
-//                onPressed: () {
-//                  print('share pics');
-//                },
-//                child: Image.asset('lib/images/sharepicsico.png'),
-//              ),
-//            ],
-//          ),
-//        ));
-//        for (String photoId in tag.photoId) {
-//          totalPics += 1;
-//          isTitleWidget.add(false);
-//
-////
-////
-////
-////
-////          print('Asset Provider Length: ${DatabaseManager.instance.assetProvider.data.length}');
-////          var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: () => null);
-//          var data = Provider.of<PhotoProvider>(context).list
-//
-//          if (data != null) {
-//            widgetsArray.add(RepaintBoundary(
-//              child: Padding(
-//                padding: const EdgeInsets.all(5.0),
-//                child: ClipRRect(
-//                  borderRadius: BorderRadius.circular(5.0),
-//                  child: CupertinoButton(
-//                    padding: const EdgeInsets.all(0),
-//                    onPressed: () {
-//                      Ads.setScreen(HideAdScreen);
-//                      Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-////                      int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
-//                      tagsEditingController.text = '';
-//
-//                      DatabaseManager.instance.tagsSuggestions(
-//                        tagsEditingController.text,
-//                        data.id,
-//                        excludeTags: picInfo.tags,
-//                        notify: false,
-//                      );
-//
-//                      print('PicTags: ${picInfo.tags}');
-//
-//                      selectedPhotoData = data;
-//                      selectedPhotoPicInfo = picInfo;
-////                      selectedPhotoIndex = indexOfPic;
-//
-//                      setState(() {
-//                        modalPhotoCard = true;
-//                      });
-//                    },
-//                    child: ImageItem(
-//                      entity: data,
-//                      size: 150,
-//                      backgroundColor: Colors.grey[400],
-//                    ),
-//                  ),
-//                ),
-//              ),
-//            ));
-//          } else {
-//            print('Did not find picture: $photoId');
-//            widgetsArray.add(
-//              Padding(
-//                padding: const EdgeInsets.all(5.0),
-//                child: ClipRRect(
-//                  borderRadius: BorderRadius.circular(5.0),
-//                  child: Container(
-//                    color: Colors.grey[400],
-//                  ),
-//                ),
-//              ),
-//            );
-//          }
-//        }
-//      }
-//    } else {
-//      for (var photoId in DatabaseManager.instance.searchPhotosIds) {
-//        totalPics += 1;
-//        var data = DatabaseManager.instance.assetProvider.data.firstWhere((e) => e.id == photoId, orElse: () => null);
-//
-//        if (data != null) {
-//          widgetsArray.add(RepaintBoundary(
-//            child: Padding(
-//              padding: const EdgeInsets.all(5.0),
-//              child: ClipRRect(
-//                borderRadius: BorderRadius.circular(5.0),
-//                child: CupertinoButton(
-//                  padding: const EdgeInsets.all(0),
-//                  onPressed: () {
-//                    Ads.setScreen(HideAdScreen);
-//                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-////                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
-//                    tagsEditingController.text = '';
-//
-//                    DatabaseManager.instance.tagsSuggestions(
-//                      tagsEditingController.text,
-//                      data.id,
-//                      excludeTags: picInfo.tags,
-//                      notify: false,
-//                    );
-//
-//                    print('PicTags: ${picInfo.tags}');
-//
-//                    selectedPhotoData = data;
-//                    selectedPhotoPicInfo = picInfo;
-//
-//                    setState(() {
-//                      modalPhotoCard = true;
-//                    });
-//                  },
-//                  child: ImageItem(
-//                    entity: data,
-//                    size: 150,
-//                    backgroundColor: Colors.grey[400],
-//                  ),
-//                ),
-//              ),
-//            ),
-//          ));
-//        } else {
-//          print('Did not find picture: $photoId');
-//          widgetsArray.add(
-//            Padding(
-//              padding: const EdgeInsets.all(5.0),
-//              child: ClipRRect(
-//                borderRadius: BorderRadius.circular(5.0),
-//                child: Container(
-//                  color: Colors.grey[400],
-//                ),
-//              ),
-//            ),
-//          );
-//        }
-//      }
-//    }
-//
-////    print('Number of pics: ${DatabaseManager.instance.allPics.length}');
-////    print('Number of tags: ${DatabaseManager.instance.allTags.length}');
-//
-//    print('New Padding: $newPadding');
-//
-//    return StaggeredGridView.countBuilder(
-//      controller: scrollControllerThirdTab,
-//      padding: EdgeInsets.only(
-//        top: 140 - newPadding,
-//        right: 6.0,
-//        left: 6.0,
-//      ),
-//      crossAxisCount: 3,
-//      itemCount: isFiltered ? totalPics : totalTags + totalPics, // picsBox.length + 1,
-//      itemBuilder: (BuildContext context, int index) {
-//        return widgetsArray[index];
-//      },
-//      staggeredTileBuilder: (int index) {
-//        if (isFiltered) return StaggeredTile.count(1, 1);
-//
-//        if (isTitleWidget[index]) {
-//          return StaggeredTile.fit(3);
-//        }
-//        return StaggeredTile.count(1, 1);
-//      },
-//      mainAxisSpacing: 4.0,
-//      crossAxisSpacing: 4.0,
-//    );
+    bool isFiltered = DatabaseManager.instance.searchActiveTags.isNotEmpty;
+
+    var picsBox = Hive.box('pics');
+    var tagsBox = Hive.box('tags');
+
+    scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
+    scrollControllerThirdTab.addListener(() {
+      movedGridPositionThirdTab();
+    });
+
+    double newPadding = 0.0;
+    if (DatabaseManager.instance.searchingTags == true) {
+      newPadding = 140 - offsetThirdTab;
+      if (newPadding > 140) {
+        newPadding = 140.0;
+      }
+      if (newPadding < 0) {
+        newPadding = 0;
+      }
+    }
+
+    int totalTags = 0;
+    int totalPics = 0;
+
+    List<Widget> widgetsArray = [];
+    List<bool> isTitleWidget = [];
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+
+    if (!isFiltered) {
+      for (Tag tag in tagsBox.values) {
+        if (tag.photoId.length == 0) {
+          print('skipping because tag has no pictures...');
+          continue;
+        }
+        totalTags += 1;
+        isTitleWidget.add(true);
+        widgetsArray.add(Container(
+          padding: const EdgeInsets.only(left: 2.0, right: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                tag.name,
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff606566),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                  letterSpacing: -0.4099999964237213,
+                ),
+              ),
+              CupertinoButton(
+                onPressed: () {
+                  print('share pics');
+                },
+                child: Image.asset('lib/images/sharepicsico.png'),
+              ),
+            ],
+          ),
+        ));
+        for (String photoId in tag.photoId) {
+          totalPics += 1;
+          isTitleWidget.add(false);
+
+          var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+
+          if (data != null) {
+            widgetsArray.add(RepaintBoundary(
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      Ads.setScreen(HideAdScreen);
+                      Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+//                      int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+                      tagsEditingController.text = '';
+
+                      DatabaseManager.instance.tagsSuggestions(
+                        tagsEditingController.text,
+                        data.id,
+                        excludeTags: picInfo.tags,
+                        notify: false,
+                      );
+
+                      print('PicTags: ${picInfo.tags}');
+
+                      selectedPhotoData = data;
+                      selectedPhotoPicInfo = picInfo;
+//                      selectedPhotoIndex = indexOfPic;
+
+                      setState(() {
+                        modalPhotoCard = true;
+                      });
+                    },
+                    child: ImageItem(
+                      entity: data,
+                      size: 150,
+                      backgroundColor: Colors.grey[400],
+                    ),
+                  ),
+                ),
+              ),
+            ));
+          } else {
+            print('Did not find picture: $photoId');
+            widgetsArray.add(
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(5.0),
+                  child: Container(
+                    color: Colors.grey[400],
+                  ),
+                ),
+              ),
+            );
+          }
+        }
+      }
+    } else {
+      for (var photoId in DatabaseManager.instance.searchPhotosIds) {
+        totalPics += 1;
+        var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+
+        if (data != null) {
+          widgetsArray.add(RepaintBoundary(
+            child: Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () {
+                    Ads.setScreen(HideAdScreen);
+                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+//                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+                    tagsEditingController.text = '';
+
+                    DatabaseManager.instance.tagsSuggestions(
+                      tagsEditingController.text,
+                      data.id,
+                      excludeTags: picInfo.tags,
+                      notify: false,
+                    );
+
+                    print('PicTags: ${picInfo.tags}');
+
+                    selectedPhotoData = data;
+                    selectedPhotoPicInfo = picInfo;
+
+                    setState(() {
+                      modalPhotoCard = true;
+                    });
+                  },
+                  child: ImageItem(
+                    entity: data,
+                    size: 150,
+                    backgroundColor: Colors.grey[400],
+                  ),
+                ),
+              ),
+            ),
+          ));
+        } else {
+          print('Did not find picture: $photoId');
+          widgetsArray.add(
+            Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5.0),
+                child: Container(
+                  color: Colors.grey[400],
+                ),
+              ),
+            ),
+          );
+        }
+      }
+    }
+
+//    print('Number of pics: ${DatabaseManager.instance.allPics.length}');
+//    print('Number of tags: ${DatabaseManager.instance.allTags.length}');
+
+    print('New Padding: $newPadding');
+
+    return StaggeredGridView.countBuilder(
+      controller: scrollControllerThirdTab,
+      padding: EdgeInsets.only(
+        top: 140 - newPadding,
+        right: 6.0,
+        left: 6.0,
+      ),
+      crossAxisCount: 3,
+      itemCount: isFiltered ? totalPics : totalTags + totalPics, // picsBox.length + 1,
+      itemBuilder: (BuildContext context, int index) {
+        return widgetsArray[index];
+      },
+      staggeredTileBuilder: (int index) {
+        if (isFiltered) return StaggeredTile.count(1, 1);
+
+        if (isTitleWidget[index]) {
+          return StaggeredTile.fit(3);
+        }
+        return StaggeredTile.count(1, 1);
+      },
+      mainAxisSpacing: 4.0,
+      crossAxisSpacing: 4.0,
+    );
   }
 
   Widget _buildGridView() {
-    print('### Number of photos: ${photoManager.list[0].assetCount}');
+    print('### Number of photos: ${PhotoProvider.instance.list[0].assetCount}');
 
     scrollControllerFirstTab = ScrollController(initialScrollOffset: offsetFirstTab);
     scrollControllerFirstTab.addListener(() {
       movedGridPositionFirstTab();
     });
 
-//    print();
-
-    AssetPathProvider pathProvider = photoManager.pathProviderMap[photoManager.list[0]];
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
 
     return GridView.builder(
@@ -558,14 +539,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    AssetPathProvider pathProvider = photoManager.pathProviderMap[photoManager.list[0]];
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     print('pathProvider itemcount: ${pathProvider.list.length}');
-
-//    if (pathProvider.orderedList[index] == null) {
-//      print('needs to load more pics');
-//      _loadMore(start: index, end: index + 30);
-//      return _buildLoading();
-//    }
 
     var data = pathProvider.orderedList[index];
 
@@ -632,82 +607,72 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
-//    final noMore = DatabaseManager.instance.assetProvider.noMore;
-//    print('No More: $noMore - index $index - Count ${DatabaseManager.instance.assetProvider.count}');
-//
-//    if (!noMore && index == DatabaseManager.instance.assetProvider.count) {
-//      print('loading more');
-//      _loadMore();
-//      print('returning container');
-//      return Container();
-//      return _buildLoading();
+    print('photo slides index: $index');
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    var data = pathProvider.orderedList[index];
+
+    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+
+    if (picInfo == null) {
+      picInfo = Pic(
+        data.id,
+        data.createDateTime,
+        data.latitude,
+        data.longitude,
+        null,
+        null,
+        null,
+        null,
+        [],
+      );
+    }
+
+    print('photo id: ${data.id}');
+    double latitude = data.latitude;
+    double longitude = data.longitude;
+
+    print('lat: $latitude - long: $longitude');
+
+//    if (latitude == 0.0 && longitude == 0.0) {
+//      DatabaseManager.instance.currentPhotoCity = 'Local da foto';
+//      DatabaseManager.instance.currentPhotoState = ' estado';
+//    } else if (DatabaseManager.instance.lastLocationRequest[0] == latitude &&
+//        DatabaseManager.instance.lastLocationRequest[1] == longitude) {
+//      print('skipping location request');
+//    } else {
+//      DatabaseManager.instance.findLocation(latitude, longitude);
 //    }
-//
-//    print('photo slides index: $index');
-//    var data = DatabaseManager.instance.assetProvider.data[index];
-//
-//    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-//
-//    if (picInfo == null) {
-//      picInfo = Pic(
-//        data.id,
-//        data.createDateTime,
-//        data.latitude,
-//        data.longitude,
-//        null,
-//        null,
-//        null,
-//        null,
-//        [],
+
+//    if (suggestions == null) {
+//      suggestions = DatabaseManager.instance.tagsSuggestions(
+//        '',
+//        picInfo.photoId,
+//        excludeTags: picInfo.tags,
 //      );
 //    }
-//
-//    print('photo id: ${data.id}');
-//    double latitude = data.latitude;
-//    double longitude = data.longitude;
-//
-//    print('lat: $latitude - long: $longitude');
-//
-////    if (latitude == 0.0 && longitude == 0.0) {
-////      DatabaseManager.instance.currentPhotoCity = 'Local da foto';
-////      DatabaseManager.instance.currentPhotoState = ' estado';
-////    } else if (DatabaseManager.instance.lastLocationRequest[0] == latitude &&
-////        DatabaseManager.instance.lastLocationRequest[1] == longitude) {
-////      print('skipping location request');
-////    } else {
-////      DatabaseManager.instance.findLocation(latitude, longitude);
-////    }
-//
-////    if (suggestions == null) {
-////      suggestions = DatabaseManager.instance.tagsSuggestions(
-////        '',
-////        picInfo.photoId,
-////        excludeTags: picInfo.tags,
-////      );
-////    }
-//
-//    print('using picSwiper id: $picSwiper');
-//
-//    DatabaseManager.instance.tagsSuggestions(
-//      tagsEditingController.text,
-//      picInfo.photoId,
-//      excludeTags: picInfo.tags,
-//      notify: false,
-//    );
-//
-//    return PhotoCard(
-//      data: data,
-//      photoId: picInfo.photoId,
-//      picSwiper: picSwiper,
-//      index: index,
-//      tagsEditingController: tagsEditingController,
-//      specificLocation: picInfo.specificLocation,
-//      generalLocation: picInfo.generalLocation,
-//      showEditTagModal: showEditTagModal,
-//      onPressedTrash: () {
-//        trashPic(data);
-//      },
-//    );
+
+    print('using picSwiper id: $picSwiper');
+
+    DatabaseManager.instance.tagsSuggestions(
+      tagsEditingController.text,
+      picInfo.photoId,
+      excludeTags: picInfo.tags,
+      notify: false,
+    );
+
+    return PhotoCard(
+      data: data,
+      photoId: picInfo.photoId,
+      picSwiper: picSwiper,
+      index: index,
+      tagsEditingController: tagsEditingController,
+      specificLocation: picInfo.specificLocation,
+      generalLocation: picInfo.generalLocation,
+      showEditTagModal: showEditTagModal,
+      onPressedTrash: () {
+        trashPic(data);
+      },
+    );
   }
 
   void dismissPhotoCard() {
@@ -749,7 +714,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   Widget build(BuildContext context) {
     AssetPathProvider pathProvider;
     if (PhotoProvider.instance.list.isNotEmpty) {
-      pathProvider = photoManager.pathProviderMap[PhotoProvider.instance.list[0]];
+      print('refreshing');
+      pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     }
 
     var screenWidth = MediaQuery.of(context).size.width;
@@ -957,7 +923,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             child: Swiper(
                               controller: swiperController,
                               loop: true,
-                              itemCount: 1, // count == 0 ? 1 : count,
+                              itemCount: pathProvider.orderedList.length, // count == 0 ? 1 : count,
                               onIndexChanged: (index) async {
                                 picSwiper = index;
                                 print('picSwiper = $index');
