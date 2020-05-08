@@ -168,6 +168,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   void initState() {
     super.initState();
     isAdVisible = false;
+    photoManager.pathProviderMap[photoManager.list[0]].loadAllPics();
 
 //    if (DatabaseManager.instance.userSettings.tutorialCompleted == true) {
 //      isAdVisible = true;

@@ -259,6 +259,19 @@ class AssetPathProvider extends ChangeNotifier {
     printListLength("loadmore");
   }
 
+  Future<void> loadAllPics() async {
+    if (isLoaded) {
+      return;
+    }
+
+    final list = await path.getAssetListRange(start: 0, end: path.assetCount);
+    this.orderedList = list;
+    isLoaded = true;
+
+    print('LOADED ALL PHOTOS!!!!');
+    notifyListeners();
+  }
+
   Future<void> loadPaths({int start, int end}) async {
     if (isLoaded) {
       return;
