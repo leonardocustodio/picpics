@@ -6,11 +6,9 @@ import 'package:photo_manager/photo_manager.dart';
 class PhotoProvider extends ChangeNotifier {
   List<AssetPathEntity> list = [];
 
-  RequestType type = RequestType.common;
-
+  RequestType type = RequestType.image;
   var hasAll = true;
-
-  var onlyAll = false;
+  var onlyAll = true;
 
   Map<AssetPathEntity, AssetPathProvider> pathProviderMap = {};
 
@@ -25,7 +23,7 @@ class PhotoProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  DateTime _startDt = DateTime.now().subtract(Duration(days: 365 * 8)); // Default Before 8 years
+  DateTime _startDt = DateTime.fromMicrosecondsSinceEpoch(0); // Default Before 8 years
 
   DateTime get startDt => _startDt;
 
@@ -67,7 +65,7 @@ class PhotoProvider extends ChangeNotifier {
   String maxWidth = "10000";
   String minHeight = "0";
   String maxHeight = "10000";
-  bool _ignoreSize = false;
+  bool _ignoreSize = true;
 
   bool get ignoreSize => _ignoreSize;
 
@@ -141,10 +139,18 @@ class PhotoProvider extends ChangeNotifier {
 
     this.list.clear();
     this.list.addAll(galleryList);
+
+    print('Loaded all photos: ${this.list[0].assetCount}');
   }
 
   AssetPathProvider getOrCreatePathProvider(AssetPathEntity pathEntity) {
     pathProviderMap[pathEntity] ??= AssetPathProvider(pathEntity);
+
+    if (pathProviderMap[pathEntity].orderedList == null) {
+      pathProviderMap[pathEntity].orderedList = List(pathEntity.assetCount);
+      print('initializing a ordered list with ${pathEntity.assetCount} photos');
+    }
+
     return pathProviderMap[pathEntity];
   }
 
@@ -211,11 +217,14 @@ class AssetPathProvider extends ChangeNotifier {
   static const loadCount = 50;
 
   bool isInit = false;
+  bool isLoaded = false;
 
   final AssetPathEntity path;
   AssetPathProvider(this.path);
 
   List<AssetEntity> list = [];
+
+  List<AssetEntity> orderedList;
 
   var page = 0;
 
@@ -248,6 +257,45 @@ class AssetPathProvider extends ChangeNotifier {
     this.list.addAll(list);
     notifyListeners();
     printListLength("loadmore");
+  }
+
+  Future<void> loadPaths({int start, int end}) async {
+    if (isLoaded) {
+      return;
+    }
+
+    // Verificar essa parte
+//    int useThisEnd = end;
+//
+//    if (end > path.assetCount) {
+//      useThisEnd = path.assetCount;
+//    }
+//
+//    if (this.orderedList[useThisEnd - 1] != null) {
+//      int newEnd = useThisEnd - 3;
+//      while (this.orderedList[newEnd] != null) {
+//        newEnd -= 3;
+//        if (newEnd <= start) {
+//          break;
+//        }
+//      }
+//      useThisEnd = newEnd;
+//    }
+//    // Verificar essa parte
+//
+//    print('Loading from range: $start to $useThisEnd');
+    final list = await path.getAssetListRange(start: 0, end: path.assetCount);
+    this.orderedList = list;
+    isLoaded = true;
+
+//    int x = start;
+//    for (AssetEntity entity in list) {
+//      this.orderedList[x] = entity;
+//      x++;
+//    }
+//    print(this.orderedList);
+    print('LOADED ALL PHOTOS!!!!');
+    notifyListeners();
   }
 
 //  void delete(AssetEntity entity) async {

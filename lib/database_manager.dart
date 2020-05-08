@@ -182,7 +182,7 @@ class DatabaseManager extends ChangeNotifier {
       picsBox.delete(entity.id);
     }
 
-    DatabaseManager.instance.assetProvider.data.remove(entity);
+//    DatabaseManager.instance.assetProvider.data.remove(entity);
     notifyListeners();
   }
 
@@ -749,30 +749,30 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void setupPathList() async {
-    List<AssetPathEntity> pathList;
-
-    pathList = await PhotoManager.getAssetPathList(
-      hasAll: true,
-      onlyAll: true,
-      type: RequestType.image,
-    );
-
-    print('pathList: $pathList');
-
-    DatabaseManager.instance.assetProvider.current = pathList[0];
-    DatabaseManager.instance.loadFirstPhotos();
+//    List<AssetPathEntity> pathList;
+//
+//    pathList = await PhotoManager.getAssetPathList(
+//      hasAll: true,
+//      onlyAll: true,
+//      type: RequestType.image,
+//    );
+//
+//    print('pathList: $pathList');
+//
+//    DatabaseManager.instance.assetProvider.current = pathList[0];
+//    DatabaseManager.instance.loadFirstPhotos();
   }
 
   loadFirstPhotos() async {
-    await assetProvider.loadMore();
-    print('loaded first photos');
+//    await assetProvider.loadMore();
+//    print('loaded first photos');
   }
 
   loadMore() async {
-    print('calling asset provider loadmore');
-    await assetProvider.loadMore();
-    print('calling notify listeners');
-    notifyListeners();
+//    print('calling asset provider loadmore');
+//    await assetProvider.loadMore();
+//    print('calling notify listeners');
+//    notifyListeners();
   }
 
 //  String formatDate(DateTime date) {

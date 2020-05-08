@@ -99,7 +99,6 @@ void main() async {
   } else {
     DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
-    DatabaseManager.instance.setupPathList();
   }
 
   DatabaseManager.instance.loadRemoteConfig();
@@ -132,10 +131,10 @@ class _PicPicsAppState extends State<PicPicsApp> {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MultiProvider(
       providers: [
-        Provider<DatabaseManager>(
+        ChangeNotifierProvider<DatabaseManager>(
           create: (_) => DatabaseManager.instance,
         ),
-        Provider<PhotoProvider>(
+        ChangeNotifierProvider<PhotoProvider>(
           create: (_) => PhotoProvider(),
         ),
       ],

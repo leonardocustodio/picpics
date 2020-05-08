@@ -137,7 +137,7 @@ class PhotoCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
                     onPressed: () {
                       Ads.setScreen(PhotoScreen.id);
-                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
+//                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },
                     child: Image.asset('lib/images/expandphotoico.png'),
@@ -300,50 +300,50 @@ class PhotoCard extends StatelessWidget {
                     }
                   },
                   onSubmitted: (text) {
-                    print('return');
-                    if (text != '') {
-                      print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
-                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
-                      DatabaseManager.instance.addTag(
-                        tagName: text,
-                        photoId: data.id,
-                      );
-                      tagsEditingController.clear();
-
-                      if (picSwiper != -1) {
-                        // Refatorar essa gambi dps
-                        var indexPicBefore = picSwiper - 1;
-                        var indexPicAfter = picSwiper + 1;
-
-                        if (indexPicBefore < 0) {
-                          indexPicBefore = DatabaseManager.instance.assetProvider.data.length - 1;
-                        }
-                        if (indexPicAfter == DatabaseManager.instance.assetProvider.data.length) {
-                          indexPicAfter = 0;
-                        }
-
-                        Pic picBefore = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicBefore].id);
-                        Pic picAfter = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicAfter].id);
-
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          picBefore.photoId,
-                          excludeTags: picBefore.tags,
-                        );
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          picAfter.photoId,
-                          excludeTags: picAfter.tags,
-                        );
-                        ////////////////////////
-                      } else {
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          data.id,
-                          excludeTags: picInfo.tags,
-                        );
-                      }
-                    }
+//                    print('return');
+//                    if (text != '') {
+//                      print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+//                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
+//                      DatabaseManager.instance.addTag(
+//                        tagName: text,
+//                        photoId: data.id,
+//                      );
+//                      tagsEditingController.clear();
+//
+//                      if (picSwiper != -1) {
+//                        // Refatorar essa gambi dps
+//                        var indexPicBefore = picSwiper - 1;
+//                        var indexPicAfter = picSwiper + 1;
+//
+//                        if (indexPicBefore < 0) {
+//                          indexPicBefore = DatabaseManager.instance.assetProvider.data.length - 1;
+//                        }
+//                        if (indexPicAfter == DatabaseManager.instance.assetProvider.data.length) {
+//                          indexPicAfter = 0;
+//                        }
+//
+//                        Pic picBefore = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicBefore].id);
+//                        Pic picAfter = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.assetProvider.data[indexPicAfter].id);
+//
+//                        DatabaseManager.instance.tagsSuggestions(
+//                          '',
+//                          picBefore.photoId,
+//                          excludeTags: picBefore.tags,
+//                        );
+//                        DatabaseManager.instance.tagsSuggestions(
+//                          '',
+//                          picAfter.photoId,
+//                          excludeTags: picAfter.tags,
+//                        );
+//                        ////////////////////////
+//                      } else {
+//                        DatabaseManager.instance.tagsSuggestions(
+//                          '',
+//                          data.id,
+//                          excludeTags: picInfo.tags,
+//                        );
+//                      }
+//                    }
                   },
                 ),
                 Padding(
@@ -354,11 +354,11 @@ class PhotoCard extends StatelessWidget {
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: showEditTagModal,
                     onTap: (tagName) {
-                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
-                      DatabaseManager.instance.addTag(
-                        tagName: tagName,
-                        photoId: picInfo.photoId,
-                      );
+//                      DatabaseManager.instance.selectedPhoto = DatabaseManager.instance.assetProvider.data[index];
+//                      DatabaseManager.instance.addTag(
+//                        tagName: tagName,
+//                        photoId: picInfo.photoId,
+//                      );
                     },
                     onDoubleTap: () {
                       print('do nothing');
