@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/lru_cache.dart';
 import 'dart:typed_data';
 
 class OriginalImageItem extends StatelessWidget {
@@ -24,7 +23,6 @@ class OriginalImageItem extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
         var futureData = snapshot.data;
         if (snapshot.connectionState == ConnectionState.done && futureData != null) {
-//          ImageLruCache.setData(entity, size, futureData);
           return _buildImageItem(context, futureData);
         }
 
@@ -40,7 +38,6 @@ class OriginalImageItem extends StatelessWidget {
       data,
       width: double.infinity,
       height: double.infinity,
-//      fit: fit,
     );
 
     return image;
