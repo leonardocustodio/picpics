@@ -307,7 +307,7 @@ SPEC CHECKSUMS:
   geolocator: 460cc8e850b616f8c0e90944c86517d91ccbb686
   Google-Mobile-Ads-SDK: 7052557293c75c676db55feb707ace9b790f32c1
   google_api_availability: 15fa42a8cd83c0a6738507ffe6e87096f12abcb8
-  google_maps_flutter: d0dd62f5a7d39bae61057eb9f52dd778d99c7c6c
+  google_maps_flutter: df4e7de95264aa0a2f11aac0fc7e313acb8ffc7e
   GoogleAppMeasurement: dfe55efa543e899d906309eaaac6ca26d249862f
   GoogleDataTransport: 8e9b210c97d55fbff306cc5468ff91b9cb32dcf5
   GoogleDataTransportCCTSupport: ef79a4728b864946a8aafdbab770d5294faf3b5f

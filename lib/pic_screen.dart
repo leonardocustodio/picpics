@@ -32,6 +32,7 @@ import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -45,7 +46,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
+
+  CarouselController carouselController = CarouselController();
   SwiperController swiperController = SwiperController();
+
   SwiperController tutorialSwiperController = SwiperController();
 
   TextEditingController tagsEditingController = TextEditingController();
@@ -223,7 +227,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   @override
   void afterFirstLayout(BuildContext context) async {
-//    print('#!#!#!#!#!# AFTER LAYOUT');
+    print('#!#!#!#!#!# AFTER LAYOUT');
 //    if (DatabaseManager.instance.editingTags == true) {
 //      tagsFocusNode.requestFocus();
 //    }
@@ -244,8 +248,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   void changePage(int index) {
     _sendCurrentTabToAnalytics(index);
+    print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex()}');
+//    swiperController.move(DatabaseManager.instance.swiperIndex(), animation: false);
     DatabaseManager.instance.setCurrentTab(index);
+//    swiperController.index = DatabaseManager.instance.swiperIndex();
     Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+
 //    if (index == 1) {
 //      print('#### moving to picture.... $picSwiper');
 //      swiperController.move(picSwiper, animation: false);
@@ -740,8 +748,16 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     }
   }
 
+  void afterBuild() {
+    print('#### AFTER BUILD!');
+    print('Trying to moe to page: ${DatabaseManager.instance.swiperIndex()}');
+//    swiperController.index = DatabaseManager.instance.swiperIndex();
+//    swiperController.move(DatabaseManager.instance.swiperIndex(), animation: false);
+  }
+
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild());
     AssetPathProvider pathProvider;
     if (PhotoProvider.instance.list.isNotEmpty) {
       print('refreshing');
@@ -950,33 +966,60 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             ),
                           ),
                           Expanded(
-                            child: Swiper(
-                              controller: swiperController,
-                              loop: true,
-                              itemCount: pathProvider.orderedList.length, // count == 0 ? 1 : count,
-                              onIndexChanged: (index) async {
-                                picSwiper = index;
-                                print('picSwiper = $index');
-                                bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
-                                if (shouldShowAds) {
-                                  showWatchAdModal(context);
-                                }
-                              },
+                            child: CarouselSlider.builder(
+                              itemCount: pathProvider.orderedList.length,
+                              carouselController: carouselController,
                               itemBuilder: (BuildContext context, int index) {
                                 print('calling index $index');
                                 return _buildPhotoSlider(context, index);
                               },
-                              layout: SwiperLayout.CUSTOM,
-                              itemWidth: screenWidth,
-                              customLayoutOption:
-                                  CustomLayoutOption(startIndex: -1, stateCount: 3).addRotate([-45.0 / 180, 0.0, 45.0 / 180]).addTranslate(
-                                [
-                                  Offset(-screenWidth - screenWidth / 2, -40.0),
-                                  Offset(0.0, 0.0),
-                                  Offset(screenWidth + screenWidth / 2, -40.0),
-                                ],
+                              options: CarouselOptions(
+                                initialPage: DatabaseManager.instance.swiperIndex(),
+                                enableInfiniteScroll: true,
+                                height: double.maxFinite,
+                                viewportFraction: 0.95,
+                                enlargeCenterPage: false,
+                                autoPlayCurve: Curves.fastOutSlowIn,
+                                onPageChanged: (index, reason) async {
+                                  DatabaseManager.instance.setSwiperIndex(index);
+                                  picSwiper = index;
+                                  print('picSwiper = $index');
+                                  bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
+                                  if (shouldShowAds) {
+                                    showWatchAdModal(context);
+                                  }
+                                },
                               ),
                             ),
+//                            Swiper(
+//                              controller: swiperController,
+//                              loop: true,
+//                              index: DatabaseManager.instance.swiperIndex(),
+//                              itemCount: pathProvider.orderedList.length, // count == 0 ? 1 : count,
+//                              onIndexChanged: (index) async {
+//                                DatabaseManager.instance.setSwiperIndex(index);
+//                                picSwiper = index;
+//                                print('picSwiper = $index');
+//                                bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
+//                                if (shouldShowAds) {
+//                                  showWatchAdModal(context);
+//                                }
+//                              },
+//                              itemBuilder: (BuildContext context, int index) {
+//                                print('calling index $index');
+//                                return _buildPhotoSlider(context, index);
+//                              },
+//                              layout: SwiperLayout.DEFAULT,
+//                              itemWidth: screenWidth,
+//                              customLayoutOption:
+//                                  CustomLayoutOption(startIndex: -1, stateCount: 3).addRotate([-45.0 / 180, 0.0, 45.0 / 180]).addTranslate(
+//                                [
+//                                  Offset(-screenWidth - screenWidth / 2, -40.0),
+//                                  Offset(0.0, 0.0),
+//                                  Offset(screenWidth + screenWidth / 2, -40.0),
+//                                ],
+//                              ),
+//                            ),
                           ),
                         ],
                       ),

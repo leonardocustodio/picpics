@@ -70,6 +70,7 @@ void main() async {
       picsTaggedToday: 0,
       lastTaggedPicDate: DateTime.now(),
       canTagToday: true,
+      swiperIndex: 0,
     );
 
     userBox.add(user);
