@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:picPics/admob_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
-import 'package:picPics/image_item.dart';
+import 'package:picPics/original_image_item.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
@@ -103,6 +104,20 @@ class _PhotoScreenState extends State<PhotoScreen> {
       );
     }
 
+    //                FutureBuilder<File>(
+//                  future: DatabaseManager.instance.selectedPhoto.file,
+//                  builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+//                    var futureData = snapshot.data;
+//                    if (snapshot.connectionState == ConnectionState.done && futureData != null) {
+//                      return PhotoView(
+//                        imageProvider: FileImage(futureData),
+//                      );
+//                    }
+//                    return Container();
+//                  },
+//                ),
+//              ),
+
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
@@ -118,9 +133,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
                 child: PhotoView.customChild(
                   initialScale: 1.0,
                   minScale: 1.0,
-                  child: ImageItem(
+                  child: OriginalImageItem(
                     entity: DatabaseManager.instance.selectedPhoto,
-                    size: MediaQuery.of(context).size.height.toInt(),
+//                    size: MediaQuery.of(context).size.height.toInt(),
                     fit: BoxFit.contain,
                     backgroundColor: Colors.black,
                   ),
