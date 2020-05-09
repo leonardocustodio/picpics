@@ -41,6 +41,8 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
+  List<bool> picHasTag;
+
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
   SwiperController swiperController = SwiperController();
@@ -528,17 +530,45 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
 
-    return GridView.builder(
-      padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+    if (itemCount > 0) {
+      picHasTag = List(pathProvider.orderedList.length);
+      int x = 0;
+      for (var item in pathProvider.orderedList) {
+        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
+        if (pic != null) {
+          if (pic.tags.length > 0) {
+            picHasTag[x] = true;
+            x++;
+            continue;
+          }
+        }
+        picHasTag[x] = false;
+        x++;
+      }
+    }
+
+    return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
-      scrollDirection: Axis.vertical,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
-      itemCount: itemCount, // count,
+      padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+      crossAxisCount: 3,
+      itemCount: itemCount,
       itemBuilder: _buildItem,
+      staggeredTileBuilder: (int index) {
+        if (picHasTag[index] == true) return StaggeredTile.count(0, 0);
+        return StaggeredTile.count(1, 1);
+      },
+//      mainAxisSpacing: 5.0,
+//      crossAxisSpacing: 5.0,
     );
+//  }
   }
 
   Widget _buildItem(BuildContext context, int index) {
+    if (picHasTag[index] == true) {
+      print('This pic has tag returning empty container');
+      return Container();
+    }
+
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     print('pathProvider itemcount: ${pathProvider.list.length}');
 
