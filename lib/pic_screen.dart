@@ -715,7 +715,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               entity: data,
               size: 150,
               backgroundColor: Colors.grey[400],
-              showOverlay: true,
+              showOverlay: multiPicSelect ? true : false,
               isSelected: picsSelected.contains(index),
             ),
           ),
