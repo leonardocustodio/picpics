@@ -35,6 +35,8 @@ class DatabaseManager extends ChangeNotifier {
   static const maxNumOfRecentTags = 5;
 
   int swiperIndex = 0;
+  List<bool> picHasTag;
+  List<int> sliderIndex;
 
   bool hasGalleryPermission = true;
   bool noTaggedPhoto = false;
@@ -199,8 +201,60 @@ class DatabaseManager extends ChangeNotifier {
     }
 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    pathProvider.orderedList.remove(entity);
+    int indexInOrderedList = pathProvider.orderedList.indexOf(entity);
+
+    if (indexInOrderedList != null) {
+      pathProvider.orderedList.remove(entity);
+      sliderIndex.remove(indexInOrderedList);
+      picHasTag.removeAt(indexInOrderedList);
+      print('Removed pic in ordered list number $indexInOrderedList');
+    }
     notifyListeners();
+  }
+
+  void checkPicHasTags(String photoId) {
+    print('Checking photoId $photoId has tags...');
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
+
+    Pic getPic = getPicInfo(photoId);
+    int indexOfOrderedList = pathProvider.orderedList.indexWhere((element) => element.id == photoId);
+
+    if (indexOfOrderedList == null) {
+      print('### ERROR DID NOT FIND INDEX IN ORDERED LIST');
+      return;
+    }
+
+    if (getPic.tags.length > 0) {
+      print('pic has tags!!!');
+      picHasTag[indexOfOrderedList] = true;
+    } else {
+      print('pic has no tags!!!');
+      picHasTag[indexOfOrderedList] = false;
+    }
+  }
+
+  void sliderHasPics() {
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
+
+    if (itemCount > 0) {
+      sliderIndex = [];
+      picHasTag = [];
+      int y = 0;
+      for (var item in pathProvider.orderedList) {
+        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
+        if (pic != null) {
+          if (pic.tags.length > 0) {
+            picHasTag.add(true);
+            continue;
+          }
+        }
+        picHasTag.add(false);
+        sliderIndex.add(y);
+        y++;
+      }
+    }
   }
 
   void setCurrentTab(int tab, {bool notify = true}) {
@@ -512,6 +566,7 @@ class DatabaseManager extends ChangeNotifier {
       getPic.tags.removeAt(indexOfTagInPic);
       picsBox.put(photoId, getPic);
       print('removed tag from pic');
+      checkPicHasTags(photoId);
 
       if (getPic.tags.length == 0) {
         print('pic has no tags anymore!!!!');
@@ -540,6 +595,7 @@ class DatabaseManager extends ChangeNotifier {
           pic.tags.removeAt(indexOfTagInPic);
           picsBox.put(photoId, pic);
           print('removed tag from pic');
+          checkPicHasTags(photoId);
         }
       }
 
@@ -669,6 +725,7 @@ class DatabaseManager extends ChangeNotifier {
       picsBox.put(photoId, getPic);
       print('updated picture');
 
+      checkPicHasTags(photoId);
       return;
     }
 
@@ -689,6 +746,7 @@ class DatabaseManager extends ChangeNotifier {
     );
 
     picsBox.put(photoId, pic);
+    checkPicHasTags(photoId);
 
     if (noTaggedPhoto == true) {
       noTaggedPhoto = false;

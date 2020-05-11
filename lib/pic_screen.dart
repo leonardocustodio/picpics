@@ -42,10 +42,6 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
-  List<bool> picHasTag;
-  List<int> sliderIndex;
-  int sliderCount;
-
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
 
@@ -539,7 +535,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-    _checkTaggedPics();
+//    DatabaseManager.instance.checkTaggedPics();
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
@@ -548,7 +544,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       itemCount: itemCount,
       itemBuilder: _buildItem,
       staggeredTileBuilder: (int index) {
-        if (picHasTag[index] == true) return StaggeredTile.count(0, 0);
+        if (DatabaseManager.instance.picHasTag[index] == true) return StaggeredTile.count(0, 0);
         return StaggeredTile.count(1, 1);
       },
 //      mainAxisSpacing: 5.0,
@@ -558,7 +554,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    if (picHasTag[index] == true) {
+    if (DatabaseManager.instance.picHasTag[index] == true) {
       print('This pic has tag returning empty container');
       return Container();
     }
@@ -633,10 +629,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   Widget _buildPhotoSlider(BuildContext context, int index) {
     print('photo slides index: $index');
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    int getPicInIndex = sliderIndex.indexOf(index);
-    print('Getting pic in index: $getPicInIndex');
 
-    var data = pathProvider.orderedList[getPicInIndex];
+    int orderedIndex = DatabaseManager.instance.sliderIndex[index];
+    var data = pathProvider.orderedList[orderedIndex];
 
     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
 
@@ -724,56 +719,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     );
   }
 
-  void _checkTaggedPics() {
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-
-    if (itemCount > 0) {
-      picHasTag = List(pathProvider.orderedList.length);
-      int x = 0;
-      for (var item in pathProvider.orderedList) {
-        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
-        if (pic != null) {
-          if (pic.tags.length > 0) {
-            picHasTag[x] = true;
-            x++;
-            continue;
-          }
-        }
-        picHasTag[x] = false;
-        x++;
-      }
-    }
-  }
-
-  void _sliderHasPics() {
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-
-    if (itemCount > 0) {
-      sliderIndex = List(pathProvider.orderedList.length);
-      picHasTag = List(pathProvider.orderedList.length);
-      int x = 0;
-      int y = 0;
-      for (var item in pathProvider.orderedList) {
-        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
-        if (pic != null) {
-          if (pic.tags.length > 0) {
-            sliderIndex[x] = null;
-            picHasTag[x] = true;
-            x++;
-            continue;
-          }
-        }
-        picHasTag[x] = false;
-        sliderIndex[x] = y;
-        y++;
-        x++;
-      }
-      sliderCount = y;
-    }
-  }
-
   void _loadPhotos() async {
     if (PhotoProvider.instance.list.isEmpty) {
       await PhotoProvider.instance.refreshGalleryList();
@@ -782,7 +727,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
       await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
 //      _checkTaggedPics();
-      _sliderHasPics();
+      DatabaseManager.instance.sliderHasPics();
       setState(() {});
     } else {
       print('Already loaded');
@@ -1008,7 +953,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           ),
                           Expanded(
                             child: CarouselSlider.builder(
-                              itemCount: sliderCount, // pathProvider.orderedList.length,
+                              itemCount: Provider.of<DatabaseManager>(context).sliderIndex.length ?? 0,
                               carouselController: carouselController,
                               itemBuilder: (BuildContext context, int index) {
                                 print('calling index $index');

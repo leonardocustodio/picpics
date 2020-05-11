@@ -155,7 +155,7 @@ class PhotoProvider extends ChangeNotifier {
     pathProviderMap[pathEntity] ??= AssetPathProvider(pathEntity);
 
     if (pathProviderMap[pathEntity].orderedList == null) {
-      pathProviderMap[pathEntity].orderedList = List(pathEntity.assetCount);
+      pathProviderMap[pathEntity].orderedList = [];
       print('initializing a ordered list with ${pathEntity.assetCount} photos');
     }
 
