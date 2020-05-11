@@ -187,7 +187,6 @@ class DatabaseManager extends ChangeNotifier {
       print('found pic');
 
       for (var tag in getPic.tags) {
-//        int indexOfTag = allTags.indexOf(tag);
         String tagKey = stripTag(tag);
 
         Tag getTag = tagsBox.get(tagKey);
@@ -199,7 +198,8 @@ class DatabaseManager extends ChangeNotifier {
       picsBox.delete(entity.id);
     }
 
-//    DatabaseManager.instance.assetProvider.data.remove(entity);
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    pathProvider.orderedList.remove(entity);
     notifyListeners();
   }
 
