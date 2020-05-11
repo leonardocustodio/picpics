@@ -537,23 +537,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-
-    if (itemCount > 0) {
-      picHasTag = List(pathProvider.orderedList.length);
-      int x = 0;
-      for (var item in pathProvider.orderedList) {
-        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
-        if (pic != null) {
-          if (pic.tags.length > 0) {
-            picHasTag[x] = true;
-            x++;
-            continue;
-          }
-        }
-        picHasTag[x] = false;
-        x++;
-      }
-    }
+    _checkTaggedPics();
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
@@ -735,6 +719,28 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     );
   }
 
+  void _checkTaggedPics() {
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
+
+    if (itemCount > 0) {
+      picHasTag = List(pathProvider.orderedList.length);
+      int x = 0;
+      for (var item in pathProvider.orderedList) {
+        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
+        if (pic != null) {
+          if (pic.tags.length > 0) {
+            picHasTag[x] = true;
+            x++;
+            continue;
+          }
+        }
+        picHasTag[x] = false;
+        x++;
+      }
+    }
+  }
+
   void _loadPhotos() async {
     if (PhotoProvider.instance.list.isEmpty) {
       await PhotoProvider.instance.refreshGalleryList();
@@ -742,6 +748,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
       PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
       await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
+      _checkTaggedPics();
       setState(() {});
     } else {
       print('Already loaded');
