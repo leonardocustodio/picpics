@@ -644,80 +644,79 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     return RepaintBoundary(
       child: Padding(
         padding: const EdgeInsets.all(5.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(5.0),
-          child: GestureDetector(
-            onLongPress: () {
-              print('LongPress');
-              if (multiPicSelect == false) {
-                picsSelected.add(index);
-                setState(() {
-                  multiPicSelect = true;
-                });
+        child: GestureDetector(
+          onLongPress: () {
+            print('LongPress');
+            if (multiPicSelect == false) {
+              picsSelected.add(index);
+              setState(() {
+                multiPicSelect = true;
+              });
+            }
+          },
+          child: CupertinoButton(
+            padding: const EdgeInsets.all(0),
+            onPressed: () {
+              if (multiPicSelect) {
+                if (picsSelected.contains(index)) {
+                  setState(() {
+                    picsSelected.remove(index);
+                  });
+                } else {
+                  setState(() {
+                    picsSelected.add(index);
+                  });
+                }
+                print('Pics Selected Length: ${picsSelected.length}');
+                return;
               }
-            },
-            child: CupertinoButton(
-              padding: const EdgeInsets.all(0),
-              onPressed: () {
-                if (multiPicSelect) {
-                  if (picsSelected.contains(index)) {
-                    setState(() {
-                      picsSelected.remove(index);
-                    });
-                  } else {
-                    setState(() {
-                      picsSelected.add(index);
-                    });
-                  }
-                  print('Pics Selected Length: ${picsSelected.length}');
-                  return;
-                }
 
-                if (!DatabaseManager.instance.canTagToday()) {
-                  showWatchAdModal(context);
-                  return;
-                }
+              if (!DatabaseManager.instance.canTagToday()) {
+                showWatchAdModal(context);
+                return;
+              }
 
-                Ads.setScreen(HideAdScreen);
-                Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-                tagsEditingController.text = '';
+              Ads.setScreen(HideAdScreen);
+              Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+              tagsEditingController.text = '';
 
-                if (picInfo == null) {
-                  picInfo = Pic(
-                    data.id,
-                    data.createDateTime,
-                    data.latitude,
-                    data.longitude,
-                    null,
-                    null,
-                    null,
-                    null,
-                    [],
-                  );
-                }
-
-                DatabaseManager.instance.tagsSuggestions(
-                  tagsEditingController.text,
+              if (picInfo == null) {
+                picInfo = Pic(
                   data.id,
-                  excludeTags: picInfo.tags,
-                  notify: false,
+                  data.createDateTime,
+                  data.latitude,
+                  data.longitude,
+                  null,
+                  null,
+                  null,
+                  null,
+                  [],
                 );
+              }
 
-                print('PicTags: ${picInfo.tags}');
+              DatabaseManager.instance.tagsSuggestions(
+                tagsEditingController.text,
+                data.id,
+                excludeTags: picInfo.tags,
+                notify: false,
+              );
 
-                selectedPhotoData = data;
-                selectedPhotoPicInfo = picInfo;
-                selectedPhotoIndex = index;
+              print('PicTags: ${picInfo.tags}');
 
-                setState(() {
-                  modalPhotoCard = true;
-                });
-              },
-              child: ImageItem(
-                entity: data,
-                size: 150,
-                backgroundColor: Colors.grey[400],
-              ),
+              selectedPhotoData = data;
+              selectedPhotoPicInfo = picInfo;
+              selectedPhotoIndex = index;
+
+              setState(() {
+                modalPhotoCard = true;
+              });
+            },
+            child: ImageItem(
+              entity: data,
+              size: 150,
+              backgroundColor: Colors.grey[400],
+              showOverlay: true,
+              isSelected: picsSelected.contains(index),
             ),
           ),
         ),
