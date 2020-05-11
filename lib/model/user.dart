@@ -45,9 +45,6 @@ class User {
   @HiveField(13)
   bool canTagToday;
 
-  @HiveField(14)
-  int swiperIndex;
-
   User({
     this.id,
     this.email,
@@ -63,6 +60,5 @@ class User {
     this.picsTaggedToday,
     this.lastTaggedPicDate,
     this.canTagToday,
-    this.swiperIndex,
   });
 }

@@ -70,7 +70,6 @@ void main() async {
       picsTaggedToday: 0,
       lastTaggedPicDate: DateTime.now(),
       canTagToday: true,
-      swiperIndex: 0,
     );
 
     userBox.add(user);
@@ -128,6 +127,7 @@ class PicPicsApp extends StatefulWidget {
 class _PicPicsAppState extends State<PicPicsApp> {
   @override
   Widget build(BuildContext context) {
+    print('#@#@#@#@##@ THIS IS MAIN #@#@#@#@');
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MultiProvider(

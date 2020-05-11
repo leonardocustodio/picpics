@@ -34,6 +34,8 @@ class DatabaseManager extends ChangeNotifier {
   static const maxNumOfSuggestions = 6;
   static const maxNumOfRecentTags = 5;
 
+  int swiperIndex = 0;
+
   bool hasGalleryPermission = true;
   bool noTaggedPhoto = false;
 //  bool editingTags = false;
@@ -111,19 +113,20 @@ class DatabaseManager extends ChangeNotifier {
     print('Setting user can tag today to: $canTag');
   }
 
-  int swiperIndex() {
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
-    return getUser.swiperIndex ?? 0;
-  }
-
-  void setSwiperIndex(int index) {
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
-    getUser.swiperIndex = index;
-    userBox.putAt(0, getUser);
-    print('Setting user swiper index to $index');
-  }
+//  int swiperIndex() {
+//    var userBox = Hive.box('user');
+//    User getUser = userBox.getAt(0);
+//    return getUser.swiperIndex ?? 0;
+//  }
+//
+//  void setSwiperIndex(int index) {
+//    var userBox = Hive.box('user');
+//    User getUser = userBox.getAt(0);
+//    getUser.swiperIndex = index;
+//    userBox.putAt(0, getUser);
+//  swiperIndex = index
+//    print('Setting user swiper index to $index');
+//  }
 
   String getTagName(String tagKey) {
     var tagsBox = Hive.box('tags');

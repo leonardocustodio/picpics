@@ -43,6 +43,8 @@ class PicScreen extends StatefulWidget {
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
   List<bool> picHasTag;
+  List<int> sliderIndex;
+  int sliderCount;
 
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
@@ -248,7 +250,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   void changePage(int index) {
     _sendCurrentTabToAnalytics(index);
-    print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex()}');
+    print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
 //    swiperController.move(DatabaseManager.instance.swiperIndex(), animation: false);
     DatabaseManager.instance.setCurrentTab(index);
 //    swiperController.index = DatabaseManager.instance.swiperIndex();
@@ -631,7 +633,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   Widget _buildPhotoSlider(BuildContext context, int index) {
     print('photo slides index: $index');
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    var data = pathProvider.orderedList[index];
+    int getPicInIndex = sliderIndex.indexOf(index);
+    print('Getting pic in index: $getPicInIndex');
+
+    var data = pathProvider.orderedList[getPicInIndex];
 
     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
 
@@ -741,6 +746,34 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     }
   }
 
+  void _sliderHasPics() {
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
+
+    if (itemCount > 0) {
+      sliderIndex = List(pathProvider.orderedList.length);
+      picHasTag = List(pathProvider.orderedList.length);
+      int x = 0;
+      int y = 0;
+      for (var item in pathProvider.orderedList) {
+        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
+        if (pic != null) {
+          if (pic.tags.length > 0) {
+            sliderIndex[x] = null;
+            picHasTag[x] = true;
+            x++;
+            continue;
+          }
+        }
+        picHasTag[x] = false;
+        sliderIndex[x] = y;
+        y++;
+        x++;
+      }
+      sliderCount = y;
+    }
+  }
+
   void _loadPhotos() async {
     if (PhotoProvider.instance.list.isEmpty) {
       await PhotoProvider.instance.refreshGalleryList();
@@ -748,7 +781,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
       PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
       await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
-      _checkTaggedPics();
+//      _checkTaggedPics();
+      _sliderHasPics();
       setState(() {});
     } else {
       print('Already loaded');
@@ -757,7 +791,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   void afterBuild() {
     print('#### AFTER BUILD!');
-    print('Trying to moe to page: ${DatabaseManager.instance.swiperIndex()}');
+    print('Trying to moe to page: ${DatabaseManager.instance.swiperIndex}');
 //    swiperController.index = DatabaseManager.instance.swiperIndex();
 //    swiperController.move(DatabaseManager.instance.swiperIndex(), animation: false);
   }
@@ -974,21 +1008,21 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           ),
                           Expanded(
                             child: CarouselSlider.builder(
-                              itemCount: pathProvider.orderedList.length,
+                              itemCount: sliderCount, // pathProvider.orderedList.length,
                               carouselController: carouselController,
                               itemBuilder: (BuildContext context, int index) {
                                 print('calling index $index');
                                 return _buildPhotoSlider(context, index);
                               },
                               options: CarouselOptions(
-                                initialPage: DatabaseManager.instance.swiperIndex(),
+                                initialPage: DatabaseManager.instance.swiperIndex,
                                 enableInfiniteScroll: true,
                                 height: double.maxFinite,
                                 viewportFraction: 0.95,
                                 enlargeCenterPage: false,
                                 autoPlayCurve: Curves.fastOutSlowIn,
                                 onPageChanged: (index, reason) async {
-                                  DatabaseManager.instance.setSwiperIndex(index);
+                                  DatabaseManager.instance.swiperIndex = index;
                                   picSwiper = index;
                                   print('picSwiper = $index');
                                   bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
