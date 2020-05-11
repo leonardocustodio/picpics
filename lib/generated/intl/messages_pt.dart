@@ -19,7 +19,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'pt';
 
-  static m0(url) => "Para organizar suas fotos, veja neste link: ${url}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'Nenhuma foto selecionada', one: '1 foto selecionada', other: '${howMany} fotos selecionadas')}";
+
+  static m1(url) => "Para organizar suas fotos, veja neste link: ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -57,6 +59,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ok" : MessageLookupByLibrary.simpleMessage("OK"),
     "organized_photos_description" : MessageLookupByLibrary.simpleMessage("Fotos que já foram taggeadas"),
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("Fotos organizadas"),
+    "photo_gallery_count" : m0,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("Fotos ainda não organizadas"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Galeria de fotos"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Local da foto"),
@@ -74,7 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("Sugestões"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Marque várias fotos de uma vez só"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("Dê uma olhada nesse aplicativo!"),
-    "take_a_look_description" : m0,
+    "take_a_look_description" : m1,
     "time" : MessageLookupByLibrary.simpleMessage("Horário"),
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("Trazemos diariamente um pacote para você organizer aos poucos sua biblioteca."),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Organize suas fotos adicionando tags, como \"família\", \"pets\", ou o que você quiser."),

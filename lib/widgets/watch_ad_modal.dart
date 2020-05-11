@@ -54,7 +54,7 @@ class WatchAdModal extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          "Watch add video to continue",
+                          "Watch ad video to continue",
                           style: TextStyle(
                             fontFamily: 'Lato',
                             color: kWhiteColor,

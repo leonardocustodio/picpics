@@ -42,6 +42,9 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
+  bool multiPicSelect = false;
+  List<int> picsSelected = [];
+
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
 
@@ -525,6 +528,78 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     );
   }
 
+  void showMultiTagSheet(BuildContext context) async {
+//    refreshInterface() {
+//      print('teste');
+//      setState(() {
+//        multiPicSelect = false;
+//      });
+//    }
+
+    showBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height / 3,
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      setState(() {
+                        multiPicSelect = false;
+                      });
+                    },
+                    child: Container(
+                      width: 80.0,
+                      child: Text(
+                        S.of(context).cancel,
+                        style: TextStyle(
+                          color: Color(0xff707070),
+                          fontSize: 16,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Spacer(),
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      setState(() {
+                        multiPicSelect = false;
+                      });
+                    },
+                    child: Container(
+                      width: 80.0,
+                      child: Text(
+                        S.of(context).ok,
+                        textAlign: TextAlign.end,
+                        style: TextStyle(
+                          color: Color(0xff707070),
+                          fontSize: 16,
+                          fontFamily: 'Lato',
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: Container(),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildGridView() {
     print('### Number of photos: ${PhotoProvider.instance.list[0].assetCount}');
 
@@ -535,7 +610,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-//    DatabaseManager.instance.checkTaggedPics();
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
@@ -572,53 +646,78 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         padding: const EdgeInsets.all(5.0),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(5.0),
-          child: CupertinoButton(
-            padding: const EdgeInsets.all(0),
-            onPressed: () {
-              if (!DatabaseManager.instance.canTagToday()) {
-                showWatchAdModal(context);
-                return;
+          child: GestureDetector(
+            onLongPress: () {
+              print('LongPress');
+              if (multiPicSelect == false) {
+                picsSelected.add(index);
+                setState(() {
+                  multiPicSelect = true;
+                });
               }
-
-              Ads.setScreen(HideAdScreen);
-              Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-              tagsEditingController.text = '';
-
-              if (picInfo == null) {
-                picInfo = Pic(
-                  data.id,
-                  data.createDateTime,
-                  data.latitude,
-                  data.longitude,
-                  null,
-                  null,
-                  null,
-                  null,
-                  [],
-                );
-              }
-
-              DatabaseManager.instance.tagsSuggestions(
-                tagsEditingController.text,
-                data.id,
-                excludeTags: picInfo.tags,
-                notify: false,
-              );
-
-              print('PicTags: ${picInfo.tags}');
-
-              selectedPhotoData = data;
-              selectedPhotoPicInfo = picInfo;
-              selectedPhotoIndex = index;
-
-              setState(() {
-                modalPhotoCard = true;
-              });
             },
-            child: ImageItem(
-              entity: data,
-              size: 150,
-              backgroundColor: Colors.grey[400],
+            child: CupertinoButton(
+              padding: const EdgeInsets.all(0),
+              onPressed: () {
+                if (multiPicSelect) {
+                  if (picsSelected.contains(index)) {
+                    setState(() {
+                      picsSelected.remove(index);
+                    });
+                  } else {
+                    setState(() {
+                      picsSelected.add(index);
+                    });
+                  }
+                  print('Pics Selected Length: ${picsSelected.length}');
+                  return;
+                }
+
+                if (!DatabaseManager.instance.canTagToday()) {
+                  showWatchAdModal(context);
+                  return;
+                }
+
+                Ads.setScreen(HideAdScreen);
+                Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+                tagsEditingController.text = '';
+
+                if (picInfo == null) {
+                  picInfo = Pic(
+                    data.id,
+                    data.createDateTime,
+                    data.latitude,
+                    data.longitude,
+                    null,
+                    null,
+                    null,
+                    null,
+                    [],
+                  );
+                }
+
+                DatabaseManager.instance.tagsSuggestions(
+                  tagsEditingController.text,
+                  data.id,
+                  excludeTags: picInfo.tags,
+                  notify: false,
+                );
+
+                print('PicTags: ${picInfo.tags}');
+
+                selectedPhotoData = data;
+                selectedPhotoPicInfo = picInfo;
+                selectedPhotoIndex = index;
+
+                setState(() {
+                  modalPhotoCard = true;
+                });
+              },
+              child: ImageItem(
+                entity: data,
+                size: 150,
+                backgroundColor: Colors.grey[400],
+              ),
             ),
           ),
         ),
@@ -889,7 +988,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     ),
                                   if (!hideSubtitleFirstTab)
                                     Text(
-                                      S.of(context).photo_gallery_description,
+                                      multiPicSelect
+                                          ? S.of(context).photo_gallery_count(picsSelected.length)
+                                          : S.of(context).photo_gallery_description,
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: Color(0xff606566),
@@ -1211,31 +1312,38 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               ],
             ),
           ),
-          bottomNavigationBar: BubbleBottomBar(
-            backgroundColor: kWhiteColor,
-            hasNotch: true,
-            opacity: 1.0,
-            currentIndex: Provider.of<DatabaseManager>(context).currentTab,
-            onTap: changePage,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(16)), //border radius doesn't work when the notch is enabled.
-            elevation: 8,
-            items: <BubbleBottomBarItem>[
-              BubbleBottomBarItem(
-                backgroundColor: kPinkColor,
-                icon: Image.asset('lib/images/tabgridred.png'),
-                activeIcon: Image.asset('lib/images/tabgridwhite.png'),
-              ),
-              BubbleBottomBarItem(
-                backgroundColor: kSecondaryColor,
-                icon: Image.asset('lib/images/tabpicpicsred.png'),
-                activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
-              ),
-              BubbleBottomBarItem(
-                backgroundColor: kPrimaryColor,
-                icon: Image.asset('lib/images/tabtaggedblue.png'),
-                activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
-              ),
-            ],
+          bottomNavigationBar: Container(
+            constraints: BoxConstraints(
+              maxHeight: multiPicSelect ? 0.0 : 100.0,
+            ),
+            child: BubbleBottomBar(
+              backgroundColor: kWhiteColor,
+              hasNotch: true,
+              opacity: 1.0,
+              currentIndex: Provider.of<DatabaseManager>(context).currentTab,
+              onTap: changePage,
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(16),
+              ), //border radius doesn't work when the notch is enabled.
+              elevation: 8,
+              items: <BubbleBottomBarItem>[
+                BubbleBottomBarItem(
+                  backgroundColor: kPinkColor,
+                  icon: Image.asset('lib/images/tabgridred.png'),
+                  activeIcon: Image.asset('lib/images/tabgridwhite.png'),
+                ),
+                BubbleBottomBarItem(
+                  backgroundColor: kSecondaryColor,
+                  icon: Image.asset('lib/images/tabpicpicsred.png'),
+                  activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
+                ),
+                BubbleBottomBarItem(
+                  backgroundColor: kPrimaryColor,
+                  icon: Image.asset('lib/images/tabtaggedblue.png'),
+                  activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
+                ),
+              ],
+            ),
           ),
         ),
         if (modalPhotoCard)

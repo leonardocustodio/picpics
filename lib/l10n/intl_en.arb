@@ -29,6 +29,7 @@
 
   "photo_gallery_title": "Photo Gallery",
   "photo_gallery_description": "Photos not yet organized",
+  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
 
   "organized_photos_title": "Organized Photos",
   "organized_photos_description": "Photos that have already been tagged",

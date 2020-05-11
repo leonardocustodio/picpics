@@ -234,6 +234,18 @@ class S {
     );
   }
 
+  String photo_gallery_count(num howMany) {
+    return Intl.plural(
+      howMany,
+      zero: 'No photos selected',
+      one: '1 photo selected',
+      other: '$howMany photos selected',
+      name: 'photo_gallery_count',
+      desc: '',
+      args: [howMany],
+    );
+  }
+
   String get organized_photos_title {
     return Intl.message(
       'Organized Photos',
