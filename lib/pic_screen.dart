@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/components/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
@@ -42,7 +43,9 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
+  BuildContext multiPicContext;
   bool multiPicSelect = false;
+  bool showingMultiTagSheet = false;
   List<int> picsSelected = [];
 
   ScrollController scrollControllerFirstTab;
@@ -86,6 +89,32 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   void changeIndex() {
     print('teste');
+  }
+
+  void trashPics() async {
+    print('trashing selected pics....');
+
+    List<String> entitiesIds = [];
+    List<AssetEntity> entities = [];
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+
+    for (var index in picsSelected) {
+      AssetEntity entity = pathProvider.orderedList[index];
+      entitiesIds.add(entity.id);
+      entities.add(entity);
+    }
+
+    final List<String> result = await PhotoManager.editor.deleteWithIds(entitiesIds);
+    if (result.isNotEmpty) {
+      for (AssetEntity entity in entities) {
+        DatabaseManager.instance.deletedPic(entity);
+      }
+
+      picsSelected = [];
+      setState(() {
+        multiPicSelect = false;
+      });
+    }
   }
 
   void trashPic(AssetEntity entity) async {
@@ -248,6 +277,21 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   void changePage(int index) {
+    if (multiPicSelect) {
+      if (index == 0) {
+        picsSelected = [];
+        setState(() {
+          multiPicSelect = false;
+        });
+      } else if (index == 1) {
+        showMultiTagSheet();
+      } else {
+        trashPics();
+      }
+
+      return;
+    }
+
     _sendCurrentTabToAnalytics(index);
     print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
 //    swiperController.move(DatabaseManager.instance.swiperIndex(), animation: false);
@@ -536,7 +580,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     );
   }
 
-  void showMultiTagSheet(BuildContext context) async {
+  void showMultiTagSheet() async {
 //    refreshInterface() {
 //      print('teste');
 //      setState(() {
@@ -544,62 +588,173 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //      });
 //    }
 
+    setState(() {
+      showingMultiTagSheet = true;
+    });
+
     showBottomSheet(
-      context: context,
+      context: multiPicContext,
       builder: (BuildContext builder) {
         return Container(
-          height: MediaQuery.of(context).copyWith().size.height / 3,
+          height: MediaQuery.of(multiPicContext).copyWith().size.height / 3,
           child: Column(
             children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  CupertinoButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      setState(() {
-                        multiPicSelect = false;
-                      });
-                    },
-                    child: Container(
-                      width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        style: TextStyle(
-                          color: Color(0xff707070),
-                          fontSize: 16,
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w700,
+              Container(
+                color: Color(0xF1F3F5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    CupertinoButton(
+                      onPressed: () {
+                        Navigator.pop(multiPicContext);
+                        setState(() {
+                          showingMultiTagSheet = false;
+                        });
+                      },
+                      child: Container(
+                        width: 80.0,
+                        child: Text(
+                          S.of(multiPicContext).cancel,
+                          style: TextStyle(
+                            color: Color(0xff707070),
+                            fontSize: 16,
+                            fontFamily: 'Lato',
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Spacer(),
-                  CupertinoButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      setState(() {
-                        multiPicSelect = false;
-                      });
-                    },
-                    child: Container(
-                      width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textAlign: TextAlign.end,
-                        style: TextStyle(
-                          color: Color(0xff707070),
-                          fontSize: 16,
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w700,
+                    Spacer(),
+                    CupertinoButton(
+                      onPressed: () {
+                        Navigator.pop(multiPicContext);
+                        setState(() {
+                          showingMultiTagSheet = false;
+                        });
+                      },
+                      child: Container(
+                        width: 80.0,
+                        child: Text(
+                          S.of(multiPicContext).ok,
+                          textAlign: TextAlign.end,
+                          style: TextStyle(
+                            color: Color(0xff707070),
+                            fontSize: 16,
+                            fontFamily: 'Lato',
+                            fontWeight: FontWeight.w700,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               Expanded(
-                child: Container(),
+                child: Container(
+                  padding: const EdgeInsets.all(24.0),
+                  color: Color(0xFFEFEFF4).withOpacity(0.94),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      TagsList(
+                        tagsKeys: ['oi'], //picInfo.tags,
+                        addTagField: true,
+                        textEditingController: tagsEditingController,
+                        showEditTagModal: showEditTagModal,
+                        onTap: (tagName) {
+                          print('do nothing');
+                        },
+                        onDoubleTap: () {
+//                        DatabaseManager.instance.removeTagFromPic(
+//                          tagKey: DatabaseManager.instance.selectedTagKey,
+//                          photoId: picInfo.photoId,
+//                        );
+                        },
+                        onChanged: (text) {
+//                        print('photo Index: $index - photo Swipe : $picSwiper');
+//                        if (index == picSwiper || picSwiper == -1) {
+//                          print('calling tag suggestions');
+//                          DatabaseManager.instance.tagsSuggestions(
+//                            text,
+//                            picInfo.photoId,
+//                            excludeTags: picInfo.tags,
+//                          );
+//                        } else {
+//                          print('skipping');
+//                        }
+                        },
+                        onSubmitted: (text) {
+//                        print('return');
+//                        if (text != '') {
+//                          print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+//                          AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//                          DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+//                          DatabaseManager.instance.addTag(
+//                            tagName: text,
+//                            photoId: data.id,
+//                          );
+//                          tagsEditingController.clear();
+//
+//                          if (picSwiper != -1) {
+//                            // Refatorar essa gambi dps
+//                            var indexPicBefore = picSwiper - 1;
+//                            var indexPicAfter = picSwiper + 1;
+//
+//                            AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//                            if (indexPicBefore < 0) {
+//                              indexPicBefore = pathProvider.orderedList.length - 1;
+//                            }
+//                            if (indexPicAfter == pathProvider.orderedList.length) {
+//                              indexPicAfter = 0;
+//                            }
+//
+//                            Pic picBefore = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicBefore].id);
+//                            Pic picAfter = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicAfter].id);
+//
+//                            DatabaseManager.instance.tagsSuggestions(
+//                              '',
+//                              picBefore.photoId,
+//                              excludeTags: picBefore.tags,
+//                            );
+//                            DatabaseManager.instance.tagsSuggestions(
+//                              '',
+//                              picAfter.photoId,
+//                              excludeTags: picAfter.tags,
+//                            );
+//                            ////////////////////////
+//                          } else {
+//                            DatabaseManager.instance.tagsSuggestions(
+//                              '',
+//                              data.id,
+//                              excludeTags: picInfo.tags,
+//                            );
+//                          }
+//                        }
+                        },
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8.0),
+                        child: TagsList(
+                          title: S.of(context).suggestions,
+                          tagsKeys: ['oi', 'tchau'], //DatabaseManager.instance.suggestionTags[picInfo.photoId],
+                          tagStyle: TagStyle.GrayOutlined,
+                          showEditTagModal: showEditTagModal,
+                          onTap: (tagName) {
+//                          AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//                          DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+//                          DatabaseManager.instance.addTag(
+//                            tagName: tagName,
+//                            photoId: picInfo.photoId,
+//                          );
+                          },
+                          onDoubleTap: () {
+                            print('do nothing');
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ],
           ),
@@ -657,6 +812,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             print('LongPress');
             if (multiPicSelect == false) {
               picsSelected.add(index);
+              multiPicContext = context;
               setState(() {
                 multiPicSelect = true;
               });
@@ -1157,9 +1313,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         ),
                                         CupertinoButton(
                                           padding: const EdgeInsets.all(0),
-                                          onPressed: () {
-                                            changePage(1);
-                                          },
+                                          onPressed: () => changePage(1),
                                           child: Container(
                                             width: 201.0,
                                             height: 44.0,
@@ -1321,7 +1475,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           ),
           bottomNavigationBar: Container(
             constraints: BoxConstraints(
-              maxHeight: multiPicSelect ? 0.0 : 100.0,
+              maxHeight: showingMultiTagSheet ? 0 : 100.0,
             ),
             child: BubbleBottomBar(
               backgroundColor: kWhiteColor,
@@ -1331,25 +1485,40 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               onTap: changePage,
               borderRadius: BorderRadius.vertical(
                 top: Radius.circular(16),
-              ), //border radius doesn't work when the notch is enabled.
+              ),
               elevation: 8,
-              items: <BubbleBottomBarItem>[
-                BubbleBottomBarItem(
-                  backgroundColor: kPinkColor,
-                  icon: Image.asset('lib/images/tabgridred.png'),
-                  activeIcon: Image.asset('lib/images/tabgridwhite.png'),
-                ),
-                BubbleBottomBarItem(
-                  backgroundColor: kSecondaryColor,
-                  icon: Image.asset('lib/images/tabpicpicsred.png'),
-                  activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
-                ),
-                BubbleBottomBarItem(
-                  backgroundColor: kPrimaryColor,
-                  icon: Image.asset('lib/images/tabtaggedblue.png'),
-                  activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
-                ),
-              ],
+              items: multiPicSelect
+                  ? <BubbleBottomBarItem>[
+                      BubbleBottomBarItem(
+                        backgroundColor: kWhiteColor,
+                        icon: Image.asset('lib/images/cancelbarbutton.png'),
+                      ),
+                      BubbleBottomBarItem(
+                        backgroundColor: kWhiteColor,
+                        icon: Image.asset('lib/images/picbarbutton.png'),
+                      ),
+                      BubbleBottomBarItem(
+                        backgroundColor: kWhiteColor,
+                        icon: Image.asset('lib/images/trashbarbutton.png'),
+                      )
+                    ]
+                  : <BubbleBottomBarItem>[
+                      BubbleBottomBarItem(
+                        backgroundColor: kPinkColor,
+                        icon: Image.asset('lib/images/tabgridred.png'),
+                        activeIcon: Image.asset('lib/images/tabgridwhite.png'),
+                      ),
+                      BubbleBottomBarItem(
+                        backgroundColor: kSecondaryColor,
+                        icon: Image.asset('lib/images/tabpicpicsred.png'),
+                        activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
+                      ),
+                      BubbleBottomBarItem(
+                        backgroundColor: kPrimaryColor,
+                        icon: Image.asset('lib/images/tabtaggedblue.png'),
+                        activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
+                      )
+                    ],
             ),
           ),
         ),
