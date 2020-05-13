@@ -44,7 +44,7 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
-  ExpandableController expandableController = ExpandableController(initialExpanded: true);
+  ExpandableController expandableController = ExpandableController(initialExpanded: false);
   BuildContext multiPicContext;
   bool multiPicSelect = false;
   bool showingMultiTagSheet = false;
@@ -289,6 +289,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //        showMultiTagSheet();
         setState(() {
           showingMultiTagSheet = true;
+        });
+
+        Future.delayed(Duration(milliseconds: 200), () {
+          setState(() {
+            expandableController.expanded = true;
+          });
         });
       } else {
         trashPics();
