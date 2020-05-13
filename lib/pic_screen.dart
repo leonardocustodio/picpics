@@ -283,6 +283,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
+      Pic getPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
       String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
       alertInputController.text = tagName;
 
@@ -295,6 +296,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             alertInputController: alertInputController,
             onPressedDelete: () {
               DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
+              DatabaseManager.instance.tagsSuggestions(
+                tagsEditingController.text,
+                DatabaseManager.instance.selectedPhoto.id,
+                excludeTags: getPic.tags,
+                notify: false,
+              );
               Navigator.of(context).pop();
             },
             onPressedOk: () {
@@ -392,7 +399,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                     onPressed: () {
                       Ads.setScreen(HideAdScreen);
                       Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-//                      int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                      int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
                       tagsEditingController.text = '';
 
                       DatabaseManager.instance.tagsSuggestions(
@@ -406,7 +414,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
                       selectedPhotoData = data;
                       selectedPhotoPicInfo = picInfo;
-//                      selectedPhotoIndex = indexOfPic;
+                      selectedPhotoIndex = indexOfPic;
 
                       setState(() {
                         modalPhotoCard = true;
