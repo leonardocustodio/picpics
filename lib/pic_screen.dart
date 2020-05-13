@@ -34,6 +34,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:expandable/expandable.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -43,6 +44,7 @@ class PicScreen extends StatefulWidget {
 }
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
+  ExpandableController expandableController = ExpandableController(initialExpanded: true);
   BuildContext multiPicContext;
   bool multiPicSelect = false;
   bool showingMultiTagSheet = false;
@@ -284,7 +286,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           multiPicSelect = false;
         });
       } else if (index == 1) {
-        showMultiTagSheet();
+//        showMultiTagSheet();
+        setState(() {
+          showingMultiTagSheet = true;
+        });
       } else {
         trashPics();
       }
@@ -592,175 +597,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       showingMultiTagSheet = true;
     });
 
-    showBottomSheet(
-      context: multiPicContext,
-      builder: (BuildContext builder) {
-        return Container(
-          height: MediaQuery.of(multiPicContext).copyWith().size.height / 3,
-          child: Column(
-            children: <Widget>[
-              Container(
-                color: Color(0xF1F3F5),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    CupertinoButton(
-                      onPressed: () {
-                        Navigator.pop(multiPicContext);
-                        setState(() {
-                          showingMultiTagSheet = false;
-                        });
-                      },
-                      child: Container(
-                        width: 80.0,
-                        child: Text(
-                          S.of(multiPicContext).cancel,
-                          style: TextStyle(
-                            color: Color(0xff707070),
-                            fontSize: 16,
-                            fontFamily: 'Lato',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Spacer(),
-                    CupertinoButton(
-                      onPressed: () {
-                        Navigator.pop(multiPicContext);
-                        setState(() {
-                          showingMultiTagSheet = false;
-                        });
-                      },
-                      child: Container(
-                        width: 80.0,
-                        child: Text(
-                          S.of(multiPicContext).ok,
-                          textAlign: TextAlign.end,
-                          style: TextStyle(
-                            color: Color(0xff707070),
-                            fontSize: 16,
-                            fontFamily: 'Lato',
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(24.0),
-                  color: Color(0xFFEFEFF4).withOpacity(0.94),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      TagsList(
-                        tagsKeys: ['oi'], //picInfo.tags,
-                        addTagField: true,
-                        textEditingController: tagsEditingController,
-                        showEditTagModal: showEditTagModal,
-                        onTap: (tagName) {
-                          print('do nothing');
-                        },
-                        onDoubleTap: () {
-//                        DatabaseManager.instance.removeTagFromPic(
-//                          tagKey: DatabaseManager.instance.selectedTagKey,
-//                          photoId: picInfo.photoId,
-//                        );
-                        },
-                        onChanged: (text) {
-//                        print('photo Index: $index - photo Swipe : $picSwiper');
-//                        if (index == picSwiper || picSwiper == -1) {
-//                          print('calling tag suggestions');
-//                          DatabaseManager.instance.tagsSuggestions(
-//                            text,
-//                            picInfo.photoId,
-//                            excludeTags: picInfo.tags,
-//                          );
-//                        } else {
-//                          print('skipping');
-//                        }
-                        },
-                        onSubmitted: (text) {
-//                        print('return');
-//                        if (text != '') {
-//                          print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
-//                          AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                          DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
-//                          DatabaseManager.instance.addTag(
-//                            tagName: text,
-//                            photoId: data.id,
-//                          );
-//                          tagsEditingController.clear();
-//
-//                          if (picSwiper != -1) {
-//                            // Refatorar essa gambi dps
-//                            var indexPicBefore = picSwiper - 1;
-//                            var indexPicAfter = picSwiper + 1;
-//
-//                            AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                            if (indexPicBefore < 0) {
-//                              indexPicBefore = pathProvider.orderedList.length - 1;
-//                            }
-//                            if (indexPicAfter == pathProvider.orderedList.length) {
-//                              indexPicAfter = 0;
-//                            }
-//
-//                            Pic picBefore = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicBefore].id);
-//                            Pic picAfter = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicAfter].id);
-//
-//                            DatabaseManager.instance.tagsSuggestions(
-//                              '',
-//                              picBefore.photoId,
-//                              excludeTags: picBefore.tags,
-//                            );
-//                            DatabaseManager.instance.tagsSuggestions(
-//                              '',
-//                              picAfter.photoId,
-//                              excludeTags: picAfter.tags,
-//                            );
-//                            ////////////////////////
-//                          } else {
-//                            DatabaseManager.instance.tagsSuggestions(
-//                              '',
-//                              data.id,
-//                              excludeTags: picInfo.tags,
-//                            );
-//                          }
-//                        }
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: TagsList(
-                          title: S.of(context).suggestions,
-                          tagsKeys: ['oi', 'tchau'], //DatabaseManager.instance.suggestionTags[picInfo.photoId],
-                          tagStyle: TagStyle.GrayOutlined,
-                          showEditTagModal: showEditTagModal,
-                          onTap: (tagName) {
-//                          AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                          DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
-//                          DatabaseManager.instance.addTag(
-//                            tagName: tagName,
-//                            photoId: picInfo.photoId,
-//                          );
-                          },
-                          onDoubleTap: () {
-                            print('do nothing');
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+//    showBottomSheet(
+//      context: multiPicContext,
+//      builder: (BuildContext builder) {
+//        return Container(
+//          height: MediaQuery.of(multiPicContext).copyWith().size.height / 3,
+//          child:
+//        );
+//      },
+//    );
   }
 
   Widget _buildGridView() {
@@ -1473,54 +1318,232 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               ],
             ),
           ),
-          bottomNavigationBar: Container(
-            constraints: BoxConstraints(
-              maxHeight: showingMultiTagSheet ? 0 : 100.0,
-            ),
-            child: BubbleBottomBar(
-              backgroundColor: kWhiteColor,
-              hasNotch: true,
-              opacity: 1.0,
-              currentIndex: Provider.of<DatabaseManager>(context).currentTab,
-              onTap: changePage,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
-              elevation: 8,
-              items: multiPicSelect
-                  ? <BubbleBottomBarItem>[
-                      BubbleBottomBarItem(
-                        backgroundColor: kWhiteColor,
-                        icon: Image.asset('lib/images/cancelbarbutton.png'),
-                      ),
-                      BubbleBottomBarItem(
-                        backgroundColor: kWhiteColor,
-                        icon: Image.asset('lib/images/picbarbutton.png'),
-                      ),
-                      BubbleBottomBarItem(
-                        backgroundColor: kWhiteColor,
-                        icon: Image.asset('lib/images/trashbarbutton.png'),
-                      )
-                    ]
-                  : <BubbleBottomBarItem>[
-                      BubbleBottomBarItem(
-                        backgroundColor: kPinkColor,
-                        icon: Image.asset('lib/images/tabgridred.png'),
-                        activeIcon: Image.asset('lib/images/tabgridwhite.png'),
-                      ),
-                      BubbleBottomBarItem(
-                        backgroundColor: kSecondaryColor,
-                        icon: Image.asset('lib/images/tabpicpicsred.png'),
-                        activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
-                      ),
-                      BubbleBottomBarItem(
-                        backgroundColor: kPrimaryColor,
-                        icon: Image.asset('lib/images/tabtaggedblue.png'),
-                        activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
-                      )
-                    ],
-            ),
-          ),
+          bottomNavigationBar: showingMultiTagSheet
+              ? ExpandableNotifier(
+                  child: Container(
+                    color: Color(0xF1F3F5),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () {
+                            setState(() {
+                              expandableController.expanded = !expandableController.expanded;
+                            });
+                          },
+                          child: SafeArea(
+                            bottom: !expandableController.expanded,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                CupertinoButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      showingMultiTagSheet = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 80.0,
+                                    child: Text(
+                                      S.of(multiPicContext).cancel,
+                                      style: TextStyle(
+                                        color: Color(0xff707070),
+                                        fontSize: 16,
+                                        fontFamily: 'Lato',
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                CupertinoButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      showingMultiTagSheet = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    width: 80.0,
+                                    child: Text(
+                                      S.of(multiPicContext).ok,
+                                      textAlign: TextAlign.end,
+                                      style: TextStyle(
+                                        color: Color(0xff707070),
+                                        fontSize: 16,
+                                        fontFamily: 'Lato',
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Expandable(
+                          controller: expandableController,
+                          expanded: Container(
+                            padding: const EdgeInsets.all(24.0),
+                            color: Color(0xFFEFEFF4).withOpacity(0.94),
+                            child: SafeArea(
+                              bottom: true,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  TagsList(
+                                    tagsKeys: ['oi'], //picInfo.tags,
+                                    addTagField: true,
+                                    textEditingController: tagsEditingController,
+                                    showEditTagModal: showEditTagModal,
+                                    onTap: (tagName) {
+                                      print('do nothing');
+                                    },
+                                    onDoubleTap: () {
+//                        DatabaseManager.instance.removeTagFromPic(
+//                          tagKey: DatabaseManager.instance.selectedTagKey,
+//                          photoId: picInfo.photoId,
+//                        );
+                                    },
+                                    onChanged: (text) {
+//                        print('photo Index: $index - photo Swipe : $picSwiper');
+//                        if (index == picSwiper || picSwiper == -1) {
+//                          print('calling tag suggestions');
+//                          DatabaseManager.instance.tagsSuggestions(
+//                            text,
+//                            picInfo.photoId,
+//                            excludeTags: picInfo.tags,
+//                          );
+//                        } else {
+//                          print('skipping');
+//                        }
+                                    },
+                                    onSubmitted: (text) {
+//                        print('return');
+//                        if (text != '') {
+//                          print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+//                          AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//                          DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+//                          DatabaseManager.instance.addTag(
+//                            tagName: text,
+//                            photoId: data.id,
+//                          );
+//                          tagsEditingController.clear();
+//
+//                          if (picSwiper != -1) {
+//                            // Refatorar essa gambi dps
+//                            var indexPicBefore = picSwiper - 1;
+//                            var indexPicAfter = picSwiper + 1;
+//
+//                            AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//                            if (indexPicBefore < 0) {
+//                              indexPicBefore = pathProvider.orderedList.length - 1;
+//                            }
+//                            if (indexPicAfter == pathProvider.orderedList.length) {
+//                              indexPicAfter = 0;
+//                            }
+//
+//                            Pic picBefore = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicBefore].id);
+//                            Pic picAfter = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicAfter].id);
+//
+//                            DatabaseManager.instance.tagsSuggestions(
+//                              '',
+//                              picBefore.photoId,
+//                              excludeTags: picBefore.tags,
+//                            );
+//                            DatabaseManager.instance.tagsSuggestions(
+//                              '',
+//                              picAfter.photoId,
+//                              excludeTags: picAfter.tags,
+//                            );
+//                            ////////////////////////
+//                          } else {
+//                            DatabaseManager.instance.tagsSuggestions(
+//                              '',
+//                              data.id,
+//                              excludeTags: picInfo.tags,
+//                            );
+//                          }
+//                        }
+                                    },
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: TagsList(
+                                      title: S.of(context).suggestions,
+                                      tagsKeys: ['oi', 'tchau'], //DatabaseManager.instance.suggestionTags[picInfo.photoId],
+                                      tagStyle: TagStyle.GrayOutlined,
+                                      showEditTagModal: showEditTagModal,
+                                      onTap: (tagName) {
+//                          AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//                          DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+//                          DatabaseManager.instance.addTag(
+//                            tagName: tagName,
+//                            photoId: picInfo.photoId,
+//                          );
+                                      },
+                                      onDoubleTap: () {
+                                        print('do nothing');
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Container(
+                  constraints: BoxConstraints(
+                    maxHeight: 100.0,
+                  ),
+                  child: BubbleBottomBar(
+                    backgroundColor: kWhiteColor,
+                    hasNotch: true,
+                    opacity: 1.0,
+                    currentIndex: Provider.of<DatabaseManager>(context).currentTab,
+                    onTap: changePage,
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(16),
+                    ),
+                    elevation: 8,
+                    items: multiPicSelect
+                        ? <BubbleBottomBarItem>[
+                            BubbleBottomBarItem(
+                              backgroundColor: kWhiteColor,
+                              icon: Image.asset('lib/images/cancelbarbutton.png'),
+                            ),
+                            BubbleBottomBarItem(
+                              backgroundColor: kWhiteColor,
+                              icon: Image.asset('lib/images/picbarbutton.png'),
+                            ),
+                            BubbleBottomBarItem(
+                              backgroundColor: kWhiteColor,
+                              icon: Image.asset('lib/images/trashbarbutton.png'),
+                            )
+                          ]
+                        : <BubbleBottomBarItem>[
+                            BubbleBottomBarItem(
+                              backgroundColor: kPinkColor,
+                              icon: Image.asset('lib/images/tabgridred.png'),
+                              activeIcon: Image.asset('lib/images/tabgridwhite.png'),
+                            ),
+                            BubbleBottomBarItem(
+                              backgroundColor: kSecondaryColor,
+                              icon: Image.asset('lib/images/tabpicpicsred.png'),
+                              activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
+                            ),
+                            BubbleBottomBarItem(
+                              backgroundColor: kPrimaryColor,
+                              icon: Image.asset('lib/images/tabtaggedblue.png'),
+                              activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
+                            )
+                          ],
+                  ),
+                ),
         ),
         if (modalPhotoCard)
           Material(
