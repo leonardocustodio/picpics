@@ -585,29 +585,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     );
   }
 
-  void showMultiTagSheet() async {
-//    refreshInterface() {
-//      print('teste');
-//      setState(() {
-//        multiPicSelect = false;
-//      });
-//    }
-
-    setState(() {
-      showingMultiTagSheet = true;
-    });
-
-//    showBottomSheet(
-//      context: multiPicContext,
-//      builder: (BuildContext builder) {
-//        return Container(
-//          height: MediaQuery.of(multiPicContext).copyWith().size.height / 3,
-//          child:
-//        );
-//      },
-//    );
-  }
-
   Widget _buildGridView() {
     print('### Number of photos: ${PhotoProvider.instance.list[0].assetCount}');
 
