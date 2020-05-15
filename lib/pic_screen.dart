@@ -45,10 +45,13 @@ class PicScreen extends StatefulWidget {
 
 class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> {
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
+  ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
+
   BuildContext multiPicContext;
   bool multiPicSelect = false;
   bool showingMultiTagSheet = false;
   List<int> picsSelected = [];
+  List<String> multiPicTagKeys = [];
 
   ScrollController scrollControllerFirstTab;
   ScrollController scrollControllerThirdTab;
@@ -59,6 +62,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   SwiperController tutorialSwiperController = SwiperController();
 
   TextEditingController tagsEditingController = TextEditingController();
+
+  TextEditingController bottomTagsEditingController = TextEditingController();
 //  Map<String, List<String>> suggestions;
 
 //  FocusNode tagsFocusNode = FocusNode();
@@ -213,12 +218,24 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     DatabaseManager.instance.setCurrentTab(0, notify: false);
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
 
-//    KeyboardVisibility.onChange.listen((bool visible) {
-//      print('keyboard: $visible');
+    KeyboardVisibility.onChange.listen((bool visible) {
+      print('keyboard: $visible');
+
+      if (visible && showingMultiTagSheet) {
+        setState(() {
+          expandablePaddingController.expanded = true;
+        });
+      } else if (!visible && showingMultiTagSheet) {
+        setState(() {
+          expandablePaddingController.expanded = false;
+        });
+      }
+
 //      setState(() {
 //        isAdVisible = !visible;
+//        isKeyboardVisible = visible;
 //      });
-//    });
+    });
 
     _changeThrottle = Throttle(onCall: _onAssetChange);
     PhotoManager.addChangeCallback(_changeThrottle.call);
@@ -287,6 +304,14 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         });
       } else if (index == 1) {
 //        showMultiTagSheet();
+
+        // Verificar se multipic não existe antes
+        DatabaseManager.instance.tagsSuggestions(
+          bottomTagsEditingController.text,
+          'MULTIPIC',
+          // excludeTags: picInfo.tags,
+        );
+
         setState(() {
           showingMultiTagSheet = true;
         });
@@ -1375,31 +1400,32 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   TagsList(
-                                    tagsKeys: ['oi'], //picInfo.tags,
+                                    tagsKeys: multiPicTagKeys, //picInfo.tags,
                                     addTagField: true,
-                                    textEditingController: tagsEditingController,
+                                    textEditingController: bottomTagsEditingController,
                                     showEditTagModal: showEditTagModal,
                                     onTap: (tagName) {
                                       print('do nothing');
                                     },
                                     onDoubleTap: () {
-//                        DatabaseManager.instance.removeTagFromPic(
-//                          tagKey: DatabaseManager.instance.selectedTagKey,
-//                          photoId: picInfo.photoId,
-//                        );
+                                      if (multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+                                        setState(() {
+                                          multiPicTagKeys.remove(DatabaseManager.instance.selectedTagKey);
+                                        });
+                                        DatabaseManager.instance.tagsSuggestions(
+                                          bottomTagsEditingController.text,
+                                          'MULTIPIC',
+                                          excludeTags: multiPicTagKeys,
+                                        );
+                                      }
                                     },
                                     onChanged: (text) {
-//                        print('photo Index: $index - photo Swipe : $picSwiper');
-//                        if (index == picSwiper || picSwiper == -1) {
-//                          print('calling tag suggestions');
-//                          DatabaseManager.instance.tagsSuggestions(
-//                            text,
-//                            picInfo.photoId,
-//                            excludeTags: picInfo.tags,
-//                          );
-//                        } else {
-//                          print('skipping');
-//                        }
+                                      print('calling tag suggestions');
+                                      DatabaseManager.instance.tagsSuggestions(
+                                        text,
+                                        'MULTIPIC',
+                                        excludeTags: multiPicTagKeys,
+                                      );
                                     },
                                     onSubmitted: (text) {
 //                        print('return');
@@ -1413,57 +1439,26 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //                          );
 //                          tagsEditingController.clear();
 //
-//                          if (picSwiper != -1) {
-//                            // Refatorar essa gambi dps
-//                            var indexPicBefore = picSwiper - 1;
-//                            var indexPicAfter = picSwiper + 1;
-//
-//                            AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                            if (indexPicBefore < 0) {
-//                              indexPicBefore = pathProvider.orderedList.length - 1;
-//                            }
-//                            if (indexPicAfter == pathProvider.orderedList.length) {
-//                              indexPicAfter = 0;
-//                            }
-//
-//                            Pic picBefore = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicBefore].id);
-//                            Pic picAfter = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicAfter].id);
-//
-//                            DatabaseManager.instance.tagsSuggestions(
-//                              '',
-//                              picBefore.photoId,
-//                              excludeTags: picBefore.tags,
-//                            );
-//                            DatabaseManager.instance.tagsSuggestions(
-//                              '',
-//                              picAfter.photoId,
-//                              excludeTags: picAfter.tags,
-//                            );
-//                            ////////////////////////
-//                          } else {
-//                            DatabaseManager.instance.tagsSuggestions(
-//                              '',
-//                              data.id,
-//                              excludeTags: picInfo.tags,
-//                            );
-//                          }
-//                        }
                                     },
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     child: TagsList(
                                       title: S.of(context).suggestions,
-                                      tagsKeys: ['oi', 'tchau'], //DatabaseManager.instance.suggestionTags[picInfo.photoId],
+                                      tagsKeys: DatabaseManager.instance.suggestionTags['MULTIPIC'],
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagName) {
-//                          AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                          DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
-//                          DatabaseManager.instance.addTag(
-//                            tagName: tagName,
-//                            photoId: picInfo.photoId,
-//                          );
+                                        bottomTagsEditingController.clear();
+                                        String tagKey = DatabaseManager.instance.encryptTag(tagName);
+                                        if (!multiPicTagKeys.contains(tagKey)) {
+                                          multiPicTagKeys.add(tagKey);
+                                          DatabaseManager.instance.tagsSuggestions(
+                                            '',
+                                            'MULTIPIC',
+                                            excludeTags: multiPicTagKeys,
+                                          );
+                                        }
                                       },
                                       onDoubleTap: () {
                                         print('do nothing');
@@ -1473,6 +1468,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 ],
                               ),
                             ),
+                          ),
+                        ),
+                        Expandable(
+                          controller: expandablePaddingController,
+                          expanded: Container(
+                            height: MediaQuery.of(context).viewInsets.bottom,
                           ),
                         ),
                       ],
