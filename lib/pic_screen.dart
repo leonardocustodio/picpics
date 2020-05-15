@@ -1400,47 +1400,52 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   TagsList(
-                                    tagsKeys: multiPicTagKeys, //picInfo.tags,
-                                    addTagField: true,
-                                    textEditingController: bottomTagsEditingController,
-                                    showEditTagModal: showEditTagModal,
-                                    onTap: (tagName) {
-                                      print('do nothing');
-                                    },
-                                    onDoubleTap: () {
-                                      if (multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-                                        setState(() {
-                                          multiPicTagKeys.remove(DatabaseManager.instance.selectedTagKey);
-                                        });
+                                      tagsKeys: multiPicTagKeys, //picInfo.tags,
+                                      addTagField: true,
+                                      textEditingController: bottomTagsEditingController,
+                                      showEditTagModal: showEditTagModal,
+                                      onTap: (tagName) {
+                                        print('do nothing');
+                                      },
+                                      onDoubleTap: () {
+                                        if (multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+                                          setState(() {
+                                            multiPicTagKeys.remove(DatabaseManager.instance.selectedTagKey);
+                                          });
+                                          DatabaseManager.instance.tagsSuggestions(
+                                            bottomTagsEditingController.text,
+                                            'MULTIPIC',
+                                            excludeTags: multiPicTagKeys,
+                                          );
+                                        }
+                                      },
+                                      onChanged: (text) {
+                                        print('calling tag suggestions');
                                         DatabaseManager.instance.tagsSuggestions(
-                                          bottomTagsEditingController.text,
+                                          text,
                                           'MULTIPIC',
                                           excludeTags: multiPicTagKeys,
                                         );
-                                      }
-                                    },
-                                    onChanged: (text) {
-                                      print('calling tag suggestions');
-                                      DatabaseManager.instance.tagsSuggestions(
-                                        text,
-                                        'MULTIPIC',
-                                        excludeTags: multiPicTagKeys,
-                                      );
-                                    },
-                                    onSubmitted: (text) {
-//                        print('return');
-//                        if (text != '') {
-//                          print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
-//                          AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                          DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
-//                          DatabaseManager.instance.addTag(
-//                            tagName: text,
-//                            photoId: data.id,
-//                          );
-//                          tagsEditingController.clear();
-//
-                                    },
-                                  ),
+                                      },
+                                      onSubmitted: (text) {
+                                        print('return');
+                                        if (text != '') {
+                                          bottomTagsEditingController.clear();
+                                          String tagKey = DatabaseManager.instance.encryptTag(text);
+                                          if (!multiPicTagKeys.contains(tagKey)) {
+                                            if (DatabaseManager.instance.getTagName(tagKey) == null) {
+                                              print('tag does not exist! creating it!');
+                                              DatabaseManager.instance.createTag(text);
+                                            }
+                                            multiPicTagKeys.add(tagKey);
+                                            DatabaseManager.instance.tagsSuggestions(
+                                              '',
+                                              'MULTIPIC',
+                                              excludeTags: multiPicTagKeys,
+                                            );
+                                          }
+                                        }
+                                      }),
                                   Padding(
                                     padding: const EdgeInsets.only(top: 8.0),
                                     child: TagsList(

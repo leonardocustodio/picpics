@@ -142,7 +142,7 @@ class DatabaseManager extends ChangeNotifier {
       return getTag.name;
     } else {
       print('### ERROR ### Returning key');
-      return tagKey;
+      return null;
     }
   }
 
@@ -782,6 +782,24 @@ class DatabaseManager extends ChangeNotifier {
 
     print('Decrypted tag: $decrypted');
     return decrypted;
+  }
+
+  void createTag(String tagName) {
+    var tagsBox = Hive.box('tags');
+    print(tagsBox.keys);
+
+    String tagKey = encryptTag(tagName);
+    print('Adding tag: $tagName');
+
+    if (tagsBox.containsKey(tagKey)) {
+      print('user already has this tag');
+      return;
+    }
+
+    print('adding tag to database...');
+    tagsBox.put(tagKey, Tag(tagName, []));
+    addTagToRecent(tagKey: tagKey);
+    notifyListeners();
   }
 
   void addTag({String tagName, String photoId}) {
