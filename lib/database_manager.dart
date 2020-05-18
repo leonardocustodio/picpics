@@ -703,7 +703,7 @@ class DatabaseManager extends ChangeNotifier {
     print('final tags in recent: ${getUser.recentTags}');
   }
 
-  void addTagToPic({String tagKey, String photoId}) {
+  void addTagToPic({String tagKey, String photoId, List<AssetEntity> entities}) {
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
@@ -731,23 +731,53 @@ class DatabaseManager extends ChangeNotifier {
 
     print('this picture is not in db, adding it...');
     print('Photo Id: $photoId');
-    print('Pic Info Localization: ${selectedPhoto.latitude} - ${selectedPhoto.longitude} - ${selectedPhoto.createDateTime}');
 
-    Pic pic = Pic(
-      photoId,
-      selectedPhoto.createDateTime,
-      selectedPhoto.latitude,
-      selectedPhoto.longitude,
-      null,
-      null,
-      null,
-      null,
-      [tagKey],
-    );
+    Pic pic;
 
+    if (selectedPhoto != null) {
+      print('Pic Info Localization: ${selectedPhoto.latitude} - ${selectedPhoto.longitude} - ${selectedPhoto.createDateTime}');
+
+      pic = Pic(
+        photoId,
+        selectedPhoto.createDateTime,
+        selectedPhoto.latitude,
+        selectedPhoto.longitude,
+        null,
+        null,
+        null,
+        null,
+        [tagKey],
+      );
+    } else {
+      AssetEntity entity = entities.firstWhere((element) => element.id == photoId, orElse: () => null);
+      if (entity == null) {
+        pic = Pic(
+          photoId,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          null,
+          [tagKey],
+        );
+      } else {
+        pic = Pic(
+          photoId,
+          entity.createDateTime,
+          entity.latitude,
+          entity.longitude,
+          null,
+          null,
+          null,
+          null,
+          [tagKey],
+        );
+      }
+    }
     picsBox.put(photoId, pic);
     checkPicHasTags(photoId);
-
     if (noTaggedPhoto == true) {
       noTaggedPhoto = false;
     }
@@ -799,6 +829,31 @@ class DatabaseManager extends ChangeNotifier {
     print('adding tag to database...');
     tagsBox.put(tagKey, Tag(tagName, []));
     addTagToRecent(tagKey: tagKey);
+    notifyListeners();
+  }
+
+  void addTagsToPics({List<String> tagsKeys, List<String> photosIds, List<AssetEntity> entities}) {
+    var tagsBox = Hive.box('tags');
+
+    for (String photoId in photosIds) {
+      for (String tagKey in tagsKeys) {
+        Tag getTag = tagsBox.get(tagKey);
+
+        if (getTag.photoId.contains(photoId)) {
+          print('this tag is already in this picture');
+          continue;
+        }
+
+        getTag.photoId.add(photoId);
+        tagsBox.put(tagKey, getTag);
+        addTagToPic(
+          tagKey: tagKey,
+          photoId: photoId,
+          entities: entities,
+        );
+        print('update pictures in tag');
+      }
+    }
     notifyListeners();
   }
 

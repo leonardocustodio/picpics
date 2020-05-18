@@ -444,6 +444,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             children: <Widget>[
               Text(
                 tag.name,
+                textScaleFactor: 1.0,
                 style: TextStyle(
                   fontFamily: 'Lato',
                   color: Color(0xff606566),
@@ -912,6 +913,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 ),
                                 Text(
                                   S.of(context).gallery_access_permission_description,
+                                  textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'Lato',
@@ -939,6 +941,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     child: Center(
                                       child: Text(
                                         S.of(context).gallery_access_permission,
+                                        textScaleFactor: 1.0,
                                         style: TextStyle(
                                           fontFamily: 'Lato',
                                           color: kWhiteColor,
@@ -990,6 +993,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 children: <Widget>[
                                   Text(
                                     S.of(context).photo_gallery_title,
+                                    textScaleFactor: 1.0,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff979a9b),
@@ -1007,6 +1011,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       multiPicSelect
                                           ? S.of(context).photo_gallery_count(picsSelected.length)
                                           : S.of(context).photo_gallery_description,
+                                      textScaleFactor: 1.0,
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: Color(0xff606566),
@@ -1152,6 +1157,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         ),
                                         Text(
                                           S.of(context).no_tagged_photos,
+                                          textScaleFactor: 1.0,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
@@ -1177,6 +1183,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             child: Center(
                                               child: Text(
                                                 S.of(context).start_tagging,
+                                                textScaleFactor: 1.0,
                                                 style: TextStyle(
                                                   fontFamily: 'Lato',
                                                   color: kWhiteColor,
@@ -1227,6 +1234,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                           padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                           child: Text(
                                             S.of(context).search_results,
+                                            textScaleFactor: 1.0,
                                             style: TextStyle(
                                               fontFamily: 'Lato',
                                               color: Color(0xff979a9b),
@@ -1259,6 +1267,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
                                             child: Text(
                                               S.of(context).no_tags_found,
+                                              textScaleFactor: 1.0,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontFamily: 'Lato',
@@ -1293,6 +1302,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 children: <Widget>[
                                   Text(
                                     S.of(context).organized_photos_title,
+                                    textScaleFactor: 1.0,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff979a9b),
@@ -1308,6 +1318,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   if (!hideSubtitleThirdTab)
                                     Text(
                                       S.of(context).organized_photos_description,
+                                      textScaleFactor: 1.0,
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: Color(0xff606566),
@@ -1355,6 +1366,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     width: 80.0,
                                     child: Text(
                                       S.of(multiPicContext).cancel,
+                                      textScaleFactor: 1.0,
                                       style: TextStyle(
                                         color: Color(0xff707070),
                                         fontSize: 16,
@@ -1367,14 +1379,33 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 Spacer(),
                                 CupertinoButton(
                                   onPressed: () {
+                                    List<String> photosIds = [];
+                                    List<AssetEntity> entities = [];
+                                    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                                    for (var index in picsSelected) {
+                                      AssetEntity entity = pathProvider.orderedList[index];
+                                      photosIds.add(entity.id);
+                                      entities.add(entity);
+                                    }
+                                    DatabaseManager.instance.addTagsToPics(
+                                      tagsKeys: multiPicTagKeys,
+                                      photosIds: photosIds,
+                                      entities: entities,
+                                    );
+
                                     setState(() {
                                       showingMultiTagSheet = false;
+                                      multiPicSelect = false;
                                     });
+
+                                    picsSelected = [];
+                                    multiPicTagKeys = [];
                                   },
                                   child: Container(
                                     width: 80.0,
                                     child: Text(
                                       S.of(multiPicContext).ok,
+                                      textScaleFactor: 1.0,
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
                                         color: Color(0xff707070),
@@ -1597,6 +1628,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                     children: <Widget>[
                       Text(
                         S.of(context).welcome,
+                        textScaleFactor: 1.0,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -1637,6 +1669,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                   child: Text(
                                     text,
+                                    textScaleFactor: 1.0,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
@@ -1738,6 +1771,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           child: Center(
                             child: Text(
                               swiperIndex == 2 ? S.of(context).close : S.of(context).next,
+                              textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',

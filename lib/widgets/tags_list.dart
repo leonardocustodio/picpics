@@ -107,6 +107,7 @@ class TagsList extends StatelessWidget {
                 : kGrayBoxDecoration,
             child: Text(
               tagName,
+              textScaleFactor: 1.0,
               style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
             ),
           ),
@@ -136,6 +137,7 @@ class TagsList extends StatelessWidget {
               ),
               Text(
                 S.of(context).add_tag,
+                textScaleFactor: 1.0,
                 style: TextStyle(
                   fontFamily: 'Lato',
                   color: kGrayColor,
@@ -264,6 +266,7 @@ class TagsList extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
               title,
+              textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),

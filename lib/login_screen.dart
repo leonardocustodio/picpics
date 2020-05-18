@@ -44,6 +44,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Text(
                     S.of(context).welcome,
+                    textScaleFactor: 1.0,
                     style: TextStyle(
                       fontFamily: 'Lato',
                       color: kWhiteColor,
@@ -54,6 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Text(
                     S.of(context).photos_always_organized,
+                    textScaleFactor: 1.0,
                     style: TextStyle(
                       fontFamily: 'Lato',
                       color: kWhiteColor,
@@ -86,6 +88,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Center(
                         child: Text(
                           S.of(context).continue_string,
+                          textScaleFactor: 1.0,
                           style: TextStyle(
                             fontFamily: 'Lato',
                             color: Color(0xfff5fafa),

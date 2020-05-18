@@ -84,6 +84,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       width: 80.0,
                       child: Text(
                         S.of(context).cancel,
+                        textScaleFactor: 1.0,
                         style: TextStyle(
                           color: Color(0xff707070),
                           fontSize: 16,
@@ -95,6 +96,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                   Text(
                     S.of(context).how_many_pics,
+                    textScaleFactor: 1.0,
                     style: TextStyle(
                       color: Color(0xff707070),
                       fontSize: 24,
@@ -111,6 +113,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       width: 80.0,
                       child: Text(
                         S.of(context).ok,
+                        textScaleFactor: 1.0,
                         textAlign: TextAlign.end,
                         style: TextStyle(
                           color: Color(0xff707070),
@@ -136,7 +139,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     }
                   },
                   itemBuilder: (BuildContext context, int index) {
-                    return Center(child: Text('${index + 1}'));
+                    return Center(
+                        child: Text(
+                      '${index + 1}',
+                      textScaleFactor: 1.0,
+                    ));
                   },
                 ),
               ),
@@ -174,6 +181,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       width: 80.0,
                       child: Text(
                         S.of(context).cancel,
+                        textScaleFactor: 1.0,
                         style: TextStyle(
                           color: Color(0xff707070),
                           fontSize: 16,
@@ -185,6 +193,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                   Text(
                     S.of(context).time,
+                    textScaleFactor: 1.0,
                     style: TextStyle(
                       color: Color(0xff707070),
                       fontSize: 24,
@@ -201,6 +210,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       width: 80.0,
                       child: Text(
                         S.of(context).ok,
+                        textScaleFactor: 1.0,
                         textAlign: TextAlign.end,
                         style: TextStyle(
                           color: Color(0xff707070),
@@ -242,17 +252,26 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         context: context,
         builder: (BuildContext context) {
           return PlatformAlertDialog(
-            title: Text(S.of(context).notifications),
+            title: Text(
+              S.of(context).notifications,
+              textScaleFactor: 1.0,
+            ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
-                  Text(S.of(context).daily_challenge_permission_description),
+                  Text(
+                    S.of(context).daily_challenge_permission_description,
+                    textScaleFactor: 1.0,
+                  ),
                 ],
               ),
             ),
             actions: <Widget>[
               PlatformDialogAction(
-                child: Text(S.of(context).ok),
+                child: Text(
+                  S.of(context).ok,
+                  textScaleFactor: 1.0,
+                ),
                 actionType: ActionType.Preferred,
                 onPressed: () {
                   NotificationPermissions.requestNotificationPermissions(
@@ -339,6 +358,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                             children: <Widget>[
                               Text(
                                 S.of(context).daily_challenge,
+                                textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -378,6 +398,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                             children: <Widget>[
                               Text(
                                 S.of(context).daily_goal,
+                                textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -389,6 +410,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               ),
                               Text(
                                 '${Provider.of<DatabaseManager>(context).userSettings.goal}',
+                                textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -420,6 +442,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                             children: <Widget>[
                               Text(
                                 S.of(context).notification_time,
+                                textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -431,6 +454,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               ),
                               Text(
                                 '${'${Provider.of<DatabaseManager>(context).userSettings.hourOfDay}'.padLeft(2, '0')}: ${'${Provider.of<DatabaseManager>(context).userSettings.minutesOfDay}'.padLeft(2, '0')}',
+                                textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -469,6 +493,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   ),
                                   Text(
                                     S.of(context).share_with_friends,
+                                    textScaleFactor: 1.0,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff979a9b),
@@ -497,6 +522,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   ),
                                   Text(
                                     S.of(context).rate_this_app,
+                                    textScaleFactor: 1.0,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff979a9b),
@@ -539,6 +565,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 Provider.of<DatabaseManager>(context).userSettings.isPremium
                                     ? S.of(context).you_are_premium
                                     : S.of(context).get_premium_now,
+                                textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: kSecondaryColor,

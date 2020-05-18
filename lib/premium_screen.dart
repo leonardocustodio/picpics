@@ -122,6 +122,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       Image.asset('lib/images/bigpremiumlogo.png'),
       Text(
         S.of(context).get_premium_title,
+        textScaleFactor: 1.0,
         style: TextStyle(
           fontFamily: 'Lato',
           color: kPrimaryColor,
@@ -133,6 +134,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       ),
       Text(
         S.of(context).get_premium_description,
+        textScaleFactor: 1.0,
         style: TextStyle(
           fontFamily: 'Lato',
           color: kPrimaryColor,
@@ -154,6 +156,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             Text(
               S.of(context).no_ads,
+              textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff707070),
@@ -175,6 +178,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             Text(
               S.of(context).export_all_gallery,
+              textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff707070),
@@ -196,6 +200,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             Text(
               S.of(context).infinite_tags,
+              textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff707070),
@@ -217,6 +222,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             Text(
               S.of(context).tag_multiple_photos_at_once,
+              textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff707070),
@@ -279,6 +285,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       child: Center(
                         child: Text(
                           "${S.of(context).sign} ${yearSubs.product.priceString}/${S.of(context).year}",
+                          textScaleFactor: 1.0,
                           style: TextStyle(
                             fontFamily: 'Lato',
                             color: kPinkColor,
@@ -306,6 +313,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         child: Center(
                           child: Text(
                             "   ${S.of(context).save} ${save.round()}%",
+                            textScaleFactor: 1.0,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: Color(0xff606566),
@@ -339,6 +347,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               child: Center(
                 child: Text(
                   "${S.of(context).sign} ${monthSubs.product.priceString}/${S.of(context).month}",
+                  textScaleFactor: 1.0,
                   style: TextStyle(
                     fontFamily: 'Lato',
                     color: kWhiteColor,
@@ -360,6 +369,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             },
             child: Text(
               S.of(context).restore_purchase,
+              textScaleFactor: 1.0,
               style: const TextStyle(
                 fontWeight: FontWeight.w700,
                 color: kPrimaryColor,

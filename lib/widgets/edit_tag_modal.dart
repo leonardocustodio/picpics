@@ -35,6 +35,7 @@ class EditTagModal extends StatelessWidget {
               padding: const EdgeInsets.only(top: 19.0, bottom: 10.0),
               child: Text(
                 S.of(context).edit_tag,
+                textScaleFactor: 1.0,
                 style: TextStyle(
                   color: Color(0xff606566),
                   fontSize: 16,
@@ -86,6 +87,7 @@ class EditTagModal extends StatelessWidget {
                       child: Center(
                         child: Text(
                           S.of(context).delete,
+                          textScaleFactor: 1.0,
                           style: TextStyle(
                             color: Color(0xFFE01717),
                             fontSize: 16,
@@ -107,6 +109,7 @@ class EditTagModal extends StatelessWidget {
                       child: Center(
                         child: Text(
                           S.of(context).ok,
+                          textScaleFactor: 1.0,
                           style: TextStyle(
                             color: Color(0xFF606566),
                             fontSize: 16,

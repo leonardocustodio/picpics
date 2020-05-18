@@ -215,6 +215,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     RichText(
+                                      textScaleFactor: 1.0,
                                       text: new TextSpan(
                                         children: [
                                           new TextSpan(
@@ -243,6 +244,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                     ),
                                     Text(
                                       dateFormat(DatabaseManager.instance.selectedPhoto.createDateTime),
+                                      textScaleFactor: 1.0,
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: kWhiteColor,

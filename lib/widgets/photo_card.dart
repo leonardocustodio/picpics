@@ -168,6 +168,7 @@ class PhotoCard extends StatelessWidget {
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
                               return RichText(
+                                textScaleFactor: 1.0,
                                 text: new TextSpan(
                                   children: [
                                     TextSpan(
@@ -197,6 +198,7 @@ class PhotoCard extends StatelessWidget {
                               );
                             } else if (snapshot.hasError) {
                               return RichText(
+                                textScaleFactor: 1.0,
                                 text: new TextSpan(
                                   children: [
                                     TextSpan(
@@ -228,6 +230,7 @@ class PhotoCard extends StatelessWidget {
                               return Row(
                                 children: <Widget>[
                                   RichText(
+                                    textScaleFactor: 1.0,
                                     text: new TextSpan(
                                       children: [
                                         TextSpan(
@@ -263,6 +266,7 @@ class PhotoCard extends StatelessWidget {
                     ),
                     Text(
                       dateFormat(data.createDateTime),
+                      textScaleFactor: 1.0,
                       style: TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff606566),

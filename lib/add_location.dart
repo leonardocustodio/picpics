@@ -246,6 +246,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         child: Center(
                           child: Text(
                             S.of(context).save_location,
+                            textScaleFactor: 1.0,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kWhiteColor,

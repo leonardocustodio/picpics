@@ -34,6 +34,7 @@ class WatchAdModal extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 52.0, vertical: 32.0),
                   child: Text(
                     'Your done with your 50 daily pics goal, do you want to continue? ',
+                    textScaleFactor: 1.0,
                     style: TextStyle(
                       color: kSecondaryColor,
                       fontSize: 16,
@@ -55,6 +56,7 @@ class WatchAdModal extends StatelessWidget {
                       child: Center(
                         child: Text(
                           "Watch ad video to continue",
+                          textScaleFactor: 1.0,
                           style: TextStyle(
                             fontFamily: 'Lato',
                             color: kWhiteColor,
@@ -82,6 +84,7 @@ class WatchAdModal extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               "Get Premium account",
+                              textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.w400,
@@ -95,6 +98,7 @@ class WatchAdModal extends StatelessWidget {
                             ),
                             Text(
                               'ONE-YEAR WITHOUT ADDS',
+                              textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: kPrimaryColor,
