@@ -21,6 +21,7 @@ import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -781,6 +782,36 @@ class DatabaseManager extends ChangeNotifier {
     if (noTaggedPhoto == true) {
       noTaggedPhoto = false;
     }
+  }
+
+  void sharePics({List<String> photoIds}) async {
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    Map<String, dynamic> bytesPhotos = {};
+    int x = 0;
+
+    for (var photoId in photoIds) {
+      AssetEntity data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+
+      if (data == null) {
+        continue;
+      }
+
+      var bytes = await data.thumbDataWithSize(
+        data.size.width.toInt(),
+        data.size.height.toInt(),
+        format: ThumbFormat.jpeg,
+      );
+      bytesPhotos['$x.jpg'] = bytes;
+      x++;
+    }
+
+    await Share.files(
+      'images',
+      {
+        ...bytesPhotos,
+      },
+      'image/jpeg',
+    );
   }
 
   String stripTag(String tag) {

@@ -427,6 +427,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     List<Widget> widgetsArray = [];
     List<bool> isTitleWidget = [];
+
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 
     if (!isFiltered) {
@@ -457,6 +458,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               CupertinoButton(
                 onPressed: () {
                   print('share pics');
+                  DatabaseManager.instance.sharePics(photoIds: tag.photoId);
                 },
                 child: Image.asset('lib/images/sharepicsico.png'),
               ),
@@ -528,10 +530,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       }
     } else {
       for (var photoId in DatabaseManager.instance.searchPhotosIds) {
+        List<AssetEntity> entities = [];
         totalPics += 1;
         var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
 
         if (data != null) {
+          entities.add(data);
           widgetsArray.add(RepaintBoundary(
             child: Padding(
               padding: const EdgeInsets.all(5.0),
