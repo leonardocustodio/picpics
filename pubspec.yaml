@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.0.0+94
+version: 1.0.0+95
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -19,8 +19,11 @@ dependencies:
   rate_my_app: ^0.6.1+2
   geolocator: ^5.3.1
   google_maps_flutter: ^0.5.27+3
-  hive: ^1.4.1+1
-  hive_flutter: ^0.3.0+2
+  hive:
+    git:
+      url: https://github.com/jenjiskan/hive.git
+      path: hive
+      ref: upgrade-dartx
   after_layout: ^1.0.7+2
   flutter_staggered_grid_view: ^0.3.0
   outline_gradient_button: ^1.0.0+2
@@ -43,13 +46,9 @@ dependencies:
   carousel_slider: ^2.1.0
   expandable: ^4.1.4
 
-dependency_overrides:
-  dartx: ^0.3.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  hive_generator: ^0.7.0+2
   build_runner: ^1.10.0
 
 flutter:

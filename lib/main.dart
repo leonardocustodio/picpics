@@ -18,12 +18,12 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:path_provider/path_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +36,9 @@ void main() async {
   DatabaseManager.instance.analytics = FirebaseAnalytics();
   DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
 
-  await Hive.initFlutter();
+//  await Hive.initFlutter();
+  var dir = await getApplicationDocumentsDirectory();
+  Hive.init(dir.path);
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
   Hive.registerAdapter(TagAdapter());
