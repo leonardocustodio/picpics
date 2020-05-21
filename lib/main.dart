@@ -39,6 +39,7 @@ void main() async {
 //  await Hive.initFlutter();
   var dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
+
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
   Hive.registerAdapter(TagAdapter());

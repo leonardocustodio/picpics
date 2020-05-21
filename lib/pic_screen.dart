@@ -35,6 +35,8 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:expandable/expandable.dart';
+import 'package:loading/loading.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
 
 class PicScreen extends StatefulWidget {
   static const id = 'pic_screen';
@@ -93,6 +95,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   Throttle _changeThrottle;
 
   bool isAdVisible = false;
+  bool isLoading = false;
 
   void changeIndex() {
     print('teste');
@@ -456,9 +459,15 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                 ),
               ),
               CupertinoButton(
-                onPressed: () {
+                onPressed: () async {
                   print('share pics');
-                  DatabaseManager.instance.sharePics(photoIds: tag.photoId);
+                  setState(() {
+                    isLoading = true;
+                  });
+                  await DatabaseManager.instance.sharePics(photoIds: tag.photoId);
+                  setState(() {
+                    isLoading = false;
+                  });
                 },
                 child: Image.asset('lib/images/sharepicsico.png'),
               ),
@@ -1608,6 +1617,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   ),
                 ),
               ),
+            ),
+          ),
+        if (isLoading)
+          Material(
+            color: Colors.black.withOpacity(0.6),
+            child: Center(
+              child: Loading(indicator: BallPulseIndicator(), size: 100.0),
             ),
           ),
         if (Provider.of<DatabaseManager>(context).userSettings.tutorialCompleted == false)

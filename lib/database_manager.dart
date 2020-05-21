@@ -784,7 +784,7 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void sharePics({List<String> photoIds}) async {
+  Future<void> sharePics({List<String> photoIds}) async {
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     Map<String, dynamic> bytesPhotos = {};
     int x = 0;
@@ -812,6 +812,8 @@ class DatabaseManager extends ChangeNotifier {
       },
       'image/jpeg',
     );
+
+    return;
   }
 
   String stripTag(String tag) {

@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.0.0+95
+version: 1.0.0+96
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -45,6 +45,7 @@ dependencies:
   date_utils: ^0.1.0+3
   carousel_slider: ^2.1.0
   expandable: ^4.1.4
+  loading: ^1.0.2
 
 dev_dependencies:
   flutter_test:
