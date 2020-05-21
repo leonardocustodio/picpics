@@ -3,6 +3,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/add_location.dart';
+import 'package:picPics/gallery_screen.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/database_manager.dart';
@@ -139,8 +140,8 @@ class PhotoCard extends StatelessWidget {
                     onPressed: () {
                       Ads.setScreen(PhotoScreen.id);
                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
-                      Navigator.pushNamed(context, PhotoScreen.id);
+//                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+                      Navigator.pushNamed(context, GalleryScreen.id);
                     },
                     child: Image.asset('lib/images/expandphotoico.png'),
                   ),
