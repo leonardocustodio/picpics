@@ -405,7 +405,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   Widget _buildTaggedGridView() {
     bool isFiltered = DatabaseManager.instance.searchActiveTags.isNotEmpty;
-
     var picsBox = Hive.box('pics');
     var tagsBox = Hive.box('tags');
 
@@ -539,12 +538,10 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       }
     } else {
       for (var photoId in DatabaseManager.instance.searchPhotosIds) {
-        List<AssetEntity> entities = [];
         totalPics += 1;
         var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
 
         if (data != null) {
-          entities.add(data);
           widgetsArray.add(RepaintBoundary(
             child: Padding(
               padding: const EdgeInsets.all(5.0),
@@ -1227,19 +1224,40 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       if (Provider.of<DatabaseManager>(context).searchActiveTags.isNotEmpty)
                                         Padding(
                                           padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-                                          child: TagsList(
-                                            tagsKeys: Provider.of<DatabaseManager>(context).searchActiveTags,
-                                            tagStyle: TagStyle.MultiColored,
-                                            onTap: (tagName) {
-                                              print('do nothing');
-                                            },
-                                            onDoubleTap: () {
-                                              DatabaseManager.instance.removeTagFromSearchFilter();
-                                              if (DatabaseManager.instance.searchActiveTags.isEmpty && searchFocusNode.hasFocus == false) {
-                                                DatabaseManager.instance.switchSearchingTags(false);
-                                              }
-                                            },
-                                            showEditTagModal: showEditTagModal,
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              TagsList(
+                                                tagsKeys: Provider.of<DatabaseManager>(context).searchActiveTags,
+                                                tagStyle: TagStyle.MultiColored,
+                                                onTap: (tagName) {
+                                                  print('do nothing');
+                                                },
+                                                onDoubleTap: () {
+                                                  DatabaseManager.instance.removeTagFromSearchFilter();
+                                                  if (DatabaseManager.instance.searchActiveTags.isEmpty &&
+                                                      searchFocusNode.hasFocus == false) {
+                                                    DatabaseManager.instance.switchSearchingTags(false);
+                                                  }
+                                                },
+                                                showEditTagModal: showEditTagModal,
+                                              ),
+                                              CupertinoButton(
+                                                padding: const EdgeInsets.all(10),
+                                                onPressed: () async {
+                                                  print('share pics');
+                                                  setState(() {
+                                                    isLoading = true;
+                                                  });
+                                                  await DatabaseManager.instance
+                                                      .sharePics(photoIds: DatabaseManager.instance.searchPhotosIds);
+                                                  setState(() {
+                                                    isLoading = false;
+                                                  });
+                                                },
+                                                child: Image.asset('lib/images/sharepicsico.png'),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       if (Provider.of<DatabaseManager>(context).searchResults != null)
