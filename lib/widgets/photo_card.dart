@@ -140,8 +140,8 @@ class PhotoCard extends StatelessWidget {
                     onPressed: () {
                       Ads.setScreen(PhotoScreen.id);
                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
-                      Navigator.pushNamed(context, GalleryScreen.id);
+                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+                      Navigator.pushNamed(context, PhotoScreen.id);
                     },
                     child: Image.asset('lib/images/expandphotoico.png'),
                   ),

@@ -115,15 +115,21 @@ class _GalleryScreenState extends State<GalleryScreen> {
   }
 
   Widget _buildThumbnails(BuildContext context, int index) {
-    return Container(
-      height: 98,
-      width: 98,
-      margin: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: ImageItem(
-        entity: getEntity(DatabaseManager.instance.searchPhotosIds[index]),
-        size: 98,
-        fit: BoxFit.cover,
-        backgroundColor: Colors.black,
+    return CupertinoButton(
+      padding: const EdgeInsets.all(0),
+      onPressed: () {
+        print('clicked on thumbnail');
+      },
+      child: Container(
+        height: 98,
+        width: 98,
+        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: ImageItem(
+          entity: getEntity(DatabaseManager.instance.searchPhotosIds[index]),
+          size: 98,
+          fit: BoxFit.cover,
+          backgroundColor: Colors.black,
+        ),
       ),
     );
   }
