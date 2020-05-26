@@ -299,6 +299,28 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   void changePage(int index) {
+    if (index == 0) {
+      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+      List<String> photosIds = [];
+      for (int x = 0; x < pathProvider.orderedList.length; x++) {
+        bool hasTag = DatabaseManager.instance.picHasTag[x];
+        AssetEntity entity = pathProvider.orderedList[x];
+        if (!hasTag) {
+          photosIds.add(entity.id);
+        }
+      }
+      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
+    } else if (index == 1) {
+      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+      List<String> photosIds = [];
+      for (int x = 0; x < DatabaseManager.instance.sliderIndex.length; x++) {
+        int orderedIndex = DatabaseManager.instance.sliderIndex[x];
+        AssetEntity entity = pathProvider.orderedList[orderedIndex];
+        photosIds.add(entity.id);
+      }
+      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
+    }
+
     if (multiPicSelect) {
       if (index == 0) {
         picsSelected = [];
