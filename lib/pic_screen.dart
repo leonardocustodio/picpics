@@ -1436,6 +1436,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 Spacer(),
                                 CupertinoButton(
                                   onPressed: () {
+                                    if (!DatabaseManager.instance.userSettings.isPremium) {
+                                      Ads.setScreen(PremiumScreen.id);
+                                      Navigator.pushNamed(context, PremiumScreen.id);
+                                      return;
+                                    }
+
                                     List<String> photosIds = [];
                                     List<AssetEntity> entities = [];
                                     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
@@ -1493,9 +1499,20 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       textEditingController: bottomTagsEditingController,
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagName) {
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Ads.setScreen(PremiumScreen.id);
+                                          Navigator.pushNamed(context, PremiumScreen.id);
+                                          return;
+                                        }
                                         print('do nothing');
                                       },
                                       onDoubleTap: () {
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Ads.setScreen(PremiumScreen.id);
+                                          Navigator.pushNamed(context, PremiumScreen.id);
+                                          return;
+                                        }
+
                                         if (multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
                                           setState(() {
                                             multiPicTagKeys.remove(DatabaseManager.instance.selectedTagKey);
@@ -1516,6 +1533,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         );
                                       },
                                       onSubmitted: (text) {
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Ads.setScreen(PremiumScreen.id);
+                                          Navigator.pushNamed(context, PremiumScreen.id);
+                                          return;
+                                        }
+
                                         print('return');
                                         if (text != '') {
                                           bottomTagsEditingController.clear();
@@ -1542,6 +1565,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagName) {
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Ads.setScreen(PremiumScreen.id);
+                                          Navigator.pushNamed(context, PremiumScreen.id);
+                                          return;
+                                        }
+
                                         bottomTagsEditingController.clear();
                                         String tagKey = DatabaseManager.instance.encryptTag(tagName);
                                         if (!multiPicTagKeys.contains(tagKey)) {
@@ -1554,6 +1583,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                         }
                                       },
                                       onDoubleTap: () {
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Ads.setScreen(PremiumScreen.id);
+                                          Navigator.pushNamed(context, PremiumScreen.id);
+                                          return;
+                                        }
+
                                         print('do nothing');
                                       },
                                     ),
