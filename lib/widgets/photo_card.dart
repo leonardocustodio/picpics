@@ -141,7 +141,19 @@ class PhotoCard extends StatelessWidget {
                       Ads.setScreen(PhotoScreen.id);
                       DatabaseManager.instance.selectedPhoto = data;
                       print('Selected photo: ${data.id}');
-                      Navigator.pushNamed(context, PhotoScreen.id);
+
+                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
+
+//                      Navigator.pushNamed(context, PhotoScreen.id);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PhotoScreen(
+                            initialIndex: initialIndex,
+                          ),
+                        ),
+                      );
                     },
                     child: Image.asset('lib/images/expandphotoico.png'),
                   ),

@@ -13,7 +13,6 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/image_item.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:flutter/services.dart';
@@ -23,14 +22,18 @@ import 'package:provider/provider.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
+  final int initialIndex;
+  final PageController galleryPageController;
+
+  PhotoScreen({
+    this.initialIndex = 0,
+  }) : galleryPageController = PageController(initialPage: initialIndex);
 
   @override
   _PhotoScreenState createState() => _PhotoScreenState();
 }
 
 class _PhotoScreenState extends State<PhotoScreen> {
-  PageController galleryPageController = PageController(initialPage: 0);
-
   DateTime createdDate;
   Pic picInfo;
 
@@ -224,7 +227,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                 backgroundDecoration: const BoxDecoration(
                   color: Colors.black,
                 ),
-                pageController: galleryPageController,
+                pageController: widget.galleryPageController,
                 onPageChanged: (index) {
                   print('page changed');
                 },
