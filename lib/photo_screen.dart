@@ -103,7 +103,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    String photoId = DatabaseManager.instance.searchPhotosIds[index];
+    String photoId = DatabaseManager.instance.slideThumbPhotoIds[index];
 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
@@ -147,7 +147,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
         width: 98,
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
         child: ImageItem(
-          entity: getEntity(DatabaseManager.instance.searchPhotosIds[index]),
+          entity: getEntity(DatabaseManager.instance.slideThumbPhotoIds[index]),
           size: 98,
           fit: BoxFit.cover,
           backgroundColor: Colors.black,
@@ -211,7 +211,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               child: PhotoViewGallery.builder(
 //                scrollPhysics: const BouncingScrollPhysics(),
                 builder: _buildItem,
-                itemCount: DatabaseManager.instance.searchPhotosIds.length,
+                itemCount: DatabaseManager.instance.slideThumbPhotoIds.length,
                 loadingBuilder: (context, event) => Center(
                   child: Container(
                     width: 20.0,
@@ -412,7 +412,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: _buildThumbnails,
-                                    itemCount: DatabaseManager.instance.searchPhotosIds.length,
+                                    itemCount: DatabaseManager.instance.slideThumbPhotoIds.length,
                                     padding: const EdgeInsets.only(left: 8.0),
                                   ),
                                 ),

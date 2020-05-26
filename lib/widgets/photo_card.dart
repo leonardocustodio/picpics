@@ -139,8 +139,7 @@ class PhotoCard extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
                     onPressed: () {
                       Ads.setScreen(PhotoScreen.id);
-                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+                      DatabaseManager.instance.selectedPhoto = data;
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },
                     child: Image.asset('lib/images/expandphotoico.png'),

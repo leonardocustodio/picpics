@@ -433,6 +433,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 
     if (!isFiltered) {
+      List<String> slideThumbPhotoIds = [];
+
       for (Tag tag in tagsBox.values) {
         if (tag.photoId.length == 0) {
           print('skipping because tag has no pictures...');
@@ -480,6 +482,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
 
           if (data != null) {
+            slideThumbPhotoIds.add(data.id);
             widgetsArray.add(RepaintBoundary(
               child: Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -536,6 +539,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           }
         }
       }
+      DatabaseManager.instance.slideThumbPhotoIds = slideThumbPhotoIds;
     } else {
       for (var photoId in DatabaseManager.instance.searchPhotosIds) {
         totalPics += 1;

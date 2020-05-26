@@ -51,6 +51,8 @@ class DatabaseManager extends ChangeNotifier {
   List<String> searchResults;
   List<String> searchPhotosIds = [];
 
+  List<String> slideThumbPhotoIds = [];
+
 //  AssetProvider assetProvider = AssetProvider();
   AssetEntity selectedPhoto;
   List<double> lastLocationRequest = [0.0, 0.0];
@@ -495,6 +497,7 @@ class DatabaseManager extends ChangeNotifier {
       }
     }
     searchPhotosIds = tempPhotosIds;
+    slideThumbPhotoIds = tempPhotosIds;
     print('Search Photos Ids: $searchPhotosIds');
     notifyListeners();
   }
