@@ -11,6 +11,7 @@ class ImageItem extends StatelessWidget {
   final BoxFit fit;
   final bool showOverlay;
   final bool isSelected;
+  final Function onTap;
 
   const ImageItem({
     Key key,
@@ -20,13 +21,19 @@ class ImageItem extends StatelessWidget {
     this.fit = BoxFit.cover,
     this.showOverlay = false,
     this.isSelected = false,
+    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var thumb = ImageLruCache.getData(entity, size);
     if (thumb != null) {
-      return _buildImageItem(context, thumb);
+      return onTap != null
+          ? GestureDetector(
+              onTap: onTap,
+              child: _buildImageItem(context, thumb),
+            )
+          : _buildImageItem(context, thumb);
     }
 
     return FutureBuilder<Uint8List>(
@@ -35,11 +42,23 @@ class ImageItem extends StatelessWidget {
         var futureData = snapshot.data;
         if (snapshot.connectionState == ConnectionState.done && futureData != null) {
           ImageLruCache.setData(entity, size, futureData);
-          return _buildImageItem(context, futureData);
+          return onTap != null
+              ? GestureDetector(
+                  onTap: onTap,
+                  child: _buildImageItem(context, futureData),
+                )
+              : _buildImageItem(context, futureData);
         }
-        return Container(
-          color: backgroundColor,
-        );
+        return onTap != null
+            ? GestureDetector(
+                onTap: onTap,
+                child: Container(
+                  color: backgroundColor,
+                ),
+              )
+            : Container(
+                color: backgroundColor,
+              );
       },
     );
   }

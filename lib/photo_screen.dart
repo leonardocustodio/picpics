@@ -11,6 +11,10 @@ import 'package:picPics/image_item.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/image_item.dart';
+import 'package:picPics/asset_provider.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -25,10 +29,13 @@ class PhotoScreen extends StatefulWidget {
 }
 
 class _PhotoScreenState extends State<PhotoScreen> {
+  PageController galleryPageController = PageController(initialPage: 0);
+
   DateTime createdDate;
   Pic picInfo;
 
   bool overlay = true;
+  bool showSlideshow = false;
 
   @override
   void initState() {
@@ -37,13 +44,23 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   void changeOverlay() {
-    setState(() {
-      overlay = !overlay;
-    });
     if (!overlay) {
-      SystemChrome.setEnabledSystemUIOverlays([]);
-    } else {
+      setState(() {
+        overlay = true;
+      });
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+    } else {
+      if (!showSlideshow) {
+        setState(() {
+          showSlideshow = true;
+        });
+      } else {
+        showSlideshow = false;
+        setState(() {
+          overlay = false;
+        });
+        SystemChrome.setEnabledSystemUIOverlays([]);
+      }
     }
   }
 
@@ -85,6 +102,66 @@ class _PhotoScreenState extends State<PhotoScreen> {
     return formatter.format(dateTime);
   }
 
+  PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
+    String photoId = DatabaseManager.instance.searchPhotosIds[index];
+
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+
+    return PhotoViewGalleryPageOptions.customChild(
+      child: Container(
+        color: Colors.black,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: ImageItem(
+          entity: entity,
+          size: MediaQuery.of(context).size.height.toInt(),
+          fit: BoxFit.contain,
+          backgroundColor: Colors.black,
+          onTap: () {
+            print('ON TAP');
+            changeOverlay();
+          },
+        ),
+      ),
+      childSize: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height),
+      onTapUp: (context, details, controllerValue) {
+        print('On tap up');
+        changeOverlay();
+      },
+      initialScale: PhotoViewComputedScale.contained,
+      minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+      maxScale: PhotoViewComputedScale.covered * 1.1,
+      heroAttributes: PhotoViewHeroAttributes(tag: entity.id),
+    );
+  }
+
+  Widget _buildThumbnails(BuildContext context, int index) {
+    return CupertinoButton(
+      padding: const EdgeInsets.all(0),
+      onPressed: () {
+        print('clicked on thumbnail');
+      },
+      child: Container(
+        height: 98,
+        width: 98,
+        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: ImageItem(
+          entity: getEntity(DatabaseManager.instance.searchPhotosIds[index]),
+          size: 98,
+          fit: BoxFit.cover,
+          backgroundColor: Colors.black,
+        ),
+      ),
+    );
+  }
+
+  AssetEntity getEntity(String photoId) {
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+    return entity;
+  }
+
   @override
   Widget build(BuildContext context) {
     createdDate = Provider.of<DatabaseManager>(context).selectedPhoto.createDateTime;
@@ -123,24 +200,48 @@ class _PhotoScreenState extends State<PhotoScreen> {
         value: SystemUiOverlayStyle.light,
         child: Stack(
           children: <Widget>[
-            GestureDetector(
-              onTap: () {
-                changeOverlay();
-              },
-              child: Container(
-                constraints: BoxConstraints.expand(),
-                color: Color(0xff101010),
-                child: PhotoView.customChild(
-                  initialScale: 1.0,
-                  minScale: 1.0,
-                  child: ImageItem(
-                    entity: DatabaseManager.instance.selectedPhoto,
-                    size: MediaQuery.of(context).size.height.toInt(),
-                    fit: BoxFit.contain,
-                    backgroundColor: Colors.black,
+//            GestureDetector(
+//              onTap: () {
+//                changeOverlay();
+//              },
+//              child:
+            Container(
+              constraints: BoxConstraints.expand(),
+              color: Color(0xff101010),
+              child: PhotoViewGallery.builder(
+//                scrollPhysics: const BouncingScrollPhysics(),
+                builder: _buildItem,
+                itemCount: DatabaseManager.instance.searchPhotosIds.length,
+                loadingBuilder: (context, event) => Center(
+                  child: Container(
+                    width: 20.0,
+                    height: 20.0,
+                    child: CircularProgressIndicator(
+                      value: event == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                    ),
                   ),
                 ),
+                backgroundDecoration: const BoxDecoration(
+                  color: Colors.black,
+                ),
+                pageController: galleryPageController,
+                onPageChanged: (index) {
+                  print('page changed');
+                },
+                scrollDirection: Axis.horizontal,
               ),
+//
+//                PhotoView.customChild(
+//                  initialScale: 1.0,
+//                  minScale: 1.0,
+//                  child: ImageItem(
+//                    entity: DatabaseManager.instance.selectedPhoto,
+//                    size: MediaQuery.of(context).size.height.toInt(),
+//                    fit: BoxFit.contain,
+//                    backgroundColor: Colors.black,
+//                  ),
+//                ),
+//            ),
             ),
             if (overlay)
               Column(
@@ -183,16 +284,111 @@ class _PhotoScreenState extends State<PhotoScreen> {
                     ),
                   ),
                   Spacer(),
-                  ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: 2.0,
-                        sigmaY: 2.0,
-                      ),
-                      child: Container(
-                        constraints: BoxConstraints(
-                          minHeight: 184.0,
+                  if (!showSlideshow)
+                    ClipRect(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(
+                          sigmaX: 2.0,
+                          sigmaY: 2.0,
                         ),
+                        child: Container(
+                          constraints: BoxConstraints(
+                            minHeight: 184.0,
+                          ),
+                          decoration: new BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
+                                Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                              ],
+                              stops: [0, 0.40625],
+                            ),
+                          ),
+                          child: SafeArea(
+                            top: false,
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: <Widget>[
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: <Widget>[
+                                      RichText(
+                                        textScaleFactor: 1.0,
+                                        text: new TextSpan(
+                                          children: [
+                                            new TextSpan(
+                                                text: S.of(context).photo_location,
+                                                style: TextStyle(
+                                                  fontFamily: 'NotoSans',
+                                                  color: kWhiteColor,
+                                                  fontSize: 17,
+                                                  fontWeight: FontWeight.w400,
+                                                  fontStyle: FontStyle.normal,
+                                                  letterSpacing: -0.4099999964237213,
+                                                )),
+                                            new TextSpan(
+                                              text: '  ${S.of(context).country}',
+                                              style: TextStyle(
+                                                fontFamily: 'NotoSans',
+                                                color: kWhiteColor,
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w300,
+                                                fontStyle: FontStyle.normal,
+                                                letterSpacing: -0.4099999964237213,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Text(
+                                        dateFormat(DatabaseManager.instance.selectedPhoto.createDateTime),
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: kWhiteColor,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w300,
+                                          fontStyle: FontStyle.normal,
+                                          letterSpacing: -0.4099999964237213,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: TagsList(
+                                      tagsKeys: picInfo.tags,
+                                      tagStyle: TagStyle.MultiColored,
+                                      addTagButton: () {
+                                        Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
+                                        Navigator.pop(context, 'show_keyboard');
+                                      },
+                                      onTap: (tagName) {
+                                        print('ignore click');
+                                      },
+                                      onDoubleTap: () {
+                                        DatabaseManager.instance.removeTagFromPic(
+                                          tagKey: DatabaseManager.instance.selectedTagKey,
+                                          photoId: picInfo.photoId,
+                                        );
+                                      },
+                                      showEditTagModal: showEditTagModal,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (showSlideshow)
+                    ClipRect(
+                      child: Container(
                         decoration: new BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -207,74 +403,17 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         child: SafeArea(
                           top: false,
                           child: Padding(
-                            padding: const EdgeInsets.all(16.0),
+                            padding: const EdgeInsets.only(top: 8.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: <Widget>[
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    RichText(
-                                      textScaleFactor: 1.0,
-                                      text: new TextSpan(
-                                        children: [
-                                          new TextSpan(
-                                              text: S.of(context).photo_location,
-                                              style: TextStyle(
-                                                fontFamily: 'NotoSans',
-                                                color: kWhiteColor,
-                                                fontSize: 17,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              )),
-                                          new TextSpan(
-                                            text: '  ${S.of(context).country}',
-                                            style: TextStyle(
-                                              fontFamily: 'NotoSans',
-                                              color: kWhiteColor,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w300,
-                                              fontStyle: FontStyle.normal,
-                                              letterSpacing: -0.4099999964237213,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Text(
-                                      dateFormat(DatabaseManager.instance.selectedPhoto.createDateTime),
-                                      textScaleFactor: 1.0,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: kWhiteColor,
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(top: 16.0),
-                                  child: TagsList(
-                                    tagsKeys: picInfo.tags,
-                                    tagStyle: TagStyle.MultiColored,
-                                    addTagButton: () {
-                                      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
-                                      Navigator.pop(context, 'show_keyboard');
-                                    },
-                                    onTap: (tagName) {
-                                      print('ignore click');
-                                    },
-                                    onDoubleTap: () {
-                                      DatabaseManager.instance.removeTagFromPic(
-                                        tagKey: DatabaseManager.instance.selectedTagKey,
-                                        photoId: picInfo.photoId,
-                                      );
-                                    },
-                                    showEditTagModal: showEditTagModal,
+                                Container(
+                                  height: 98,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemBuilder: _buildThumbnails,
+                                    itemCount: DatabaseManager.instance.searchPhotosIds.length,
+                                    padding: const EdgeInsets.only(left: 8.0),
                                   ),
                                 ),
                               ],
@@ -283,7 +422,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
           ],
