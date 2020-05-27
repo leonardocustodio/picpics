@@ -113,3 +113,10 @@ const kBottomSheetTextStyle = TextStyle(
   fontFamily: 'Lato',
   fontWeight: FontWeight.w700,
 );
+
+const kBottomSheetTitleTextStyle = TextStyle(
+  color: Color(0xff707070),
+  fontSize: 24,
+  fontFamily: 'Lato',
+  fontWeight: FontWeight.w300,
+);

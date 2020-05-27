@@ -87,12 +87,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   Text(
                     S.of(context).how_many_pics,
                     textScaleFactor: 1.0,
-                    style: TextStyle(
-                      color: Color(0xff707070),
-                      fontSize: 24,
-                      fontFamily: 'Lato',
-                      fontWeight: FontWeight.w300,
-                    ),
+                    style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
                     onPressed: () {
@@ -170,12 +165,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   Text(
                     S.of(context).time,
                     textScaleFactor: 1.0,
-                    style: TextStyle(
-                      color: Color(0xff707070),
-                      fontSize: 24,
-                      fontFamily: 'Lato',
-                      fontWeight: FontWeight.w300,
-                    ),
+                    style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
                     onPressed: () {
@@ -198,7 +188,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 child: CupertinoDatePicker(
                   initialDateTime: time,
                   onDateTimeChanged: (DateTime newDate) {
-                    print(newDate);
                     time = newDate;
                   },
                   use24hFormat: true,
