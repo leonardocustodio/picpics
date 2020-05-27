@@ -3,12 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:picPics/components/arrow_painter.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-//import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-import 'dart:async';
-import 'dart:io';
-import 'package:picPics/admob_manager.dart';
 import 'package:picPics/database_manager.dart';
-import 'package:picPics/settings_screen.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -44,7 +39,6 @@ class _PremiumScreenState extends State<PremiumScreen> {
         // Unlock that great "pro" content
         print('know you are fucking pro!');
         DatabaseManager.instance.setUserAsPremium();
-        Ads.setScreen(SettingsScreen.id);
         Navigator.pop(context);
       }
     } on PlatformException catch (e) {
@@ -64,7 +58,6 @@ class _PremiumScreenState extends State<PremiumScreen> {
         // Unlock that great "pro" content
         print('know you are fucking pro!');
         DatabaseManager.instance.setUserAsPremium();
-        Ads.setScreen(SettingsScreen.id);
         Navigator.pop(context);
       } else {
         showDialog<void>(
@@ -286,14 +279,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         child: Text(
                           "${S.of(context).sign} ${yearSubs.product.priceString}/${S.of(context).year}",
                           textScaleFactor: 1.0,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: kPinkColor,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
-                          ),
+                          style: kPremiumButtonTextStyle,
                         ),
                       ),
                     ),
@@ -348,14 +334,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 child: Text(
                   "${S.of(context).sign} ${monthSubs.product.priceString}/${S.of(context).month}",
                   textScaleFactor: 1.0,
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    color: kWhiteColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: -0.4099999964237213,
-                  ),
+                  style: kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
                 ),
               ),
             ),
@@ -390,7 +369,6 @@ class _PremiumScreenState extends State<PremiumScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-//      backgroundColor: Color(0xffff6666),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Container(
@@ -421,7 +399,6 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     right: 0,
                     child: CupertinoButton(
                       onPressed: () {
-                        Ads.setScreen(SettingsScreen.id);
                         Navigator.pop(context);
                       },
                       child: Image.asset('lib/images/closegrayico.png'),

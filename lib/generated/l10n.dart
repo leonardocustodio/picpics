@@ -419,7 +419,7 @@ class S {
 
   String get get_premium_title {
     return Intl.message(
-      'Get Premium',
+      'GET PREMIUM',
       name: 'get_premium_title',
       desc: '',
       args: [],

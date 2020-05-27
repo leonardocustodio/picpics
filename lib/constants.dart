@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 const kPrimaryColor = Color(0xFF52CECE);
 const kSecondaryColor = Color(0xFFFF6666);
 const kYellowColor = Color(0xFFFEE067);
-const kPinkColor = Color(0xFFF1be5CA7);
+const kPinkColor = Color(0xFFEC56A1);
 const kSucessColor = Color(0xFF70FF98);
 const kAlertColor = Color(0xFFF68C0F);
 const kWarningColor = Color(0xFFE01717);
@@ -119,4 +119,13 @@ const kBottomSheetTitleTextStyle = TextStyle(
   fontSize: 24,
   fontFamily: 'Lato',
   fontWeight: FontWeight.w300,
+);
+
+const kPremiumButtonTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  color: kPinkColor,
+  fontSize: 16,
+  fontWeight: FontWeight.w700,
+  fontStyle: FontStyle.normal,
+  letterSpacing: -0.4099999964237213,
 );

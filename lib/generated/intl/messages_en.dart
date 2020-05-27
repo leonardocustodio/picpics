@@ -44,7 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "gallery_access_reason" : MessageLookupByLibrary.simpleMessage("To organize your photos we need access to your photo gallery"),
     "get_premium_description" : MessageLookupByLibrary.simpleMessage("TO HAVE ALL THESE FEATURES"),
     "get_premium_now" : MessageLookupByLibrary.simpleMessage("Get premium now!"),
-    "get_premium_title" : MessageLookupByLibrary.simpleMessage("Get Premium"),
+    "get_premium_title" : MessageLookupByLibrary.simpleMessage("GET PREMIUM"),
     "how_many_pics" : MessageLookupByLibrary.simpleMessage("How many pics"),
     "infinite_tags" : MessageLookupByLibrary.simpleMessage("Infinite tags"),
     "month" : MessageLookupByLibrary.simpleMessage("month"),
