@@ -569,6 +569,42 @@ class S {
       args: [],
     );
   }
+
+  String premium_modal_description(Object number) {
+    return Intl.message(
+      'You completed your $number free daily pics, do you want to continue?',
+      name: 'premium_modal_description',
+      desc: '',
+      args: [number],
+    );
+  }
+
+  String get premium_modal_watch_ad {
+    return Intl.message(
+      'Watch video ad to continue',
+      name: 'premium_modal_watch_ad',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get premium_modal_get_premium_title {
+    return Intl.message(
+      'Get Premium Account',
+      name: 'premium_modal_get_premium_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get premium_modal_get_premium_description {
+    return Intl.message(
+      'ALL FEATURES WITHOUT ADS',
+      name: 'premium_modal_get_premium_description',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

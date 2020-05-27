@@ -85,6 +85,11 @@
   "gallery_access_permission": "Permissão de acesso",
   "gallery_access_permission_description": "Para começarmos a organizar suas fotos, precisamos de autorização para acessá-las\"",
 
-  "export_library": "Exportar biblioteca"
+  "export_library": "Exportar biblioteca",
+
+  "premium_modal_description": "Você completo seus {number} pics diários gratuítos, deseja continuar?",
+  "premium_modal_watch_ad": "Assista ao anúncio para continuar",
+  "premium_modal_get_premium_title": "Obter conta premium",
+  "premium_modal_get_premium_description": "Todos os recursos e sem anuncios"
 
 }

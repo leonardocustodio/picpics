@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 
@@ -33,7 +34,7 @@ class WatchAdModal extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 52.0, vertical: 32.0),
                   child: Text(
-                    'Your done with your 50 daily pics goal, do you want to continue? ',
+                    S.of(context).premium_modal_description(DatabaseManager.instance.dailyPicsForAds),
                     textScaleFactor: 1.0,
                     style: TextStyle(
                       color: kSecondaryColor,
@@ -55,7 +56,7 @@ class WatchAdModal extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          "Watch ad video to continue",
+                          S.of(context).premium_modal_watch_ad,
                           textScaleFactor: 1.0,
                           style: TextStyle(
                             fontFamily: 'Lato',
@@ -83,7 +84,7 @@ class WatchAdModal extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Get Premium account",
+                              S.of(context).premium_modal_get_premium_title,
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -97,7 +98,7 @@ class WatchAdModal extends StatelessWidget {
                               height: 6.0,
                             ),
                             Text(
-                              'ONE-YEAR WITHOUT ADDS',
+                              S.of(context).premium_modal_get_premium_description,
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(

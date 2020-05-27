@@ -36,6 +36,8 @@ class DatabaseManager extends ChangeNotifier {
   static const maxNumOfRecentTags = 5;
 
   int swiperIndex = 0;
+  int dailyPicsForAds = 50;
+
   List<bool> picHasTag;
   List<int> sliderIndex;
 
@@ -309,7 +311,7 @@ class DatabaseManager extends ChangeNotifier {
       print('same day... increasing number of tagged photos today, now it is: ${userInfo.picsTaggedToday}');
 
       final RemoteConfig remoteConfig = await RemoteConfig.instance;
-      int dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
+      dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
       int mod = userInfo.picsTaggedToday % dailyPicsForAds;
 
       if (mod == 0) {

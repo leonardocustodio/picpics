@@ -85,6 +85,11 @@
   "gallery_access_permission": "Access permissions",
   "gallery_access_permission_description": "To start organizing your photos, we need authorization to access them",
 
-  "export_library": "Export Library"
+  "export_library": "Export Library",
+
+  "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
+  "premium_modal_watch_ad": "Watch video ad to continue",
+  "premium_modal_get_premium_title": "Get Premium Account",
+  "premium_modal_get_premium_description": "ALL FEATURES WITHOUT ADS"
 
 }

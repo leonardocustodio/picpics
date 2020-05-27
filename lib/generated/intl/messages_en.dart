@@ -21,7 +21,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
 
-  static m1(url) => "To organize all your photos go to ${url}";
+  static m1(number) => "You completed your ${number} free daily pics, do you want to continue?";
+
+  static m2(url) => "To organize all your photos go to ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -64,6 +66,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Photo Gallery"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Photo location"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Now your photos will be always organized"),
+    "premium_modal_description" : m1,
+    "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("ALL FEATURES WITHOUT ADS"),
+    "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("Get Premium Account"),
+    "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("Watch video ad to continue"),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("Rate this app"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Restore purchase"),
     "save" : MessageLookupByLibrary.simpleMessage("save"),
@@ -77,7 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("Suggestions"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Tag multiple photos at once"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("Take a look at this app!"),
-    "take_a_look_description" : m1,
+    "take_a_look_description" : m2,
     "time" : MessageLookupByLibrary.simpleMessage("Time"),
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("We bring a daily package for you to gradually organize your library."),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want."),

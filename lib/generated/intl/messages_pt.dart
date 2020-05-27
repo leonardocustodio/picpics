@@ -21,7 +21,9 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static m0(howMany) => "${Intl.plural(howMany, zero: 'Nenhuma foto selecionada', one: '1 foto selecionada', other: '${howMany} fotos selecionadas')}";
 
-  static m1(url) => "Para organizar suas fotos, veja neste link: ${url}";
+  static m1(number) => "Você completo seus ${number} pics diários gratuítos, deseja continuar?";
+
+  static m2(url) => "Para organizar suas fotos, veja neste link: ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
@@ -64,6 +66,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Galeria de fotos"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Local da foto"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Agora suas fotos estarão sempre organizadas"),
+    "premium_modal_description" : m1,
+    "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("Todos os recursos e sem anuncios"),
+    "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("Obter conta premium"),
+    "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("Assista ao anúncio para continuar"),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("Avalie esse app"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Restaurar compra"),
     "save" : MessageLookupByLibrary.simpleMessage("economize"),
@@ -77,7 +83,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("Sugestões"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Marque várias fotos de uma vez só"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("Dê uma olhada nesse aplicativo!"),
-    "take_a_look_description" : m1,
+    "take_a_look_description" : m2,
     "time" : MessageLookupByLibrary.simpleMessage("Horário"),
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("Trazemos diariamente um pacote para você organizer aos poucos sua biblioteca."),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Organize suas fotos adicionando tags, como \"família\", \"pets\", ou o que você quiser."),
