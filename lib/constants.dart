@@ -80,3 +80,36 @@ const kGrayTextStyle = TextStyle(
   fontStyle: FontStyle.normal,
   letterSpacing: -0.4099999964237213,
 );
+
+const kGraySettingsFieldTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  color: Color(0xff606566),
+  fontSize: 12,
+  fontWeight: FontWeight.w300,
+  fontStyle: FontStyle.normal,
+  letterSpacing: -0.4099999964237213,
+);
+
+const kGraySettingsValueTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  color: Color(0xff606566),
+  fontSize: 18,
+  fontWeight: FontWeight.w400,
+  fontStyle: FontStyle.normal,
+);
+
+const kGraySettingsBoldTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  color: Color(0xff979a9b),
+  fontSize: 16,
+  fontWeight: FontWeight.w700,
+  fontStyle: FontStyle.normal,
+  letterSpacing: -0.4099999964237213,
+);
+
+const kBottomSheetTextStyle = TextStyle(
+  color: Color(0xff707070),
+  fontSize: 16,
+  fontFamily: 'Lato',
+  fontWeight: FontWeight.w700,
+);

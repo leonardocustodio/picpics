@@ -11,9 +11,6 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
-import 'package:after_layout/after_layout.dart';
-import 'package:picPics/admob_manager.dart';
-import 'package:picPics/pic_screen.dart';
 import 'package:picPics/generated/l10n.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -23,7 +20,7 @@ class SettingsScreen extends StatefulWidget {
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver, AfterLayoutMixin<SettingsScreen> {
+class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   @override
   void dispose() {
     super.dispose();
@@ -62,8 +59,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 
     FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: goalIndex);
 
-    Ads.setScreen(HideAdScreen);
-
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
@@ -85,12 +80,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       child: Text(
                         S.of(context).cancel,
                         textScaleFactor: 1.0,
-                        style: TextStyle(
-                          color: Color(0xff707070),
-                          fontSize: 16,
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: kBottomSheetTextStyle,
                       ),
                     ),
                   ),
@@ -115,12 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         S.of(context).ok,
                         textScaleFactor: 1.0,
                         textAlign: TextAlign.end,
-                        style: TextStyle(
-                          color: Color(0xff707070),
-                          fontSize: 16,
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: kBottomSheetTextStyle,
                       ),
                     ),
                   ),
@@ -152,13 +137,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         );
       },
     );
-
-    Ads.setScreen(SettingsScreen.id);
   }
 
   void showTimePicker(BuildContext context) async {
-    Ads.setScreen(HideAdScreen);
-
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
@@ -182,12 +163,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       child: Text(
                         S.of(context).cancel,
                         textScaleFactor: 1.0,
-                        style: TextStyle(
-                          color: Color(0xff707070),
-                          fontSize: 16,
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: kBottomSheetTextStyle,
                       ),
                     ),
                   ),
@@ -212,12 +188,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         S.of(context).ok,
                         textScaleFactor: 1.0,
                         textAlign: TextAlign.end,
-                        style: TextStyle(
-                          color: Color(0xff707070),
-                          fontSize: 16,
-                          fontFamily: 'Lato',
-                          fontWeight: FontWeight.w700,
-                        ),
+                        style: kBottomSheetTextStyle,
                       ),
                     ),
                   ),
@@ -240,8 +211,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         );
       },
     );
-
-    Ads.setScreen(SettingsScreen.id);
   }
 
   void changeDailyChallenges(BuildContext context, bool value) async {
@@ -293,7 +262,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    print('#### INIT!!!!');
   }
 
   @override
@@ -301,23 +269,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     if (state == AppLifecycleState.resumed) {
       DatabaseManager.instance.checkNotificationPermission(shouldNotify: true);
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    print('#!#!#!#! did change dependencies');
-
-//    if (myBanner == null) {
-//      startBanner();
-//      displayBanner();
-//    }
-  }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    // Calling the same function "after layout" to resolve the issue.
-    print('after layout');
   }
 
   @override
@@ -332,11 +283,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
             children: <Widget>[
               CupertinoButton(
                 padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-                onPressed: () {
-                  print('Current tab in picScreen: ${DatabaseManager.instance.currentTab}');
-                  Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
-                  Navigator.pop(context);
-                },
+                onPressed: () => Navigator.pop(context),
                 child: Image.asset('lib/images/backarrowgray.png'),
               ),
               Expanded(
@@ -350,23 +297,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
-                          onPressed: () {
-                            DatabaseManager.instance.changeDailyChallenges();
-                          },
+                          onPressed: () => DatabaseManager.instance.changeDailyChallenges(),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
                                 S.of(context).daily_challenge,
                                 textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
+                                style: kGraySettingsFieldTextStyle,
                               ),
                               CupertinoSwitch(
                                 value: Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
@@ -390,34 +328,19 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
-                          onPressed: () {
-                            showGoalPicker(context);
-                          },
+                          onPressed: () => showGoalPicker(context),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
                                 S.of(context).daily_goal,
                                 textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
+                                style: kGraySettingsFieldTextStyle,
                               ),
                               Text(
                                 '${Provider.of<DatabaseManager>(context).userSettings.goal}',
                                 textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                ),
+                                style: kGraySettingsValueTextStyle,
                               ),
                             ],
                           ),
@@ -434,34 +357,19 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
-                          onPressed: () {
-                            showTimePicker(context);
-                          },
+                          onPressed: () => showTimePicker(context),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
                                 S.of(context).notification_time,
                                 textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
+                                style: kGraySettingsFieldTextStyle,
                               ),
                               Text(
                                 '${'${Provider.of<DatabaseManager>(context).userSettings.hourOfDay}'.padLeft(2, '0')}: ${'${Provider.of<DatabaseManager>(context).userSettings.minutesOfDay}'.padLeft(2, '0')}',
                                 textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                ),
+                                style: kGraySettingsValueTextStyle,
                               ),
                             ],
                           ),
@@ -472,16 +380,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       color: kLightGrayColor,
                       thickness: 1.0,
                     ),
-                    Spacer(
-//                      flex: 2,
-                        ),
+                    Spacer(),
                     Center(
                       child: Column(
                         children: <Widget>[
                           CupertinoButton(
-                            onPressed: () {
-                              shareApp(context);
-                            },
+                            onPressed: () => shareApp(context),
                             child: Container(
                               width: 166.0,
                               child: Row(
@@ -494,23 +398,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   Text(
                                     S.of(context).share_with_friends,
                                     textScaleFactor: 1.0,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff979a9b),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
-                                    ),
+                                    style: kGraySettingsBoldTextStyle,
                                   ),
                                 ],
                               ),
                             ),
                           ),
                           CupertinoButton(
-                            onPressed: () {
-                              rateDialog();
-                            },
+                            onPressed: () => rateDialog(),
                             child: Container(
                               width: 166.0,
                               child: Row(
@@ -523,14 +418,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   Text(
                                     S.of(context).rate_this_app,
                                     textScaleFactor: 1.0,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff979a9b),
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
-                                    ),
+                                    style: kGraySettingsBoldTextStyle,
                                   ),
                                 ],
                               ),
@@ -549,7 +437,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           if (DatabaseManager.instance.userSettings.isPremium) {
                             return;
                           }
-                          Ads.setScreen(PremiumScreen.id);
                           Navigator.pushNamed(context, PremiumScreen.id);
                         },
                         padding: const EdgeInsets.all(0),
@@ -566,46 +453,21 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                     ? S.of(context).you_are_premium
                                     : S.of(context).get_premium_now,
                                 textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kSecondaryColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
+                                style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
                               ),
                             ],
                           ),
-                          gradient: LinearGradient(colors: [Color(0xFFFFA4D1), Color(0xFFFFCC00)]),
+                          gradient: LinearGradient(
+                            colors: [
+                              Color(0xFFFFA4D1),
+                              Color(0xFFFFCC00),
+                            ],
+                          ),
                           strokeWidth: 2.0,
                           radius: Radius.circular(8.0),
                         ),
                       ),
                     ),
-//                    Spacer(
-//                      flex: 1,
-//                    ),
-//                    Container(
-//                      height: 44.0,
-//                      decoration: BoxDecoration(
-//                        gradient: kPrimaryGradient,
-//                        borderRadius: BorderRadius.circular(8.0),
-//                      ),
-//                      child: Center(
-//                        child: Text(
-//                          "Exportar biblioteca",
-//                          style: TextStyle(
-//                            fontFamily: 'Lato',
-//                            color: kWhiteColor,
-//                            fontSize: 16,
-//                            fontWeight: FontWeight.w700,
-//                            fontStyle: FontStyle.normal,
-//                            letterSpacing: -0.4099999964237213,
-//                          ),
-//                        ),
-//                      ),
-//                    ),
                   ],
                 ),
               ),
