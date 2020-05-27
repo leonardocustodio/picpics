@@ -5,10 +5,8 @@ import 'dart:async';
 
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
-import 'package:picPics/pic_screen.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
-import 'dart:math';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/model/pic.dart';
