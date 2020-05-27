@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
@@ -16,14 +17,23 @@ import 'package:flutter/services.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:hive/hive.dart';
-import 'package:notification_permissions/notification_permissions.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:uuid/uuid.dart';
+
+Future<void> initPlatformState() async {
+  if (kDebugMode) {
+    Purchases.setDebugLogsEnabled(true);
+  }
+  await Purchases.setup(
+    'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
+    appUserId: DatabaseManager.instance.userSettings.id,
+  );
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,6 +43,7 @@ void main() async {
 
   Ads.initialize();
   Ads.loadRewarded();
+
   DatabaseManager.instance.analytics = FirebaseAnalytics();
   DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
 
@@ -48,20 +59,15 @@ void main() async {
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
 
-  Future<void> initPlatformState() async {
-    Purchases.setDebugLogsEnabled(true);
-    await Purchases.setup("FccxPqqfiDFQRbkTkvorJKTrokkeNUMu");
-  }
-
   String initialRoute = PicScreen.id;
 
   if (userBox.length == 0) {
-    print('creating user entry...');
+    var uuid = Uuid();
 
     User user = User(
-      id: 'userId',
-      email: 'leonardo@custodio.me',
-      password: 'pass',
+      id: uuid.v4(),
+      email: null,
+      password: null,
       notifications: false,
       dailyChallenges: false,
       goal: 20,
@@ -130,7 +136,6 @@ class PicPicsApp extends StatefulWidget {
 class _PicPicsAppState extends State<PicPicsApp> {
   @override
   Widget build(BuildContext context) {
-    print('#@#@#@#@##@ THIS IS MAIN #@#@#@#@');
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MultiProvider(
