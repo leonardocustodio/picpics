@@ -3,13 +3,11 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/add_location.dart';
-import 'package:picPics/gallery_screen.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/model/pic.dart';
-import 'package:picPics/admob_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
@@ -138,7 +136,6 @@ class PhotoCard extends StatelessWidget {
                   child: CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
                     onPressed: () {
-                      Ads.setScreen(PhotoScreen.id);
                       DatabaseManager.instance.selectedPhoto = data;
                       print('Selected photo: ${data.id}');
 

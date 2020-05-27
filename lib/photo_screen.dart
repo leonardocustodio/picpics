@@ -43,7 +43,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
   @override
   void initState() {
     super.initState();
-    Ads.setScreen(PhotoScreen.id);
   }
 
   void changeOverlay() {
@@ -275,7 +274,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
                               CupertinoButton(
                                 padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-                                  Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
                                   Navigator.pop(context);
                                 },
                                 child: Image.asset('lib/images/backarrowwithdropshadow.png'),
@@ -367,7 +365,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       tagsKeys: picInfo.tags,
                                       tagStyle: TagStyle.MultiColored,
                                       addTagButton: () {
-                                        Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
                                         Navigator.pop(context, 'show_keyboard');
                                       },
                                       onTap: (tagName) {

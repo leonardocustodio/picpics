@@ -8,7 +8,6 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/photo_screen.dart';
-import 'package:picPics/gallery_screen.dart';
 import 'package:picPics/pic_screen.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:picPics/settings_screen.dart';
@@ -158,7 +157,6 @@ class _PicPicsAppState extends State<PicPicsApp> {
           LoginScreen.id: (context) => LoginScreen(),
           PicScreen.id: (context) => PicScreen(),
           PhotoScreen.id: (context) => PhotoScreen(),
-          GalleryScreen.id: (context) => GalleryScreen(),
           SettingsScreen.id: (context) => SettingsScreen(),
           AddLocationScreen.id: (context) => AddLocationScreen(),
           PremiumScreen.id: (context) => PremiumScreen(),

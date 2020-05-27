@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/settings_screen.dart';
-import 'package:picPics/admob_manager.dart';
 import 'package:picPics/database_manager.dart';
 
 class TopBar extends StatelessWidget {
@@ -84,7 +83,6 @@ class TopBar extends StatelessWidget {
               CupertinoButton(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 onPressed: () {
-                  Ads.setScreen(SettingsScreen.id);
                   Navigator.pushNamed(context, SettingsScreen.id);
                 },
                 child: Image.asset('lib/images/settings.png'),

@@ -24,7 +24,6 @@ import 'package:hive/hive.dart';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/image_item.dart';
-import 'package:flutter/gestures.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'dart:io';
 import 'package:picPics/admob_manager.dart';
@@ -358,7 +357,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //    swiperController.move(DatabaseManager.instance.swiperIndex(), animation: false);
     DatabaseManager.instance.setCurrentTab(index);
 //    swiperController.index = DatabaseManager.instance.swiperIndex();
-    Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
 
 //    if (index == 1) {
 //      print('#### moving to picture.... $picSwiper');
@@ -513,7 +511,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
                     onPressed: () {
-                      Ads.setScreen(HideAdScreen);
                       Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
                       int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
@@ -576,7 +573,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                 child: CupertinoButton(
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
-                    Ads.setScreen(HideAdScreen);
                     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
 //                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
                     tagsEditingController.text = '';
@@ -730,7 +726,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                 return;
               }
 
-              Ads.setScreen(HideAdScreen);
               Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
               tagsEditingController.text = '';
 
@@ -928,7 +923,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
-                                    Ads.setScreen(SettingsScreen.id);
                                     Navigator.pushNamed(context, SettingsScreen.id);
                                   },
                                   child: Image.asset('lib/images/settings.png'),
@@ -1012,7 +1006,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
-                                    Ads.setScreen(SettingsScreen.id);
                                     Navigator.pushNamed(context, SettingsScreen.id);
                                   },
                                   child: Image.asset('lib/images/settings.png'),
@@ -1101,7 +1094,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
-                                    Ads.setScreen(SettingsScreen.id);
                                     Navigator.pushNamed(context, SettingsScreen.id);
                                   },
                                   child: Image.asset('lib/images/settings.png'),
@@ -1437,7 +1429,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 CupertinoButton(
                                   onPressed: () {
                                     if (!DatabaseManager.instance.userSettings.isPremium) {
-                                      Ads.setScreen(PremiumScreen.id);
                                       Navigator.pushNamed(context, PremiumScreen.id);
                                       return;
                                     }
@@ -1500,7 +1491,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagName) {
                                         if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Ads.setScreen(PremiumScreen.id);
                                           Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
@@ -1508,7 +1498,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       },
                                       onDoubleTap: () {
                                         if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Ads.setScreen(PremiumScreen.id);
                                           Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
@@ -1534,7 +1523,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       },
                                       onSubmitted: (text) {
                                         if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Ads.setScreen(PremiumScreen.id);
                                           Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
@@ -1566,7 +1554,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagName) {
                                         if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Ads.setScreen(PremiumScreen.id);
                                           Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
@@ -1584,7 +1571,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                       },
                                       onDoubleTap: () {
                                         if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Ads.setScreen(PremiumScreen.id);
                                           Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
@@ -1663,7 +1649,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
                   dismissPhotoCard();
                 },
                 child: Container(
@@ -1850,10 +1835,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       CupertinoButton(
                         onPressed: () {
                           if (swiperIndex == 2) {
-//                            setState(() {
-//                              isAdVisible = true;
-//                            });
-                            Ads.setScreen(PicScreen.id, 1);
                             DatabaseManager.instance.finishedTutorial();
                             return;
                           }
