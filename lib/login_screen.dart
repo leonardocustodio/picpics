@@ -18,7 +18,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-//      backgroundColor: Color(0xffff6666),
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Container(
@@ -45,24 +44,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   Text(
                     S.of(context).welcome,
                     textScaleFactor: 1.0,
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: kWhiteColor,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      fontStyle: FontStyle.normal,
-                    ),
+                    style: kLoginDescriptionTextStyle,
                   ),
                   Text(
                     S.of(context).photos_always_organized,
                     textScaleFactor: 1.0,
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: kWhiteColor,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w700,
-                      fontStyle: FontStyle.normal,
-                    ),
+                    style: kLoginDescriptionTextStyle,
                   ),
                   Spacer(
                     flex: 2,
@@ -89,14 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           S.of(context).continue_string,
                           textScaleFactor: 1.0,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xfff5fafa),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
-                          ),
+                          style: kLoginButtonTextStyle,
                         ),
                       ),
                     ),
@@ -104,26 +84,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(
                     height: 40.0,
                   ),
-//                  Container(
-//                    height: 44.0,
-//                    decoration: BoxDecoration(
-//                      border: Border.all(color: kWhiteColor, width: 1.0),
-//                      borderRadius: BorderRadius.circular(8.0),
-//                    ),
-//                    child: Center(
-//                      child: Text(
-//                        "Criar conta",
-//                        style: TextStyle(
-//                          fontFamily: 'Lato',
-//                          color: kWhiteColor,
-//                          fontSize: 16,
-//                          fontWeight: FontWeight.w700,
-//                          fontStyle: FontStyle.normal,
-//                          letterSpacing: -0.4099999964237213,
-//                        ),
-//                      ),
-//                    ),
-//                  ),
                 ],
               ),
             ),

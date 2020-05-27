@@ -155,7 +155,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: kDebugMode,
         initialRoute: widget.initialRoute,
         navigatorObservers: [DatabaseManager.instance.observer],
         routes: {

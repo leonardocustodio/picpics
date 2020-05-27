@@ -129,3 +129,20 @@ const kPremiumButtonTextStyle = TextStyle(
   fontStyle: FontStyle.normal,
   letterSpacing: -0.4099999964237213,
 );
+
+const kLoginDescriptionTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  color: kWhiteColor,
+  fontSize: 28,
+  fontWeight: FontWeight.w700,
+  fontStyle: FontStyle.normal,
+);
+
+const kLoginButtonTextStyle = TextStyle(
+  fontFamily: 'Lato',
+  color: Color(0xfff5fafa),
+  fontSize: 16,
+  fontWeight: FontWeight.w700,
+  fontStyle: FontStyle.normal,
+  letterSpacing: -0.4099999964237213,
+);
