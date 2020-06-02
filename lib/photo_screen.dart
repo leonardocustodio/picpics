@@ -124,14 +124,19 @@ class _PhotoScreenState extends State<PhotoScreen> {
           },
         ),
       ),
-      childSize: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height),
+      childSize: Size(
+        MediaQuery.of(context).size.width,
+        MediaQuery.of(context).size.height,
+      ),
       onTapUp: (context, details, controllerValue) {
         print('On tap up');
         changeOverlay();
       },
-      initialScale: PhotoViewComputedScale.contained,
-      minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
-      maxScale: PhotoViewComputedScale.covered * 1.1,
+//      initialScale: PhotoViewComputedScale.contained,
+//      minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+//      maxScale: PhotoViewComputedScale.covered * 1.1,
+      minScale: 0.7,
+      maxScale: 3.0,
       heroAttributes: PhotoViewHeroAttributes(tag: entity.id),
     );
   }
@@ -140,7 +145,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
       onPressed: () {
-        print('clicked on thumbnail');
+        widget.galleryPageController.jumpToPage(index);
       },
       child: Container(
         height: 98,
@@ -209,7 +214,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               constraints: BoxConstraints.expand(),
               color: Color(0xff101010),
               child: PhotoViewGallery.builder(
-//                scrollPhysics: const BouncingScrollPhysics(),
+                scrollPhysics: const BouncingScrollPhysics(),
                 builder: _buildItem,
                 itemCount: DatabaseManager.instance.slideThumbPhotoIds.length,
                 loadingBuilder: (context, event) => Center(

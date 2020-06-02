@@ -246,8 +246,8 @@ class DatabaseManager extends ChangeNotifier {
     if (itemCount > 0) {
       sliderIndex = [];
       picHasTag = [];
-      int y = 0;
-      for (var item in pathProvider.orderedList) {
+      for (int x = 0; x < pathProvider.orderedList.length; x++) {
+        var item = pathProvider.orderedList[x];
         Pic pic = DatabaseManager.instance.getPicInfo(item.id);
         if (pic != null) {
           if (pic.tags.length > 0) {
@@ -256,10 +256,12 @@ class DatabaseManager extends ChangeNotifier {
           }
         }
         picHasTag.add(false);
-        sliderIndex.add(y);
-        y++;
+        sliderIndex.add(x);
       }
     }
+
+    print('## Total Item Count: $itemCount');
+    print('## Slider Count: ${sliderIndex.length}');
   }
 
   void setCurrentTab(int tab, {bool notify = true}) {

@@ -239,8 +239,9 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //      });
     });
 
-    _changeThrottle = Throttle(onCall: _onAssetChange);
-    PhotoManager.addChangeCallback(_changeThrottle.call);
+//    _changeThrottle = Throttle(onCall: _onAssetChange);
+//    PhotoManager.addChangeCallback(_changeThrottle.call);
+    PhotoManager.addChangeCallback(_onAssetChange);
     PhotoManager.startChangeNotify();
 
     if (DatabaseManager.instance.userSettings.tutorialCompleted == true && DatabaseManager.instance.userSettings.notifications == true) {
@@ -292,8 +293,20 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     super.dispose();
   }
 
-  void _onAssetChange() {
-    print('asset changed');
+  void _onAssetChange(MethodCall call) {
+    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
+
+    List<dynamic> deletedPics = call.arguments['delete'];
+    print(deletedPics);
+
+    if (deletedPics.length > 0) {
+      print('### deleted pics from library!');
+      for (var pic in deletedPics) {
+        print('Pic deleted Id: ${pic['id']}');
+        DatabaseManager.instance.deletedPic(pic['id']);
+      }
+    }
+
 //    _onPhotoRefresh();
   }
 
@@ -778,6 +791,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 
     int orderedIndex = DatabaseManager.instance.sliderIndex[index];
+    print('Slider index in index $index: $orderedIndex');
     var data = pathProvider.orderedList[orderedIndex];
 
     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
