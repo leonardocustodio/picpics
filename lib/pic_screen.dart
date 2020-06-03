@@ -294,26 +294,28 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   void _onAssetChange(MethodCall call) {
-//    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
-//
-//    List<dynamic> deletedPics = call.arguments['delete'];
-//    print(deletedPics);
-//
-//    if (deletedPics.length > 0) {
-//      print('### deleted pics from library!');
-//      for (var pic in deletedPics) {
-//        print('Pic deleted Id: ${pic['id']}');
-//        DatabaseManager.instance.deletedPic(pic['id']);
-//      }
-//    }
-//
+    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
+
+    List<dynamic> deletedPics = call.arguments['delete'];
+    print(deletedPics);
+
+    if (deletedPics.length > 0) {
+      print('### deleted pics from library!');
+      for (var pic in deletedPics) {
+        print('Pic deleted Id: ${pic['id']}');
+        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
+
+        if (entity != null) {
+          DatabaseManager.instance.deletedPic(entity);
+        }
+      }
+    }
+
 //    _onPhotoRefresh();
   }
 
   void changePage(int index) {
-//    print()
-    print(DatabaseManager.instance.sliderIndex);
-
     if (index == 0) {
       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
       List<String> photosIds = [];
@@ -465,6 +467,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     List<Widget> widgetsArray = [];
     List<bool> isTitleWidget = [];
+//    List<int> isDeletedPic = [];
 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 
@@ -560,6 +563,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
             ));
           } else {
             print('Did not find picture: $photoId');
+//            int index = totalTags + totalPics - 1;
+//            isDeletedPic.add(index);
             widgetsArray.add(
               Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -620,6 +625,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           ));
         } else {
           print('Did not find picture: $photoId');
+//          int index = totalPics - 1;
+//          isDeletedPic.add(index);
           widgetsArray.add(
             Padding(
               padding: const EdgeInsets.all(5.0),
@@ -639,6 +646,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //    print('Number of tags: ${DatabaseManager.instance.allTags.length}');
 
     print('New Padding: $newPadding');
+//    print('Deleted pic index: $isDeletedPic');
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,
