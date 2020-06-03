@@ -382,25 +382,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //    }
   }
 
-  showWatchAdModal(BuildContext context) {
-    DatabaseManager.instance.setCanTagToday(false);
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return WatchAdModal(
-          onPressedWatchAdd: () {
-            Navigator.pop(context);
-            RewardedVideoAd.instance.show();
-          },
-          onPressedGetPremium: () {
-            Navigator.popAndPushNamed(context, PremiumScreen.id);
-          },
-        );
-      },
-    );
-  }
-
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
@@ -742,11 +723,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   });
                 }
                 print('Pics Selected Length: ${picsSelected.length}');
-                return;
-              }
-
-              if (!DatabaseManager.instance.canTagToday()) {
-                showWatchAdModal(context);
                 return;
               }
 
@@ -1145,10 +1121,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                   DatabaseManager.instance.swiperIndex = index;
                                   picSwiper = index;
                                   print('picSwiper = $index');
-                                  bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
-                                  if (shouldShowAds) {
-                                    showWatchAdModal(context);
-                                  }
                                 },
                               ),
                             ),

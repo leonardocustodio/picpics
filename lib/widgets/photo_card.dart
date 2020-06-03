@@ -1,3 +1,4 @@
+import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
@@ -6,12 +7,14 @@ import 'package:picPics/add_location.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:picPics/premium_screen.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/asset_provider.dart';
+import 'package:picPics/widgets/watch_ad_modal.dart';
 
 class PhotoCard extends StatelessWidget {
   final AssetEntity data;
@@ -35,6 +38,24 @@ class PhotoCard extends StatelessWidget {
     this.showEditTagModal,
     this.onPressedTrash,
   });
+
+  showWatchAdModal(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return WatchAdModal(
+          onPressedWatchAdd: () {
+            Navigator.pop(context);
+            RewardedVideoAd.instance.show();
+          },
+          onPressedGetPremium: () {
+            Navigator.popAndPushNamed(context, PremiumScreen.id);
+          },
+        );
+      },
+    );
+  }
 
   String dateFormat(DateTime dateTime) {
     var formatter = DateFormat.yMMMEd();
@@ -297,6 +318,11 @@ class PhotoCard extends StatelessWidget {
                     print('do nothing');
                   },
                   onDoubleTap: () {
+                    if (!DatabaseManager.instance.canTagToday()) {
+                      showWatchAdModal(context);
+                      return;
+                    }
+
                     DatabaseManager.instance.removeTagFromPic(
                       tagKey: DatabaseManager.instance.selectedTagKey,
                       photoId: picInfo.photoId,
@@ -318,6 +344,17 @@ class PhotoCard extends StatelessWidget {
                   onSubmitted: (text) {
                     print('return');
                     if (text != '') {
+                      if (!DatabaseManager.instance.canTagToday()) {
+                        tagsEditingController.clear();
+                        DatabaseManager.instance.tagsSuggestions(
+                          '',
+                          data.id,
+                          excludeTags: picInfo.tags,
+                        );
+                        showWatchAdModal(context);
+                        return;
+                      }
+
                       print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
                       DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
@@ -372,6 +409,11 @@ class PhotoCard extends StatelessWidget {
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: showEditTagModal,
                     onTap: (tagName) {
+                      if (!DatabaseManager.instance.canTagToday()) {
+                        showWatchAdModal(context);
+                        return;
+                      }
+
                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
                       DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
                       DatabaseManager.instance.addTag(

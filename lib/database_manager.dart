@@ -314,7 +314,7 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  Future<bool> increaseTodayTaggedPics() async {
+  void increaseTodayTaggedPics() async {
     var userBox = Hive.box('user');
 
     User userInfo = userBox.getAt(0);
@@ -337,7 +337,8 @@ class DatabaseManager extends ChangeNotifier {
 
       if (mod == 0) {
         print('### CALL ADS!!!');
-        return true;
+        setCanTagToday(false);
+        return;
       }
     } else {
       print('not same day... resetting counter....');
@@ -345,7 +346,7 @@ class DatabaseManager extends ChangeNotifier {
       userInfo.lastTaggedPicDate = dateNow;
     }
     userBox.putAt(0, userInfo);
-    return false;
+    setCanTagToday(true);
   }
 
   void setUserAsPremium() {
@@ -808,6 +809,9 @@ class DatabaseManager extends ChangeNotifier {
     if (noTaggedPhoto == true) {
       noTaggedPhoto = false;
     }
+
+    // Increase today tagged pics everytime it adds a new pic to database.
+    DatabaseManager.instance.increaseTodayTaggedPics();
   }
 
   Future<void> sharePics({List<String> photoIds}) async {
