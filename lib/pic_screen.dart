@@ -294,23 +294,26 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   void _onAssetChange(MethodCall call) {
-    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
-
-    List<dynamic> deletedPics = call.arguments['delete'];
-    print(deletedPics);
-
-    if (deletedPics.length > 0) {
-      print('### deleted pics from library!');
-      for (var pic in deletedPics) {
-        print('Pic deleted Id: ${pic['id']}');
-        DatabaseManager.instance.deletedPic(pic['id']);
-      }
-    }
-
+//    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
+//
+//    List<dynamic> deletedPics = call.arguments['delete'];
+//    print(deletedPics);
+//
+//    if (deletedPics.length > 0) {
+//      print('### deleted pics from library!');
+//      for (var pic in deletedPics) {
+//        print('Pic deleted Id: ${pic['id']}');
+//        DatabaseManager.instance.deletedPic(pic['id']);
+//      }
+//    }
+//
 //    _onPhotoRefresh();
   }
 
   void changePage(int index) {
+//    print()
+    print(DatabaseManager.instance.sliderIndex);
+
     if (index == 0) {
       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
       List<String> photosIds = [];

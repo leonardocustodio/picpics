@@ -210,11 +210,30 @@ class DatabaseManager extends ChangeNotifier {
 
     if (indexInOrderedList != null) {
       pathProvider.orderedList.remove(entity);
-      sliderIndex.remove(indexInOrderedList);
+
+      // Supondo que pic está nas não taggeadas
+      reorderSliderIndex(indexInOrderedList);
       picHasTag.removeAt(indexInOrderedList);
       print('Removed pic in ordered list number $indexInOrderedList');
     }
     notifyListeners();
+  }
+
+  void reorderSliderIndex(int removeIndex) {
+    int indexOfValue = sliderIndex.indexOf(removeIndex);
+
+    List<int> newSliderIndex = [];
+    for (int x = 0; x < sliderIndex.length; x++) {
+      if (x < indexOfValue) {
+        newSliderIndex.add(sliderIndex[x]);
+      } else if (x == indexOfValue) {
+        print('Skipping value ${sliderIndex[x]}');
+      } else {
+        newSliderIndex.add(sliderIndex[x - 1]);
+      }
+    }
+
+    sliderIndex = newSliderIndex;
   }
 
   void checkPicHasTags(String photoId) {
