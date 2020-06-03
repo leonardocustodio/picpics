@@ -36,13 +36,16 @@ platform :android do
     #changelog = File.read("../changelog.txt")
 
     # submit build to firebase app distribution
-    firebase_app_distribution(
-        app: "1:782873848258:android:9c6e970f39f436db1f8e5b",
-        release_notes: "New beta build",
-        groups: "picpics",
-        apk_path: "/Users/custodio/FlutterProjects/picpics/build/app/outputs/apk/release/app-release.apk",
-        firebase_cli_path: "/Users/custodio/.nvm/versions/node/v8.17.0/bin/firebase",
-    )
+    #firebase_app_distribution(
+    #    app: "1:782873848258:android:9c6e970f39f436db1f8e5b",
+    #    release_notes: "New beta build",
+    #    groups: "picpics",
+    #    apk_path: "/Users/custodio/FlutterProjects/picpics/build/app/outputs/apk/release/app-release.apk",
+    #    firebase_cli_path: "/Users/custodio/.nvm/versions/node/v8.17.0/bin/firebase",
+    #)
+
+    upload_to_play_store(track: 'beta')
+
   end
 
   desc "Deploy a new version to the Google Play"
