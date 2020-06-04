@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:loading/loading.dart';
 import 'package:picPics/components/arrow_painter.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +19,7 @@ class PremiumScreen extends StatefulWidget {
 
 class _PremiumScreenState extends State<PremiumScreen> {
   List<Package> _items = [];
+  bool isLoading = false;
 
   void getOffers() async {
     try {
@@ -33,15 +36,27 @@ class _PremiumScreenState extends State<PremiumScreen> {
   }
 
   void makePurchase(BuildContext context, Package package) async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
       if (purchaserInfo.entitlements.all["Premium"].isActive) {
         // Unlock that great "pro" content
+        setState(() {
+          isLoading = false;
+        });
+
         print('know you are fucking pro!');
         DatabaseManager.instance.setUserAsPremium();
         Navigator.pop(context);
       }
     } on PlatformException catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
         print(e);
@@ -51,15 +66,26 @@ class _PremiumScreenState extends State<PremiumScreen> {
   }
 
   void restorePurchase() async {
+    setState(() {
+      isLoading = true;
+    });
+
     try {
       PurchaserInfo restoredInfo = await Purchases.restoreTransactions();
       // ... check restored purchaserInfo to see if entitlement is now active
       if (restoredInfo.entitlements.all["Premium"].isActive) {
+        setState(() {
+          isLoading = false;
+        });
         // Unlock that great "pro" content
         print('know you are fucking pro!');
         DatabaseManager.instance.setUserAsPremium();
         Navigator.pop(context);
       } else {
+        setState(() {
+          isLoading = false;
+        });
+
         showDialog<void>(
           context: context,
           builder: (BuildContext context) {
@@ -371,43 +397,54 @@ class _PremiumScreenState extends State<PremiumScreen> {
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: Container(
-          constraints: BoxConstraints.expand(),
-          decoration: new BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('lib/images/background.png'),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: SafeArea(
-            child: Container(
-              margin: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: Color(0xFFF5FAFA).withOpacity(0.76),
-                borderRadius: BorderRadius.circular(8.0),
+        child: Stack(
+          children: <Widget>[
+            Container(
+              constraints: BoxConstraints.expand(),
+              decoration: new BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('lib/images/background.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
-              child: Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: this._renderInApps(context),
-                    ),
+              child: SafeArea(
+                child: Container(
+                  margin: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF5FAFA).withOpacity(0.76),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  Positioned(
-                    right: 0,
-                    child: CupertinoButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      child: Image.asset('lib/images/closegrayico.png'),
-                    ),
+                  child: Stack(
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: this._renderInApps(context),
+                        ),
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: CupertinoButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Image.asset('lib/images/closegrayico.png'),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             ),
-          ),
+            if (isLoading)
+              Container(
+                color: Colors.black.withOpacity(0.6),
+                child: Center(
+                  child: Loading(indicator: BallPulseIndicator(), size: 100.0),
+                ),
+              ),
+          ],
         ),
       ),
     );
