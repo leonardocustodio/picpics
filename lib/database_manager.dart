@@ -559,16 +559,16 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   Pic getPicInfo(String photoId) {
-    print('loading pic info from: $photoId');
+//    print('loading pic info from: $photoId');
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
-      print('found pic!!!');
+//      print('found pic!!!');
       Pic getPic = picsBox.get(photoId);
-      print('@@@ Lat: ${getPic.latitude} - Long ${getPic.longitude} - PhotoId: $photoId');
+//      print('@@@ Lat: ${getPic.latitude} - Long ${getPic.longitude} - PhotoId: $photoId');
       return getPic;
     }
-    print('did not found pic!!!');
+//    print('did not found pic!!!');
 
     return null;
   }

@@ -217,8 +217,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //      isAdVisible = true;
 //      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
 //    }
-    DatabaseManager.instance.setCurrentTab(0, notify: false);
-    _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
 
     KeyboardVisibility.onChange.listen((bool visible) {
       print('keyboard: $visible');
@@ -268,8 +266,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         Ads.loadRewarded();
       }
     };
-
-    DatabaseManager.instance.checkHasTaggedPhotos();
   }
 
   @override
@@ -880,6 +876,11 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     } else {
       print('Already loaded');
     }
+
+    DatabaseManager.instance.checkHasTaggedPhotos();
+    DatabaseManager.instance.setCurrentTab(1, notify: false);
+    _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
+    changePage(1);
   }
 
   void afterBuild() {
@@ -1102,28 +1103,37 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               ],
                             ),
                           ),
-                          Expanded(
-                            child: CarouselSlider.builder(
-                              itemCount: Provider.of<DatabaseManager>(context).sliderIndex.length ?? 0,
-                              carouselController: carouselController,
-                              itemBuilder: (BuildContext context, int index) {
-                                print('calling index $index');
-                                return _buildPhotoSlider(context, index);
-                              },
-                              options: CarouselOptions(
-                                initialPage: DatabaseManager.instance.swiperIndex,
-                                enableInfiniteScroll: true,
-                                height: double.maxFinite,
-                                viewportFraction: 0.95,
-                                enlargeCenterPage: false,
-                                autoPlayCurve: Curves.fastOutSlowIn,
-                                onPageChanged: (index, reason) async {
-                                  DatabaseManager.instance.swiperIndex = index;
-                                  picSwiper = index;
-                                  print('picSwiper = $index');
-                                },
+                          if (Provider.of<DatabaseManager>(context).sliderIndex == null)
+                            Expanded(
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                                ),
                               ),
                             ),
+                          if (Provider.of<DatabaseManager>(context).sliderIndex != null)
+                            Expanded(
+                              child: CarouselSlider.builder(
+                                itemCount: Provider.of<DatabaseManager>(context).sliderIndex.length,
+                                carouselController: carouselController,
+                                itemBuilder: (BuildContext context, int index) {
+                                  print('calling index $index');
+                                  return _buildPhotoSlider(context, index);
+                                },
+                                options: CarouselOptions(
+                                  initialPage: DatabaseManager.instance.swiperIndex,
+                                  enableInfiniteScroll: true,
+                                  height: double.maxFinite,
+                                  viewportFraction: 0.95,
+                                  enlargeCenterPage: false,
+                                  autoPlayCurve: Curves.fastOutSlowIn,
+                                  onPageChanged: (index, reason) async {
+                                    DatabaseManager.instance.swiperIndex = index;
+                                    picSwiper = index;
+                                    print('picSwiper = $index');
+                                  },
+                                ),
+                              ),
 //                            Swiper(
 //                              controller: swiperController,
 //                              loop: true,
@@ -1153,7 +1163,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 //                                ],
 //                              ),
 //                            ),
-                          ),
+                            ),
                         ],
                       ),
                     ),
