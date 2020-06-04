@@ -206,7 +206,7 @@ class TagsList extends StatelessWidget {
                   padding: const EdgeInsets.all(0),
                   minSize: 30,
                   onPressed: () {
-                    print('tapped');
+                    onSubmitted(textEditingController.text);
                   },
                   child: Container(
                     child: Image.asset('lib/images/plusaddtagico.png'),

@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       var result = await PhotoManager.requestPermission();
                       if (result) {
                         DatabaseManager.instance.setupPathList();
-                        Navigator.pushNamed(context, PicScreen.id);
+                        Navigator.pushReplacementNamed(context, PicScreen.id);
                       } else {
                         // fail
                         /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
