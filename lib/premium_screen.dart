@@ -58,6 +58,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       });
 
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
+//      print('Error Code: $errorCode');
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
         print(e);
 //        showError(e);
@@ -320,7 +321,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         paintingStyle: PaintingStyle.fill,
                       ),
                       child: Container(
-                        width: 69.0,
+                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
                         height: 24.0,
                         child: Center(
                           child: Text(
