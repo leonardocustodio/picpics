@@ -1709,7 +1709,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
@@ -1731,6 +1731,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       ),
                       Expanded(
                         child: new Swiper(
+                          loop: false,
                           itemBuilder: (BuildContext context, int index) {
                             String text = '';
                             Image image;
@@ -1853,7 +1854,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           ),
                           child: Center(
                             child: Text(
-                              swiperIndex == 2 ? S.of(context).close : S.of(context).next,
+                              swiperIndex == 2 ? S.of(context).start : S.of(context).next,
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(

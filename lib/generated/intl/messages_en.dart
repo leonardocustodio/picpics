@@ -79,6 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "settings" : MessageLookupByLibrary.simpleMessage("Settings"),
     "share_with_friends" : MessageLookupByLibrary.simpleMessage("Share with friends"),
     "sign" : MessageLookupByLibrary.simpleMessage("Sign"),
+    "start" : MessageLookupByLibrary.simpleMessage("Start"),
     "start_tagging" : MessageLookupByLibrary.simpleMessage("Start tagging"),
     "suggestions" : MessageLookupByLibrary.simpleMessage("Suggestions"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Tag multiple photos at once"),

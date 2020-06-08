@@ -144,6 +144,15 @@ class S {
     );
   }
 
+  String get start {
+    return Intl.message(
+      'Start',
+      name: 'start',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get tutorial_just_swipe {
     return Intl.message(
       'After adding the tags to your photo, just swipe to go to the next one.',
