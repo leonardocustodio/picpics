@@ -141,6 +141,12 @@ class PhotoProvider extends ChangeNotifier {
       filterOption: option,
     );
 
+    if (galleryList.length == 0) {
+      this.list.clear();
+      print('No photos in gallery...');
+      return;
+    }
+
     galleryList.sort((s1, s2) {
       return s2.assetCount.compareTo(s1.assetCount);
     });

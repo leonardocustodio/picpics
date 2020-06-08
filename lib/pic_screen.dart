@@ -11,6 +11,7 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/top_bar.dart';
@@ -95,6 +96,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
   bool isAdVisible = false;
   bool isLoading = false;
+  bool deviceHasNoPics = false;
 
   void changeIndex() {
     print('teste');
@@ -315,6 +317,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   void changePage(int index) {
+    if (deviceHasNoPics) {
+      _sendCurrentTabToAnalytics(index);
+      print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
+      DatabaseManager.instance.setCurrentTab(index);
+      return;
+    }
+
     if (index == 0) {
       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
       List<String> photosIds = [];
@@ -859,18 +868,33 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     );
   }
 
+  void _setDeviceHasNoPics() {
+    print('This device has no pics!!!!');
+    setState(() {
+      deviceHasNoPics = true;
+    });
+    return;
+  }
+
   void _loadPhotos() async {
+    print('Loading photos.....');
     if (PhotoProvider.instance.list.isEmpty) {
       await PhotoProvider.instance.refreshGalleryList();
       print('LISTA: ${PhotoProvider.instance.list}');
 
+      if (PhotoProvider.instance.list.length == 0) {
+        _setDeviceHasNoPics();
+        return;
+      }
+
       PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
       await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
-//      _checkTaggedPics();
+//      _checkTaggedPics()
+
       DatabaseManager.instance.sliderHasPics();
-      setState(() {});
-    } else {
-      print('Already loaded');
+      setState(() {
+        deviceHasNoPics = false;
+      });
     }
 
     DatabaseManager.instance.checkHasTaggedPhotos();
@@ -1011,7 +1035,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               ],
                             ),
                           ),
-                          if (pathProvider != null && pathProvider.isLoaded != null)
+                          if (deviceHasNoPics) DeviceHasNoPics(),
+                          if (pathProvider != null && pathProvider.isLoaded != null && !deviceHasNoPics)
                             Positioned(
                               left: 16.0,
                               top: topOffsetFirstTab,
@@ -1050,7 +1075,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 ],
                               ),
                             ),
-                          if (pathProvider != null && pathProvider.isLoaded != null)
+                          if (pathProvider != null && pathProvider.isLoaded != null && !deviceHasNoPics)
                             Padding(
                               padding: isAdVisible && !DatabaseManager.instance.userSettings.isPremium
                                   ? const EdgeInsets.only(top: 48.0, bottom: 60.0)
@@ -1099,13 +1124,17 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                               ],
                             ),
                           ),
-                          if (Provider.of<DatabaseManager>(context).sliderIndex == null)
+                          if (Provider.of<DatabaseManager>(context).sliderIndex == null && !deviceHasNoPics)
                             Expanded(
                               child: Center(
                                 child: CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
                                 ),
                               ),
+                            ),
+                          if (Provider.of<DatabaseManager>(context).sliderIndex == null && deviceHasNoPics)
+                            Expanded(
+                              child: DeviceHasNoPics(),
                             ),
                           if (Provider.of<DatabaseManager>(context).sliderIndex != null)
                             Expanded(
@@ -1174,7 +1203,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                     child: SafeArea(
                       child: Stack(
                         children: <Widget>[
-                          if (Provider.of<DatabaseManager>(context).noTaggedPhoto)
+                          if (deviceHasNoPics) DeviceHasNoPics(),
+                          if (Provider.of<DatabaseManager>(context).noTaggedPhoto && !deviceHasNoPics)
                             TopBar(
                               children: <Widget>[
                                 Expanded(
@@ -1233,7 +1263,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 ),
                               ],
                             ),
-                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
+                          if (!Provider.of<DatabaseManager>(context).noTaggedPhoto && !deviceHasNoPics)
                             TopBar(
                               searchEditingController: searchEditingController,
                               searchFocusNode: searchFocusNode,
@@ -1345,7 +1375,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             ),
                           if (!Provider.of<DatabaseManager>(context).noTaggedPhoto &&
                               !hideTitleThirdTab &&
-                              !Provider.of<DatabaseManager>(context).searchingTags)
+                              !Provider.of<DatabaseManager>(context).searchingTags &&
+                              !deviceHasNoPics)
                             Positioned(
                               left: 19.0,
                               top: topOffsetThirdTab,

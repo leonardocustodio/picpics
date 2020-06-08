@@ -552,6 +552,24 @@ class S {
     );
   }
 
+  String get device_has_no_pics {
+    return Intl.message(
+      'This device has no photo in the gallery, so there is no photo that can be tagged.',
+      name: 'device_has_no_pics',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get open_gallery {
+    return Intl.message(
+      'Open gallery',
+      name: 'open_gallery',
+      desc: '',
+      args: [],
+    );
+  }
+
   String get gallery_access_permission {
     return Intl.message(
       'Access permissions',

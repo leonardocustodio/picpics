@@ -82,6 +82,8 @@
 
   "save_location": "Confirmar localização",
 
+  "device_has_no_pics": "Esse dispositivo não tem nenhuma foto na galeria, assim não há nenhuma foto que possa ser taggeada.",
+  "open_gallery": "Abrir galeria",
 
   "gallery_access_permission": "Permissão de acesso",
   "gallery_access_permission_description": "Para começarmos a organizar suas fotos, precisamos de autorização para acessá-las\"",

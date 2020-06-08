@@ -82,6 +82,8 @@
 
   "save_location": "Save location",
 
+  "device_has_no_pics": "This device has no photo in the gallery, so there is no photo that can be tagged.",
+  "open_gallery": "Open gallery",
 
   "gallery_access_permission": "Access permissions",
   "gallery_access_permission_description": "To start organizing your photos, we need authorization to access them",
