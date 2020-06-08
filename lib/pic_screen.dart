@@ -1736,14 +1736,14 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                             Image image;
 
                             if (index == 0) {
-                              text = S.of(context).tutorial_daily_package;
-                              image = Image.asset('lib/images/tutorialfirstimage.png');
+                              text = S.of(context).tutorial_just_swipe;
+                              image = Image.asset('lib/images/tutorialthirdimage.png');
                             } else if (index == 1) {
                               text = S.of(context).tutorial_however_you_want;
                               image = Image.asset('lib/images/tutorialsecondimage.png');
                             } else {
-                              text = S.of(context).tutorial_just_swipe;
-                              image = Image.asset('lib/images/tutorialthirdimage.png');
+                              text = S.of(context).tutorial_daily_package;
+                              image = Image.asset('lib/images/tutorialfirstimage.png');
                             }
 
                             return Column(
