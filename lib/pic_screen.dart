@@ -516,7 +516,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
 
           if (data == null) {
-            print('Found a deleted picture');
+//            print('Found a deleted picture');
             continue;
           }
 
