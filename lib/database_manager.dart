@@ -185,12 +185,12 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void deletedPic(AssetEntity entity) {
+  void deletedPic(AssetEntity entity, {bool removeFromDb = true}) {
     var picsBox = Hive.box('pics');
     var tagsBox = Hive.box('tags');
 
     Pic getPic = picsBox.get(entity.id);
-    if (getPic != null) {
+    if (getPic != null && removeFromDb == true) {
       print('found pic');
 
       for (var tag in getPic.tags) {
