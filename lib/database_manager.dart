@@ -826,12 +826,17 @@ class DatabaseManager extends ChangeNotifier {
         continue;
       }
 
-      var bytes = await data.thumbDataWithSize(
-        data.size.width.toInt(),
-        data.size.height.toInt(),
-        format: ThumbFormat.jpeg,
-      );
-      bytesPhotos['$x.jpg'] = bytes;
+      if (Platform.isAndroid) {
+        var bytes = await data.originBytes;
+        bytesPhotos['$x.jpg'] = bytes;
+      } else {
+        var bytes = await data.thumbDataWithSize(
+          data.size.width.toInt(),
+          data.size.height.toInt(),
+          format: ThumbFormat.jpeg,
+        );
+        bytesPhotos['$x.jpg'] = bytes;
+      }
       x++;
     }
 
