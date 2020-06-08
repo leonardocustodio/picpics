@@ -41,6 +41,46 @@ class _PhotoScreenState extends State<PhotoScreen> {
   @override
   void initState() {
     super.initState();
+
+    createdDate = DatabaseManager.instance.selectedPhoto.createDateTime;
+    picInfo = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
+
+    if (picInfo == null) {
+      picInfo = Pic(
+        DatabaseManager.instance.selectedPhoto.id,
+        DatabaseManager.instance.selectedPhoto.createDateTime,
+        DatabaseManager.instance.selectedPhoto.latitude,
+        DatabaseManager.instance.selectedPhoto.longitude,
+        DatabaseManager.instance.selectedPhoto.latitude,
+        DatabaseManager.instance.selectedPhoto.longitude,
+        null,
+        null,
+        [],
+      );
+    }
+  }
+
+  void loadPicInfo(int index) {
+    AssetEntity entity = getEntity(DatabaseManager.instance.slideThumbPhotoIds[index]);
+
+    setState(() {
+      createdDate = entity.createDateTime;
+      picInfo = DatabaseManager.instance.getPicInfo(entity.id);
+
+      if (picInfo == null) {
+        picInfo = Pic(
+          entity.id,
+          entity.createDateTime,
+          entity.latitude,
+          entity.longitude,
+          entity.latitude,
+          entity.longitude,
+          null,
+          null,
+          [],
+        );
+      }
+    });
   }
 
   void changeOverlay() {
@@ -169,47 +209,11 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   @override
   Widget build(BuildContext context) {
-    createdDate = Provider.of<DatabaseManager>(context).selectedPhoto.createDateTime;
-    picInfo = Provider.of<DatabaseManager>(context).getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-
-    if (picInfo == null) {
-      picInfo = Pic(
-        DatabaseManager.instance.selectedPhoto.id,
-        DatabaseManager.instance.selectedPhoto.createDateTime,
-        DatabaseManager.instance.selectedPhoto.latitude,
-        DatabaseManager.instance.selectedPhoto.longitude,
-        DatabaseManager.instance.selectedPhoto.latitude,
-        DatabaseManager.instance.selectedPhoto.longitude,
-        null,
-        null,
-        [],
-      );
-    }
-
-    //                FutureBuilder<File>(
-//                  future: DatabaseManager.instance.selectedPhoto.file,
-//                  builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-//                    var futureData = snapshot.data;
-//                    if (snapshot.connectionState == ConnectionState.done && futureData != null) {
-//                      return PhotoView(
-//                        imageProvider: FileImage(futureData),
-//                      );
-//                    }
-//                    return Container();
-//                  },
-//                ),
-//              ),
-
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Stack(
           children: <Widget>[
-//            GestureDetector(
-//              onTap: () {
-//                changeOverlay();
-//              },
-//              child:
             Container(
               constraints: BoxConstraints.expand(),
               color: Color(0xff101010),
@@ -231,22 +235,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
                 ),
                 pageController: widget.galleryPageController,
                 onPageChanged: (index) {
-                  print('page changed');
+                  loadPicInfo(index);
                 },
                 scrollDirection: Axis.horizontal,
               ),
-//
-//                PhotoView.customChild(
-//                  initialScale: 1.0,
-//                  minScale: 1.0,
-//                  child: ImageItem(
-//                    entity: DatabaseManager.instance.selectedPhoto,
-//                    size: MediaQuery.of(context).size.height.toInt(),
-//                    fit: BoxFit.contain,
-//                    backgroundColor: Colors.black,
-//                  ),
-//                ),
-//            ),
             ),
             if (overlay)
               Column(

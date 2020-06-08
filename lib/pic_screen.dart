@@ -290,23 +290,23 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   void _onAssetChange(MethodCall call) {
-    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
-
-    List<dynamic> deletedPics = call.arguments['delete'];
-    print(deletedPics);
-
-    if (deletedPics.length > 0) {
-      print('### deleted pics from library!');
-      for (var pic in deletedPics) {
-        print('Pic deleted Id: ${pic['id']}');
-        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
-
-        if (entity != null) {
-          DatabaseManager.instance.deletedPic(entity);
-        }
-      }
-    }
+//    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
+//
+//    List<dynamic> deletedPics = call.arguments['delete'];
+//    print(deletedPics);
+//
+//    if (deletedPics.length > 0) {
+//      print('### deleted pics from library!');
+//      for (var pic in deletedPics) {
+//        print('Pic deleted Id: ${pic['id']}');
+//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
+//
+//        if (entity != null) {
+//          DatabaseManager.instance.deletedPic(entity);
+//        }
+//      }
+//    }
 
 //    _onPhotoRefresh();
   }
@@ -418,6 +418,18 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     }
   }
 
+  bool checkTagHasOneValidPic(Tag tag) {
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+
+    for (String photoId in tag.photoId) {
+      var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+      if (data != null) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Widget _buildTaggedGridView() {
     bool isFiltered = DatabaseManager.instance.searchActiveTags.isNotEmpty;
     var picsBox = Hive.box('pics');
@@ -444,7 +456,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     List<Widget> widgetsArray = [];
     List<bool> isTitleWidget = [];
-//    List<int> isDeletedPic = [];
 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 
@@ -456,6 +467,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           print('skipping because tag has no pictures...');
           continue;
         }
+
+        bool oneValidPic = checkTagHasOneValidPic(tag);
+        if (!oneValidPic) {
+          print('skipping because tag has no valid pictures...');
+          continue;
+        }
+
         totalTags += 1;
         isTitleWidget.add(true);
         widgetsArray.add(Container(
@@ -492,77 +510,17 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
           ),
         ));
         for (String photoId in tag.photoId) {
+          var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+
+          if (data == null) {
+            print('Found a deleted picture');
+            continue;
+          }
+
           totalPics += 1;
           isTitleWidget.add(false);
 
-          var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-
-          if (data != null) {
-            slideThumbPhotoIds.add(data.id);
-            widgetsArray.add(RepaintBoundary(
-              child: Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () {
-                      Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                      int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
-                      tagsEditingController.text = '';
-
-                      DatabaseManager.instance.tagsSuggestions(
-                        tagsEditingController.text,
-                        data.id,
-                        excludeTags: picInfo.tags,
-                        notify: false,
-                      );
-
-                      print('PicTags: ${picInfo.tags}');
-
-                      selectedPhotoData = data;
-                      selectedPhotoPicInfo = picInfo;
-                      selectedPhotoIndex = indexOfPic;
-
-                      setState(() {
-                        modalPhotoCard = true;
-                      });
-                    },
-                    child: ImageItem(
-                      entity: data,
-                      size: 150,
-                      backgroundColor: Colors.grey[400],
-                    ),
-                  ),
-                ),
-              ),
-            ));
-          } else {
-            print('Did not find picture: $photoId');
-//            int index = totalTags + totalPics - 1;
-//            isDeletedPic.add(index);
-            widgetsArray.add(
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(5.0),
-                  child: Container(
-                    color: Colors.grey[400],
-                  ),
-                ),
-              ),
-            );
-          }
-        }
-      }
-      DatabaseManager.instance.slideThumbPhotoIds = slideThumbPhotoIds;
-    } else {
-      for (var photoId in DatabaseManager.instance.searchPhotosIds) {
-        totalPics += 1;
-        var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-
-        if (data != null) {
+          slideThumbPhotoIds.add(data.id);
           widgetsArray.add(RepaintBoundary(
             child: Padding(
               padding: const EdgeInsets.all(5.0),
@@ -572,7 +530,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
                     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-//                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+                    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                    int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
                     tagsEditingController.text = '';
 
                     DatabaseManager.instance.tagsSuggestions(
@@ -586,6 +545,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
                     selectedPhotoData = data;
                     selectedPhotoPicInfo = picInfo;
+                    selectedPhotoIndex = indexOfPic;
 
                     setState(() {
                       modalPhotoCard = true;
@@ -600,22 +560,55 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
               ),
             ),
           ));
-        } else {
-          print('Did not find picture: $photoId');
-//          int index = totalPics - 1;
-//          isDeletedPic.add(index);
-          widgetsArray.add(
-            Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: Container(
-                  color: Colors.grey[400],
+        }
+      }
+      DatabaseManager.instance.slideThumbPhotoIds = slideThumbPhotoIds;
+    } else {
+      for (var photoId in DatabaseManager.instance.searchPhotosIds) {
+        var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+        if (data == null) {
+          print('Found a deleted picture');
+          continue;
+        }
+
+        totalPics += 1;
+        widgetsArray.add(RepaintBoundary(
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(5.0),
+              child: CupertinoButton(
+                padding: const EdgeInsets.all(0),
+                onPressed: () {
+                  Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+//                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+                  tagsEditingController.text = '';
+
+                  DatabaseManager.instance.tagsSuggestions(
+                    tagsEditingController.text,
+                    data.id,
+                    excludeTags: picInfo.tags,
+                    notify: false,
+                  );
+
+                  print('PicTags: ${picInfo.tags}');
+
+                  selectedPhotoData = data;
+                  selectedPhotoPicInfo = picInfo;
+
+                  setState(() {
+                    modalPhotoCard = true;
+                  });
+                },
+                child: ImageItem(
+                  entity: data,
+                  size: 150,
+                  backgroundColor: Colors.grey[400],
                 ),
               ),
             ),
-          );
-        }
+          ),
+        ));
       }
     }
 
