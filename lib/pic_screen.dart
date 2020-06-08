@@ -1774,22 +1774,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                           itemCount: 3,
                           controller: tutorialSwiperController,
                           onIndexChanged: (index) {
-                            if (index == 1) {
-                              print('Requesting notification....');
-
-                              if (Platform.isAndroid) {
-                                var userBox = Hive.box('user');
-                                DatabaseManager.instance.userSettings.notifications = true;
-                                DatabaseManager.instance.userSettings.dailyChallenges = true;
-                                userBox.putAt(0, DatabaseManager.instance.userSettings);
-                              } else {
-                                PushNotificationsManager push = PushNotificationsManager();
-                                push.init();
-                              }
-                            } else if (index == 2) {
-                              DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
-                            }
-
                             setState(() {
                               swiperIndex = index;
                             });
@@ -1839,6 +1823,18 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                       CupertinoButton(
                         onPressed: () {
                           if (swiperIndex == 2) {
+                            print('Requesting notification....');
+
+                            if (Platform.isAndroid) {
+                              var userBox = Hive.box('user');
+                              DatabaseManager.instance.userSettings.notifications = true;
+                              DatabaseManager.instance.userSettings.dailyChallenges = true;
+                              userBox.putAt(0, DatabaseManager.instance.userSettings);
+                            } else {
+                              PushNotificationsManager push = PushNotificationsManager();
+                              push.init();
+                            }
+                            DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
                             DatabaseManager.instance.finishedTutorial();
                             return;
                           }
