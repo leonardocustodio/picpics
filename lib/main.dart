@@ -22,7 +22,8 @@ import 'package:picPics/admob_manager.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+//import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 Future<void> initPlatformState() async {
@@ -47,9 +48,9 @@ void main() async {
   DatabaseManager.instance.analytics = FirebaseAnalytics();
   DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
 
-//  await Hive.initFlutter();
-  var dir = await getApplicationDocumentsDirectory();
-  Hive.init(dir.path);
+  await Hive.initFlutter();
+//  var dir = await getApplicationDocumentsDirectory();
+//  Hive.init(dir.path);
 
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());

@@ -258,6 +258,13 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
+  void resetSlider() {
+    swiperIndex = 0;
+    sliderIndex = null;
+    picHasTag = null;
+    notifyListeners();
+  }
+
   void sliderHasPics() {
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
@@ -281,6 +288,7 @@ class DatabaseManager extends ChangeNotifier {
 
     print('## Total Item Count: $itemCount');
     print('## Slider Count: ${sliderIndex.length}');
+    notifyListeners();
   }
 
   void setCurrentTab(int tab, {bool notify = true}) {

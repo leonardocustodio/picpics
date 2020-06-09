@@ -320,12 +320,13 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
         print('Pic created Id: ${pic['id']}');
         AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
         AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-        pathProvider.orderedList.add(picEntity);
+        pathProvider.addAsset(picEntity);
       }
 
       DatabaseManager.instance.sliderHasPics();
-
       setState(() {
+        picSwiper = 0;
+        carouselController.jumpToPage(0);
         if (deviceHasNoPics) {
           deviceHasNoPics = false;
         }
@@ -673,8 +674,6 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
   }
 
   Widget _buildGridView() {
-    print('### Number of photos: ${PhotoProvider.instance.list[0].assetCount}');
-
     scrollControllerFirstTab = ScrollController(initialScrollOffset: offsetFirstTab);
     scrollControllerFirstTab.addListener(() {
       movedGridPositionFirstTab();
@@ -682,6 +681,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
+    print('#!#@#!# Number of photos: $itemCount');
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,

@@ -250,6 +250,11 @@ class AssetPathProvider extends ChangeNotifier {
     }
   }
 
+  void addAsset(AssetEntity entity) {
+    orderedList.insert(0, entity);
+    notifyListeners();
+  }
+
   Future onRefresh() async {
     await path.refreshPathProperties();
     final list = await path.getAssetListPaged(0, loadCount);
