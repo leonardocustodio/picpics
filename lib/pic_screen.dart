@@ -291,11 +291,12 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     super.dispose();
   }
 
-  void _onAssetChange(MethodCall call) {
+  void _onAssetChange(MethodCall call) async {
     print('#!#!#!#!#!#! asset changed: ${call.arguments}');
 
+    List<dynamic> createdPics = call.arguments['create'];
     List<dynamic> deletedPics = call.arguments['delete'];
-    print(deletedPics);
+//    print(deletedPics);
 
     if (deletedPics.length > 0) {
       print('### deleted pics from library!');
@@ -313,7 +314,23 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       }
     }
 
-//    _onPhotoRefresh();
+    if (createdPics.length > 0) {
+      print('#### created pics!!!');
+      for (var pic in createdPics) {
+        print('Pic created Id: ${pic['id']}');
+        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
+        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+        pathProvider.orderedList.add(picEntity);
+      }
+
+      DatabaseManager.instance.sliderHasPics();
+
+      setState(() {
+        if (deviceHasNoPics) {
+          deviceHasNoPics = false;
+        }
+      });
+    }
   }
 
   void changePage(int index) {
@@ -876,7 +893,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
     return;
   }
 
-  void _loadPhotos() async {
+  void _loadPhotos({shouldReload = false}) async {
     print('Loading photos.....');
     if (PhotoProvider.instance.list.isEmpty) {
       await PhotoProvider.instance.refreshGalleryList();
