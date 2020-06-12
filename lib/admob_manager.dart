@@ -23,16 +23,17 @@ class Ads {
 
   static void loadRewarded() {
     if (Platform.isAndroid) {
-      RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo);
+//      RewardedVideoAd.testAdUnitId
+      RewardedVideoAd.instance.load(adUnitId: androidRewardedId, targetingInfo: targetingInfo);
     } else {
-      RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo);
+      RewardedVideoAd.instance.load(adUnitId: iosRewardedId, targetingInfo: targetingInfo);
     }
     print('Did load rewarded!!!');
   }
 
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-    keywords: <String>['foo', 'bar'],
-    contentUrl: 'http://foo.com/bar.html',
+//    keywords: <String>['foo', 'bar'],
+//    contentUrl: 'http://foo.com/bar.html',
     childDirected: false,
     nonPersonalizedAds: false,
     testDevices: <String>[],
