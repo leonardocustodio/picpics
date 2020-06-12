@@ -93,6 +93,17 @@
   "premium_modal_description": "Você completo seus {number} pics diários gratuítos, deseja continuar?",
   "premium_modal_watch_ad": "Assista ao anúncio para continuar",
   "premium_modal_get_premium_title": "Obter conta premium",
-  "premium_modal_get_premium_description": "Todos os recursos e sem anuncios"
+  "premium_modal_get_premium_description": "Todos os recursos e sem anuncios",
+
+  "family_tag": "Família",
+  "travel_tag": "Viagens",
+  "pets_tag": "Pets",
+  "selfies_tag": "Selfies",
+  "screenshots_tag": "Sreenshots",
+  "foods_tag": "Comidas",
+  "sports_tag": "Sports",
+  "home_tag": "Casa",
+  "work_tag": "Trabalho",
+  "parties_tag": "Festas"
 
 }

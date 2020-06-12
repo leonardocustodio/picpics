@@ -85,27 +85,6 @@ void main() async {
     userBox.add(user);
     DatabaseManager.instance.userSettings = user;
     initialRoute = LoginScreen.id;
-
-    Tag tag1 = Tag('Família', []);
-    Tag tag2 = Tag('Viagens', []);
-    Tag tag3 = Tag('Pets', []);
-    Tag tag4 = Tag('Selfies', []);
-    Tag tag5 = Tag('Screenshots', []);
-    Tag tag6 = Tag('Comidas', []);
-    Tag tag7 = Tag('Esportes', []);
-    Tag tag8 = Tag('Casa', []);
-
-    Map<String, Tag> entries = {
-      DatabaseManager.instance.encryptTag('Família'): tag1,
-      DatabaseManager.instance.encryptTag('Viagens'): tag2,
-      DatabaseManager.instance.encryptTag('Pets'): tag3,
-      DatabaseManager.instance.encryptTag('Selfies'): tag4,
-      DatabaseManager.instance.encryptTag('Screenshots'): tag5,
-      DatabaseManager.instance.encryptTag('Comidas'): tag6,
-      DatabaseManager.instance.encryptTag('Esportes'): tag7,
-      DatabaseManager.instance.encryptTag('Casa'): tag8,
-    };
-    tagsBox.putAll(entries);
   } else {
     DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();

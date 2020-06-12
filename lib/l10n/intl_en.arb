@@ -93,6 +93,16 @@
   "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
   "premium_modal_watch_ad": "Watch video ad to continue",
   "premium_modal_get_premium_title": "Get Premium Account",
-  "premium_modal_get_premium_description": "ALL FEATURES WITHOUT ADS"
+  "premium_modal_get_premium_description": "ALL FEATURES WITHOUT ADS",
 
+  "family_tag": "Family",
+  "travel_tag": "Travel",
+  "pets_tag": "Pets",
+  "selfies_tag": "Selfies",
+  "screenshots_tag": "Sreenshots",
+  "foods_tag": "Foods",
+  "sports_tag": "Sports",
+  "home_tag": "Home",
+  "work_tag": "Work",
+  "parties_tag": "Parties"
 }

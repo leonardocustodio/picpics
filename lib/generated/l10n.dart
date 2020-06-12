@@ -632,6 +632,96 @@ class S {
       args: [],
     );
   }
+
+  String get family_tag {
+    return Intl.message(
+      'Family',
+      name: 'family_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get travel_tag {
+    return Intl.message(
+      'Travel',
+      name: 'travel_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get pets_tag {
+    return Intl.message(
+      'Pets',
+      name: 'pets_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get selfies_tag {
+    return Intl.message(
+      'Selfies',
+      name: 'selfies_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get screenshots_tag {
+    return Intl.message(
+      'Sreenshots',
+      name: 'screenshots_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get foods_tag {
+    return Intl.message(
+      'Foods',
+      name: 'foods_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get sports_tag {
+    return Intl.message(
+      'Sports',
+      name: 'sports_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get home_tag {
+    return Intl.message(
+      'Home',
+      name: 'home_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get work_tag {
+    return Intl.message(
+      'Work',
+      name: 'work_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  String get parties_tag {
+    return Intl.message(
+      'Parties',
+      name: 'parties_tag',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
