@@ -132,45 +132,45 @@ class _PremiumScreenState extends State<PremiumScreen> {
     super.dispose();
   }
 
-  List<Widget> _renderInApps(BuildContext context) {
-    var isPremium = DatabaseManager.instance.userSettings.isPremium;
+  List<Widget> _premiumBenefits(BuildContext context) {
+    //    var isPremium = DatabaseManager.instance.userSettings.isPremium;
 
     List<Widget> widgets = [
       Spacer(
         flex: 1,
       ),
-      Image.asset('lib/images/bigpremiumlogo.png'),
       Text(
         S.of(context).get_premium_title,
         textScaleFactor: 1.0,
-        style: TextStyle(
-          fontFamily: 'Lato',
-          color: kPrimaryColor,
-          fontSize: 24,
+        style: const TextStyle(
+          color: kPinkColor,
           fontWeight: FontWeight.w400,
+          fontFamily: "Lato",
           fontStyle: FontStyle.normal,
-          letterSpacing: -0.4099999964237213,
+          fontSize: 36.0,
         ),
+      ),
+      SizedBox(
+        height: 12.0,
       ),
       Text(
         S.of(context).get_premium_description,
-        textScaleFactor: 1.0,
         style: TextStyle(
-          fontFamily: 'Lato',
-          color: kPrimaryColor,
-          fontSize: 12,
+          color: kPrimaryColor.withOpacity(0.8),
           fontWeight: FontWeight.w400,
+          fontFamily: "Lato",
           fontStyle: FontStyle.normal,
+          fontSize: 18.0,
         ),
       ),
       Spacer(
-        flex: 3,
+        flex: 4,
       ),
       Padding(
         padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
         child: Row(
           children: <Widget>[
-            Image.asset('lib/images/starrateapp.png'),
+            Image.asset('lib/images/pinkstar.png'),
             SizedBox(
               width: 16.0,
             ),
@@ -188,33 +188,11 @@ class _PremiumScreenState extends State<PremiumScreen> {
           ],
         ),
       ),
-//      Padding(
-//        padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
-//        child: Row(
-//          children: <Widget>[
-//            Image.asset('lib/images/starrateapp.png'),
-//            SizedBox(
-//              width: 16.0,
-//            ),
-//            Text(
-//              S.of(context).export_all_gallery,
-//              textScaleFactor: 1.0,
-//              style: TextStyle(
-//                fontFamily: 'Lato',
-//                color: Color(0xff707070),
-//                fontSize: 16,
-//                fontWeight: FontWeight.w400,
-//                fontStyle: FontStyle.normal,
-//              ),
-//            ),
-//          ],
-//        ),
-//      ),
       Padding(
         padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
         child: Row(
           children: <Widget>[
-            Image.asset('lib/images/starrateapp.png'),
+            Image.asset('lib/images/pinkstar.png'),
             SizedBox(
               width: 16.0,
             ),
@@ -233,10 +211,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.only(left: 18.0),
+        padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
         child: Row(
           children: <Widget>[
-            Image.asset('lib/images/starrateapp.png'),
+            Image.asset('lib/images/pinkstar.png'),
             SizedBox(
               width: 16.0,
             ),
@@ -254,23 +232,41 @@ class _PremiumScreenState extends State<PremiumScreen> {
           ],
         ),
       ),
-      Spacer(
-        flex: 5,
+      Padding(
+        padding: const EdgeInsets.only(left: 18.0),
+        child: Row(
+          children: <Widget>[
+            Image.asset('lib/images/pinkstar.png'),
+            SizedBox(
+              width: 16.0,
+            ),
+            Text(
+              'Cancel anytime',
+              textScaleFactor: 1.0,
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff707070),
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+              ),
+            ),
+          ],
+        ),
       ),
-      // Add buttons (position 10)
       Spacer(
-        flex: 1,
+        flex: 4,
       ),
     ];
 
-    if (_items.length == 0) {
-      widgets.insert(
-          10,
-          CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-          ));
+    return widgets;
+  }
 
-      return widgets;
+  Widget _renderInApps(BuildContext context) {
+    if (_items.length == 0) {
+      return CircularProgressIndicator(
+        valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+      );
     }
 
     var yearSubs = _items.firstWhere((e) => e.packageType == PackageType.annual, orElse: null);
@@ -279,17 +275,43 @@ class _PremiumScreenState extends State<PremiumScreen> {
     double save = 100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
     print('Save: $save');
 
-    widgets.insert(
-      10,
-      Column(
-        children: <Widget>[
-          CupertinoButton(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+        Expanded(
+          child: CupertinoButton(
+            padding: const EdgeInsets.all(0),
+            onPressed: () {
+              makePurchase(context, monthSubs);
+            },
+            child: Container(
+              height: 65.0,
+              decoration: BoxDecoration(
+                gradient: kPrimaryGradient,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Center(
+                child: Text(
+                  "${S.of(context).sign} ${monthSubs.product.priceString}\n${S.of(context).month}",
+                  textScaleFactor: 1.0,
+                  textAlign: TextAlign.center,
+                  style: kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
+                ),
+              ),
+            ),
+          ),
+        ),
+        SizedBox(
+          width: 16.0,
+        ),
+        Expanded(
+          child: CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
               makePurchase(context, yearSubs);
             },
             child: Container(
-              height: 63.0,
+              height: 102.0,
               child: Stack(
                 children: <Widget>[
                   Positioned(
@@ -297,15 +319,17 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     left: 0,
                     right: 0,
                     child: Container(
-                      height: 44.0,
+                      height: 65.0,
                       decoration: BoxDecoration(
+                        color: Color(0x4cffffff),
                         borderRadius: BorderRadius.circular(8.0),
                         border: Border.all(color: kPinkColor, width: 1.0),
                       ),
                       child: Center(
                         child: Text(
-                          "${S.of(context).sign} ${yearSubs.product.priceString}/${S.of(context).year}",
+                          "${S.of(context).sign} ${yearSubs.product.priceString}\n${S.of(context).year}",
                           textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
                           style: kPremiumButtonTextStyle,
                         ),
                       ),
@@ -343,54 +367,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
               ),
             ),
           ),
-          SizedBox(
-            height: 16.0,
-          ),
-          CupertinoButton(
-            padding: const EdgeInsets.all(0),
-            onPressed: () {
-              makePurchase(context, monthSubs);
-            },
-            child: Container(
-              height: 44.0,
-              decoration: BoxDecoration(
-                gradient: kPrimaryGradient,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Center(
-                child: Text(
-                  "${S.of(context).sign} ${monthSubs.product.priceString}/${S.of(context).month}",
-                  textScaleFactor: 1.0,
-                  style: kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 8.0,
-          ),
-          CupertinoButton(
-            onPressed: () {
-              restorePurchase();
-            },
-            child: Text(
-              S.of(context).restore_purchase,
-              textScaleFactor: 1.0,
-              style: const TextStyle(
-                fontWeight: FontWeight.w700,
-                color: kPrimaryColor,
-                decoration: TextDecoration.underline,
-                fontFamily: "Lato",
-                fontStyle: FontStyle.normal,
-                fontSize: 14.0,
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
-
-    return widgets;
   }
 
   @override
@@ -408,29 +387,111 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   fit: BoxFit.cover,
                 ),
               ),
-              child: SafeArea(
-                child: Container(
-                  margin: const EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Color(0xFFF5FAFA).withOpacity(0.76),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Stack(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Color(0xFFF5FAFA).withOpacity(0.76),
+                ),
+                child: SafeArea(
+                  bottom: false,
+                  child: Column(
                     children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: this._renderInApps(context),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          CupertinoButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Image.asset('lib/images/backarrowgray.png'),
+                          ),
+                          CupertinoButton(
+                            onPressed: () {
+                              restorePurchase();
+                            },
+                            child: Text(
+                              S.of(context).restore_purchase,
+                              textScaleFactor: 1.0,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xff979a9b),
+                                decoration: TextDecoration.underline,
+                                fontFamily: "Lato",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14.0,
+                                letterSpacing: -0.4099999964237213,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Expanded(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 24.0,
+                            vertical: 4.0,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              ...this._premiumBenefits(context),
+                              this._renderInApps(context),
+                              Center(
+                                child: RichText(
+                                  text: TextSpan(
+                                    children: [
+                                      TextSpan(
+                                          style: const TextStyle(
+                                              color: const Color(0xff606566),
+                                              fontWeight: FontWeight.w400,
+                                              fontFamily: "Lato",
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 12.0),
+                                          text: "The subscription is "),
+                                      TextSpan(
+                                          style: const TextStyle(
+                                              color: const Color(0xff606566),
+                                              fontWeight: FontWeight.w700,
+                                              fontFamily: "Lato",
+                                              fontStyle: FontStyle.normal,
+                                              fontSize: 12.0),
+                                          text: "auto-renewable.")
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Spacer(
+                                flex: 2,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                      Positioned(
-                        right: 0,
-                        child: CupertinoButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Image.asset('lib/images/closegrayico.png'),
+                      Container(
+                        width: double.infinity,
+                        margin: EdgeInsets.symmetric(horizontal: 24.0),
+                        decoration: BoxDecoration(
+                          color: Color(0x99ffffff),
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(12.0),
+                            topRight: Radius.circular(12.0),
+                          ),
+                        ),
+                        child: SafeArea(
+                          top: false,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Text(
+                              "Privacy Policy & Terms of use",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                color: const Color(0xff606566),
+                                fontWeight: FontWeight.w600,
+                                fontFamily: "Lato",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 9.0,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                     ],

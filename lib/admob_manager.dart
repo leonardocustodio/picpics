@@ -9,6 +9,10 @@ const String iosRewardedId = 'ca-app-pub-5152146538991892/3698742406';
 const String androidRewardedId = 'ca-app-pub-5152146538991892/6096647360';
 const String HideAdScreen = 'HideAd';
 
+//static final String testAdUnitId = Platform.isAndroid
+//    ? 'ca-app-pub-3940256099942544/5224354917'
+//    : 'ca-app-pub-3940256099942544/1712485313';
+
 class Ads {
 //  static BannerAd _bannerAd;
 
@@ -26,17 +30,19 @@ class Ads {
 //      RewardedVideoAd.testAdUnitId
       RewardedVideoAd.instance.load(adUnitId: androidRewardedId, targetingInfo: targetingInfo);
     } else {
-      RewardedVideoAd.instance.load(adUnitId: iosRewardedId, targetingInfo: targetingInfo);
+      RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo).catchError((e) {
+        print(e.toString());
+      });
     }
     print('Did load rewarded!!!');
   }
 
   static const MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-//    keywords: <String>['foo', 'bar'],
-//    contentUrl: 'http://foo.com/bar.html',
+    keywords: <String>['pic', 'image', 'pictures', 'photos', 'photography', 'album', 'manager', 'filter'],
+    contentUrl: 'https://www.inovatso.com.br',
     childDirected: false,
     nonPersonalizedAds: false,
-    testDevices: <String>[],
+    testDevices: <String>['00008020-0009251E1A84002E', 'BBBB5C82882E2809449515237DD8EC25'],
   );
 
 //  static BannerAd _createBannerAd() {

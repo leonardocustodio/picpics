@@ -265,6 +265,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
       }
 
       if (event == RewardedVideoAdEvent.closed || event == RewardedVideoAdEvent.failedToLoad) {
+        print('Failed to load or closed');
         Ads.loadRewarded();
       }
     };
