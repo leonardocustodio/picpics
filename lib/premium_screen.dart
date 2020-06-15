@@ -9,6 +9,7 @@ import 'package:picPics/database_manager.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -118,6 +119,14 @@ class _PremiumScreenState extends State<PremiumScreen> {
     } on PlatformException catch (e) {
       // Error restoring purchases
       print(e);
+    }
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
     }
   }
 
@@ -479,17 +488,57 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         child: SafeArea(
                           top: false,
                           child: Padding(
-                            padding: const EdgeInsets.only(top: 16.0),
-                            child: Text(
-                              "Privacy Policy & Terms of use",
-                              textAlign: TextAlign.center,
-                              style: const TextStyle(
-                                color: const Color(0xff606566),
-                                fontWeight: FontWeight.w600,
-                                fontFamily: "Lato",
-                                fontStyle: FontStyle.normal,
-                                fontSize: 9.0,
-                              ),
+                            padding: const EdgeInsets.only(top: 6.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                CupertinoButton(
+                                  onPressed: () {
+                                    _launchURL('https://www.inovatso.com.br/picpics/privacy');
+                                  },
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                  minSize: 32.0,
+                                  child: Text(
+                                    "Privacy Policy",
+                                    style: const TextStyle(
+                                      color: const Color(0xff606566),
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Lato",
+                                      fontStyle: FontStyle.normal,
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 10.0,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  "  &   ",
+                                  style: const TextStyle(
+                                    color: const Color(0xff606566),
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: "Lato",
+                                    fontStyle: FontStyle.normal,
+                                    fontSize: 10.0,
+                                  ),
+                                ),
+                                CupertinoButton(
+                                  onPressed: () {
+                                    _launchURL('https://www.inovatso.com.br/picpics/terms');
+                                  },
+                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                  minSize: 32.0,
+                                  child: Text(
+                                    "Terms of Use",
+                                    style: const TextStyle(
+                                      color: const Color(0xff606566),
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: "Lato",
+                                      fontStyle: FontStyle.normal,
+                                      decoration: TextDecoration.underline,
+                                      fontSize: 10.0,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),

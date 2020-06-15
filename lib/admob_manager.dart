@@ -28,7 +28,7 @@ class Ads {
   static void loadRewarded() {
     if (Platform.isAndroid) {
 //      RewardedVideoAd.testAdUnitId
-      RewardedVideoAd.instance.load(adUnitId: androidRewardedId, targetingInfo: targetingInfo);
+      RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo);
     } else {
       RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo).catchError((e) {
         print(e.toString());
