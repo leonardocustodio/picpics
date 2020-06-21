@@ -311,10 +311,10 @@ class PhotoCard extends StatelessWidget {
                 ),
                 TagsList(
                   tagsKeys: picInfo.tags,
-                  showTagsNames: List.filled(picInfo.tags.length, true),
                   addTagField: true,
                   textEditingController: tagsEditingController,
                   showEditTagModal: showEditTagModal,
+                  shouldChangeToSwipeMode: true,
                   onTap: (tagName) {
                     print('do nothing');
                   },
@@ -407,7 +407,6 @@ class PhotoCard extends StatelessWidget {
                   child: TagsList(
                     title: S.of(context).suggestions,
                     tagsKeys: DatabaseManager.instance.suggestionTags[picInfo.photoId],
-                    showTagsNames: List.filled(DatabaseManager.instance.suggestionTags[picInfo.photoId].length, true),
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: showEditTagModal,
                     onTap: (tagName) {

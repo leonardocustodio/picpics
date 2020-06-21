@@ -14,9 +14,8 @@ enum TagStyle {
   GrayOutlined,
 }
 
-class TagsList extends StatelessWidget {
+class TagsList extends StatefulWidget {
   final List<String> tagsKeys;
-  final List<bool> showTagsNames;
   final TextEditingController textEditingController;
   final bool addTagField;
   final Function addTagButton;
@@ -28,10 +27,10 @@ class TagsList extends StatelessWidget {
   final Function onSubmitted;
   final Function onChanged;
   final Function showEditTagModal;
+  final bool shouldChangeToSwipeMode;
 
   const TagsList({
     @required this.tagsKeys,
-    @required this.showTagsNames,
     this.tagStyle = TagStyle.MultiColored,
     this.textEditingController,
     this.addTagField = false,
@@ -43,10 +42,18 @@ class TagsList extends StatelessWidget {
     this.onChanged,
     this.title,
     @required this.showEditTagModal,
+    this.shouldChangeToSwipeMode = false,
   });
 
+  @override
+  _TagsListState createState() => _TagsListState();
+}
+
+class _TagsListState extends State<TagsList> {
+  int showSwiperInIndex;
+
   Widget _buildTagsWidget(BuildContext context) {
-    if (tagsKeys == null) {
+    if (widget.tagsKeys == null) {
       return Container();
     }
 
@@ -76,11 +83,10 @@ class TagsList extends StatelessWidget {
     }
 
     List<Widget> tagsWidgets = [];
-    print('Tags in TagsList: $tagsKeys');
+    print('Tags in TagsList: ${widget.tagsKeys}');
 
-    for (int i = 0; i < tagsKeys.length; i++) {
-      String tagKey = tagsKeys[i];
-      bool showTagName = showTagsNames[i];
+    for (int i = 0; i < widget.tagsKeys.length; i++) {
+      String tagKey = widget.tagsKeys[i];
       var mod = i % 4;
 
       String tagName = DatabaseManager.instance.getTagName(tagKey);
@@ -88,33 +94,43 @@ class TagsList extends StatelessWidget {
       tagsWidgets.add(
         GestureDetector(
           onTap: () {
+            if (widget.shouldChangeToSwipeMode) {
+              setState(() {
+                if (showSwiperInIndex == null) {
+                  showSwiperInIndex = widget.tagsKeys.indexOf(tagKey);
+                } else {
+                  showSwiperInIndex = null;
+                }
+              });
+            }
+
             Vibrate.feedback(FeedbackType.success);
             DatabaseManager.instance.selectedTagKey = tagKey;
-            onTap(tagName);
+            widget.onTap(tagName);
           },
           onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
             DatabaseManager.instance.selectedTagKey = tagKey;
-            onDoubleTap();
+            widget.onDoubleTap();
           },
           onLongPress: () {
             DatabaseManager.instance.selectedTagKey = tagKey;
-            showEditTagModal();
+            widget.showEditTagModal();
           },
           child: Container(
-            decoration: tagStyle == TagStyle.MultiColored
+            decoration: widget.tagStyle == TagStyle.MultiColored
                 ? BoxDecoration(
                     gradient: getGradient(mod),
                     borderRadius: BorderRadius.circular(19.0),
                   )
                 : kGrayBoxDecoration,
-            child: !showTagName
+            child: showSwiperInIndex != i
                 ? Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Text(
                       tagName,
                       textScaleFactor: 1.0,
-                      style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                      style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                     ),
                   )
                 : CustomAnimation<double>(
@@ -173,7 +189,7 @@ class TagsList extends StatelessWidget {
                               child: Text(
                                 tagName,
                                 textScaleFactor: 1.0,
-                                style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                                style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                               ),
                             ),
                           ),
@@ -187,7 +203,7 @@ class TagsList extends StatelessWidget {
                                 alignment: Alignment.center,
                                 fit: BoxFit.contain,
                                 animation: 'arrow_left',
-                                color: kSecondaryColor,
+                                color: kWhiteColor,
                               ),
                             ),
                           ),
@@ -196,7 +212,7 @@ class TagsList extends StatelessWidget {
                             child: Text(
                               S.of(context).delete,
                               textScaleFactor: 1.0,
-                              style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                              style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                             ),
                           ),
                         ],
@@ -208,11 +224,11 @@ class TagsList extends StatelessWidget {
       );
     }
 
-    if (addTagButton != null) {
+    if (widget.addTagButton != null) {
       tagsWidgets.add(CupertinoButton(
         minSize: 30,
         padding: const EdgeInsets.all(0),
-        onPressed: addTagButton,
+        onPressed: widget.addTagButton,
         child: Container(
           height: 30.0,
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -246,7 +262,7 @@ class TagsList extends StatelessWidget {
       ));
     }
 
-    if (addTagField) {
+    if (widget.addTagField) {
       tagsWidgets.add(
         Container(
           margin: const EdgeInsets.only(top: 10.0),
@@ -263,9 +279,9 @@ class TagsList extends StatelessWidget {
               Image.asset('lib/images/smalladdtag.png'),
               Expanded(
                 child: TextField(
-                  controller: textEditingController,
-                  onChanged: onChanged,
-                  onSubmitted: onSubmitted,
+                  controller: widget.textEditingController,
+                  onChanged: widget.onChanged,
+                  onSubmitted: widget.onSubmitted,
                   keyboardType: TextInputType.text,
                   textAlignVertical: TextAlignVertical.center,
                   maxLines: 1,
@@ -294,12 +310,12 @@ class TagsList extends StatelessWidget {
                   ),
                 ),
               ),
-              if (addButtonVisible)
+              if (widget.addButtonVisible)
                 CupertinoButton(
                   padding: const EdgeInsets.all(0),
                   minSize: 30,
                   onPressed: () {
-                    onSubmitted(textEditingController.text);
+                    widget.onSubmitted(widget.textEditingController.text);
                   },
                   child: Container(
                     child: Image.asset('lib/images/plusaddtagico.png'),
@@ -308,57 +324,17 @@ class TagsList extends StatelessWidget {
             ],
           ),
         ),
-
-//        CupertinoButton(
-//          padding: const EdgeInsets.all(0.0),
-//          minSize: 0,
-//          onPressed: () {
-////          if (fullScreen) {
-////            print('in full screen mode!');
-////            return;
-////          }
-////            DatabaseManager.instance.switchEditingTags();
-//          },
-//          child: Container(
-//            height: 30.0,
-//            child: Row(
-//              mainAxisSize: MainAxisSize.min,
-//              children: <Widget>[
-//                Text(
-//                  "Add Tag",
-//                  style: TextStyle(
-//                    fontFamily: 'Lato',
-//                    color: Color(0xffff6666),
-//                    fontSize: 12,
-//                    fontWeight: FontWeight.w700,
-//                    fontStyle: FontStyle.normal,
-//                    letterSpacing: -0.4099999964237213,
-//                  ),
-//                ),
-//                SizedBox(
-//                  width: 8.0,
-//                ),
-//                Image.asset('lib/images/plusredico.png'),
-//              ],
-//            ),
-//            padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 16.0),
-//            decoration: BoxDecoration(
-//              borderRadius: BorderRadius.circular(19.0),
-//              border: Border.all(color: kSecondaryColor, width: 1.0),
-//            ),
-//          ),
-//        ),
       );
     }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        if (title != null)
+        if (widget.title != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
-              title,
+              widget.title,
               textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
