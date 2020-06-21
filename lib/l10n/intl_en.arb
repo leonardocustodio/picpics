@@ -104,5 +104,12 @@
   "sports_tag": "Sports",
   "home_tag": "Home",
   "work_tag": "Work",
-  "parties_tag": "Parties"
+  "parties_tag": "Parties",
+
+  "terms_of_use": "Terms of Use",
+  "privacy_policy": "Privacy Policy",
+
+  "auto_renewable_first_part": "The subscription is ",
+  "auto_renewable_second_part": "auto-renewable.",
+  "cancel_anytime": "Cancel anytime"
 }

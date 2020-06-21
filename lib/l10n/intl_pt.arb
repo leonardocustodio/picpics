@@ -104,6 +104,13 @@
   "sports_tag": "Sports",
   "home_tag": "Casa",
   "work_tag": "Trabalho",
-  "parties_tag": "Festas"
+  "parties_tag": "Festas",
+
+  "terms_of_use": "Termos de uso",
+  "privacy_policy": "Política de privacidade",
+
+  "auto_renewable_first_part": "A assinatura é ",
+  "auto_renewable_second_part": "auto-renovável.",
+  "cancel_anytime": "Cancele a qualquer momento"
 
 }

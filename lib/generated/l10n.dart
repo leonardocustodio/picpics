@@ -8,8 +8,12 @@ import 'intl/messages_all.dart';
 // Made by Localizely
 // **************************************************************************
 
+// ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+
 class S {
   S();
+  
+  static S current;
   
   static const AppLocalizationDelegate delegate =
     AppLocalizationDelegate();
@@ -19,7 +23,9 @@ class S {
     final localeName = Intl.canonicalizedLocale(name); 
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      return S();
+      S.current = S();
+      
+      return S.current;
     });
   } 
 
@@ -27,6 +33,7 @@ class S {
     return Localizations.of<S>(context, S);
   }
 
+  /// `OK`
   String get ok {
     return Intl.message(
       'OK',
@@ -36,6 +43,7 @@ class S {
     );
   }
 
+  /// `Delete`
   String get delete {
     return Intl.message(
       'Delete',
@@ -45,6 +53,7 @@ class S {
     );
   }
 
+  /// `Edit tag`
   String get edit_tag {
     return Intl.message(
       'Edit tag',
@@ -54,6 +63,7 @@ class S {
     );
   }
 
+  /// `Cancel`
   String get cancel {
     return Intl.message(
       'Cancel',
@@ -63,6 +73,7 @@ class S {
     );
   }
 
+  /// `Notifications`
   String get notifications {
     return Intl.message(
       'Notifications',
@@ -72,6 +83,7 @@ class S {
     );
   }
 
+  /// `Welcome!`
   String get welcome {
     return Intl.message(
       'Welcome!',
@@ -81,6 +93,7 @@ class S {
     );
   }
 
+  /// `Now your photos will be always organized`
   String get photos_always_organized {
     return Intl.message(
       'Now your photos will be always organized',
@@ -90,6 +103,7 @@ class S {
     );
   }
 
+  /// `Continue`
   String get continue_string {
     return Intl.message(
       'Continue',
@@ -99,6 +113,7 @@ class S {
     );
   }
 
+  /// `To organize your photos we need access to your photo gallery`
   String get gallery_access_reason {
     return Intl.message(
       'To organize your photos we need access to your photo gallery',
@@ -108,6 +123,7 @@ class S {
     );
   }
 
+  /// `We bring a daily package for you to gradually organize your library.`
   String get tutorial_daily_package {
     return Intl.message(
       'We bring a daily package for you to gradually organize your library.',
@@ -117,6 +133,7 @@ class S {
     );
   }
 
+  /// `Next`
   String get next {
     return Intl.message(
       'Next',
@@ -126,6 +143,7 @@ class S {
     );
   }
 
+  /// `Organize your photos by adding tags, like "family", "pets", or whatever you want.`
   String get tutorial_however_you_want {
     return Intl.message(
       'Organize your photos by adding tags, like "family", "pets", or whatever you want.',
@@ -135,6 +153,7 @@ class S {
     );
   }
 
+  /// `Close`
   String get close {
     return Intl.message(
       'Close',
@@ -144,6 +163,7 @@ class S {
     );
   }
 
+  /// `Start`
   String get start {
     return Intl.message(
       'Start',
@@ -153,6 +173,7 @@ class S {
     );
   }
 
+  /// `After adding the tags to your photo, just swipe to go to the next one.`
   String get tutorial_just_swipe {
     return Intl.message(
       'After adding the tags to your photo, just swipe to go to the next one.',
@@ -162,6 +183,7 @@ class S {
     );
   }
 
+  /// `Settings`
   String get settings {
     return Intl.message(
       'Settings',
@@ -171,6 +193,7 @@ class S {
     );
   }
 
+  /// `Suggestions`
   String get suggestions {
     return Intl.message(
       'Suggestions',
@@ -180,6 +203,7 @@ class S {
     );
   }
 
+  /// `Photo location`
   String get photo_location {
     return Intl.message(
       'Photo location',
@@ -189,6 +213,7 @@ class S {
     );
   }
 
+  /// `country`
   String get country {
     return Intl.message(
       'country',
@@ -198,6 +223,7 @@ class S {
     );
   }
 
+  /// `Add tag`
   String get add_tag {
     return Intl.message(
       'Add tag',
@@ -207,6 +233,7 @@ class S {
     );
   }
 
+  /// `Add tags`
   String get add_tags {
     return Intl.message(
       'Add tags',
@@ -216,6 +243,7 @@ class S {
     );
   }
 
+  /// `Full Screen`
   String get full_screen {
     return Intl.message(
       'Full Screen',
@@ -225,6 +253,7 @@ class S {
     );
   }
 
+  /// `Photo Gallery`
   String get photo_gallery_title {
     return Intl.message(
       'Photo Gallery',
@@ -234,6 +263,7 @@ class S {
     );
   }
 
+  /// `Photos not yet organized`
   String get photo_gallery_description {
     return Intl.message(
       'Photos not yet organized',
@@ -243,6 +273,7 @@ class S {
     );
   }
 
+  /// `{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}`
   String photo_gallery_count(num howMany) {
     return Intl.plural(
       howMany,
@@ -255,6 +286,7 @@ class S {
     );
   }
 
+  /// `Organized Photos`
   String get organized_photos_title {
     return Intl.message(
       'Organized Photos',
@@ -264,6 +296,7 @@ class S {
     );
   }
 
+  /// `Photos that have already been tagged`
   String get organized_photos_description {
     return Intl.message(
       'Photos that have already been tagged',
@@ -273,6 +306,7 @@ class S {
     );
   }
 
+  /// `Search...`
   String get search {
     return Intl.message(
       'Search...',
@@ -282,6 +316,7 @@ class S {
     );
   }
 
+  /// `You don't have any tagged photos yet`
   String get no_tagged_photos {
     return Intl.message(
       'You don\'t have any tagged photos yet',
@@ -291,6 +326,7 @@ class S {
     );
   }
 
+  /// `Start tagging`
   String get start_tagging {
     return Intl.message(
       'Start tagging',
@@ -300,6 +336,7 @@ class S {
     );
   }
 
+  /// `No tags found`
   String get no_tags_found {
     return Intl.message(
       'No tags found',
@@ -309,6 +346,7 @@ class S {
     );
   }
 
+  /// `Search results`
   String get search_results {
     return Intl.message(
       'Search results',
@@ -318,6 +356,7 @@ class S {
     );
   }
 
+  /// `Daily challenge`
   String get daily_challenge {
     return Intl.message(
       'Daily challenge',
@@ -327,6 +366,7 @@ class S {
     );
   }
 
+  /// `Daily goal`
   String get daily_goal {
     return Intl.message(
       'Daily goal',
@@ -336,6 +376,7 @@ class S {
     );
   }
 
+  /// `Notification time`
   String get notification_time {
     return Intl.message(
       'Notification time',
@@ -345,6 +386,7 @@ class S {
     );
   }
 
+  /// `Share with friends`
   String get share_with_friends {
     return Intl.message(
       'Share with friends',
@@ -354,6 +396,7 @@ class S {
     );
   }
 
+  /// `Rate this app`
   String get rate_this_app {
     return Intl.message(
       'Rate this app',
@@ -363,6 +406,7 @@ class S {
     );
   }
 
+  /// `How many pics`
   String get how_many_pics {
     return Intl.message(
       'How many pics',
@@ -372,6 +416,7 @@ class S {
     );
   }
 
+  /// `Time`
   String get time {
     return Intl.message(
       'Time',
@@ -381,6 +426,7 @@ class S {
     );
   }
 
+  /// `Take a look at this app!`
   String get take_a_look {
     return Intl.message(
       'Take a look at this app!',
@@ -390,6 +436,7 @@ class S {
     );
   }
 
+  /// `To organize all your photos go to {url}`
   String take_a_look_description(Object url) {
     return Intl.message(
       'To organize all your photos go to $url',
@@ -399,6 +446,7 @@ class S {
     );
   }
 
+  /// `For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone`
   String get daily_challenge_permission_description {
     return Intl.message(
       'For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone',
@@ -408,6 +456,7 @@ class S {
     );
   }
 
+  /// `You are premium!`
   String get you_are_premium {
     return Intl.message(
       'You are premium!',
@@ -417,6 +466,7 @@ class S {
     );
   }
 
+  /// `Get premium now!`
   String get get_premium_now {
     return Intl.message(
       'Get premium now!',
@@ -426,6 +476,7 @@ class S {
     );
   }
 
+  /// `GET PREMIUM`
   String get get_premium_title {
     return Intl.message(
       'GET PREMIUM',
@@ -435,6 +486,7 @@ class S {
     );
   }
 
+  /// `TO HAVE ALL THESE FEATURES`
   String get get_premium_description {
     return Intl.message(
       'TO HAVE ALL THESE FEATURES',
@@ -444,6 +496,7 @@ class S {
     );
   }
 
+  /// `No Ads`
   String get no_ads {
     return Intl.message(
       'No Ads',
@@ -453,6 +506,7 @@ class S {
     );
   }
 
+  /// `Export all gallery`
   String get export_all_gallery {
     return Intl.message(
       'Export all gallery',
@@ -462,6 +516,7 @@ class S {
     );
   }
 
+  /// `Infinite tags`
   String get infinite_tags {
     return Intl.message(
       'Infinite tags',
@@ -471,6 +526,7 @@ class S {
     );
   }
 
+  /// `Tag multiple photos at once`
   String get tag_multiple_photos_at_once {
     return Intl.message(
       'Tag multiple photos at once',
@@ -480,6 +536,7 @@ class S {
     );
   }
 
+  /// `Sign`
   String get sign {
     return Intl.message(
       'Sign',
@@ -489,6 +546,7 @@ class S {
     );
   }
 
+  /// `year`
   String get year {
     return Intl.message(
       'year',
@@ -498,6 +556,7 @@ class S {
     );
   }
 
+  /// `month`
   String get month {
     return Intl.message(
       'month',
@@ -507,6 +566,7 @@ class S {
     );
   }
 
+  /// `Restore purchase`
   String get restore_purchase {
     return Intl.message(
       'Restore purchase',
@@ -516,6 +576,7 @@ class S {
     );
   }
 
+  /// `No Previous Purchase`
   String get no_previous_purchase {
     return Intl.message(
       'No Previous Purchase',
@@ -525,6 +586,7 @@ class S {
     );
   }
 
+  /// `Could not find a valid subscription purchase.`
   String get no_valid_subscription {
     return Intl.message(
       'Could not find a valid subscription purchase.',
@@ -534,6 +596,7 @@ class S {
     );
   }
 
+  /// `save`
   String get save {
     return Intl.message(
       'save',
@@ -543,6 +606,7 @@ class S {
     );
   }
 
+  /// `Save location`
   String get save_location {
     return Intl.message(
       'Save location',
@@ -552,6 +616,7 @@ class S {
     );
   }
 
+  /// `This device has no photo in the gallery, so there is no photo that can be tagged.`
   String get device_has_no_pics {
     return Intl.message(
       'This device has no photo in the gallery, so there is no photo that can be tagged.',
@@ -561,6 +626,7 @@ class S {
     );
   }
 
+  /// `Open gallery`
   String get open_gallery {
     return Intl.message(
       'Open gallery',
@@ -570,6 +636,7 @@ class S {
     );
   }
 
+  /// `Access permissions`
   String get gallery_access_permission {
     return Intl.message(
       'Access permissions',
@@ -579,6 +646,7 @@ class S {
     );
   }
 
+  /// `To start organizing your photos, we need authorization to access them`
   String get gallery_access_permission_description {
     return Intl.message(
       'To start organizing your photos, we need authorization to access them',
@@ -588,6 +656,7 @@ class S {
     );
   }
 
+  /// `Export Library`
   String get export_library {
     return Intl.message(
       'Export Library',
@@ -597,6 +666,7 @@ class S {
     );
   }
 
+  /// `You completed your {number} free daily pics, do you want to continue?`
   String premium_modal_description(Object number) {
     return Intl.message(
       'You completed your $number free daily pics, do you want to continue?',
@@ -606,6 +676,7 @@ class S {
     );
   }
 
+  /// `Watch video ad to continue`
   String get premium_modal_watch_ad {
     return Intl.message(
       'Watch video ad to continue',
@@ -615,6 +686,7 @@ class S {
     );
   }
 
+  /// `Get Premium Account`
   String get premium_modal_get_premium_title {
     return Intl.message(
       'Get Premium Account',
@@ -624,6 +696,7 @@ class S {
     );
   }
 
+  /// `ALL FEATURES WITHOUT ADS`
   String get premium_modal_get_premium_description {
     return Intl.message(
       'ALL FEATURES WITHOUT ADS',
@@ -633,6 +706,7 @@ class S {
     );
   }
 
+  /// `Family`
   String get family_tag {
     return Intl.message(
       'Family',
@@ -642,6 +716,7 @@ class S {
     );
   }
 
+  /// `Travel`
   String get travel_tag {
     return Intl.message(
       'Travel',
@@ -651,6 +726,7 @@ class S {
     );
   }
 
+  /// `Pets`
   String get pets_tag {
     return Intl.message(
       'Pets',
@@ -660,6 +736,7 @@ class S {
     );
   }
 
+  /// `Selfies`
   String get selfies_tag {
     return Intl.message(
       'Selfies',
@@ -669,6 +746,7 @@ class S {
     );
   }
 
+  /// `Sreenshots`
   String get screenshots_tag {
     return Intl.message(
       'Sreenshots',
@@ -678,6 +756,7 @@ class S {
     );
   }
 
+  /// `Foods`
   String get foods_tag {
     return Intl.message(
       'Foods',
@@ -687,6 +766,7 @@ class S {
     );
   }
 
+  /// `Sports`
   String get sports_tag {
     return Intl.message(
       'Sports',
@@ -696,6 +776,7 @@ class S {
     );
   }
 
+  /// `Home`
   String get home_tag {
     return Intl.message(
       'Home',
@@ -705,6 +786,7 @@ class S {
     );
   }
 
+  /// `Work`
   String get work_tag {
     return Intl.message(
       'Work',
@@ -714,10 +796,61 @@ class S {
     );
   }
 
+  /// `Parties`
   String get parties_tag {
     return Intl.message(
       'Parties',
       name: 'parties_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Terms of Use`
+  String get terms_of_use {
+    return Intl.message(
+      'Terms of Use',
+      name: 'terms_of_use',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy`
+  String get privacy_policy {
+    return Intl.message(
+      'Privacy Policy',
+      name: 'privacy_policy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The subscription is `
+  String get auto_renewable_first_part {
+    return Intl.message(
+      'The subscription is ',
+      name: 'auto_renewable_first_part',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `auto-renewable.`
+  String get auto_renewable_second_part {
+    return Intl.message(
+      'auto-renewable.',
+      name: 'auto_renewable_second_part',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Cancel anytime`
+  String get cancel_anytime {
+    return Intl.message(
+      'Cancel anytime',
+      name: 'cancel_anytime',
       desc: '',
       args: [],
     );

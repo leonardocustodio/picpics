@@ -250,7 +250,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               width: 16.0,
             ),
             Text(
-              'Cancel anytime',
+              S.of(context).cancel_anytime,
               textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
@@ -455,7 +455,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                               fontFamily: "Lato",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 12.0),
-                                          text: "The subscription is "),
+                                          text: S.of(context).auto_renewable_first_part),
                                       TextSpan(
                                           style: const TextStyle(
                                               color: const Color(0xff606566),
@@ -463,7 +463,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                               fontFamily: "Lato",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 12.0),
-                                          text: "auto-renewable.")
+                                          text: S.of(context).auto_renewable_secondt_part)
                                     ],
                                   ),
                                 ),
@@ -499,7 +499,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   minSize: 32.0,
                                   child: Text(
-                                    "Privacy Policy",
+                                    S.of(context).privacy_policy,
                                     style: const TextStyle(
                                       color: const Color(0xff606566),
                                       fontWeight: FontWeight.w600,
@@ -527,7 +527,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                                   minSize: 32.0,
                                   child: Text(
-                                    "Terms of Use",
+                                    S.of(context).terms_of_use,
                                     style: const TextStyle(
                                       color: const Color(0xff606566),
                                       fontWeight: FontWeight.w600,
