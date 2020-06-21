@@ -1299,15 +1299,23 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                               TagsList(
                                                 tagsKeys: Provider.of<DatabaseManager>(context).searchActiveTags,
                                                 tagStyle: TagStyle.MultiColored,
-                                                onTap: (tagName, tagKey, showSwiperInIndex) {
+                                                onTap: (tagName) {
                                                   print('do nothing');
-                                                },
-                                                onDoubleTap: () {
                                                   DatabaseManager.instance.removeTagFromSearchFilter();
                                                   if (DatabaseManager.instance.searchActiveTags.isEmpty &&
                                                       searchFocusNode.hasFocus == false) {
                                                     DatabaseManager.instance.switchSearchingTags(false);
                                                   }
+                                                },
+                                                onPanUpdate: () {
+                                                  DatabaseManager.instance.removeTagFromSearchFilter();
+                                                  if (DatabaseManager.instance.searchActiveTags.isEmpty &&
+                                                      searchFocusNode.hasFocus == false) {
+                                                    DatabaseManager.instance.switchSearchingTags(false);
+                                                  }
+                                                },
+                                                onDoubleTap: () {
+                                                  print('do nothing');
                                                 },
                                                 showEditTagModal: showEditTagModal,
                                               ),
