@@ -463,7 +463,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                               fontFamily: "Lato",
                                               fontStyle: FontStyle.normal,
                                               fontSize: 12.0),
-                                          text: S.of(context).auto_renewable_secondt_part)
+                                          text: S.of(context).auto_renewable_second_part)
                                     ],
                                   ),
                                 ),

@@ -4,6 +4,9 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:flare_flutter/flare_actor.dart';
+import 'package:simple_animations/simple_animations.dart';
+import 'package:supercharged/supercharged.dart';
 
 enum TagStyle {
   MultiColored,
@@ -13,6 +16,7 @@ enum TagStyle {
 
 class TagsList extends StatelessWidget {
   final List<String> tagsKeys;
+  final List<bool> showTagsNames;
   final TextEditingController textEditingController;
   final bool addTagField;
   final Function addTagButton;
@@ -27,6 +31,7 @@ class TagsList extends StatelessWidget {
 
   const TagsList({
     @required this.tagsKeys,
+    @required this.showTagsNames,
     this.tagStyle = TagStyle.MultiColored,
     this.textEditingController,
     this.addTagField = false,
@@ -73,11 +78,10 @@ class TagsList extends StatelessWidget {
     List<Widget> tagsWidgets = [];
     print('Tags in TagsList: $tagsKeys');
 
-    var index = 0;
-
-    for (var tagKey in tagsKeys) {
-      var mod = index % 4;
-      index++;
+    for (int i = 0; i < tagsKeys.length; i++) {
+      String tagKey = tagsKeys[i];
+      bool showTagName = showTagsNames[i];
+      var mod = i % 4;
 
       String tagName = DatabaseManager.instance.getTagName(tagKey);
 
@@ -98,18 +102,107 @@ class TagsList extends StatelessWidget {
             showEditTagModal();
           },
           child: Container(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
             decoration: tagStyle == TagStyle.MultiColored
                 ? BoxDecoration(
                     gradient: getGradient(mod),
                     borderRadius: BorderRadius.circular(19.0),
                   )
                 : kGrayBoxDecoration,
-            child: Text(
-              tagName,
-              textScaleFactor: 1.0,
-              style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
-            ),
+            child: !showTagName
+                ? Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Text(
+                      tagName,
+                      textScaleFactor: 1.0,
+                      style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                    ),
+                  )
+                : CustomAnimation<double>(
+                    control: CustomAnimationControl.LOOP,
+                    tween: 0.0.tweenTo(600.0),
+                    duration: 7.seconds,
+                    startPosition: 0.0,
+                    builder: (context, child, value) {
+                      double firstOpct = 0.0;
+                      double secondOpct = 0.0;
+                      double thirdOpct = 0.0;
+
+                      if (value <= 300) {
+                        firstOpct = 0.0;
+                        thirdOpct = 0.0;
+                        secondOpct = 1.0;
+
+                        if (value <= 20) {
+                          secondOpct = value / 20.0;
+                        } else if (value <= 280) {
+                          secondOpct = 1.0;
+                        } else {
+                          secondOpct = 1.0 - ((value - 280.0) / 20.0);
+                        }
+                      } else if (value <= 500) {
+                        firstOpct = 0.0;
+                        secondOpct = 0.0;
+
+                        if (value <= 380) {
+                          thirdOpct = (value - 300.0) / 80.0;
+                        } else if (value <= 420) {
+                          thirdOpct = 1.0;
+                        } else {
+                          thirdOpct = 1.0 - ((value - 420.0) / 80);
+                        }
+                      } else if (value <= 700) {
+                        secondOpct = 0.0;
+                        thirdOpct = 0.0;
+
+                        if (value <= 580) {
+                          firstOpct = (value - 500.0) / 80.0;
+                        } else if (value <= 620) {
+                          firstOpct = 1.0;
+                        } else {
+                          firstOpct = 1.0 - ((value - 620) / 80.0);
+                        }
+                      }
+
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Opacity(
+                            opacity: firstOpct,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                              child: Text(
+                                tagName,
+                                textScaleFactor: 1.0,
+                                style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                              ),
+                            ),
+                          ),
+                          Opacity(
+                            opacity: secondOpct,
+                            child: Container(
+                              height: 30.0,
+                              width: 30.0,
+                              child: FlareActor(
+                                'lib/anims/arrow_swipe.flr',
+                                alignment: Alignment.center,
+                                fit: BoxFit.contain,
+                                animation: 'arrow_left',
+                                color: kSecondaryColor,
+                              ),
+                            ),
+                          ),
+                          Opacity(
+                            opacity: thirdOpct,
+                            child: Text(
+                              S.of(context).delete,
+                              textScaleFactor: 1.0,
+                              style: tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
           ),
         ),
       );

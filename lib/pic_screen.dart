@@ -1298,6 +1298,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             children: [
                                               TagsList(
                                                 tagsKeys: Provider.of<DatabaseManager>(context).searchActiveTags,
+                                                showTagsNames: List.filled(
+                                                    Provider.of<DatabaseManager>(context).searchActiveTags.length, true), // nfo.
                                                 tagStyle: TagStyle.MultiColored,
                                                 onTap: (tagName) {
                                                   print('do nothing');
@@ -1351,6 +1353,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                             padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                             child: TagsList(
                                               tagsKeys: Provider.of<DatabaseManager>(context).searchResults,
+                                              showTagsNames:
+                                                  List.filled(Provider.of<DatabaseManager>(context).searchResults.length, true), // nfo.
                                               tagStyle: TagStyle.GrayOutlined,
                                               showEditTagModal: showEditTagModal,
                                               onTap: (tagName) {
@@ -1537,7 +1541,8 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   TagsList(
-                                      tagsKeys: multiPicTagKeys, //picInfo.tags,
+                                      tagsKeys: multiPicTagKeys, //picI
+                                      showTagsNames: List.filled(multiPicTagKeys.length, true), // nfo.tags,
                                       addTagField: true,
                                       textEditingController: bottomTagsEditingController,
                                       showEditTagModal: showEditTagModal,
@@ -1602,6 +1607,7 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
                                     child: TagsList(
                                       title: S.of(context).suggestions,
                                       tagsKeys: DatabaseManager.instance.suggestionTags['MULTIPIC'],
+                                      showTagsNames: List.filled(DatabaseManager.instance.suggestionTags['MULTIPIC'].length, true),
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagName) {
