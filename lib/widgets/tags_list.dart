@@ -24,6 +24,7 @@ class TagsList extends StatefulWidget {
   final TagStyle tagStyle;
   final Function onTap;
   final Function onDoubleTap;
+  final Function onPanUpdate;
   final Function onSubmitted;
   final Function onChanged;
   final Function showEditTagModal;
@@ -38,6 +39,7 @@ class TagsList extends StatefulWidget {
     this.addTagButton,
     @required this.onTap,
     @required this.onDoubleTap,
+    @required this.onPanUpdate,
     this.onSubmitted,
     this.onChanged,
     this.title,
@@ -116,6 +118,15 @@ class _TagsListState extends State<TagsList> {
           onLongPress: () {
             DatabaseManager.instance.selectedTagKey = tagKey;
             widget.showEditTagModal();
+          },
+          onPanUpdate: (details) {
+            if (details.delta.dy < 0) {
+              // swiping in right direction
+              print(details.delta.dy);
+              Vibrate.feedback(FeedbackType.success);
+              DatabaseManager.instance.selectedTagKey = tagKey;
+              widget.onPanUpdate();
+            }
           },
           child: Container(
             decoration: widget.tagStyle == TagStyle.MultiColored

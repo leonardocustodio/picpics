@@ -1629,6 +1629,14 @@ class _PicScreenState extends State<PicScreen> with AfterLayoutMixin<PicScreen> 
 
                                         print('do nothing');
                                       },
+                                      onPanUpdate: () {
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
+                                          return;
+                                        }
+
+                                        print('do nothing');
+                                      },
                                     ),
                                   ),
                                 ],

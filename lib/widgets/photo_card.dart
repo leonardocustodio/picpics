@@ -319,6 +319,9 @@ class PhotoCard extends StatelessWidget {
                     print('do nothing');
                   },
                   onDoubleTap: () {
+                    print('do nothing');
+                  },
+                  onPanUpdate: () {
                     if (!DatabaseManager.instance.canTagToday()) {
                       showWatchAdModal(context);
                       return;
@@ -423,6 +426,9 @@ class PhotoCard extends StatelessWidget {
                       );
                     },
                     onDoubleTap: () {
+                      print('do nothing');
+                    },
+                    onPanUpdate: () {
                       print('do nothing');
                     },
                   ),
