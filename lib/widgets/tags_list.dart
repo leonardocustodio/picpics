@@ -7,6 +7,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
+import 'dart:math';
 
 enum TagStyle {
   MultiColored,
@@ -53,6 +54,7 @@ class TagsList extends StatefulWidget {
 
 class _TagsListState extends State<TagsList> {
   int showSwiperInIndex;
+  String tagBeingPanned;
 
   Widget _buildTagsWidget(BuildContext context) {
     if (widget.tagsKeys == null) {
@@ -119,10 +121,19 @@ class _TagsListState extends State<TagsList> {
             DatabaseManager.instance.selectedTagKey = tagKey;
             widget.showEditTagModal();
           },
+          onPanStart: (details) {
+            print('Started pan on tag: $tagKey');
+            tagBeingPanned = tagKey;
+          },
           onPanUpdate: (details) {
+            if (tagBeingPanned != tagKey) {
+              return;
+            }
+
             if (details.delta.dy < 0) {
               // swiping in right direction
               print(details.delta.dy);
+              showSwiperInIndex = null;
               Vibrate.feedback(FeedbackType.success);
               DatabaseManager.instance.selectedTagKey = tagKey;
               widget.onPanUpdate();
@@ -209,12 +220,15 @@ class _TagsListState extends State<TagsList> {
                             child: Container(
                               height: 30.0,
                               width: 30.0,
-                              child: FlareActor(
-                                'lib/anims/arrow_swipe.flr',
-                                alignment: Alignment.center,
-                                fit: BoxFit.contain,
-                                animation: 'arrow_left',
-                                color: kWhiteColor,
+                              child: Transform.rotate(
+                                angle: pi / 2,
+                                child: FlareActor(
+                                  'lib/anims/arrow_swipe.flr',
+                                  alignment: Alignment.center,
+                                  fit: BoxFit.contain,
+                                  animation: 'arrow_left',
+                                  color: kWhiteColor,
+                                ),
                               ),
                             ),
                           ),
