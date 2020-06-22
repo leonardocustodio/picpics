@@ -8,7 +8,6 @@ import 'package:hive/hive.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
-import 'dart:math';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -20,7 +19,6 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:date_utils/date_utils.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 
 class DatabaseManager extends ChangeNotifier {
@@ -75,6 +73,10 @@ class DatabaseManager extends ChangeNotifier {
   int currentTab = 1;
 
   double adOffset = 48.0;
+
+  AssetEntity selectedPhotoData;
+  Pic selectedPhotoPicInfo;
+  int selectedPhotoIndex;
 
 //  Pic selectedPic;
   void requestNotification() {

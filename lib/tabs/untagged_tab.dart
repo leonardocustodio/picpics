@@ -17,8 +17,11 @@ class UntaggedTab extends StatefulWidget {
   final AssetPathProvider pathProvider;
   final bool deviceHasNoPics;
 
-  const UntaggedTab({
+  final Function showPhotoCardModal;
+
+  UntaggedTab({
     @required this.pathProvider,
+    @required this.showPhotoCardModal,
     this.deviceHasNoPics = false,
   });
 
@@ -27,8 +30,6 @@ class UntaggedTab extends StatefulWidget {
 }
 
 class _UntaggedTabState extends State<UntaggedTab> {
-  bool modalPhotoCard = false; // Mudar essa variavel pq não serve para nada!!!
-
   ScrollController scrollControllerFirstTab;
 
   double offsetFirstTab = 0.0;
@@ -43,10 +44,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
   List<String> multiPicTagKeys = [];
 
   TextEditingController tagsEditingController = TextEditingController();
-
-  AssetEntity selectedPhotoData;
-  Pic selectedPhotoPicInfo;
-  int selectedPhotoIndex;
 
   void movedGridPositionFirstTab() {
     var offset = scrollControllerFirstTab.offset;
@@ -169,13 +166,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
               print('PicTags: ${picInfo.tags}');
 
-              selectedPhotoData = data;
-              selectedPhotoPicInfo = picInfo;
-              selectedPhotoIndex = index;
+              DatabaseManager.instance.selectedPhotoData = data;
+              DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
+              DatabaseManager.instance.selectedPhotoIndex = index;
 
-              setState(() {
-                modalPhotoCard = true;
-              });
+              widget.showPhotoCardModal();
             },
             child: ImageItem(
               entity: data,

@@ -13,15 +13,20 @@ import 'package:picPics/asset_provider.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:picPics/model/tag.dart';
 
 class TaggedTab extends StatefulWidget {
   static const id = 'tagged_tab';
 
   final bool deviceHasNoPics;
+  final Function setTabIndex;
+  final Function showEditTagModal;
+  final Function showPhotoCardModal;
 
   TaggedTab({
+    @required this.setTabIndex,
+    @required this.showEditTagModal,
+    @required this.showPhotoCardModal,
     this.deviceHasNoPics = false,
   });
 
@@ -30,12 +35,6 @@ class TaggedTab extends StatefulWidget {
 }
 
 class _TaggedTabState extends State<TaggedTab> {
-  bool modalPhotoCard = false; // Mudar essa variavel pq não serve para nada!!!
-  AssetEntity selectedPhotoData;
-  Pic selectedPhotoPicInfo;
-  int selectedPhotoIndex;
-  // msm coisa variaveis acima
-
   ScrollController scrollControllerThirdTab;
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
@@ -48,46 +47,6 @@ class _TaggedTabState extends State<TaggedTab> {
   bool hideSubtitleThirdTab = false;
 
   TextEditingController tagsEditingController = TextEditingController();
-
-  showEditTagModal() {
-    if (DatabaseManager.instance.selectedTagKey != '') {
-      TextEditingController alertInputController = TextEditingController();
-      Pic getPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
-      alertInputController.text = tagName;
-
-      print('showModal');
-      showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext buildContext) {
-          return EditTagModal(
-            alertInputController: alertInputController,
-            onPressedDelete: () {
-              DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
-              DatabaseManager.instance.tagsSuggestions(
-                tagsEditingController.text,
-                DatabaseManager.instance.selectedPhoto.id,
-                excludeTags: getPic.tags,
-                notify: false,
-              );
-              Navigator.of(context).pop();
-            },
-            onPressedOk: () {
-              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
-              if (tagName != alertInputController.text) {
-                DatabaseManager.instance.editTag(
-                  oldTagKey: DatabaseManager.instance.selectedTagKey,
-                  newName: alertInputController.text,
-                );
-              }
-              Navigator.of(context).pop();
-            },
-          );
-        },
-      );
-    }
-  }
 
   void movedGridPositionThirdTab() {
     var offset = scrollControllerThirdTab.offset;
@@ -238,13 +197,11 @@ class _TaggedTabState extends State<TaggedTab> {
 
                     print('PicTags: ${picInfo.tags}');
 
-                    selectedPhotoData = data;
-                    selectedPhotoPicInfo = picInfo;
-                    selectedPhotoIndex = indexOfPic;
+                    DatabaseManager.instance.selectedPhotoData = data;
+                    DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
+                    DatabaseManager.instance.selectedPhotoIndex = indexOfPic;
 
-                    setState(() {
-                      modalPhotoCard = true;
-                    });
+                    widget.showPhotoCardModal();
                   },
                   child: ImageItem(
                     entity: data,
@@ -288,12 +245,10 @@ class _TaggedTabState extends State<TaggedTab> {
 
                   print('PicTags: ${picInfo.tags}');
 
-                  selectedPhotoData = data;
-                  selectedPhotoPicInfo = picInfo;
+                  DatabaseManager.instance.selectedPhotoData = data;
+                  DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
 
-                  setState(() {
-                    modalPhotoCard = true;
-                  });
+                  widget.showPhotoCardModal();
                 },
                 child: ImageItem(
                   entity: data,
@@ -377,7 +332,7 @@ class _TaggedTabState extends State<TaggedTab> {
                           ),
                           CupertinoButton(
                             padding: const EdgeInsets.all(0),
-                            onPressed: () => print('hey'), // changePage(1),
+                            onPressed: () => widget.setTabIndex(1),
                             child: Container(
                               width: 201.0,
                               height: 44.0,
@@ -441,7 +396,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                   onDoubleTap: () {
                                     print('do nothing');
                                   },
-                                  showEditTagModal: showEditTagModal,
+                                  showEditTagModal: widget.showEditTagModal,
                                 ),
                                 CupertinoButton(
                                   padding: const EdgeInsets.all(10),
@@ -483,7 +438,7 @@ class _TaggedTabState extends State<TaggedTab> {
                               child: TagsList(
                                 tagsKeys: Provider.of<DatabaseManager>(context).searchResults,
                                 tagStyle: TagStyle.GrayOutlined,
-                                showEditTagModal: showEditTagModal,
+                                showEditTagModal: widget.showEditTagModal,
                                 onTap: (tagName) {
                                   DatabaseManager.instance.addTagToSearchFilter();
                                 },

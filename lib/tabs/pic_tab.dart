@@ -9,15 +9,17 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/widgets/photo_card.dart';
-import 'package:picPics/widgets/edit_tag_modal.dart';
-import 'package:photo_manager/photo_manager.dart';
 
 class PicTab extends StatefulWidget {
   static const id = 'pic_tab';
 
   final bool deviceHasNoPics;
+  final Function showEditTagModal;
+  final Function trashPic;
 
   PicTab({
+    @required this.showEditTagModal,
+    @required this.trashPic,
     this.deviceHasNoPics = false,
   });
 
@@ -26,12 +28,6 @@ class PicTab extends StatefulWidget {
 }
 
 class _PicTabState extends State<PicTab> {
-  bool modalPhotoCard = false; // Mudar essa variavel pq não serve para nada!!!
-  AssetEntity selectedPhotoData;
-  Pic selectedPhotoPicInfo;
-  int selectedPhotoIndex;
-  // msm coisa variaveis acima
-
   CarouselController carouselController = CarouselController();
   int picSwiper = 0;
 
@@ -102,67 +98,11 @@ class _PicTabState extends State<PicTab> {
       tagsEditingController: tagsEditingController,
       specificLocation: picInfo.specificLocation,
       generalLocation: picInfo.generalLocation,
-      showEditTagModal: showEditTagModal,
+      showEditTagModal: widget.showEditTagModal,
       onPressedTrash: () {
-        trashPic(data);
+        widget.trashPic(data);
       },
     );
-  }
-
-  void trashPic(AssetEntity entity) async {
-    print('trashing pic');
-    final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
-    if (result.isNotEmpty) {
-      DatabaseManager.instance.deletedPic(entity);
-      if (modalPhotoCard) {
-        setState(() {
-          selectedPhotoPicInfo = null;
-          selectedPhotoIndex = null;
-          selectedPhotoData = null;
-          modalPhotoCard = false;
-        });
-      }
-    }
-  }
-
-  showEditTagModal() {
-    if (DatabaseManager.instance.selectedTagKey != '') {
-      TextEditingController alertInputController = TextEditingController();
-      Pic getPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
-      alertInputController.text = tagName;
-
-      print('showModal');
-      showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext buildContext) {
-          return EditTagModal(
-            alertInputController: alertInputController,
-            onPressedDelete: () {
-              DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
-              DatabaseManager.instance.tagsSuggestions(
-                tagsEditingController.text,
-                DatabaseManager.instance.selectedPhoto.id,
-                excludeTags: getPic.tags,
-                notify: false,
-              );
-              Navigator.of(context).pop();
-            },
-            onPressedOk: () {
-              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
-              if (tagName != alertInputController.text) {
-                DatabaseManager.instance.editTag(
-                  oldTagKey: DatabaseManager.instance.selectedTagKey,
-                  newName: alertInputController.text,
-                );
-              }
-              Navigator.of(context).pop();
-            },
-          );
-        },
-      );
-    }
   }
 
   @override
@@ -231,35 +171,6 @@ class _PicTabState extends State<PicTab> {
                     },
                   ),
                 ),
-//                            Swiper(
-//                              controller: swiperController,
-//                              loop: true,
-//                              index: DatabaseManager.instance.swiperIndex(),
-//                              itemCount: pathProvider.orderedList.length, // count == 0 ? 1 : count,
-//                              onIndexChanged: (index) async {
-//                                DatabaseManager.instance.setSwiperIndex(index);
-//                                picSwiper = index;
-//                                print('picSwiper = $index');
-//                                bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
-//                                if (shouldShowAds) {
-//                                  showWatchAdModal(context);
-//                                }
-//                              },
-//                              itemBuilder: (BuildContext context, int index) {
-//                                print('calling index $index');
-//                                return _buildPhotoSlider(context, index);
-//                              },
-//                              layout: SwiperLayout.DEFAULT,
-//                              itemWidth: screenWidth,
-//                              customLayoutOption:
-//                                  CustomLayoutOption(startIndex: -1, stateCount: 3).addRotate([-45.0 / 180, 0.0, 45.0 / 180]).addTranslate(
-//                                [
-//                                  Offset(-screenWidth - screenWidth / 2, -40.0),
-//                                  Offset(0.0, 0.0),
-//                                  Offset(screenWidth + screenWidth / 2, -40.0),
-//                                ],
-//                              ),
-//                            ),
               ),
           ],
         ),

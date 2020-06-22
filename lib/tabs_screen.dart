@@ -22,7 +22,6 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:hive/hive.dart';
-import 'package:after_layout/after_layout.dart';
 import 'dart:io';
 import 'package:picPics/admob_manager.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -40,12 +39,9 @@ class TabsScreen extends StatefulWidget {
   _TabsScreenState createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen>
-    with AfterLayoutMixin<TabsScreen> {
-  ExpandableController expandableController =
-      ExpandableController(initialExpanded: false);
-  ExpandableController expandablePaddingController =
-      ExpandableController(initialExpanded: false);
+class _TabsScreenState extends State<TabsScreen> {
+  ExpandableController expandableController = ExpandableController(initialExpanded: false);
+  ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
 
   BuildContext multiPicContext;
   bool multiPicSelect = false;
@@ -53,45 +49,25 @@ class _TabsScreenState extends State<TabsScreen>
   List<int> picsSelected = [];
   List<String> multiPicTagKeys = [];
 
-  SwiperController swiperController = SwiperController();
-
+  // Swiper do Tutorial
+  int tutorialSwiperIndex = 0;
   SwiperController tutorialSwiperController = SwiperController();
 
   TextEditingController tagsEditingController = TextEditingController();
 
   TextEditingController bottomTagsEditingController = TextEditingController();
-//  Map<String, List<String>> suggestions;
 
-//  FocusNode tagsFocusNode = FocusNode();
-
-  TextEditingController searchEditingController = TextEditingController();
-  FocusNode searchFocusNode = FocusNode();
-
-//  int currentIndex;
-  int swiperIndex = 0;
-
-  bool modalPhotoCard = false;
-
-  AssetEntity selectedPhotoData;
-  Pic selectedPhotoPicInfo;
-  int selectedPhotoIndex;
   Throttle _changeThrottle;
 
-  bool isAdVisible = false;
   bool isLoading = false;
   bool deviceHasNoPics = false;
-
-  void changeIndex() {
-    print('teste');
-  }
 
   void trashPics() async {
     print('trashing selected pics....');
 
     List<String> entitiesIds = [];
     List<AssetEntity> entities = [];
-    AssetPathProvider pathProvider =
-        PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 
     for (var index in picsSelected) {
       AssetEntity entity = pathProvider.orderedList[index];
@@ -99,8 +75,7 @@ class _TabsScreenState extends State<TabsScreen>
       entities.add(entity);
     }
 
-    final List<String> result =
-        await PhotoManager.editor.deleteWithIds(entitiesIds);
+    final List<String> result = await PhotoManager.editor.deleteWithIds(entitiesIds);
     if (result.isNotEmpty) {
       for (AssetEntity entity in entities) {
         DatabaseManager.instance.deletedPic(entity);
@@ -113,20 +88,21 @@ class _TabsScreenState extends State<TabsScreen>
     }
   }
 
-  void trashPic(AssetEntity entity) async {
+  trashPic(AssetEntity entity) async {
     print('trashing pic');
-    final List<String> result =
-        await PhotoManager.editor.deleteWithIds([entity.id]);
+    final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
     if (result.isNotEmpty) {
       DatabaseManager.instance.deletedPic(entity);
-      if (modalPhotoCard) {
-        setState(() {
-          selectedPhotoPicInfo = null;
-          selectedPhotoIndex = null;
-          selectedPhotoData = null;
-          modalPhotoCard = false;
-        });
-      }
+
+//      Arrumar isso aqui
+//      if (modalPhotoCard) {
+//        setState(() {
+//          selectedPhotoPicInfo = null;
+//          selectedPhotoIndex = null;
+//          selectedPhotoData = null;
+//          modalPhotoCard = false;
+//        });
+//      }
     }
   }
 
@@ -150,10 +126,8 @@ class _TabsScreenState extends State<TabsScreen>
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
-      Pic getPic = DatabaseManager.instance
-          .getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-      String tagName = DatabaseManager.instance
-          .getTagName(DatabaseManager.instance.selectedTagKey);
+      Pic getPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
+      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
       alertInputController.text = tagName;
 
       print('showModal');
@@ -164,8 +138,7 @@ class _TabsScreenState extends State<TabsScreen>
           return EditTagModal(
             alertInputController: alertInputController,
             onPressedDelete: () {
-              DatabaseManager.instance
-                  .deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
+              DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               DatabaseManager.instance.tagsSuggestions(
                 tagsEditingController.text,
                 DatabaseManager.instance.selectedPhoto.id,
@@ -175,8 +148,7 @@ class _TabsScreenState extends State<TabsScreen>
               Navigator.of(context).pop();
             },
             onPressedOk: () {
-              print(
-                  'Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 DatabaseManager.instance.editTag(
                   oldTagKey: DatabaseManager.instance.selectedTagKey,
@@ -191,16 +163,49 @@ class _TabsScreenState extends State<TabsScreen>
     }
   }
 
+  showPhotoCardModal() async {
+    print('Show photo card modal!!!');
+
+//    sem horizontal
+//    bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
+//    top: bottomInsets > 0 ? 5 : 46.0,
+
+    String dialogResult = await showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 38.0),
+          child: PhotoCard(
+            data: DatabaseManager.instance.selectedPhotoData,
+            photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
+            picSwiper: -1,
+            index: DatabaseManager.instance.selectedPhotoIndex,
+            tagsEditingController: tagsEditingController,
+            specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
+            generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
+            showEditTagModal: showEditTagModal,
+            onPressedTrash: () {
+              trashPic(DatabaseManager.instance.selectedPhotoData);
+            },
+          ),
+        );
+      },
+    );
+
+    if (dialogResult == null) {
+      print('dismissed photo card!!!');
+      DatabaseManager.instance.selectedPhotoData = null;
+      DatabaseManager.instance.selectedPhotoPicInfo = null;
+      DatabaseManager.instance.selectedPhotoIndex = null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _loadPhotos();
-    isAdVisible = false;
-
-//    if (DatabaseManager.instance.userSettings.tutorialCompleted == true) {
-//      isAdVisible = true;
-//      Ads.setScreen(PicScreen.id, DatabaseManager.instance.currentTab);
-//    }
 
     KeyboardVisibility.onChange.listen((bool visible) {
       print('keyboard: $visible');
@@ -214,11 +219,6 @@ class _TabsScreenState extends State<TabsScreen>
           expandablePaddingController.expanded = false;
         });
       }
-
-//      setState(() {
-//        isAdVisible = !visible;
-//        isKeyboardVisible = visible;
-//      });
     });
 
 //    _changeThrottle = Throttle(onCall: _onAssetChange);
@@ -226,8 +226,7 @@ class _TabsScreenState extends State<TabsScreen>
     PhotoManager.addChangeCallback(_onAssetChange);
     PhotoManager.startChangeNotify();
 
-    if (DatabaseManager.instance.userSettings.tutorialCompleted == true &&
-        DatabaseManager.instance.userSettings.notifications == true) {
+    if (DatabaseManager.instance.userSettings.tutorialCompleted == true && DatabaseManager.instance.userSettings.notifications == true) {
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
     }
@@ -236,8 +235,7 @@ class _TabsScreenState extends State<TabsScreen>
       DatabaseManager.instance.checkPremiumStatus();
     }
 
-    RewardedVideoAd.instance.listener =
-        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.loaded) {
         print('@@@ loaded');
       }
@@ -248,25 +246,11 @@ class _TabsScreenState extends State<TabsScreen>
         Ads.loadRewarded();
       }
 
-      if (event == RewardedVideoAdEvent.closed ||
-          event == RewardedVideoAdEvent.failedToLoad) {
+      if (event == RewardedVideoAdEvent.closed || event == RewardedVideoAdEvent.failedToLoad) {
         print('Failed to load or closed');
         Ads.loadRewarded();
       }
     };
-  }
-
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-  }
-
-  @override
-  void afterFirstLayout(BuildContext context) async {
-    print('#!#!#!#!#!# AFTER LAYOUT');
-//    if (DatabaseManager.instance.editingTags == true) {
-//      tagsFocusNode.requestFocus();
-//    }
   }
 
   @override
@@ -288,11 +272,8 @@ class _TabsScreenState extends State<TabsScreen>
       print('### deleted pics from library!');
       for (var pic in deletedPics) {
         print('Pic deleted Id: ${pic['id']}');
-        AssetPathProvider pathProvider = PhotoProvider
-            .instance.pathProviderMap[PhotoProvider.instance.list[0]];
-        AssetEntity entity = pathProvider.orderedList.firstWhere(
-            (element) => element.id == pic['id'],
-            orElse: () => null);
+        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
 
         if (entity != null) {
           DatabaseManager.instance.deletedPic(
@@ -308,34 +289,33 @@ class _TabsScreenState extends State<TabsScreen>
       for (var pic in createdPics) {
         print('Pic created Id: ${pic['id']}');
         AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
-        AssetPathProvider pathProvider = PhotoProvider
-            .instance.pathProviderMap[PhotoProvider.instance.list[0]];
+        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
         pathProvider.addAsset(picEntity);
       }
 
       DatabaseManager.instance.sliderHasPics();
       setState(() {
+//        Conferir isso aqui que eu tive que comentar!!!!
+
         // picSwiper = 0;
         // carouselController.jumpToPage(0);
-        // if (deviceHasNoPics) {
-        //   deviceHasNoPics = false;
-        // }
+        if (deviceHasNoPics) {
+          deviceHasNoPics = false;
+        }
       });
     }
   }
 
-  void changePage(int index) {
+  void setTabIndex(int index) {
     if (deviceHasNoPics) {
       _sendCurrentTabToAnalytics(index);
-      print(
-          'Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
+      print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
       DatabaseManager.instance.setCurrentTab(index);
       return;
     }
 
     if (index == 0) {
-      AssetPathProvider pathProvider = PhotoProvider
-          .instance.pathProviderMap[PhotoProvider.instance.list[0]];
+      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
       List<String> photosIds = [];
       for (int x = 0; x < pathProvider.orderedList.length; x++) {
         bool hasTag = DatabaseManager.instance.picHasTag[x];
@@ -346,8 +326,7 @@ class _TabsScreenState extends State<TabsScreen>
       }
       DatabaseManager.instance.slideThumbPhotoIds = photosIds;
     } else if (index == 1) {
-      AssetPathProvider pathProvider = PhotoProvider
-          .instance.pathProviderMap[PhotoProvider.instance.list[0]];
+      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
       List<String> photosIds = [];
       for (int x = 0; x < DatabaseManager.instance.sliderIndex.length; x++) {
         int orderedIndex = DatabaseManager.instance.sliderIndex[x];
@@ -390,26 +369,8 @@ class _TabsScreenState extends State<TabsScreen>
     }
 
     _sendCurrentTabToAnalytics(index);
-    print(
-        'Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
-//    swiperController.move(DatabaseManager.instance.swiperIndex(), animation: false);
+    print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
     DatabaseManager.instance.setCurrentTab(index);
-//    swiperController.index = DatabaseManager.instance.swiperIndex();
-
-//    if (index == 1) {
-//      print('#### moving to picture.... $picSwiper');
-//      swiperController.move(picSwiper, animation: false);
-//    }
-  }
-
-  void dismissPhotoCard() {
-    selectedPhotoData = null;
-    selectedPhotoPicInfo = null;
-    selectedPhotoIndex = null;
-
-    setState(() {
-      modalPhotoCard = false;
-    });
   }
 
   Widget _buildLoading() {
@@ -443,11 +404,8 @@ class _TabsScreenState extends State<TabsScreen>
         return;
       }
 
-      PhotoProvider.instance
-          .getOrCreatePathProvider(PhotoProvider.instance.list[0]);
-      await PhotoProvider
-          .instance.pathProviderMap[PhotoProvider.instance.list[0]]
-          .loadAllPics();
+      PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
+      await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
 //      _checkTaggedPics()
 
       DatabaseManager.instance.sliderHasPics();
@@ -459,14 +417,12 @@ class _TabsScreenState extends State<TabsScreen>
     DatabaseManager.instance.checkHasTaggedPhotos();
     DatabaseManager.instance.setCurrentTab(1, notify: false);
     _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
-    changePage(1);
+    setTabIndex(1);
   }
 
   void afterBuild() {
     print('#### AFTER BUILD!');
-    print('Trying to moe to page: ${DatabaseManager.instance.swiperIndex}');
-//    swiperController.index = DatabaseManager.instance.swiperIndex();
-//    swiperController.move(DatabaseManager.instance.swiperIndex(), animation: false);
+    print('Trying to move to page: ${DatabaseManager.instance.swiperIndex}');
   }
 
   @override
@@ -475,8 +431,7 @@ class _TabsScreenState extends State<TabsScreen>
     AssetPathProvider pathProvider;
     if (PhotoProvider.instance.list.isNotEmpty) {
       print('refreshing');
-      pathProvider = PhotoProvider
-          .instance.pathProviderMap[PhotoProvider.instance.list[0]];
+      pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     }
 
     var screenWidth = MediaQuery.of(context).size.width;
@@ -498,17 +453,14 @@ class _TabsScreenState extends State<TabsScreen>
                       child: Stack(
                         children: <Widget>[
                           Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 CupertinoButton(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   onPressed: () {
-                                    Navigator.pushNamed(
-                                        context, SettingsScreen.id);
+                                    Navigator.pushNamed(context, SettingsScreen.id);
                                   },
                                   child: Image.asset('lib/images/settings.png'),
                                 ),
@@ -521,16 +473,13 @@ class _TabsScreenState extends State<TabsScreen>
                               children: <Widget>[
                                 Padding(
                                   padding: const EdgeInsets.only(right: 30.0),
-                                  child: Image.asset(
-                                      'lib/images/nogalleryauth.png'),
+                                  child: Image.asset('lib/images/nogalleryauth.png'),
                                 ),
                                 SizedBox(
                                   height: 21.0,
                                 ),
                                 Text(
-                                  S
-                                      .of(context)
-                                      .gallery_access_permission_description,
+                                  S.of(context).gallery_access_permission_description,
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -579,15 +528,25 @@ class _TabsScreenState extends State<TabsScreen>
                       ),
                     ),
                   ),
-                if (Provider.of<DatabaseManager>(context).currentTab == 0 &&
-                    Provider.of<DatabaseManager>(context).hasGalleryPermission)
-                  UntaggedTab(),
-                if (Provider.of<DatabaseManager>(context).currentTab == 1 &&
-                    Provider.of<DatabaseManager>(context).hasGalleryPermission)
-                  PicTab(),
-                if (Provider.of<DatabaseManager>(context).currentTab == 2 &&
-                    Provider.of<DatabaseManager>(context).hasGalleryPermission)
-                  TaggedTab(),
+                if (Provider.of<DatabaseManager>(context).currentTab == 0 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                  UntaggedTab(
+                    pathProvider: pathProvider,
+                    deviceHasNoPics: deviceHasNoPics,
+                    showPhotoCardModal: showPhotoCardModal,
+                  ),
+                if (Provider.of<DatabaseManager>(context).currentTab == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                  PicTab(
+                    deviceHasNoPics: deviceHasNoPics,
+                    showEditTagModal: showEditTagModal,
+                    trashPic: trashPic,
+                  ),
+                if (Provider.of<DatabaseManager>(context).currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                  TaggedTab(
+                    setTabIndex: setTabIndex,
+                    deviceHasNoPics: deviceHasNoPics,
+                    showEditTagModal: showEditTagModal,
+                    showPhotoCardModal: showPhotoCardModal,
+                  ),
               ],
             ),
           ),
@@ -602,8 +561,7 @@ class _TabsScreenState extends State<TabsScreen>
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
                             setState(() {
-                              expandableController.expanded =
-                                  !expandableController.expanded;
+                              expandableController.expanded = !expandableController.expanded;
                             });
                           },
                           child: SafeArea(
@@ -634,21 +592,16 @@ class _TabsScreenState extends State<TabsScreen>
                                 Spacer(),
                                 CupertinoButton(
                                   onPressed: () {
-                                    if (!DatabaseManager
-                                        .instance.userSettings.isPremium) {
-                                      Navigator.pushNamed(
-                                          context, PremiumScreen.id);
+                                    if (!DatabaseManager.instance.userSettings.isPremium) {
+                                      Navigator.pushNamed(context, PremiumScreen.id);
                                       return;
                                     }
 
                                     List<String> photosIds = [];
                                     List<AssetEntity> entities = [];
-                                    AssetPathProvider pathProvider =
-                                        PhotoProvider.instance.pathProviderMap[
-                                            PhotoProvider.instance.list[0]];
+                                    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
                                     for (var index in picsSelected) {
-                                      AssetEntity entity =
-                                          pathProvider.orderedList[index];
+                                      AssetEntity entity = pathProvider.orderedList[index];
                                       photosIds.add(entity.id);
                                       entities.add(entity);
                                     }
@@ -698,78 +651,64 @@ class _TabsScreenState extends State<TabsScreen>
                                   TagsList(
                                       tagsKeys: multiPicTagKeys, //picI
                                       addTagField: true,
-                                      textEditingController:
-                                          bottomTagsEditingController,
+                                      textEditingController: bottomTagsEditingController,
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagName) {
-                                        if (!DatabaseManager
-                                            .instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(
-                                              context, PremiumScreen.id);
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
                                         print('do nothing');
                                       },
-                                      onDoubleTap: () {
-                                        if (!DatabaseManager
-                                            .instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(
-                                              context, PremiumScreen.id);
+                                      onPanUpdate: () {
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
 
-                                        if (multiPicTagKeys.contains(
-                                            DatabaseManager
-                                                .instance.selectedTagKey)) {
+                                        if (multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
                                           setState(() {
-                                            multiPicTagKeys.remove(
-                                                DatabaseManager
-                                                    .instance.selectedTagKey);
+                                            multiPicTagKeys.remove(DatabaseManager.instance.selectedTagKey);
                                           });
-                                          DatabaseManager.instance
-                                              .tagsSuggestions(
+                                          DatabaseManager.instance.tagsSuggestions(
                                             bottomTagsEditingController.text,
                                             'MULTIPIC',
                                             excludeTags: multiPicTagKeys,
                                           );
                                         }
                                       },
+                                      onDoubleTap: () {
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
+                                          return;
+                                        }
+                                        print('do nothing');
+                                      },
                                       onChanged: (text) {
                                         print('calling tag suggestions');
-                                        DatabaseManager.instance
-                                            .tagsSuggestions(
+                                        DatabaseManager.instance.tagsSuggestions(
                                           text,
                                           'MULTIPIC',
                                           excludeTags: multiPicTagKeys,
                                         );
                                       },
                                       onSubmitted: (text) {
-                                        if (!DatabaseManager
-                                            .instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(
-                                              context, PremiumScreen.id);
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
 
                                         print('return');
                                         if (text != '') {
                                           bottomTagsEditingController.clear();
-                                          String tagKey = DatabaseManager
-                                              .instance
-                                              .encryptTag(text);
-                                          if (!multiPicTagKeys
-                                              .contains(tagKey)) {
-                                            if (DatabaseManager.instance
-                                                    .getTagName(tagKey) ==
-                                                null) {
-                                              print(
-                                                  'tag does not exist! creating it!');
-                                              DatabaseManager.instance
-                                                  .createTag(text);
+                                          String tagKey = DatabaseManager.instance.encryptTag(text);
+                                          if (!multiPicTagKeys.contains(tagKey)) {
+                                            if (DatabaseManager.instance.getTagName(tagKey) == null) {
+                                              print('tag does not exist! creating it!');
+                                              DatabaseManager.instance.createTag(text);
                                             }
                                             multiPicTagKeys.add(tagKey);
-                                            DatabaseManager.instance
-                                                .tagsSuggestions(
+                                            DatabaseManager.instance.tagsSuggestions(
                                               '',
                                               'MULTIPIC',
                                               excludeTags: multiPicTagKeys,
@@ -781,25 +720,20 @@ class _TabsScreenState extends State<TabsScreen>
                                     padding: const EdgeInsets.only(top: 8.0),
                                     child: TagsList(
                                       title: S.of(context).suggestions,
-                                      tagsKeys: DatabaseManager
-                                          .instance.suggestionTags['MULTIPIC'],
+                                      tagsKeys: DatabaseManager.instance.suggestionTags['MULTIPIC'],
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagName) {
-                                        if (!DatabaseManager
-                                            .instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(
-                                              context, PremiumScreen.id);
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
 
                                         bottomTagsEditingController.clear();
-                                        String tagKey = DatabaseManager.instance
-                                            .encryptTag(tagName);
+                                        String tagKey = DatabaseManager.instance.encryptTag(tagName);
                                         if (!multiPicTagKeys.contains(tagKey)) {
                                           multiPicTagKeys.add(tagKey);
-                                          DatabaseManager.instance
-                                              .tagsSuggestions(
+                                          DatabaseManager.instance.tagsSuggestions(
                                             '',
                                             'MULTIPIC',
                                             excludeTags: multiPicTagKeys,
@@ -807,20 +741,16 @@ class _TabsScreenState extends State<TabsScreen>
                                         }
                                       },
                                       onDoubleTap: () {
-                                        if (!DatabaseManager
-                                            .instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(
-                                              context, PremiumScreen.id);
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
 
                                         print('do nothing');
                                       },
                                       onPanUpdate: () {
-                                        if (!DatabaseManager
-                                            .instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(
-                                              context, PremiumScreen.id);
+                                        if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
                                           return;
                                         }
 
@@ -851,9 +781,8 @@ class _TabsScreenState extends State<TabsScreen>
                     backgroundColor: kWhiteColor,
                     hasNotch: true,
                     opacity: 1.0,
-                    currentIndex:
-                        Provider.of<DatabaseManager>(context).currentTab,
-                    onTap: changePage,
+                    currentIndex: Provider.of<DatabaseManager>(context).currentTab,
+                    onTap: setTabIndex,
                     borderRadius: BorderRadius.vertical(
                       top: Radius.circular(16),
                     ),
@@ -862,8 +791,7 @@ class _TabsScreenState extends State<TabsScreen>
                         ? <BubbleBottomBarItem>[
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
-                              icon:
-                                  Image.asset('lib/images/cancelbarbutton.png'),
+                              icon: Image.asset('lib/images/cancelbarbutton.png'),
                             ),
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
@@ -871,74 +799,29 @@ class _TabsScreenState extends State<TabsScreen>
                             ),
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
-                              icon:
-                                  Image.asset('lib/images/trashbarbutton.png'),
+                              icon: Image.asset('lib/images/trashbarbutton.png'),
                             )
                           ]
                         : <BubbleBottomBarItem>[
                             BubbleBottomBarItem(
                               backgroundColor: kPinkColor,
                               icon: Image.asset('lib/images/tabgridred.png'),
-                              activeIcon:
-                                  Image.asset('lib/images/tabgridwhite.png'),
+                              activeIcon: Image.asset('lib/images/tabgridwhite.png'),
                             ),
                             BubbleBottomBarItem(
                               backgroundColor: kSecondaryColor,
                               icon: Image.asset('lib/images/tabpicpicsred.png'),
-                              activeIcon:
-                                  Image.asset('lib/images/tabpicpicswhite.png'),
+                              activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
                             ),
                             BubbleBottomBarItem(
                               backgroundColor: kPrimaryColor,
                               icon: Image.asset('lib/images/tabtaggedblue.png'),
-                              activeIcon:
-                                  Image.asset('lib/images/tabtaggedwhite.png'),
+                              activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
                             )
                           ],
                   ),
                 ),
         ),
-        if (modalPhotoCard)
-          Material(
-            color: Colors.transparent,
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  dismissPhotoCard();
-                },
-                child: Container(
-                  color: Colors.black.withOpacity(0.4),
-                  child: SafeArea(
-                    child: GestureDetector(
-                      onTap: () {
-                        print('ignore');
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
-                          top: bottomInsets > 0 ? 5 : 46.0,
-                        ),
-                        child: PhotoCard(
-                          data: selectedPhotoData,
-                          photoId: selectedPhotoPicInfo.photoId,
-                          picSwiper: -1,
-                          index: selectedPhotoIndex,
-                          tagsEditingController: tagsEditingController,
-                          specificLocation:
-                              selectedPhotoPicInfo.specificLocation,
-                          generalLocation: selectedPhotoPicInfo.generalLocation,
-                          showEditTagModal: showEditTagModal,
-                          onPressedTrash: () {
-                            trashPic(selectedPhotoData);
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
         if (isLoading)
           Material(
             color: Colors.black.withOpacity(0.6),
@@ -946,17 +829,11 @@ class _TabsScreenState extends State<TabsScreen>
               child: Loading(indicator: BallPulseIndicator(), size: 100.0),
             ),
           ),
-        if (Provider.of<DatabaseManager>(context)
-                .userSettings
-                .tutorialCompleted ==
-            false)
+        if (Provider.of<DatabaseManager>(context).userSettings.tutorialCompleted == false)
           Container(
             color: Colors.black.withOpacity(0.4),
           ),
-        if (Provider.of<DatabaseManager>(context)
-                .userSettings
-                .tutorialCompleted ==
-            false)
+        if (Provider.of<DatabaseManager>(context).userSettings.tutorialCompleted == false)
           Material(
             color: Colors.transparent,
             child: Center(
@@ -997,16 +874,13 @@ class _TabsScreenState extends State<TabsScreen>
 
                             if (index == 0) {
                               text = S.of(context).tutorial_just_swipe;
-                              image = Image.asset(
-                                  'lib/images/tutorialthirdimage.png');
+                              image = Image.asset('lib/images/tutorialthirdimage.png');
                             } else if (index == 1) {
                               text = S.of(context).tutorial_however_you_want;
-                              image = Image.asset(
-                                  'lib/images/tutorialsecondimage.png');
+                              image = Image.asset('lib/images/tutorialsecondimage.png');
                             } else {
                               text = S.of(context).tutorial_daily_package;
-                              image = Image.asset(
-                                  'lib/images/tutorialfirstimage.png');
+                              image = Image.asset('lib/images/tutorialfirstimage.png');
                             }
 
                             return Column(
@@ -1016,8 +890,7 @@ class _TabsScreenState extends State<TabsScreen>
                                   height: 28.0,
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16.0),
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                   child: Text(
                                     text,
                                     textScaleFactor: 1.0,
@@ -1038,12 +911,11 @@ class _TabsScreenState extends State<TabsScreen>
                           controller: tutorialSwiperController,
                           onIndexChanged: (index) {
                             setState(() {
-                              swiperIndex = index;
+                              tutorialSwiperIndex = index;
                             });
                           },
                           pagination: new SwiperCustomPagination(
-                            builder: (BuildContext context,
-                                SwiperPluginConfig config) {
+                            builder: (BuildContext context, SwiperPluginConfig config) {
                               return Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Row(
@@ -1053,35 +925,25 @@ class _TabsScreenState extends State<TabsScreen>
                                       height: 8.0,
                                       width: 8.0,
                                       decoration: BoxDecoration(
-                                        color: config.activeIndex == 0
-                                            ? kSecondaryColor
-                                            : kGrayColor,
-                                        borderRadius:
-                                            BorderRadius.circular(4.0),
+                                        color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
+                                        borderRadius: BorderRadius.circular(4.0),
                                       ),
                                     ),
                                     Container(
                                       height: 8.0,
                                       width: 8.0,
-                                      margin: const EdgeInsets.only(
-                                          left: 24.0, right: 24.0),
+                                      margin: const EdgeInsets.only(left: 24.0, right: 24.0),
                                       decoration: BoxDecoration(
-                                        color: config.activeIndex == 1
-                                            ? kSecondaryColor
-                                            : kGrayColor,
-                                        borderRadius:
-                                            BorderRadius.circular(4.0),
+                                        color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
+                                        borderRadius: BorderRadius.circular(4.0),
                                       ),
                                     ),
                                     Container(
                                       height: 8.0,
                                       width: 8.0,
                                       decoration: BoxDecoration(
-                                        color: config.activeIndex == 2
-                                            ? kSecondaryColor
-                                            : kGrayColor,
-                                        borderRadius:
-                                            BorderRadius.circular(4.0),
+                                        color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
+                                        borderRadius: BorderRadius.circular(4.0),
                                       ),
                                     ),
                                   ],
@@ -1096,25 +958,19 @@ class _TabsScreenState extends State<TabsScreen>
                       ),
                       CupertinoButton(
                         onPressed: () {
-                          if (swiperIndex == 2) {
+                          if (tutorialSwiperIndex == 2) {
                             print('Requesting notification....');
 
                             if (Platform.isAndroid) {
                               var userBox = Hive.box('user');
-                              DatabaseManager
-                                  .instance.userSettings.notifications = true;
-                              DatabaseManager
-                                  .instance.userSettings.dailyChallenges = true;
-                              userBox.putAt(
-                                  0, DatabaseManager.instance.userSettings);
+                              DatabaseManager.instance.userSettings.notifications = true;
+                              DatabaseManager.instance.userSettings.dailyChallenges = true;
+                              userBox.putAt(0, DatabaseManager.instance.userSettings);
                             } else {
-                              PushNotificationsManager push =
-                                  PushNotificationsManager();
+                              PushNotificationsManager push = PushNotificationsManager();
                               push.init();
                             }
-                            DatabaseManager.instance
-                                .checkNotificationPermission(
-                                    firstPermissionCheck: true);
+                            DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
                             DatabaseManager.instance.finishedTutorial();
                             return;
                           }
@@ -1130,9 +986,7 @@ class _TabsScreenState extends State<TabsScreen>
                           ),
                           child: Center(
                             child: Text(
-                              swiperIndex == 2
-                                  ? S.of(context).start
-                                  : S.of(context).next,
+                              tutorialSwiperIndex == 2 ? S.of(context).start : S.of(context).next,
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
