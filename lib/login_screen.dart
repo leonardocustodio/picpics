@@ -17,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  void createDefaultTags() async {
+  void createDefaultTags(BuildContext context) async {
     var tagsBox = await Hive.openBox('tags');
 
     if (tagsBox.length == 0) {
@@ -52,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    createDefaultTags();
   }
 
   @override
@@ -97,6 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   CupertinoButton(
                     padding: const EdgeInsets.all(0),
                     onPressed: () async {
+                      createDefaultTags(context);
                       var result = await PhotoManager.requestPermission();
                       if (result) {
                         DatabaseManager.instance.setupPathList();
