@@ -10,6 +10,7 @@ import 'package:picPics/model/pic.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
+import 'package:provider/provider.dart';
 
 class UntaggedTab extends StatefulWidget {
   static const id = 'untagged_tab';
@@ -34,12 +35,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   double offsetFirstTab = 0.0;
   double topOffsetFirstTab = 64.0;
-//  double topOffsetFirstTab = 112.0;
   bool hideSubtitleFirstTab = false;
 
   BuildContext multiPicContext;
-  bool multiPicSelect = false;
   bool showingMultiTagSheet = false;
+
   List<int> picsSelected = [];
   List<String> multiPicTagKeys = [];
 
@@ -115,18 +115,16 @@ class _UntaggedTabState extends State<UntaggedTab> {
         child: GestureDetector(
           onLongPress: () {
             print('LongPress');
-            if (multiPicSelect == false) {
+            if (DatabaseManager.instance.multiPicBar == false) {
               picsSelected.add(index);
               multiPicContext = context;
-              setState(() {
-                multiPicSelect = true;
-              });
+              DatabaseManager.instance.setMultiPicBar(true);
             }
           },
           child: CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
-              if (multiPicSelect) {
+              if (DatabaseManager.instance.multiPicBar) {
                 if (picsSelected.contains(index)) {
                   setState(() {
                     picsSelected.remove(index);
@@ -176,7 +174,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               entity: data,
               size: 150,
               backgroundColor: Colors.grey[400],
-              showOverlay: multiPicSelect ? true : false,
+              showOverlay: DatabaseManager.instance.multiPicBar ? true : false,
               isSelected: picsSelected.contains(index),
             ),
           ),
@@ -233,7 +231,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       ),
                     if (!hideSubtitleFirstTab)
                       Text(
-                        multiPicSelect ? S.of(context).photo_gallery_count(picsSelected.length) : S.of(context).photo_gallery_description,
+                        Provider.of<DatabaseManager>(context).multiPicBar
+                            ? S.of(context).photo_gallery_count(picsSelected.length)
+                            : S.of(context).photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',

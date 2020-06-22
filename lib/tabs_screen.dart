@@ -44,7 +44,7 @@ class _TabsScreenState extends State<TabsScreen> {
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
 
   BuildContext multiPicContext;
-  bool multiPicSelect = false;
+
   bool showingMultiTagSheet = false;
   List<int> picsSelected = [];
   List<String> multiPicTagKeys = [];
@@ -82,9 +82,7 @@ class _TabsScreenState extends State<TabsScreen> {
       }
 
       picsSelected = [];
-      setState(() {
-        multiPicSelect = false;
-      });
+      DatabaseManager.instance.setMultiPicBar(false);
     }
   }
 
@@ -306,7 +304,7 @@ class _TabsScreenState extends State<TabsScreen> {
     }
   }
 
-  void setTabIndex(int index) {
+  setTabIndex(int index) {
     if (deviceHasNoPics) {
       _sendCurrentTabToAnalytics(index);
       print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
@@ -336,12 +334,10 @@ class _TabsScreenState extends State<TabsScreen> {
       DatabaseManager.instance.slideThumbPhotoIds = photosIds;
     }
 
-    if (multiPicSelect) {
+    if (DatabaseManager.instance.multiPicBar) {
       if (index == 0) {
         picsSelected = [];
-        setState(() {
-          multiPicSelect = false;
-        });
+        DatabaseManager.instance.setMultiPicBar(false);
       } else if (index == 1) {
 //        showMultiTagSheet();
 
@@ -613,8 +609,9 @@ class _TabsScreenState extends State<TabsScreen> {
 
                                     setState(() {
                                       showingMultiTagSheet = false;
-                                      multiPicSelect = false;
                                     });
+
+                                    DatabaseManager.instance.setMultiPicBar(false);
 
                                     picsSelected = [];
                                     multiPicTagKeys = [];
@@ -787,7 +784,7 @@ class _TabsScreenState extends State<TabsScreen> {
                       top: Radius.circular(16),
                     ),
                     elevation: 8,
-                    items: multiPicSelect
+                    items: Provider.of<DatabaseManager>(context).multiPicBar
                         ? <BubbleBottomBarItem>[
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,

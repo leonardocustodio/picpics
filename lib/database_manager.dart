@@ -78,6 +78,13 @@ class DatabaseManager extends ChangeNotifier {
   Pic selectedPhotoPicInfo;
   int selectedPhotoIndex;
 
+  bool multiPicBar = false;
+
+  void setMultiPicBar(bool enabled) {
+    multiPicBar = enabled;
+    notifyListeners();
+  }
+
 //  Pic selectedPic;
   void requestNotification() {
     var userBox = Hive.box('user');
