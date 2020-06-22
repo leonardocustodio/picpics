@@ -37,9 +37,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
   double topOffsetFirstTab = 64.0;
   bool hideSubtitleFirstTab = false;
 
-  List<int> picsSelected = [];
-  List<String> multiPicTagKeys = [];
-
   TextEditingController tagsEditingController = TextEditingController();
 
   void movedGridPositionFirstTab() {
@@ -113,7 +110,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
           onLongPress: () {
             print('LongPress');
             if (DatabaseManager.instance.multiPicBar == false) {
-              picsSelected.add(index);
+              List<int> picsCopy = DatabaseManager.instance.picsSelected;
+              picsCopy.add(index);
+              DatabaseManager.instance.setPicsSelected(picsCopy);
               DatabaseManager.instance.setMultiPicBar(true);
             }
           },
@@ -121,16 +120,16 @@ class _UntaggedTabState extends State<UntaggedTab> {
             padding: const EdgeInsets.all(0),
             onPressed: () {
               if (DatabaseManager.instance.multiPicBar) {
-                if (picsSelected.contains(index)) {
-                  setState(() {
-                    picsSelected.remove(index);
-                  });
+                if (DatabaseManager.instance.picsSelected.contains(index)) {
+                  List<int> picsCopy = DatabaseManager.instance.picsSelected;
+                  picsCopy.remove(index);
+                  DatabaseManager.instance.setPicsSelected(picsCopy);
                 } else {
-                  setState(() {
-                    picsSelected.add(index);
-                  });
+                  List<int> picsCopy = DatabaseManager.instance.picsSelected;
+                  picsCopy.add(index);
+                  DatabaseManager.instance.setPicsSelected(picsCopy);
                 }
-                print('Pics Selected Length: ${picsSelected.length}');
+                print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
                 return;
               }
 
@@ -171,7 +170,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               size: 150,
               backgroundColor: Colors.grey[400],
               showOverlay: DatabaseManager.instance.multiPicBar ? true : false,
-              isSelected: picsSelected.contains(index),
+              isSelected: DatabaseManager.instance.picsSelected.contains(index),
             ),
           ),
         ),
@@ -228,7 +227,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     if (!hideSubtitleFirstTab)
                       Text(
                         Provider.of<DatabaseManager>(context).multiPicBar
-                            ? S.of(context).photo_gallery_count(picsSelected.length)
+                            ? S.of(context).photo_gallery_count(Provider.of<DatabaseManager>(context).picsSelected.length)
                             : S.of(context).photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
