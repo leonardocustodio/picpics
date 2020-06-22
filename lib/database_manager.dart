@@ -109,6 +109,9 @@ class DatabaseManager extends ChangeNotifier {
     var userBox = Hive.box('user');
     User getUser = userBox.getAt(0);
     print('User can tag today: ${getUser.canTagToday}');
+    if (getUser.isPremium) {
+      return true;
+    }
     return getUser.canTagToday ?? true;
   }
 
