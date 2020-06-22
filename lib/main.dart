@@ -9,7 +9,7 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/photo_screen.dart';
-import 'package:picPics/pic_screen.dart';
+import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +23,6 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-//import 'package:path_provider/path_provider.dart';
 import 'package:uuid/uuid.dart';
 
 Future<void> initPlatformState() async {
@@ -60,7 +59,7 @@ void main() async {
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
 
-  String initialRoute = PicScreen.id;
+  String initialRoute = TabsScreen.id;
 
   if (userBox.length == 0) {
     var uuid = Uuid();
@@ -140,7 +139,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
         navigatorObservers: [DatabaseManager.instance.observer],
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
-          PicScreen.id: (context) => PicScreen(),
+          TabsScreen.id: (context) => TabsScreen(),
           PhotoScreen.id: (context) => PhotoScreen(),
           SettingsScreen.id: (context) => SettingsScreen(),
           AddLocationScreen.id: (context) => AddLocationScreen(),

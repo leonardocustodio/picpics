@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:picPics/constants.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/pic_screen.dart';
+import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:hive/hive.dart';
@@ -100,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       var result = await PhotoManager.requestPermission();
                       if (result) {
                         DatabaseManager.instance.setupPathList();
-                        Navigator.pushReplacementNamed(context, PicScreen.id);
+                        Navigator.pushReplacementNamed(context, TabsScreen.id);
                       } else {
                         // fail
                         /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission

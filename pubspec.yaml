@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.1.0+124
+version: 1.1.0+125
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -43,7 +43,7 @@ dependencies:
   diacritic: ^0.1.1
   intl: ^0.16.1
   date_utils: ^0.1.0+3
-  carousel_slider: ^2.1.0
+  carousel_slider: 2.1.0
   expandable: ^4.1.4
   loading: ^1.0.2
   uuid: ^2.1.0
