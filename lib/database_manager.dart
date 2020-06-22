@@ -78,7 +78,20 @@ class DatabaseManager extends ChangeNotifier {
   Pic selectedPhotoPicInfo;
   int selectedPhotoIndex;
 
+  // For multipic work
   bool multiPicBar = false;
+  List<int> picsSelected = [];
+  List<String> multiPicTagKeys = [];
+
+  void setPicsSelected(List<int> pics) {
+    picsSelected = pics;
+    notifyListeners();
+  }
+
+  void setMultiPicTagKeys(List<String> pics) {
+    multiPicTagKeys = pics;
+    notifyListeners();
+  }
 
   void setMultiPicBar(bool enabled) {
     multiPicBar = enabled;

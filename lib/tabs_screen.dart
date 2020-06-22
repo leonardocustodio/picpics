@@ -43,11 +43,9 @@ class _TabsScreenState extends State<TabsScreen> {
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
 
-  BuildContext multiPicContext;
+//  BuildContext multiPicContext;
 
   bool showingMultiTagSheet = false;
-  List<int> picsSelected = [];
-  List<String> multiPicTagKeys = [];
 
   // Swiper do Tutorial
   int tutorialSwiperIndex = 0;
@@ -69,7 +67,7 @@ class _TabsScreenState extends State<TabsScreen> {
     List<AssetEntity> entities = [];
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 
-    for (var index in picsSelected) {
+    for (var index in DatabaseManager.instance.picsSelected) {
       AssetEntity entity = pathProvider.orderedList[index];
       entitiesIds.add(entity.id);
       entities.add(entity);
@@ -81,7 +79,7 @@ class _TabsScreenState extends State<TabsScreen> {
         DatabaseManager.instance.deletedPic(entity);
       }
 
-      picsSelected = [];
+      DatabaseManager.instance.setPicsSelected([]);
       DatabaseManager.instance.setMultiPicBar(false);
     }
   }
@@ -336,7 +334,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
     if (DatabaseManager.instance.multiPicBar) {
       if (index == 0) {
-        picsSelected = [];
+        DatabaseManager.instance.setPicsSelected([]);
         DatabaseManager.instance.setMultiPicBar(false);
       } else if (index == 1) {
 //        showMultiTagSheet();
@@ -574,7 +572,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                   child: Container(
                                     width: 80.0,
                                     child: Text(
-                                      S.of(multiPicContext).cancel,
+                                      S.of(context).cancel,
                                       textScaleFactor: 1.0,
                                       style: TextStyle(
                                         color: Color(0xff707070),
@@ -596,13 +594,13 @@ class _TabsScreenState extends State<TabsScreen> {
                                     List<String> photosIds = [];
                                     List<AssetEntity> entities = [];
                                     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                                    for (var index in picsSelected) {
+                                    for (var index in DatabaseManager.instance.picsSelected) {
                                       AssetEntity entity = pathProvider.orderedList[index];
                                       photosIds.add(entity.id);
                                       entities.add(entity);
                                     }
                                     DatabaseManager.instance.addTagsToPics(
-                                      tagsKeys: multiPicTagKeys,
+                                      tagsKeys: DatabaseManager.instance.multiPicTagKeys,
                                       photosIds: photosIds,
                                       entities: entities,
                                     );
@@ -612,14 +610,13 @@ class _TabsScreenState extends State<TabsScreen> {
                                     });
 
                                     DatabaseManager.instance.setMultiPicBar(false);
-
-                                    picsSelected = [];
-                                    multiPicTagKeys = [];
+                                    DatabaseManager.instance.setPicsSelected([]);
+                                    DatabaseManager.instance.setMultiPicTagKeys([]);
                                   },
                                   child: Container(
                                     width: 80.0,
                                     child: Text(
-                                      S.of(multiPicContext).ok,
+                                      S.of(context).ok,
                                       textScaleFactor: 1.0,
                                       textAlign: TextAlign.end,
                                       style: TextStyle(
@@ -646,7 +643,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
                                   TagsList(
-                                      tagsKeys: multiPicTagKeys, //picI
+                                      tagsKeys: Provider.of<DatabaseManager>(context).multiPicTagKeys, //picI
                                       addTagField: true,
                                       textEditingController: bottomTagsEditingController,
                                       showEditTagModal: showEditTagModal,
@@ -663,14 +660,15 @@ class _TabsScreenState extends State<TabsScreen> {
                                           return;
                                         }
 
-                                        if (multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-                                          setState(() {
-                                            multiPicTagKeys.remove(DatabaseManager.instance.selectedTagKey);
-                                          });
+                                        if (DatabaseManager.instance.multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+                                          List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
+                                          multiPic.remove(DatabaseManager.instance.selectedTagKey);
+                                          DatabaseManager.instance.setMultiPicTagKeys(multiPic);
+
                                           DatabaseManager.instance.tagsSuggestions(
                                             bottomTagsEditingController.text,
                                             'MULTIPIC',
-                                            excludeTags: multiPicTagKeys,
+                                            excludeTags: DatabaseManager.instance.multiPicTagKeys,
                                           );
                                         }
                                       },
@@ -686,7 +684,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                         DatabaseManager.instance.tagsSuggestions(
                                           text,
                                           'MULTIPIC',
-                                          excludeTags: multiPicTagKeys,
+                                          excludeTags: DatabaseManager.instance.multiPicTagKeys,
                                         );
                                       },
                                       onSubmitted: (text) {
@@ -699,16 +697,19 @@ class _TabsScreenState extends State<TabsScreen> {
                                         if (text != '') {
                                           bottomTagsEditingController.clear();
                                           String tagKey = DatabaseManager.instance.encryptTag(text);
-                                          if (!multiPicTagKeys.contains(tagKey)) {
+                                          if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
                                             if (DatabaseManager.instance.getTagName(tagKey) == null) {
                                               print('tag does not exist! creating it!');
                                               DatabaseManager.instance.createTag(text);
                                             }
-                                            multiPicTagKeys.add(tagKey);
+                                            List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
+                                            multiPic.add(tagKey);
+                                            DatabaseManager.instance.setMultiPicTagKeys(multiPic);
+
                                             DatabaseManager.instance.tagsSuggestions(
                                               '',
                                               'MULTIPIC',
-                                              excludeTags: multiPicTagKeys,
+                                              excludeTags: DatabaseManager.instance.multiPicTagKeys,
                                             );
                                           }
                                         }
@@ -728,12 +729,15 @@ class _TabsScreenState extends State<TabsScreen> {
 
                                         bottomTagsEditingController.clear();
                                         String tagKey = DatabaseManager.instance.encryptTag(tagName);
-                                        if (!multiPicTagKeys.contains(tagKey)) {
-                                          multiPicTagKeys.add(tagKey);
+                                        if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
+                                          List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
+                                          multiPic.add(tagKey);
+                                          DatabaseManager.instance.setMultiPicTagKeys(multiPic);
+
                                           DatabaseManager.instance.tagsSuggestions(
                                             '',
                                             'MULTIPIC',
-                                            excludeTags: multiPicTagKeys,
+                                            excludeTags: DatabaseManager.instance.multiPicTagKeys,
                                           );
                                         }
                                       },

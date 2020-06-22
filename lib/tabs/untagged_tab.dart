@@ -37,9 +37,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
   double topOffsetFirstTab = 64.0;
   bool hideSubtitleFirstTab = false;
 
-  BuildContext multiPicContext;
-  bool showingMultiTagSheet = false;
-
   List<int> picsSelected = [];
   List<String> multiPicTagKeys = [];
 
@@ -117,7 +114,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
             print('LongPress');
             if (DatabaseManager.instance.multiPicBar == false) {
               picsSelected.add(index);
-              multiPicContext = context;
               DatabaseManager.instance.setMultiPicBar(true);
             }
           },
