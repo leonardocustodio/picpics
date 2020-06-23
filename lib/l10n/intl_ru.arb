@@ -1,114 +1,113 @@
 {
-  "ok": "OK",
-  "delete": "Delete",
-  "edit_tag": "Edit tag",
-  "cancel": "Cancel",
-  "notifications": "Notifications",
+  "ok": "Хорошо",
+  "delete": "Удалить",
+  "edit_tag": "Изменить тег",
+  "cancel": "Отмена",
+  "notifications": "Уведомления",
 
+  "welcome": "Добро пожаловать!",
+  "photos_always_organized": "Теперь ваши фотографии будут всегда упорядочены",
 
-  "welcome": "Welcome!",
-  "photos_always_organized": "Now your photos will be always organized",
+  "continue_string": "Продолжить",
+  "gallery_access_reason": "Для организации ваших фотографий нам нужен доступ к вашей фотогалерее",
 
-  "continue_string": "Continue",
-  "gallery_access_reason": "To organize your photos we need access to your photo gallery",
+  "tutorial_daily_package": "Мы предоставляем вам ежедневный пакет, позволяющей постепенно упорядочить вашу библиотеку.",
+  "next": "Далее",
+  "tutorial_however_you_want": "Организуйте свои фотографии, добавив к ним теги «семья», «питомцы», или какие вы сами хотите.",
+  "close": "Закрыть",
+  "start": "Начать",
+  "tutorial_just_swipe": "После добавления тегов к фотографии просто проведите пальцем, чтобы перейти к следующему.",
 
-  "tutorial_daily_package": "We bring a daily package for you to gradually organize your library.",
-  "next": "Next",
-  "tutorial_however_you_want": "Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want.",
-  "close": "Close",
-  "start": "Start",
-  "tutorial_just_swipe": "After adding the tags to your photo, just swipe to go to the next one.",
+  "settings": "Настройки",
+  "suggestions": "Предложения",
+  "photo_location": "Расположение фото",
+  "country": "страна",
+  "add_tag": "Добавить тег",
+  "add_tags": "Добавить теги",
+  "full_screen": "На весь экран",
 
-  "settings": "Settings",
-  "suggestions": "Suggestions",
-  "photo_location": "Photo location",
-  "country": "country",
-  "add_tag": "Add tag",
-  "add_tags": "Add tags",
-  "full_screen": "Full Screen",
-
-  "photo_gallery_title": "Photo Gallery",
-  "photo_gallery_description": "Photos not yet organized",
+  "photo_gallery_title": "Фотогалерея",
+  "photo_gallery_description": "Фотографии еще не упорядочены",
   "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
 
-  "organized_photos_title": "Organized Photos",
-  "organized_photos_description": "Photos that have already been tagged",
+  "organized_photos_title": "Упорядоченные фотографии",
+  "organized_photos_description": "Уже отмеченные тегами фотографии",
 
-  "search": "Search...",
-
-
-  "no_tagged_photos": "You don't have any tagged photos yet",
-  "start_tagging": "Start tagging",
-
-  "no_tags_found": "No tags found",
-  "search_results": "Search results",
-
-  "daily_challenge": "Daily challenge",
-  "daily_goal": "Daily goal",
-  "notification_time": "Notification time",
-  "share_with_friends": "Share with friends",
-  "rate_this_app": "Rate this app",
-  "how_many_pics": "How many pics",
-  "time": "Time",
-
-  "take_a_look": "Take a look at this app!",
-  "take_a_look_description": "To organize all your photos go to {url}",
-
-  "daily_challenge_permission_description": "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone",
+  "search": "Поиск...",
 
 
-  "you_are_premium": "You are premium!",
-  "get_premium_now": "Get premium now!",
+  "no_tagged_photos": "У вас еще нет фотографий с тегами",
+  "start_tagging": "Начать разметку",
+
+  "no_tags_found": "Теги не найдены",
+  "search_results": "Результаты поиска",
+
+  "daily_challenge": "Ежедневное задание",
+  "daily_goal": "Ежедневная цель",
+  "notification_time": "Время уведомления",
+  "share_with_friends": "Поделиться с друзьями",
+  "rate_this_app": "Оцените это приложение",
+  "how_many_pics": "Сколько фото",
+  "time": "Время",
+
+  "take_a_look": "Взгляните на это приложение!",
+  "take_a_look_description": "Чтобы упорядочить все свои фотографии, перейдите по ссылке {url}",
+
+  "daily_challenge_permission_description": "Чтобы мы могли отправлять вам ежедневные задания, нам нужно разрешение на отправку уведомлений, поэтому вам необходимо разрешить уведомления в настройках вашего мобильного телефона.",
 
 
-  "get_premium_title": "GET PREMIUM",
-  "get_premium_description": "TO HAVE ALL THESE FEATURES",
+  "you_are_premium": "Вы получили Премиум!",
+  "get_premium_now": "Получите Премиум сейчас!",
 
 
-  "no_ads": "No Ads",
-  "export_all_gallery": "Export all gallery",
-  "infinite_tags": "Infinite tags",
-  "tag_multiple_photos_at_once": "Tag multiple photos at once",
+  "get_premium_title": "ПОЛУЧИТЕ ПРЕМИУМ",
+  "get_premium_description": "ЧТОБЫ ПОЛУЧИТЬ ВСЕ ЭТИ ФУНКЦИИ",
 
-  "sign": "Sign",
-  "year": "year",
-  "month": "month",
 
-  "restore_purchase": "Restore purchase",
-  "no_previous_purchase": "No Previous Purchase",
-  "no_valid_subscription": "Could not find a valid subscription purchase.",
-  "save": "save",
+  "no_ads": "Без рекламы",
+  "export_all_gallery": "Экспорт всей галереи",
+  "infinite_tags": "Бесконечные теги",
+  "tag_multiple_photos_at_once": "Разметка нескольких фото одновременно",
 
-  "save_location": "Save location",
+  "sign": "Подписать",
+  "year": "год",
+  "month": "месяц",
 
-  "device_has_no_pics": "This device has no photo in the gallery, so there is no photo that can be tagged.",
-  "open_gallery": "Open gallery",
+  "restore_purchase": "Восстановить покупку",
+  "no_previous_purchase": "Нет предыдущей покупки",
+  "no_valid_subscription": "Не удалось найти действительную покупку подписки.",
+  "save": "Сохранить",
 
-  "gallery_access_permission": "Access permissions",
-  "gallery_access_permission_description": "To start organizing your photos, we need authorization to access them",
+  "save_location": "Сохранить местоположение",
 
-  "export_library": "Export Library",
+  "device_has_no_pics": "На этом устройстве нет фотографий в галерее, поэтому нет фотографии для разметки тегами.",
+  "open_gallery": "Открыть галерею",
 
-  "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
-  "premium_modal_watch_ad": "Watch video ad to continue",
-  "premium_modal_get_premium_title": "Get Premium Account",
-  "premium_modal_get_premium_description": "ALL FEATURES WITHOUT ADS",
+  "gallery_access_permission": "Права доступа",
+  "gallery_access_permission_description": "Для организации ваших фотографий нам нужна авторизация доступа к ним.",
 
-  "family_tag": "Family",
-  "travel_tag": "Travel",
-  "pets_tag": "Pets",
-  "selfies_tag": "Selfies",
-  "screenshots_tag": "Sreenshots",
-  "foods_tag": "Foods",
-  "sports_tag": "Sports",
-  "home_tag": "Home",
-  "work_tag": "Work",
-  "parties_tag": "Parties",
+  "export_library": "Экспорт библиотеки",
 
-  "terms_of_use": "Terms of Use",
-  "privacy_policy": "Privacy Policy",
+  "premium_modal_description": "Вы обработали свои {number} бесплатных ежедневных фото. Хотите продолжить?",
+  "premium_modal_watch_ad": "Для продолжения просмотрите видео-рекламу",
+  "premium_modal_get_premium_title": "Получить Премиум-аккаунт",
+  "premium_modal_get_premium_description": "ВСЕ ФУНКЦИИ БЕЗ РЕКЛАМЫ",
 
-  "auto_renewable_first_part": "The subscription is ",
-  "auto_renewable_second_part": "auto-renewable.",
-  "cancel_anytime": "Cancel anytime"
+  "family_tag": "Семья",
+  "travel_tag": "Путешествия",
+  "pets_tag": "Питомцы",
+  "selfies_tag": "Селфи",
+  "screenshots_tag": "Скриншоты",
+  "foods_tag": "Продукты",
+  "sports_tag": "Спорт",
+  "home_tag": "Дом",
+  "work_tag": "Работа",
+  "parties_tag": "Вечеринки",
+
+  "terms_of_use": "Условия использования",
+  "privacy_policy": "Политика конфиденциальности",
+
+  "auto_renewable_first_part": "Подписка ",
+  "auto_renewable_second_part": "продлевается автоматически.",
+  "cancel_anytime": "Можно отменить в любое время"
 }
