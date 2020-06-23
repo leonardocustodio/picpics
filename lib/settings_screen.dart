@@ -95,14 +95,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     ),
                   ),
                   Text(
-                    'Language',
+                    S.of(context).language,
                     textScaleFactor: 1.0,
                     style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      DatabaseManager.instance.changeUserLanguage(temporaryLanguage);
+                      DatabaseManager.instance.changeUserLanguage(supportedLocales[temporaryLanguage].toString());
                       Navigator.pop(context);
+                      setState(() {
+                        S.load(supportedLocales[temporaryLanguage]);
+                      });
                     },
                     child: Container(
                       width: 80.0,
@@ -466,12 +469,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               Text(
-                                'Language',
+                                S.of(context).language,
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsFieldTextStyle,
                               ),
                               Text(
-                                'English',
+                                DatabaseManager.instance.getUserLanguage(),
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsValueTextStyle,
                               ),

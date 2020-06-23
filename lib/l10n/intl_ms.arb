@@ -110,5 +110,7 @@
 
   "auto_renewable_first_part": "Langganan adalah ",
   "auto_renewable_second_part": "boleh diperbaharui secara automatik.",
-  "cancel_anytime": "Batalkan bila-bila"
+  "cancel_anytime": "Batalkan bila-bila",
+
+  "language": "Bahasa"
 }

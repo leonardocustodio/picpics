@@ -110,5 +110,7 @@
 
   "auto_renewable_first_part": "Prenumerationen är ",
   "auto_renewable_second_part": "auto-förnybar.",
-  "cancel_anytime": "Avbryt när som helst"
+  "cancel_anytime": "Avbryt när som helst",
+
+  "language": "Språk"
 }

@@ -110,5 +110,7 @@
 
   "auto_renewable_first_part": "The subscription is ",
   "auto_renewable_second_part": "auto-renewable.",
-  "cancel_anytime": "Cancel anytime"
+  "cancel_anytime": "Cancel anytime",
+
+  "language": "Language"
 }

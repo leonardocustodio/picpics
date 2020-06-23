@@ -24,6 +24,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter_device_locale/flutter_device_locale.dart';
 
 Future<void> initPlatformState() async {
   if (kDebugMode) {
@@ -62,8 +63,9 @@ void main() async {
   String initialRoute = TabsScreen.id;
 
   if (userBox.length == 0) {
-    var uuid = Uuid();
+    Locale locale = await DeviceLocale.getCurrentLocale();
 
+    var uuid = Uuid();
     User user = User(
       id: uuid.v4(),
       email: null,
@@ -79,6 +81,7 @@ void main() async {
       picsTaggedToday: 0,
       lastTaggedPicDate: DateTime.now(),
       canTagToday: true,
+      appLanguage: locale.toString(),
     );
 
     userBox.add(user);
@@ -89,13 +92,21 @@ void main() async {
     DatabaseManager.instance.checkNotificationPermission();
   }
 
+  Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
+  print('User locale: $userLocale');
+
   DatabaseManager.instance.loadRemoteConfig();
+
+  Locale locale = await DeviceLocale.getCurrentLocale();
+  print('Current Locale: $locale');
+
   initPlatformState();
 
   runZonedGuarded(() {
     runApp(
       PicPicsApp(
         initialRoute: initialRoute,
+        userLocale: userLocale,
       ),
     );
   }, (Object error, StackTrace stack) {
@@ -105,8 +116,12 @@ void main() async {
 
 class PicPicsApp extends StatefulWidget {
   final String initialRoute;
+  final Locale userLocale;
 
-  PicPicsApp({@required this.initialRoute});
+  PicPicsApp({
+    @required this.initialRoute,
+    @required this.userLocale,
+  });
 
   @override
   _PicPicsAppState createState() => _PicPicsAppState();
@@ -133,6 +148,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
+        locale: widget.userLocale,
         supportedLocales: S.delegate.supportedLocales,
         debugShowCheckedModeBanner: false, // kDebugMode
         initialRoute: widget.initialRoute,

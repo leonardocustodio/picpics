@@ -110,5 +110,7 @@
 
   "auto_renewable_first_part": "サブスクリプションは",
   "auto_renewable_second_part": "自動更新可能。",
-  "cancel_anytime": "いつでもキャンセル"
+  "cancel_anytime": "いつでもキャンセル",
+
+  "language": "言語"
 }

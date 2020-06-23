@@ -56,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "home_tag" : MessageLookupByLibrary.simpleMessage("Hem"),
     "how_many_pics" : MessageLookupByLibrary.simpleMessage("Hur många bilder"),
     "infinite_tags" : MessageLookupByLibrary.simpleMessage("Oändliga taggar"),
+    "language" : MessageLookupByLibrary.simpleMessage("Språk"),
     "month" : MessageLookupByLibrary.simpleMessage("månad"),
     "next" : MessageLookupByLibrary.simpleMessage("Nästa"),
     "no_ads" : MessageLookupByLibrary.simpleMessage("Inga annonser"),

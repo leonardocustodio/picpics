@@ -349,6 +349,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_device_locale:
+    dependency: "direct main"
+    description:
+      name: flutter_device_locale
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:

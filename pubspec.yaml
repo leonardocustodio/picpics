@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.2.0+131
+version: 1.1.1+131
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -50,6 +50,7 @@ dependencies:
   url_launcher: ^5.4.11
   flare_flutter: ^2.0.3
   simple_animations: ^2.2.1
+  flutter_device_locale: ^0.4.0
 
 dev_dependencies:
   flutter_test:

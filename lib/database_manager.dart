@@ -15,11 +15,13 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
+import 'package:picPics/utils/languages.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
+import 'package:picPics/generated/l10n.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -416,8 +418,17 @@ class DatabaseManager extends ChangeNotifier {
     userSettings = getUser;
   }
 
-  void changeUserLanguage(int language) {
-    print('language');
+  void changeUserLanguage(String appLanguage) {
+    var userBox = Hive.box('user');
+    userSettings.appLanguage = appLanguage;
+    userBox.putAt(0, userSettings);
+    notifyListeners();
+  }
+
+  String getUserLanguage() {
+    String appLanguage = userSettings.appLanguage.split('_')[0];
+    var language = LanguageLocal();
+    return ' ${language.getDisplayLanguage(appLanguage)['nativeName']}';
   }
 
   void changeUserGoal(int goal) {

@@ -110,5 +110,7 @@
 
   "auto_renewable_first_part": "การสมัครสมาชิกนี้",
   "auto_renewable_second_part": "มีการต่ออายุโดยอัตโนมัติ",
-  "cancel_anytime": "ยกเลิกได้เสมอ"
+  "cancel_anytime": "ยกเลิกได้เสมอ",
+
+  "language": "ภาษา"
 }

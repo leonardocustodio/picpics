@@ -56,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "home_tag" : MessageLookupByLibrary.simpleMessage("ホーム"),
     "how_many_pics" : MessageLookupByLibrary.simpleMessage("写真の数"),
     "infinite_tags" : MessageLookupByLibrary.simpleMessage("無数のタグ"),
+    "language" : MessageLookupByLibrary.simpleMessage("言語"),
     "month" : MessageLookupByLibrary.simpleMessage("月"),
     "next" : MessageLookupByLibrary.simpleMessage("次"),
     "no_ads" : MessageLookupByLibrary.simpleMessage("広告なし"),

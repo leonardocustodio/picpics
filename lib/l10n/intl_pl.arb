@@ -110,5 +110,7 @@
 
   "auto_renewable_first_part": "Subskrypcja jest ",
   "auto_renewable_second_part": "autoodnawialne.",
-  "cancel_anytime": "Anuluj w dowolnym momencie"
+  "cancel_anytime": "Anuluj w dowolnym momencie",
+
+  "language": "Język"
 }

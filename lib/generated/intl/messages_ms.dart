@@ -56,6 +56,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "home_tag" : MessageLookupByLibrary.simpleMessage("Rumah"),
     "how_many_pics" : MessageLookupByLibrary.simpleMessage("Berapa banyak gambar"),
     "infinite_tags" : MessageLookupByLibrary.simpleMessage("Tag tanpa had"),
+    "language" : MessageLookupByLibrary.simpleMessage("Bahasa"),
     "month" : MessageLookupByLibrary.simpleMessage("bulan"),
     "next" : MessageLookupByLibrary.simpleMessage("Seterusnya"),
     "no_ads" : MessageLookupByLibrary.simpleMessage("Tiada Iklan"),

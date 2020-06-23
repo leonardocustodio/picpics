@@ -109,5 +109,7 @@
 
   "auto_renewable_first_part": "Подписка ",
   "auto_renewable_second_part": "продлевается автоматически.",
-  "cancel_anytime": "Можно отменить в любое время"
+  "cancel_anytime": "Можно отменить в любое время",
+
+  "language": "язык"
 }

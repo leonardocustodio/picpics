@@ -110,5 +110,7 @@
 
   "auto_renewable_first_part": "L'abbonamento è ",
   "auto_renewable_second_part": "rinnovabile automaticamente.",
-  "cancel_anytime": "Annulla in qualsiasi momento"
+  "cancel_anytime": "Annulla in qualsiasi momento",
+
+  "language": "Linguaggio"
 }
