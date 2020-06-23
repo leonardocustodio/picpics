@@ -36,7 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 //    Share.share('Veja esse aplicativo da para organizar todas suas fotos https://appsto.re/picpics', subject: 'Teste');
     Share.text(
       S.of(context).take_a_look,
-      S.of(context).take_a_look_description('https://appsto.re/picpics'),
+      S.of(context).take_a_look_description('https://apps.apple.com/us/app/id1503352127'),
       'text/plain',
     );
   }
