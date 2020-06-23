@@ -3,7 +3,7 @@ part of search_map_place;
 class SearchMapPlaceWidget extends StatefulWidget {
   SearchMapPlaceWidget({
     @required this.apiKey,
-    this.placeholder = 'Procurar',
+    this.placeholder,
     this.icon = Icons.search,
     this.hasClearButton = true,
     this.clearIcon = Icons.clear,
@@ -213,7 +213,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
                       border: OutlineInputBorder(borderSide: BorderSide.none),
                       enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
                       focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                      hintText: 'Pesquisar...',
+                      hintText: widget.placeholder,
                       hintStyle: TextStyle(
                         fontFamily: 'Lato',
                         color: kGrayColor,
