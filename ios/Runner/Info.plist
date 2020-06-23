@@ -6,6 +6,13 @@
 	<array>
 		<string>en</string>
 		<string>pt</string>
+		<string>ja</string>
+		<string>it</string>
+		<string>sv</string>
+		<string>th</string>
+		<string>ms</string>
+		<string>pl</string>
+		<string>ru</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>

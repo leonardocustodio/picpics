@@ -1,0 +1,114 @@
+{
+  "ok": "OK",
+  "delete": "削除",
+  "edit_tag": "タグを編集",
+  "cancel": "キャンセル",
+  "notifications": "通知",
+
+
+  "welcome": "ようこそ！",
+  "photos_always_organized": "これでいつでも写真が整理されます",
+
+  "continue_string": "続ける",
+  "gallery_access_reason": "写真を整理するにはフォトギャラリーにアクセスする必要があります",
+
+  "tutorial_daily_package": "ライブラリは徐々に整理できるよう、デイリーパッケージをお届けします。",
+  "next": "次",
+  "tutorial_however_you_want": "「家族」、「ペット」など、好きなタグを付けて写真を整理できます。",
+  "close": "終了",
+  "start": "開始",
+  "tutorial_just_swipe": "写真にタグを付けた後はスワイプするだけで次の写真に移動できます。",
+
+  "settings": "設定",
+  "suggestions": "提案",
+  "photo_location": "写真の場所",
+  "country": "国",
+  "add_tag": "タグを付ける",
+  "add_tags": "タグを付ける",
+  "full_screen": "全画面表示",
+
+  "photo_gallery_title": "フォトギャラリー",
+  "photo_gallery_description": "写真はまだ整理されていません",
+  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+
+  "organized_photos_title": "整理された写真",
+  "organized_photos_description": "タグ付けされている写真",
+
+  "search": "検索...",
+
+
+  "no_tagged_photos": "タグ付けされた写真はまだありません",
+  "start_tagging": "タグ付けを開始",
+
+  "no_tags_found": "タグが見つかりません",
+  "search_results": "結果を検索",
+
+  "daily_challenge": "デイリーチャレンジ",
+  "daily_goal": "デイリーゴール",
+  "notification_time": "通知時間",
+  "share_with_friends": "友だちとシェア",
+  "rate_this_app": "このアプリを評価する",
+  "how_many_pics": "写真の数",
+  "time": "時間",
+
+  "take_a_look": "このアプリを見てください！",
+  "take_a_look_description": "すべての写真を整理するには、{url} にアクセスしてください",
+
+  "daily_challenge_permission_description": "デイリーチャレンジをお届けするには、ユーザーの通知受信の許可が必要です。そのため、携帯電話のオプションで通知受信を許可にしてください。",
+
+
+  "you_are_premium": "プレミアムのユーザーになりました！",
+  "get_premium_now": "今すぐプレミアムを購入しましょう！",
+
+
+  "get_premium_title": "プレミアムを購入",
+  "get_premium_description": "これらのすべての機能を利用する",
+
+
+  "no_ads": "広告なし",
+  "export_all_gallery": "すべてのギャラリーをエクスポート",
+  "infinite_tags": "無数のタグ",
+  "tag_multiple_photos_at_once": "一度に複数の写真にタグを付ける",
+
+  "sign": "サイン",
+  "year": "年",
+  "month": "月",
+
+  "restore_purchase": "購入商品を復元",
+  "no_previous_purchase": "以前の購入はありません",
+  "no_valid_subscription": "有効なサブスクリプション購入が見つかりませんでした。",
+  "save": "保存",
+
+  "save_location": "位置を保存",
+
+  "device_has_no_pics": "このデバイスのギャラリーには写真がないため、タグ付けできる写真はありません。",
+  "open_gallery": "ギャラリーを開く",
+
+  "gallery_access_permission": "アクセス許可",
+  "gallery_access_permission_description": "写真の整理を開始するには、写真にアクセスするための許可が必要です",
+
+  "export_library": "ライブラリをエクスポート",
+
+  "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
+  "premium_modal_watch_ad": "続行するにはビデオ広告をご覧ください",
+  "premium_modal_get_premium_title": "プレミアムアカウントを購入",
+  "premium_modal_get_premium_description": "広告なしのすべての機能",
+
+  "family_tag": "家族",
+  "travel_tag": "旅行",
+  "pets_tag": "ペット",
+  "selfies_tag": "自撮り",
+  "screenshots_tag": "スクリーンショット",
+  "foods_tag": "食べ物",
+  "sports_tag": "スポーツ",
+  "home_tag": "ホーム",
+  "work_tag": "仕事",
+  "parties_tag": "パーティー",
+
+  "terms_of_use": "利用規約",
+  "privacy_policy": "プライバシーポリシー",
+
+  "auto_renewable_first_part": "サブスクリプションは",
+  "auto_renewable_second_part": "自動更新可能。",
+  "cancel_anytime": "いつでもキャンセル"
+}

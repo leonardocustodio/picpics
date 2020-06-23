@@ -421,6 +421,9 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Locale myLocale = Localizations.localeOf(context);
+    print('Language Code: ${myLocale.languageCode}');
+
     WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild());
     AssetPathProvider pathProvider;
     if (PhotoProvider.instance.list.isNotEmpty) {
