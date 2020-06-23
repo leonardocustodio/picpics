@@ -16,7 +16,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 
-class PhotoCard extends StatelessWidget {
+class PhotoCard extends StatefulWidget {
   final AssetEntity data;
   final int index;
   final String photoId;
@@ -39,6 +39,11 @@ class PhotoCard extends StatelessWidget {
     this.onPressedTrash,
   });
 
+  @override
+  _PhotoCardState createState() => _PhotoCardState();
+}
+
+class _PhotoCardState extends State<PhotoCard> {
   showWatchAdModal(BuildContext context) {
     showDialog<void>(
       context: context,
@@ -63,8 +68,8 @@ class PhotoCard extends StatelessWidget {
   }
 
   Future<List<String>> reverseGeocoding(BuildContext context, Pic picInfo) async {
-    if (specificLocation != null && generalLocation != null) {
-      return [specificLocation, '  $generalLocation'];
+    if (widget.specificLocation != null && widget.generalLocation != null) {
+      return [widget.specificLocation, '  $widget.generalLocation'];
     }
 
     if ((picInfo.originalLatitude == null || picInfo.originalLongitude == null) ||
@@ -72,7 +77,7 @@ class PhotoCard extends StatelessWidget {
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
-    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(data.latitude, data.longitude);
+    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(widget.data.latitude, widget.data.longitude);
 
     print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -95,14 +100,14 @@ class PhotoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Pic picInfo = DatabaseManager.instance.getPicInfo(photoId);
+    Pic picInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
 
     if (picInfo == null) {
       picInfo = Pic(
-        data.id,
-        data.createDateTime,
-        data.latitude,
-        data.longitude,
+        widget.data.id,
+        widget.data.createDateTime,
+        widget.data.latitude,
+        widget.data.longitude,
         null,
         null,
         null,
@@ -137,7 +142,7 @@ class PhotoCard extends StatelessWidget {
                     topRight: Radius.circular(12.0),
                   ),
                   child: ImageItem(
-                    entity: data,
+                    entity: widget.data,
                     size: 600,
                     backgroundColor: Colors.grey[400],
                   ),
@@ -147,7 +152,7 @@ class PhotoCard extends StatelessWidget {
                   right: 6.0,
                   child: CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
-                    onPressed: onPressedTrash,
+                    onPressed: widget.onPressedTrash,
                     child: Image.asset('lib/images/pictrashicon.png'),
                   ),
                 ),
@@ -157,10 +162,10 @@ class PhotoCard extends StatelessWidget {
                   child: CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
                     onPressed: () {
-                      DatabaseManager.instance.selectedPhoto = data;
-                      print('Selected photo: ${data.id}');
+                      DatabaseManager.instance.selectedPhoto = widget.data;
+                      print('Selected photo: ${widget.data.id}');
 
-                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
+                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(widget.data.id);
 
 //                      Navigator.pushNamed(context, PhotoScreen.id);
 
@@ -190,7 +195,7 @@ class PhotoCard extends StatelessWidget {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        DatabaseManager.instance.selectedPhoto = data;
+                        DatabaseManager.instance.selectedPhoto = widget.data;
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: FutureBuilder(
@@ -296,7 +301,7 @@ class PhotoCard extends StatelessWidget {
                           }),
                     ),
                     Text(
-                      dateFormat(data.createDateTime),
+                      dateFormat(widget.data.createDateTime),
                       textScaleFactor: 1.0,
                       style: TextStyle(
                         fontFamily: 'Lato',
@@ -312,8 +317,8 @@ class PhotoCard extends StatelessWidget {
                 TagsList(
                   tagsKeys: picInfo.tags,
                   addTagField: true,
-                  textEditingController: tagsEditingController,
-                  showEditTagModal: showEditTagModal,
+                  textEditingController: widget.tagsEditingController,
+                  showEditTagModal: widget.showEditTagModal,
                   shouldChangeToSwipeMode: true,
                   onTap: (tagName) {
                     print('do nothing');
@@ -331,10 +336,12 @@ class PhotoCard extends StatelessWidget {
                       tagKey: DatabaseManager.instance.selectedTagKey,
                       photoId: picInfo.photoId,
                     );
+
+                    setState(() {});
                   },
                   onChanged: (text) {
-                    print('photo Index: $index - photo Swipe : $picSwiper');
-                    if (index == picSwiper || picSwiper == -1) {
+                    print('photo Index: ${widget.index} - photo Swipe : ${widget.picSwiper}');
+                    if (widget.index == widget.picSwiper || widget.picSwiper == -1) {
                       print('calling tag suggestions');
                       DatabaseManager.instance.tagsSuggestions(
                         text,
@@ -344,34 +351,37 @@ class PhotoCard extends StatelessWidget {
                     } else {
                       print('skipping');
                     }
+
+                    setState(() {});
                   },
                   onSubmitted: (text) {
                     print('return');
                     if (text != '') {
                       if (!DatabaseManager.instance.canTagToday()) {
-                        tagsEditingController.clear();
+                        widget.tagsEditingController.clear();
                         DatabaseManager.instance.tagsSuggestions(
                           '',
-                          data.id,
+                          widget.data.id,
                           excludeTags: picInfo.tags,
                         );
+                        setState(() {});
                         showWatchAdModal(context);
                         return;
                       }
 
-                      print('text: $text - data.id: ${data.id} - index: $index - picSwiper: $picSwiper');
+                      print('text: $text - data.id: ${widget.data.id} - index: $widget.index - picSwiper: ${widget.picSwiper}');
                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[widget.index];
                       DatabaseManager.instance.addTag(
                         tagName: text,
-                        photoId: data.id,
+                        photoId: widget.data.id,
                       );
-                      tagsEditingController.clear();
+                      widget.tagsEditingController.clear();
 
-                      if (picSwiper != -1) {
+                      if (widget.picSwiper != -1) {
                         // Refatorar essa gambi dps
-                        var indexPicBefore = picSwiper - 1;
-                        var indexPicAfter = picSwiper + 1;
+                        var indexPicBefore = widget.picSwiper - 1;
+                        var indexPicAfter = widget.picSwiper + 1;
 
                         AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
                         if (indexPicBefore < 0) {
@@ -398,11 +408,12 @@ class PhotoCard extends StatelessWidget {
                       } else {
                         DatabaseManager.instance.tagsSuggestions(
                           '',
-                          data.id,
+                          widget.data.id,
                           excludeTags: picInfo.tags,
                         );
                       }
                     }
+                    setState(() {});
                   },
                 ),
                 Padding(
@@ -411,7 +422,7 @@ class PhotoCard extends StatelessWidget {
                     title: S.of(context).suggestions,
                     tagsKeys: DatabaseManager.instance.suggestionTags[picInfo.photoId],
                     tagStyle: TagStyle.GrayOutlined,
-                    showEditTagModal: showEditTagModal,
+                    showEditTagModal: widget.showEditTagModal,
                     onTap: (tagName) {
                       if (!DatabaseManager.instance.canTagToday()) {
                         showWatchAdModal(context);
@@ -419,11 +430,13 @@ class PhotoCard extends StatelessWidget {
                       }
 
                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[index];
+                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[widget.index];
                       DatabaseManager.instance.addTag(
                         tagName: tagName,
                         photoId: picInfo.photoId,
                       );
+
+                      setState(() {});
                     },
                     onDoubleTap: () {
                       print('do nothing');

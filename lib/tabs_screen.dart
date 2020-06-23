@@ -159,7 +159,7 @@ class _TabsScreenState extends State<TabsScreen> {
     }
   }
 
-  showPhotoCardModal() async {
+  showPhotoCardModal(BuildContext context) async {
     print('Show photo card modal!!!');
 
 //    sem horizontal
@@ -169,7 +169,7 @@ class _TabsScreenState extends State<TabsScreen> {
     String dialogResult = await showDialog(
       context: context,
       barrierDismissible: true,
-      builder: (BuildContext buildContext) {
+      builder: (_) {
         return Dialog(
           backgroundColor: Colors.transparent,
           insetPadding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 38.0),
