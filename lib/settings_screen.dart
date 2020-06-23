@@ -5,6 +5,7 @@ import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/premium_screen.dart';
+import 'package:picPics/utils/languages.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
@@ -52,6 +53,88 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         );
       }
     });
+  }
+
+  void showLanguagePicker(BuildContext context) async {
+    var language = LanguageLocal();
+    var supportedLocales = S.delegate.supportedLocales;
+
+    int languageIndex = 0;
+    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: languageIndex);
+
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        int temporaryLanguage = languageIndex;
+
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height / 3,
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 80.0,
+                      child: Text(
+                        S.of(context).cancel,
+                        textScaleFactor: 1.0,
+                        style: kBottomSheetTextStyle,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Language',
+                    textScaleFactor: 1.0,
+                    style: kBottomSheetTitleTextStyle,
+                  ),
+                  CupertinoButton(
+                    onPressed: () {
+                      DatabaseManager.instance.changeUserLanguage(temporaryLanguage);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 80.0,
+                      child: Text(
+                        S.of(context).ok,
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.end,
+                        style: kBottomSheetTextStyle,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: CupertinoPicker.builder(
+                  scrollController: extentScrollController,
+                  childCount: supportedLocales.length,
+                  itemExtent: 36.0,
+                  useMagnifier: true,
+                  magnification: 1.2,
+                  onSelectedItemChanged: (int index) {
+                    if (mounted) {
+                      temporaryLanguage = index;
+                    }
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(
+                        child: Text(
+                      '${language.getDisplayLanguage(supportedLocales[index].languageCode)['name']} / ${language.getDisplayLanguage(supportedLocales[index].languageCode)['nativeName']}',
+                      textScaleFactor: 1.0,
+                    ));
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void showGoalPicker(BuildContext context) async {
@@ -317,35 +400,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
-                          onPressed: () => showGoalPicker(context),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                S.of(context).daily_goal,
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsFieldTextStyle,
-                              ),
-                              Text(
-                                '${Provider.of<DatabaseManager>(context).userSettings.goal}',
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsValueTextStyle,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      color: kLightGrayColor,
-                      thickness: 1.0,
-                    ),
-                    Container(
-                      height: 60.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
                           onPressed: () => showTimePicker(context),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -357,6 +411,60 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               ),
                               Text(
                                 '${'${Provider.of<DatabaseManager>(context).userSettings.hourOfDay}'.padLeft(2, '0')}: ${'${Provider.of<DatabaseManager>(context).userSettings.minutesOfDay}'.padLeft(2, '0')}',
+                                textScaleFactor: 1.0,
+                                style: kGraySettingsValueTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+//                    Container(
+//                      height: 60.0,
+//                      child: Padding(
+//                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+//                        child: CupertinoButton(
+//                          padding: const EdgeInsets.all(0),
+//                          onPressed: () => showGoalPicker(context),
+//                          child: Row(
+//                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                            children: <Widget>[
+//                              Text(
+//                                S.of(context).daily_goal,
+//                                textScaleFactor: 1.0,
+//                                style: kGraySettingsFieldTextStyle,
+//                              ),
+//                              Text(
+//                                '${Provider.of<DatabaseManager>(context).userSettings.goal}',
+//                                textScaleFactor: 1.0,
+//                                style: kGraySettingsValueTextStyle,
+//                              ),
+//                            ],
+//                          ),
+//                        ),
+//                      ),
+//                    ),
+                    Divider(
+                      color: kLightGrayColor,
+                      thickness: 1.0,
+                    ),
+                    Container(
+                      height: 60.0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () => showLanguagePicker(context),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'Language',
+                                textScaleFactor: 1.0,
+                                style: kGraySettingsFieldTextStyle,
+                              ),
+                              Text(
+                                'English',
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsValueTextStyle,
                               ),

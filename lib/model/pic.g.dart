@@ -52,4 +52,14 @@ class PicAdapter extends TypeAdapter<Pic> {
       ..writeByte(8)
       ..write(obj.tags);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PicAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

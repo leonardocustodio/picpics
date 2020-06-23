@@ -416,6 +416,10 @@ class DatabaseManager extends ChangeNotifier {
     userSettings = getUser;
   }
 
+  void changeUserLanguage(int language) {
+    print('language');
+  }
+
   void changeUserGoal(int goal) {
     var userBox = Hive.box('user');
     userSettings.goal = goal;

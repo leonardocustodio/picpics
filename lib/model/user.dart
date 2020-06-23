@@ -45,6 +45,9 @@ class User {
   @HiveField(13)
   bool canTagToday;
 
+  @HiveField(14)
+  String appLanguage;
+
   User({
     this.id,
     this.email,
@@ -60,5 +63,6 @@ class User {
     this.picsTaggedToday,
     this.lastTaggedPicDate,
     this.canTagToday,
+    this.appLanguage,
   });
 }
