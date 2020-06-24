@@ -1,0 +1,115 @@
+{
+  "ok": "OK",
+  "delete": "Löschen",
+  "edit_tag": "Tag bearbeiten",
+  "cancel": "Abbrechen",
+  "notifications": "Benachrichtigungen",
+
+  "welcome": "Herzlich willkommen!",
+  "photos_always_organized": "Jetzt werden Ihre Fotos immer organisiert sein",
+
+  "continue_string": "Fortsetzen",
+  "gallery_access_reason": "Um Ihre Fotos zu organisieren, benötigen wir Zugriff auf Ihre Fotogalerie.",
+
+  "tutorial_daily_package": "Wir bieten Ihnen ein tägliches Paket, mit dem Sie Ihre Bibliothek schrittweise organisieren können.",
+  "next": "Nächstes",
+  "tutorial_however_you_want": "Organisieren Sie Ihre Fotos, indem Sie Tags wie \"Familie\", \"Haustiere\" oder was Sie möchten hinzufügen.",
+  "close": "Schließen",
+  "start": "Start",
+  "tutorial_just_swipe": "Wischen Sie nach dem Hinzufügen der Tags zu Ihrem Foto einfach, um zum nächsten zu gelangen.",
+
+  "settings": "Einstellungen",
+  "suggestions": "Vorschläge",
+  "photo_location": "Fotostandort",
+  "country": "Land",
+  "add_tag": "Tag hinzufügen",
+  "add_tags": "Tags hinzufügen",
+  "full_screen": "Vollbildschirm",
+
+  "photo_gallery_title": "Fotogalerie",
+  "photo_gallery_description": "Noch nicht organisierte Fotos",
+  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+
+  "organized_photos_title": "Organisierte Fotos",
+  "organized_photos_description": "Bereits markierte Fotos",
+
+  "search": "Suche...",
+
+
+  "no_tagged_photos": "Sie haben noch keine getaggten Fotos",
+  "start_tagging": "Starten Sie das Taggen",
+
+  "no_tags_found": "Keine Tags gefunden",
+  "search_results": "Suchergebnisse",
+
+  "daily_challenge": "Tägliche Herausforderung",
+  "daily_goal": "Tägliches Ziel",
+  "notification_time": "Benachrichtigungszeit",
+  "share_with_friends": "Mit Freunden teilen",
+  "rate_this_app": "Bewerten Sie diese App",
+  "how_many_pics": "Wie viele Bilder",
+  "time": "Zeit",
+
+  "take_a_look": "Schauen Sie sich diese App an!",
+  "take_a_look_description": "Gehen Sie zu {url}, um alle Ihre Fotos zu organisieren.",
+
+  "daily_challenge_permission_description": "Damit wir Ihre täglichen Herausforderungen senden können, benötigen wir eine Autorisierung zum Senden von Benachrichtigungen. Daher ist es erforderlich, dass Sie die Benachrichtigungen in den Optionen Ihres Mobiltelefons autorisieren.",
+
+
+  "you_are_premium": "Du bist Premium!",
+  "get_premium_now": "Holen Sie sich jetzt Premium!",
+
+
+  "get_premium_title": "PREMIUM HOLEN",
+  "get_premium_description": "ERHALTEN SIE ALLE DIESE FUNKTIONEN",
+
+
+  "no_ads": "Keine Werbung",
+  "export_all_gallery": "Alle Galerien exportieren",
+  "infinite_tags": "Unendliche Tags",
+  "tag_multiple_photos_at_once": "Kennzeichnen Sie mehrere Fotos gleichzeitig.",
+
+  "sign": "Zeichen",
+  "year": "Jahr",
+  "month": "Monat",
+
+  "restore_purchase": "Kauf wiederherstellen",
+  "no_previous_purchase": "Kein vorheriger Kauf",
+  "no_valid_subscription": "Es konnte kein gültiger Abonnementkauf gefunden werden.",
+  "save": "speichern",
+
+  "save_location": "Speicherort",
+
+  "device_has_no_pics": "Dieses Gerät hat kein Foto in der Galerie, daher gibt es kein Foto, das markiert werden kann.",
+  "open_gallery": "Galerie öffnen",
+
+  "gallery_access_permission": "Zugriffsberechtigungen",
+  "gallery_access_permission_description": "Um Ihre Fotos organisieren zu können, benötigen wir eine Berechtigung für den Zugriff.",
+
+  "export_library": "Bibliothek exportieren",
+
+  "premium_modal_description": "Sie haben die {number} Ihrer täglich kostenlosen Bilder fertiggestellt, möchten Sie fortfahren?",
+  "premium_modal_watch_ad": "Sehen Sie sich die Videoanzeige an, um fortzufahren.",
+  "premium_modal_get_premium_title": "Holen Sie sich ein Premium-Konto",
+  "premium_modal_get_premium_description": "ALLE FUNKTIONEN OHNE WERBUNG",
+
+  "family_tag": "Familie",
+  "travel_tag": "Reise",
+  "pets_tag": "Haustiere",
+  "selfies_tag": "Selfies",
+  "screenshots_tag": "Sreenshots",
+  "foods_tag": "Lebensmittel",
+  "sports_tag": "Sport",
+  "home_tag": "Zuhause",
+  "work_tag": "Arbeit",
+  "parties_tag": "Partys",
+
+  "terms_of_use": "Nutzungsbedingungen",
+  "privacy_policy": "Datenschutzbestimmungen",
+
+  "auto_renewable_first_part": "Das Abonnement ",
+  "auto_renewable_second_part": "ist automatisch erneuerbar.",
+  "cancel_anytime": "kann jederzeit gekündigt werden.",
+
+  "language": "Sprache"
+}

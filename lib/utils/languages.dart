@@ -58,7 +58,7 @@ class LanguageLocal {
     "ha": {"name": "Hausa", "nativeName": "Hausa, هَوُسَ"},
     "he": {"name": "Hebrew (modern)", "nativeName": "עברית"},
     "hz": {"name": "Herero", "nativeName": "Otjiherero"},
-    "hi": {"name": "Hindi", "nativeName": "हिन्दी, हिंदी"},
+    "hi": {"name": "Hindi", "nativeName": "हिन्दी"},
     "ho": {"name": "Hiri Motu", "nativeName": "Hiri Motu"},
     "hu": {"name": "Hungarian", "nativeName": "Magyar"},
     "ia": {"name": "Interlingua", "nativeName": "Interlingua"},
