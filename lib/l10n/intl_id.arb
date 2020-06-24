@@ -1,116 +1,116 @@
 {
   "ok": "OK",
-  "delete": "Delete",
+  "delete": "Hapus",
   "edit_tag": "Edit tag",
-  "cancel": "Cancel",
-  "notifications": "Notifications",
+  "cancel": "Batal",
+  "notifications": "Notifikasi",
 
 
-  "welcome": "Welcome!",
-  "photos_always_organized": "Now your photos will be always organized",
+  "welcome": "Selamat datang!",
+  "photos_always_organized": "Kini, foto Anda akan selalu teratur",
 
-  "continue_string": "Continue",
-  "gallery_access_reason": "To organize your photos we need access to your photo gallery",
+  "continue_string": "Lanjutkan",
+  "gallery_access_reason": "Untuk mengatur foto, kami memerlukan akses ke galeri foto Anda",
 
-  "tutorial_daily_package": "We bring a daily package for you to gradually organize your library.",
-  "next": "Next",
-  "tutorial_however_you_want": "Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want.",
-  "close": "Close",
-  "start": "Start",
-  "tutorial_just_swipe": "After adding the tags to your photo, just swipe to go to the next one.",
+  "tutorial_daily_package": "Kami membawa paket harian untuk Anda untuk mengatur koleksi Anda secara berkala.",
+  "next": "Berikutnya",
+  "tutorial_however_you_want": "Atur foto Anda dengan menambahkan tag, seperti 'keluarga', 'hewan peliharaan', atau apa pun yang Anda inginkan.",
+  "close": "Tutup",
+  "start": "Mulai",
+  "tutorial_just_swipe": "Setelah menambahkan tag ke foto Anda, cukup geser untuk membuka yang berikutnya.",
 
-  "settings": "Settings",
-  "suggestions": "Suggestions",
-  "photo_location": "Photo location",
-  "country": "country",
-  "add_tag": "Add tag",
-  "add_tags": "Add tags",
-  "full_screen": "Full Screen",
+  "settings": "Pengaturan",
+  "suggestions": "Saran",
+  "photo_location": "Lokasi foto",
+  "country": "negara",
+  "add_tag": "Tambahkan tag",
+  "add_tags": "Tambahkan tag",
+  "full_screen": "Layar penuh",
 
-  "photo_gallery_title": "Photo Gallery",
-  "photo_gallery_description": "Photos not yet organized",
+  "photo_gallery_title": "Galeri foto",
+  "photo_gallery_description": "Foto belum diatur",
   "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
 
-  "organized_photos_title": "Organized Photos",
-  "organized_photos_description": "Photos that have already been tagged",
+  "organized_photos_title": "Foto yang Diatur",
+  "organized_photos_description": "Foto yang telah diberi tag",
 
-  "search": "Search...",
-
-
-  "no_tagged_photos": "You don't have any tagged photos yet",
-  "start_tagging": "Start tagging",
-
-  "no_tags_found": "No tags found",
-  "search_results": "Search results",
-
-  "daily_challenge": "Daily challenge",
-  "daily_goal": "Daily goal",
-  "notification_time": "Notification time",
-  "share_with_friends": "Share with friends",
-  "rate_this_app": "Rate this app",
-  "how_many_pics": "How many pics",
-  "time": "Time",
-
-  "take_a_look": "Take a look at this app!",
-  "take_a_look_description": "To organize all your photos go to {url}",
-
-  "daily_challenge_permission_description": "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone",
+  "search": "Cari...",
 
 
-  "you_are_premium": "You are premium!",
-  "get_premium_now": "Get premium now!",
+  "no_tagged_photos": "Anda belum memiliki foto yang diberi tag",
+  "start_tagging": "Mulai beri tag",
+
+  "no_tags_found": "Tidak ada tag yang ditemukan",
+  "search_results": "Hasil pencarian",
+
+  "daily_challenge": "Tantangan harian",
+  "daily_goal": "Misi harian",
+  "notification_time": "Waktu notifikasi",
+  "share_with_friends": "Bagikan dengan teman",
+  "rate_this_app": "Beri peringkat aplikasi ini",
+  "how_many_pics": "Berapa banyak foto",
+  "time": "Waktu",
+
+  "take_a_look": "Lihatlah aplikasi ini!",
+  "take_a_look_description": "Untuk mengatur semua foto Anda, buka {url}",
+
+  "daily_challenge_permission_description": "Agar kami dapat mengirimkan tantangan harian, kami memerlukan izin untuk mengirim notifikasi. Karena itu, Anda harus mengizinkan notifikasi pada opsi ponsel Anda.",
 
 
-  "get_premium_title": "GET PREMIUM",
-  "get_premium_description": "TO HAVE ALL THESE FEATURES",
+  "you_are_premium": "Anda adalah pengguna premium!",
+  "get_premium_now": "Berlangganan premium sekarang!",
 
 
-  "no_ads": "No Ads",
-  "export_all_gallery": "Export all gallery",
-  "infinite_tags": "Infinite tags",
-  "tag_multiple_photos_at_once": "Tag multiple photos at once",
+  "get_premium_title": "BERLANGGANAN PREMIUM",
+  "get_premium_description": "UNTUK MEMILIKI SEMUA FITUR INI",
 
-  "sign": "Sign",
-  "year": "year",
-  "month": "month",
 
-  "restore_purchase": "Restore purchase",
-  "no_previous_purchase": "No Previous Purchase",
-  "no_valid_subscription": "Could not find a valid subscription purchase.",
-  "save": "save",
+  "no_ads": "Tanpa iklan",
+  "export_all_gallery": "Ekspor semua galeri",
+  "infinite_tags": "Tag tanpa batas",
+  "tag_multiple_photos_at_once": "Beri tag banyak foto sekaligus",
 
-  "save_location": "Save location",
+  "sign": "Tanda",
+  "year": "tahun",
+  "month": "bulan",
 
-  "device_has_no_pics": "This device has no photo in the gallery, so there is no photo that can be tagged.",
-  "open_gallery": "Open gallery",
+  "restore_purchase": "Pulihkan pembelian",
+  "no_previous_purchase": "Tidak Ada Pembelian Sebelumnya",
+  "no_valid_subscription": "Tidak dapat menemukan pembelian berlangganan yang valid.",
+  "save": "simpan",
 
-  "gallery_access_permission": "Access permissions",
-  "gallery_access_permission_description": "To start organizing your photos, we need authorization to access them",
+  "save_location": "Lokasi penyimpanan",
 
-  "export_library": "Export Library",
+  "device_has_no_pics": "Perangkat ini tidak memiliki foto di galeri, jadi tidak ada foto yang dapat diberi tag.",
+  "open_gallery": "Buka galeri",
 
-  "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
-  "premium_modal_watch_ad": "Watch video ad to continue",
-  "premium_modal_get_premium_title": "Get Premium Account",
-  "premium_modal_get_premium_description": "ALL FEATURES WITHOUT ADS",
+  "gallery_access_permission": "Izin akses",
+  "gallery_access_permission_description": "Untuk mulai mengatur foto Anda, kami butuh izin untuk mengaksesnya",
 
-  "family_tag": "Family",
-  "travel_tag": "Travel",
-  "pets_tag": "Pets",
-  "selfies_tag": "Selfies",
-  "screenshots_tag": "Sreenshots",
-  "foods_tag": "Foods",
-  "sports_tag": "Sports",
-  "home_tag": "Home",
-  "work_tag": "Work",
-  "parties_tag": "Parties",
+  "export_library": "Ekspor Koleksi",
 
-  "terms_of_use": "Terms of Use",
-  "privacy_policy": "Privacy Policy",
+  "premium_modal_description": "Anda menyelesaikan {number} foto harian gratis Anda, apakah Anda ingin melanjutkan?",
+  "premium_modal_watch_ad": "Tonton iklan video untuk melanjutkan",
+  "premium_modal_get_premium_title": "Dapatkan Akun Premium",
+  "premium_modal_get_premium_description": "SEMUA FITUR TANPA IKLAN",
 
-  "auto_renewable_first_part": "The subscription is ",
-  "auto_renewable_second_part": "auto-renewable.",
-  "cancel_anytime": "Cancel anytime",
+  "family_tag": "Keluarga",
+  "travel_tag": "Perjalanan",
+  "pets_tag": "Hewan peliharaan",
+  "selfies_tag": "Selfie",
+  "screenshots_tag": "Tangkapan layar",
+  "foods_tag": "Makanan",
+  "sports_tag": "Olah raga",
+  "home_tag": "Rumah",
+  "work_tag": "Kerja",
+  "parties_tag": "Pesta",
 
-  "language": "Language"
+  "terms_of_use": "Ketentuan Penggunaan",
+  "privacy_policy": "Kebijakan Privasi",
+
+  "auto_renewable_first_part": "Berlangganan ini ",
+  "auto_renewable_second_part": "diperpanjang secara otomatis.",
+  "cancel_anytime": "Batalkan kapan saja",
+
+  "language": "Bahasa"
 }
