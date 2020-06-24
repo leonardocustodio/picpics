@@ -16,36 +16,44 @@ import 'package:intl/message_lookup_by_library.dart';
 import 'package:intl/src/intl_helpers.dart';
 
 import 'messages_en.dart' as messages_en;
+import 'messages_es.dart' as messages_es;
 import 'messages_fr.dart' as messages_fr;
 import 'messages_it.dart' as messages_it;
 import 'messages_ja_JP.dart' as messages_ja_jp;
 import 'messages_ko.dart' as messages_ko;
 import 'messages_ms.dart' as messages_ms;
+import 'messages_nl.dart' as messages_nl;
 import 'messages_pl.dart' as messages_pl;
 import 'messages_pt.dart' as messages_pt;
 import 'messages_ru.dart' as messages_ru;
 import 'messages_sv_SE.dart' as messages_sv_se;
 import 'messages_th.dart' as messages_th;
+import 'messages_zh.dart' as messages_zh;
 
 typedef Future<dynamic> LibraryLoader();
 Map<String, LibraryLoader> _deferredLibraries = {
   'en': () => new Future.value(null),
+  'es': () => new Future.value(null),
   'fr': () => new Future.value(null),
   'it': () => new Future.value(null),
   'ja_JP': () => new Future.value(null),
   'ko': () => new Future.value(null),
   'ms': () => new Future.value(null),
+  'nl': () => new Future.value(null),
   'pl': () => new Future.value(null),
   'pt': () => new Future.value(null),
   'ru': () => new Future.value(null),
   'sv_SE': () => new Future.value(null),
   'th': () => new Future.value(null),
+  'zh': () => new Future.value(null),
 };
 
 MessageLookupByLibrary _findExact(String localeName) {
   switch (localeName) {
     case 'en':
       return messages_en.messages;
+    case 'es':
+      return messages_es.messages;
     case 'fr':
       return messages_fr.messages;
     case 'it':
@@ -56,6 +64,8 @@ MessageLookupByLibrary _findExact(String localeName) {
       return messages_ko.messages;
     case 'ms':
       return messages_ms.messages;
+    case 'nl':
+      return messages_nl.messages;
     case 'pl':
       return messages_pl.messages;
     case 'pt':
@@ -66,6 +76,8 @@ MessageLookupByLibrary _findExact(String localeName) {
       return messages_sv_se.messages;
     case 'th':
       return messages_th.messages;
+    case 'zh':
+      return messages_zh.messages;
     default:
       return null;
   }

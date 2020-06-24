@@ -1,0 +1,116 @@
+{
+  "ok": "OK",
+  "delete": "Delete",
+  "edit_tag": "Edit tag",
+  "cancel": "Cancel",
+  "notifications": "Notifications",
+
+
+  "welcome": "Welcome!",
+  "photos_always_organized": "Now your photos will be always organized",
+
+  "continue_string": "Continue",
+  "gallery_access_reason": "To organize your photos we need access to your photo gallery",
+
+  "tutorial_daily_package": "We bring a daily package for you to gradually organize your library.",
+  "next": "Next",
+  "tutorial_however_you_want": "Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want.",
+  "close": "Close",
+  "start": "Start",
+  "tutorial_just_swipe": "After adding the tags to your photo, just swipe to go to the next one.",
+
+  "settings": "Settings",
+  "suggestions": "Suggestions",
+  "photo_location": "Photo location",
+  "country": "country",
+  "add_tag": "Add tag",
+  "add_tags": "Add tags",
+  "full_screen": "Full Screen",
+
+  "photo_gallery_title": "Photo Gallery",
+  "photo_gallery_description": "Photos not yet organized",
+  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+
+  "organized_photos_title": "Organized Photos",
+  "organized_photos_description": "Photos that have already been tagged",
+
+  "search": "Search...",
+
+
+  "no_tagged_photos": "You don't have any tagged photos yet",
+  "start_tagging": "Start tagging",
+
+  "no_tags_found": "No tags found",
+  "search_results": "Search results",
+
+  "daily_challenge": "Daily challenge",
+  "daily_goal": "Daily goal",
+  "notification_time": "Notification time",
+  "share_with_friends": "Share with friends",
+  "rate_this_app": "Rate this app",
+  "how_many_pics": "How many pics",
+  "time": "Time",
+
+  "take_a_look": "Take a look at this app!",
+  "take_a_look_description": "To organize all your photos go to {url}",
+
+  "daily_challenge_permission_description": "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone",
+
+
+  "you_are_premium": "You are premium!",
+  "get_premium_now": "Get premium now!",
+
+
+  "get_premium_title": "GET PREMIUM",
+  "get_premium_description": "TO HAVE ALL THESE FEATURES",
+
+
+  "no_ads": "No Ads",
+  "export_all_gallery": "Export all gallery",
+  "infinite_tags": "Infinite tags",
+  "tag_multiple_photos_at_once": "Tag multiple photos at once",
+
+  "sign": "Sign",
+  "year": "year",
+  "month": "month",
+
+  "restore_purchase": "Restore purchase",
+  "no_previous_purchase": "No Previous Purchase",
+  "no_valid_subscription": "Could not find a valid subscription purchase.",
+  "save": "save",
+
+  "save_location": "Save location",
+
+  "device_has_no_pics": "This device has no photo in the gallery, so there is no photo that can be tagged.",
+  "open_gallery": "Open gallery",
+
+  "gallery_access_permission": "Access permissions",
+  "gallery_access_permission_description": "To start organizing your photos, we need authorization to access them",
+
+  "export_library": "Export Library",
+
+  "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
+  "premium_modal_watch_ad": "Watch video ad to continue",
+  "premium_modal_get_premium_title": "Get Premium Account",
+  "premium_modal_get_premium_description": "ALL FEATURES WITHOUT ADS",
+
+  "family_tag": "Family",
+  "travel_tag": "Travel",
+  "pets_tag": "Pets",
+  "selfies_tag": "Selfies",
+  "screenshots_tag": "Sreenshots",
+  "foods_tag": "Foods",
+  "sports_tag": "Sports",
+  "home_tag": "Home",
+  "work_tag": "Work",
+  "parties_tag": "Parties",
+
+  "terms_of_use": "Terms of Use",
+  "privacy_policy": "Privacy Policy",
+
+  "auto_renewable_first_part": "The subscription is ",
+  "auto_renewable_second_part": "auto-renewable.",
+  "cancel_anytime": "Cancel anytime",
+
+  "language": "Language"
+}

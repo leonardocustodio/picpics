@@ -1,0 +1,115 @@
+{
+  "ok": "OK",
+  "delete": "Verwijderen",
+  "edit_tag": "Label bewerken",
+  "cancel": "Annuleren",
+  "notifications": "Kennisgevingen",
+
+  "welcome": "Welkom!",
+  "photos_always_organized": "Nu worden uw foto's altijd geordend",
+
+  "continue_string": "Doorgaan met",
+  "gallery_access_reason": "Om uw foto's te ordenen, hebben we toegang tot uw fotogalerij nodig",
+
+  "tutorial_daily_package": "We brengen u een dagelijks pakket om uw bibliotheek geleidelijk te organiseren.",
+  "next": "Volgende",
+  "tutorial_however_you_want": "Organiseer uw foto's door tags toe te voegen, zoals 'familie', 'huisdieren' of wat u maar wilt.",
+  "close": "Sluiten",
+  "start": "Beginnen",
+  "tutorial_just_swipe": "Nadat u de tags aan uw foto heeft toegevoegd, swiped u gewoon om naar de volgende te gaan.",
+
+  "settings": "Instellingen",
+  "suggestions": "Suggesties",
+  "photo_location": "Fotolocatie",
+  "country": "land",
+  "add_tag": "Tag toevoegen",
+  "add_tags": "Voeg tags toe",
+  "full_screen": "Volledig scherm",
+
+  "photo_gallery_title": "Fotogallerij",
+  "photo_gallery_description": "Foto's nog niet geordend",
+  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+
+  "organized_photos_title": "Geordende foto's",
+  "organized_photos_description": "Foto's die al zijn getagd",
+
+  "search": "Zoeken...",
+
+
+  "no_tagged_photos": "Je hebt nog geen getagde foto's",
+  "start_tagging": "Begin met taggen",
+
+  "no_tags_found": "Geen tags gevonden",
+  "search_results": "Zoekresultaten",
+
+  "daily_challenge": "Dagelijkse uitdaging",
+  "daily_goal": "Dagelijks doel",
+  "notification_time": "Meldingstijd",
+  "share_with_friends": "Delen met vrienden",
+  "rate_this_app": "Beoordeel deze app",
+  "how_many_pics": "Hoeveel foto's",
+  "time": "Tijd",
+
+  "take_a_look": "Bekijk deze app eens!",
+  "take_a_look_description": "Ga naar {url} om al uw foto's te ordenen",
+
+  "daily_challenge_permission_description": "Om uw dagelijkse uitdagingen te kunnen verzenden, hebben we toestemming nodig om meldingen te verzenden, dus het is noodzakelijk dat u de meldingen autoriseert in de opties van uw mobiele telefoon",
+
+
+  "you_are_premium": "U bent premium!",
+  "get_premium_now": "Krijg nu premium!",
+
+
+  "get_premium_title": "KRIJG PREMIUM",
+  "get_premium_description": "OM AL DEZE FUNCTIES TE HEBBEN",
+
+
+  "no_ads": "Geen Advertenties",
+  "export_all_gallery": "Exporteer alle galerijen",
+  "infinite_tags": "Oneindige tags",
+  "tag_multiple_photos_at_once": "Label meerdere foto's tegelijk",
+
+  "sign": "Tekenen",
+  "year": "jaar",
+  "month": "maand",
+
+  "restore_purchase": "Herstel aankoop",
+  "no_previous_purchase": "Geen eerdere aankoop",
+  "no_valid_subscription": "Kan geen geldige abonnementsaankoop vinden.",
+  "save": "opslaan",
+
+  "save_location": "Bewaarlocatie",
+
+  "device_has_no_pics": "Dit apparaat heeft geen foto in de galerij, dus er is geen foto die kan worden getagd.",
+  "open_gallery": "Galerij openen",
+
+  "gallery_access_permission": "Toegangsrechten",
+  "gallery_access_permission_description": "Om te beginnen met het organiseren van uw foto's, hebben we toestemming nodig om ze te openen",
+
+  "export_library": "Bibliotheek exporteren",
+
+  "premium_modal_description": "U heeft uw {number} gratis dagelijkse foto's voltooid, wilt u doorgaan?",
+  "premium_modal_watch_ad": "Bekijk videoadvertentie om door te gaan",
+  "premium_modal_get_premium_title": "Krijg Premium Account",
+  "premium_modal_get_premium_description": "ALLE FUNCTIES ZONDER ADVERTENTIES",
+
+  "family_tag": "Familie",
+  "travel_tag": "Reizen",
+  "pets_tag": "Huisdieren",
+  "selfies_tag": "Selfies",
+  "screenshots_tag": "Schermafbeeldingen",
+  "foods_tag": "Eten",
+  "sports_tag": "Sport",
+  "home_tag": "Huis",
+  "work_tag": "Werk",
+  "parties_tag": "Feestjes",
+
+  "terms_of_use": "Gebruiksvoorwaarden",
+  "privacy_policy": "Privacybeleid",
+
+  "auto_renewable_first_part": "Het abonnement is ",
+  "auto_renewable_second_part": "automatisch vernieuwbaar.",
+  "cancel_anytime": "U kunt op elk moment annuleren",
+
+  "language": "Taal"
+}
