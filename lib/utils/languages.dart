@@ -29,7 +29,7 @@ class LanguageLocal {
     "ch": {"name": "Chamorro", "nativeName": "Chamoru"},
     "ce": {"name": "Chechen", "nativeName": "нохчийн мотт"},
     "ny": {"name": "Chichewa; Chewa; Nyanja", "nativeName": "chiCheŵa, chinyanja"},
-    "zh": {"name": "Chinese", "nativeName": "中文 (Zhōngwén), 汉语, 漢語"},
+    "zh": {"name": "Chinese", "nativeName": "简体中文"},
     "cv": {"name": "Chuvash", "nativeName": "чӑваш чӗлхи"},
     "kw": {"name": "Cornish", "nativeName": "Kernewek"},
     "co": {"name": "Corsican", "nativeName": "corsu, lingua corsa"},

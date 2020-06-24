@@ -66,7 +66,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     var language = LanguageLocal();
     var supportedLocales = S.delegate.supportedLocales;
 
-    int languageIndex = 0;
+    List<String> appSplit = DatabaseManager.instance.userSettings.appLanguage.split('_');
+    int languageIndex = supportedLocales.indexOf(Locale(
+      appSplit[0],
+      appSplit.length > 1 ? appSplit[1] : '',
+    ));
+
     FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: languageIndex);
 
     await showModalBottomSheet(

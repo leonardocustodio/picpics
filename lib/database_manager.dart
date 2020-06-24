@@ -428,7 +428,7 @@ class DatabaseManager extends ChangeNotifier {
   String getUserLanguage() {
     String appLanguage = userSettings.appLanguage.split('_')[0];
     var language = LanguageLocal();
-    return ' ${language.getDisplayLanguage(appLanguage)['nativeName']}';
+    return '${language.getDisplayLanguage(appLanguage)['nativeName']}';
   }
 
   void changeUserGoal(int goal) {
