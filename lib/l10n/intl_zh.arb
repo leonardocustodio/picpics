@@ -1,116 +1,116 @@
 {
-  "ok": "OK",
-  "delete": "Delete",
-  "edit_tag": "Edit tag",
-  "cancel": "Cancel",
-  "notifications": "Notifications",
+  "ok": "确定",
+  "delete": "删除",
+  "edit_tag": "编辑标签",
+  "cancel": "取消",
+  "notifications": "通知",
 
 
-  "welcome": "Welcome!",
-  "photos_always_organized": "Now your photos will be always organized",
+  "welcome": "欢迎！",
+  "photos_always_organized": "现在，您的照片将始终井井有条",
 
-  "continue_string": "Continue",
-  "gallery_access_reason": "To organize your photos we need access to your photo gallery",
+  "continue_string": "继续",
+  "gallery_access_reason": "要整理您的照片，我们需要访问您的照片库",
 
-  "tutorial_daily_package": "We bring a daily package for you to gradually organize your library.",
-  "next": "Next",
-  "tutorial_however_you_want": "Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want.",
-  "close": "Close",
-  "start": "Start",
-  "tutorial_just_swipe": "After adding the tags to your photo, just swipe to go to the next one.",
+  "tutorial_daily_package": "我们为您带来每日包，以逐步整理您的图库。",
+  "next": "下一个",
+  "tutorial_however_you_want": "通过添加标签（例如“家庭”、“宠物”或任何您想要的标签）来整理照片。",
+  "close": "关闭",
+  "start": "开始",
+  "tutorial_just_swipe": "将标签添加到照片后，只需滑动即可前往下一个。",
 
-  "settings": "Settings",
-  "suggestions": "Suggestions",
-  "photo_location": "Photo location",
-  "country": "country",
-  "add_tag": "Add tag",
-  "add_tags": "Add tags",
-  "full_screen": "Full Screen",
+  "settings": "设置",
+  "suggestions": "建议",
+  "photo_location": "照片位置",
+  "country": "国家",
+  "add_tag": "添加标签",
+  "add_tags": "添加标签",
+  "full_screen": "全屏",
 
-  "photo_gallery_title": "Photo Gallery",
-  "photo_gallery_description": "Photos not yet organized",
+  "photo_gallery_title": "照片库",
+  "photo_gallery_description": "尚未整理的照片",
   "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
 
-  "organized_photos_title": "Organized Photos",
-  "organized_photos_description": "Photos that have already been tagged",
+  "organized_photos_title": "已整理的照片",
+  "organized_photos_description": "已添加标签的照片",
 
-  "search": "Search...",
-
-
-  "no_tagged_photos": "You don't have any tagged photos yet",
-  "start_tagging": "Start tagging",
-
-  "no_tags_found": "No tags found",
-  "search_results": "Search results",
-
-  "daily_challenge": "Daily challenge",
-  "daily_goal": "Daily goal",
-  "notification_time": "Notification time",
-  "share_with_friends": "Share with friends",
-  "rate_this_app": "Rate this app",
-  "how_many_pics": "How many pics",
-  "time": "Time",
-
-  "take_a_look": "Take a look at this app!",
-  "take_a_look_description": "To organize all your photos go to {url}",
-
-  "daily_challenge_permission_description": "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone",
+  "search": "搜索...",
 
 
-  "you_are_premium": "You are premium!",
-  "get_premium_now": "Get premium now!",
+  "no_tagged_photos": "您还没有添加了标签的照片",
+  "start_tagging": "开始添加标签",
+
+  "no_tags_found": "未找到标签",
+  "search_results": "搜索结果",
+
+  "daily_challenge": "每日挑战",
+  "daily_goal": "每日目标",
+  "notification_time": "通知时间",
+  "share_with_friends": "和朋友分享",
+  "rate_this_app": "评价这个App",
+  "how_many_pics": "多少图片",
+  "time": "时间",
+
+  "take_a_look": "看看这个App！",
+  "take_a_look_description": "要整理所有照片，请访问{url}",
+
+  "daily_challenge_permission_description": "为了让我们能够发送您的每日挑战，我们需要授权来发送通知，因此您需要在手机选项中授权通知权限",
 
 
-  "get_premium_title": "GET PREMIUM",
-  "get_premium_description": "TO HAVE ALL THESE FEATURES",
+  "you_are_premium": "您是高级版用户！",
+  "get_premium_now": "立即获取高级版！",
 
 
-  "no_ads": "No Ads",
-  "export_all_gallery": "Export all gallery",
-  "infinite_tags": "Infinite tags",
-  "tag_multiple_photos_at_once": "Tag multiple photos at once",
+  "get_premium_title": "获取高级版",
+  "get_premium_description": "享受所有这些功能",
 
-  "sign": "Sign",
-  "year": "year",
-  "month": "month",
 
-  "restore_purchase": "Restore purchase",
-  "no_previous_purchase": "No Previous Purchase",
-  "no_valid_subscription": "Could not find a valid subscription purchase.",
-  "save": "save",
+  "no_ads": "无广告",
+  "export_all_gallery": "导出所有图库",
+  "infinite_tags": "无限标签",
+  "tag_multiple_photos_at_once": "一次给多张照片添加标签",
 
-  "save_location": "Save location",
+  "sign": "签",
+  "year": "年",
+  "month": "月",
 
-  "device_has_no_pics": "This device has no photo in the gallery, so there is no photo that can be tagged.",
-  "open_gallery": "Open gallery",
+  "restore_purchase": "恢复购买",
+  "no_previous_purchase": "没有之前的购买",
+  "no_valid_subscription": "找不到有效的订阅购买。",
+  "save": "保存",
 
-  "gallery_access_permission": "Access permissions",
-  "gallery_access_permission_description": "To start organizing your photos, we need authorization to access them",
+  "save_location": "保存位置",
 
-  "export_library": "Export Library",
+  "device_has_no_pics": "此设备的图库中没有照片，因此没有可以添加标签的照片。",
+  "open_gallery": "打开图库",
 
-  "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
-  "premium_modal_watch_ad": "Watch video ad to continue",
-  "premium_modal_get_premium_title": "Get Premium Account",
-  "premium_modal_get_premium_description": "ALL FEATURES WITHOUT ADS",
+  "gallery_access_permission": "访问权限",
+  "gallery_access_permission_description": "要开始整理您的照片，我们需要授权以访问它们",
 
-  "family_tag": "Family",
-  "travel_tag": "Travel",
-  "pets_tag": "Pets",
-  "selfies_tag": "Selfies",
-  "screenshots_tag": "Sreenshots",
-  "foods_tag": "Foods",
-  "sports_tag": "Sports",
-  "home_tag": "Home",
-  "work_tag": "Work",
-  "parties_tag": "Parties",
+  "export_library": "导出图库",
 
-  "terms_of_use": "Terms of Use",
-  "privacy_policy": "Privacy Policy",
+  "premium_modal_description": "您已完成您的{number}张免费每日图片，是否要继续？",
+  "premium_modal_watch_ad": "观看视频广告以继续",
+  "premium_modal_get_premium_title": "获取高级账户",
+  "premium_modal_get_premium_description": "所有功能，无广告",
 
-  "auto_renewable_first_part": "The subscription is ",
-  "auto_renewable_second_part": "auto-renewable.",
-  "cancel_anytime": "Cancel anytime",
+  "family_tag": "家庭",
+  "travel_tag": "旅行",
+  "pets_tag": "宠物",
+  "selfies_tag": "自拍",
+  "screenshots_tag": "截屏",
+  "foods_tag": "食品",
+  "sports_tag": "体育",
+  "home_tag": "居家",
+  "work_tag": "工作",
+  "parties_tag": "派对",
 
-  "language": "Language"
+  "terms_of_use": "使用条款",
+  "privacy_policy": "隐私政策",
+
+  "auto_renewable_first_part": "订阅为",
+  "auto_renewable_second_part": "自动续订。",
+  "cancel_anytime": "随时取消",
+
+  "language": "语言"
 }
