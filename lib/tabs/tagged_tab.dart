@@ -84,7 +84,7 @@ class _TaggedTabState extends State<TaggedTab> {
     return false;
   }
 
-  Widget _buildTaggedGridView() {
+  Widget _buildTaggedGridView(BuildContext context) {
     bool isFiltered = DatabaseManager.instance.searchActiveTags.isNotEmpty;
     var picsBox = Hive.box('pics');
     var tagsBox = Hive.box('tags');
@@ -201,7 +201,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
                     DatabaseManager.instance.selectedPhotoIndex = indexOfPic;
 
-                    widget.showPhotoCardModal();
+                    widget.showPhotoCardModal(context);
                   },
                   child: ImageItem(
                     entity: data,
@@ -248,7 +248,7 @@ class _TaggedTabState extends State<TaggedTab> {
                   DatabaseManager.instance.selectedPhotoData = data;
                   DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
 
-                  widget.showPhotoCardModal();
+                  widget.showPhotoCardModal(context);
                 },
                 child: ImageItem(
                   entity: data,
@@ -473,7 +473,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     ),
                   if (!Provider.of<DatabaseManager>(context).noTaggedPhoto)
                     Expanded(
-                      child: _buildTaggedGridView(),
+                      child: _buildTaggedGridView(context),
                     ),
                 ],
               ),
