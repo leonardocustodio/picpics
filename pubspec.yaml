@@ -45,12 +45,13 @@ dependencies:
   date_utils: ^0.1.0+3
   carousel_slider: 2.1.0
   expandable: ^4.1.4
-  loading: ^1.0.2
   uuid: ^2.1.0
   url_launcher: ^5.4.11
   flare_flutter: ^2.0.3
   simple_animations: ^2.2.1
   flutter_device_locale: ^0.4.0
+  package_info: ^0.4.1
+  flutter_spinkit: ^4.1.2+1
 
 dev_dependencies:
   flutter_test:

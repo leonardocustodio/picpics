@@ -25,6 +25,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_device_locale/flutter_device_locale.dart';
+import 'package:package_info/package_info.dart';
 
 Future<void> initPlatformState() async {
   if (kDebugMode) {

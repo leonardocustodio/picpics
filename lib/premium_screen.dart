@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
-import 'package:loading/loading.dart';
 import 'package:picPics/components/arrow_painter.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,6 +8,7 @@ import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -550,9 +549,12 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             if (isLoading)
               Container(
-                color: Colors.black.withOpacity(0.6),
+                color: Colors.black.withOpacity(0.7),
                 child: Center(
-                  child: Loading(indicator: BallPulseIndicator(), size: 100.0),
+                  child: SpinKitChasingDots(
+                    color: kPrimaryColor,
+                    size: 80.0,
+                  ),
                 ),
               ),
           ],

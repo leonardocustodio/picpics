@@ -28,8 +28,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
-import 'package:loading/loading.dart';
-import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -828,9 +827,12 @@ class _TabsScreenState extends State<TabsScreen> {
         ),
         if (isLoading)
           Material(
-            color: Colors.black.withOpacity(0.6),
+            color: Colors.black.withOpacity(0.7),
             child: Center(
-              child: Loading(indicator: BallPulseIndicator(), size: 100.0),
+              child: SpinKitChasingDots(
+                color: kPrimaryColor,
+                size: 80.0,
+              ),
             ),
           ),
         if (Provider.of<DatabaseManager>(context).userSettings.tutorialCompleted == false)
