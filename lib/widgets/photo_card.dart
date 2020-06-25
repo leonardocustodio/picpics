@@ -69,7 +69,7 @@ class _PhotoCardState extends State<PhotoCard> {
 
   Future<List<String>> reverseGeocoding(BuildContext context, Pic picInfo) async {
     if (widget.specificLocation != null && widget.generalLocation != null) {
-      return [widget.specificLocation, '  $widget.generalLocation'];
+      return [widget.specificLocation, '  ${widget.generalLocation}'];
     }
 
     if ((picInfo.originalLatitude == null || picInfo.originalLongitude == null) ||

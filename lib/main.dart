@@ -103,6 +103,10 @@ void main() async {
 
   initPlatformState();
 
+  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+    DatabaseManager.instance.setAppVersion(packageInfo.version);
+  });
+
   runZonedGuarded(() {
     runApp(
       PicPicsApp(

@@ -580,6 +580,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         ),
                       ),
                     ),
+                    Center(
+                      child: Text(
+                        'VERSION ${DatabaseManager.instance.userSettings.appVersion}',
+                        textScaleFactor: 1.0,
+                        style: kGraySettingsFieldTextStyle,
+                      ),
+                    ),
                   ],
                 ),
               ),

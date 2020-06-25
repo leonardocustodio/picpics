@@ -48,6 +48,9 @@ class User {
   @HiveField(14)
   String appLanguage;
 
+  @HiveField(15)
+  String appVersion;
+
   User({
     this.id,
     this.email,
@@ -64,5 +67,6 @@ class User {
     this.lastTaggedPicDate,
     this.canTagToday,
     this.appLanguage,
+    this.appVersion,
   });
 }
