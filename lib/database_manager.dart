@@ -21,7 +21,9 @@ import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
-import 'package:picPics/generated/l10n.dart';
+import 'package:share_extend/share_extend.dart';
+import 'dart:typed_data';
+import 'package:path_provider/path_provider.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -426,11 +428,14 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeUserLanguage(String appLanguage) {
+  void changeUserLanguage(String appLanguage, {bool notify = true}) {
     var userBox = Hive.box('user');
     userSettings.appLanguage = appLanguage;
     userBox.putAt(0, userSettings);
-    notifyListeners();
+
+    if (notify = true) {
+      notifyListeners();
+    }
   }
 
   String getUserLanguage() {
@@ -877,10 +882,20 @@ class DatabaseManager extends ChangeNotifier {
     DatabaseManager.instance.increaseTodayTaggedPics();
   }
 
+  Future<String> _writeByteToImageFile(Uint8List byteData) async {
+    Directory tempDir = await getTemporaryDirectory();
+    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    imageFile.createSync(recursive: true);
+    imageFile.writeAsBytesSync(byteData);
+    return imageFile.path;
+  }
+
   Future<void> sharePics({List<String> photoIds}) async {
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     Map<String, dynamic> bytesPhotos = {};
     int x = 0;
+
+    var imageList = List<String>();
 
     for (var photoId in photoIds) {
       AssetEntity data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
@@ -890,26 +905,40 @@ class DatabaseManager extends ChangeNotifier {
       }
 
       if (Platform.isAndroid) {
-        var bytes = await data.originBytes;
-        bytesPhotos['$x.jpg'] = bytes;
+        String path = await _writeByteToImageFile(await data.originBytes);
+        imageList.add(path);
       } else {
         var bytes = await data.thumbDataWithSize(
           data.size.width.toInt(),
           data.size.height.toInt(),
           format: ThumbFormat.jpeg,
         );
-        bytesPhotos['$x.jpg'] = bytes;
+        String path = await _writeByteToImageFile(bytes);
+        imageList.add(path);
       }
+
+//      if (Platform.isAndroid) {
+//        var bytes = await data.originBytes;
+//        bytesPhotos['$x.jpg'] = bytes;
+//      } else {
+//        var bytes = await data.thumbDataWithSize(
+//          data.size.width.toInt(),
+//          data.size.height.toInt(),
+//          format: ThumbFormat.jpeg,
+//        );
+//        bytesPhotos['$x.jpg'] = bytes;
+//      }
       x++;
     }
+    ShareExtend.shareMultiple(imageList, "image", subject: "my picpics album");
 
-    await Share.files(
-      'images',
-      {
-        ...bytesPhotos,
-      },
-      'image/jpeg',
-    );
+//    await Share.files(
+//      'images',
+//      {
+//        ...bytesPhotos,
+//      },
+//      'image/jpeg',
+//    );
 
     return;
   }

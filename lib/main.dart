@@ -92,13 +92,27 @@ void main() async {
   } else {
     DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
+    print('teste 1');
 
     if (DatabaseManager.instance.userSettings.hasSwiped == null) {
+      print('teste 2');
       DatabaseManager.instance.userSettings.hasSwiped = false;
+      print('teste 3');
     }
+    print('teste 4');
   }
 
+  print('Getting locale');
+
+  if (DatabaseManager.instance.userSettings.appLanguage == null) {
+    Locale locale = await DeviceLocale.getCurrentLocale();
+    DatabaseManager.instance.changeUserLanguage(
+      locale.toString().split('_')[0],
+      notify: false,
+    );
+  }
   Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
+  print('DatabaseManager.instance.userSettings.appLanguage');
   print('User locale: $userLocale');
 
   DatabaseManager.instance.loadRemoteConfig();

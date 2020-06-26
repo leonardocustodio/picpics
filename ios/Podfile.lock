@@ -179,6 +179,8 @@ PODS:
     - Purchases (~> 3.2.2)
   - rate_my_app (0.1):
     - Flutter
+  - share_extend (0.0.1):
+    - Flutter
   - shared_preferences (0.0.1):
     - Flutter
   - shared_preferences_macos (0.0.1):
@@ -219,6 +221,7 @@ DEPENDENCIES:
   - photo_manager (from `.symlinks/plugins/photo_manager/ios`)
   - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - rate_my_app (from `.symlinks/plugins/rate_my_app/ios`)
+  - share_extend (from `.symlinks/plugins/share_extend/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
@@ -305,6 +308,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/purchases_flutter/ios"
   rate_my_app:
     :path: ".symlinks/plugins/rate_my_app/ios"
+  share_extend:
+    :path: ".symlinks/plugins/share_extend/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
   shared_preferences_macos:
@@ -368,6 +373,7 @@ SPEC CHECKSUMS:
   Purchases: 392c729893c011c7d4d37d7f7c9f863e597d4a9b
   purchases_flutter: b18d344e105cfd494ed286f8bb280a6a4b4622a8
   rate_my_app: 45513a2f4d9a55b7b46d19b64fc13882fd101157
+  share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
