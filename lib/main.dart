@@ -107,14 +107,7 @@ void main() async {
   }
 
   Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
-  print('DatabaseManager.instance.userSettings.appLanguage');
-  print('User locale: $userLocale');
-
   DatabaseManager.instance.loadRemoteConfig();
-
-  Locale locale = await DeviceLocale.getCurrentLocale();
-  print('Current Locale: $locale');
-
   initPlatformState();
 
   PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
