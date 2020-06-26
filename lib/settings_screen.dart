@@ -493,51 +493,43 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       thickness: 1.0,
                     ),
                     Spacer(),
-                    Center(
-                      child: Column(
-                        children: <Widget>[
-                          CupertinoButton(
-                            onPressed: () => shareApp(context),
-                            child: Container(
-                              width: 166.0,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Image.asset('lib/images/sharewithfriends.png'),
-                                  SizedBox(
-                                    width: 15.0,
-                                  ),
-                                  Text(
-                                    S.of(context).share_with_friends,
-                                    textScaleFactor: 1.0,
-                                    style: kGraySettingsBoldTextStyle,
-                                  ),
-                                ],
+                    Column(
+                      children: <Widget>[
+                        CupertinoButton(
+                          onPressed: () => shareApp(context),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image.asset('lib/images/sharewithfriends.png'),
+                              SizedBox(
+                                width: 15.0,
                               ),
-                            ),
-                          ),
-                          CupertinoButton(
-                            onPressed: () => rateDialog(),
-                            child: Container(
-                              width: 166.0,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget>[
-                                  Image.asset('lib/images/starrateapp.png'),
-                                  SizedBox(
-                                    width: 15.0,
-                                  ),
-                                  Text(
-                                    S.of(context).rate_this_app,
-                                    textScaleFactor: 1.0,
-                                    style: kGraySettingsBoldTextStyle,
-                                  ),
-                                ],
+                              Text(
+                                S.of(context).share_with_friends,
+                                textScaleFactor: 1.0,
+                                style: kGraySettingsBoldTextStyle,
                               ),
-                            ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        CupertinoButton(
+                          onPressed: () => rateDialog(),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image.asset('lib/images/starrateapp.png'),
+                              SizedBox(
+                                width: 15.0,
+                              ),
+                              Text(
+                                S.of(context).rate_this_app,
+                                textScaleFactor: 1.0,
+                                style: kGraySettingsBoldTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(
                       height: 40.0,

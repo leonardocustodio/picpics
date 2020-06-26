@@ -20,11 +20,13 @@ class TaggedTab extends StatefulWidget {
 
   final bool deviceHasNoPics;
   final Function setTabIndex;
+  final Function setIsLoading;
   final Function showEditTagModal;
   final Function showPhotoCardModal;
 
   TaggedTab({
     @required this.setTabIndex,
+    @required this.setIsLoading,
     @required this.showEditTagModal,
     @required this.showPhotoCardModal,
     this.deviceHasNoPics = false,
@@ -38,8 +40,6 @@ class _TaggedTabState extends State<TaggedTab> {
   ScrollController scrollControllerThirdTab;
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
-
-  bool isLoading = false; // mudar tb
 
   double offsetThirdTab = 0.0;
   double topOffsetThirdTab = 64.0;
@@ -150,13 +150,9 @@ class _TaggedTabState extends State<TaggedTab> {
               CupertinoButton(
                 onPressed: () async {
                   print('share pics');
-                  setState(() {
-                    isLoading = true;
-                  });
+                  widget.setIsLoading(true);
                   await DatabaseManager.instance.sharePics(photoIds: tag.photoId);
-                  setState(() {
-                    isLoading = false;
-                  });
+                  widget.setIsLoading(false);
                 },
                 child: Image.asset('lib/images/sharepicsico.png'),
               ),
@@ -402,13 +398,9 @@ class _TaggedTabState extends State<TaggedTab> {
                                   padding: const EdgeInsets.all(10),
                                   onPressed: () async {
                                     print('share pics');
-                                    setState(() {
-                                      isLoading = true;
-                                    });
+                                    widget.setIsLoading(true);
                                     await DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.searchPhotosIds);
-                                    setState(() {
-                                      isLoading = false;
-                                    });
+                                    widget.setIsLoading(false);
                                   },
                                   child: Image.asset('lib/images/sharepicsico.png'),
                                 ),

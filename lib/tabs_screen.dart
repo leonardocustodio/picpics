@@ -199,6 +199,12 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  setIsLoading(bool loading) {
+    setState(() {
+      isLoading = loading;
+    });
+  }
+
   void dismissPhotoCard() {
     print('dismissed photo card!!!');
 
@@ -553,6 +559,7 @@ class _TabsScreenState extends State<TabsScreen> {
                 if (Provider.of<DatabaseManager>(context).currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
                   TaggedTab(
                     setTabIndex: setTabIndex,
+                    setIsLoading: setIsLoading,
                     deviceHasNoPics: deviceHasNoPics,
                     showEditTagModal: showEditTagModal,
                     showPhotoCardModal: showPhotoCardModal,
