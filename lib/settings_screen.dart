@@ -548,17 +548,28 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
+                              SizedBox(
+                                width: 16.0,
+                              ),
                               Image.asset('lib/images/logopremium.png'),
                               SizedBox(
                                 width: 16.0,
                               ),
-                              Text(
-                                Provider.of<DatabaseManager>(context).userSettings.isPremium
-                                    ? S.of(context).you_are_premium
-                                    : S.of(context).get_premium_now,
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
+                              Flexible(
+                                child: Text(
+                                  Provider.of<DatabaseManager>(context).userSettings.isPremium
+                                      ? S.of(context).you_are_premium
+                                      : S.of(context).get_premium_now,
+                                  maxLines: 2,
+                                  textAlign: TextAlign.left,
+                                  textScaleFactor: 1.0,
+                                  style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
+                                ),
                               ),
+                              SizedBox(
+                                width: 16.0,
+                              ),
+                              s
                             ],
                           ),
                           gradient: LinearGradient(
