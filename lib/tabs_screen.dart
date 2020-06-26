@@ -59,6 +59,8 @@ class _TabsScreenState extends State<TabsScreen> {
   bool isLoading = false;
   bool deviceHasNoPics = false;
 
+  bool modalPhotoCard = false;
+
   void trashPics() async {
     print('trashing selected pics....');
 
@@ -158,43 +160,56 @@ class _TabsScreenState extends State<TabsScreen> {
     }
   }
 
-  showPhotoCardModal(BuildContext context) async {
-    print('Show photo card modal!!!');
+//  showPhotoCardModal(BuildContext context) async {
+//    print('Show photo card modal!!!');
+//
+////    sem horizontal
+////    bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
+////    top: bottomInsets > 0 ? 5 : 46.0,
+//
+//    String dialogResult = await showDialog(
+//      context: context,
+//      barrierDismissible: true,
+//      builder: (_) {
+//        return Dialog(
+//          backgroundColor: Colors.transparent,
+//          insetPadding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 38.0),
+//          child: PhotoCard(
+//            data: DatabaseManager.instance.selectedPhotoData,
+//            photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
+//            picSwiper: -1,
+//            index: DatabaseManager.instance.selectedPhotoIndex,
+//            tagsEditingController: tagsEditingController,
+//            specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
+//            generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
+//            showEditTagModal: showEditTagModal,
+//            onPressedTrash: () {
+//              trashPic(DatabaseManager.instance.selectedPhotoData);
+//            },
+//          ),
+//        );
+//      },
+//    );
+//
+//    if (dialogResult == null) {}
+//  }
 
-//    sem horizontal
-//    bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
-//    top: bottomInsets > 0 ? 5 : 46.0,
+  showPhotoCardModal() {
+    setState(() {
+      modalPhotoCard = true;
+    });
+  }
 
-    String dialogResult = await showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (_) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 38.0),
-          child: PhotoCard(
-            data: DatabaseManager.instance.selectedPhotoData,
-            photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
-            picSwiper: -1,
-            index: DatabaseManager.instance.selectedPhotoIndex,
-            tagsEditingController: tagsEditingController,
-            specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
-            generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
-            showEditTagModal: showEditTagModal,
-            onPressedTrash: () {
-              trashPic(DatabaseManager.instance.selectedPhotoData);
-            },
-          ),
-        );
-      },
-    );
+  void dismissPhotoCard() {
+    print('dismissed photo card!!!');
 
-    if (dialogResult == null) {
-      print('dismissed photo card!!!');
-      DatabaseManager.instance.selectedPhotoData = null;
-      DatabaseManager.instance.selectedPhotoPicInfo = null;
-      DatabaseManager.instance.selectedPhotoIndex = null;
-    }
+    DatabaseManager.instance.selectedPhotoData = null;
+    DatabaseManager.instance.selectedPhotoPicInfo = null;
+    DatabaseManager.instance.selectedPhotoIndex = null;
+
+    setState(() {
+      modalPhotoCard = false;
+    });
   }
 
   @override
@@ -825,6 +840,46 @@ class _TabsScreenState extends State<TabsScreen> {
                   ),
                 ),
         ),
+        if (modalPhotoCard)
+          Material(
+            color: Colors.transparent,
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  dismissPhotoCard();
+                },
+                child: Container(
+                  color: Colors.black.withOpacity(0.4),
+                  child: SafeArea(
+                    child: GestureDetector(
+                      onTap: () {
+                        print('ignore');
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(
+                          bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
+                          top: bottomInsets > 0 ? 5 : 46.0,
+                        ),
+                        child: PhotoCard(
+                          data: DatabaseManager.instance.selectedPhotoData,
+                          photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
+                          picSwiper: -1,
+                          index: DatabaseManager.instance.selectedPhotoIndex,
+                          tagsEditingController: tagsEditingController,
+                          specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
+                          generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
+                          showEditTagModal: showEditTagModal,
+                          onPressedTrash: () {
+                            trashPic(DatabaseManager.instance.selectedPhotoData);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
         if (isLoading)
           Material(
             color: Colors.black.withOpacity(0.7),

@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
+import 'package:provider/provider.dart';
 
 class PhotoCard extends StatefulWidget {
   final AssetEntity data;
@@ -194,7 +195,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   children: <Widget>[
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
-                      onPressed: () {
+                      onPressed: () async {
                         DatabaseManager.instance.selectedPhoto = widget.data;
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },

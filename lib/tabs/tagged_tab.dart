@@ -201,7 +201,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
                     DatabaseManager.instance.selectedPhotoIndex = indexOfPic;
 
-                    widget.showPhotoCardModal(context);
+                    widget.showPhotoCardModal();
                   },
                   child: ImageItem(
                     entity: data,
@@ -248,7 +248,7 @@ class _TaggedTabState extends State<TaggedTab> {
                   DatabaseManager.instance.selectedPhotoData = data;
                   DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
 
-                  widget.showPhotoCardModal(context);
+                  widget.showPhotoCardModal();
                 },
                 child: ImageItem(
                   entity: data,

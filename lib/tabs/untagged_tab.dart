@@ -163,7 +163,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
               DatabaseManager.instance.selectedPhotoIndex = index;
 
-              widget.showPhotoCardModal(context);
+              widget.showPhotoCardModal();
             },
             child: ImageItem(
               entity: data,
