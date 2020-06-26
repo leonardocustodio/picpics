@@ -91,15 +91,14 @@ class _TabsScreenState extends State<TabsScreen> {
     if (result.isNotEmpty) {
       DatabaseManager.instance.deletedPic(entity);
 
-//      Arrumar isso aqui
-//      if (modalPhotoCard) {
-//        setState(() {
-//          selectedPhotoPicInfo = null;
-//          selectedPhotoIndex = null;
-//          selectedPhotoData = null;
-//          modalPhotoCard = false;
-//        });
-//      }
+      if (modalPhotoCard) {
+        DatabaseManager.instance.selectedPhotoPicInfo = null;
+        DatabaseManager.instance.selectedPhotoIndex = null;
+        DatabaseManager.instance.selectedPhotoData = null;
+        setState(() {
+          modalPhotoCard = false;
+        });
+      }
     }
   }
 

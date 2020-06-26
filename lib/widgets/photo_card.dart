@@ -341,7 +341,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     setState(() {});
                   },
                   onChanged: (text) {
-                    print('photo Index: ${widget.index} - photo Swipe : ${widget.picSwiper}');
+                    print('photoIndex: ${widget.index} - photoSwipe : ${widget.picSwiper}');
                     if (widget.index == widget.picSwiper || widget.picSwiper == -1) {
                       print('calling tag suggestions');
                       DatabaseManager.instance.tagsSuggestions(
@@ -370,7 +370,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         return;
                       }
 
-                      print('text: $text - data.id: ${widget.data.id} - index: $widget.index - picSwiper: ${widget.picSwiper}');
+                      print('text: $text - data.id: ${widget.data.id} - index: ${widget.index} - picSwiper: ${widget.picSwiper}');
                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
                       DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[widget.index];
                       DatabaseManager.instance.addTag(
