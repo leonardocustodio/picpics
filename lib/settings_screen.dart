@@ -569,7 +569,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               SizedBox(
                                 width: 16.0,
                               ),
-                              s
                             ],
                           ),
                           gradient: LinearGradient(

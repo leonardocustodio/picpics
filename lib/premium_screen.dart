@@ -150,6 +150,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
       Text(
         S.of(context).get_premium_title,
         textScaleFactor: 1.0,
+        maxLines: 2,
+        textAlign: TextAlign.left,
+        overflow: TextOverflow.visible,
         style: const TextStyle(
           color: kPinkColor,
           fontWeight: FontWeight.w400,
@@ -161,14 +164,20 @@ class _PremiumScreenState extends State<PremiumScreen> {
       SizedBox(
         height: 12.0,
       ),
-      Text(
-        S.of(context).get_premium_description,
-        style: TextStyle(
-          color: kPrimaryColor.withOpacity(0.8),
-          fontWeight: FontWeight.w400,
-          fontFamily: "Lato",
-          fontStyle: FontStyle.normal,
-          fontSize: 18.0,
+      Flexible(
+        child: Text(
+          S.of(context).get_premium_description,
+          maxLines: 2,
+          textAlign: TextAlign.left,
+          textScaleFactor: 1.0,
+          overflow: TextOverflow.visible,
+          style: TextStyle(
+            color: kPrimaryColor.withOpacity(0.8),
+            fontWeight: FontWeight.w400,
+            fontFamily: "Lato",
+            fontStyle: FontStyle.normal,
+            fontSize: 18.0,
+          ),
         ),
       ),
       Spacer(
@@ -182,15 +191,19 @@ class _PremiumScreenState extends State<PremiumScreen> {
             SizedBox(
               width: 16.0,
             ),
-            Text(
-              S.of(context).no_ads,
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff707070),
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
+            Flexible(
+              child: Text(
+                S.of(context).no_ads,
+                textScaleFactor: 1.0,
+                maxLines: 2,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff707070),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                ),
               ),
             ),
           ],
@@ -204,15 +217,19 @@ class _PremiumScreenState extends State<PremiumScreen> {
             SizedBox(
               width: 16.0,
             ),
-            Text(
-              S.of(context).infinite_tags,
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff707070),
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
+            Flexible(
+              child: Text(
+                S.of(context).infinite_tags,
+                maxLines: 2,
+                textAlign: TextAlign.left,
+                textScaleFactor: 1.0,
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff707070),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                ),
               ),
             ),
           ],
@@ -226,15 +243,19 @@ class _PremiumScreenState extends State<PremiumScreen> {
             SizedBox(
               width: 16.0,
             ),
-            Text(
-              S.of(context).tag_multiple_photos_at_once,
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff707070),
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
+            Flexible(
+              child: Text(
+                S.of(context).tag_multiple_photos_at_once,
+                textScaleFactor: 1.0,
+                maxLines: 2,
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff707070),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                ),
               ),
             ),
           ],
@@ -248,15 +269,19 @@ class _PremiumScreenState extends State<PremiumScreen> {
             SizedBox(
               width: 16.0,
             ),
-            Text(
-              S.of(context).cancel_anytime,
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff707070),
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
+            Flexible(
+              child: Text(
+                S.of(context).cancel_anytime,
+                maxLines: 2,
+                textAlign: TextAlign.left,
+                textScaleFactor: 1.0,
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff707070),
+                  fontSize: 16,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                ),
               ),
             ),
           ],
