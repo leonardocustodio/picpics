@@ -51,6 +51,9 @@ class User {
   @HiveField(15)
   String appVersion;
 
+  @HiveField(16)
+  bool hasSwiped;
+
   User({
     this.id,
     this.email,
@@ -68,5 +71,6 @@ class User {
     this.canTagToday,
     this.appLanguage,
     this.appVersion,
+    this.hasSwiped,
   });
 }

@@ -244,7 +244,7 @@ class _TagsListState extends State<TagsList> {
                               child: Transform.rotate(
                                 angle: pi / 2,
                                 child: FlareActor(
-                                  'lib/anims/arrow_swipe.flr',
+                                  'lib/anims/swipe_arrow.flr',
                                   alignment: Alignment.center,
                                   fit: BoxFit.contain,
                                   animation: 'arrow_left',

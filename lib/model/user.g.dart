@@ -33,13 +33,14 @@ class UserAdapter extends TypeAdapter<User> {
       canTagToday: fields[13] as bool,
       appLanguage: fields[14] as String,
       appVersion: fields[15] as String,
+      hasSwiped: fields[16] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -71,7 +72,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(14)
       ..write(obj.appLanguage)
       ..writeByte(15)
-      ..write(obj.appVersion);
+      ..write(obj.appVersion)
+      ..writeByte(16)
+      ..write(obj.hasSwiped);
   }
 
   @override

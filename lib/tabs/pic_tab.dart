@@ -9,6 +9,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/widgets/photo_card.dart';
+import 'package:flare_flutter/flare_actor.dart';
 
 class PicTab extends StatefulWidget {
   static const id = 'pic_tab';
@@ -144,26 +145,44 @@ class _PicTabState extends State<PicTab> {
               ),
             if (Provider.of<DatabaseManager>(context).sliderIndex != null)
               Expanded(
-                child: CarouselSlider.builder(
-                  itemCount: Provider.of<DatabaseManager>(context).sliderIndex.length,
-                  carouselController: carouselController,
-                  itemBuilder: (BuildContext context, int index) {
-                    print('calling index $index');
-                    return _buildPhotoSlider(context, index);
-                  },
-                  options: CarouselOptions(
-                    initialPage: DatabaseManager.instance.swiperIndex,
-                    enableInfiniteScroll: true,
-                    height: double.maxFinite,
-                    viewportFraction: 1.0,
-                    enlargeCenterPage: true,
-                    autoPlayCurve: Curves.fastOutSlowIn,
-                    onPageChanged: (index, reason) async {
-//                      DatabaseManager.instance.swiperIndex = index;
-//                      picSwiper = index;
-                      print('### Swiper Index: $index');
-                    },
-                  ),
+                child: Stack(
+                  children: <Widget>[
+                    CarouselSlider.builder(
+                      itemCount: Provider.of<DatabaseManager>(context).sliderIndex.length,
+                      carouselController: carouselController,
+                      itemBuilder: (BuildContext context, int index) {
+                        print('calling index $index');
+                        return _buildPhotoSlider(context, index);
+                      },
+                      options: CarouselOptions(
+                        initialPage: DatabaseManager.instance.swiperIndex,
+                        enableInfiniteScroll: true,
+                        height: double.maxFinite,
+                        viewportFraction: 1.0,
+                        enlargeCenterPage: true,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        onPageChanged: (index, reason) async {
+                          if (!DatabaseManager.instance.userSettings.hasSwiped) {
+                            DatabaseManager.instance.setUserHasSwiped();
+                          }
+                          print('### Swiper Index: $index');
+                        },
+                      ),
+                    ),
+                    if (!Provider.of<DatabaseManager>(context).userSettings.hasSwiped)
+                      IgnorePointer(
+                        child: Container(
+                          padding: const EdgeInsets.only(top: 150.0),
+                          child: FlareActor(
+                            'lib/anims/swipe_left.flr',
+                            alignment: Alignment.topCenter,
+                            fit: BoxFit.contain,
+                            animation: 'Animations',
+//                            color: kWhiteColor,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
           ],

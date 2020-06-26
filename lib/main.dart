@@ -83,6 +83,7 @@ void main() async {
       lastTaggedPicDate: DateTime.now(),
       canTagToday: true,
       appLanguage: locale.toString(),
+      hasSwiped: false,
     );
 
     userBox.add(user);
@@ -91,6 +92,10 @@ void main() async {
   } else {
     DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
+
+    if (DatabaseManager.instance.userSettings.hasSwiped == null) {
+      DatabaseManager.instance.userSettings.hasSwiped = false;
+    }
   }
 
   Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);

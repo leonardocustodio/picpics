@@ -764,6 +764,13 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
+  void setUserHasSwiped() {
+    var userBox = Hive.box('user');
+    userSettings.hasSwiped = true;
+    userBox.putAt(0, userSettings);
+    notifyListeners();
+  }
+
   void addTagToRecent({String tagKey}) {
     print('adding tag to recent: $tagKey');
 
