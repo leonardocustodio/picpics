@@ -13,30 +13,22 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class PhotoCard extends StatefulWidget {
   final AssetEntity data;
-//  final int index;
   final String photoId;
-//  final int picSwiper;
   final String specificLocation;
   final String generalLocation;
-//  final TextEditingController tagsEditingController;
   final Function showEditTagModal;
   final Function onPressedTrash;
 
   PhotoCard({
     this.data,
-//    this.index,
     this.photoId,
-//    this.picSwiper,
     this.specificLocation,
     this.generalLocation,
-//    this.tagsEditingController,
     this.showEditTagModal,
     this.onPressedTrash,
   });
@@ -127,6 +119,15 @@ class _PhotoCardState extends State<PhotoCard> {
     super.dispose();
   }
 
+  void initTagSuggestions(Pic picInfo) {
+    DatabaseManager.instance.tagsSuggestions(
+      '',
+      picInfo.photoId,
+      excludeTags: picInfo.tags,
+      notify: false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Pic picInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
@@ -143,6 +144,10 @@ class _PhotoCardState extends State<PhotoCard> {
         null,
         [],
       );
+    }
+
+    if (DatabaseManager.instance.suggestionTags[picInfo.photoId] == null) {
+      initTagSuggestions(picInfo);
     }
 
     return Container(
@@ -323,7 +328,6 @@ class _PhotoCardState extends State<PhotoCard> {
                                       ],
                                     ),
                                   ),
-//                                  CircularProgressIndicator(),
                                 ],
                               );
                             }
@@ -370,79 +374,38 @@ class _PhotoCardState extends State<PhotoCard> {
                     setState(() {});
                   },
                   onChanged: (text) {
-//                    print('photoIndex: ${widget.index} - photoSwipe : ${widget.picSwiper}');
-//                    if (widget.index == widget.picSwiper || widget.picSwiper == -1) {
-//                      print('calling tag suggestions');
-//                      DatabaseManager.instance.tagsSuggestions(
-//                        text,
-//                        picInfo.photoId,
-//                        excludeTags: picInfo.tags,
-//                      );
-//                    } else {
-//                      print('skipping');
-//                    }
+                    DatabaseManager.instance.tagsSuggestions(
+                      text,
+                      picInfo.photoId,
+                      excludeTags: picInfo.tags,
+                    );
 
                     setState(() {});
                   },
                   onSubmitted: (text) {
                     print('return');
 
-//                    if (text != '') {
-//                      if (!DatabaseManager.instance.canTagToday()) {
-//                        widget.tagsEditingController.clear();
-//                        DatabaseManager.instance.tagsSuggestions(
-//                          '',
-//                          widget.data.id,
-//                          excludeTags: picInfo.tags,
-//                        );
-//                        setState(() {});
-//                        showWatchAdModal(context);
-//                        return;
-//                      }
-//
-////                      print('text: $text - data.id: ${widget.data.id} - index: ${widget.index} - picSwiper: ${widget.picSwiper}');
-//                      DatabaseManager.instance.selectedPhoto = widget.data;
-//                      DatabaseManager.instance.addTag(
-//                        tagName: text,
-//                        photoId: widget.data.id,
-//                      );
-//                      widget.tagsEditingController.clear();
-//
-//                      if (widget.picSwiper != -1) {
-//                        // Refatorar essa gambi dps
-//                        var indexPicBefore = widget.picSwiper - 1;
-//                        var indexPicAfter = widget.picSwiper + 1;
-//
-//                        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                        if (indexPicBefore < 0) {
-//                          indexPicBefore = pathProvider.orderedList.length - 1;
-//                        }
-//                        if (indexPicAfter == pathProvider.orderedList.length) {
-//                          indexPicAfter = 0;
-//                        }
-//
-//                        Pic picBefore = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicBefore].id);
-//                        Pic picAfter = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicAfter].id);
-//
-//                        DatabaseManager.instance.tagsSuggestions(
-//                          '',
-//                          picBefore.photoId,
-//                          excludeTags: picBefore.tags,
-//                        );
-//                        DatabaseManager.instance.tagsSuggestions(
-//                          '',
-//                          picAfter.photoId,
-//                          excludeTags: picAfter.tags,
-//                        );
-//                        ////////////////////////
-//                      } else {
-//                        DatabaseManager.instance.tagsSuggestions(
-//                          '',
-//                          widget.data.id,
-//                          excludeTags: picInfo.tags,
-//                        );
-//                      }
-//                    }
+                    if (text != '') {
+                      if (!DatabaseManager.instance.canTagToday()) {
+                        tagsEditingController.clear();
+                        DatabaseManager.instance.tagsSuggestions(
+                          '',
+                          widget.data.id,
+                          excludeTags: picInfo.tags,
+                        );
+                        setState(() {});
+                        showWatchAdModal(context);
+                        return;
+                      }
+
+                      DatabaseManager.instance.selectedPhoto = widget.data;
+                      DatabaseManager.instance.addTag(
+                        tagName: text,
+                        photoId: widget.data.id,
+                      );
+                      tagsEditingController.clear();
+                    }
+
                     setState(() {});
                   },
                 ),

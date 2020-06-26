@@ -91,6 +91,25 @@ class _TagsListState extends State<TagsList> {
     List<Widget> tagsWidgets = [];
     print('Tags in TagsList: ${widget.tagsKeys}');
 
+    if (widget.tagsKeys.length == 0 && widget.tagStyle == TagStyle.GrayOutlined) {
+      tagsWidgets.add(
+        Container(
+          padding: const EdgeInsets.only(top: 10.0, left: 18.0, bottom: 8.0),
+          child: Text(
+            S.of(context).no_tags_found,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff979a9b),
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
+          ),
+        ),
+      );
+    }
+
     for (int i = 0; i < widget.tagsKeys.length; i++) {
       String tagKey = widget.tagsKeys[i];
       var mod = i % 4;
