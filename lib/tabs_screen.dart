@@ -862,9 +862,9 @@ class _TabsScreenState extends State<TabsScreen> {
                         child: PhotoCard(
                           data: DatabaseManager.instance.selectedPhotoData,
                           photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
-                          picSwiper: -1,
-                          index: DatabaseManager.instance.selectedPhotoIndex,
-                          tagsEditingController: tagsEditingController,
+//                          picSwiper: -1,
+//                          index: DatabaseManager.instance.selectedPhotoIndex,
+//                          tagsEditingController: tagsEditingController,
                           specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
                           generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
                           showEditTagModal: showEditTagModal,

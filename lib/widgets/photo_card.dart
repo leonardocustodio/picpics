@@ -16,26 +16,27 @@ import 'package:geolocator/geolocator.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class PhotoCard extends StatefulWidget {
   final AssetEntity data;
-  final int index;
+//  final int index;
   final String photoId;
-  final int picSwiper;
+//  final int picSwiper;
   final String specificLocation;
   final String generalLocation;
-  final TextEditingController tagsEditingController;
+//  final TextEditingController tagsEditingController;
   final Function showEditTagModal;
   final Function onPressedTrash;
 
   PhotoCard({
     this.data,
-    this.index,
+//    this.index,
     this.photoId,
-    this.picSwiper,
+//    this.picSwiper,
     this.specificLocation,
     this.generalLocation,
-    this.tagsEditingController,
+//    this.tagsEditingController,
     this.showEditTagModal,
     this.onPressedTrash,
   });
@@ -45,6 +46,9 @@ class PhotoCard extends StatefulWidget {
 }
 
 class _PhotoCardState extends State<PhotoCard> {
+  TextEditingController tagsEditingController = TextEditingController();
+  FocusNode tagsFocusNode;
+
   showWatchAdModal(BuildContext context) {
     showDialog<void>(
       context: context,
@@ -97,6 +101,30 @@ class _PhotoCardState extends State<PhotoCard> {
       );
       return [placemark[0].locality, '  ${placemark[0].country}'];
     }
+  }
+
+  void focusTagsEditingController() {}
+
+  @override
+  void initState() {
+    super.initState();
+    tagsFocusNode = FocusNode();
+
+    if (KeyboardVisibility.isVisible) {
+      print('#### keyboard is visible!!!!');
+      tagsFocusNode.requestFocus();
+    }
+
+//    KeyboardVisibility.onChange.listen((bool visible) {
+//      print('Keyboard visibility update. Is visible: ${visible}');
+//
+//    });
+  }
+
+  @override
+  void dispose() {
+    tagsFocusNode = FocusNode();
+    super.dispose();
   }
 
   @override
@@ -318,7 +346,8 @@ class _PhotoCardState extends State<PhotoCard> {
                 TagsList(
                   tagsKeys: picInfo.tags,
                   addTagField: true,
-                  textEditingController: widget.tagsEditingController,
+                  textEditingController: tagsEditingController,
+                  textFocusNode: tagsFocusNode,
                   showEditTagModal: widget.showEditTagModal,
                   shouldChangeToSwipeMode: true,
                   onTap: (tagName) {
@@ -341,79 +370,79 @@ class _PhotoCardState extends State<PhotoCard> {
                     setState(() {});
                   },
                   onChanged: (text) {
-                    print('photoIndex: ${widget.index} - photoSwipe : ${widget.picSwiper}');
-                    if (widget.index == widget.picSwiper || widget.picSwiper == -1) {
-                      print('calling tag suggestions');
-                      DatabaseManager.instance.tagsSuggestions(
-                        text,
-                        picInfo.photoId,
-                        excludeTags: picInfo.tags,
-                      );
-                    } else {
-                      print('skipping');
-                    }
+//                    print('photoIndex: ${widget.index} - photoSwipe : ${widget.picSwiper}');
+//                    if (widget.index == widget.picSwiper || widget.picSwiper == -1) {
+//                      print('calling tag suggestions');
+//                      DatabaseManager.instance.tagsSuggestions(
+//                        text,
+//                        picInfo.photoId,
+//                        excludeTags: picInfo.tags,
+//                      );
+//                    } else {
+//                      print('skipping');
+//                    }
 
                     setState(() {});
                   },
                   onSubmitted: (text) {
                     print('return');
-                    if (text != '') {
-                      if (!DatabaseManager.instance.canTagToday()) {
-                        widget.tagsEditingController.clear();
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          widget.data.id,
-                          excludeTags: picInfo.tags,
-                        );
-                        setState(() {});
-                        showWatchAdModal(context);
-                        return;
-                      }
 
-                      print('text: $text - data.id: ${widget.data.id} - index: ${widget.index} - picSwiper: ${widget.picSwiper}');
-                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[widget.index];
-                      DatabaseManager.instance.addTag(
-                        tagName: text,
-                        photoId: widget.data.id,
-                      );
-                      widget.tagsEditingController.clear();
-
-                      if (widget.picSwiper != -1) {
-                        // Refatorar essa gambi dps
-                        var indexPicBefore = widget.picSwiper - 1;
-                        var indexPicAfter = widget.picSwiper + 1;
-
-                        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                        if (indexPicBefore < 0) {
-                          indexPicBefore = pathProvider.orderedList.length - 1;
-                        }
-                        if (indexPicAfter == pathProvider.orderedList.length) {
-                          indexPicAfter = 0;
-                        }
-
-                        Pic picBefore = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicBefore].id);
-                        Pic picAfter = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicAfter].id);
-
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          picBefore.photoId,
-                          excludeTags: picBefore.tags,
-                        );
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          picAfter.photoId,
-                          excludeTags: picAfter.tags,
-                        );
-                        ////////////////////////
-                      } else {
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          widget.data.id,
-                          excludeTags: picInfo.tags,
-                        );
-                      }
-                    }
+//                    if (text != '') {
+//                      if (!DatabaseManager.instance.canTagToday()) {
+//                        widget.tagsEditingController.clear();
+//                        DatabaseManager.instance.tagsSuggestions(
+//                          '',
+//                          widget.data.id,
+//                          excludeTags: picInfo.tags,
+//                        );
+//                        setState(() {});
+//                        showWatchAdModal(context);
+//                        return;
+//                      }
+//
+////                      print('text: $text - data.id: ${widget.data.id} - index: ${widget.index} - picSwiper: ${widget.picSwiper}');
+//                      DatabaseManager.instance.selectedPhoto = widget.data;
+//                      DatabaseManager.instance.addTag(
+//                        tagName: text,
+//                        photoId: widget.data.id,
+//                      );
+//                      widget.tagsEditingController.clear();
+//
+//                      if (widget.picSwiper != -1) {
+//                        // Refatorar essa gambi dps
+//                        var indexPicBefore = widget.picSwiper - 1;
+//                        var indexPicAfter = widget.picSwiper + 1;
+//
+//                        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//                        if (indexPicBefore < 0) {
+//                          indexPicBefore = pathProvider.orderedList.length - 1;
+//                        }
+//                        if (indexPicAfter == pathProvider.orderedList.length) {
+//                          indexPicAfter = 0;
+//                        }
+//
+//                        Pic picBefore = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicBefore].id);
+//                        Pic picAfter = DatabaseManager.instance.getPicInfo(pathProvider.orderedList[indexPicAfter].id);
+//
+//                        DatabaseManager.instance.tagsSuggestions(
+//                          '',
+//                          picBefore.photoId,
+//                          excludeTags: picBefore.tags,
+//                        );
+//                        DatabaseManager.instance.tagsSuggestions(
+//                          '',
+//                          picAfter.photoId,
+//                          excludeTags: picAfter.tags,
+//                        );
+//                        ////////////////////////
+//                      } else {
+//                        DatabaseManager.instance.tagsSuggestions(
+//                          '',
+//                          widget.data.id,
+//                          excludeTags: picInfo.tags,
+//                        );
+//                      }
+//                    }
                     setState(() {});
                   },
                 ),
@@ -430,8 +459,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         return;
                       }
 
-                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                      DatabaseManager.instance.selectedPhoto = pathProvider.orderedList[widget.index];
+                      DatabaseManager.instance.selectedPhoto = widget.data;
                       DatabaseManager.instance.addTag(
                         tagName: tagName,
                         photoId: picInfo.photoId,

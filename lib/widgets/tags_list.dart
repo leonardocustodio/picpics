@@ -18,6 +18,7 @@ enum TagStyle {
 class TagsList extends StatefulWidget {
   final List<String> tagsKeys;
   final TextEditingController textEditingController;
+  final FocusNode textFocusNode;
   final bool addTagField;
   final Function addTagButton;
   final bool addButtonVisible;
@@ -35,6 +36,7 @@ class TagsList extends StatefulWidget {
     @required this.tagsKeys,
     this.tagStyle = TagStyle.MultiColored,
     this.textEditingController,
+    this.textFocusNode,
     this.addTagField = false,
     this.addButtonVisible = true,
     this.addTagButton,
@@ -305,6 +307,7 @@ class _TagsListState extends State<TagsList> {
               Expanded(
                 child: TextField(
                   controller: widget.textEditingController,
+                  focusNode: widget.textFocusNode,
                   onChanged: widget.onChanged,
                   onSubmitted: widget.onSubmitted,
                   keyboardType: TextInputType.text,

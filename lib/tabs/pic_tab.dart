@@ -29,9 +29,9 @@ class PicTab extends StatefulWidget {
 
 class _PicTabState extends State<PicTab> {
   CarouselController carouselController = CarouselController();
-  int picSwiper = 0;
+//  int picSwiper = 0;
 
-  TextEditingController tagsEditingController = TextEditingController();
+//  TextEditingController tagsEditingController = TextEditingController();
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
     print('photo slides index: $index');
@@ -81,27 +81,30 @@ class _PicTabState extends State<PicTab> {
 //      );
 //    }
 
-    print('using picSwiper id: $picSwiper');
+//    print('using picSwiper id: $picSwiper');
+//
+//    DatabaseManager.instance.tagsSuggestions(
+//      tagsEditingController.text,
+//      picInfo.photoId,
+//      excludeTags: picInfo.tags,
+//      notify: false,
+//    );
 
-    DatabaseManager.instance.tagsSuggestions(
-      tagsEditingController.text,
-      picInfo.photoId,
-      excludeTags: picInfo.tags,
-      notify: false,
-    );
-
-    return PhotoCard(
-      data: data,
-      photoId: picInfo.photoId,
-      picSwiper: picSwiper,
-      index: index,
-      tagsEditingController: tagsEditingController,
-      specificLocation: picInfo.specificLocation,
-      generalLocation: picInfo.generalLocation,
-      showEditTagModal: widget.showEditTagModal,
-      onPressedTrash: () {
-        widget.trashPic(data);
-      },
+    return Padding(
+      padding: const EdgeInsets.all(6.0),
+      child: PhotoCard(
+        data: data,
+        photoId: picInfo.photoId,
+//      picSwiper: picSwiper,
+//      index: index,
+//      tagsEditingController: tagsEditingController,
+        specificLocation: picInfo.specificLocation,
+        generalLocation: picInfo.generalLocation,
+        showEditTagModal: widget.showEditTagModal,
+        onPressedTrash: () {
+          widget.trashPic(data);
+        },
+      ),
     );
   }
 
@@ -161,13 +164,13 @@ class _PicTabState extends State<PicTab> {
                     initialPage: DatabaseManager.instance.swiperIndex,
                     enableInfiniteScroll: true,
                     height: double.maxFinite,
-                    viewportFraction: 0.95,
-                    enlargeCenterPage: false,
+                    viewportFraction: 1.0,
+                    enlargeCenterPage: true,
                     autoPlayCurve: Curves.fastOutSlowIn,
                     onPageChanged: (index, reason) async {
-                      DatabaseManager.instance.swiperIndex = index;
-                      picSwiper = index;
-                      print('picSwiper = $index');
+//                      DatabaseManager.instance.swiperIndex = index;
+//                      picSwiper = index;
+                      print('### Swiper Index: $index');
                     },
                   ),
                 ),
