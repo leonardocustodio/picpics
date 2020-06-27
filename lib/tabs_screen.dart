@@ -30,6 +30,7 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
+import 'package:facebook_audience_network/facebook_audience_network.dart';
 
 class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
@@ -250,22 +251,22 @@ class _TabsScreenState extends State<TabsScreen> {
       DatabaseManager.instance.checkPremiumStatus();
     }
 
-    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      if (event == RewardedVideoAdEvent.loaded) {
-        print('@@@ loaded');
-      }
-
-      if (event == RewardedVideoAdEvent.rewarded) {
-        print('@@@ rewarded');
-        DatabaseManager.instance.setCanTagToday(true);
-        Ads.loadRewarded();
-      }
-
-      if (event == RewardedVideoAdEvent.closed || event == RewardedVideoAdEvent.failedToLoad) {
-        print('Failed to load or closed');
-        Ads.loadRewarded();
-      }
-    };
+//    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+//      if (event == RewardedVideoAdEvent.loaded) {
+//        print('@@@ loaded');
+//      }
+//
+//      if (event == RewardedVideoAdEvent.rewarded) {
+//        print('@@@ rewarded');
+//        DatabaseManager.instance.setCanTagToday(true);
+//        Ads.loadRewarded();
+//      }
+//
+//      if (event == RewardedVideoAdEvent.closed || event == RewardedVideoAdEvent.failedToLoad) {
+//        print('Failed to load or closed');
+//        Ads.loadRewarded();
+//      }
+//    };
   }
 
   @override
