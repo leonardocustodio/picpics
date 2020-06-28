@@ -1,0 +1,13 @@
+/*
+  InfoPlist.strings
+  Runner
+
+  Created by Leonardo Custodio on 28/06/20.
+  
+*/
+
+NSLocationAlwaysAndWhenInUseUsageDescription = "앱에서 사진에 위치를 추가하려면 위치에 액세스 할 수있는 권한이 필요합니다.";
+NSLocationAlwaysUsageDescription = "앱에서 사진에 위치를 추가하려면 위치에 액세스 할 수있는 권한이 필요합니다.";
+NSLocationWhenInUseUsageDescription = "앱에서 사진에 위치를 추가하려면 위치에 액세스 할 수있는 권한이 필요합니다.";
+NSPhotoLibraryAddUsageDescription = "앱이 제대로 작동하려면 사진 갤러리에 대한 전체 액세스 권한이 필요합니다.";
+NSPhotoLibraryUsageDescription = "앱이 제대로 작동하려면 사진 갤러리에 대한 전체 액세스 권한이 필요합니다.";

@@ -54,7 +54,7 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   share_extend: ^1.1.7
   path_provider: ^1.6.11
-  facebook_audience_network: ^0.6.2
+#  facebook_audience_network: ^0.6.2
 
 dev_dependencies:
   flutter_test:

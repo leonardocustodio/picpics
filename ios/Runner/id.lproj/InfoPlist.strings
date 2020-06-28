@@ -1,0 +1,13 @@
+/*
+  InfoPlist.strings
+  Runner
+
+  Created by Leonardo Custodio on 28/06/20.
+  
+*/
+
+NSLocationAlwaysAndWhenInUseUsageDescription = "Jika Anda ingin aplikasi kami menambahkan lokasi Anda ke foto Anda, kami memerlukan otorisasi untuk mengakses lokasi Anda.";
+NSLocationAlwaysUsageDescription = "Jika Anda ingin aplikasi kami menambahkan lokasi Anda ke foto Anda, kami memerlukan otorisasi untuk mengakses lokasi Anda.";
+NSLocationWhenInUseUsageDescription = "Jika Anda ingin aplikasi kami menambahkan lokasi Anda ke foto Anda, kami memerlukan otorisasi untuk mengakses lokasi Anda.";
+NSPhotoLibraryAddUsageDescription = "Agar aplikasi kami berfungsi dengan baik, kami membutuhkan akses penuh ke galeri foto Anda.";
+NSPhotoLibraryUsageDescription = "Agar aplikasi kami berfungsi dengan baik, kami membutuhkan akses penuh ke galeri foto Anda.";

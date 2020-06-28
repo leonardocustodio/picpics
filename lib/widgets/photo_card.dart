@@ -15,7 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:facebook_audience_network/facebook_audience_network.dart';
+//import 'package:facebook_audience_network/facebook_audience_network.dart';
 
 class PhotoCard extends StatefulWidget {
   final AssetEntity data;
@@ -50,8 +50,8 @@ class _PhotoCardState extends State<PhotoCard> {
         return WatchAdModal(
           onPressedWatchAdd: () {
             Navigator.pop(context);
-//            RewardedVideoAd.instance.show();
-            FacebookInterstitialAd.showInterstitialAd(delay: 0);
+            RewardedVideoAd.instance.show();
+//            FacebookInterstitialAd.showInterstitialAd(delay: 0);
           },
           onPressedGetPremium: () {
             Navigator.popAndPushNamed(context, PremiumScreen.id);

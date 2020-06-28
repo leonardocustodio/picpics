@@ -1,0 +1,13 @@
+/*
+  InfoPlist.strings
+  Runner
+
+  Created by Leonardo Custodio on 28/06/20.
+  
+*/
+
+NSLocationAlwaysAndWhenInUseUsageDescription = "Se você desejar que nosso aplicativo adicione sua localização as fotos, precisamos de autorização para acessar sua localização.";
+NSLocationAlwaysUsageDescription = "Se você desejar que nosso aplicativo adicione sua localização as fotos, precisamos de autorização para acessar sua localização.";
+NSLocationWhenInUseUsageDescription = "Se você desejar que nosso aplicativo adicione sua localização as fotos, precisamos de autorização para acessar sua localização.";
+NSPhotoLibraryAddUsageDescription = "Para que nosso aplicativo funcione corretamente, precisamos de acesso total à sua galeria de fotos.";
+NSPhotoLibraryUsageDescription = "Para que nosso aplicativo funcione corretamente, precisamos de acesso total à sua galeria de fotos.";
