@@ -358,7 +358,11 @@ class _TabsScreenState extends State<TabsScreen> {
         DatabaseManager.instance.setPicsSelected([]);
         DatabaseManager.instance.setMultiPicBar(false);
       } else if (index == 1) {
-//        showMultiTagSheet();
+        print('share menu!!!!');
+      } else if (index == 2) {
+        trashPics();
+      } else {
+        //        showMultiTagSheet();
 
         // Verificar se multipic não existe antes
         DatabaseManager.instance.tagsSuggestions(
@@ -376,8 +380,6 @@ class _TabsScreenState extends State<TabsScreen> {
             expandableController.expanded = true;
           });
         });
-      } else {
-        trashPics();
       }
 
       return;
@@ -864,14 +866,14 @@ class _TabsScreenState extends State<TabsScreen> {
                           ],
                         ),
                 ),
-          floatingActionButton: !Provider.of<DatabaseManager>(context).multiPicBar
+          floatingActionButton: !Provider.of<DatabaseManager>(context).multiPicBar || showingMultiTagSheet
               ? Container(
                   width: 0,
                   height: 0,
                 )
               : FloatingActionButton(
                   onPressed: () {
-//                    setTabIndex(index);
+                    setTabIndex(3);
                   },
                   child: Image.asset('lib/images/picbarbutton.png'),
                   backgroundColor: kWhiteColor,
