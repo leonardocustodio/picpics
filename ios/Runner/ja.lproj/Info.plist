@@ -49,15 +49,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open and in the background.</string>
+	<string>私たちのアプリがあなたの写真にあなたの場所を追加したい場合、私たちはあなたの場所にアクセスするための承認が必要です。</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to location when in the background.</string>
+	<string>私たちのアプリがあなたの写真にあなたの場所を追加したい場合、私たちはあなたの場所にアクセスするための承認が必要です。</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>私たちのアプリがあなたの写真にあなたの場所を追加したい場合、私たちはあなたの場所にアクセスするための承認が必要です。</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Precisamos de acesso para adicionar, editar e deletar fotos da sua galeria.</string>
+	<string>アプリが正常に機能するためには、フォトギャラリーへのフルアクセスが必要です。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Precisamos de acesso a sua galeria para organizar suas fotos.</string>
+	<string>アプリが正常に機能するためには、フォトギャラリーへのフルアクセスが必要です。</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -83,6 +83,6 @@
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
 	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-5152146538991892~4542623621</string>
+	<string>ca-app-pub-4850390878205651~6175952653</string>
 </dict>
 </plist>

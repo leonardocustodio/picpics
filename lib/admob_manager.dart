@@ -1,17 +1,20 @@
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:facebook_audience_network/facebook_audience_network.dart';
-
 import 'dart:io';
-
 import 'package:picPics/database_manager.dart';
 
-const String androidAppId = 'ca-app-pub-5152146538991892~2540164868';
-const String iosAppId = 'ca-app-pub-5152146538991892~4542623621';
-const String iosBannerId = 'ca-app-pub-5152146538991892/7863578075';
-const String androidBannerId = 'ca-app-pub-5152146538991892/1911525195';
-const String iosRewardedId = 'ca-app-pub-5152146538991892/3698742406';
-const String androidRewardedId = 'ca-app-pub-5152146538991892/6096647360';
-const String HideAdScreen = 'HideAd';
+//const String androidAppId = 'ca-app-pub-5152146538991892~2540164868';
+//const String iosAppId = 'ca-app-pub-5152146538991892~4542623621';
+////const String iosBannerId = 'ca-app-pub-5152146538991892/7863578075';
+////const String androidBannerId = 'ca-app-pub-5152146538991892/1911525195';
+//const String iosRewardedId = 'ca-app-pub-5152146538991892/3698742406';
+//const String androidRewardedId = 'ca-app-pub-5152146538991892/6096647360';
+//const String HideAdScreen = 'HideAd';
+
+const String androidAppId = 'ca-app-pub-4850390878205651~5454538550';
+const String androidRewardedId = 'ca-app-pub-4850390878205651/2428279339';
+const String iosAppId = 'ca-app-pub-4850390878205651~6175952653';
+const String iosRewardedId = 'ca-app-pub-4850390878205651/6587016195';
 
 //static final String testAdUnitId = Platform.isAndroid
 //    ? 'ca-app-pub-3940256099942544/5224354917'
@@ -21,27 +24,24 @@ class Ads {
 //  static BannerAd _bannerAd;
 
   static void initialize() {
-    FacebookAudienceNetwork.init(
-//      testingId: "37b1da9d-b48c-4103-a393-2e095e734bd6", //optional
-        );
-    print('Initializing fb audience network');
+//    FacebookAudienceNetwork.init(
+////      testingId: "37b1da9d-b48c-4103-a393-2e095e734bd6", //optional
+//        );
+//    print('Initializing fb audience network');
 
-//    EAALxJjY8I58BACqaGN4vkZBE45vBZBrj8t30ZB3NZAENqX6WJJ9QgC3fpBgxeAlR5Kx5lserXptQfJeOZA9OdoJlF6Yulj5qTNUpIXBOdQ4f643C3ItI5KExkGs17Sj6ZBligP9SyyPKGoIadF1hrVmEASyO7L4AsEjKZA6lqlvSVHzLsSQ1Yi7m0gEPi8JA4sx8pSwqvZCgpAZDZD
-
-//    if (Platform.isAndroid) {
-//      FirebaseAdMob.instance.initialize(appId: androidAppId);
-//    } else {
-//      FirebaseAdMob.instance.initialize(appId: iosAppId);
-//    }
-//    print('Did initialize admob!!!');
+    if (Platform.isAndroid) {
+      FirebaseAdMob.instance.initialize(appId: androidAppId);
+    } else {
+      FirebaseAdMob.instance.initialize(appId: iosAppId);
+    }
+    print('Did initialize admob!!!');
   }
 
   static void loadRewarded() {
     if (Platform.isAndroid) {
-//      RewardedVideoAd.testAdUnitId
-      RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo);
+      RewardedVideoAd.instance.load(adUnitId: androidRewardedId, targetingInfo: targetingInfo);
     } else {
-      RewardedVideoAd.instance.load(adUnitId: RewardedVideoAd.testAdUnitId, targetingInfo: targetingInfo).catchError((e) {
+      RewardedVideoAd.instance.load(adUnitId: iosRewardedId, targetingInfo: targetingInfo).catchError((e) {
         print(e.toString());
       });
     }
@@ -50,8 +50,9 @@ class Ads {
 
   static void loadInterstitial({bool showOnLoad = false}) {
     FacebookInterstitialAd.loadInterstitialAd(
-      placementId: "VID_HD_9_16_39S_APP_INSTALL#828096374383519_828099774383179",
+      placementId: Platform.isAndroid ? '828096374383519_828098257716664' : '828096374383519_828099774383179',
       listener: (result, value) {
+        print('result: $result');
         if (result == InterstitialAdResult.LOADED) {
           print('@@@ loaded');
           if (showOnLoad) {
@@ -63,10 +64,10 @@ class Ads {
           DatabaseManager.instance.setCanTagToday(true);
           loadInterstitial(showOnLoad: false);
         }
-        if (result == InterstitialAdResult.ERROR) {
-          print('Failed to load');
-          loadInterstitial(showOnLoad: true);
-        }
+//        if (result == InterstitialAdResult.ERROR) {
+//          print('Failed to load');
+//          loadInterstitial(showOnLoad: true);
+//        }
       },
     );
   }

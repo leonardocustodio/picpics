@@ -50,8 +50,8 @@ class _PhotoCardState extends State<PhotoCard> {
         return WatchAdModal(
           onPressedWatchAdd: () {
             Navigator.pop(context);
-//            RewardedVideoAd.instance.show();
-            FacebookInterstitialAd.showInterstitialAd(delay: 0);
+            RewardedVideoAd.instance.show();
+//            FacebookInterstitialAd.showInterstitialAd(delay: 0);
           },
           onPressedGetPremium: () {
             Navigator.popAndPushNamed(context, PremiumScreen.id);
