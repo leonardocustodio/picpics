@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:picPics/asset_provider.dart';
-import 'package:picPics/components/bubble_bottom_bar.dart';
+import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/premium_screen.dart';
@@ -802,7 +802,7 @@ class _TabsScreenState extends State<TabsScreen> {
                   constraints: BoxConstraints(
                     maxHeight: 100.0,
                   ),
-                  child: BubbleBottomBar(
+                  child: CustomBubbleBottomBar(
                     backgroundColor: kWhiteColor,
                     hasNotch: true,
                     opacity: 1.0,
@@ -812,40 +812,47 @@ class _TabsScreenState extends State<TabsScreen> {
                       top: Radius.circular(16),
                     ),
                     elevation: 8,
-                    items: Provider.of<DatabaseManager>(context).multiPicBar
-                        ? <BubbleBottomBarItem>[
-                            BubbleBottomBarItem(
-                              backgroundColor: kWhiteColor,
-                              icon: Image.asset('lib/images/cancelbarbutton.png'),
-                            ),
-                            BubbleBottomBarItem(
-                              backgroundColor: kWhiteColor,
-                              icon: Image.asset('lib/images/picbarbutton.png'),
-                            ),
-                            BubbleBottomBarItem(
-                              backgroundColor: kWhiteColor,
-                              icon: Image.asset('lib/images/trashbarbutton.png'),
-                            )
-                          ]
-                        : <BubbleBottomBarItem>[
-                            BubbleBottomBarItem(
-                              backgroundColor: kPinkColor,
-                              icon: Image.asset('lib/images/tabgridred.png'),
-                              activeIcon: Image.asset('lib/images/tabgridwhite.png'),
-                            ),
-                            BubbleBottomBarItem(
-                              backgroundColor: kSecondaryColor,
-                              icon: Image.asset('lib/images/tabpicpicsred.png'),
-                              activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
-                            ),
-                            BubbleBottomBarItem(
-                              backgroundColor: kPrimaryColor,
-                              icon: Image.asset('lib/images/tabtaggedblue.png'),
-                              activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
-                            )
-                          ],
+                    items: <CustomBubbleBottomBarItem>[
+                      CustomBubbleBottomBarItem(
+                        backgroundColor: kPinkColor,
+                        icon: Image.asset('lib/images/tabgridred.png'),
+                        activeIcon: Image.asset('lib/images/tabgridwhite.png'),
+                      ),
+                      CustomBubbleBottomBarItem(
+                        backgroundColor: kSecondaryColor,
+                        icon: Image.asset('lib/images/tabpicpicsred.png'),
+                        activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
+                      ),
+                      CustomBubbleBottomBarItem(
+                        backgroundColor: kPrimaryColor,
+                        icon: Image.asset('lib/images/tabtaggedblue.png'),
+                        activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
+                      ),
+                    ],
                   ),
+
+//
+//                            BubbleBottomBarItem(
+//                              backgroundColor: kWhiteColor,
+//                              icon: Image.asset('lib/images/cancelbarbutton.png'),
+//                            ),
+//                            BubbleBottomBarItem(
+//                              backgroundColor: kWhiteColor,
+//                              icon: Image.asset('lib/images/trashbarbutton.png'),
+//                            ),
+//                            BubbleBottomBarItem(
+//                              backgroundColor: kWhiteColor,
+//                              icon: Image.asset('lib/images/sharebutton.png'),
+//                            )
+//                          ]
+//                        :
                 ),
+//          floatingActionButton: FloatingActionButton(
+//            onPressed: () {},
+//            child: Image.asset('lib/images/picbarbutton.png'),
+//            backgroundColor: kWhiteColor,
+//          ),
+//          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         ),
         if (modalPhotoCard)
           Material(

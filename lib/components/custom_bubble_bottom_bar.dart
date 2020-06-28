@@ -4,10 +4,10 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
 const double _kBottomMargin = 8.0;
-enum BubbleBottomBarFabLocation { end, center }
+enum CustomBubbleBottomBarFabLocation { end, center }
 
-class BubbleBottomBar extends StatefulWidget {
-  BubbleBottomBar(
+class CustomBubbleBottomBar extends StatefulWidget {
+  CustomBubbleBottomBar(
       {Key key,
       @required this.items,
       this.onTap,
@@ -27,7 +27,7 @@ class BubbleBottomBar extends StatefulWidget {
         assert(iconSize != null),
         super(key: key);
 
-  final List<BubbleBottomBarItem> items;
+  final List<CustomBubbleBottomBarItem> items;
   final ValueChanged<int> onTap;
   int currentIndex;
   final double iconSize;
@@ -37,19 +37,19 @@ class BubbleBottomBar extends StatefulWidget {
   final Color backgroundColor;
   final bool hasNotch;
   final bool hasInk;
-  final BubbleBottomBarFabLocation fabLocation;
+  final CustomBubbleBottomBarFabLocation fabLocation;
   final Color inkColor;
 
   @override
-  _BottomNavigationBarState createState() => _BottomNavigationBarState();
+  _CustomBottomNavigationBarState createState() => _CustomBottomNavigationBarState();
 }
 
-class _BottomNavigationTile extends StatelessWidget {
-  const _BottomNavigationTile(this.item, this.opacity, this.animation, this.iconSize,
+class _CustomBottomNavigationTile extends StatelessWidget {
+  const _CustomBottomNavigationTile(this.item, this.opacity, this.animation, this.iconSize,
       {this.onTap, this.colorTween, this.flex, this.selected = false, this.indexLabel, this.ink = false, this.inkColor})
       : assert(selected != null);
 
-  final BubbleBottomBarItem item;
+  final CustomBubbleBottomBarItem item;
   final Animation<double> animation;
   final double iconSize;
   final VoidCallback onTap;
@@ -137,7 +137,7 @@ class _TileIcon extends StatelessWidget {
   final Animation<double> animation;
   final double iconSize;
   final bool selected;
-  final BubbleBottomBarItem item;
+  final CustomBubbleBottomBarItem item;
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +168,7 @@ class _Label extends StatelessWidget {
   }) : super(key: key);
 
   final Animation<double> animation;
-  final BubbleBottomBarItem item;
+  final CustomBubbleBottomBarItem item;
   final Color color;
 
   @override
@@ -186,13 +186,13 @@ class _Label extends StatelessWidget {
   }
 }
 
-class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProviderStateMixin {
+class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with TickerProviderStateMixin {
   List<AnimationController> _controllers = <AnimationController>[];
   List<CurvedAnimation> _animations;
   Color _backgroundColor;
   ValueListenable<ScaffoldGeometry> geometryListenable;
   bool fabExists = false;
-  BubbleBottomBar holder;
+  CustomBubbleBottomBar holder;
   Animatable<double> _flexTween;
 
   @override
@@ -243,7 +243,7 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
   double _evaluateFlex(Animation<double> animation) => _flexTween.evaluate(animation);
 
   @override
-  void didUpdateWidget(BubbleBottomBar oldWidget) {
+  void didUpdateWidget(CustomBubbleBottomBar oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.items.length != oldWidget.items.length) {
@@ -255,9 +255,9 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
       _controllers[oldWidget.currentIndex].reverse();
       _controllers[widget.currentIndex].forward();
 
-      if (widget.fabLocation == BubbleBottomBarFabLocation.center) {
-        BubbleBottomBarItem _currentItem = widget.items[oldWidget.currentIndex];
-        BubbleBottomBarItem _nextItem = widget.items[widget.currentIndex];
+      if (widget.fabLocation == CustomBubbleBottomBarFabLocation.center) {
+        CustomBubbleBottomBarItem _currentItem = widget.items[oldWidget.currentIndex];
+        CustomBubbleBottomBarItem _nextItem = widget.items[widget.currentIndex];
 
         widget.items[0] = _nextItem;
         widget.items[widget.currentIndex] = _currentItem;
@@ -278,7 +278,7 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
     final List<Widget> children = <Widget>[];
     for (int i = 0; i < widget.items.length; i += 1) {
       children.add(
-        _BottomNavigationTile(
+        _CustomBottomNavigationTile(
           widget.items[i],
           widget.opacity,
           _animations[i],
@@ -317,7 +317,8 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
         child: Material(
           type: MaterialType.transparency,
           child: Padding(
-            padding: EdgeInsets.only(bottom: additionalBottomPadding, right: widget.fabLocation == BubbleBottomBarFabLocation.end ? 72 : 0),
+            padding: EdgeInsets.only(
+                bottom: additionalBottomPadding, right: widget.fabLocation == CustomBubbleBottomBarFabLocation.end ? 72 : 0),
             child: MediaQuery.removePadding(
               context: context,
               removeBottom: true,
@@ -340,7 +341,7 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
             ? PhysicalShape(
                 elevation: widget.elevation != null ? widget.elevation : 8.0,
                 color: widget.backgroundColor != null ? widget.backgroundColor : Colors.white,
-                clipper: _BubbleBottomBarClipper(
+                clipper: _CustomBubbleBottomBarClipper(
                   shape: CircularNotchedRectangle(),
                   geometry: geometryListenable,
                   notchMargin: 8,
@@ -356,8 +357,8 @@ class _BottomNavigationBarState extends State<BubbleBottomBar> with TickerProvid
   }
 }
 
-class BubbleBottomBarItem {
-  const BubbleBottomBarItem({
+class CustomBubbleBottomBarItem {
+  const CustomBubbleBottomBarItem({
     @required this.icon,
 //    this.title,
     Widget activeIcon,
@@ -370,8 +371,8 @@ class BubbleBottomBarItem {
   final Color backgroundColor;
 }
 
-class _BubbleBottomBarClipper extends CustomClipper<Path> {
-  const _BubbleBottomBarClipper({
+class _CustomBubbleBottomBarClipper extends CustomClipper<Path> {
+  const _CustomBubbleBottomBarClipper({
     @required this.geometry,
     @required this.shape,
     @required this.notchMargin,
@@ -395,7 +396,7 @@ class _BubbleBottomBarClipper extends CustomClipper<Path> {
   }
 
   @override
-  bool shouldReclip(_BubbleBottomBarClipper oldClipper) {
+  bool shouldReclip(_CustomBubbleBottomBarClipper oldClipper) {
     return oldClipper.geometry != geometry || oldClipper.shape != shape || oldClipper.notchMargin != notchMargin;
   }
 }
