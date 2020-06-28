@@ -49,15 +49,15 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open and in the background.</string>
+	<string>If you want our app to add your location to your photos, we need authorization to access your location.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>This app needs access to location when in the background.</string>
+	<string>If you want our app to add your location to your photos, we need authorization to access your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>This app needs access to location when open.</string>
+	<string>If you want our app to add your location to your photos, we need authorization to access your location.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Precisamos de acesso para adicionar, editar e deletar fotos da sua galeria.</string>
+	<string>For our app to work properly we need full access to your photo gallery.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Precisamos de acesso a sua galeria para organizar suas fotos.</string>
+	<string>For our app to work properly we need full access to your photo gallery.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

@@ -20,8 +20,8 @@ import 'package:picPics/database_manager.dart';
 class Ads {
 //  static BannerAd _bannerAd;
 
-  static final String appId = Platform.isAndroid ? '' : '';
-  static final String rewardedId = Platform.isAndroid ? '' : '';
+  static final String appId = Platform.isAndroid ? 'ca-app-pub-4850390878205651~5454538550' : 'ca-app-pub-4850390878205651~6175952653';
+  static final String rewardedId = Platform.isAndroid ? 'ca-app-pub-4850390878205651/2428279339' : 'ca-app-pub-4850390878205651/6587016195';
 
   static void initialize() {
 //    FacebookAudienceNetwork.init(
