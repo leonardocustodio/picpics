@@ -358,9 +358,9 @@ class _TabsScreenState extends State<TabsScreen> {
         DatabaseManager.instance.setPicsSelected([]);
         DatabaseManager.instance.setMultiPicBar(false);
       } else if (index == 1) {
-        print('share menu!!!!');
-      } else if (index == 2) {
         trashPics();
+      } else if (index == 2) {
+        print('share menu!!!!');
       } else {
         //        showMultiTagSheet();
 
@@ -838,29 +838,27 @@ class _TabsScreenState extends State<TabsScreen> {
                           backgroundColor: kWhiteColor,
                           hasNotch: true,
                           opacity: 1.0,
+                          currentIndex: 2,
                           onTap: setTabIndex,
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(16),
                           ),
                           elevation: 8,
-                          fabLocation: BubbleBottomBarFabLocation.center,
+                          fabLocation: BubbleBottomBarFabLocation.end,
                           items: <BubbleBottomBarItem>[
                             BubbleBottomBarItem(
-                              backgroundColor: kSecondaryColor,
-                              icon: Image.asset('lib/images/cancelbarbuttonwhite.png'),
-                              title: Text(
-                                S.of(context).cancel,
-                                style: kWhiteTextStyle,
-                              ),
-                            ),
-                            BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
-                              icon: Image.asset('lib/images/sharebutton.png'),
+                              icon: Image.asset('lib/images/cancelbarbutton.png'),
                               title: Text(''),
                             ),
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
                               icon: Image.asset('lib/images/trashbarbutton.png'),
+                              title: Text(''),
+                            ),
+                            BubbleBottomBarItem(
+                              backgroundColor: kWhiteColor,
+                              icon: Image.asset('lib/images/sharebutton.png'),
                               title: Text(''),
                             ),
                           ],
@@ -875,10 +873,10 @@ class _TabsScreenState extends State<TabsScreen> {
                   onPressed: () {
                     setTabIndex(3);
                   },
-                  child: Image.asset('lib/images/picbarbutton.png'),
-                  backgroundColor: kWhiteColor,
+                  child: Image.asset('lib/images/picbarbuttonwhite.png'),
+                  backgroundColor: kSecondaryColor,
                 ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         ),
         if (modalPhotoCard)
           Material(
