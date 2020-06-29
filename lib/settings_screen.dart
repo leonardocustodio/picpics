@@ -33,19 +33,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   );
 
   void shareApp(BuildContext context) {
-    if (Platform.isAndroid) {
-      Share.text(
-        S.of(context).take_a_look,
-        S.of(context).take_a_look_description('https://play.google.com/store/apps/details?id=br.com.inovatso.picPics'),
-        'text/plain',
-      );
-    } else {
-      Share.text(
-        S.of(context).take_a_look,
-        S.of(context).take_a_look_description('https://apps.apple.com/us/app/id1503352127'),
-        'text/plain',
-      );
-    }
+    Share.text(
+      S.of(context).take_a_look,
+      S.of(context).take_a_look_description('https://picpics.link/get'),
+      'text/plain',
+    );
   }
 
   void rateDialog() {
