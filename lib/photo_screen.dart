@@ -265,6 +265,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         child: SafeArea(
                           bottom: false,
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               CupertinoButton(
                                 padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
@@ -272,6 +273,13 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                   Navigator.pop(context);
                                 },
                                 child: Image.asset('lib/images/backarrowwithdropshadow.png'),
+                              ),
+                              CupertinoButton(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                                onPressed: () {
+                                  DatabaseManager.instance.sharePic(getEntity(picInfo.photoId));
+                                },
+                                child: Image.asset('lib/images/sharebuttonwithdropshadow.png'),
                               ),
                             ],
                           ),

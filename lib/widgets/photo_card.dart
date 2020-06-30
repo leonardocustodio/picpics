@@ -16,6 +16,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 //import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:picPics/components/circular_menu.dart';
+import 'package:picPics/components/circular_menu_item.dart';
+import 'dart:math';
 
 class PhotoCard extends StatefulWidget {
   final AssetEntity data;
@@ -170,34 +173,24 @@ class _PhotoCardState extends State<PhotoCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: Stack(
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12.0),
-                    topRight: Radius.circular(12.0),
-                  ),
-                  child: ImageItem(
-                    entity: widget.data,
-                    size: 600,
-                    backgroundColor: Colors.grey[400],
-                  ),
-                ),
-                Positioned(
-                  top: 0.0,
-                  right: 6.0,
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
-                    onPressed: widget.onPressedTrash,
-                    child: Image.asset('lib/images/pictrashicon.png'),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0.0,
-                  right: 6.0,
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
-                    onPressed: () {
+            child: CircularMenu(
+              alignment: Alignment.bottomRight,
+              radius: 80,
+              startingAngleInRadian: pi,
+              endingAngleInRadian: pi + pi / 2,
+              toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
+              toggleButtonBoxShadow: [
+                BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),
+              ],
+              toggleButtonIconColor: Colors.white,
+              toggleButtonMargin: 12.0,
+              toggleButtonPadding: 8.0,
+              toggleButtonSize: 18.0,
+              items: [
+                CircularMenuItem(
+                    image: Image.asset('lib/images/expandnobackground.png'),
+                    color: kSecondaryColor,
+                    onTap: () {
                       DatabaseManager.instance.selectedPhoto = widget.data;
                       print('Selected photo: ${widget.data.id}');
 
@@ -213,11 +206,30 @@ class _PhotoCardState extends State<PhotoCard> {
                           ),
                         ),
                       );
-                    },
-                    child: Image.asset('lib/images/expandphotoico.png'),
-                  ),
+                    }),
+                CircularMenuItem(
+                    image: Image.asset('lib/images/sharenobackground.png'),
+                    color: kPrimaryColor,
+                    onTap: () {
+                      DatabaseManager.instance.sharePic(widget.data);
+                    }),
+                CircularMenuItem(
+                  image: Image.asset('lib/images/trashnobackground.png'),
+                  color: kPinkColor,
+                  onTap: widget.onPressedTrash,
                 ),
               ],
+              backgroundWidget: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.0),
+                  topRight: Radius.circular(12.0),
+                ),
+                child: ImageItem(
+                  entity: widget.data,
+                  size: 600,
+                  backgroundColor: Colors.grey[400],
+                ),
+              ),
             ),
           ),
           Padding(

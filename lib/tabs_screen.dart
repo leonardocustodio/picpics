@@ -31,6 +31,7 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
+import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 //import 'package:facebook_audience_network/facebook_audience_network.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -360,7 +361,17 @@ class _TabsScreenState extends State<TabsScreen> {
       } else if (index == 1) {
         trashPics();
       } else if (index == 2) {
-        print('share menu!!!!');
+        print('sharing selected pics....');
+
+        List<String> entitiesIds = [];
+        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+
+        for (var index in DatabaseManager.instance.picsSelected) {
+          AssetEntity entity = pathProvider.orderedList[index];
+          entitiesIds.add(entity.id);
+        }
+
+        DatabaseManager.instance.sharePics(photoIds: entitiesIds);
       } else {
         //        showMultiTagSheet();
 
@@ -853,12 +864,18 @@ class _TabsScreenState extends State<TabsScreen> {
                             ),
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
-                              icon: Image.asset('lib/images/trashbarbutton.png'),
+                              icon: Opacity(
+                                opacity: Provider.of<DatabaseManager>(context).picsSelected.length > 0 ? 1.0 : 0.35,
+                                child: Image.asset('lib/images/trashbarbutton.png'),
+                              ),
                               title: Text(''),
                             ),
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
-                              icon: Image.asset('lib/images/sharebutton.png'),
+                              icon: Opacity(
+                                opacity: Provider.of<DatabaseManager>(context).picsSelected.length > 0 ? 1.0 : 0.35,
+                                child: Image.asset('lib/images/sharebutton.png'),
+                              ),
                               title: Text(''),
                             ),
                           ],

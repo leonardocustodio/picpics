@@ -20,7 +20,6 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:date_utils/date_utils.dart';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:share_extend/share_extend.dart';
 import 'dart:typed_data';
 import 'package:path_provider/path_provider.dart';
@@ -888,6 +887,30 @@ class DatabaseManager extends ChangeNotifier {
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
     return imageFile.path;
+  }
+
+  Future<void> sharePic(AssetEntity data) async {
+    if (data == null) {
+      return;
+    }
+
+    String path = '';
+    if (Platform.isAndroid) {
+      path = await _writeByteToImageFile(await data.originBytes);
+    } else {
+      var bytes = await data.thumbDataWithSize(
+        data.size.width.toInt(),
+        data.size.height.toInt(),
+        format: ThumbFormat.jpeg,
+      );
+      path = await _writeByteToImageFile(bytes);
+    }
+
+    if (path == '' || path == null) {
+      return;
+    }
+
+    ShareExtend.share(path, "image");
   }
 
   Future<void> sharePics({List<String> photoIds}) async {
