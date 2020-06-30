@@ -363,6 +363,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.0"
+  flutter_inapp_purchase:
+    dependency: "direct main"
+    description:
+      name: flutter_inapp_purchase
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.2.0"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:

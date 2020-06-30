@@ -55,6 +55,7 @@ dependencies:
   share_extend: ^1.1.7
   path_provider: ^1.6.11
   bubble_bottom_bar: ^1.2.0
+  flutter_inapp_purchase: ^2.2.0
 #  facebook_audience_network: ^0.6.2
 
 dev_dependencies:

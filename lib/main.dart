@@ -26,6 +26,8 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:package_info/package_info.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'dart:io';
 
 Future<void> initPlatformState() async {
   if (kDebugMode) {
@@ -35,6 +37,28 @@ Future<void> initPlatformState() async {
     'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
     appUserId: DatabaseManager.instance.userSettings.id,
   );
+}
+
+void getItems() async {
+  await FlutterInappPurchase.instance.initConnection;
+
+  List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(['US14_99_yearly_subscription', 'US1_99_monthly_subscription']);
+  for (var item in items) {
+    print('${item.toString()}');
+//    this._items.add(item);
+  }
+}
+
+void checkForAppStoreInitiatedProducts() async {
+  print('Checking if appstore initiated products');
+  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts(); // Get list of products
+
+  getItems();
+
+  if (appStoreProducts.length > 0) {
+    print('HAS REQUESTED PURCHASE FROM APPSTORE');
+//      _requestPurchase(appStoreProducts.last); // Buy last product in the list
+  }
 }
 
 void main() async {
@@ -114,6 +138,10 @@ void main() async {
   PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
     DatabaseManager.instance.setAppVersion(packageInfo.version);
   });
+
+  if (Platform.isIOS) {
+    checkForAppStoreInitiatedProducts();
+  }
 
   runZonedGuarded(() {
     runApp(
