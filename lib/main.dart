@@ -163,7 +163,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
         ],
         locale: widget.userLocale,
         supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: false, // kDebugMode
+        debugShowCheckedModeBanner: kDebugMode,
         initialRoute: widget.initialRoute,
         navigatorObservers: [DatabaseManager.instance.observer],
         routes: {

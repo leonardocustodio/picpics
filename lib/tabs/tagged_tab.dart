@@ -190,16 +190,16 @@ class _TaggedTabState extends State<TaggedTab> {
                     padding: const EdgeInsets.all(0),
                     onPressed: () {
                       if (DatabaseManager.instance.multiPicBar) {
-//                      if (DatabaseManager.instance.picsSelected.contains(index)) {
-//                        List<int> picsCopy = DatabaseManager.instance.picsSelected;
-//                        picsCopy.remove(index);
-//                        DatabaseManager.instance.setPicsSelected(picsCopy);
-//                      } else {
-//                        List<int> picsCopy = DatabaseManager.instance.picsSelected;
-//                        picsCopy.add(index);
-//                        DatabaseManager.instance.setPicsSelected(picsCopy);
-//                      }
-//                      print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
+                        if (DatabaseManager.instance.picsSelected.contains(data.id)) {
+                          Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+                          picsCopy.remove(data.id);
+                          DatabaseManager.instance.setPicsSelected(picsCopy);
+                        } else {
+                          Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+                          picsCopy.add(data.id);
+                          DatabaseManager.instance.setPicsSelected(picsCopy);
+                        }
+                        print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
                         return;
                       }
 
@@ -256,9 +256,9 @@ class _TaggedTabState extends State<TaggedTab> {
                 onLongPress: () {
                   print('LongPress');
                   if (DatabaseManager.instance.multiPicBar == false) {
-//                    List<int> picsCopy = DatabaseManager.instance.picsSelected;
-//                    picsCopy.add(index);
-//                    DatabaseManager.instance.setPicsSelected(picsCopy);
+                    Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+                    picsCopy.add(data.id);
+                    DatabaseManager.instance.setPicsSelected(picsCopy);
                     DatabaseManager.instance.setMultiPicBar(true);
                   }
                 },
@@ -266,16 +266,16 @@ class _TaggedTabState extends State<TaggedTab> {
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
                     if (DatabaseManager.instance.multiPicBar) {
-//                      if (DatabaseManager.instance.picsSelected.contains(index)) {
-//                        List<int> picsCopy = DatabaseManager.instance.picsSelected;
-//                        picsCopy.remove(index);
-//                        DatabaseManager.instance.setPicsSelected(picsCopy);
-//                      } else {
-//                        List<int> picsCopy = DatabaseManager.instance.picsSelected;
-//                        picsCopy.add(index);
-//                        DatabaseManager.instance.setPicsSelected(picsCopy);
-//                      }
-//                      print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
+                      if (DatabaseManager.instance.picsSelected.contains(data.id)) {
+                        Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+                        picsCopy.remove(data.id);
+                        DatabaseManager.instance.setPicsSelected(picsCopy);
+                      } else {
+                        Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+                        picsCopy.add(data.id);
+                        DatabaseManager.instance.setPicsSelected(picsCopy);
+                      }
+                      print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
                       return;
                     }
 

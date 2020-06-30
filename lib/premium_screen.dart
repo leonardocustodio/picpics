@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/components/arrow_painter.dart';
@@ -39,6 +40,12 @@ class _PremiumScreenState extends State<PremiumScreen> {
     setState(() {
       isLoading = true;
     });
+
+    if (kDebugMode) {
+      DatabaseManager.instance.userSettings.isPremium = true;
+      Navigator.pop(context);
+      return;
+    }
 
     try {
       PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
