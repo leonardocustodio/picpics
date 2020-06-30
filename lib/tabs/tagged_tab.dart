@@ -176,33 +176,60 @@ class _TaggedTabState extends State<TaggedTab> {
               padding: const EdgeInsets.all(5.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(5.0),
-                child: CupertinoButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () {
-                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-                    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                    int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
-                    tagsEditingController.text = '';
-
-                    DatabaseManager.instance.tagsSuggestions(
-                      tagsEditingController.text,
-                      data.id,
-                      excludeTags: picInfo.tags,
-                      notify: false,
-                    );
-
-                    print('PicTags: ${picInfo.tags}');
-
-                    DatabaseManager.instance.selectedPhotoData = data;
-                    DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
-                    DatabaseManager.instance.selectedPhotoIndex = indexOfPic;
-
-                    widget.showPhotoCardModal();
+                child: GestureDetector(
+                  onLongPress: () {
+                    print('LongPress');
+                    if (DatabaseManager.instance.multiPicBar == false) {
+                      Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+                      picsCopy.add(data.id);
+                      DatabaseManager.instance.setPicsSelected(picsCopy);
+                      DatabaseManager.instance.setMultiPicBar(true);
+                    }
                   },
-                  child: ImageItem(
-                    entity: data,
-                    size: 150,
-                    backgroundColor: Colors.grey[400],
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      if (DatabaseManager.instance.multiPicBar) {
+//                      if (DatabaseManager.instance.picsSelected.contains(index)) {
+//                        List<int> picsCopy = DatabaseManager.instance.picsSelected;
+//                        picsCopy.remove(index);
+//                        DatabaseManager.instance.setPicsSelected(picsCopy);
+//                      } else {
+//                        List<int> picsCopy = DatabaseManager.instance.picsSelected;
+//                        picsCopy.add(index);
+//                        DatabaseManager.instance.setPicsSelected(picsCopy);
+//                      }
+//                      print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
+                        return;
+                      }
+
+                      Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                      int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
+                      tagsEditingController.text = '';
+
+                      DatabaseManager.instance.tagsSuggestions(
+                        tagsEditingController.text,
+                        data.id,
+                        excludeTags: picInfo.tags,
+                        notify: false,
+                      );
+
+                      print('PicTags: ${picInfo.tags}');
+
+                      DatabaseManager.instance.selectedPhotoData = data;
+                      DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
+                      DatabaseManager.instance.selectedPhotoIndex = indexOfPic;
+
+                      widget.showPhotoCardModal();
+                    },
+                    child: ImageItem(
+                      entity: data,
+                      size: 150,
+                      backgroundColor: Colors.grey[400],
+                      showOverlay: DatabaseManager.instance.multiPicBar ? true : false,
+                      isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
+                    ),
                   ),
                 ),
               ),
@@ -225,31 +252,58 @@ class _TaggedTabState extends State<TaggedTab> {
             padding: const EdgeInsets.all(5.0),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(5.0),
-              child: CupertinoButton(
-                padding: const EdgeInsets.all(0),
-                onPressed: () {
-                  Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-//                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
-                  tagsEditingController.text = '';
-
-                  DatabaseManager.instance.tagsSuggestions(
-                    tagsEditingController.text,
-                    data.id,
-                    excludeTags: picInfo.tags,
-                    notify: false,
-                  );
-
-                  print('PicTags: ${picInfo.tags}');
-
-                  DatabaseManager.instance.selectedPhotoData = data;
-                  DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
-
-                  widget.showPhotoCardModal();
+              child: GestureDetector(
+                onLongPress: () {
+                  print('LongPress');
+                  if (DatabaseManager.instance.multiPicBar == false) {
+//                    List<int> picsCopy = DatabaseManager.instance.picsSelected;
+//                    picsCopy.add(index);
+//                    DatabaseManager.instance.setPicsSelected(picsCopy);
+                    DatabaseManager.instance.setMultiPicBar(true);
+                  }
                 },
-                child: ImageItem(
-                  entity: data,
-                  size: 150,
-                  backgroundColor: Colors.grey[400],
+                child: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () {
+                    if (DatabaseManager.instance.multiPicBar) {
+//                      if (DatabaseManager.instance.picsSelected.contains(index)) {
+//                        List<int> picsCopy = DatabaseManager.instance.picsSelected;
+//                        picsCopy.remove(index);
+//                        DatabaseManager.instance.setPicsSelected(picsCopy);
+//                      } else {
+//                        List<int> picsCopy = DatabaseManager.instance.picsSelected;
+//                        picsCopy.add(index);
+//                        DatabaseManager.instance.setPicsSelected(picsCopy);
+//                      }
+//                      print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
+                      return;
+                    }
+
+                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+//                    int indexOfPic = DatabaseManager.instance.allPics.indexOf(data.id);
+                    tagsEditingController.text = '';
+
+                    DatabaseManager.instance.tagsSuggestions(
+                      tagsEditingController.text,
+                      data.id,
+                      excludeTags: picInfo.tags,
+                      notify: false,
+                    );
+
+                    print('PicTags: ${picInfo.tags}');
+
+                    DatabaseManager.instance.selectedPhotoData = data;
+                    DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
+
+                    widget.showPhotoCardModal();
+                  },
+                  child: ImageItem(
+                    entity: data,
+                    size: 150,
+                    backgroundColor: Colors.grey[400],
+                    showOverlay: DatabaseManager.instance.multiPicBar ? true : false,
+                    isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
+                  ),
                 ),
               ),
             ),

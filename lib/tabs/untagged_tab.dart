@@ -110,8 +110,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
           onLongPress: () {
             print('LongPress');
             if (DatabaseManager.instance.multiPicBar == false) {
-              List<int> picsCopy = DatabaseManager.instance.picsSelected;
-              picsCopy.add(index);
+              Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+              picsCopy.add(data.id);
               DatabaseManager.instance.setPicsSelected(picsCopy);
               DatabaseManager.instance.setMultiPicBar(true);
             }
@@ -120,13 +120,13 @@ class _UntaggedTabState extends State<UntaggedTab> {
             padding: const EdgeInsets.all(0),
             onPressed: () {
               if (DatabaseManager.instance.multiPicBar) {
-                if (DatabaseManager.instance.picsSelected.contains(index)) {
-                  List<int> picsCopy = DatabaseManager.instance.picsSelected;
-                  picsCopy.remove(index);
+                if (DatabaseManager.instance.picsSelected.contains(data.id)) {
+                  Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+                  picsCopy.remove(data.id);
                   DatabaseManager.instance.setPicsSelected(picsCopy);
                 } else {
-                  List<int> picsCopy = DatabaseManager.instance.picsSelected;
-                  picsCopy.add(index);
+                  Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+                  picsCopy.add(data.id);
                   DatabaseManager.instance.setPicsSelected(picsCopy);
                 }
                 print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
@@ -170,7 +170,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               size: 150,
               backgroundColor: Colors.grey[400],
               showOverlay: DatabaseManager.instance.multiPicBar ? true : false,
-              isSelected: DatabaseManager.instance.picsSelected.contains(index),
+              isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
             ),
           ),
         ),

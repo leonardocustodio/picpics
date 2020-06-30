@@ -71,9 +71,9 @@ class _TabsScreenState extends State<TabsScreen> {
     List<AssetEntity> entities = [];
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 
-    for (var index in DatabaseManager.instance.picsSelected) {
-      AssetEntity entity = pathProvider.orderedList[index];
-      entitiesIds.add(entity.id);
+    for (var photoId in DatabaseManager.instance.picsSelected) {
+      AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+      entitiesIds.add(photoId);
       entities.add(entity);
     }
 
@@ -83,7 +83,7 @@ class _TabsScreenState extends State<TabsScreen> {
         DatabaseManager.instance.deletedPic(entity);
       }
 
-      DatabaseManager.instance.setPicsSelected([]);
+      DatabaseManager.instance.setPicsSelected(Set());
       DatabaseManager.instance.setMultiPicBar(false);
     }
   }
@@ -356,22 +356,13 @@ class _TabsScreenState extends State<TabsScreen> {
 
     if (DatabaseManager.instance.multiPicBar) {
       if (index == 0) {
-        DatabaseManager.instance.setPicsSelected([]);
+        DatabaseManager.instance.setPicsSelected(Set());
         DatabaseManager.instance.setMultiPicBar(false);
       } else if (index == 1) {
         trashPics();
       } else if (index == 2) {
         print('sharing selected pics....');
-
-        List<String> entitiesIds = [];
-        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-
-        for (var index in DatabaseManager.instance.picsSelected) {
-          AssetEntity entity = pathProvider.orderedList[index];
-          entitiesIds.add(entity.id);
-        }
-
-        DatabaseManager.instance.sharePics(photoIds: entitiesIds);
+        DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.picsSelected.toList());
       } else {
         //        showMultiTagSheet();
 
@@ -632,9 +623,10 @@ class _TabsScreenState extends State<TabsScreen> {
                                     List<String> photosIds = [];
                                     List<AssetEntity> entities = [];
                                     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                                    for (var index in DatabaseManager.instance.picsSelected) {
-                                      AssetEntity entity = pathProvider.orderedList[index];
-                                      photosIds.add(entity.id);
+                                    for (var photoId in DatabaseManager.instance.picsSelected) {
+                                      AssetEntity entity =
+                                          pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+                                      photosIds.add(photoId);
                                       entities.add(entity);
                                     }
                                     DatabaseManager.instance.addTagsToPics(
@@ -648,7 +640,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                     });
 
                                     DatabaseManager.instance.setMultiPicBar(false);
-                                    DatabaseManager.instance.setPicsSelected([]);
+                                    DatabaseManager.instance.setPicsSelected(Set());
                                     DatabaseManager.instance.setMultiPicTagKeys([]);
                                   },
                                   child: Container(
