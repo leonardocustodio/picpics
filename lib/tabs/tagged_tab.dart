@@ -12,7 +12,6 @@ import 'package:hive/hive.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/model/pic.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/model/tag.dart';
 
 class TaggedTab extends StatefulWidget {
@@ -487,6 +486,8 @@ class _TaggedTabState extends State<TaggedTab> {
                                 showEditTagModal: widget.showEditTagModal,
                                 onTap: (tagName) {
                                   DatabaseManager.instance.addTagToSearchFilter();
+                                  searchEditingController.clear();
+                                  DatabaseManager.instance.searchResultsTags(searchEditingController.text);
                                 },
                                 onDoubleTap: () {
                                   print('do nothing');

@@ -1,6 +1,6 @@
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/admob_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/add_location.dart';
@@ -53,7 +53,7 @@ class _PhotoCardState extends State<PhotoCard> {
         return WatchAdModal(
           onPressedWatchAdd: () {
             Navigator.pop(context);
-            RewardedVideoAd.instance.show();
+            Ads.showRewarded();
 //            FacebookInterstitialAd.showInterstitialAd(delay: 0);
           },
           onPressedGetPremium: () {

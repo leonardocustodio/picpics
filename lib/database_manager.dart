@@ -86,6 +86,9 @@ class DatabaseManager extends ChangeNotifier {
   Set<String> picsSelected = Set();
   List<String> multiPicTagKeys = [];
 
+  bool adsIsLoaded = false;
+  bool showShowAdAfterReload = false;
+
   void setPicsSelected(Set<String> pics) {
     picsSelected = pics;
     notifyListeners();

@@ -253,22 +253,27 @@ class _TabsScreenState extends State<TabsScreen> {
       DatabaseManager.instance.checkPremiumStatus();
     }
 
-//    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-//      if (event == RewardedVideoAdEvent.loaded) {
-//        print('@@@ loaded');
-//      }
-//
-//      if (event == RewardedVideoAdEvent.rewarded) {
-//        print('@@@ rewarded');
-//        DatabaseManager.instance.setCanTagToday(true);
-//        Ads.loadRewarded();
-//      }
-//
-//      if (event == RewardedVideoAdEvent.closed || event == RewardedVideoAdEvent.failedToLoad) {
-//        print('Failed to load or closed');
-//        Ads.loadRewarded();
-//      }
-//    };
+    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+      if (event == RewardedVideoAdEvent.loaded) {
+        print('@@@ loaded');
+      }
+
+      if (event == RewardedVideoAdEvent.rewarded) {
+        print('@@@ rewarded');
+        DatabaseManager.instance.setCanTagToday(true);
+      }
+
+      if (event == RewardedVideoAdEvent.closed) {
+        print('@@@@ closed');
+        DatabaseManager.instance.adsIsLoaded = false;
+        Ads.loadRewarded();
+      }
+
+      if (event == RewardedVideoAdEvent.failedToLoad) {
+        print('@@@ failed');
+        DatabaseManager.instance.adsIsLoaded = false;
+      }
+    };
   }
 
   @override

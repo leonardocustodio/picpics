@@ -1,8 +1,8 @@
 import 'package:firebase_admob/firebase_admob.dart';
+import 'package:flutter/foundation.dart';
 //import 'package:facebook_audience_network/facebook_audience_network.dart';
 
 import 'dart:io';
-
 import 'package:picPics/database_manager.dart';
 
 //const String androidAppId = 'ca-app-pub-5152146538991892~2540164868';
@@ -31,15 +31,32 @@ class Ads {
 
 //    EAALxJjY8I58BACqaGN4vkZBE45vBZBrj8t30ZB3NZAENqX6WJJ9QgC3fpBgxeAlR5Kx5lserXptQfJeOZA9OdoJlF6Yulj5qTNUpIXBOdQ4f643C3ItI5KExkGs17Sj6ZBligP9SyyPKGoIadF1hrVmEASyO7L4AsEjKZA6lqlvSVHzLsSQ1Yi7m0gEPi8JA4sx8pSwqvZCgpAZDZD
 
-    FirebaseAdMob.instance.initialize(appId: appId);
+    FirebaseAdMob.instance.initialize(appId: kDebugMode ? FirebaseAdMob.testAppId : appId);
     print('Did initialize admob!!!');
   }
 
   static void loadRewarded() {
-    RewardedVideoAd.instance.load(adUnitId: rewardedId, targetingInfo: targetingInfo).catchError((e) {
+    RewardedVideoAd.instance
+        .load(adUnitId: kDebugMode ? RewardedVideoAd.testAdUnitId : rewardedId, targetingInfo: targetingInfo)
+        .catchError((e) {
       print(e.toString());
+    }).then((value) {
+      print('Did load rewarded!!!');
+      DatabaseManager.instance.adsIsLoaded = true;
+      if (DatabaseManager.instance.showShowAdAfterReload) {
+        DatabaseManager.instance.showShowAdAfterReload = false;
+        Ads.showRewarded();
+      }
     });
-    print('Did load rewarded!!!');
+  }
+
+  static void showRewarded() {
+    if (DatabaseManager.instance.adsIsLoaded) {
+      RewardedVideoAd.instance.show();
+    } else {
+      DatabaseManager.instance.showShowAdAfterReload = true;
+      loadRewarded();
+    }
   }
 
 //  static void loadInterstitial({bool showOnLoad = false}) {

@@ -7,7 +7,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/model/pic.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
