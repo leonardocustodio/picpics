@@ -63,7 +63,7 @@ class DatabaseManager extends ChangeNotifier {
   String currentPhotoCity;
   String currentPhotoState;
 
-  Map<String, List<String>> suggestionTags = Map();
+  List<String> suggestionTags = [];
 
   double scale = 1.0;
 
@@ -483,8 +483,7 @@ class DatabaseManager extends ChangeNotifier {
     var tagsBox = Hive.box('tags');
     User getUser = userBox.getAt(0);
 
-    List<String> suggestions = [];
-//    suggestionTags.clear();
+    suggestionTags.clear();
 
     if (excludeTags == null) {
       excludeTags = [];
@@ -495,24 +494,24 @@ class DatabaseManager extends ChangeNotifier {
         if (excludeTags.contains(recent)) {
           continue;
         }
-        suggestions.add(recent);
+        suggestionTags.add(recent);
       }
 
-      print('Sugestion Length: ${suggestions.length} - Num of Suggestions: $maxNumOfSuggestions');
+      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: $maxNumOfSuggestions');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
 //            continue;
 //          }
-      if (suggestions.length < maxNumOfSuggestions) {
+      if (suggestionTags.length < maxNumOfSuggestions) {
         for (var tagKey in tagsBox.keys) {
-          if (suggestions.length == maxNumOfSuggestions) {
+          if (suggestionTags.length == maxNumOfSuggestions) {
             break;
           }
-          if (excludeTags.contains(tagKey) || suggestions.contains(tagKey)) {
+          if (excludeTags.contains(tagKey) || suggestionTags.contains(tagKey)) {
             continue;
           }
-          suggestions.add(tagKey);
+          suggestionTags.add(tagKey);
         }
       }
 //      }
@@ -520,13 +519,11 @@ class DatabaseManager extends ChangeNotifier {
       for (var tagKey in tagsBox.keys) {
         String tagName = decryptTag(tagKey);
         if (tagName.startsWith(stripTag(text))) {
-          suggestions.add(tagKey);
+          suggestionTags.add(tagKey);
         }
       }
     }
     print('find suggestions: $text - exclude: $excludeTags');
-
-    suggestionTags[photoId] = suggestions;
     print(suggestionTags);
 
     if (notify) {
@@ -743,11 +740,9 @@ class DatabaseManager extends ChangeNotifier {
       }
 
       print('updating in all suggestions');
-      for (var suggestionTag in suggestionTags.values) {
-        if (suggestionTag.contains(oldTagKey)) {
-          int indexOfSuggestionTag = suggestionTag.indexOf(oldTagKey);
-          suggestionTag[indexOfSuggestionTag] = newTagKey;
-        }
+      if (suggestionTags.contains(oldTagKey)) {
+        int indexOfSuggestionTag = suggestionTags.indexOf(oldTagKey);
+        suggestionTags[indexOfSuggestionTag] = newTagKey;
       }
 
       if (searchResults.isNotEmpty) {
@@ -801,7 +796,7 @@ class DatabaseManager extends ChangeNotifier {
     print('final tags in recent: ${getUser.recentTags}');
   }
 
-  void addTagToPic({String tagKey, String photoId, List<AssetEntity> entities}) {
+  Future<void> addTagToPic({String tagKey, String photoId, List<AssetEntity> entities}) async {
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
@@ -874,7 +869,8 @@ class DatabaseManager extends ChangeNotifier {
         );
       }
     }
-    picsBox.put(photoId, pic);
+    await picsBox.put(photoId, pic);
+    print('@@@@@@@@ tagsKey: ${tagKey}');
     checkPicHasTags(photoId);
     if (noTaggedPhoto == true) {
       noTaggedPhoto = false;
@@ -1043,7 +1039,7 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addTag({String tagName, String photoId}) {
+  Future<void> addTag({String tagName, String photoId}) async {
     var tagsBox = Hive.box('tags');
     print(tagsBox.keys);
 
@@ -1062,7 +1058,7 @@ class DatabaseManager extends ChangeNotifier {
 
       getTag.photoId.add(photoId);
       tagsBox.put(tagKey, getTag);
-      addTagToPic(
+      await addTagToPic(
         tagKey: tagKey,
         photoId: photoId,
       );
@@ -1074,7 +1070,7 @@ class DatabaseManager extends ChangeNotifier {
 
     print('adding tag to database...');
     tagsBox.put(tagKey, Tag(tagName, [photoId]));
-    addTagToPic(
+    await addTagToPic(
       tagKey: tagKey,
       photoId: photoId,
     );

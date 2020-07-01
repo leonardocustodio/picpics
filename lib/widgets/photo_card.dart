@@ -19,6 +19,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'dart:math';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 class PhotoCard extends StatefulWidget {
   final AssetEntity data;
@@ -124,18 +125,21 @@ class _PhotoCardState extends State<PhotoCard> {
     super.dispose();
   }
 
-  void initTagSuggestions(Pic picInfo) {
+  void refreshTagSuggestions(Pic picInfo, {bool notify = true}) {
+    print('@@@ Pic Info Tags: ${picInfo.tags}');
+
     DatabaseManager.instance.tagsSuggestions(
-      '',
+      tagsEditingController.text,
       picInfo.photoId,
       excludeTags: picInfo.tags,
-      notify: false,
+      notify: notify,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     Pic picInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
+    print('Suggestions: ${DatabaseManager.instance.suggestionTags}');
 
     if (picInfo == null) {
       picInfo = Pic(
@@ -151,8 +155,12 @@ class _PhotoCardState extends State<PhotoCard> {
       );
     }
 
-    if (DatabaseManager.instance.suggestionTags[picInfo.photoId] == null) {
-      initTagSuggestions(picInfo);
+    if (DatabaseManager.instance.suggestionTags.length == 0) {
+      print('###### calling init tag suggestions!!!!');
+      refreshTagSuggestions(
+        picInfo,
+        notify: false,
+      );
     }
 
     return Container(
@@ -385,29 +393,18 @@ class _PhotoCardState extends State<PhotoCard> {
                       photoId: picInfo.photoId,
                     );
 
-                    setState(() {});
+                    refreshTagSuggestions(picInfo);
                   },
                   onChanged: (text) {
-                    DatabaseManager.instance.tagsSuggestions(
-                      text,
-                      picInfo.photoId,
-                      excludeTags: picInfo.tags,
-                    );
-
-                    setState(() {});
+                    refreshTagSuggestions(picInfo);
                   },
-                  onSubmitted: (text) {
+                  onSubmitted: (text) async {
                     print('return');
 
                     if (text != '') {
                       if (!DatabaseManager.instance.canTagToday()) {
                         tagsEditingController.clear();
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          widget.data.id,
-                          excludeTags: picInfo.tags,
-                        );
-                        setState(() {});
+                        refreshTagSuggestions(picInfo);
                         showWatchAdModal(context);
                         return;
                       }
@@ -417,32 +414,38 @@ class _PhotoCardState extends State<PhotoCard> {
                         tagName: text,
                         photoId: widget.data.id,
                       );
+                      Vibrate.feedback(FeedbackType.success);
                       tagsEditingController.clear();
-                    }
 
-                    setState(() {});
+                      Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
+                      print('Updated picinfo - tags length: ${updatedPicInfo.tags.length}');
+                      refreshTagSuggestions(updatedPicInfo);
+                    }
                   },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TagsList(
                     title: S.of(context).suggestions,
-                    tagsKeys: DatabaseManager.instance.suggestionTags[picInfo.photoId],
+                    tagsKeys: DatabaseManager.instance.suggestionTags,
                     tagStyle: TagStyle.GrayOutlined,
                     showEditTagModal: widget.showEditTagModal,
-                    onTap: (tagName) {
+                    onTap: (tagName) async {
                       if (!DatabaseManager.instance.canTagToday()) {
                         showWatchAdModal(context);
                         return;
                       }
 
                       DatabaseManager.instance.selectedPhoto = widget.data;
-                      DatabaseManager.instance.addTag(
+                      await DatabaseManager.instance.addTag(
                         tagName: tagName,
                         photoId: picInfo.photoId,
                       );
+                      tagsEditingController.clear();
 
-                      setState(() {});
+                      Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
+                      print('Updated picinfo - tags length: ${updatedPicInfo.tags.length}');
+                      refreshTagSuggestions(updatedPicInfo);
                     },
                     onDoubleTap: () {
                       print('do nothing');
