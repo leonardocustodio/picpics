@@ -865,6 +865,26 @@ class S {
       args: [],
     );
   }
+
+  /// `All Search Tags`
+  String get all_search_tags {
+    return Intl.message(
+      'All Search Tags',
+      name: 'all_search_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No pictures were found with all tags on it.`
+  String get search_all_tags_not_found {
+    return Intl.message(
+      'No pictures were found with all tags on it.',
+      name: 'search_all_tags_not_found',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

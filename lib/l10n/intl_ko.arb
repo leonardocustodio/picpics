@@ -111,5 +111,7 @@
   "auto_renewable_second_part": "자동 갱신 가능.",
   "cancel_anytime": "언제든지 취소 가능",
 
-  "language": "언어"
+  "language": "언어",
+  "all_search_tags": "All Search Tags",
+  "search_all_tags_not_found": "No pictures were found with all tags on it."
 }

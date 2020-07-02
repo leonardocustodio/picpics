@@ -111,5 +111,7 @@
   "auto_renewable_second_part": "ऑटो-नवीकरणीय",
   "cancel_anytime": "कभी भी रद्द करें",
 
-  "language": "भाषा"
+  "language": "भाषा",
+  "all_search_tags": "All Search Tags",
+  "search_all_tags_not_found": "No pictures were found with all tags on it."
 }

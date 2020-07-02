@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Lägg till tagg"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Lägg till taggar"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("Prenumerationen är "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("auto-förnybar."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Avbryt"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Spara plats"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Skärmdumpar"),
     "search" : MessageLookupByLibrary.simpleMessage("Sök..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Sökresultat"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Selfies"),
     "settings" : MessageLookupByLibrary.simpleMessage("Inställningar"),

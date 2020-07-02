@@ -112,5 +112,7 @@
   "auto_renewable_second_part": "自动续订。",
   "cancel_anytime": "随时取消",
 
-  "language": "语言"
+  "language": "语言",
+  "all_search_tags": "All Search Tags",
+  "search_all_tags_not_found": "No pictures were found with all tags on it."
 }

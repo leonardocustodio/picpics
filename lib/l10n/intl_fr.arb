@@ -112,5 +112,7 @@
   "auto_renewable_second_part": "renouvelable automatiquement.",
   "cancel_anytime": "Annuler à tout moment",
 
-  "language": "Langue"
+  "language": "Langue",
+  "all_search_tags": "All Search Tags",
+  "search_all_tags_not_found": "No pictures were found with all tags on it."
 }

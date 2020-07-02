@@ -111,5 +111,7 @@
   "auto_renewable_second_part": "automatisch vernieuwbaar.",
   "cancel_anytime": "U kunt op elk moment annuleren",
 
-  "language": "Taal"
+  "language": "Taal",
+  "all_search_tags": "All Search Tags",
+  "search_all_tags_not_found": "No pictures were found with all tags on it."
 }

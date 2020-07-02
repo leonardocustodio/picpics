@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("टैग जोड़ो"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("टैग लगा दो"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("सदस्यता है "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("ऑटो-नवीकरणीय"),
     "cancel" : MessageLookupByLibrary.simpleMessage("रद्द करें"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("स्थान सहेजें"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("स्क्रीनशॉटस"),
     "search" : MessageLookupByLibrary.simpleMessage("खोज..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
     "search_results" : MessageLookupByLibrary.simpleMessage("खोज परिणाम"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("सेल्फ़ीज़"),
     "settings" : MessageLookupByLibrary.simpleMessage("समायोजन"),

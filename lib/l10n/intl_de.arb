@@ -111,5 +111,7 @@
   "auto_renewable_second_part": "ist automatisch erneuerbar.",
   "cancel_anytime": "kann jederzeit gekündigt werden.",
 
-  "language": "Sprache"
+  "language": "Sprache",
+  "all_search_tags": "All Search Tags",
+  "search_all_tags_not_found": "No pictures were found with all tags on it."
 }

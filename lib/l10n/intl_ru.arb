@@ -111,5 +111,7 @@
   "auto_renewable_second_part": "продлевается автоматически.",
   "cancel_anytime": "Можно отменить в любое время",
 
-  "language": "язык"
+  "language": "язык",
+  "all_search_tags": "All Search Tags",
+  "search_all_tags_not_found": "No pictures were found with all tags on it."
 }

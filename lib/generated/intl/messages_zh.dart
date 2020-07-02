@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("添加标签"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("添加标签"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("订阅为"),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("自动续订。"),
     "cancel" : MessageLookupByLibrary.simpleMessage("取消"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("保存位置"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("截屏"),
     "search" : MessageLookupByLibrary.simpleMessage("搜索..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
     "search_results" : MessageLookupByLibrary.simpleMessage("搜索结果"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("自拍"),
     "settings" : MessageLookupByLibrary.simpleMessage("设置"),

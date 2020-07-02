@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("タグを付ける"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("タグを付ける"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("サブスクリプションは"),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("自動更新可能。"),
     "cancel" : MessageLookupByLibrary.simpleMessage("キャンセル"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("位置を保存"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("スクリーンショット"),
     "search" : MessageLookupByLibrary.simpleMessage("検索..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
     "search_results" : MessageLookupByLibrary.simpleMessage("結果を検索"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("自撮り"),
     "settings" : MessageLookupByLibrary.simpleMessage("設定"),

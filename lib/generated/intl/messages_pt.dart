@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Add tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Add tags"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("A assinatura é "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("auto-renovável."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancelar"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Confirmar localização"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Sreenshots"),
     "search" : MessageLookupByLibrary.simpleMessage("Pesquisar..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Resultados da busca"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Selfies"),
     "settings" : MessageLookupByLibrary.simpleMessage("Opções"),

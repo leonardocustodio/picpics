@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("การสมัครสมาชิกนี้"),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("มีการต่ออายุโดยอัตโนมัติ"),
     "cancel" : MessageLookupByLibrary.simpleMessage("ยกเลิก"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("บันทึกตำแหน่ง"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("สกรีนช็อต"),
     "search" : MessageLookupByLibrary.simpleMessage("ค้นหา..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
     "search_results" : MessageLookupByLibrary.simpleMessage("ผลการค้นหา"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("เซลฟี่"),
     "settings" : MessageLookupByLibrary.simpleMessage("การตั้งค่า"),
