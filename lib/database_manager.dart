@@ -914,8 +914,8 @@ class DatabaseManager extends ChangeNotifier {
 
   Future<void> sharePics({List<String> photoIds}) async {
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    Map<String, dynamic> bytesPhotos = {};
-    int x = 0;
+//    Map<String, dynamic> bytesPhotos = {};
+//    int x = 0;
 
     var imageList = List<String>();
 
@@ -950,11 +950,20 @@ class DatabaseManager extends ChangeNotifier {
 //        );
 //        bytesPhotos['$x.jpg'] = bytes;
 //      }
-      x++;
+//      x++;
     }
-    ShareExtend.shareMultiple(imageList, "image", subject: "my picpics album");
 
-//    await Share.files(
+    ShareExtend.shareMultiple(
+      imageList,
+      "image",
+    );
+
+    if (DatabaseManager.instance.multiPicBar) {
+      DatabaseManager.instance.setPicsSelected(Set());
+      DatabaseManager.instance.setMultiPicBar(false);
+    }
+
+    //    await Share.files(
 //      'images',
 //      {
 //        ...bytesPhotos,

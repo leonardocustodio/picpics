@@ -329,7 +329,7 @@ class _TabsScreenState extends State<TabsScreen> {
     }
   }
 
-  setTabIndex(int index) {
+  setTabIndex(int index) async {
     if (deviceHasNoPics) {
       _sendCurrentTabToAnalytics(index);
       print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
@@ -367,7 +367,15 @@ class _TabsScreenState extends State<TabsScreen> {
         trashPics();
       } else if (index == 2) {
         print('sharing selected pics....');
-        DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.picsSelected.toList());
+        setState(() {
+          isLoading = true;
+        });
+
+        await DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.picsSelected.toList());
+
+        setState(() {
+          isLoading = false;
+        });
       } else {
         //        showMultiTagSheet();
 
