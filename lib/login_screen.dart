@@ -99,11 +99,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       createDefaultTags(context);
                       var result = await PhotoManager.requestPermission();
                       if (result) {
-                        DatabaseManager.instance.setupPathList();
+                        DatabaseManager.instance.hasGalleryPermission = true;
                         Navigator.pushReplacementNamed(context, TabsScreen.id);
                       } else {
-                        // fail
-                        /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
+                        DatabaseManager.instance.hasGalleryPermission = false;
+                        Navigator.pushReplacementNamed(context, TabsScreen.id);
                       }
                     },
                     child: Container(

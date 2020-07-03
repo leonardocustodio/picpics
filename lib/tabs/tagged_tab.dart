@@ -600,7 +600,9 @@ class _TaggedTabState extends State<TaggedTab> {
                       ),
                     if (!hideSubtitleThirdTab)
                       Text(
-                        S.of(context).organized_photos_description,
+                        Provider.of<DatabaseManager>(context).multiPicBar
+                            ? S.of(context).photo_gallery_count(Provider.of<DatabaseManager>(context).picsSelected.length)
+                            : S.of(context).organized_photos_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',

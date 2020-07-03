@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/add_location.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/login_screen.dart';
@@ -46,6 +47,15 @@ void getItems() async {
   for (var item in items) {
     print('${item.toString()}');
 //    this._items.add(item);
+  }
+}
+
+void _hasGalleryPermission() async {
+  var result = await PhotoManager.requestPermission();
+  if (result) {
+    DatabaseManager.instance.hasGalleryPermission = true;
+  } else {
+    DatabaseManager.instance.hasGalleryPermission = false;
   }
 }
 
@@ -115,6 +125,7 @@ void main() async {
     DatabaseManager.instance.userSettings = user;
     initialRoute = LoginScreen.id;
   } else {
+    _hasGalleryPermission();
     DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
 
