@@ -29,7 +29,7 @@
 
   "photo_gallery_title": "คลังภาพ",
   "photo_gallery_description": "ภาพถ่ายที่ยังไม่ได้รับการจัดหมวดหมู่",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{ไม่มีรูปที่เลือก} one{เลือก 1 ภาพ} other{เลือก {howMany} ภาพ}}",
 
   "organized_photos_title": "ภาพถ่ายที่จัดหมวดหมู่แล้ว",
   "organized_photos_description": "ภาพถ่ายติดแท็กแล้ว",
@@ -113,6 +113,6 @@
   "cancel_anytime": "ยกเลิกได้เสมอ",
 
   "language": "ภาษา",
-  "all_search_tags": "All Search Tags",
-  "search_all_tags_not_found": "No pictures were found with all tags on it."
+  "all_search_tags": "แท็กค้นหาทั้งหมด",
+  "search_all_tags_not_found": "ไม่พบรูปภาพพร้อมแท็กทั้งหมดในนั้น"
 }

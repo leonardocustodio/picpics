@@ -28,7 +28,7 @@
 
   "photo_gallery_title": "Фотогалерея",
   "photo_gallery_description": "Фотографии еще не упорядочены",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{Фотографии не выбраны} one{Выбрано 1 фото} other{Выбрано {howMany} фотографий}}",
 
   "organized_photos_title": "Упорядоченные фотографии",
   "organized_photos_description": "Уже отмеченные тегами фотографии",
@@ -112,6 +112,6 @@
   "cancel_anytime": "Можно отменить в любое время",
 
   "language": "язык",
-  "all_search_tags": "All Search Tags",
-  "search_all_tags_not_found": "No pictures were found with all tags on it."
+  "all_search_tags": "Все теги поиска",
+  "search_all_tags_not_found": "Не найдено ни одной фотографии со всеми тегами."
 }

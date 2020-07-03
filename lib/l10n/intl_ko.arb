@@ -28,7 +28,7 @@
 
   "photo_gallery_title": "사진 갤러리",
   "photo_gallery_description": "아직 정리되지 않은 사진",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{선택된 사진이 없습니다} one{사진 1장이 선택됨} other{사진 {howMany}장이 선택됨}}",
 
   "organized_photos_title": "정리된 사진",
   "organized_photos_description": "이미 태그된 사진",
@@ -112,6 +112,6 @@
   "cancel_anytime": "언제든지 취소 가능",
 
   "language": "언어",
-  "all_search_tags": "All Search Tags",
-  "search_all_tags_not_found": "No pictures were found with all tags on it."
+  "all_search_tags": "모든 검색 태그",
+  "search_all_tags_not_found": "태그가 모두 포함 된 사진이 없습니다."
 }

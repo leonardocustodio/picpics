@@ -29,7 +29,7 @@
 
   "photo_gallery_title": "Galeri foto",
   "photo_gallery_description": "Foto belum diatur",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{Tidak ada foto yang dipilih} one{1 foto dipilih} other{{howMany} foto dipilih}}",
 
   "organized_photos_title": "Foto yang Diatur",
   "organized_photos_description": "Foto yang telah diberi tag",
@@ -113,6 +113,6 @@
   "cancel_anytime": "Batalkan kapan saja",
 
   "language": "Bahasa",
-  "all_search_tags": "All Search Tags",
-  "search_all_tags_not_found": "No pictures were found with all tags on it."
+  "all_search_tags": "Semua Tag Pencarian",
+  "search_all_tags_not_found": "Tidak ada gambar yang ditemukan dengan semua tag di dalamnya."
 }

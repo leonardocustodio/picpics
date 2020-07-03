@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'id';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'Tidak ada foto yang dipilih', one: '1 foto dipilih', other: '${howMany} foto dipilih')}";
 
   static m1(number) => "Anda menyelesaikan ${number} foto harian gratis Anda, apakah Anda ingin melanjutkan?";
 
@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Tambahkan tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Tambahkan tag"),
-    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("Semua Tag Pencarian"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("Berlangganan ini "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("diperpanjang secara otomatis."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Batal"),
@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Lokasi penyimpanan"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Tangkapan layar"),
     "search" : MessageLookupByLibrary.simpleMessage("Cari..."),
-    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("Tidak ada gambar yang ditemukan dengan semua tag di dalamnya."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Hasil pencarian"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Selfie"),
     "settings" : MessageLookupByLibrary.simpleMessage("Pengaturan"),

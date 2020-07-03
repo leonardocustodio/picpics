@@ -19,17 +19,17 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'it';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'Nessuna foto selezionata', one: '1 foto selezionata', other: '${howMany} foto selezionate')}";
 
   static m1(number) => "Hai completato ${number} immagini giornaliere gratuite, vuoi continuare?";
 
-  static m2(url) => "Per organizzare tutte le tue foto vai a URL_QUI";
+  static m2(url) => "Per organizzare tutte le tue foto vai a ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Aggiungi Tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Aggiungi i tag"),
-    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("Tutti i tag di ricerca"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("L\'abbonamento è "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("rinnovabile automaticamente."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Annulla"),
@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Salva la posizione"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Screenshot"),
     "search" : MessageLookupByLibrary.simpleMessage("Ricerca..."),
-    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("Nessuna immagine trovata con tutti i tag su di essa."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Risultati di ricerca"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Selfie"),
     "settings" : MessageLookupByLibrary.simpleMessage("Impostazioni"),

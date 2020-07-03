@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'es';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'No hay ninguna foto seleccionada', one: '1 foto seleccionada', other: '${howMany} fotos seleccionadas')}";
 
   static m1(number) => "Has completado tu ${number} de fotos diarias gratis, ¿quieres continuar?";
 
@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Añadir etiqueta"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Añadir etiquetas"),
-    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("Todas las etiquetas de búsqueda"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("La suscripción se "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("renueva automáticamente."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancelar"),
@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Guardar dirección"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Capturas de pantalla"),
     "search" : MessageLookupByLibrary.simpleMessage("Buscar..."),
-    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No se encontraron imágenes con todas las etiquetas."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Resultados de la búsqueda"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Selfies"),
     "settings" : MessageLookupByLibrary.simpleMessage("Ajustes"),

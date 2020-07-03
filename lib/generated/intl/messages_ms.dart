@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ms';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'Tiada gambar yang dipilih', one: '1 gambar dipilih', other: '${howMany} gambar dipilih')}";
 
   static m1(number) => "Anda telah melengkapkan ${number} gambar harian percuma anda, adakah anda ingin teruskan?";
 
@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Tambah tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Tambah tag"),
-    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("Semua Tag Carian"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("Langganan adalah "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("boleh diperbaharui secara automatik."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Batalkan"),
@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Simpan lokasi"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Tangkapan Skrin"),
     "search" : MessageLookupByLibrary.simpleMessage("Cari..."),
-    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("Tiada gambar dijumpai dengan semua tanda di atasnya."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Keputusan carian"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Swafoto"),
     "settings" : MessageLookupByLibrary.simpleMessage("Tetapan"),

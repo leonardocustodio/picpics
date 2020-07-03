@@ -29,7 +29,7 @@
 
   "photo_gallery_title": "Galleria foto",
   "photo_gallery_description": "Foto non ancora organizzate",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{Nessuna foto selezionata} one{1 foto selezionata} other{{howMany} foto selezionate}}",
 
   "organized_photos_title": "Foto organizzate",
   "organized_photos_description": "Foto che sono già state taggate",
@@ -52,7 +52,7 @@
   "time": "Orario",
 
   "take_a_look": "Dai un'occhiata a questa app!",
-  "take_a_look_description": "Per organizzare tutte le tue foto vai a URL_QUI",
+  "take_a_look_description": "Per organizzare tutte le tue foto vai a {url}",
 
   "daily_challenge_permission_description": "Per poter inviare le tue sfide quotidiane abbiamo bisogno dell'autorizzazione per inviare notifiche, quindi è necessario autorizzare le notifiche nelle opzioni del tuo cellulare",
 
@@ -113,6 +113,6 @@
   "cancel_anytime": "Annulla in qualsiasi momento",
 
   "language": "Linguaggio",
-  "all_search_tags": "All Search Tags",
-  "search_all_tags_not_found": "No pictures were found with all tags on it."
+  "all_search_tags": "Tutti i tag di ricerca",
+  "search_all_tags_not_found": "Nessuna immagine trovata con tutti i tag su di essa."
 }

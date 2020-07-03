@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'th';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'ไม่มีรูปที่เลือก', one: 'เลือก 1 ภาพ', other: 'เลือก ${howMany} ภาพ')}";
 
   static m1(number) => "คุณทำภาพถ่ายฟรีประจำวันครบ ${number} แล้ว ต้องการทำต่อไหม?";
 
@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
-    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("แท็กค้นหาทั้งหมด"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("การสมัครสมาชิกนี้"),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("มีการต่ออายุโดยอัตโนมัติ"),
     "cancel" : MessageLookupByLibrary.simpleMessage("ยกเลิก"),
@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("บันทึกตำแหน่ง"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("สกรีนช็อต"),
     "search" : MessageLookupByLibrary.simpleMessage("ค้นหา..."),
-    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("ไม่พบรูปภาพพร้อมแท็กทั้งหมดในนั้น"),
     "search_results" : MessageLookupByLibrary.simpleMessage("ผลการค้นหา"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("เซลฟี่"),
     "settings" : MessageLookupByLibrary.simpleMessage("การตั้งค่า"),

@@ -29,7 +29,7 @@
 
   "photo_gallery_title": "照片库",
   "photo_gallery_description": "尚未整理的照片",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{未选择照片} one{已选择1张照片} other{已选择{howMany}张照片}}",
 
   "organized_photos_title": "已整理的照片",
   "organized_photos_description": "已添加标签的照片",
@@ -113,6 +113,6 @@
   "cancel_anytime": "随时取消",
 
   "language": "语言",
-  "all_search_tags": "All Search Tags",
-  "search_all_tags_not_found": "No pictures were found with all tags on it."
+  "all_search_tags": "所有搜寻标签",
+  "search_all_tags_not_found": "未找到带有所有标签的图片。"
 }

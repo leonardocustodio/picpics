@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ru';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'Фотографии не выбраны', one: 'Выбрано 1 фото', other: 'Выбрано ${howMany} фотографий')}";
 
   static m1(number) => "Вы обработали свои ${number} бесплатных ежедневных фото. Хотите продолжить?";
 
@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Добавить тег"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Добавить теги"),
-    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("Все теги поиска"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("Подписка "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("продлевается автоматически."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Отмена"),
@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Сохранить местоположение"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Скриншоты"),
     "search" : MessageLookupByLibrary.simpleMessage("Поиск..."),
-    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("Не найдено ни одной фотографии со всеми тегами."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Результаты поиска"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Селфи"),
     "settings" : MessageLookupByLibrary.simpleMessage("Настройки"),

@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'nl';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'Geen foto\'s geselecteerd', one: '1 foto geselecteerd', other: '${howMany} foto\'s geselecteerd')}";
 
   static m1(number) => "U heeft uw ${number} gratis dagelijkse foto\'s voltooid, wilt u doorgaan?";
 
@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Tag toevoegen"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Voeg tags toe"),
-    "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("Alle zoektags"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("Het abonnement is "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("automatisch vernieuwbaar."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Annuleren"),
@@ -89,7 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Bewaarlocatie"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Schermafbeeldingen"),
     "search" : MessageLookupByLibrary.simpleMessage("Zoeken..."),
-    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("Er zijn geen foto\'s gevonden met alle tags erop."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Zoekresultaten"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Selfies"),
     "settings" : MessageLookupByLibrary.simpleMessage("Instellingen"),
