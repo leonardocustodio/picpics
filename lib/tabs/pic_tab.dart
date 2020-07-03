@@ -85,6 +85,8 @@ class _PicTabState extends State<PicTab> {
 //    print('using picSwiper id: $picSwiper');
 //
 
+    DatabaseManager.instance.suggestionTags = [];
+
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
