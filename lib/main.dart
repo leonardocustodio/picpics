@@ -4,6 +4,7 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/add_location.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/login_screen.dart';
 import 'package:picPics/model/pic.dart';
@@ -81,9 +82,6 @@ void main() async {
 //  Ads.loadInterstitial();
   Ads.loadRewarded();
 
-  DatabaseManager.instance.analytics = FirebaseAnalytics();
-  DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
-
   await Hive.initFlutter();
 //  var dir = await getApplicationDocumentsDirectory();
 //  Hive.init(dir.path);
@@ -125,7 +123,7 @@ void main() async {
     DatabaseManager.instance.userSettings = user;
     initialRoute = LoginScreen.id;
   } else {
-    _hasGalleryPermission();
+    await _hasGalleryPermission();
     DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
 
@@ -204,7 +202,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
         supportedLocales: S.delegate.supportedLocales,
         debugShowCheckedModeBanner: kDebugMode,
         initialRoute: widget.initialRoute,
-        navigatorObservers: [DatabaseManager.instance.observer],
+        navigatorObservers: [Analytics.observer],
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           TabsScreen.id: (context) => TabsScreen(),

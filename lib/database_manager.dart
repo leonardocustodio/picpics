@@ -8,8 +8,6 @@ import 'package:hive/hive.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
@@ -46,9 +44,6 @@ class DatabaseManager extends ChangeNotifier {
   bool noTaggedPhoto = false;
 //  bool editingTags = false;
   bool searchingTags = false;
-
-  FirebaseAnalytics analytics;
-  FirebaseAnalyticsObserver observer;
 
   List<String> searchActiveTags = [];
   List<String> searchResults;

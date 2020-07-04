@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
@@ -41,6 +42,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
   @override
   void initState() {
     super.initState();
+    Analytics.sendCurrentScreen(Screen.photo_screen);
 
     createdDate = DatabaseManager.instance.selectedPhoto.createDateTime;
     picInfo = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/database_manager.dart';
@@ -341,6 +342,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    Analytics.sendCurrentScreen(Screen.settings_screen);
   }
 
   @override

@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/components/arrow_painter.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -139,6 +140,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   @override
   void initState() {
     super.initState();
+    Analytics.sendCurrentScreen(Screen.premium_screen);
     getOffers();
   }
 

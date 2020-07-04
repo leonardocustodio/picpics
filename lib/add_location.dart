@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'dart:async';
 
 import 'package:picPics/constants.dart';
@@ -169,6 +170,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   void initState() {
     super.initState();
+    Analytics.sendCurrentScreen(Screen.add_location_screen);
     findInitialCamera();
   }
 

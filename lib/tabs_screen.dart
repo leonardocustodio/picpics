@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
@@ -103,23 +104,6 @@ class _TabsScreenState extends State<TabsScreen> {
         });
       }
     }
-  }
-
-  void _sendCurrentTabToAnalytics(index) {
-    print('#### sending to analytics!');
-
-    var tabName = '';
-    if (index == 0) {
-      tabName = 'gallery';
-    } else if (index == 1) {
-      tabName = 'pics';
-    } else if (index == 2) {
-      tabName = 'tagged';
-    }
-
-    DatabaseManager.instance.observer.analytics.setCurrentScreen(
-      screenName: 'pic_screen/$tabName',
-    );
   }
 
   showEditTagModal() {
@@ -331,7 +315,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   setTabIndex(int index) async {
     if (deviceHasNoPics) {
-      _sendCurrentTabToAnalytics(index);
+      Analytics.sendCurrentTab(index);
       print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
       DatabaseManager.instance.setCurrentTab(index);
       return;
@@ -400,7 +384,7 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
 
-    _sendCurrentTabToAnalytics(index);
+    Analytics.sendCurrentTab(index);
     print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
     DatabaseManager.instance.setCurrentTab(index);
   }
@@ -448,7 +432,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
     DatabaseManager.instance.checkHasTaggedPhotos();
     DatabaseManager.instance.setCurrentTab(1, notify: false);
-    _sendCurrentTabToAnalytics(DatabaseManager.instance.currentTab);
+    Analytics.sendCurrentTab(DatabaseManager.instance.currentTab);
     setTabIndex(1);
   }
 

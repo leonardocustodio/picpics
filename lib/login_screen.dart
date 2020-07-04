@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    Analytics.sendCurrentScreen(Screen.login_screen);
   }
 
   @override
