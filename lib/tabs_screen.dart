@@ -288,28 +288,6 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
 
-    if (index == 0) {
-      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-      List<String> photosIds = [];
-      for (int x = 0; x < pathProvider.orderedList.length; x++) {
-        bool hasTag = DatabaseManager.instance.picHasTag[x];
-        AssetEntity entity = pathProvider.orderedList[x];
-        if (!hasTag) {
-          photosIds.add(entity.id);
-        }
-      }
-      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
-    } else if (index == 1) {
-      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-      List<String> photosIds = [];
-      for (int x = 0; x < DatabaseManager.instance.sliderIndex.length; x++) {
-        int orderedIndex = DatabaseManager.instance.sliderIndex[x];
-        AssetEntity entity = pathProvider.orderedList[orderedIndex];
-        photosIds.add(entity.id);
-      }
-      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
-    }
-
     if (DatabaseManager.instance.multiPicBar) {
       if (index == 0) {
         DatabaseManager.instance.setPicsSelected(Set());
@@ -347,12 +325,33 @@ class _TabsScreenState extends State<TabsScreen> {
           });
         });
       }
-
       return;
     }
 
-    Analytics.sendCurrentTab(index);
+    if (index == 0) {
+      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+      List<String> photosIds = [];
+      for (int x = 0; x < pathProvider.orderedList.length; x++) {
+        bool hasTag = DatabaseManager.instance.picHasTag[x];
+        AssetEntity entity = pathProvider.orderedList[x];
+        if (!hasTag) {
+          photosIds.add(entity.id);
+        }
+      }
+      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
+    } else if (index == 1) {
+      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+      List<String> photosIds = [];
+      for (int x = 0; x < DatabaseManager.instance.sliderIndex.length; x++) {
+        int orderedIndex = DatabaseManager.instance.sliderIndex[x];
+        AssetEntity entity = pathProvider.orderedList[orderedIndex];
+        photosIds.add(entity.id);
+      }
+      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
+    }
+
     print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
+    Analytics.sendCurrentTab(index);
     DatabaseManager.instance.setCurrentTab(index);
   }
 
@@ -399,7 +398,6 @@ class _TabsScreenState extends State<TabsScreen> {
 
     DatabaseManager.instance.checkHasTaggedPhotos();
     DatabaseManager.instance.setCurrentTab(1, notify: false);
-    Analytics.sendCurrentTab(DatabaseManager.instance.currentTab);
     setTabIndex(1);
   }
 
