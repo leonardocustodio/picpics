@@ -25,6 +25,7 @@ enum Event {
   deleted_tag,
   edited_tag,
   swiped_photo,
+  searched_photos,
   showed_card,
   watch_ads_modal,
   played_ads,

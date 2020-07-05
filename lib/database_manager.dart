@@ -573,6 +573,8 @@ class DatabaseManager extends ChangeNotifier {
     searchPhotosIds = tempPhotosIds;
     slideThumbPhotoIds = tempPhotosIds;
     print('Search Photos Ids: $searchPhotosIds');
+
+    Analytics.sendEvent(Event.searched_photos);
     notifyListeners();
   }
 
