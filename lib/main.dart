@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/add_location.dart';
@@ -17,7 +16,6 @@ import 'package:picPics/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/database_manager.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/admob_manager.dart';
@@ -122,14 +120,20 @@ void main() async {
     userBox.add(user);
     DatabaseManager.instance.userSettings = user;
     initialRoute = LoginScreen.id;
+
+    Analytics.setUserId(user.id);
+    Analytics.sendEvent(Event.created_user);
   } else {
     await _hasGalleryPermission();
-    DatabaseManager.instance.loadUserSettings();
+    await DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
 
     if (DatabaseManager.instance.userSettings.hasSwiped == null) {
       DatabaseManager.instance.userSettings.hasSwiped = false;
     }
+
+    Analytics.setUserId(DatabaseManager.instance.userSettings.id);
+    Analytics.sendEvent(Event.user_returned);
   }
 
   if (DatabaseManager.instance.userSettings.appLanguage == null) {

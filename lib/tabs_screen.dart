@@ -146,41 +146,8 @@ class _TabsScreenState extends State<TabsScreen> {
     }
   }
 
-//  showPhotoCardModal(BuildContext context) async {
-//    print('Show photo card modal!!!');
-//
-////    sem horizontal
-////    bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
-////    top: bottomInsets > 0 ? 5 : 46.0,
-//
-//    String dialogResult = await showDialog(
-//      context: context,
-//      barrierDismissible: true,
-//      builder: (_) {
-//        return Dialog(
-//          backgroundColor: Colors.transparent,
-//          insetPadding: const EdgeInsets.symmetric(horizontal: 6.0, vertical: 38.0),
-//          child: PhotoCard(
-//            data: DatabaseManager.instance.selectedPhotoData,
-//            photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
-//            picSwiper: -1,
-//            index: DatabaseManager.instance.selectedPhotoIndex,
-//            tagsEditingController: tagsEditingController,
-//            specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
-//            generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
-//            showEditTagModal: showEditTagModal,
-//            onPressedTrash: () {
-//              trashPic(DatabaseManager.instance.selectedPhotoData);
-//            },
-//          ),
-//        );
-//      },
-//    );
-//
-//    if (dialogResult == null) {}
-//  }
-
   showPhotoCardModal() {
+    Analytics.sendEvent(Event.showed_card);
     setState(() {
       modalPhotoCard = true;
     });

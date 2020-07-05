@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:geolocator/geolocator.dart';
@@ -95,6 +96,9 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void setMultiPicBar(bool enabled) {
+    if (enabled) {
+      Analytics.sendEvent(Event.selected_photos);
+    }
     multiPicBar = enabled;
     notifyListeners();
   }
@@ -145,21 +149,6 @@ class DatabaseManager extends ChangeNotifier {
     userBox.putAt(0, getUser);
     print('Setting user can tag today to: $canTag');
   }
-
-//  int swiperIndex() {
-//    var userBox = Hive.box('user');
-//    User getUser = userBox.getAt(0);
-//    return getUser.swiperIndex ?? 0;
-//  }
-//
-//  void setSwiperIndex(int index) {
-//    var userBox = Hive.box('user');
-//    User getUser = userBox.getAt(0);
-//    getUser.swiperIndex = index;
-//    userBox.putAt(0, getUser);
-//  swiperIndex = index
-//    print('Setting user swiper index to $index');
-//  }
 
   String getTagName(String tagKey) {
     var tagsBox = Hive.box('tags');
@@ -242,6 +231,8 @@ class DatabaseManager extends ChangeNotifier {
       picHasTag.removeAt(indexInOrderedList);
       print('Removed pic in ordered list number $indexInOrderedList');
     }
+
+    Analytics.sendEvent(Event.deleted_photo);
     notifyListeners();
   }
 
@@ -411,9 +402,9 @@ class DatabaseManager extends ChangeNotifier {
     print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
   }
 
-  void loadUserSettings() {
+  void loadUserSettings() async {
     var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
+    User getUser = await userBox.getAt(0);
     userSettings = getUser;
   }
 
@@ -431,6 +422,7 @@ class DatabaseManager extends ChangeNotifier {
     userBox.putAt(0, userSettings);
 
     if (notify = true) {
+      Analytics.sendEvent(Event.changed_language);
       notifyListeners();
     }
   }
@@ -453,6 +445,7 @@ class DatabaseManager extends ChangeNotifier {
     userSettings.hourOfDay = hour;
     userSettings.minutesOfDay = minute;
     userBox.putAt(0, userSettings);
+    Analytics.sendEvent(Event.notification_time);
     notifyListeners();
 
     if (userSettings.dailyChallenges == true) {
@@ -470,6 +463,8 @@ class DatabaseManager extends ChangeNotifier {
     } else {
       push.register();
     }
+
+    Analytics.sendEvent(Event.notification_switch);
     notifyListeners();
   }
 
@@ -656,6 +651,7 @@ class DatabaseManager extends ChangeNotifier {
       }
     }
     checkHasTaggedPhotos();
+    Analytics.sendEvent(Event.removed_tag);
     notifyListeners();
   }
 
@@ -694,6 +690,7 @@ class DatabaseManager extends ChangeNotifier {
       tagsBox.delete(tagKey);
       checkHasTaggedPhotos();
       print('deleted from tags db');
+      Analytics.sendEvent(Event.deleted_tag);
       notifyListeners();
     }
   }
@@ -757,6 +754,7 @@ class DatabaseManager extends ChangeNotifier {
       }
 
       print('finished updating all tags');
+      Analytics.sendEvent(Event.edited_tag);
       notifyListeners();
     }
   }
@@ -814,6 +812,7 @@ class DatabaseManager extends ChangeNotifier {
       print('updated picture');
 
       checkPicHasTags(photoId);
+      Analytics.sendEvent(Event.added_tag);
       return;
     }
 
@@ -873,6 +872,7 @@ class DatabaseManager extends ChangeNotifier {
 
     // Increase today tagged pics everytime it adds a new pic to database.
     DatabaseManager.instance.increaseTodayTaggedPics();
+    Analytics.sendEvent(Event.added_tag);
   }
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
@@ -904,6 +904,7 @@ class DatabaseManager extends ChangeNotifier {
       return;
     }
 
+    Analytics.sendEvent(Event.shared_photo);
     ShareExtend.share(path, "image");
   }
 
@@ -948,6 +949,7 @@ class DatabaseManager extends ChangeNotifier {
 //      x++;
     }
 
+    Analytics.sendEvent(Event.shared_photos);
     ShareExtend.shareMultiple(
       imageList,
       "image",
@@ -1000,6 +1002,7 @@ class DatabaseManager extends ChangeNotifier {
     return decrypted;
   }
 
+  // Create tag for using in multipic
   void createTag(String tagName) {
     var tagsBox = Hive.box('tags');
     print(tagsBox.keys);
@@ -1015,6 +1018,8 @@ class DatabaseManager extends ChangeNotifier {
     print('adding tag to database...');
     tagsBox.put(tagKey, Tag(tagName, []));
     addTagToRecent(tagKey: tagKey);
+
+    Analytics.sendEvent(Event.created_tag);
     notifyListeners();
   }
 
@@ -1038,8 +1043,10 @@ class DatabaseManager extends ChangeNotifier {
           entities: entities,
         );
         print('update pictures in tag');
+        Analytics.sendEvent(Event.added_tag);
       }
     }
+
     notifyListeners();
   }
 
@@ -1072,6 +1079,7 @@ class DatabaseManager extends ChangeNotifier {
       return;
     }
 
+    Analytics.sendEvent(Event.created_tag);
     print('adding tag to database...');
     tagsBox.put(tagKey, Tag(tagName, [photoId]));
     await addTagToPic(

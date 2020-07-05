@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/settings_screen.dart';
@@ -167,6 +168,7 @@ class _PicTabState extends State<PicTab> {
                           if (!DatabaseManager.instance.userSettings.hasSwiped) {
                             DatabaseManager.instance.setUserHasSwiped();
                           }
+                          Analytics.sendEvent(Event.swiped_photo);
                           print('### Swiper Index: $index');
                         },
                       ),

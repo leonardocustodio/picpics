@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/admob_manager.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/add_location.dart';
@@ -47,6 +48,7 @@ class _PhotoCardState extends State<PhotoCard> {
   FocusNode tagsFocusNode;
 
   showWatchAdModal(BuildContext context) {
+    Analytics.sendEvent(Event.watch_ads_modal);
     showDialog<void>(
       context: context,
       barrierDismissible: true,

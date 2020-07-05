@@ -39,6 +39,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       S.of(context).take_a_look_description('https://picpics.link/get'),
       'text/plain',
     );
+    Analytics.sendEvent(Event.shared_app);
   }
 
   void rateDialog() {
@@ -53,6 +54,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         );
       }
     });
+    Analytics.sendEvent(Event.rated_app);
   }
 
   void showLanguagePicker(BuildContext context) async {

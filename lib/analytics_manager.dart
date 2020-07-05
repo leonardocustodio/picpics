@@ -17,7 +17,26 @@ enum Tab {
 }
 
 enum Event {
+  created_user,
+  user_returned,
+  created_tag,
+  added_tag,
+  removed_tag,
+  deleted_tag,
+  edited_tag,
+  swiped_photo,
+  showed_card,
+  watch_ads_modal,
   played_ads,
+  selected_photos,
+  shared_photo,
+  shared_photos,
+  deleted_photo,
+  changed_language,
+  shared_app,
+  rated_app,
+  notification_switch,
+  notification_time,
 }
 
 class Analytics {
@@ -26,9 +45,12 @@ class Analytics {
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
-  static sendEvent() async {
-    await analytics.logEvent(name: 'first_start');
-    print('abc');
+  static sendEvent(Event event) async {
+    await analytics.logEvent(name: '${enumToString(event)}');
+  }
+
+  static setUserId(String userId) async {
+    await analytics.setUserId(userId);
   }
 
   static sendCurrentScreen(Screen screen) {
