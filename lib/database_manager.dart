@@ -85,6 +85,8 @@ class DatabaseManager extends ChangeNotifier {
   bool adsIsLoaded = false;
   bool showShowAdAfterReload = false;
 
+  bool appStartInPremium = false;
+
   void setPicsSelected(Set<String> pics) {
     picsSelected = pics;
     notifyListeners();

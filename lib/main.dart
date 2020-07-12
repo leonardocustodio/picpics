@@ -39,15 +39,15 @@ Future<void> initPlatformState() async {
   );
 }
 
-void getItems() async {
-  await FlutterInappPurchase.instance.initConnection;
-
-  List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(['US14_99_yearly_subscription', 'US1_99_monthly_subscription']);
-  for (var item in items) {
-    print('${item.toString()}');
-//    this._items.add(item);
-  }
-}
+//void getItems() async {
+//  await FlutterInappPurchase.instance.initConnection;
+//
+//  List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(['US14_99_yearly_subscription', 'US1_99_monthly_subscription']);
+//  for (var item in items) {
+//    print('${item.toString()}');
+////    this._items.add(item);
+//  }
+//}
 
 void _hasGalleryPermission() async {
   var result = await PhotoManager.requestPermission();
@@ -61,12 +61,12 @@ void _hasGalleryPermission() async {
 void checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
   List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts(); // Get list of products
-
-  getItems();
+//  getItems();
 
   if (appStoreProducts.length > 0) {
     print('HAS REQUESTED PURCHASE FROM APPSTORE');
 //      _requestPurchase(appStoreProducts.last); // Buy last product in the list
+    DatabaseManager.instance.appStartInPremium = true;
   }
 }
 
@@ -153,7 +153,7 @@ void main() async {
   });
 
   if (Platform.isIOS) {
-    checkForAppStoreInitiatedProducts();
+    await checkForAppStoreInitiatedProducts();
   }
 
   runZonedGuarded(() {

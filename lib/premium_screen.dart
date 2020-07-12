@@ -31,6 +31,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
         setState(() {
           _items = offerings.current.availablePackages;
         });
+
+        if (!DatabaseManager.instance.appStartInPremium) {
+          print('comprar aqui!!!');
+        }
       }
     } on PlatformException catch (e) {
       // optional error handling

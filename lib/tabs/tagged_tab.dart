@@ -186,6 +186,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
         totalPics += 1;
         isTitleWidget.add(false);
+        slideThumbPhotoIds.add(data.id);
         widgetsArray.add(RepaintBoundary(
           child: Padding(
             padding: const EdgeInsets.all(5.0),
