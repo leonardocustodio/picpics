@@ -109,6 +109,9 @@ PODS:
     - Flutter
   - flutter_plugin_android_lifecycle (0.0.1):
     - Flutter
+  - flutter_uxcam (1.1.2):
+    - Flutter
+    - UXCam (~> 3.2.4)
   - flutter_vibrate (0.0.1):
     - Flutter
   - "geolocator (5.3.2+2)":
@@ -195,6 +198,7 @@ PODS:
     - Flutter
   - url_launcher_web (0.0.1):
     - Flutter
+  - UXCam (3.2.4)
 
 DEPENDENCIES:
   - esys_flutter_share (from `.symlinks/plugins/esys_flutter_share/ios`)
@@ -211,6 +215,7 @@ DEPENDENCIES:
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
+  - flutter_uxcam (from `.symlinks/plugins/flutter_uxcam/ios`)
   - flutter_vibrate (from `.symlinks/plugins/flutter_vibrate/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
@@ -257,6 +262,7 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - Purchases
+    - UXCam
 
 EXTERNAL SOURCES:
   esys_flutter_share:
@@ -287,6 +293,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_local_notifications/ios"
   flutter_plugin_android_lifecycle:
     :path: ".symlinks/plugins/flutter_plugin_android_lifecycle/ios"
+  flutter_uxcam:
+    :path: ".symlinks/plugins/flutter_uxcam/ios"
   flutter_vibrate:
     :path: ".symlinks/plugins/flutter_vibrate/ios"
   geolocator:
@@ -356,6 +364,7 @@ SPEC CHECKSUMS:
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
   flutter_plugin_android_lifecycle: dc0b544e129eebb77a6bfb1239d4d1c673a60a35
+  flutter_uxcam: 3bb33fe039be8ef1dc0c3a5c741735e7b4f47379
   flutter_vibrate: c0ca4ac994ff97c3f147f69865458bbc0cc3508b
   geolocator: f7622e0e7e2a24718285b73916d60c4a54b9f5b6
   Google-Mobile-Ads-SDK: d70efb31e7ea19fe99d466dc5d4788966b6914f8
@@ -386,6 +395,7 @@ SPEC CHECKSUMS:
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   url_launcher_macos: fd7894421cd39320dce5f292fc99ea9270b2a313
   url_launcher_web: e5527357f037c87560776e36436bf2b0288b965c
+  UXCam: f4598b678564c4da92ca46827f76c49f43536602
 
 PODFILE CHECKSUM: 59db26a1c4b5699a7350e948357457e5aeb10bbc
 

@@ -86,6 +86,7 @@ class DatabaseManager extends ChangeNotifier {
   bool showShowAdAfterReload = false;
 
   bool appStartInPremium = false;
+  String trybuyId;
 
   void setPicsSelected(Set<String> pics) {
     picsSelected = pics;

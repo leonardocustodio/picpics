@@ -27,6 +27,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'dart:io';
 
 Future<void> initPlatformState() async {
@@ -39,16 +40,6 @@ Future<void> initPlatformState() async {
   );
 }
 
-//void getItems() async {
-//  await FlutterInappPurchase.instance.initConnection;
-//
-//  List<IAPItem> items = await FlutterInappPurchase.instance.getProducts(['US14_99_yearly_subscription', 'US1_99_monthly_subscription']);
-//  for (var item in items) {
-//    print('${item.toString()}');
-////    this._items.add(item);
-//  }
-//}
-
 void _hasGalleryPermission() async {
   var result = await PhotoManager.requestPermission();
   if (result) {
@@ -60,13 +51,13 @@ void _hasGalleryPermission() async {
 
 void checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
-  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts(); // Get list of products
-//  getItems();
-
+  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
   if (appStoreProducts.length > 0) {
-    print('HAS REQUESTED PURCHASE FROM APPSTORE');
-//      _requestPurchase(appStoreProducts.last); // Buy last product in the list
     DatabaseManager.instance.appStartInPremium = true;
+    DatabaseManager.instance.trybuyId = appStoreProducts.last.productId;
+  } else {
+    DatabaseManager.instance.appStartInPremium = false;
+    DatabaseManager.instance.trybuyId = null;
   }
 }
 
@@ -184,6 +175,8 @@ class PicPicsApp extends StatefulWidget {
 class _PicPicsAppState extends State<PicPicsApp> {
   @override
   Widget build(BuildContext context) {
+    FlutterUxcam.optIntoSchematicRecordings();
+    FlutterUxcam.startWithKey("so0id471t97vb2v");
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MultiProvider(

@@ -32,8 +32,18 @@ class _PremiumScreenState extends State<PremiumScreen> {
           _items = offerings.current.availablePackages;
         });
 
-        if (!DatabaseManager.instance.appStartInPremium) {
-          print('comprar aqui!!!');
+        if (DatabaseManager.instance.appStartInPremium) {
+          var getPackage =
+              _items.firstWhere((element) => element.product.identifier == DatabaseManager.instance.trybuyId, orElse: () => null);
+
+          if (getPackage != null) {
+            print(getPackage);
+            print('making purchase!!!');
+            makePurchase(context, getPackage);
+
+            DatabaseManager.instance.appStartInPremium = false;
+            DatabaseManager.instance.trybuyId = null;
+          }
         }
       }
     } on PlatformException catch (e) {

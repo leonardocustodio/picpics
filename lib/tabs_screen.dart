@@ -228,7 +228,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
     // Added for the case of buying premium from appstore
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!DatabaseManager.instance.appStartInPremium) {
+      if (DatabaseManager.instance.appStartInPremium) {
         Navigator.pushNamed(context, PremiumScreen.id);
       }
     });
