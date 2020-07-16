@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/photo_screen.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/widgets/top_bar.dart';
@@ -219,22 +220,37 @@ class _TaggedTabState extends State<TaggedTab> {
                       return;
                     }
 
-                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-                    tagsEditingController.text = '';
+                    // Call photocard
+//                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+//                    tagsEditingController.text = '';
+//
+//                    DatabaseManager.instance.tagsSuggestions(
+//                      tagsEditingController.text,
+//                      data.id,
+//                      excludeTags: picInfo.tags,
+//                      notify: false,
+//                    );
+//
+//                    print('PicTags: ${picInfo.tags}');
+//
+//                    DatabaseManager.instance.selectedPhotoData = data;
+//                    DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
+//
+//                    widget.showPhotoCardModal();
 
-                    DatabaseManager.instance.tagsSuggestions(
-                      tagsEditingController.text,
-                      data.id,
-                      excludeTags: picInfo.tags,
-                      notify: false,
+                    // Call expanded screen directly
+                    DatabaseManager.instance.selectedPhoto = data;
+                    print('Selected photo: ${data.id}');
+                    int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PhotoScreen(
+                          initialIndex: initialIndex,
+                        ),
+                      ),
                     );
-
-                    print('PicTags: ${picInfo.tags}');
-
-                    DatabaseManager.instance.selectedPhotoData = data;
-                    DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
-
-                    widget.showPhotoCardModal();
+                    // Call expanded screen directly
                   },
                   child: ImageItem(
                     entity: data,
@@ -341,25 +357,39 @@ class _TaggedTabState extends State<TaggedTab> {
                         return;
                       }
 
-                      Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                      int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
-                      tagsEditingController.text = '';
+//                      Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+//                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//                      int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
+//                      tagsEditingController.text = '';
+//
+//                      DatabaseManager.instance.tagsSuggestions(
+//                        tagsEditingController.text,
+//                        data.id,
+//                        excludeTags: picInfo.tags,
+//                        notify: false,
+//                      );
+//
+//                      print('PicTags: ${picInfo.tags}');
+//
+//                      DatabaseManager.instance.selectedPhotoData = data;
+//                      DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
+//                      DatabaseManager.instance.selectedPhotoIndex = indexOfPic;
+//
+//                      widget.showPhotoCardModal();
 
-                      DatabaseManager.instance.tagsSuggestions(
-                        tagsEditingController.text,
-                        data.id,
-                        excludeTags: picInfo.tags,
-                        notify: false,
+                      // Call expanded screen directly
+                      DatabaseManager.instance.selectedPhoto = data;
+                      print('Selected photo: ${data.id}');
+                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PhotoScreen(
+                            initialIndex: initialIndex,
+                          ),
+                        ),
                       );
-
-                      print('PicTags: ${picInfo.tags}');
-
-                      DatabaseManager.instance.selectedPhotoData = data;
-                      DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
-                      DatabaseManager.instance.selectedPhotoIndex = indexOfPic;
-
-                      widget.showPhotoCardModal();
+                      // Call expanded screen directly
                     },
                     child: ImageItem(
                       entity: data,

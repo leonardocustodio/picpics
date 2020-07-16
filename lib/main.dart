@@ -175,7 +175,8 @@ class PicPicsApp extends StatefulWidget {
 class _PicPicsAppState extends State<PicPicsApp> {
   @override
   Widget build(BuildContext context) {
-    FlutterUxcam.optIntoSchematicRecordings();
+    FlutterUxcam.optOutOfVideoRecording();
+    FlutterUxcam.optOutOfSchematicRecordings();
     FlutterUxcam.startWithKey("so0id471t97vb2v");
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
