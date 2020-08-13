@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/components/custom_bubble_bottom_bar.dart';
@@ -12,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs/pic_tab.dart';
 import 'package:picPics/tabs/tagged_tab.dart';
 import 'package:picPics/tabs/untagged_tab.dart';
@@ -43,6 +45,8 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
+  TabsStore tabsStore;
+
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
 
@@ -291,7 +295,7 @@ class _TabsScreenState extends State<TabsScreen> {
     if (deviceHasNoPics) {
       Analytics.sendCurrentTab(index);
       print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
-      DatabaseManager.instance.setCurrentTab(index);
+      tabsStore.setCurrentTab(index);
       return;
     }
 
@@ -359,7 +363,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
     print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
     Analytics.sendCurrentTab(index);
-    DatabaseManager.instance.setCurrentTab(index);
+    tabsStore.setCurrentTab(index);
   }
 
   Widget _buildLoading() {
@@ -404,13 +408,19 @@ class _TabsScreenState extends State<TabsScreen> {
     }
 
     DatabaseManager.instance.checkHasTaggedPhotos();
-    DatabaseManager.instance.setCurrentTab(1, notify: false);
+    tabsStore.setCurrentTab(1);
     setTabIndex(1);
   }
 
   void afterBuild() {
     print('#### AFTER BUILD!');
     print('Trying to move to page: ${DatabaseManager.instance.swiperIndex}');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    tabsStore = Provider.of<TabsStore>(context);
   }
 
   @override
@@ -519,26 +529,30 @@ class _TabsScreenState extends State<TabsScreen> {
                       ),
                     ),
                   ),
-                if (Provider.of<DatabaseManager>(context).currentTab == 0 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
-                  UntaggedTab(
-                    pathProvider: pathProvider,
-                    deviceHasNoPics: deviceHasNoPics,
-                    showPhotoCardModal: showPhotoCardModal,
-                  ),
-                if (Provider.of<DatabaseManager>(context).currentTab == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
-                  PicTab(
-                    deviceHasNoPics: deviceHasNoPics,
-                    showEditTagModal: showEditTagModal,
-                    trashPic: trashPic,
-                  ),
-                if (Provider.of<DatabaseManager>(context).currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
-                  TaggedTab(
-                    setTabIndex: setTabIndex,
-                    setIsLoading: setIsLoading,
-                    deviceHasNoPics: deviceHasNoPics,
-                    showEditTagModal: showEditTagModal,
-                    showPhotoCardModal: showPhotoCardModal,
-                  ),
+                Observer(builder: (_) {
+                  Widget wgt;
+                  if (tabsStore.currentTab == 0 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                    wgt = UntaggedTab(
+                      pathProvider: pathProvider,
+                      deviceHasNoPics: deviceHasNoPics,
+                      showPhotoCardModal: showPhotoCardModal,
+                    );
+                  if (tabsStore.currentTab == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                    wgt = PicTab(
+                      deviceHasNoPics: deviceHasNoPics,
+                      showEditTagModal: showEditTagModal,
+                      trashPic: trashPic,
+                    );
+                  if (tabsStore.currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                    wgt = TaggedTab(
+                      setTabIndex: setTabIndex,
+                      setIsLoading: setIsLoading,
+                      deviceHasNoPics: deviceHasNoPics,
+                      showEditTagModal: showEditTagModal,
+                      showPhotoCardModal: showPhotoCardModal,
+                    );
+                  return wgt;
+                }),
               ],
             ),
           ),
@@ -593,8 +607,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                     List<AssetEntity> entities = [];
                                     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
                                     for (var photoId in DatabaseManager.instance.picsSelected) {
-                                      AssetEntity entity =
-                                          pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+                                      AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
                                       photosIds.add(photoId);
                                       entities.add(entity);
                                     }
@@ -778,34 +791,36 @@ class _TabsScreenState extends State<TabsScreen> {
                     maxHeight: 100.0,
                   ),
                   child: !Provider.of<DatabaseManager>(context).multiPicBar
-                      ? CustomBubbleBottomBar(
-                          backgroundColor: kWhiteColor,
-                          hasNotch: true,
-                          opacity: 1.0,
-                          currentIndex: Provider.of<DatabaseManager>(context).currentTab,
-                          onTap: setTabIndex,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
-                          ),
-                          elevation: 8,
-                          items: <CustomBubbleBottomBarItem>[
-                            CustomBubbleBottomBarItem(
-                              backgroundColor: kPinkColor,
-                              icon: Image.asset('lib/images/tabgridred.png'),
-                              activeIcon: Image.asset('lib/images/tabgridwhite.png'),
+                      ? Observer(builder: (_) {
+                          return CustomBubbleBottomBar(
+                            backgroundColor: kWhiteColor,
+                            hasNotch: true,
+                            opacity: 1.0,
+                            currentIndex: tabsStore.currentTab,
+                            onTap: setTabIndex,
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(16),
                             ),
-                            CustomBubbleBottomBarItem(
-                              backgroundColor: kSecondaryColor,
-                              icon: Image.asset('lib/images/tabpicpicsred.png'),
-                              activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
-                            ),
-                            CustomBubbleBottomBarItem(
-                              backgroundColor: kPrimaryColor,
-                              icon: Image.asset('lib/images/tabtaggedblue.png'),
-                              activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
-                            ),
-                          ],
-                        )
+                            elevation: 8,
+                            items: <CustomBubbleBottomBarItem>[
+                              CustomBubbleBottomBarItem(
+                                backgroundColor: kPinkColor,
+                                icon: Image.asset('lib/images/tabgridred.png'),
+                                activeIcon: Image.asset('lib/images/tabgridwhite.png'),
+                              ),
+                              CustomBubbleBottomBarItem(
+                                backgroundColor: kSecondaryColor,
+                                icon: Image.asset('lib/images/tabpicpicsred.png'),
+                                activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
+                              ),
+                              CustomBubbleBottomBarItem(
+                                backgroundColor: kPrimaryColor,
+                                icon: Image.asset('lib/images/tabtaggedblue.png'),
+                                activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
+                              ),
+                            ],
+                          );
+                        })
                       : BubbleBottomBar(
                           backgroundColor: kWhiteColor,
                           hasNotch: true,

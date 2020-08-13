@@ -10,6 +10,8 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/photo_screen.dart';
+import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:picPics/settings_screen.dart';
@@ -27,7 +29,7 @@ import 'package:uuid/uuid.dart';
 import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+//import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'dart:io';
 
 Future<void> initPlatformState() async {
@@ -175,13 +177,21 @@ class PicPicsApp extends StatefulWidget {
 class _PicPicsAppState extends State<PicPicsApp> {
   @override
   Widget build(BuildContext context) {
-    FlutterUxcam.optOutOfVideoRecording();
-    FlutterUxcam.optOutOfSchematicRecordings();
-    FlutterUxcam.startWithKey("so0id471t97vb2v");
+    AppStore appStore = AppStore();
+
+//    FlutterUxcam.optOutOfVideoRecording();
+//    FlutterUxcam.optOutOfSchematicRecordings();
+//    FlutterUxcam.startWithKey("so0id471t97vb2v");
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MultiProvider(
       providers: [
+        Provider<AppStore>.value(
+          value: appStore,
+        ),
+        Provider<TabsStore>.value(
+          value: TabsStore(appStore: appStore),
+        ),
         ChangeNotifierProvider<DatabaseManager>(
           create: (_) => DatabaseManager.instance,
         ),

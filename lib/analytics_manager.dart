@@ -1,6 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:flutter_uxcam/flutter_uxcam.dart';
+//import 'package:flutter_uxcam/flutter_uxcam.dart';
 
 enum Screen {
   tabs_screen,
@@ -48,17 +48,17 @@ class Analytics {
   static String enumToString(Object o) => o.toString().split('.').last;
 
   static sendEvent(Event event) async {
-    FlutterUxcam.logEvent('${enumToString(event)}');
+//    FlutterUxcam.logEvent('${enumToString(event)}');
     await analytics.logEvent(name: '${enumToString(event)}');
   }
 
   static setUserId(String userId) async {
-    FlutterUxcam.setUserIdentity(userId);
+//    FlutterUxcam.setUserIdentity(userId);
     await analytics.setUserId(userId);
   }
 
   static sendCurrentScreen(Screen screen) {
-    FlutterUxcam.tagScreenName('${enumToString(screen)}');
+//    FlutterUxcam.tagScreenName('${enumToString(screen)}');
     observer.analytics.setCurrentScreen(
       screenName: '${enumToString(screen)}',
     );
@@ -74,7 +74,7 @@ class Analytics {
       tabName = '${enumToString(Tab.tagged)}';
     }
 
-    FlutterUxcam.tagScreenName('${enumToString(Screen.tabs_screen)}/$tabName');
+//    FlutterUxcam.tagScreenName('${enumToString(Screen.tabs_screen)}/$tabName');
     observer.analytics.setCurrentScreen(
       screenName: '${enumToString(Screen.tabs_screen)}/$tabName',
     );
