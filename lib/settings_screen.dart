@@ -299,49 +299,49 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
   }
 
-  void changeDailyChallenges(BuildContext context, bool value) async {
-    if (value == false) {
-      DatabaseManager.instance.changeDailyChallenges();
-    } else if (value == true && DatabaseManager.instance.userSettings.notifications == false) {
-      showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return PlatformAlertDialog(
-            title: Text(
-              S.of(context).notifications,
-              textScaleFactor: 1.0,
-            ),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    S.of(context).daily_challenge_permission_description,
-                    textScaleFactor: 1.0,
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              PlatformDialogAction(
-                child: Text(
-                  S.of(context).ok,
-                  textScaleFactor: 1.0,
-                ),
-                actionType: ActionType.Preferred,
-                onPressed: () {
-                  NotificationPermissions.requestNotificationPermissions(iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true))
-                      .then((_) {});
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      DatabaseManager.instance.changeDailyChallenges();
-    }
-  }
+//  void changeDailyChallenges(BuildContext context, bool value) async {
+//    if (value == false) {
+//      DatabaseManager.instance.changeDailyChallenges();
+//    } else if (value == true && DatabaseManager.instance.userSettings.notifications == false) {
+//      showDialog<void>(
+//        context: context,
+//        builder: (BuildContext context) {
+//          return PlatformAlertDialog(
+//            title: Text(
+//              S.of(context).notifications,
+//              textScaleFactor: 1.0,
+//            ),
+//            content: SingleChildScrollView(
+//              child: ListBody(
+//                children: <Widget>[
+//                  Text(
+//                    S.of(context).daily_challenge_permission_description,
+//                    textScaleFactor: 1.0,
+//                  ),
+//                ],
+//              ),
+//            ),
+//            actions: <Widget>[
+//              PlatformDialogAction(
+//                child: Text(
+//                  S.of(context).ok,
+//                  textScaleFactor: 1.0,
+//                ),
+//                actionType: ActionType.Preferred,
+//                onPressed: () {
+//                  NotificationPermissions.requestNotificationPermissions(iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true))
+//                      .then((_) {});
+//                  Navigator.of(context).pop();
+//                },
+//              ),
+//            ],
+//          );
+//        },
+//      );
+//    } else {
+//      DatabaseManager.instance.changeDailyChallenges();
+//    }
+//  }
 
   @override
   void initState() {
@@ -389,7 +389,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
-                          onPressed: () => DatabaseManager.instance.changeDailyChallenges(),
+                          onPressed: appStore.switchDailyChallenges,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -401,12 +401,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               Observer(
                                 builder: (_) {
                                   return CupertinoSwitch(
-                                    value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-                                    activeColor: kSecondaryColor,
-                                    onChanged: (value) {
-                                      changeDailyChallenges(context, value);
-                                    },
-                                  );
+                                      value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                      activeColor: kSecondaryColor,
+                                      onChanged: (value) => appStore.switchDailyChallenges());
                                 },
                               ),
                             ],

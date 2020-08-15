@@ -458,19 +458,6 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void changeDailyChallenges() {
-    PushNotificationsManager push = PushNotificationsManager();
-
-    if (userSettings.dailyChallenges) {
-      push.deregister();
-    } else {
-      push.register();
-    }
-
-    Analytics.sendEvent(Event.notification_switch);
-    notifyListeners();
-  }
-
   void tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
     var userBox = Hive.box('user');
     var tagsBox = Hive.box('tags');

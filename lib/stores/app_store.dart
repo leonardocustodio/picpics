@@ -1,4 +1,6 @@
 import 'package:mobx/mobx.dart';
+import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/push_notifications_manager.dart';
 
 part 'app_store.g.dart';
 
@@ -16,6 +18,20 @@ abstract class _AppStore with Store {
 
   @observable
   bool dailyChallenges = false;
+
+  @action
+  void switchDailyChallenges() {
+//    PushNotificationsManager push = PushNotificationsManager();
+//
+//    if (dailyChallenges) {
+//      push.deregister();
+//    } else {
+//      push.register();
+//    }
+    dailyChallenges = !dailyChallenges;
+//
+//    Analytics.sendEvent(Event.notification_switch);
+  }
 
 //  int goal;
 

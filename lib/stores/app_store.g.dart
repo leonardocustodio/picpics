@@ -129,6 +129,19 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$_AppStoreActionController = ActionController(name: '_AppStore');
+
+  @override
+  void switchDailyChallenges() {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.switchDailyChallenges');
+    try {
+      return super.switchDailyChallenges();
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
