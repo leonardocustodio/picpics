@@ -1,6 +1,8 @@
+import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/push_notifications_manager.dart';
+import 'package:picPics/utils/languages.dart';
 
 part 'app_store.g.dart';
 
@@ -41,6 +43,22 @@ abstract class _AppStore with Store {
   @observable
   int minutesOfDay = 00;
 
+  @action
+  void changeUserTimeOfDay(int hour, int minute) {
+    var userBox = Hive.box('user');
+    hourOfDay = hour;
+    minutesOfDay = minute;
+//    userBox.putAt(0, userSettings);
+    Analytics.sendEvent(Event.notification_time);
+//    notifyListeners();
+
+    if (dailyChallenges == true) {
+//      PushNotificationsManager push = PushNotificationsManager();
+//      push.scheduleNotification();
+      print('rescheduling notifications....');
+    }
+  }
+
   @observable
   bool isPremium = false;
 
@@ -60,6 +78,22 @@ abstract class _AppStore with Store {
 
   @observable
   String appLanguage = 'pt_BR';
+
+  @action
+  void changeUserLanguage(String language) {
+    var userBox = Hive.box('user');
+    appLanguage = language;
+//    userBox.putAt(0, userSettings);
+
+    Analytics.sendEvent(Event.changed_language);
+  }
+
+  @computed
+  String get currentLanguage {
+    String lang = appLanguage.split('_')[0];
+    var local = LanguageLocal();
+    return '${local.getDisplayLanguage(lang)['nativeName']}';
+  }
 
   String appVersion = '1.0.0';
 }

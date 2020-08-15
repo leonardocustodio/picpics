@@ -443,21 +443,6 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeUserTimeOfDay(int hour, int minute) {
-    var userBox = Hive.box('user');
-    userSettings.hourOfDay = hour;
-    userSettings.minutesOfDay = minute;
-    userBox.putAt(0, userSettings);
-    Analytics.sendEvent(Event.notification_time);
-    notifyListeners();
-
-    if (userSettings.dailyChallenges == true) {
-      PushNotificationsManager push = PushNotificationsManager();
-      push.scheduleNotification();
-      print('rescheduling notifications....');
-    }
-  }
-
   void tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
     var userBox = Hive.box('user');
     var tagsBox = Hive.box('tags');

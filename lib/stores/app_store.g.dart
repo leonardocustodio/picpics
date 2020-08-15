@@ -9,6 +9,14 @@ part of 'app_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$AppStore on _AppStore, Store {
+  Computed<String> _$currentLanguageComputed;
+
+  @override
+  String get currentLanguage => (_$currentLanguageComputed ??= Computed<String>(
+          () => super.currentLanguage,
+          name: '_AppStore.currentLanguage'))
+      .value;
+
   final _$notificationsAtom = Atom(name: '_AppStore.notifications');
 
   @override
@@ -143,6 +151,28 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void changeUserTimeOfDay(int hour, int minute) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.changeUserTimeOfDay');
+    try {
+      return super.changeUserTimeOfDay(hour, minute);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void changeUserLanguage(String language) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.changeUserLanguage');
+    try {
+      return super.changeUserLanguage(language);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},
@@ -152,7 +182,8 @@ minutesOfDay: ${minutesOfDay},
 isPremium: ${isPremium},
 tutorialCompleted: ${tutorialCompleted},
 hasSwiped: ${hasSwiped},
-appLanguage: ${appLanguage}
+appLanguage: ${appLanguage},
+currentLanguage: ${currentLanguage}
     ''';
   }
 }

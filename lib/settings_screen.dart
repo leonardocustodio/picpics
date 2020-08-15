@@ -65,7 +65,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     var language = LanguageLocal();
     var supportedLocales = S.delegate.supportedLocales;
 
-    List<String> appSplit = DatabaseManager.instance.userSettings.appLanguage.split('_');
+    List<String> appSplit = appStore.appLanguage.split('_');
     int languageIndex = supportedLocales.indexOf(Locale(
       appSplit[0],
       appSplit.length > 1 ? appSplit[1] : '',
@@ -105,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      DatabaseManager.instance.changeUserLanguage(supportedLocales[temporaryLanguage].toString());
+                      appStore.changeUserLanguage(supportedLocales[temporaryLanguage].toString());
                       Navigator.pop(context);
                       setState(() {
                         S.load(supportedLocales[temporaryLanguage]);
@@ -236,8 +236,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       context: context,
       builder: (BuildContext builder) {
         DateTime now = DateTime.now();
-        DateTime time =
-            DateTime(now.year, now.month, now.day, DatabaseManager.instance.userSettings.hourOfDay, DatabaseManager.instance.userSettings.minutesOfDay);
+        DateTime time = DateTime(now.year, now.month, now.day, appStore.hourOfDay, appStore.minutesOfDay);
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -266,7 +265,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      DatabaseManager.instance.changeUserTimeOfDay(time.hour, time.minute);
+                      appStore.changeUserTimeOfDay(time.hour, time.minute);
                       Navigator.pop(context);
                     },
                     child: Container(
@@ -488,10 +487,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsFieldTextStyle,
                               ),
-                              Text(
-                                DatabaseManager.instance.getUserLanguage(),
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsValueTextStyle,
+                              Observer(
+                                builder: (_) {
+                                  return Text(
+                                    appStore.currentLanguage,
+                                    textScaleFactor: 1.0,
+                                    style: kGraySettingsValueTextStyle,
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -596,7 +599,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     ),
                     Center(
                       child: Text(
-                        'VERSION ${appStore.appVersion}',
+                        'VERSION: ${appStore.appVersion}',
                         textScaleFactor: 1.0,
                         style: kGraySettingsFieldTextStyle,
                       ),
