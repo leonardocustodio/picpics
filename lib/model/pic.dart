@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 part 'pic.g.dart';
 
 @HiveType(typeId: 0)
-class Pic {
+class Pic extends HiveObject {
   @HiveField(0)
   final String photoId;
 

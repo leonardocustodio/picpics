@@ -53,7 +53,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       } else {
         rateMyApp.showStarRateDialog(
           context,
-          ignoreIOS: false,
+          ignoreNativeDialog: false,
           onDismissed: () => rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
         );
       }

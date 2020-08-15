@@ -38,6 +38,13 @@ abstract class _AppStore with Store {
 
   @action
   void switchDailyChallenges() {
+    dailyChallenges = !dailyChallenges;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.dailyChallenges = dailyChallenges;
+    currentUser.save();
+
 //    PushNotificationsManager push = PushNotificationsManager();
 //
 //    if (dailyChallenges) {
@@ -45,9 +52,8 @@ abstract class _AppStore with Store {
 //    } else {
 //      push.register();
 //    }
-    dailyChallenges = !dailyChallenges;
-//
-//    Analytics.sendEvent(Event.notification_switch);
+
+    Analytics.sendEvent(Event.notification_switch);
   }
 
 //  int goal;
@@ -60,12 +66,16 @@ abstract class _AppStore with Store {
 
   @action
   void changeUserTimeOfDay(int hour, int minute) {
-    var userBox = Hive.box('user');
     hourOfDay = hour;
     minutesOfDay = minute;
-//    userBox.putAt(0, userSettings);
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.hourOfDay = hour;
+    currentUser.minutesOfDay = minute;
+    currentUser.save();
+
     Analytics.sendEvent(Event.notification_time);
-//    notifyListeners();
 
     if (dailyChallenges == true) {
 //      PushNotificationsManager push = PushNotificationsManager();
@@ -96,9 +106,12 @@ abstract class _AppStore with Store {
 
   @action
   void changeUserLanguage(String language) {
-    var userBox = Hive.box('user');
     appLanguage = language;
-//    userBox.putAt(0, userSettings);
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.appLanguage = language;
+    currentUser.save();
 
     Analytics.sendEvent(Event.changed_language);
   }
