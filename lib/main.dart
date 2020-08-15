@@ -141,8 +141,8 @@ void main() async {
   DatabaseManager.instance.loadRemoteConfig();
   initPlatformState();
 
-  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-    DatabaseManager.instance.setAppVersion(packageInfo.version);
+  String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+    return packageInfo.version;
   });
 
   if (Platform.isIOS) {
@@ -154,6 +154,7 @@ void main() async {
       PicPicsApp(
         initialRoute: initialRoute,
         userLocale: userLocale,
+        appVersion: appVersion,
       ),
     );
   }, (Object error, StackTrace stack) {
@@ -164,10 +165,12 @@ void main() async {
 class PicPicsApp extends StatefulWidget {
   final String initialRoute;
   final Locale userLocale;
+  final String appVersion;
 
   PicPicsApp({
     @required this.initialRoute,
     @required this.userLocale,
+    @required this.appVersion,
   });
 
   @override
@@ -177,7 +180,7 @@ class PicPicsApp extends StatefulWidget {
 class _PicPicsAppState extends State<PicPicsApp> {
   @override
   Widget build(BuildContext context) {
-    AppStore appStore = AppStore();
+    AppStore appStore = AppStore(appVersion: widget.appVersion);
 
 //    FlutterUxcam.optOutOfVideoRecording();
 //    FlutterUxcam.optOutOfSchematicRecordings();

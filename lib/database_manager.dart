@@ -411,14 +411,6 @@ class DatabaseManager extends ChangeNotifier {
     userSettings = getUser;
   }
 
-  void setAppVersion(String appVersion) {
-    print('User app version: $appVersion');
-    var userBox = Hive.box('user');
-    userSettings.appVersion = appVersion;
-    userBox.putAt(0, userSettings);
-    notifyListeners();
-  }
-
   void changeUserLanguage(String appLanguage, {bool notify = true}) {
     var userBox = Hive.box('user');
     userSettings.appLanguage = appLanguage;

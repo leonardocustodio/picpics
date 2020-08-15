@@ -64,12 +64,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void showLanguagePicker(BuildContext context) async {
     var language = LanguageLocal();
     var supportedLocales = S.delegate.supportedLocales;
+    List<String> supportedLanguages = supportedLocales.map((e) => e.languageCode).toList();
+
+    print('Supported Locales: $supportedLocales');
+    print('Supported languages: $supportedLanguages');
+    print('AppLanguage: ${appStore.appLanguage}');
 
     List<String> appSplit = appStore.appLanguage.split('_');
-    int languageIndex = supportedLocales.indexOf(Locale(
-      appSplit[0],
-      appSplit.length > 1 ? appSplit[1] : '',
-    ));
+    int languageIndex = supportedLanguages.indexOf(appSplit[0]);
+    print('Index: $languageIndex');
 
     FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: languageIndex);
 

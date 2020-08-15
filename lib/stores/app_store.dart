@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/model/user.dart';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/utils/languages.dart';
 
@@ -9,7 +10,21 @@ part 'app_store.g.dart';
 class AppStore = _AppStore with _$AppStore;
 
 abstract class _AppStore with Store {
-  _AppStore() {
+  final String appVersion;
+
+  _AppStore({this.appVersion}) {
+    var userBox = Hive.box('user');
+    User user = userBox.getAt(0);
+
+    notifications = user.notifications;
+    dailyChallenges = user.dailyChallenges;
+    hourOfDay = user.hourOfDay;
+    minutesOfDay = user.minutesOfDay;
+    isPremium = user.isPremium;
+    tutorialCompleted = user.tutorialCompleted;
+    hasSwiped = user.hasSwiped;
+    appLanguage = user.appLanguage;
+
     autorun((_) {
       print('autorun');
     });
@@ -94,6 +109,4 @@ abstract class _AppStore with Store {
     var local = LanguageLocal();
     return '${local.getDisplayLanguage(lang)['nativeName']}';
   }
-
-  String appVersion = '1.0.0';
 }
