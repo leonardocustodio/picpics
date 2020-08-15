@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/premium_screen.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
@@ -23,6 +25,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
+  AppStore appStore;
+
   @override
   void dispose() {
     super.dispose();
@@ -232,8 +236,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       context: context,
       builder: (BuildContext builder) {
         DateTime now = DateTime.now();
-        DateTime time = DateTime(now.year, now.month, now.day, DatabaseManager.instance.userSettings.hourOfDay,
-            DatabaseManager.instance.userSettings.minutesOfDay);
+        DateTime time =
+            DateTime(now.year, now.month, now.day, DatabaseManager.instance.userSettings.hourOfDay, DatabaseManager.instance.userSettings.minutesOfDay);
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -325,8 +329,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 ),
                 actionType: ActionType.Preferred,
                 onPressed: () {
-                  NotificationPermissions.requestNotificationPermissions(
-                          iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true))
+                  NotificationPermissions.requestNotificationPermissions(iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true))
                       .then((_) {});
                   Navigator.of(context).pop();
                 },
@@ -352,6 +355,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     if (state == AppLifecycleState.resumed) {
       DatabaseManager.instance.checkNotificationPermission(shouldNotify: true);
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
   }
 
   @override
@@ -389,11 +398,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsFieldTextStyle,
                               ),
-                              CupertinoSwitch(
-                                value: Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-                                activeColor: kSecondaryColor,
-                                onChanged: (value) {
-                                  changeDailyChallenges(context, value);
+                              Observer(
+                                builder: (_) {
+                                  return CupertinoSwitch(
+                                    value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                    activeColor: kSecondaryColor,
+                                    onChanged: (value) {
+                                      changeDailyChallenges(context, value);
+                                    },
+                                  );
                                 },
                               ),
                             ],
@@ -420,10 +433,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsFieldTextStyle,
                               ),
-                              Text(
-                                '${'${Provider.of<DatabaseManager>(context).userSettings.hourOfDay}'.padLeft(2, '0')}: ${'${Provider.of<DatabaseManager>(context).userSettings.minutesOfDay}'.padLeft(2, '0')}',
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsValueTextStyle,
+                              Observer(
+                                builder: (_) {
+                                  return Text(
+                                    '${'${appStore.hourOfDay}'.padLeft(2, '0')}: ${'${appStore.minutesOfDay}'.padLeft(2, '0')}',
+                                    textScaleFactor: 1.0,
+                                    style: kGraySettingsValueTextStyle,
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -552,14 +569,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 width: 16.0,
                               ),
                               Flexible(
-                                child: Text(
-                                  Provider.of<DatabaseManager>(context).userSettings.isPremium
-                                      ? S.of(context).you_are_premium
-                                      : S.of(context).get_premium_now,
-                                  maxLines: 2,
-                                  textAlign: TextAlign.left,
-                                  textScaleFactor: 1.0,
-                                  style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
+                                child: Observer(
+                                  builder: (_) {
+                                    return Text(
+                                      appStore.isPremium ? S.of(context).you_are_premium : S.of(context).get_premium_now,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.left,
+                                      textScaleFactor: 1.0,
+                                      style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
+                                    );
+                                  },
                                 ),
                               ),
                               SizedBox(
@@ -580,7 +599,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                     ),
                     Center(
                       child: Text(
-                        'VERSION ${DatabaseManager.instance.userSettings.appVersion}',
+                        'VERSION ${appStore.appVersion}',
                         textScaleFactor: 1.0,
                         style: kGraySettingsFieldTextStyle,
                       ),
