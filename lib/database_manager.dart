@@ -41,7 +41,6 @@ class DatabaseManager extends ChangeNotifier {
   List<bool> picHasTag;
   List<int> sliderIndex;
 
-  bool hasGalleryPermission;
   bool noTaggedPhoto = false;
 //  bool editingTags = false;
   bool searchingTags = false;

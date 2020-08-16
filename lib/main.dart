@@ -42,15 +42,6 @@ Future<void> initPlatformState() async {
   );
 }
 
-void _hasGalleryPermission() async {
-  var result = await PhotoManager.requestPermission();
-  if (result) {
-    DatabaseManager.instance.hasGalleryPermission = true;
-  } else {
-    DatabaseManager.instance.hasGalleryPermission = false;
-  }
-}
-
 void checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
   List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
@@ -108,6 +99,7 @@ void main() async {
       canTagToday: true,
       appLanguage: locale.toString(),
       hasSwiped: false,
+      hasGalleryPermission: null,
     );
 
     userBox.add(user);
@@ -117,7 +109,6 @@ void main() async {
     Analytics.setUserId(user.id);
     Analytics.sendEvent(Event.created_user);
   } else {
-    await _hasGalleryPermission();
     await DatabaseManager.instance.loadUserSettings();
     DatabaseManager.instance.checkNotificationPermission();
 

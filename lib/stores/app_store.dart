@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/push_notifications_manager.dart';
@@ -24,6 +25,11 @@ abstract class _AppStore with Store {
     tutorialCompleted = user.tutorialCompleted;
     hasSwiped = user.hasSwiped;
     appLanguage = user.appLanguage;
+    hasGalleryPermission = user.hasGalleryPermission;
+
+    if (user.hasGalleryPermission != null || user.tutorialCompleted) {
+      requestGalleryPermission();
+    }
 
     autorun((_) {
       print('autorun');
@@ -103,6 +109,22 @@ abstract class _AppStore with Store {
 
   @observable
   String appLanguage = 'pt_BR';
+
+  @observable
+  bool hasGalleryPermission = false;
+
+  @action
+  Future<void> requestGalleryPermission() async {
+    var result = await PhotoManager.requestPermission();
+    if (result) {
+      hasGalleryPermission = true;
+    }
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.hasGalleryPermission = hasGalleryPermission;
+    currentUser.save();
+  }
 
   @action
   void changeUserLanguage(String language) {

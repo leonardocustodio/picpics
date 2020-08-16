@@ -137,6 +137,32 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$hasGalleryPermissionAtom =
+      Atom(name: '_AppStore.hasGalleryPermission');
+
+  @override
+  bool get hasGalleryPermission {
+    _$hasGalleryPermissionAtom.reportRead();
+    return super.hasGalleryPermission;
+  }
+
+  @override
+  set hasGalleryPermission(bool value) {
+    _$hasGalleryPermissionAtom.reportWrite(value, super.hasGalleryPermission,
+        () {
+      super.hasGalleryPermission = value;
+    });
+  }
+
+  final _$requestGalleryPermissionAsyncAction =
+      AsyncAction('_AppStore.requestGalleryPermission');
+
+  @override
+  Future<void> requestGalleryPermission() {
+    return _$requestGalleryPermissionAsyncAction
+        .run(() => super.requestGalleryPermission());
+  }
+
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
 
   @override
@@ -183,6 +209,7 @@ isPremium: ${isPremium},
 tutorialCompleted: ${tutorialCompleted},
 hasSwiped: ${hasSwiped},
 appLanguage: ${appLanguage},
+hasGalleryPermission: ${hasGalleryPermission},
 currentLanguage: ${currentLanguage}
     ''';
   }

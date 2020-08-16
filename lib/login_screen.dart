@@ -4,11 +4,13 @@ import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/model/tag.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -18,6 +20,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  AppStore appStore;
+
   void createDefaultTags(BuildContext context) async {
     var tagsBox = await Hive.openBox('tags');
 
@@ -54,6 +58,12 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     Analytics.sendCurrentScreen(Screen.login_screen);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
   }
 
   @override
@@ -99,14 +109,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(0),
                     onPressed: () async {
                       createDefaultTags(context);
-                      var result = await PhotoManager.requestPermission();
-                      if (result) {
-                        DatabaseManager.instance.hasGalleryPermission = true;
-                        Navigator.pushReplacementNamed(context, TabsScreen.id);
-                      } else {
-                        DatabaseManager.instance.hasGalleryPermission = false;
-                        Navigator.pushReplacementNamed(context, TabsScreen.id);
-                      }
+                      await appStore.requestGalleryPermission();
+                      Navigator.pushReplacementNamed(context, TabsScreen.id);
                     },
                     child: Container(
                       height: 44.0,

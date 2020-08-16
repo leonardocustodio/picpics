@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs/pic_tab.dart';
 import 'package:picPics/tabs/tagged_tab.dart';
@@ -45,6 +46,7 @@ class TabsScreen extends StatefulWidget {
 }
 
 class _TabsScreenState extends State<TabsScreen> {
+  AppStore appStore;
   TabsStore tabsStore;
 
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
@@ -420,6 +422,7 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
   }
 
@@ -446,104 +449,104 @@ class _TabsScreenState extends State<TabsScreen> {
             value: SystemUiOverlayStyle.dark,
             child: Stack(
               children: <Widget>[
-                if (!Provider.of<DatabaseManager>(context).hasGalleryPermission)
-                  Container(
-                    constraints: BoxConstraints.expand(),
-                    color: kWhiteColor,
-                    child: SafeArea(
-                      child: Stack(
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: <Widget>[
-                                CupertinoButton(
-                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  onPressed: () {
-                                    Navigator.pushNamed(context, SettingsScreen.id);
-                                  },
-                                  child: Image.asset('lib/images/settings.png'),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 30.0),
-                                  child: Image.asset('lib/images/nogalleryauth.png'),
-                                ),
-                                SizedBox(
-                                  height: 21.0,
-                                ),
-                                Text(
-                                  S.of(context).gallery_access_permission_description,
-                                  textScaleFactor: 1.0,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff979a9b),
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.normal,
+                Observer(builder: (_) {
+                  Widget wgt;
+                  if (!appStore.hasGalleryPermission) {
+                    wgt = Container(
+                      constraints: BoxConstraints.expand(),
+                      color: kWhiteColor,
+                      child: SafeArea(
+                        child: Stack(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  CupertinoButton(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, SettingsScreen.id);
+                                    },
+                                    child: Image.asset('lib/images/settings.png'),
                                   ),
-                                ),
-                                SizedBox(
-                                  height: 17.0,
-                                ),
-                                CupertinoButton(
-                                  padding: const EdgeInsets.all(0),
-                                  onPressed: () {
-                                    PhotoManager.openSetting();
-                                  },
-                                  child: Container(
-                                    width: 201.0,
-                                    height: 44.0,
-                                    decoration: BoxDecoration(
-                                      gradient: kPrimaryGradient,
-                                      borderRadius: BorderRadius.circular(8),
+                                ],
+                              ),
+                            ),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 30.0),
+                                    child: Image.asset('lib/images/nogalleryauth.png'),
+                                  ),
+                                  SizedBox(
+                                    height: 21.0,
+                                  ),
+                                  Text(
+                                    S.of(context).gallery_access_permission_description,
+                                    textScaleFactor: 1.0,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff979a9b),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
                                     ),
-                                    child: Center(
-                                      child: Text(
-                                        S.of(context).gallery_access_permission,
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          color: kWhiteColor,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w700,
-                                          fontStyle: FontStyle.normal,
-                                          letterSpacing: -0.4099999964237213,
+                                  ),
+                                  SizedBox(
+                                    height: 17.0,
+                                  ),
+                                  CupertinoButton(
+                                    padding: const EdgeInsets.all(0),
+                                    onPressed: () {
+                                      PhotoManager.openSetting();
+                                    },
+                                    child: Container(
+                                      width: 201.0,
+                                      height: 44.0,
+                                      decoration: BoxDecoration(
+                                        gradient: kPrimaryGradient,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          S.of(context).gallery_access_permission,
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: kWhiteColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
+                                            fontStyle: FontStyle.normal,
+                                            letterSpacing: -0.4099999964237213,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                Observer(builder: (_) {
-                  Widget wgt;
-                  if (tabsStore.currentTab == 0 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                    );
+                  } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
                     wgt = UntaggedTab(
                       pathProvider: pathProvider,
                       deviceHasNoPics: deviceHasNoPics,
                       showPhotoCardModal: showPhotoCardModal,
                     );
-                  if (tabsStore.currentTab == 1 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                  else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
                     wgt = PicTab(
                       deviceHasNoPics: deviceHasNoPics,
                       showEditTagModal: showEditTagModal,
                       trashPic: trashPic,
                     );
-                  if (tabsStore.currentTab == 2 && Provider.of<DatabaseManager>(context).hasGalleryPermission)
+                  else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission)
                     wgt = TaggedTab(
                       setTabIndex: setTabIndex,
                       setIsLoading: setIsLoading,

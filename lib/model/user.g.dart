@@ -8,13 +8,13 @@ part of 'user.dart';
 
 class UserAdapter extends TypeAdapter<User> {
   @override
-  final typeId = 2;
+  final int typeId = 2;
 
   @override
   User read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return User(
       id: fields[0] as String,
@@ -34,13 +34,14 @@ class UserAdapter extends TypeAdapter<User> {
       appLanguage: fields[14] as String,
       appVersion: fields[15] as String,
       hasSwiped: fields[16] as bool,
+      hasGalleryPermission: fields[17] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -74,7 +75,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(15)
       ..write(obj.appVersion)
       ..writeByte(16)
-      ..write(obj.hasSwiped);
+      ..write(obj.hasSwiped)
+      ..writeByte(17)
+      ..write(obj.hasGalleryPermission);
   }
 
   @override
