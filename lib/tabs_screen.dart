@@ -14,6 +14,7 @@ import 'package:picPics/premium_screen.dart';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs/pic_tab.dart';
 import 'package:picPics/tabs/tagged_tab.dart';
@@ -48,6 +49,7 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   AppStore appStore;
   TabsStore tabsStore;
+  GalleryStore galleryStore;
 
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
@@ -424,6 +426,7 @@ class _TabsScreenState extends State<TabsScreen> {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
+    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   @override

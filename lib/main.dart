@@ -11,6 +11,7 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/premium_screen.dart';
@@ -182,6 +183,9 @@ class _PicPicsAppState extends State<PicPicsApp> {
       providers: [
         Provider<AppStore>.value(
           value: appStore,
+        ),
+        Provider<GalleryStore>.value(
+          value: GalleryStore(),
         ),
         Provider<TabsStore>.value(
           value: TabsStore(appStore: appStore),
