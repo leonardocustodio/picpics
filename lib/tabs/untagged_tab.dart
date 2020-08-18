@@ -67,7 +67,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
       movedGridPositionFirstTab();
     });
 
-    int itemCount = galleryStore.isLoaded ? galleryStore.entities.length : 0;
+    int itemCount = galleryStore.isLoaded ? galleryStore.pics.length : 0;
     print('#!#@#!# Number of photos: $itemCount');
 
     return StaggeredGridView.countBuilder(
@@ -92,8 +92,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //      return Container();
 //    }
 
-    print('Item Count: ${galleryStore.entities.length}');
-    var data = galleryStore.entities[index];
+    print('Item Count: ${galleryStore.pics.length}');
+    var data = galleryStore.pics[index].entity;
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     print('Build Item: $index');
 

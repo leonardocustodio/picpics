@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:mobx/mobx.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/model/pic.dart';
 import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 
 part 'gallery_store.g.dart';
 
@@ -21,11 +25,11 @@ abstract class _GalleryStore with Store {
   bool isLoaded = false;
 
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
-  ObservableList<AssetEntity> entities = ObservableList<AssetEntity>();
+  ObservableList<PicStore> pics = ObservableList<PicStore>();
 
   @computed
   bool get deviceHasPics {
-    if (entities.length == 0) {
+    if (pics.length == 0) {
       return false;
     } else {
       return true;
@@ -36,8 +40,22 @@ abstract class _GalleryStore with Store {
   Future<void> loadEntities() async {
     AssetPathEntity assetPathEntity = assetsPath[0];
     final List<AssetEntity> list = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
-    entities.addAll(list);
-    print('#@#@#@# Total photos: ${entities.length}');
+
+    List<PicStore> picsList = [];
+
+    for (AssetEntity entity in list) {
+      PicStore pic = PicStore(
+        entity: entity,
+        photoId: entity.id,
+        createdAt: entity.createDateTime,
+        originalLatitude: entity.latitude,
+        originalLongitude: entity.longitude,
+      );
+      picsList.add(pic);
+    }
+    pics.addAll(picsList);
+
+    print('#@#@#@# Total photos: ${pics.length}');
     isLoaded = true;
   }
 
