@@ -14,7 +14,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
+import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/languages.dart';
+import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
@@ -285,6 +287,8 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void sliderHasPics() {
+//    GalleryStore galleryStore = Provider.of<GalleryStore>(context, listen: false);
+
     AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
 

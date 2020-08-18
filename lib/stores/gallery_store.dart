@@ -23,6 +23,15 @@ abstract class _GalleryStore with Store {
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
   ObservableList<AssetEntity> entities = ObservableList<AssetEntity>();
 
+  @computed
+  bool get deviceHasPics {
+    if (entities.length == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   @action
   Future<void> loadEntities() async {
     AssetPathEntity assetPathEntity = assetsPath[0];

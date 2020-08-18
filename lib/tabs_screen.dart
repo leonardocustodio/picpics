@@ -69,8 +69,6 @@ class _TabsScreenState extends State<TabsScreen> {
   Throttle _changeThrottle;
 
   bool isLoading = false;
-  bool deviceHasNoPics = false;
-
   bool modalPhotoCard = false;
 
   void trashPics() async {
@@ -182,7 +180,7 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   void initState() {
     super.initState();
-    _loadPhotos();
+//    _loadPhotos();
 
     KeyboardVisibility.onChange.listen((bool visible) {
       print('keyboard: $visible');
@@ -288,15 +286,16 @@ class _TabsScreenState extends State<TabsScreen> {
 
         // picSwiper = 0;
         // carouselController.jumpToPage(0);
-        if (deviceHasNoPics) {
-          deviceHasNoPics = false;
+        if (!galleryStore.deviceHasPics) {
+          // ver isso aqui - mudei hoje 17/08
+//          deviceHasNoPics = false;
         }
       });
     }
   }
 
   setTabIndex(int index) async {
-    if (deviceHasNoPics) {
+    if (!galleryStore.deviceHasPics) {
       Analytics.sendCurrentTab(index);
       print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
       tabsStore.setCurrentTab(index);
@@ -382,33 +381,33 @@ class _TabsScreenState extends State<TabsScreen> {
     );
   }
 
-  void _setDeviceHasNoPics() {
-    print('This device has no pics!!!!');
-    setState(() {
-      deviceHasNoPics = true;
-    });
-    return;
-  }
+//  void _setDeviceHasNoPics() {
+//    print('This device has no pics!!!!');
+//    setState(() {
+//      deviceHasNoPics = true;
+//    });
+//    return;
+//  }
 
   void _loadPhotos({shouldReload = false}) async {
     print('Loading photos.....');
     if (PhotoProvider.instance.list.isEmpty) {
-      await PhotoProvider.instance.refreshGalleryList();
-      print('LISTA: ${PhotoProvider.instance.list}');
+//      await PhotoProvider.instance.refreshGalleryList();
+//      print('LISTA: ${PhotoProvider.instance.list}');
 
-      if (PhotoProvider.instance.list.length == 0) {
-        _setDeviceHasNoPics();
-        return;
-      }
+//      if (PhotoProvider.instance.list.length == 0) {
+//        _setDeviceHasNoPics();
+//        return;
+//      }
 
-      PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
-      await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
+//      PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
+//      await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
 //      _checkTaggedPics()
 
       DatabaseManager.instance.sliderHasPics();
-      setState(() {
-        deviceHasNoPics = false;
-      });
+//      setState(() {
+//        deviceHasNoPics = false;
+//      });
     }
 
     DatabaseManager.instance.checkHasTaggedPhotos();
@@ -539,13 +538,13 @@ class _TabsScreenState extends State<TabsScreen> {
                     );
                   } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
                     wgt = UntaggedTab(
-                      pathProvider: pathProvider,
-                      deviceHasNoPics: deviceHasNoPics,
+//                      pathProvider: pathProvider,
+//                      deviceHasNoPics: !galleryStore.deviceHasPics,
                       showPhotoCardModal: showPhotoCardModal,
                     );
                   else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
                     wgt = PicTab(
-                      deviceHasNoPics: deviceHasNoPics,
+                      deviceHasNoPics: !galleryStore.deviceHasPics,
                       showEditTagModal: showEditTagModal,
                       trashPic: trashPic,
                     );
@@ -553,7 +552,7 @@ class _TabsScreenState extends State<TabsScreen> {
                     wgt = TaggedTab(
                       setTabIndex: setTabIndex,
                       setIsLoading: setIsLoading,
-                      deviceHasNoPics: deviceHasNoPics,
+                      deviceHasNoPics: !galleryStore.deviceHasPics,
                       showEditTagModal: showEditTagModal,
                       showPhotoCardModal: showPhotoCardModal,
                     );
