@@ -27,6 +27,14 @@ abstract class _GalleryStore with Store {
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
   ObservableList<PicStore> pics = ObservableList<PicStore>();
 
+  @observable
+  PicStore currentPic;
+
+  @action
+  void setCurrentPic(PicStore pic) {
+    currentPic = pic;
+  }
+
   @computed
   bool get deviceHasPics {
     if (pics.length == 0) {

@@ -5,7 +5,6 @@ import 'package:picPics/database_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -157,6 +156,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
               DatabaseManager.instance.selectedPhotoIndex = index;
 
+              galleryStore.setCurrentPic(galleryStore.pics[index]);
               widget.showPhotoCardModal();
             },
             child: ImageItem(

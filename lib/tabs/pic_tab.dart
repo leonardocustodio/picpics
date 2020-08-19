@@ -4,6 +4,7 @@ import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:picPics/stores/gallery_store.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -30,6 +31,8 @@ class PicTab extends StatefulWidget {
 }
 
 class _PicTabState extends State<PicTab> {
+  GalleryStore galleryStore;
+
   CarouselController carouselController = CarouselController();
 //  int picSwiper = 0;
 
@@ -37,11 +40,7 @@ class _PicTabState extends State<PicTab> {
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
     print('photo slides index: $index');
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-
-    int orderedIndex = DatabaseManager.instance.sliderIndex[index];
-    print('Slider index in index $index: $orderedIndex');
-    var data = pathProvider.orderedList[orderedIndex];
+    var data = galleryStore.pics[index].entity;
 
     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
 
@@ -91,16 +90,19 @@ class _PicTabState extends State<PicTab> {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
-        data: data,
-        photoId: picInfo.photoId,
-        specificLocation: picInfo.specificLocation,
-        generalLocation: picInfo.generalLocation,
+        picStore: galleryStore.pics[index],
         showEditTagModal: widget.showEditTagModal,
         onPressedTrash: () {
           widget.trashPic(data);
         },
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   @override
@@ -134,61 +136,61 @@ class _PicTabState extends State<PicTab> {
                 ],
               ),
             ),
-            if (Provider.of<DatabaseManager>(context).sliderIndex == null && !widget.deviceHasNoPics)
-              Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-                  ),
-                ),
-              ),
-            if (Provider.of<DatabaseManager>(context).sliderIndex == null && widget.deviceHasNoPics)
-              Expanded(
-                child: DeviceHasNoPics(),
-              ),
-            if (Provider.of<DatabaseManager>(context).sliderIndex != null)
-              Expanded(
-                child: Stack(
-                  children: <Widget>[
-                    CarouselSlider.builder(
-                      itemCount: Provider.of<DatabaseManager>(context).sliderIndex.length,
-                      carouselController: carouselController,
-                      itemBuilder: (BuildContext context, int index) {
-                        print('calling index $index');
-                        return _buildPhotoSlider(context, index);
+//            if (Provider.of<DatabaseManager>(context).sliderIndex == null && galleryStore.deviceHasPics)
+//              Expanded(
+//                child: Center(
+//                  child: CircularProgressIndicator(
+//                    valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+//                  ),
+//                ),
+//              ),
+//            if (Provider.of<DatabaseManager>(context).sliderIndex == null && !galleryStore.deviceHasPics)
+//              Expanded(
+//                child: DeviceHasNoPics(),
+//              ),
+//            if (Provider.of<DatabaseManager>(context).sliderIndex != null)
+            Expanded(
+              child: Stack(
+                children: <Widget>[
+                  CarouselSlider.builder(
+                    itemCount: galleryStore.pics.length,
+                    carouselController: carouselController,
+                    itemBuilder: (BuildContext context, int index) {
+                      print('calling index $index');
+                      return _buildPhotoSlider(context, index);
+                    },
+                    options: CarouselOptions(
+                      initialPage: DatabaseManager.instance.swiperIndex,
+                      enableInfiniteScroll: true,
+                      height: double.maxFinite,
+                      viewportFraction: 1.0,
+                      enlargeCenterPage: true,
+                      autoPlayCurve: Curves.fastOutSlowIn,
+                      onPageChanged: (index, reason) async {
+                        if (!DatabaseManager.instance.userSettings.hasSwiped) {
+                          DatabaseManager.instance.setUserHasSwiped();
+                        }
+                        Analytics.sendEvent(Event.swiped_photo);
+                        print('### Swiper Index: $index');
                       },
-                      options: CarouselOptions(
-                        initialPage: DatabaseManager.instance.swiperIndex,
-                        enableInfiniteScroll: true,
-                        height: double.maxFinite,
-                        viewportFraction: 1.0,
-                        enlargeCenterPage: true,
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        onPageChanged: (index, reason) async {
-                          if (!DatabaseManager.instance.userSettings.hasSwiped) {
-                            DatabaseManager.instance.setUserHasSwiped();
-                          }
-                          Analytics.sendEvent(Event.swiped_photo);
-                          print('### Swiper Index: $index');
-                        },
-                      ),
                     ),
-                    if (!Provider.of<DatabaseManager>(context).userSettings.hasSwiped)
-                      IgnorePointer(
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 150.0),
-                          child: FlareActor(
-                            'lib/anims/swipe_left.flr',
-                            alignment: Alignment.topCenter,
-                            fit: BoxFit.contain,
-                            animation: 'Animations',
+                  ),
+                  if (!Provider.of<DatabaseManager>(context).userSettings.hasSwiped)
+                    IgnorePointer(
+                      child: Container(
+                        padding: const EdgeInsets.only(top: 150.0),
+                        child: FlareActor(
+                          'lib/anims/swipe_left.flr',
+                          alignment: Alignment.topCenter,
+                          fit: BoxFit.contain,
+                          animation: 'Animations',
 //                            color: kWhiteColor,
-                          ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
+            ),
           ],
         ),
       ),

@@ -354,14 +354,14 @@ class _TabsScreenState extends State<TabsScreen> {
       }
       DatabaseManager.instance.slideThumbPhotoIds = photosIds;
     } else if (index == 1) {
-      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-      List<String> photosIds = [];
-      for (int x = 0; x < DatabaseManager.instance.sliderIndex.length; x++) {
-        int orderedIndex = DatabaseManager.instance.sliderIndex[x];
-        AssetEntity entity = pathProvider.orderedList[orderedIndex];
-        photosIds.add(entity.id);
-      }
-      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
+//      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//      List<String> photosIds = [];
+//      for (int x = 0; x < DatabaseManager.instance.sliderIndex.length; x++) {
+//        int orderedIndex = DatabaseManager.instance.sliderIndex[x];
+//        AssetEntity entity = pathProvider.orderedList[orderedIndex];
+//        photosIds.add(entity.id);
+//      }
+//      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
     }
 
     print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
@@ -897,13 +897,14 @@ class _TabsScreenState extends State<TabsScreen> {
                           top: bottomInsets > 0 ? 5 : 46.0,
                         ),
                         child: PhotoCard(
-                          data: DatabaseManager.instance.selectedPhotoData,
-                          photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
+                          picStore: galleryStore.currentPic,
+//                          data: DatabaseManager.instance.selectedPhotoData,
+//                          photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
 //                          picSwiper: -1,
 //                          index: DatabaseManager.instance.selectedPhotoIndex,
 //                          tagsEditingController: tagsEditingController,
-                          specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
-                          generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
+//                          specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
+//                          generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
                           showEditTagModal: showEditTagModal,
                           onPressedTrash: () {
                             trashPic(DatabaseManager.instance.selectedPhotoData);

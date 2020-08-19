@@ -32,6 +32,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$currentPicAtom = Atom(name: '_GalleryStore.currentPic');
+
+  @override
+  PicStore get currentPic {
+    _$currentPicAtom.reportRead();
+    return super.currentPic;
+  }
+
+  @override
+  set currentPic(PicStore value) {
+    _$currentPicAtom.reportWrite(value, super.currentPic, () {
+      super.currentPic = value;
+    });
+  }
+
   final _$loadEntitiesAsyncAction = AsyncAction('_GalleryStore.loadEntities');
 
   @override
@@ -47,10 +62,25 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return _$loadAssetsPathAsyncAction.run(() => super.loadAssetsPath());
   }
 
+  final _$_GalleryStoreActionController =
+      ActionController(name: '_GalleryStore');
+
+  @override
+  void setCurrentPic(PicStore pic) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setCurrentPic');
+    try {
+      return super.setCurrentPic(pic);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
 isLoaded: ${isLoaded},
+currentPic: ${currentPic},
 deviceHasPics: ${deviceHasPics}
     ''';
   }

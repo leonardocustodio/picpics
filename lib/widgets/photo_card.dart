@@ -9,6 +9,8 @@ import 'package:picPics/photo_screen.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/premium_screen.dart';
+import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -21,20 +23,15 @@ import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'dart:math';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:provider/provider.dart';
 
 class PhotoCard extends StatefulWidget {
-  final AssetEntity data;
-  final String photoId;
-  final String specificLocation;
-  final String generalLocation;
+  final PicStore picStore;
   final Function showEditTagModal;
   final Function onPressedTrash;
 
   PhotoCard({
-    this.data,
-    this.photoId,
-    this.specificLocation,
-    this.generalLocation,
+    this.picStore,
     this.showEditTagModal,
     this.onPressedTrash,
   });
@@ -44,6 +41,8 @@ class PhotoCard extends StatefulWidget {
 }
 
 class _PhotoCardState extends State<PhotoCard> {
+  PicStore get picStore => widget.picStore;
+
   TextEditingController tagsEditingController = TextEditingController();
   FocusNode tagsFocusNode;
 
@@ -73,16 +72,15 @@ class _PhotoCardState extends State<PhotoCard> {
   }
 
   Future<List<String>> reverseGeocoding(BuildContext context, Pic picInfo) async {
-    if (widget.specificLocation != null && widget.generalLocation != null) {
-      return [widget.specificLocation, '  ${widget.generalLocation}'];
+    if (picStore.specificLocation != null && picStore.generalLocation != null) {
+      return [picStore.specificLocation, '  ${picStore.generalLocation}'];
     }
 
-    if ((picInfo.originalLatitude == null || picInfo.originalLongitude == null) ||
-        (picInfo.originalLatitude == 0 && picInfo.originalLongitude == 0)) {
+    if ((picInfo.originalLatitude == null || picInfo.originalLongitude == null) || (picInfo.originalLatitude == 0 && picInfo.originalLongitude == 0)) {
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
-    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(widget.data.latitude, widget.data.longitude);
+    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(picStore.entity.latitude, picStore.entity.longitude);
 
     print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -140,15 +138,15 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   Widget build(BuildContext context) {
-    Pic picInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
+    Pic picInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
     print('Suggestions: ${DatabaseManager.instance.suggestionTags}');
 
     if (picInfo == null) {
       picInfo = Pic(
-        widget.data.id,
-        widget.data.createDateTime,
-        widget.data.latitude,
-        widget.data.longitude,
+        picStore.entity.id,
+        picStore.entity.createDateTime,
+        picStore.entity.latitude,
+        picStore.entity.longitude,
         null,
         null,
         null,
@@ -201,10 +199,10 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/expandnobackground.png'),
                     color: kSecondaryColor,
                     onTap: () {
-                      DatabaseManager.instance.selectedPhoto = widget.data;
-                      print('Selected photo: ${widget.data.id}');
+                      DatabaseManager.instance.selectedPhoto = picStore.entity;
+                      print('Selected photo: ${picStore.entity.id}');
 
-                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(widget.data.id);
+                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
 
 //                      Navigator.pushNamed(context, PhotoScreen.id);
 
@@ -221,7 +219,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/sharenobackground.png'),
                     color: kPrimaryColor,
                     onTap: () {
-                      DatabaseManager.instance.sharePic(widget.data);
+                      DatabaseManager.instance.sharePic(picStore.entity);
                     }),
                 CircularMenuItem(
                   image: Image.asset('lib/images/trashnobackground.png'),
@@ -235,7 +233,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   topRight: Radius.circular(12.0),
                 ),
                 child: ImageItem(
-                  entity: widget.data,
+                  entity: picStore.entity,
                   size: 600,
                   backgroundColor: Colors.grey[400],
                 ),
@@ -253,7 +251,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () async {
-                        DatabaseManager.instance.selectedPhoto = widget.data;
+                        DatabaseManager.instance.selectedPhoto = picStore.entity;
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: FutureBuilder(
@@ -358,7 +356,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           }),
                     ),
                     Text(
-                      dateFormat(widget.data.createDateTime),
+                      dateFormat(picStore.entity.createDateTime),
                       textScaleFactor: 1.0,
                       style: TextStyle(
                         fontFamily: 'Lato',
@@ -411,15 +409,15 @@ class _PhotoCardState extends State<PhotoCard> {
                         return;
                       }
 
-                      DatabaseManager.instance.selectedPhoto = widget.data;
+                      DatabaseManager.instance.selectedPhoto = picStore.entity;
                       DatabaseManager.instance.addTag(
                         tagName: text,
-                        photoId: widget.data.id,
+                        photoId: picStore.entity.id,
                       );
                       Vibrate.feedback(FeedbackType.success);
                       tagsEditingController.clear();
 
-                      Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
+                      Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
                       print('Updated picinfo - tags length: ${updatedPicInfo.tags.length}');
                       refreshTagSuggestions(updatedPicInfo);
                     }
@@ -438,14 +436,14 @@ class _PhotoCardState extends State<PhotoCard> {
                         return;
                       }
 
-                      DatabaseManager.instance.selectedPhoto = widget.data;
+                      DatabaseManager.instance.selectedPhoto = picStore.entity;
                       await DatabaseManager.instance.addTag(
                         tagName: tagName,
                         photoId: picInfo.photoId,
                       );
                       tagsEditingController.clear();
 
-                      Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
+                      Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
                       print('Updated picinfo - tags length: ${updatedPicInfo.tags.length}');
                       refreshTagSuggestions(updatedPicInfo);
                     },
