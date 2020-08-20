@@ -1,11 +1,11 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/database_manager.dart';
 import 'package:picPics/login_screen.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/push_notifications_manager.dart';
@@ -76,6 +76,10 @@ abstract class _AppStore with Store {
 
     // Executa primeira vez para ver se ainda tem permissão
     checkNotificationPermission();
+
+    if (user.isPremium) {
+      checkPremiumStatus();
+    }
 
     autorun((_) {
       print('autorun');
@@ -182,6 +186,24 @@ abstract class _AppStore with Store {
 
   @observable
   bool isPremium = false;
+
+  @action
+  void setIsPremium(bool value) {
+    isPremium = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.isPremium = value;
+    currentUser.save();
+  }
+
+  @action
+  Future<void> checkPremiumStatus() async {
+    bool premium = await DatabaseManager.instance.checkPremiumStatus();
+    if (!premium) {
+      setIsPremium(false);
+    }
+  }
 
 //  List<String> recentTags;
 

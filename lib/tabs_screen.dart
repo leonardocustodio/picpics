@@ -393,10 +393,6 @@ class _TabsScreenState extends State<TabsScreen> {
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
     }
-
-    if (appStore.isPremium) {
-      DatabaseManager.instance.checkPremiumStatus();
-    }
   }
 
   @override

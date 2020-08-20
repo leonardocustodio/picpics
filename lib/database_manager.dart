@@ -314,27 +314,21 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setCurrentTab(int tab, {bool notify = true}) {
-    currentTab = tab;
-    if (notify) {
-      notifyListeners();
-    }
-  }
-
-  void checkPremiumStatus() async {
+  Future<bool> checkPremiumStatus() async {
     try {
       PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
       if (purchaserInfo.entitlements.all["Premium"].isActive) {
         // Grant user "pro" access
         print('you are still premium');
+        return true;
       } else {
         print('not premium anymore');
-        setUserAsNotPremium();
+        return false;
       }
-
       // access latest purchaserInfo
     } on PlatformException catch (e) {
       // Error fetching purchaser info
+      return null;
     }
   }
 
@@ -373,19 +367,19 @@ class DatabaseManager extends ChangeNotifier {
     setCanTagToday(true);
   }
 
-  void setUserAsPremium() {
-    var userBox = Hive.box('user');
-    userSettings.isPremium = true;
-    userBox.putAt(0, userSettings);
-    notifyListeners();
-  }
-
-  void setUserAsNotPremium() {
-    var userBox = Hive.box('user');
-    userSettings.isPremium = false;
-    userBox.putAt(0, userSettings);
-    notifyListeners();
-  }
+//  void setUserAsPremium() {
+//    var userBox = Hive.box('user');
+//    userSettings.isPremium = true;
+//    userBox.putAt(0, userSettings);
+//    notifyListeners();
+//  }
+//
+//  void setUserAsNotPremium() {
+//    var userBox = Hive.box('user');
+//    userSettings.isPremium = false;
+//    userBox.putAt(0, userSettings);
+//    notifyListeners();
+//  }
 
   void loadRemoteConfig() async {
     print('loading remote config....');
@@ -393,18 +387,12 @@ class DatabaseManager extends ChangeNotifier {
     // Enable developer mode to relax fetch throttling
     remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
     remoteConfig.setDefaults(<String, dynamic>{
-      'daily_pics_for_ads': 50,
+      'daily_pics_for_ads': 25,
     });
 
     await remoteConfig.fetch(expiration: const Duration(hours: 5));
     await remoteConfig.activateFetched();
     print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
-  }
-
-  void loadUserSettings() async {
-//    var userBox = Hive.box('user');
-//    User getUser = await userBox.getAt(0);
-//    userSettings = getUser;
   }
 
   void changeUserLanguage(String appLanguage, {bool notify = true}) {

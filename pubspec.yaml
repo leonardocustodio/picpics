@@ -11,9 +11,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  provider: ^4.3.2
-  photo_view: ^0.10.0
-  photo_manager: ^0.5.7
+  provider: ^4.3.2+1
+  photo_view: ^0.10.1
+  photo_manager: ^0.5.8
   flutter_swiper: ^1.1.6
   firebase_core: ^0.4.4+3
   rate_my_app: ^0.7.0
@@ -27,7 +27,7 @@ dependencies:
   after_layout: ^1.0.7+2
   flutter_staggered_grid_view: ^0.3.2
   outline_gradient_button: ^1.0.0+2
-  flutter_local_notifications: ^1.4.4+3
+  flutter_local_notifications: ^1.4.4+4
   firebase_messaging: ^6.0.15
   firebase_analytics: ^5.0.16
   firebase_crashlytics: ^0.1.4+1
@@ -56,10 +56,8 @@ dependencies:
   path_provider: ^1.6.11
   bubble_bottom_bar: ^1.2.0
   flutter_inapp_purchase: ^2.2.0
-#  flutter_uxcam: ^1.1.1
   mobx: ^1.2.1+2
   flutter_mobx: ^1.1.0+2
-#  facebook_audience_network: ^0.6.2
 
 dev_dependencies:
   flutter_test:

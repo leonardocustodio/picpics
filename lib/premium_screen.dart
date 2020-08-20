@@ -6,7 +6,9 @@ import 'package:picPics/components/arrow_painter.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
+import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,6 +22,8 @@ class PremiumScreen extends StatefulWidget {
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
+  AppStore appStore;
+
   List<Package> _items = [];
   bool isLoading = false;
   PurchasesErrorCode getOfferingError;
@@ -83,7 +87,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
         });
 
         print('know you are fucking pro!');
-        DatabaseManager.instance.setUserAsPremium();
+
+        appStore.setIsPremium(true);
         Navigator.pop(context);
       }
     } on PlatformException catch (e) {
@@ -114,7 +119,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         });
         // Unlock that great "pro" content
         print('know you are fucking pro!');
-        DatabaseManager.instance.setUserAsPremium();
+        appStore.setIsPremium(true);
         Navigator.pop(context);
       } else {
         setState(() {
@@ -491,6 +496,12 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ),
       ],
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
   }
 
   @override

@@ -216,6 +216,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setIsPremium(bool value) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.setIsPremium');
+    try {
+      return super.setIsPremium(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setTutorialCompleted(bool value) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.setTutorialCompleted');
