@@ -84,6 +84,21 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
+  final _$tutorialIndexAtom = Atom(name: '_TabsStore.tutorialIndex');
+
+  @override
+  int get tutorialIndex {
+    _$tutorialIndexAtom.reportRead();
+    return super.tutorialIndex;
+  }
+
+  @override
+  set tutorialIndex(int value) {
+    _$tutorialIndexAtom.reportWrite(value, super.tutorialIndex, () {
+      super.tutorialIndex = value;
+    });
+  }
+
   final _$_TabsStoreActionController = ActionController(name: '_TabsStore');
 
   @override
@@ -142,13 +157,25 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
+  void setTutorialIndex(int value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setTutorialIndex');
+    try {
+      return super.setTutorialIndex(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 currentTab: ${currentTab},
 multiPicBar: ${multiPicBar},
 multiTagSheet: ${multiTagSheet},
 isLoading: ${isLoading},
-modalCard: ${modalCard}
+modalCard: ${modalCard},
+tutorialIndex: ${tutorialIndex}
     ''';
   }
 }

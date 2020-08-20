@@ -58,4 +58,10 @@ abstract class _TabsStore with Store {
   void setModalCard(bool value) {
     modalCard = value;
   }
+
+  @observable
+  int tutorialIndex = 0;
+
+  @action
+  void setTutorialIndex(int value) => tutorialIndex = value;
 }

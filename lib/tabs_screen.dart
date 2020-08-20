@@ -54,7 +54,6 @@ class _TabsScreenState extends State<TabsScreen> {
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
 
   // Swiper do Tutorial
-  int tutorialSwiperIndex = 0;
   SwiperController tutorialSwiperController = SwiperController();
 
   TextEditingController tagsEditingController = TextEditingController();
@@ -898,179 +897,177 @@ class _TabsScreenState extends State<TabsScreen> {
           }
           return Container();
         }),
-//        Container(
-//          color: Colors.black.withOpacity(0.4),
-//        ),
         Observer(builder: (_) {
           if (appStore.tutorialCompleted == false) {
-            return Material(
-              color: Colors.transparent,
-              child: Center(
-                child: Container(
-                  height: 609.0,
-                  width: 343.0,
-                  decoration: BoxDecoration(
-                    color: kWhiteColor,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        Text(
-                          S.of(context).welcome,
-                          textScaleFactor: 1.0,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff979a9b),
-                            fontSize: 24,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
+            return Container(
+              color: Colors.black.withOpacity(0.6),
+              child: Material(
+                color: Colors.transparent,
+                child: Center(
+                  child: Container(
+                    height: 609.0,
+                    width: 343.0,
+                    decoration: BoxDecoration(
+                      color: kWhiteColor,
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: <Widget>[
+                          Text(
+                            S.of(context).welcome,
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: Color(0xff979a9b),
+                              fontSize: 24,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: -0.4099999964237213,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 40.0,
-                        ),
-                        Expanded(
-                          child: new Swiper(
-                            loop: false,
-                            itemBuilder: (BuildContext context, int index) {
-                              String text = '';
-                              Image image;
+                          SizedBox(
+                            height: 40.0,
+                          ),
+                          Expanded(
+                            child: new Swiper(
+                              loop: false,
+                              itemBuilder: (BuildContext context, int index) {
+                                String text = '';
+                                Image image;
 
-                              if (index == 0) {
-                                text = S.of(context).tutorial_just_swipe;
-                                image = Image.asset('lib/images/tutorialthirdimage.png');
-                              } else if (index == 1) {
-                                text = S.of(context).tutorial_however_you_want;
-                                image = Image.asset('lib/images/tutorialsecondimage.png');
-                              } else {
-                                text = S.of(context).tutorial_daily_package;
-                                image = Image.asset('lib/images/tutorialfirstimage.png');
-                              }
+                                if (index == 0) {
+                                  text = S.of(context).tutorial_just_swipe;
+                                  image = Image.asset('lib/images/tutorialthirdimage.png');
+                                } else if (index == 1) {
+                                  text = S.of(context).tutorial_however_you_want;
+                                  image = Image.asset('lib/images/tutorialsecondimage.png');
+                                } else {
+                                  text = S.of(context).tutorial_daily_package;
+                                  image = Image.asset('lib/images/tutorialfirstimage.png');
+                                }
 
-                              return Column(
-                                children: <Widget>[
-                                  image,
-                                  SizedBox(
-                                    height: 28.0,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                    child: Text(
-                                      text,
-                                      textScaleFactor: 1.0,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff707070),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
+                                return Column(
+                                  children: <Widget>[
+                                    image,
+                                    SizedBox(
+                                      height: 28.0,
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      child: Text(
+                                        text,
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff707070),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            },
-                            itemCount: 3,
-                            controller: tutorialSwiperController,
-                            onIndexChanged: (index) {
-                              setState(() {
-                                tutorialSwiperIndex = index;
-                              });
-                            },
-                            pagination: new SwiperCustomPagination(
-                              builder: (BuildContext context, SwiperPluginConfig config) {
-                                return Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Container(
-                                        height: 8.0,
-                                        width: 8.0,
-                                        decoration: BoxDecoration(
-                                          color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
-                                          borderRadius: BorderRadius.circular(4.0),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 8.0,
-                                        width: 8.0,
-                                        margin: const EdgeInsets.only(left: 24.0, right: 24.0),
-                                        decoration: BoxDecoration(
-                                          color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
-                                          borderRadius: BorderRadius.circular(4.0),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 8.0,
-                                        width: 8.0,
-                                        decoration: BoxDecoration(
-                                          color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
-                                          borderRadius: BorderRadius.circular(4.0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  ],
                                 );
                               },
+                              itemCount: 3,
+                              controller: tutorialSwiperController,
+                              onIndexChanged: (index) {
+                                tabsStore.setTutorialIndex(index);
+                              },
+                              pagination: new SwiperCustomPagination(
+                                builder: (BuildContext context, SwiperPluginConfig config) {
+                                  return Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          height: 8.0,
+                                          width: 8.0,
+                                          decoration: BoxDecoration(
+                                            color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
+                                            borderRadius: BorderRadius.circular(4.0),
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 8.0,
+                                          width: 8.0,
+                                          margin: const EdgeInsets.only(left: 24.0, right: 24.0),
+                                          decoration: BoxDecoration(
+                                            color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
+                                            borderRadius: BorderRadius.circular(4.0),
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 8.0,
+                                          width: 8.0,
+                                          decoration: BoxDecoration(
+                                            color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
+                                            borderRadius: BorderRadius.circular(4.0),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          height: 17.0,
-                        ),
-                        CupertinoButton(
-                          onPressed: () {
-                            if (tutorialSwiperIndex == 2) {
-                              print('Requesting notification....');
+                          SizedBox(
+                            height: 17.0,
+                          ),
+                          CupertinoButton(
+                            onPressed: () {
+                              if (tabsStore.tutorialIndex == 2) {
+                                print('Requesting notification....');
 
-                              if (Platform.isAndroid) {
-                                var userBox = Hive.box('user');
-                                DatabaseManager.instance.userSettings.notifications = true;
-                                DatabaseManager.instance.userSettings.dailyChallenges = true;
-                                userBox.putAt(0, DatabaseManager.instance.userSettings);
-                              } else {
-                                PushNotificationsManager push = PushNotificationsManager();
-                                push.init();
+                                if (Platform.isAndroid) {
+                                  var userBox = Hive.box('user');
+                                  DatabaseManager.instance.userSettings.notifications = true;
+                                  DatabaseManager.instance.userSettings.dailyChallenges = true;
+                                  userBox.putAt(0, DatabaseManager.instance.userSettings);
+                                } else {
+                                  PushNotificationsManager push = PushNotificationsManager();
+                                  push.init();
+                                }
+                                DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
+                                appStore.setTutorialCompleted(true);
+                                return;
                               }
-                              DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
-                              DatabaseManager.instance.finishedTutorial();
-                              return;
-                            }
-                            tutorialSwiperController.next(animation: true);
-                          },
-                          padding: const EdgeInsets.all(0),
-                          child: Container(
-                            height: 44.0,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                            decoration: BoxDecoration(
-                              gradient: kPrimaryGradient,
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Center(
-                              child: Text(
-                                tutorialSwiperIndex == 2 ? S.of(context).start : S.of(context).next,
-                                textScaleFactor: 1.0,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kWhiteColor,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
+                              tutorialSwiperController.next(animation: true);
+                            },
+                            padding: const EdgeInsets.all(0),
+                            child: Container(
+                              height: 44.0,
+                              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                              decoration: BoxDecoration(
+                                gradient: kPrimaryGradient,
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  tabsStore.tutorialIndex == 2 ? S.of(context).start : S.of(context).next,
+                                  textScaleFactor: 1.0,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: kWhiteColor,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    fontStyle: FontStyle.normal,
+                                    letterSpacing: -0.4099999964237213,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

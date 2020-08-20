@@ -188,6 +188,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setTutorialCompleted(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setTutorialCompleted');
+    try {
+      return super.setTutorialCompleted(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void changeUserLanguage(String language) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.changeUserLanguage');

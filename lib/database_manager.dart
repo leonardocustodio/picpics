@@ -321,13 +321,6 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void finishedTutorial() {
-    var userBox = Hive.box('user');
-    userSettings.tutorialCompleted = true;
-    userBox.putAt(0, userSettings);
-    notifyListeners();
-  }
-
   void checkPremiumStatus() async {
     try {
       PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();

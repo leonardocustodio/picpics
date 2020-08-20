@@ -98,6 +98,16 @@ abstract class _AppStore with Store {
   @observable
   bool tutorialCompleted;
 
+  @action
+  void setTutorialCompleted(bool value) {
+    tutorialCompleted = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.tutorialCompleted = value;
+    currentUser.save();
+  }
+
   int picsTaggedToday;
 
   DateTime lastTaggedPicDate;
