@@ -416,85 +416,207 @@ class _TabsScreenState extends State<TabsScreen> {
 
     return Stack(
       children: <Widget>[
-        Scaffold(
-          body: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.dark,
-            child: Stack(
-              children: <Widget>[
-                Observer(builder: (_) {
-                  Widget wgt;
-                  if (!appStore.hasGalleryPermission) {
-                    wgt = Container(
-                      constraints: BoxConstraints.expand(),
-                      color: kWhiteColor,
-                      child: SafeArea(
-                        child: Stack(
-                          children: <Widget>[
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  CupertinoButton(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                    onPressed: () {
-                                      Navigator.pushNamed(context, SettingsScreen.id);
-                                    },
-                                    child: Image.asset('lib/images/settings.png'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 30.0),
-                                    child: Image.asset('lib/images/nogalleryauth.png'),
-                                  ),
-                                  SizedBox(
-                                    height: 21.0,
-                                  ),
-                                  Text(
-                                    S.of(context).gallery_access_permission_description,
-                                    textScaleFactor: 1.0,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff979a9b),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
+        Observer(builder: (_) {
+          return Scaffold(
+            floatingActionButton: !tabsStore.multiPicBar || tabsStore.multiTagSheet
+                ? Container(
+                    width: 0,
+                    height: 0,
+                  )
+                : FloatingActionButton(
+                    onPressed: () {
+                      setTabIndex(3);
+                    },
+                    child: Image.asset('lib/images/picbarbuttonwhite.png'),
+                    backgroundColor: kSecondaryColor,
+                  ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+            body: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle.dark,
+              child: Stack(
+                children: <Widget>[
+                  Observer(builder: (_) {
+                    Widget wgt;
+                    if (!appStore.hasGalleryPermission) {
+                      wgt = Container(
+                        constraints: BoxConstraints.expand(),
+                        color: kWhiteColor,
+                        child: SafeArea(
+                          child: Stack(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, SettingsScreen.id);
+                                      },
+                                      child: Image.asset('lib/images/settings.png'),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: 17.0,
-                                  ),
+                                  ],
+                                ),
+                              ),
+                              Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.only(right: 30.0),
+                                      child: Image.asset('lib/images/nogalleryauth.png'),
+                                    ),
+                                    SizedBox(
+                                      height: 21.0,
+                                    ),
+                                    Text(
+                                      S.of(context).gallery_access_permission_description,
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff979a9b),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 17.0,
+                                    ),
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.all(0),
+                                      onPressed: () {
+                                        PhotoManager.openSetting();
+                                      },
+                                      child: Container(
+                                        width: 201.0,
+                                        height: 44.0,
+                                        decoration: BoxDecoration(
+                                          gradient: kPrimaryGradient,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            S.of(context).gallery_access_permission,
+                                            textScaleFactor: 1.0,
+                                            style: TextStyle(
+                                              fontFamily: 'Lato',
+                                              color: kWhiteColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              fontStyle: FontStyle.normal,
+                                              letterSpacing: -0.4099999964237213,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
+                      wgt = UntaggedTab(
+                        showPhotoCardModal: showPhotoCardModal,
+                      );
+                    else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
+                      wgt = PicTab(
+                        showEditTagModal: showEditTagModal,
+                        trashPic: trashPic,
+                      );
+                    else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission)
+                      wgt = TaggedTab(
+                        setTabIndex: setTabIndex,
+                        setIsLoading: setIsLoading,
+                        deviceHasNoPics: !galleryStore.deviceHasPics,
+                        showEditTagModal: showEditTagModal,
+                        showPhotoCardModal: showPhotoCardModal,
+                      );
+                    return wgt;
+                  }),
+                ],
+              ),
+            ),
+            bottomNavigationBar: tabsStore.multiTagSheet
+                ? ExpandableNotifier(
+                    child: Container(
+                      color: Color(0xF1F3F5),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CupertinoButton(
+                            padding: const EdgeInsets.all(0),
+                            onPressed: () {
+                              setState(() {
+                                expandableController.expanded = !expandableController.expanded;
+                              });
+                            },
+                            child: SafeArea(
+                              bottom: !expandableController.expanded,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
                                   CupertinoButton(
-                                    padding: const EdgeInsets.all(0),
                                     onPressed: () {
-                                      PhotoManager.openSetting();
+                                      tabsStore.setMultiTagSheet(false);
                                     },
                                     child: Container(
-                                      width: 201.0,
-                                      height: 44.0,
-                                      decoration: BoxDecoration(
-                                        gradient: kPrimaryGradient,
-                                        borderRadius: BorderRadius.circular(8),
+                                      width: 80.0,
+                                      child: Text(
+                                        S.of(context).cancel,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          color: Color(0xff707070),
+                                          fontSize: 16,
+                                          fontFamily: 'Lato',
+                                          fontWeight: FontWeight.w700,
+                                        ),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          S.of(context).gallery_access_permission,
-                                          textScaleFactor: 1.0,
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: kWhiteColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  CupertinoButton(
+                                    onPressed: () {
+                                      if (!DatabaseManager.instance.userSettings.isPremium) {
+                                        Navigator.pushNamed(context, PremiumScreen.id);
+                                        return;
+                                      }
+
+                                      List<String> photosIds = [];
+                                      List<AssetEntity> entities = [];
+                                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+                                      for (var photoId in DatabaseManager.instance.picsSelected) {
+                                        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+                                        photosIds.add(photoId);
+                                        entities.add(entity);
+                                      }
+                                      DatabaseManager.instance.addTagsToPics(
+                                        tagsKeys: DatabaseManager.instance.multiPicTagKeys,
+                                        photosIds: photosIds,
+                                        entities: entities,
+                                      );
+
+                                      tabsStore.setMultiTagSheet(false);
+                                      tabsStore.setMultiPicBar(false);
+                                      DatabaseManager.instance.setPicsSelected(Set());
+                                      DatabaseManager.instance.setMultiPicTagKeys([]);
+                                    },
+                                    child: Container(
+                                      width: 80.0,
+                                      child: Text(
+                                        S.of(context).ok,
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(
+                                          color: Color(0xff707070),
+                                          fontSize: 16,
+                                          fontFamily: 'Lato',
+                                          fontWeight: FontWeight.w700,
                                         ),
                                       ),
                                     ),
@@ -502,185 +624,105 @@ class _TabsScreenState extends State<TabsScreen> {
                                 ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-                    );
-                  } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
-                    wgt = UntaggedTab(
-                      showPhotoCardModal: showPhotoCardModal,
-                    );
-                  else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
-                    wgt = PicTab(
-                      showEditTagModal: showEditTagModal,
-                      trashPic: trashPic,
-                    );
-                  else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission)
-                    wgt = TaggedTab(
-                      setTabIndex: setTabIndex,
-                      setIsLoading: setIsLoading,
-                      deviceHasNoPics: !galleryStore.deviceHasPics,
-                      showEditTagModal: showEditTagModal,
-                      showPhotoCardModal: showPhotoCardModal,
-                    );
-                  return wgt;
-                }),
-              ],
-            ),
-          ),
-          bottomNavigationBar: tabsStore.multiTagSheet
-              ? ExpandableNotifier(
-                  child: Container(
-                    color: Color(0xF1F3F5),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () {
-                            setState(() {
-                              expandableController.expanded = !expandableController.expanded;
-                            });
-                          },
-                          child: SafeArea(
-                            bottom: !expandableController.expanded,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                CupertinoButton(
-                                  onPressed: () {
-                                    tabsStore.setMultiTagSheet(false);
-                                  },
-                                  child: Container(
-                                    width: 80.0,
-                                    child: Text(
-                                      S.of(context).cancel,
-                                      textScaleFactor: 1.0,
-                                      style: TextStyle(
-                                        color: Color(0xff707070),
-                                        fontSize: 16,
-                                        fontFamily: 'Lato',
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Spacer(),
-                                CupertinoButton(
-                                  onPressed: () {
-                                    if (!DatabaseManager.instance.userSettings.isPremium) {
-                                      Navigator.pushNamed(context, PremiumScreen.id);
-                                      return;
-                                    }
-
-                                    List<String> photosIds = [];
-                                    List<AssetEntity> entities = [];
-                                    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                                    for (var photoId in DatabaseManager.instance.picsSelected) {
-                                      AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-                                      photosIds.add(photoId);
-                                      entities.add(entity);
-                                    }
-                                    DatabaseManager.instance.addTagsToPics(
-                                      tagsKeys: DatabaseManager.instance.multiPicTagKeys,
-                                      photosIds: photosIds,
-                                      entities: entities,
-                                    );
-
-                                    tabsStore.setMultiTagSheet(false);
-                                    tabsStore.setMultiPicBar(false);
-                                    DatabaseManager.instance.setPicsSelected(Set());
-                                    DatabaseManager.instance.setMultiPicTagKeys([]);
-                                  },
-                                  child: Container(
-                                    width: 80.0,
-                                    child: Text(
-                                      S.of(context).ok,
-                                      textScaleFactor: 1.0,
-                                      textAlign: TextAlign.end,
-                                      style: TextStyle(
-                                        color: Color(0xff707070),
-                                        fontSize: 16,
-                                        fontFamily: 'Lato',
-                                        fontWeight: FontWeight.w700,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
-                        ),
-                        Expandable(
-                          controller: expandableController,
-                          expanded: Container(
-                            padding: const EdgeInsets.all(24.0),
-                            color: Color(0xFFEFEFF4).withOpacity(0.94),
-                            child: SafeArea(
-                              bottom: true,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  TagsList(
-                                      tagsKeys: Provider.of<DatabaseManager>(context).multiPicTagKeys, //picI
-                                      addTagField: true,
-                                      textEditingController: bottomTagsEditingController,
-                                      showEditTagModal: showEditTagModal,
-                                      onTap: (tagName) {
-                                        if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(context, PremiumScreen.id);
-                                          return;
-                                        }
-                                        print('do nothing');
-                                      },
-                                      onPanUpdate: () {
-                                        if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(context, PremiumScreen.id);
-                                          return;
-                                        }
+                          Expandable(
+                            controller: expandableController,
+                            expanded: Container(
+                              padding: const EdgeInsets.all(24.0),
+                              color: Color(0xFFEFEFF4).withOpacity(0.94),
+                              child: SafeArea(
+                                bottom: true,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    TagsList(
+                                        tagsKeys: Provider.of<DatabaseManager>(context).multiPicTagKeys, //picI
+                                        addTagField: true,
+                                        textEditingController: bottomTagsEditingController,
+                                        showEditTagModal: showEditTagModal,
+                                        onTap: (tagName) {
+                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                            Navigator.pushNamed(context, PremiumScreen.id);
+                                            return;
+                                          }
+                                          print('do nothing');
+                                        },
+                                        onPanUpdate: () {
+                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                            Navigator.pushNamed(context, PremiumScreen.id);
+                                            return;
+                                          }
 
-                                        if (DatabaseManager.instance.multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-                                          List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
-                                          multiPic.remove(DatabaseManager.instance.selectedTagKey);
-                                          DatabaseManager.instance.setMultiPicTagKeys(multiPic);
+                                          if (DatabaseManager.instance.multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+                                            List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
+                                            multiPic.remove(DatabaseManager.instance.selectedTagKey);
+                                            DatabaseManager.instance.setMultiPicTagKeys(multiPic);
 
+                                            DatabaseManager.instance.tagsSuggestions(
+                                              bottomTagsEditingController.text,
+                                              'MULTIPIC',
+                                              excludeTags: DatabaseManager.instance.multiPicTagKeys,
+                                            );
+                                          }
+                                        },
+                                        onDoubleTap: () {
+                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                            Navigator.pushNamed(context, PremiumScreen.id);
+                                            return;
+                                          }
+                                          print('do nothing');
+                                        },
+                                        onChanged: (text) {
+                                          print('calling tag suggestions');
                                           DatabaseManager.instance.tagsSuggestions(
-                                            bottomTagsEditingController.text,
+                                            text,
                                             'MULTIPIC',
                                             excludeTags: DatabaseManager.instance.multiPicTagKeys,
                                           );
-                                        }
-                                      },
-                                      onDoubleTap: () {
-                                        if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(context, PremiumScreen.id);
-                                          return;
-                                        }
-                                        print('do nothing');
-                                      },
-                                      onChanged: (text) {
-                                        print('calling tag suggestions');
-                                        DatabaseManager.instance.tagsSuggestions(
-                                          text,
-                                          'MULTIPIC',
-                                          excludeTags: DatabaseManager.instance.multiPicTagKeys,
-                                        );
-                                      },
-                                      onSubmitted: (text) {
-                                        if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(context, PremiumScreen.id);
-                                          return;
-                                        }
+                                        },
+                                        onSubmitted: (text) {
+                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                            Navigator.pushNamed(context, PremiumScreen.id);
+                                            return;
+                                          }
 
-                                        print('return');
-                                        if (text != '') {
-                                          bottomTagsEditingController.clear();
-                                          String tagKey = DatabaseManager.instance.encryptTag(text);
-                                          if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
-                                            if (DatabaseManager.instance.getTagName(tagKey) == null) {
-                                              print('tag does not exist! creating it!');
-                                              DatabaseManager.instance.createTag(text);
+                                          print('return');
+                                          if (text != '') {
+                                            bottomTagsEditingController.clear();
+                                            String tagKey = DatabaseManager.instance.encryptTag(text);
+                                            if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
+                                              if (DatabaseManager.instance.getTagName(tagKey) == null) {
+                                                print('tag does not exist! creating it!');
+                                                DatabaseManager.instance.createTag(text);
+                                              }
+                                              List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
+                                              multiPic.add(tagKey);
+                                              DatabaseManager.instance.setMultiPicTagKeys(multiPic);
+
+                                              DatabaseManager.instance.tagsSuggestions(
+                                                '',
+                                                'MULTIPIC',
+                                                excludeTags: DatabaseManager.instance.multiPicTagKeys,
+                                              );
                                             }
+                                          }
+                                        }),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: TagsList(
+                                        title: S.of(context).suggestions,
+                                        tagsKeys: DatabaseManager.instance.suggestionTags,
+                                        tagStyle: TagStyle.GrayOutlined,
+                                        showEditTagModal: showEditTagModal,
+                                        onTap: (tagName) {
+                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                            Navigator.pushNamed(context, PremiumScreen.id);
+                                            return;
+                                          }
+
+                                          bottomTagsEditingController.clear();
+                                          String tagKey = DatabaseManager.instance.encryptTag(tagName);
+                                          if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
                                             List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
                                             multiPic.add(tagKey);
                                             DatabaseManager.instance.setMultiPicTagKeys(multiPic);
@@ -691,104 +733,76 @@ class _TabsScreenState extends State<TabsScreen> {
                                               excludeTags: DatabaseManager.instance.multiPicTagKeys,
                                             );
                                           }
-                                        }
-                                      }),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 8.0),
-                                    child: TagsList(
-                                      title: S.of(context).suggestions,
-                                      tagsKeys: DatabaseManager.instance.suggestionTags,
-                                      tagStyle: TagStyle.GrayOutlined,
-                                      showEditTagModal: showEditTagModal,
-                                      onTap: (tagName) {
-                                        if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(context, PremiumScreen.id);
-                                          return;
-                                        }
+                                        },
+                                        onDoubleTap: () {
+                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                            Navigator.pushNamed(context, PremiumScreen.id);
+                                            return;
+                                          }
 
-                                        bottomTagsEditingController.clear();
-                                        String tagKey = DatabaseManager.instance.encryptTag(tagName);
-                                        if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
-                                          List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
-                                          multiPic.add(tagKey);
-                                          DatabaseManager.instance.setMultiPicTagKeys(multiPic);
+                                          print('do nothing');
+                                        },
+                                        onPanUpdate: () {
+                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                            Navigator.pushNamed(context, PremiumScreen.id);
+                                            return;
+                                          }
 
-                                          DatabaseManager.instance.tagsSuggestions(
-                                            '',
-                                            'MULTIPIC',
-                                            excludeTags: DatabaseManager.instance.multiPicTagKeys,
-                                          );
-                                        }
-                                      },
-                                      onDoubleTap: () {
-                                        if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(context, PremiumScreen.id);
-                                          return;
-                                        }
-
-                                        print('do nothing');
-                                      },
-                                      onPanUpdate: () {
-                                        if (!DatabaseManager.instance.userSettings.isPremium) {
-                                          Navigator.pushNamed(context, PremiumScreen.id);
-                                          return;
-                                        }
-
-                                        print('do nothing');
-                                      },
+                                          print('do nothing');
+                                        },
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        Expandable(
-                          controller: expandablePaddingController,
-                          expanded: Container(
-                            height: MediaQuery.of(context).viewInsets.bottom,
+                          Expandable(
+                            controller: expandablePaddingController,
+                            expanded: Container(
+                              height: MediaQuery.of(context).viewInsets.bottom,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              : Container(
-                  constraints: BoxConstraints(
-                    maxHeight: 100.0,
-                  ),
-                  child: !tabsStore.multiPicBar
-                      ? Observer(builder: (_) {
-                          return CustomBubbleBottomBar(
-                            backgroundColor: kWhiteColor,
-                            hasNotch: true,
-                            opacity: 1.0,
-                            currentIndex: tabsStore.currentTab,
-                            onTap: setTabIndex,
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(16),
+                  )
+                : Container(
+                    constraints: BoxConstraints(
+                      maxHeight: 100.0,
+                    ),
+                    child: Observer(builder: (_) {
+                      if (!tabsStore.multiPicBar) {
+                        return CustomBubbleBottomBar(
+                          backgroundColor: kWhiteColor,
+                          hasNotch: true,
+                          opacity: 1.0,
+                          currentIndex: tabsStore.currentTab,
+                          onTap: setTabIndex,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(16),
+                          ),
+                          elevation: 8,
+                          items: <CustomBubbleBottomBarItem>[
+                            CustomBubbleBottomBarItem(
+                              backgroundColor: kPinkColor,
+                              icon: Image.asset('lib/images/tabgridred.png'),
+                              activeIcon: Image.asset('lib/images/tabgridwhite.png'),
                             ),
-                            elevation: 8,
-                            items: <CustomBubbleBottomBarItem>[
-                              CustomBubbleBottomBarItem(
-                                backgroundColor: kPinkColor,
-                                icon: Image.asset('lib/images/tabgridred.png'),
-                                activeIcon: Image.asset('lib/images/tabgridwhite.png'),
-                              ),
-                              CustomBubbleBottomBarItem(
-                                backgroundColor: kSecondaryColor,
-                                icon: Image.asset('lib/images/tabpicpicsred.png'),
-                                activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
-                              ),
-                              CustomBubbleBottomBarItem(
-                                backgroundColor: kPrimaryColor,
-                                icon: Image.asset('lib/images/tabtaggedblue.png'),
-                                activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
-                              ),
-                            ],
-                          );
-                        })
-                      : BubbleBottomBar(
+                            CustomBubbleBottomBarItem(
+                              backgroundColor: kSecondaryColor,
+                              icon: Image.asset('lib/images/tabpicpicsred.png'),
+                              activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
+                            ),
+                            CustomBubbleBottomBarItem(
+                              backgroundColor: kPrimaryColor,
+                              icon: Image.asset('lib/images/tabtaggedblue.png'),
+                              activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return BubbleBottomBar(
                           backgroundColor: kWhiteColor,
                           hasNotch: true,
                           opacity: 1.0,
@@ -822,22 +836,12 @@ class _TabsScreenState extends State<TabsScreen> {
                               title: Text(''),
                             ),
                           ],
-                        ),
-                ),
-          floatingActionButton: !tabsStore.multiPicBar || tabsStore.multiTagSheet
-              ? Container(
-                  width: 0,
-                  height: 0,
-                )
-              : FloatingActionButton(
-                  onPressed: () {
-                    setTabIndex(3);
-                  },
-                  child: Image.asset('lib/images/picbarbuttonwhite.png'),
-                  backgroundColor: kSecondaryColor,
-                ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        ),
+                        );
+                      }
+                    }),
+                  ),
+          );
+        }),
         Observer(builder: (_) {
           if (tabsStore.modalCard) {
             return Material(
