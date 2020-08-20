@@ -133,10 +133,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    String photoId = DatabaseManager.instance.slideThumbPhotoIds[index];
-
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+//    String photoId = DatabaseManager.instance.slideThumbPhotoIds[index]; corrigir isso porém por enquanto vamo fazer diferente
+    String photoId = galleryStore.pics[index].photoId;
+    PicStore picStore = galleryStore.pics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
+    AssetEntity entity = picStore.entity;
 
     return PhotoViewGalleryPageOptions.customChild(
       child: Container(
@@ -232,7 +232,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: _buildItem,
-                itemCount: DatabaseManager.instance.slideThumbPhotoIds.length,
+                itemCount: galleryStore.pics.length, // DatabaseManager.instance.slideThumbPhotoIds.length,
                 loadingBuilder: (context, event) => Center(
                   child: Container(
                     width: 20.0,
