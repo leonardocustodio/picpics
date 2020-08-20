@@ -466,13 +466,25 @@ class _PremiumScreenState extends State<PremiumScreen> {
             text: TextSpan(
               children: [
                 TextSpan(
-                    style: const TextStyle(
-                        color: const Color(0xff606566), fontWeight: FontWeight.w400, fontFamily: "Lato", fontStyle: FontStyle.normal, fontSize: 12.0),
-                    text: S.of(context).auto_renewable_first_part),
+                  text: S.of(context).auto_renewable_first_part,
+                  style: const TextStyle(
+                    color: const Color(0xff606566),
+                    fontWeight: FontWeight.w400,
+                    fontFamily: "Lato",
+                    fontStyle: FontStyle.normal,
+                    fontSize: 12.0,
+                  ),
+                ),
                 TextSpan(
-                    style: const TextStyle(
-                        color: const Color(0xff606566), fontWeight: FontWeight.w700, fontFamily: "Lato", fontStyle: FontStyle.normal, fontSize: 12.0),
-                    text: S.of(context).auto_renewable_second_part)
+                  text: S.of(context).auto_renewable_second_part,
+                  style: const TextStyle(
+                    color: const Color(0xff606566),
+                    fontWeight: FontWeight.w700,
+                    fontFamily: "Lato",
+                    fontStyle: FontStyle.normal,
+                    fontSize: 12.0,
+                  ),
+                )
               ],
             ),
           ),

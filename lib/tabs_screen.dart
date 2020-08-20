@@ -53,10 +53,6 @@ class _TabsScreenState extends State<TabsScreen> {
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
 
-//  BuildContext multiPicContext;
-
-  bool showingMultiTagSheet = false;
-
   // Swiper do Tutorial
   int tutorialSwiperIndex = 0;
   SwiperController tutorialSwiperController = SwiperController();
@@ -66,9 +62,6 @@ class _TabsScreenState extends State<TabsScreen> {
   TextEditingController bottomTagsEditingController = TextEditingController();
 
   Throttle _changeThrottle;
-
-  bool isLoading = false;
-  bool modalPhotoCard = false;
 
   void trashPics() async {
     print('trashing selected pics....');
@@ -100,13 +93,11 @@ class _TabsScreenState extends State<TabsScreen> {
     if (result.isNotEmpty) {
       DatabaseManager.instance.deletedPic(entity);
 
-      if (modalPhotoCard) {
+      if (tabsStore.modalCard) {
         DatabaseManager.instance.selectedPhotoPicInfo = null;
         DatabaseManager.instance.selectedPhotoIndex = null;
         DatabaseManager.instance.selectedPhotoData = null;
-        setState(() {
-          modalPhotoCard = false;
-        });
+        tabsStore.setModalCard(false);
       }
     }
   }
@@ -153,15 +144,11 @@ class _TabsScreenState extends State<TabsScreen> {
 
   showPhotoCardModal() {
     Analytics.sendEvent(Event.showed_card);
-    setState(() {
-      modalPhotoCard = true;
-    });
+    tabsStore.setModalCard(true);
   }
 
   setIsLoading(bool loading) {
-    setState(() {
-      isLoading = loading;
-    });
+    tabsStore.setIsLoading(loading);
   }
 
   void dismissPhotoCard() {
@@ -170,10 +157,7 @@ class _TabsScreenState extends State<TabsScreen> {
     DatabaseManager.instance.selectedPhotoData = null;
     DatabaseManager.instance.selectedPhotoPicInfo = null;
     DatabaseManager.instance.selectedPhotoIndex = null;
-
-    setState(() {
-      modalPhotoCard = false;
-    });
+    tabsStore.setModalCard(false);
   }
 
   @override
@@ -184,11 +168,11 @@ class _TabsScreenState extends State<TabsScreen> {
     KeyboardVisibility.onChange.listen((bool visible) {
       print('keyboard: $visible');
 
-      if (visible && showingMultiTagSheet) {
+      if (visible && tabsStore.multiTagSheet) {
         setState(() {
           expandablePaddingController.expanded = true;
         });
-      } else if (!visible && showingMultiTagSheet) {
+      } else if (!visible && tabsStore.multiTagSheet) {
         setState(() {
           expandablePaddingController.expanded = false;
         });
@@ -309,15 +293,11 @@ class _TabsScreenState extends State<TabsScreen> {
         trashPics();
       } else if (index == 2) {
         print('sharing selected pics....');
-        setState(() {
-          isLoading = true;
-        });
+        tabsStore.setIsLoading(true);
 
         await DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.picsSelected.toList());
 
-        setState(() {
-          isLoading = false;
-        });
+        tabsStore.setIsLoading(false);
       } else {
         //        showMultiTagSheet();
 
@@ -328,9 +308,7 @@ class _TabsScreenState extends State<TabsScreen> {
           // excludeTags: picInfo.tags,
         );
 
-        setState(() {
-          showingMultiTagSheet = true;
-        });
+        tabsStore.setMultiTagSheet(true);
 
         Future.delayed(Duration(milliseconds: 200), () {
           setState(() {
@@ -414,11 +392,6 @@ class _TabsScreenState extends State<TabsScreen> {
     setTabIndex(1);
   }
 
-  void afterBuild() {
-    print('#### AFTER BUILD!');
-    print('Trying to move to page: ${DatabaseManager.instance.swiperIndex}');
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -432,7 +405,6 @@ class _TabsScreenState extends State<TabsScreen> {
     Locale myLocale = Localizations.localeOf(context);
     print('Language Code: ${myLocale.languageCode}');
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => afterBuild());
     AssetPathProvider pathProvider;
     if (PhotoProvider.instance.list.isNotEmpty) {
       print('refreshing');
@@ -557,7 +529,7 @@ class _TabsScreenState extends State<TabsScreen> {
               ],
             ),
           ),
-          bottomNavigationBar: showingMultiTagSheet
+          bottomNavigationBar: tabsStore.multiTagSheet
               ? ExpandableNotifier(
                   child: Container(
                     color: Color(0xF1F3F5),
@@ -578,9 +550,7 @@ class _TabsScreenState extends State<TabsScreen> {
                               children: <Widget>[
                                 CupertinoButton(
                                   onPressed: () {
-                                    setState(() {
-                                      showingMultiTagSheet = false;
-                                    });
+                                    tabsStore.setMultiTagSheet(false);
                                   },
                                   child: Container(
                                     width: 80.0,
@@ -618,10 +588,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                       entities: entities,
                                     );
 
-                                    setState(() {
-                                      showingMultiTagSheet = false;
-                                    });
-
+                                    tabsStore.setMultiTagSheet(false);
                                     tabsStore.setMultiPicBar(false);
                                     DatabaseManager.instance.setPicsSelected(Set());
                                     DatabaseManager.instance.setMultiPicTagKeys([]);
@@ -858,7 +825,7 @@ class _TabsScreenState extends State<TabsScreen> {
                           ],
                         ),
                 ),
-          floatingActionButton: !tabsStore.multiPicBar || showingMultiTagSheet
+          floatingActionButton: !tabsStore.multiPicBar || tabsStore.multiTagSheet
               ? Container(
                   width: 0,
                   height: 0,
@@ -872,28 +839,29 @@ class _TabsScreenState extends State<TabsScreen> {
                 ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         ),
-        if (modalPhotoCard)
-          Material(
-            color: Colors.transparent,
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  dismissPhotoCard();
-                },
-                child: Container(
-                  color: Colors.black.withOpacity(0.4),
-                  child: SafeArea(
-                    child: GestureDetector(
-                      onTap: () {
-                        print('ignore');
-                      },
-                      child: Container(
-                        margin: EdgeInsets.only(
-                          bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
-                          top: bottomInsets > 0 ? 5 : 46.0,
-                        ),
-                        child: PhotoCard(
-                          picStore: galleryStore.currentPic,
+        Observer(builder: (_) {
+          if (tabsStore.modalCard) {
+            return Material(
+              color: Colors.transparent,
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    dismissPhotoCard();
+                  },
+                  child: Container(
+                    color: Colors.black.withOpacity(0.4),
+                    child: SafeArea(
+                      child: GestureDetector(
+                        onTap: () {
+                          print('ignore');
+                        },
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
+                            top: bottomInsets > 0 ? 5 : 46.0,
+                          ),
+                          child: PhotoCard(
+                            picStore: galleryStore.currentPic,
 //                          data: DatabaseManager.instance.selectedPhotoData,
 //                          photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
 //                          picSwiper: -1,
@@ -901,206 +869,216 @@ class _TabsScreenState extends State<TabsScreen> {
 //                          tagsEditingController: tagsEditingController,
 //                          specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
 //                          generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
-                          showEditTagModal: showEditTagModal,
-                          onPressedTrash: () {
-                            trashPic(DatabaseManager.instance.selectedPhotoData);
-                          },
+                            showEditTagModal: showEditTagModal,
+                            onPressedTrash: () {
+                              trashPic(DatabaseManager.instance.selectedPhotoData);
+                            },
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-        if (isLoading)
-          Material(
-            color: Colors.black.withOpacity(0.7),
-            child: Center(
-              child: SpinKitChasingDots(
-                color: kPrimaryColor,
-                size: 80.0,
-              ),
-            ),
-          ),
-        if (appStore.tutorialCompleted == false)
-          Container(
-            color: Colors.black.withOpacity(0.4),
-          ),
-        if (appStore.tutorialCompleted == false)
-          Material(
-            color: Colors.transparent,
-            child: Center(
-              child: Container(
-                height: 609.0,
-                width: 343.0,
-                decoration: BoxDecoration(
-                  color: kWhiteColor,
-                  borderRadius: BorderRadius.circular(8.0),
+            );
+          }
+          return Container();
+        }),
+        Observer(builder: (_) {
+          if (tabsStore.isLoading) {
+            return Material(
+              color: Colors.black.withOpacity(0.7),
+              child: Center(
+                child: SpinKitChasingDots(
+                  color: kPrimaryColor,
+                  size: 80.0,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Text(
-                        S.of(context).welcome,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff979a9b),
-                          fontSize: 24,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
+              ),
+            );
+          }
+          return Container();
+        }),
+//        Container(
+//          color: Colors.black.withOpacity(0.4),
+//        ),
+        Observer(builder: (_) {
+          if (appStore.tutorialCompleted == false) {
+            return Material(
+              color: Colors.transparent,
+              child: Center(
+                child: Container(
+                  height: 609.0,
+                  width: 343.0,
+                  decoration: BoxDecoration(
+                    color: kWhiteColor,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        Text(
+                          S.of(context).welcome,
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff979a9b),
+                            fontSize: 24,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 40.0,
-                      ),
-                      Expanded(
-                        child: new Swiper(
-                          loop: false,
-                          itemBuilder: (BuildContext context, int index) {
-                            String text = '';
-                            Image image;
+                        SizedBox(
+                          height: 40.0,
+                        ),
+                        Expanded(
+                          child: new Swiper(
+                            loop: false,
+                            itemBuilder: (BuildContext context, int index) {
+                              String text = '';
+                              Image image;
 
-                            if (index == 0) {
-                              text = S.of(context).tutorial_just_swipe;
-                              image = Image.asset('lib/images/tutorialthirdimage.png');
-                            } else if (index == 1) {
-                              text = S.of(context).tutorial_however_you_want;
-                              image = Image.asset('lib/images/tutorialsecondimage.png');
-                            } else {
-                              text = S.of(context).tutorial_daily_package;
-                              image = Image.asset('lib/images/tutorialfirstimage.png');
-                            }
+                              if (index == 0) {
+                                text = S.of(context).tutorial_just_swipe;
+                                image = Image.asset('lib/images/tutorialthirdimage.png');
+                              } else if (index == 1) {
+                                text = S.of(context).tutorial_however_you_want;
+                                image = Image.asset('lib/images/tutorialsecondimage.png');
+                              } else {
+                                text = S.of(context).tutorial_daily_package;
+                                image = Image.asset('lib/images/tutorialfirstimage.png');
+                              }
 
-                            return Column(
-                              children: <Widget>[
-                                image,
-                                SizedBox(
-                                  height: 28.0,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                  child: Text(
-                                    text,
-                                    textScaleFactor: 1.0,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff707070),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
+                              return Column(
+                                children: <Widget>[
+                                  image,
+                                  SizedBox(
+                                    height: 28.0,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: Text(
+                                      text,
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff707070),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            );
-                          },
-                          itemCount: 3,
-                          controller: tutorialSwiperController,
-                          onIndexChanged: (index) {
-                            setState(() {
-                              tutorialSwiperIndex = index;
-                            });
-                          },
-                          pagination: new SwiperCustomPagination(
-                            builder: (BuildContext context, SwiperPluginConfig config) {
-                              return Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Container(
-                                      height: 8.0,
-                                      width: 8.0,
-                                      decoration: BoxDecoration(
-                                        color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
-                                        borderRadius: BorderRadius.circular(4.0),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 8.0,
-                                      width: 8.0,
-                                      margin: const EdgeInsets.only(left: 24.0, right: 24.0),
-                                      decoration: BoxDecoration(
-                                        color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
-                                        borderRadius: BorderRadius.circular(4.0),
-                                      ),
-                                    ),
-                                    Container(
-                                      height: 8.0,
-                                      width: 8.0,
-                                      decoration: BoxDecoration(
-                                        color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
-                                        borderRadius: BorderRadius.circular(4.0),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                ],
                               );
                             },
+                            itemCount: 3,
+                            controller: tutorialSwiperController,
+                            onIndexChanged: (index) {
+                              setState(() {
+                                tutorialSwiperIndex = index;
+                              });
+                            },
+                            pagination: new SwiperCustomPagination(
+                              builder: (BuildContext context, SwiperPluginConfig config) {
+                                return Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Container(
+                                        height: 8.0,
+                                        width: 8.0,
+                                        decoration: BoxDecoration(
+                                          color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
+                                          borderRadius: BorderRadius.circular(4.0),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 8.0,
+                                        width: 8.0,
+                                        margin: const EdgeInsets.only(left: 24.0, right: 24.0),
+                                        decoration: BoxDecoration(
+                                          color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
+                                          borderRadius: BorderRadius.circular(4.0),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 8.0,
+                                        width: 8.0,
+                                        decoration: BoxDecoration(
+                                          color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
+                                          borderRadius: BorderRadius.circular(4.0),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 17.0,
-                      ),
-                      CupertinoButton(
-                        onPressed: () {
-                          if (tutorialSwiperIndex == 2) {
-                            print('Requesting notification....');
+                        SizedBox(
+                          height: 17.0,
+                        ),
+                        CupertinoButton(
+                          onPressed: () {
+                            if (tutorialSwiperIndex == 2) {
+                              print('Requesting notification....');
 
-                            if (Platform.isAndroid) {
-                              var userBox = Hive.box('user');
-                              DatabaseManager.instance.userSettings.notifications = true;
-                              DatabaseManager.instance.userSettings.dailyChallenges = true;
-                              userBox.putAt(0, DatabaseManager.instance.userSettings);
-                            } else {
-                              PushNotificationsManager push = PushNotificationsManager();
-                              push.init();
+                              if (Platform.isAndroid) {
+                                var userBox = Hive.box('user');
+                                DatabaseManager.instance.userSettings.notifications = true;
+                                DatabaseManager.instance.userSettings.dailyChallenges = true;
+                                userBox.putAt(0, DatabaseManager.instance.userSettings);
+                              } else {
+                                PushNotificationsManager push = PushNotificationsManager();
+                                push.init();
+                              }
+                              DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
+                              DatabaseManager.instance.finishedTutorial();
+                              return;
                             }
-                            DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
-                            DatabaseManager.instance.finishedTutorial();
-                            return;
-                          }
-                          tutorialSwiperController.next(animation: true);
-                        },
-                        padding: const EdgeInsets.all(0),
-                        child: Container(
-                          height: 44.0,
-                          margin: const EdgeInsets.symmetric(horizontal: 16.0),
-                          decoration: BoxDecoration(
-                            gradient: kPrimaryGradient,
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: Center(
-                            child: Text(
-                              tutorialSwiperIndex == 2 ? S.of(context).start : S.of(context).next,
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: kWhiteColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
+                            tutorialSwiperController.next(animation: true);
+                          },
+                          padding: const EdgeInsets.all(0),
+                          child: Container(
+                            height: 44.0,
+                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            decoration: BoxDecoration(
+                              gradient: kPrimaryGradient,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Center(
+                              child: Text(
+                                tutorialSwiperIndex == 2 ? S.of(context).start : S.of(context).next,
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kWhiteColor,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ),
+            );
+          }
+          return Container();
+        }),
       ],
     );
   }

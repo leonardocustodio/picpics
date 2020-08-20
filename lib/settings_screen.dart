@@ -600,11 +600,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         ),
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        'VERSION: ${appStore.appVersion}',
-                        textScaleFactor: 1.0,
-                        style: kGraySettingsFieldTextStyle,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Center(
+                        child: Text(
+                          'VERSION: ${appStore.appVersion}',
+                          textScaleFactor: 1.0,
+                          style: kGraySettingsFieldTextStyle,
+                        ),
                       ),
                     ),
                   ],

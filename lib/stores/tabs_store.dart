@@ -34,4 +34,28 @@ abstract class _TabsStore with Store {
     }
     multiPicBar = value;
   }
+
+  @observable
+  bool multiTagSheet = false;
+
+  @action
+  void setMultiTagSheet(bool value) {
+    multiTagSheet = value;
+  }
+
+  @observable
+  bool isLoading = false;
+
+  @action
+  void setIsLoading(bool value) {
+    isLoading = value;
+  }
+
+  @observable
+  bool modalCard = false;
+
+  @action
+  void setModalCard(bool value) {
+    modalCard = value;
+  }
 }

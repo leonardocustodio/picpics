@@ -39,6 +39,51 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
+  final _$multiTagSheetAtom = Atom(name: '_TabsStore.multiTagSheet');
+
+  @override
+  bool get multiTagSheet {
+    _$multiTagSheetAtom.reportRead();
+    return super.multiTagSheet;
+  }
+
+  @override
+  set multiTagSheet(bool value) {
+    _$multiTagSheetAtom.reportWrite(value, super.multiTagSheet, () {
+      super.multiTagSheet = value;
+    });
+  }
+
+  final _$isLoadingAtom = Atom(name: '_TabsStore.isLoading');
+
+  @override
+  bool get isLoading {
+    _$isLoadingAtom.reportRead();
+    return super.isLoading;
+  }
+
+  @override
+  set isLoading(bool value) {
+    _$isLoadingAtom.reportWrite(value, super.isLoading, () {
+      super.isLoading = value;
+    });
+  }
+
+  final _$modalCardAtom = Atom(name: '_TabsStore.modalCard');
+
+  @override
+  bool get modalCard {
+    _$modalCardAtom.reportRead();
+    return super.modalCard;
+  }
+
+  @override
+  set modalCard(bool value) {
+    _$modalCardAtom.reportWrite(value, super.modalCard, () {
+      super.modalCard = value;
+    });
+  }
+
   final _$_TabsStoreActionController = ActionController(name: '_TabsStore');
 
   @override
@@ -64,10 +109,46 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
+  void setMultiTagSheet(bool value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setMultiTagSheet');
+    try {
+      return super.setMultiTagSheet(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setIsLoading(bool value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setIsLoading');
+    try {
+      return super.setIsLoading(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setModalCard(bool value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setModalCard');
+    try {
+      return super.setModalCard(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 currentTab: ${currentTab},
-multiPicBar: ${multiPicBar}
+multiPicBar: ${multiPicBar},
+multiTagSheet: ${multiTagSheet},
+isLoading: ${isLoading},
+modalCard: ${modalCard}
     ''';
   }
 }
