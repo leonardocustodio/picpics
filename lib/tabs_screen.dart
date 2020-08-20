@@ -537,13 +537,10 @@ class _TabsScreenState extends State<TabsScreen> {
                     );
                   } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
                     wgt = UntaggedTab(
-//                      pathProvider: pathProvider,
-//                      deviceHasNoPics: !galleryStore.deviceHasPics,
                       showPhotoCardModal: showPhotoCardModal,
                     );
                   else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
                     wgt = PicTab(
-                      deviceHasNoPics: !galleryStore.deviceHasPics,
                       showEditTagModal: showEditTagModal,
                       trashPic: trashPic,
                     );

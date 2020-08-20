@@ -16,14 +16,12 @@ import 'package:flare_flutter/flare_actor.dart';
 class PicTab extends StatefulWidget {
   static const id = 'pic_tab';
 
-  final bool deviceHasNoPics;
   final Function showEditTagModal;
   final Function trashPic;
 
   PicTab({
     @required this.showEditTagModal,
     @required this.trashPic,
-    this.deviceHasNoPics = false,
   });
 
   @override
