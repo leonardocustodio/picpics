@@ -41,6 +41,7 @@ class PhotoCard extends StatefulWidget {
 }
 
 class _PhotoCardState extends State<PhotoCard> {
+  GalleryStore galleryStore;
   PicStore get picStore => widget.picStore;
 
   TextEditingController tagsEditingController = TextEditingController();
@@ -137,6 +138,12 @@ class _PhotoCardState extends State<PhotoCard> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    galleryStore = Provider.of<GalleryStore>(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     Pic picInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
     print('Suggestions: ${DatabaseManager.instance.suggestionTags}');
@@ -205,6 +212,8 @@ class _PhotoCardState extends State<PhotoCard> {
                       int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
 
 //                      Navigator.pushNamed(context, PhotoScreen.id);
+
+                      galleryStore.currentPic = picStore;
 
                       Navigator.push(
                         context,

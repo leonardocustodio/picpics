@@ -9,6 +9,7 @@ import 'package:picPics/image_item.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
 
@@ -26,6 +27,7 @@ class UntaggedTab extends StatefulWidget {
 }
 
 class _UntaggedTabState extends State<UntaggedTab> {
+  TabsStore tabsStore;
   GalleryStore galleryStore;
 
   ScrollController scrollControllerFirstTab;
@@ -102,17 +104,17 @@ class _UntaggedTabState extends State<UntaggedTab> {
         child: GestureDetector(
           onLongPress: () {
             print('LongPress');
-            if (DatabaseManager.instance.multiPicBar == false) {
+            if (tabsStore.multiPicBar == false) {
               Set<String> picsCopy = DatabaseManager.instance.picsSelected;
               picsCopy.add(data.id);
               DatabaseManager.instance.setPicsSelected(picsCopy);
-              DatabaseManager.instance.setMultiPicBar(true);
+              tabsStore.setMultiPicBar(true);
             }
           },
           child: CupertinoButton(
             padding: const EdgeInsets.all(0),
             onPressed: () {
-              if (DatabaseManager.instance.multiPicBar) {
+              if (tabsStore.multiPicBar) {
                 if (DatabaseManager.instance.picsSelected.contains(data.id)) {
                   Set<String> picsCopy = DatabaseManager.instance.picsSelected;
                   picsCopy.remove(data.id);
@@ -163,7 +165,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               entity: data,
               size: 150,
               backgroundColor: Colors.grey[400],
-              showOverlay: DatabaseManager.instance.multiPicBar ? true : false,
+              showOverlay: tabsStore.multiPicBar ? true : false,
               isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
             ),
           ),
@@ -176,6 +178,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     galleryStore = Provider.of<GalleryStore>(context);
+    tabsStore = Provider.of<TabsStore>(context);
   }
 
   @override
@@ -247,7 +250,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                         ),
                       if (!hideSubtitleFirstTab)
                         Text(
-                          Provider.of<DatabaseManager>(context).multiPicBar
+                          tabsStore.multiPicBar
                               ? S.of(context).photo_gallery_count(Provider.of<DatabaseManager>(context).picsSelected.length)
                               : S.of(context).photo_gallery_description,
                           textScaleFactor: 1.0,

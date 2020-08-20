@@ -24,6 +24,21 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
+  final _$multiPicBarAtom = Atom(name: '_TabsStore.multiPicBar');
+
+  @override
+  bool get multiPicBar {
+    _$multiPicBarAtom.reportRead();
+    return super.multiPicBar;
+  }
+
+  @override
+  set multiPicBar(bool value) {
+    _$multiPicBarAtom.reportWrite(value, super.multiPicBar, () {
+      super.multiPicBar = value;
+    });
+  }
+
   final _$_TabsStoreActionController = ActionController(name: '_TabsStore');
 
   @override
@@ -38,9 +53,21 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
+  void setMultiPicBar(bool value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setMultiPicBar');
+    try {
+      return super.setMultiPicBar(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-currentTab: ${currentTab}
+currentTab: ${currentTab},
+multiPicBar: ${multiPicBar}
     ''';
   }
 }

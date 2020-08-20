@@ -4,6 +4,8 @@ import 'package:picPics/database_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/photo_screen.dart';
+import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/widgets/top_bar.dart';
@@ -37,6 +39,8 @@ class TaggedTab extends StatefulWidget {
 }
 
 class _TaggedTabState extends State<TaggedTab> {
+  TabsStore tabsStore;
+
   ScrollController scrollControllerThirdTab;
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
@@ -196,7 +200,7 @@ class _TaggedTabState extends State<TaggedTab> {
               child: GestureDetector(
                 onLongPress: () {
                   print('LongPress');
-                  if (DatabaseManager.instance.multiPicBar == false) {
+                  if (tabsStore.multiPicBar == false) {
                     Set<String> picsCopy = DatabaseManager.instance.picsSelected;
                     picsCopy.add(data.id);
                     DatabaseManager.instance.setPicsSelected(picsCopy);
@@ -206,7 +210,7 @@ class _TaggedTabState extends State<TaggedTab> {
                 child: CupertinoButton(
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
-                    if (DatabaseManager.instance.multiPicBar) {
+                    if (tabsStore.multiPicBar) {
                       if (DatabaseManager.instance.picsSelected.contains(data.id)) {
                         Set<String> picsCopy = DatabaseManager.instance.picsSelected;
                         picsCopy.remove(data.id);
@@ -256,7 +260,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     entity: data,
                     size: 150,
                     backgroundColor: Colors.grey[400],
-                    showOverlay: DatabaseManager.instance.multiPicBar ? true : false,
+                    showOverlay: tabsStore.multiPicBar ? true : false,
                     isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
                   ),
                 ),
@@ -333,7 +337,7 @@ class _TaggedTabState extends State<TaggedTab> {
                 child: GestureDetector(
                   onLongPress: () {
                     print('LongPress');
-                    if (DatabaseManager.instance.multiPicBar == false) {
+                    if (tabsStore.multiPicBar == false) {
                       Set<String> picsCopy = DatabaseManager.instance.picsSelected;
                       picsCopy.add(data.id);
                       DatabaseManager.instance.setPicsSelected(picsCopy);
@@ -343,7 +347,7 @@ class _TaggedTabState extends State<TaggedTab> {
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
                     onPressed: () {
-                      if (DatabaseManager.instance.multiPicBar) {
+                      if (tabsStore.multiPicBar) {
                         if (DatabaseManager.instance.picsSelected.contains(data.id)) {
                           Set<String> picsCopy = DatabaseManager.instance.picsSelected;
                           picsCopy.remove(data.id);
@@ -395,7 +399,7 @@ class _TaggedTabState extends State<TaggedTab> {
                       entity: data,
                       size: 150,
                       backgroundColor: Colors.grey[400],
-                      showOverlay: DatabaseManager.instance.multiPicBar ? true : false,
+                      showOverlay: tabsStore.multiPicBar ? true : false,
                       isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
                     ),
                   ),
@@ -435,6 +439,12 @@ class _TaggedTabState extends State<TaggedTab> {
       mainAxisSpacing: 4.0,
       crossAxisSpacing: 4.0,
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    tabsStore = Provider.of<TabsStore>(context);
   }
 
   @override
@@ -631,7 +641,7 @@ class _TaggedTabState extends State<TaggedTab> {
                       ),
                     if (!hideSubtitleThirdTab)
                       Text(
-                        Provider.of<DatabaseManager>(context).multiPicBar
+                        tabsStore.multiPicBar
                             ? S.of(context).photo_gallery_count(Provider.of<DatabaseManager>(context).picsSelected.length)
                             : S.of(context).organized_photos_description,
                         textScaleFactor: 1.0,

@@ -8,6 +8,8 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/image_item.dart';
+import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -33,6 +35,8 @@ class PhotoScreen extends StatefulWidget {
 }
 
 class _PhotoScreenState extends State<PhotoScreen> {
+  GalleryStore galleryStore;
+
   DateTime createdDate;
   Pic picInfo;
 
@@ -43,26 +47,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
   void initState() {
     super.initState();
     Analytics.sendCurrentScreen(Screen.photo_screen);
-
-    createdDate = DatabaseManager.instance.selectedPhoto.createDateTime;
-    picInfo = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-
-    if (picInfo == null) {
-      picInfo = Pic(
-        DatabaseManager.instance.selectedPhoto.id,
-        DatabaseManager.instance.selectedPhoto.createDateTime,
-        DatabaseManager.instance.selectedPhoto.latitude,
-        DatabaseManager.instance.selectedPhoto.longitude,
-        DatabaseManager.instance.selectedPhoto.latitude,
-        DatabaseManager.instance.selectedPhoto.longitude,
-        null,
-        null,
-        [],
-      );
-    }
   }
 
   void loadPicInfo(int index) {
+    return;
     AssetEntity entity = getEntity(DatabaseManager.instance.slideThumbPhotoIds[index]);
 
     setState(() {
@@ -204,9 +192,31 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   AssetEntity getEntity(String photoId) {
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-    return entity;
+    PicStore picStore = galleryStore.pics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
+    return picStore.entity;
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    galleryStore = Provider.of<GalleryStore>(context);
+
+    createdDate = galleryStore.currentPic.entity.createDateTime;
+    picInfo = DatabaseManager.instance.getPicInfo(galleryStore.currentPic.photoId);
+
+    if (picInfo == null) {
+      picInfo = Pic(
+        galleryStore.currentPic.photoId,
+        galleryStore.currentPic.entity.createDateTime,
+        galleryStore.currentPic.entity.latitude,
+        galleryStore.currentPic.entity.longitude,
+        galleryStore.currentPic.entity.latitude,
+        galleryStore.currentPic.entity.longitude,
+        null,
+        null,
+        [],
+      );
+    }
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:mobx/mobx.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
@@ -21,5 +22,16 @@ abstract class _TabsStore with Store {
   @action
   void setCurrentTab(int value) {
     currentTab = value;
+  }
+
+  @observable
+  bool multiPicBar = false;
+
+  @action
+  void setMultiPicBar(bool value) {
+    if (value) {
+      Analytics.sendEvent(Event.selected_photos);
+    }
+    multiPicBar = value;
   }
 }

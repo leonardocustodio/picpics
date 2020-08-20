@@ -37,7 +37,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
-//import 'package:facebook_audience_network/facebook_audience_network.dart';
 
 class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
@@ -91,7 +90,7 @@ class _TabsScreenState extends State<TabsScreen> {
       }
 
       DatabaseManager.instance.setPicsSelected(Set());
-      DatabaseManager.instance.setMultiPicBar(false);
+      tabsStore.setMultiPicBar(false);
     }
   }
 
@@ -302,10 +301,10 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
 
-    if (DatabaseManager.instance.multiPicBar) {
+    if (tabsStore.multiPicBar) {
       if (index == 0) {
         DatabaseManager.instance.setPicsSelected(Set());
-        DatabaseManager.instance.setMultiPicBar(false);
+        tabsStore.setMultiPicBar(false);
       } else if (index == 1) {
         trashPics();
       } else if (index == 2) {
@@ -343,16 +342,16 @@ class _TabsScreenState extends State<TabsScreen> {
     }
 
     if (index == 0) {
-      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-      List<String> photosIds = [];
-      for (int x = 0; x < pathProvider.orderedList.length; x++) {
-        bool hasTag = DatabaseManager.instance.picHasTag[x];
-        AssetEntity entity = pathProvider.orderedList[x];
-        if (!hasTag) {
-          photosIds.add(entity.id);
-        }
-      }
-      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
+//      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//      List<String> photosIds = [];
+//      for (int x = 0; x < pathProvider.orderedList.length; x++) {
+//        bool hasTag = DatabaseManager.instance.picHasTag[x];
+//        AssetEntity entity = pathProvider.orderedList[x];
+//        if (!hasTag) {
+//          photosIds.add(entity.id);
+//        }
+//      }
+//      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
     } else if (index == 1) {
 //      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 //      List<String> photosIds = [];
@@ -626,7 +625,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                       showingMultiTagSheet = false;
                                     });
 
-                                    DatabaseManager.instance.setMultiPicBar(false);
+                                    tabsStore.setMultiPicBar(false);
                                     DatabaseManager.instance.setPicsSelected(Set());
                                     DatabaseManager.instance.setMultiPicTagKeys([]);
                                   },
@@ -795,7 +794,7 @@ class _TabsScreenState extends State<TabsScreen> {
                   constraints: BoxConstraints(
                     maxHeight: 100.0,
                   ),
-                  child: !Provider.of<DatabaseManager>(context).multiPicBar
+                  child: !tabsStore.multiPicBar
                       ? Observer(builder: (_) {
                           return CustomBubbleBottomBar(
                             backgroundColor: kWhiteColor,
@@ -862,7 +861,7 @@ class _TabsScreenState extends State<TabsScreen> {
                           ],
                         ),
                 ),
-          floatingActionButton: !Provider.of<DatabaseManager>(context).multiPicBar || showingMultiTagSheet
+          floatingActionButton: !tabsStore.multiPicBar || showingMultiTagSheet
               ? Container(
                   width: 0,
                   height: 0,
@@ -927,11 +926,11 @@ class _TabsScreenState extends State<TabsScreen> {
               ),
             ),
           ),
-        if (Provider.of<DatabaseManager>(context).userSettings.tutorialCompleted == false)
+        if (appStore.tutorialCompleted == false)
           Container(
             color: Colors.black.withOpacity(0.4),
           ),
-        if (Provider.of<DatabaseManager>(context).userSettings.tutorialCompleted == false)
+        if (appStore.tutorialCompleted == false)
           Material(
             color: Colors.transparent,
             child: Center(
