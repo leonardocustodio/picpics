@@ -37,7 +37,7 @@ class DatabaseManager extends ChangeNotifier {
   static const maxNumOfSuggestions = 6;
   static const maxNumOfRecentTags = 5;
 
-  int swiperIndex = 0;
+//  int swiperIndex = 0;
   int dailyPicsForAds = 50;
 
   List<bool> picHasTag;
@@ -272,7 +272,7 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void resetSlider() {
-    swiperIndex = 0;
+//    swiperIndex = 0;
     sliderIndex = null;
     picHasTag = null;
     notifyListeners();

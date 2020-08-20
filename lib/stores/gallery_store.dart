@@ -22,6 +22,14 @@ abstract class _GalleryStore with Store {
   }
 
   @observable
+  int swipeIndex = 0;
+
+  @action
+  void setSwipeIndex(int value) {
+    swipeIndex = value;
+  }
+
+  @observable
   bool isLoaded = false;
 
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
@@ -64,6 +72,19 @@ abstract class _GalleryStore with Store {
     pics.addAll(picsList);
 
     print('#@#@#@# Total photos: ${pics.length}');
+
+    //    _checkTaggedPics()
+//
+//    DatabaseManager.instance.sliderHasPics();
+////      setState(() {
+////        deviceHasNoPics = false;
+////      });
+//  }
+//
+//  DatabaseManager.instance.checkHasTaggedPhotos();
+//  tabsStore.setCurrentTab(1);
+//  setTabIndex(1);
+
     isLoaded = true;
   }
 

@@ -16,12 +16,6 @@ import 'package:provider/provider.dart';
 class UntaggedTab extends StatefulWidget {
   static const id = 'untagged_tab';
 
-  final Function showPhotoCardModal;
-
-  UntaggedTab({
-    @required this.showPhotoCardModal,
-  });
-
   @override
   _UntaggedTabState createState() => _UntaggedTabState();
 }
@@ -159,7 +153,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               DatabaseManager.instance.selectedPhotoIndex = index;
 
               galleryStore.setCurrentPic(galleryStore.pics[index]);
-              widget.showPhotoCardModal();
+              tabsStore.setModalCard(true);
             },
             child: ImageItem(
               entity: data,

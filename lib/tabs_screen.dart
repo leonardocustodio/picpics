@@ -27,8 +27,6 @@ import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/model/pic.dart';
-import 'package:hive/hive.dart';
-import 'dart:io';
 import 'package:picPics/admob_manager.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -55,9 +53,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   // Swiper do Tutorial
   SwiperController tutorialSwiperController = SwiperController();
-
   TextEditingController tagsEditingController = TextEditingController();
-
   TextEditingController bottomTagsEditingController = TextEditingController();
 
   Throttle _changeThrottle;
@@ -141,28 +137,9 @@ class _TabsScreenState extends State<TabsScreen> {
     }
   }
 
-  showPhotoCardModal() {
-    Analytics.sendEvent(Event.showed_card);
-    tabsStore.setModalCard(true);
-  }
-
-  setIsLoading(bool loading) {
-    tabsStore.setIsLoading(loading);
-  }
-
-  void dismissPhotoCard() {
-    print('dismissed photo card!!!');
-
-    DatabaseManager.instance.selectedPhotoData = null;
-    DatabaseManager.instance.selectedPhotoPicInfo = null;
-    DatabaseManager.instance.selectedPhotoIndex = null;
-    tabsStore.setModalCard(false);
-  }
-
   @override
   void initState() {
     super.initState();
-//    _loadPhotos();
 
     KeyboardVisibility.onChange.listen((bool visible) {
       print('keyboard: $visible');
@@ -269,8 +246,6 @@ class _TabsScreenState extends State<TabsScreen> {
 
   setTabIndex(int index) async {
     if (!galleryStore.deviceHasPics) {
-      Analytics.sendCurrentTab(index);
-      print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
       tabsStore.setCurrentTab(index);
       return;
     }
@@ -331,8 +306,7 @@ class _TabsScreenState extends State<TabsScreen> {
 //      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
     }
 
-    print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
-    Analytics.sendCurrentTab(index);
+//    print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
     tabsStore.setCurrentTab(index);
   }
 
@@ -346,40 +320,6 @@ class _TabsScreenState extends State<TabsScreen> {
         ),
       ),
     );
-  }
-
-//  void _setDeviceHasNoPics() {
-//    print('This device has no pics!!!!');
-//    setState(() {
-//      deviceHasNoPics = true;
-//    });
-//    return;
-//  }
-
-  void _loadPhotos({shouldReload = false}) async {
-    print('Loading photos.....');
-    if (PhotoProvider.instance.list.isEmpty) {
-//      await PhotoProvider.instance.refreshGalleryList();
-//      print('LISTA: ${PhotoProvider.instance.list}');
-
-//      if (PhotoProvider.instance.list.length == 0) {
-//        _setDeviceHasNoPics();
-//        return;
-//      }
-
-//      PhotoProvider.instance.getOrCreatePathProvider(PhotoProvider.instance.list[0]);
-//      await PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]].loadAllPics();
-//      _checkTaggedPics()
-
-      DatabaseManager.instance.sliderHasPics();
-//      setState(() {
-//        deviceHasNoPics = false;
-//      });
-    }
-
-    DatabaseManager.instance.checkHasTaggedPhotos();
-    tabsStore.setCurrentTab(1);
-    setTabIndex(1);
   }
 
   @override
@@ -406,9 +346,7 @@ class _TabsScreenState extends State<TabsScreen> {
       pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
     }
 
-    var screenWidth = MediaQuery.of(context).size.width;
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
-    print('Bottom inset: $bottomInsets');
 
     return Stack(
       children: <Widget>[
@@ -517,9 +455,7 @@ class _TabsScreenState extends State<TabsScreen> {
                         ),
                       );
                     } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
-                      wgt = UntaggedTab(
-                        showPhotoCardModal: showPhotoCardModal,
-                      );
+                      wgt = UntaggedTab();
                     else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
                       wgt = PicTab(
                         showEditTagModal: showEditTagModal,
@@ -528,10 +464,8 @@ class _TabsScreenState extends State<TabsScreen> {
                     else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission)
                       wgt = TaggedTab(
                         setTabIndex: setTabIndex,
-                        setIsLoading: setIsLoading,
                         deviceHasNoPics: !galleryStore.deviceHasPics,
                         showEditTagModal: showEditTagModal,
-                        showPhotoCardModal: showPhotoCardModal,
                       );
                     return wgt;
                   }),
@@ -845,7 +779,7 @@ class _TabsScreenState extends State<TabsScreen> {
               child: Center(
                 child: GestureDetector(
                   onTap: () {
-                    dismissPhotoCard();
+                    tabsStore.setModalCard(false);
                   },
                   child: Container(
                     color: Colors.black.withOpacity(0.4),
@@ -861,13 +795,6 @@ class _TabsScreenState extends State<TabsScreen> {
                           ),
                           child: PhotoCard(
                             picStore: galleryStore.currentPic,
-//                          data: DatabaseManager.instance.selectedPhotoData,
-//                          photoId: DatabaseManager.instance.selectedPhotoPicInfo.photoId,
-//                          picSwiper: -1,
-//                          index: DatabaseManager.instance.selectedPhotoIndex,
-//                          tagsEditingController: tagsEditingController,
-//                          specificLocation: DatabaseManager.instance.selectedPhotoPicInfo.specificLocation,
-//                          generalLocation: DatabaseManager.instance.selectedPhotoPicInfo.generalLocation,
                             showEditTagModal: showEditTagModal,
                             onPressedTrash: () {
                               trashPic(DatabaseManager.instance.selectedPhotoData);

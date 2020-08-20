@@ -21,6 +21,7 @@ abstract class _TabsStore with Store {
 
   @action
   void setCurrentTab(int value) {
+    Analytics.sendCurrentTab(value);
     currentTab = value;
   }
 
@@ -56,6 +57,7 @@ abstract class _TabsStore with Store {
 
   @action
   void setModalCard(bool value) {
+    Analytics.sendEvent(Event.showed_card);
     modalCard = value;
   }
 

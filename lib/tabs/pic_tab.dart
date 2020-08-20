@@ -10,7 +10,6 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:flare_flutter/flare_actor.dart';
@@ -35,14 +34,11 @@ class _PicTabState extends State<PicTab> {
   GalleryStore galleryStore;
 
   CarouselController carouselController = CarouselController();
-//  int picSwiper = 0;
 
 //  TextEditingController tagsEditingController = TextEditingController();
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
-    print('photo slides index: $index');
     var data = galleryStore.pics[index].entity;
-
     Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
 
     if (picInfo == null) {
@@ -154,29 +150,32 @@ class _PicTabState extends State<PicTab> {
             Expanded(
               child: Stack(
                 children: <Widget>[
-                  CarouselSlider.builder(
-                    itemCount: galleryStore.pics.length,
-                    carouselController: carouselController,
-                    itemBuilder: (BuildContext context, int index) {
-                      print('calling index $index');
-                      return _buildPhotoSlider(context, index);
-                    },
-                    options: CarouselOptions(
-                      initialPage: DatabaseManager.instance.swiperIndex,
-                      enableInfiniteScroll: true,
-                      height: double.maxFinite,
-                      viewportFraction: 1.0,
-                      enlargeCenterPage: true,
-                      autoPlayCurve: Curves.fastOutSlowIn,
-                      onPageChanged: (index, reason) async {
-                        if (!appStore.hasSwiped) {
-                          appStore.setHasSwiped(true);
-                        }
-                        Analytics.sendEvent(Event.swiped_photo);
-                        print('### Swiper Index: $index');
+                  Observer(builder: (_) {
+                    return CarouselSlider.builder(
+                      itemCount: galleryStore.pics.length,
+                      carouselController: carouselController,
+                      itemBuilder: (BuildContext context, int index) {
+                        print('calling index $index');
+                        return _buildPhotoSlider(context, index);
                       },
-                    ),
-                  ),
+                      options: CarouselOptions(
+                        initialPage: galleryStore.swipeIndex,
+                        enableInfiniteScroll: true,
+                        height: double.maxFinite,
+                        viewportFraction: 1.0,
+                        enlargeCenterPage: true,
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        onPageChanged: (index, reason) async {
+                          if (!appStore.hasSwiped) {
+                            appStore.setHasSwiped(true);
+                          }
+                          galleryStore.setSwipeIndex(index);
+                          Analytics.sendEvent(Event.swiped_photo);
+                          print('### Swiper Index: $index');
+                        },
+                      ),
+                    );
+                  }),
                   Observer(builder: (_) {
                     if (!appStore.hasSwiped) {
                       return IgnorePointer(
