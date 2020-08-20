@@ -171,6 +171,15 @@ mixin _$AppStore on _AppStore, Store {
             firstPermissionCheck: firstPermissionCheck));
   }
 
+  final _$checkPremiumStatusAsyncAction =
+      AsyncAction('_AppStore.checkPremiumStatus');
+
+  @override
+  Future<void> checkPremiumStatus() {
+    return _$checkPremiumStatusAsyncAction
+        .run(() => super.checkPremiumStatus());
+  }
+
   final _$requestGalleryPermissionAsyncAction =
       AsyncAction('_AppStore.requestGalleryPermission');
 

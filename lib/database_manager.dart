@@ -99,14 +99,6 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setMultiPicBar(bool enabled) {
-//    if (enabled) {
-//      Analytics.sendEvent(Event.selected_photos);
-//    }
-//    multiPicBar = enabled;
-//    notifyListeners();
-  }
-
 //  Pic selectedPic;
   void requestNotification() {
     var userBox = Hive.box('user');
@@ -366,20 +358,6 @@ class DatabaseManager extends ChangeNotifier {
     userBox.putAt(0, userInfo);
     setCanTagToday(true);
   }
-
-//  void setUserAsPremium() {
-//    var userBox = Hive.box('user');
-//    userSettings.isPremium = true;
-//    userBox.putAt(0, userSettings);
-//    notifyListeners();
-//  }
-//
-//  void setUserAsNotPremium() {
-//    var userBox = Hive.box('user');
-//    userSettings.isPremium = false;
-//    userBox.putAt(0, userSettings);
-//    notifyListeners();
-//  }
 
   void loadRemoteConfig() async {
     print('loading remote config....');
@@ -712,13 +690,6 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void setUserHasSwiped() {
-    var userBox = Hive.box('user');
-    userSettings.hasSwiped = true;
-    userBox.putAt(0, userSettings);
-    notifyListeners();
-  }
-
   void addTagToRecent({String tagKey}) {
     print('adding tag to recent: $tagKey');
 
@@ -1042,163 +1013,6 @@ class DatabaseManager extends ChangeNotifier {
     addTagToRecent(tagKey: tagKey);
     notifyListeners();
   }
-
-  void setupPathList() async {
-//    List<AssetPathEntity> pathList;
-//
-//    pathList = await PhotoManager.getAssetPathList(
-//      hasAll: true,
-//      onlyAll: true,
-//      type: RequestType.image,
-//    );
-//
-//    print('pathList: $pathList');
-//
-//    DatabaseManager.instance.assetProvider.current = pathList[0];
-//    DatabaseManager.instance.loadFirstPhotos();
-  }
-
-  loadFirstPhotos() async {
-//    await assetProvider.loadMore();
-//    print('loaded first photos');
-  }
-
-  loadMore() async {
-//    print('calling asset provider loadmore');
-//    await assetProvider.loadMore();
-//    print('calling notify listeners');
-//    notifyListeners();
-  }
-
-//  String formatDate(DateTime date) {
-//    int daysDif = calculateDifference(date);
-//
-//    if (daysDif == 0) {
-//      return 'Hoje';
-//    } else if (daysDif == -1) {
-//      return 'Ontem';
-//    }
-//
-//    switch (date.weekday) {
-//      case 1:
-//        {
-//          return 'Segunda, ${date.day} de ${monthString(date.month)}${date.year != DateTime.now().year ? ' de ${date.year}' : ''}';
-//        }
-//        break;
-//
-//      case 2:
-//        {
-//          return 'Terça, ${date.day} de ${monthString(date.month)}${date.year != DateTime.now().year ? ' de ${date.year}' : ''}';
-//        }
-//        break;
-//
-//      case 3:
-//        {
-//          return 'Quarta, ${date.day} de ${monthString(date.month)}${date.year != DateTime.now().year ? ' de ${date.year}' : ''}';
-//        }
-//        break;
-//
-//      case 4:
-//        {
-//          return 'Quinta, ${date.day} de ${monthString(date.month)}${date.year != DateTime.now().year ? ' de ${date.year}' : ''}';
-//        }
-//        break;
-//
-//      case 5:
-//        {
-//          return 'Sexta, ${date.day} de ${monthString(date.month)}${date.year != DateTime.now().year ? ' de ${date.year}' : ''}';
-//        }
-//        break;
-//
-//      case 6:
-//        {
-//          return 'Sábado, ${date.day} de ${monthString(date.month)}${date.year != DateTime.now().year ? ' de ${date.year}' : ''}';
-//        }
-//        break;
-//
-//      case 7:
-//        {
-//          return 'Domingo, ${date.day} de ${monthString(date.month)}${date.year != DateTime.now().year ? ' de ${date.year}' : ''}';
-//        }
-//        break;
-//
-//      default:
-//        {
-//          return '${date.day} de ${monthString(date.month)}${date.year != DateTime.now().year ? ' de ${date.year}' : ''}';
-//        }
-//        break;
-//    }
-//  }
-//
-//  String monthString(int month) {
-//    switch (month) {
-//      case 1:
-//        {
-//          return 'janeiro';
-//        }
-//        break;
-//      case 2:
-//        {
-//          return 'fevereiro';
-//        }
-//        break;
-//      case 3:
-//        {
-//          return 'março';
-//        }
-//        break;
-//      case 4:
-//        {
-//          return 'abril';
-//        }
-//        break;
-//      case 5:
-//        {
-//          return 'maio';
-//        }
-//        break;
-//      case 6:
-//        {
-//          return 'junho';
-//        }
-//        break;
-//      case 7:
-//        {
-//          return 'julho';
-//        }
-//        break;
-//      case 8:
-//        {
-//          return 'agosto';
-//        }
-//        break;
-//      case 9:
-//        {
-//          return 'setembro';
-//        }
-//        break;
-//      case 10:
-//        {
-//          return 'outubro';
-//        }
-//        break;
-//      case 11:
-//        {
-//          return 'novembro';
-//        }
-//        break;
-//      case 12:
-//        {
-//          return 'dezembro';
-//        }
-//        break;
-//    }
-//  }
-//
-//  int calculateDifference(DateTime date) {
-//    DateTime now = DateTime.now();
-//    return DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
-//  }
 
   Future findLocation(double latitude, double longitude) async {
     print('Finding location...');

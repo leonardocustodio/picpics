@@ -229,6 +229,16 @@ abstract class _AppStore with Store {
   @observable
   bool hasSwiped = false;
 
+  @action
+  void setHasSwiped(bool value) {
+    hasSwiped = true;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.hasSwiped = value;
+    currentUser.save();
+  }
+
   @observable
   String appLanguage = 'pt_BR';
 

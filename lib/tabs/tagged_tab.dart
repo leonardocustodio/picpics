@@ -204,7 +204,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     Set<String> picsCopy = DatabaseManager.instance.picsSelected;
                     picsCopy.add(data.id);
                     DatabaseManager.instance.setPicsSelected(picsCopy);
-                    DatabaseManager.instance.setMultiPicBar(true);
+                    tabsStore.setMultiPicBar(true);
                   }
                 },
                 child: CupertinoButton(
@@ -341,7 +341,7 @@ class _TaggedTabState extends State<TaggedTab> {
                       Set<String> picsCopy = DatabaseManager.instance.picsSelected;
                       picsCopy.add(data.id);
                       DatabaseManager.instance.setPicsSelected(picsCopy);
-                      DatabaseManager.instance.setMultiPicBar(true);
+                      tabsStore.setMultiPicBar(true);
                     }
                   },
                   child: CupertinoButton(
