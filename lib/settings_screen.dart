@@ -554,7 +554,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       padding: const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 80.0),
                       child: CupertinoButton(
                         onPressed: () {
-                          if (DatabaseManager.instance.userSettings.isPremium) {
+                          if (appStore.isPremium) {
                             return;
                           }
                           Navigator.pushNamed(context, PremiumScreen.id);

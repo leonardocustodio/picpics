@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
@@ -34,7 +33,6 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
-import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 
 class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
@@ -340,14 +338,7 @@ class _TabsScreenState extends State<TabsScreen> {
     Locale myLocale = Localizations.localeOf(context);
     print('Language Code: ${myLocale.languageCode}');
 
-    AssetPathProvider pathProvider;
-    if (PhotoProvider.instance.list.isNotEmpty) {
-      print('refreshing');
-      pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    }
-
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
-
     return Stack(
       children: <Widget>[
         Observer(builder: (_) {

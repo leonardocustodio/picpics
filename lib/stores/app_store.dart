@@ -77,6 +77,8 @@ abstract class _AppStore with Store {
     // Executa primeira vez para ver se ainda tem permissão
     checkNotificationPermission();
 
+    DatabaseManager.instance.initPlatformState(user.id);
+
     if (user.isPremium) {
       checkPremiumStatus();
     }
@@ -277,6 +279,7 @@ abstract class _AppStore with Store {
 
   @computed
   String get currentLanguage {
+    print('App Language: $appLanguage');
     String lang = appLanguage.split('_')[0];
     var local = LanguageLocal();
     return '${local.getDisplayLanguage(lang)['nativeName']}';

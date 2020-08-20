@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/analytics_manager.dart';
@@ -276,6 +277,16 @@ class DatabaseManager extends ChangeNotifier {
     sliderIndex = null;
     picHasTag = null;
     notifyListeners();
+  }
+
+  Future<void> initPlatformState(String userId) async {
+    if (kDebugMode) {
+      Purchases.setDebugLogsEnabled(true);
+    }
+    await Purchases.setup(
+      'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
+      appUserId: userId,
+    );
   }
 
   void sliderHasPics() {

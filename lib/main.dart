@@ -30,16 +30,6 @@ import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'dart:io';
 
-//Future<void> initPlatformState() async {
-//  if (kDebugMode) {
-//    Purchases.setDebugLogsEnabled(true);
-//  }
-//  await Purchases.setup(
-//    'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
-//    appUserId: DatabaseManager.instance.userSettings.id,
-//  );
-//}
-//
 //void checkForAppStoreInitiatedProducts() async {
 //  print('Checking if appstore initiated products');
 //  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
