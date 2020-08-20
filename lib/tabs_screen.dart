@@ -582,7 +582,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                   Spacer(),
                                   CupertinoButton(
                                     onPressed: () {
-                                      if (!DatabaseManager.instance.userSettings.isPremium) {
+                                      if (!appStore.isPremium) {
                                         Navigator.pushNamed(context, PremiumScreen.id);
                                         return;
                                       }
@@ -681,7 +681,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                           );
                                         },
                                         onSubmitted: (text) {
-                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
@@ -1030,16 +1030,8 @@ class _TabsScreenState extends State<TabsScreen> {
                               if (tabsStore.tutorialIndex == 2) {
                                 print('Requesting notification....');
 
-                                if (Platform.isAndroid) {
-                                  var userBox = Hive.box('user');
-                                  DatabaseManager.instance.userSettings.notifications = true;
-                                  DatabaseManager.instance.userSettings.dailyChallenges = true;
-                                  userBox.putAt(0, DatabaseManager.instance.userSettings);
-                                } else {
-                                  PushNotificationsManager push = PushNotificationsManager();
-                                  push.init();
-                                }
-                                DatabaseManager.instance.checkNotificationPermission(firstPermissionCheck: true);
+                                appStore.requestNotificationPermission();
+                                appStore.checkNotificationPermission(firstPermissionCheck: true);
                                 appStore.setTutorialCompleted(true);
                                 return;
                               }

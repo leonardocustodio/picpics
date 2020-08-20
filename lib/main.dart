@@ -111,7 +111,6 @@ void main() async {
     Analytics.sendEvent(Event.created_user);
   } else {
     await DatabaseManager.instance.loadUserSettings();
-    DatabaseManager.instance.checkNotificationPermission();
 
     if (DatabaseManager.instance.userSettings.hasSwiped == null) {
       DatabaseManager.instance.userSettings.hasSwiped = false;

@@ -154,6 +154,17 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$checkNotificationPermissionAsyncAction =
+      AsyncAction('_AppStore.checkNotificationPermission');
+
+  @override
+  Future<void> checkNotificationPermission(
+      {bool firstPermissionCheck = false}) {
+    return _$checkNotificationPermissionAsyncAction.run(() => super
+        .checkNotificationPermission(
+            firstPermissionCheck: firstPermissionCheck));
+  }
+
   final _$requestGalleryPermissionAsyncAction =
       AsyncAction('_AppStore.requestGalleryPermission');
 
@@ -164,6 +175,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
+
+  @override
+  void requestNotificationPermission() {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.requestNotificationPermission');
+    try {
+      return super.requestNotificationPermission();
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void switchDailyChallenges() {

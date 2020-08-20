@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
+import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/model/user.dart';
@@ -31,6 +34,9 @@ abstract class _AppStore with Store {
       requestGalleryPermission();
     }
 
+    // Executa primeira vez para ver se ainda tem permissão
+    checkNotificationPermission();
+
     autorun((_) {
       print('autorun');
     });
@@ -38,6 +44,48 @@ abstract class _AppStore with Store {
 
   @observable
   bool notifications = false;
+
+  @action
+  void requestNotificationPermission() {
+    if (Platform.isAndroid) {
+      var userBox = Hive.box('user');
+      User currentUser = userBox.getAt(0);
+
+      currentUser.notifications = true;
+      currentUser.dailyChallenges = true;
+      currentUser.save();
+    } else {
+      PushNotificationsManager push = PushNotificationsManager();
+      push.init();
+    }
+  }
+
+  @action
+  Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
+    return NotificationPermissions.getNotificationPermissionStatus().then((status) {
+      var userBox = Hive.box('user');
+      User currentUser = userBox.getAt(0);
+
+      if (status == PermissionStatus.denied) {
+        print('user has no notification permission');
+        currentUser.notifications = false;
+//        if (firstPermissionCheck) {
+        currentUser.dailyChallenges = false;
+//        }
+        currentUser.save();
+      } else {
+        print('user has notification permission');
+        currentUser.notifications = true;
+        if (firstPermissionCheck) {
+          currentUser.dailyChallenges = true;
+        }
+        currentUser.save();
+      }
+
+      notifications = currentUser.notifications;
+      dailyChallenges = currentUser.dailyChallenges;
+    });
+  }
 
   @observable
   bool dailyChallenges = false;
