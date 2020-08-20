@@ -1,13 +1,17 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/login_screen.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/push_notifications_manager.dart';
+import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/utils/languages.dart';
+import 'package:uuid/uuid.dart';
 
 part 'app_store.g.dart';
 
@@ -15,10 +19,46 @@ class AppStore = _AppStore with _$AppStore;
 
 abstract class _AppStore with Store {
   final String appVersion;
+  final String deviceLocale;
 
-  _AppStore({this.appVersion}) {
+  _AppStore({this.appVersion, this.deviceLocale}) {
     var userBox = Hive.box('user');
-    User user = userBox.getAt(0);
+    User user;
+
+    if (userBox.length == 0) {
+//      Locale locale = await DeviceLocale.getCurrentLocale();
+      User createUser = User(
+        id: Uuid().v4(),
+        email: null,
+        password: null,
+        notifications: false,
+        dailyChallenges: false,
+        goal: 20,
+        hourOfDay: 21,
+        minutesOfDay: 30,
+        isPremium: false,
+        recentTags: [],
+        tutorialCompleted: false,
+        picsTaggedToday: 0,
+        lastTaggedPicDate: DateTime.now(),
+        canTagToday: true,
+        appLanguage: deviceLocale,
+        hasSwiped: false,
+        hasGalleryPermission: null,
+      );
+
+      user = createUser;
+      userBox.put(0, createUser);
+
+      initialRoute = LoginScreen.id;
+      Analytics.setUserId(user.id);
+      Analytics.sendEvent(Event.created_user);
+    } else {
+      user = userBox.getAt(0);
+      initialRoute = TabsScreen.id;
+      Analytics.setUserId(user.id);
+      Analytics.sendEvent(Event.user_returned);
+    }
 
     notifications = user.notifications;
     dailyChallenges = user.dailyChallenges;
@@ -41,6 +81,8 @@ abstract class _AppStore with Store {
       print('autorun');
     });
   }
+
+  String initialRoute;
 
   @observable
   bool notifications = false;
@@ -167,6 +209,11 @@ abstract class _AppStore with Store {
 
   @observable
   String appLanguage = 'pt_BR';
+
+  @computed
+  Locale get appLocale {
+    return Locale(appLanguage.split('_')[0]);
+  }
 
   @observable
   bool hasGalleryPermission = false;

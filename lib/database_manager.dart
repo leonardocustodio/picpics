@@ -402,9 +402,9 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void loadUserSettings() async {
-    var userBox = Hive.box('user');
-    User getUser = await userBox.getAt(0);
-    userSettings = getUser;
+//    var userBox = Hive.box('user');
+//    User getUser = await userBox.getAt(0);
+//    userSettings = getUser;
   }
 
   void changeUserLanguage(String appLanguage, {bool notify = true}) {

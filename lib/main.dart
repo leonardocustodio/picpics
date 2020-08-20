@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/add_location.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/asset_provider.dart';
@@ -26,49 +25,42 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-//import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'dart:io';
 
-Future<void> initPlatformState() async {
-  if (kDebugMode) {
-    Purchases.setDebugLogsEnabled(true);
-  }
-  await Purchases.setup(
-    'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
-    appUserId: DatabaseManager.instance.userSettings.id,
-  );
-}
-
-void checkForAppStoreInitiatedProducts() async {
-  print('Checking if appstore initiated products');
-  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
-  if (appStoreProducts.length > 0) {
-    DatabaseManager.instance.appStartInPremium = true;
-    DatabaseManager.instance.trybuyId = appStoreProducts.last.productId;
-  } else {
-    DatabaseManager.instance.appStartInPremium = false;
-    DatabaseManager.instance.trybuyId = null;
-  }
-}
+//Future<void> initPlatformState() async {
+//  if (kDebugMode) {
+//    Purchases.setDebugLogsEnabled(true);
+//  }
+//  await Purchases.setup(
+//    'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
+//    appUserId: DatabaseManager.instance.userSettings.id,
+//  );
+//}
+//
+//void checkForAppStoreInitiatedProducts() async {
+//  print('Checking if appstore initiated products');
+//  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
+//  if (appStoreProducts.length > 0) {
+//    DatabaseManager.instance.appStartInPremium = true;
+//    DatabaseManager.instance.trybuyId = appStoreProducts.last.productId;
+//  } else {
+//    DatabaseManager.instance.appStartInPremium = false;
+//    DatabaseManager.instance.trybuyId = null;
+//  }
+//}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   Ads.initialize();
-//  Ads.loadInterstitial();
   Ads.loadRewarded();
 
   await Hive.initFlutter();
-//  var dir = await getApplicationDocumentsDirectory();
-//  Hive.init(dir.path);
-
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
   Hive.registerAdapter(TagAdapter());
@@ -77,75 +69,35 @@ void main() async {
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
 
-  String initialRoute = TabsScreen.id;
+//  String initialRoute = TabsScreen.id;
+  String deviceLocale = await DeviceLocale.getCurrentLocale().toString();
 
-  if (userBox.length == 0) {
-    Locale locale = await DeviceLocale.getCurrentLocale();
-
-    var uuid = Uuid();
-    User user = User(
-      id: uuid.v4(),
-      email: null,
-      password: null,
-      notifications: false,
-      dailyChallenges: false,
-      goal: 20,
-      hourOfDay: 21,
-      minutesOfDay: 30,
-      isPremium: false,
-      recentTags: [],
-      tutorialCompleted: false,
-      picsTaggedToday: 0,
-      lastTaggedPicDate: DateTime.now(),
-      canTagToday: true,
-      appLanguage: locale.toString(),
-      hasSwiped: false,
-      hasGalleryPermission: null,
-    );
-
-    userBox.add(user);
-    DatabaseManager.instance.userSettings = user;
-    initialRoute = LoginScreen.id;
-
-    Analytics.setUserId(user.id);
-    Analytics.sendEvent(Event.created_user);
-  } else {
-    await DatabaseManager.instance.loadUserSettings();
-
-    if (DatabaseManager.instance.userSettings.hasSwiped == null) {
-      DatabaseManager.instance.userSettings.hasSwiped = false;
-    }
-
-    Analytics.setUserId(DatabaseManager.instance.userSettings.id);
-    Analytics.sendEvent(Event.user_returned);
-  }
-
-  if (DatabaseManager.instance.userSettings.appLanguage == null) {
-    Locale locale = await DeviceLocale.getCurrentLocale();
-    DatabaseManager.instance.changeUserLanguage(
-      locale.toString().split('_')[0],
-      notify: false,
-    );
-  }
-
-  Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
+//  if (DatabaseManager.instance.userSettings.appLanguage == null) {
+//    Locale locale = await DeviceLocale.getCurrentLocale();
+//    DatabaseManager.instance.changeUserLanguage(
+//      locale.toString().split('_')[0],
+//      notify: false,
+//    );
+//  }
+//
+//  Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
   DatabaseManager.instance.loadRemoteConfig();
-  initPlatformState();
+//  initPlatformState();
 
   String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
     return packageInfo.version;
   });
 
-  if (Platform.isIOS) {
-    await checkForAppStoreInitiatedProducts();
-  }
+//  if (Platform.isIOS) {
+//    await checkForAppStoreInitiatedProducts();
+//  }
 
   runZonedGuarded(() {
     runApp(
       PicPicsApp(
-        initialRoute: initialRoute,
-        userLocale: userLocale,
+//        userLocale: userLocale,
         appVersion: appVersion,
+        deviceLocale: deviceLocale,
       ),
     );
   }, (Object error, StackTrace stack) {
@@ -154,14 +106,14 @@ void main() async {
 }
 
 class PicPicsApp extends StatefulWidget {
-  final String initialRoute;
-  final Locale userLocale;
+//  final Locale userLocale;
   final String appVersion;
+  final String deviceLocale;
 
   PicPicsApp({
-    @required this.initialRoute,
-    @required this.userLocale,
+//    @required this.userLocale,
     @required this.appVersion,
+    @required this.deviceLocale,
   });
 
   @override
@@ -171,11 +123,11 @@ class PicPicsApp extends StatefulWidget {
 class _PicPicsAppState extends State<PicPicsApp> {
   @override
   Widget build(BuildContext context) {
-    AppStore appStore = AppStore(appVersion: widget.appVersion);
+    AppStore appStore = AppStore(
+      appVersion: widget.appVersion,
+      deviceLocale: widget.deviceLocale,
+    );
 
-//    FlutterUxcam.optOutOfVideoRecording();
-//    FlutterUxcam.optOutOfSchematicRecordings();
-//    FlutterUxcam.startWithKey("so0id471t97vb2v");
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MultiProvider(
@@ -203,10 +155,10 @@ class _PicPicsAppState extends State<PicPicsApp> {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        locale: widget.userLocale,
+        locale: appStore.appLocale,
         supportedLocales: S.delegate.supportedLocales,
         debugShowCheckedModeBanner: kDebugMode,
-        initialRoute: widget.initialRoute,
+        initialRoute: appStore.initialRoute,
         navigatorObservers: [Analytics.observer],
         routes: {
           LoginScreen.id: (context) => LoginScreen(),

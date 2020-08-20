@@ -9,6 +9,12 @@ part of 'app_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$AppStore on _AppStore, Store {
+  Computed<Locale> _$appLocaleComputed;
+
+  @override
+  Locale get appLocale => (_$appLocaleComputed ??=
+          Computed<Locale>(() => super.appLocale, name: '_AppStore.appLocale'))
+      .value;
   Computed<String> _$currentLanguageComputed;
 
   @override
@@ -243,6 +249,7 @@ tutorialCompleted: ${tutorialCompleted},
 hasSwiped: ${hasSwiped},
 appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},
+appLocale: ${appLocale},
 currentLanguage: ${currentLanguage}
     ''';
   }

@@ -183,15 +183,6 @@ class _TabsScreenState extends State<TabsScreen> {
     PhotoManager.addChangeCallback(_onAssetChange);
     PhotoManager.startChangeNotify();
 
-    if (DatabaseManager.instance.userSettings.tutorialCompleted == true && DatabaseManager.instance.userSettings.notifications == true) {
-      PushNotificationsManager push = PushNotificationsManager();
-      push.init();
-    }
-
-    if (DatabaseManager.instance.userSettings.isPremium) {
-      DatabaseManager.instance.checkPremiumStatus();
-    }
-
     RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.loaded) {
         print('@@@ loaded');
@@ -215,11 +206,11 @@ class _TabsScreenState extends State<TabsScreen> {
     };
 
     // Added for the case of buying premium from appstore
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (DatabaseManager.instance.appStartInPremium) {
-        Navigator.pushNamed(context, PremiumScreen.id);
-      }
-    });
+//    WidgetsBinding.instance.addPostFrameCallback((_) {
+//      if (DatabaseManager.instance.appStartInPremium) {
+//        Navigator.pushNamed(context, PremiumScreen.id);
+//      }
+//    });
   }
 
   @override
@@ -397,6 +388,15 @@ class _TabsScreenState extends State<TabsScreen> {
     appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+
+    if (appStore.tutorialCompleted == true && appStore.notifications == true) {
+      PushNotificationsManager push = PushNotificationsManager();
+      push.init();
+    }
+
+    if (appStore.isPremium) {
+      DatabaseManager.instance.checkPremiumStatus();
+    }
   }
 
   @override
