@@ -9,6 +9,7 @@ import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:share_extend/share_extend.dart';
 
@@ -17,6 +18,8 @@ part 'pic_store.g.dart';
 class PicStore = _PicStore with _$PicStore;
 
 abstract class _PicStore with Store {
+  final AppStore appStore;
+
   final AssetEntity entity;
   final String photoId;
   final DateTime createdAt;
@@ -24,6 +27,7 @@ abstract class _PicStore with Store {
   final double originalLongitude;
 
   _PicStore({
+    this.appStore,
     this.entity,
     this.photoId,
     this.createdAt,
@@ -280,7 +284,7 @@ abstract class _PicStore with Store {
 //    }
 
     // Increase today tagged pics everytime it adds a new pic to database.
-    DatabaseManager.instance.increaseTodayTaggedPics();
+    appStore.increaseTodayTaggedPics();
     Analytics.sendEvent(Event.added_tag);
   }
 

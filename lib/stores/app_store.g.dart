@@ -113,6 +113,21 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$canTagTodayAtom = Atom(name: '_AppStore.canTagToday');
+
+  @override
+  bool get canTagToday {
+    _$canTagTodayAtom.reportRead();
+    return super.canTagToday;
+  }
+
+  @override
+  set canTagToday(bool value) {
+    _$canTagTodayAtom.reportWrite(value, super.canTagToday, () {
+      super.canTagToday = value;
+    });
+  }
+
   final _$hasSwipedAtom = Atom(name: '_AppStore.hasSwiped');
 
   @override
@@ -178,6 +193,15 @@ mixin _$AppStore on _AppStore, Store {
   Future<void> checkPremiumStatus() {
     return _$checkPremiumStatusAsyncAction
         .run(() => super.checkPremiumStatus());
+  }
+
+  final _$increaseTodayTaggedPicsAsyncAction =
+      AsyncAction('_AppStore.increaseTodayTaggedPics');
+
+  @override
+  Future<void> increaseTodayTaggedPics() {
+    return _$increaseTodayTaggedPicsAsyncAction
+        .run(() => super.increaseTodayTaggedPics());
   }
 
   final _$requestGalleryPermissionAsyncAction =
@@ -247,6 +271,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setCanTagToday(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setCanTagToday');
+    try {
+      return super.setCanTagToday(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setHasSwiped(bool value) {
     final _$actionInfo =
         _$_AppStoreActionController.startAction(name: '_AppStore.setHasSwiped');
@@ -277,6 +312,7 @@ hourOfDay: ${hourOfDay},
 minutesOfDay: ${minutesOfDay},
 isPremium: ${isPremium},
 tutorialCompleted: ${tutorialCompleted},
+canTagToday: ${canTagToday},
 hasSwiped: ${hasSwiped},
 appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},

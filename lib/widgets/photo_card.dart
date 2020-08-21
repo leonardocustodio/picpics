@@ -9,6 +9,7 @@ import 'package:picPics/photo_screen.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/premium_screen.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -39,6 +40,7 @@ class PhotoCard extends StatefulWidget {
 }
 
 class _PhotoCardState extends State<PhotoCard> {
+  AppStore appStore;
   GalleryStore galleryStore;
   PicStore get picStore => widget.picStore;
 
@@ -110,11 +112,6 @@ class _PhotoCardState extends State<PhotoCard> {
       print('#### keyboard is visible!!!!');
       tagsFocusNode.requestFocus();
     }
-
-//    KeyboardVisibility.onChange.listen((bool visible) {
-//      print('Keyboard visibility update. Is visible: ${visible}');
-//
-//    });
   }
 
   @override
@@ -126,6 +123,7 @@ class _PhotoCardState extends State<PhotoCard> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
   }
 
@@ -347,7 +345,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       print('do nothing');
                     },
                     onPanUpdate: () {
-                      if (!DatabaseManager.instance.canTagToday()) {
+                      if (!appStore.canTagToday) {
                         showWatchAdModal(context);
                         return;
                       }
@@ -364,14 +362,13 @@ class _PhotoCardState extends State<PhotoCard> {
                       print('return');
 
                       if (text != '') {
-                        if (!DatabaseManager.instance.canTagToday()) {
+                        if (!appStore.canTagToday) {
                           tagsEditingController.clear();
                           picStore.setSearchText('');
                           showWatchAdModal(context);
                           return;
                         }
 
-//                        DatabaseManager.instance.selectedPhoto = picStore.entity;
                         await picStore.addTag(
                           tagName: text,
                         );
@@ -391,12 +388,11 @@ class _PhotoCardState extends State<PhotoCard> {
                       tagStyle: TagStyle.GrayOutlined,
                       showEditTagModal: widget.showEditTagModal,
                       onTap: (tagName) async {
-                        if (!DatabaseManager.instance.canTagToday()) {
+                        if (!appStore.canTagToday) {
                           showWatchAdModal(context);
                           return;
                         }
 
-//                        DatabaseManager.instance.selectedPhoto = picStore.entity;
                         await picStore.addTag(
                           tagName: tagName,
                         );

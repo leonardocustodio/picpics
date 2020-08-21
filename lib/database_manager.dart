@@ -124,24 +124,6 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  bool canTagToday() {
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
-    print('User can tag today: ${getUser.canTagToday}');
-    if (getUser.isPremium) {
-      return true;
-    }
-    return getUser.canTagToday ?? true;
-  }
-
-  void setCanTagToday(bool canTag) {
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
-    getUser.canTagToday = canTag;
-    userBox.putAt(0, getUser);
-    print('Setting user can tag today to: $canTag');
-  }
-
   String getTagName(String tagKey) {
     var tagsBox = Hive.box('tags');
     Tag getTag = tagsBox.get(tagKey);
@@ -328,41 +310,6 @@ class DatabaseManager extends ChangeNotifier {
       // Error fetching purchaser info
       return null;
     }
-  }
-
-  void increaseTodayTaggedPics() async {
-    var userBox = Hive.box('user');
-
-    User userInfo = userBox.getAt(0);
-
-    DateTime lastTaggedPicDate = userInfo.lastTaggedPicDate;
-    DateTime dateNow = DateTime.now();
-
-    if (lastTaggedPicDate == null) {
-      print('date is null....');
-      userInfo.picsTaggedToday = 1;
-      userInfo.lastTaggedPicDate = dateNow;
-    } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
-      userInfo.picsTaggedToday += 1;
-      userInfo.lastTaggedPicDate = dateNow;
-      print('same day... increasing number of tagged photos today, now it is: ${userInfo.picsTaggedToday}');
-
-      final RemoteConfig remoteConfig = await RemoteConfig.instance;
-      dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
-      int mod = userInfo.picsTaggedToday % dailyPicsForAds;
-
-      if (mod == 0) {
-        print('### CALL ADS!!!');
-        setCanTagToday(false);
-        return;
-      }
-    } else {
-      print('not same day... resetting counter....');
-      userInfo.picsTaggedToday = 1;
-      userInfo.lastTaggedPicDate = dateNow;
-    }
-    userBox.putAt(0, userInfo);
-    setCanTagToday(true);
   }
 
   void loadRemoteConfig() async {

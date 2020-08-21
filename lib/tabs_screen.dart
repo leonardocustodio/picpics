@@ -164,7 +164,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
       if (event == RewardedVideoAdEvent.rewarded) {
         print('@@@ rewarded');
-        DatabaseManager.instance.setCanTagToday(true);
+        appStore.setCanTagToday(true);
       }
 
       if (event == RewardedVideoAdEvent.closed) {

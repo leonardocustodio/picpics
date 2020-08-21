@@ -1,4 +1,6 @@
 import 'dart:io';
+import 'package:date_utils/date_utils.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
@@ -226,7 +228,47 @@ abstract class _AppStore with Store {
 
   DateTime lastTaggedPicDate;
 
+  @observable
   bool canTagToday;
+
+  @action
+  void setCanTagToday(bool value) => canTagToday = value;
+
+  @action
+  Future<void> increaseTodayTaggedPics() async {
+    var userBox = Hive.box('user');
+
+    User userInfo = userBox.getAt(0);
+
+    DateTime lastTaggedPicDate = userInfo.lastTaggedPicDate;
+    DateTime dateNow = DateTime.now();
+
+    if (lastTaggedPicDate == null) {
+      print('date is null....');
+      userInfo.picsTaggedToday = 1;
+      userInfo.lastTaggedPicDate = dateNow;
+    } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
+      userInfo.picsTaggedToday += 1;
+      userInfo.lastTaggedPicDate = dateNow;
+      print('same day... increasing number of tagged photos today, now it is: ${userInfo.picsTaggedToday}');
+
+      final RemoteConfig remoteConfig = await RemoteConfig.instance;
+      DatabaseManager.instance.dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
+      int mod = userInfo.picsTaggedToday % DatabaseManager.instance.dailyPicsForAds;
+
+      if (mod == 0) {
+        print('### CALL ADS!!!');
+        setCanTagToday(false);
+        return;
+      }
+    } else {
+      print('not same day... resetting counter....');
+      userInfo.picsTaggedToday = 1;
+      userInfo.lastTaggedPicDate = dateNow;
+    }
+    userBox.putAt(0, userInfo);
+    setCanTagToday(true);
+  }
 
   @observable
   bool hasSwiped = false;
