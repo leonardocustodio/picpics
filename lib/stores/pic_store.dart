@@ -5,6 +5,7 @@ import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
@@ -107,15 +108,15 @@ abstract class _PicStore with Store {
         suggestionTags.add(recent);
       }
 
-      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${DatabaseManager.maxNumOfSuggestions}');
+      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
 //            continue;
 //          }
-      if (suggestionTags.length < DatabaseManager.maxNumOfSuggestions) {
+      if (suggestionTags.length < kMaxNumOfSuggestions) {
         for (var tagKey in tagsBox.keys) {
-          if (suggestionTags.length == DatabaseManager.maxNumOfSuggestions) {
+          if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
           if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey)) {

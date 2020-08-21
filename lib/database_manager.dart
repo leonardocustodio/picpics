@@ -7,6 +7,7 @@ import 'package:picPics/asset_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
+import 'package:picPics/constants.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
@@ -15,13 +16,10 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
-import 'package:date_utils/date_utils.dart';
-import 'package:share_extend/share_extend.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -31,9 +29,6 @@ class DatabaseManager extends ChangeNotifier {
   static DatabaseManager get instance {
     return _instance ??= DatabaseManager._();
   }
-
-  static const maxNumOfSuggestions = 6;
-  static const maxNumOfRecentTags = 5;
 
   int dailyPicsForAds = 25;
 
@@ -593,7 +588,7 @@ class DatabaseManager extends ChangeNotifier {
       return;
     }
 
-    if (getUser.recentTags.length >= maxNumOfRecentTags) {
+    if (getUser.recentTags.length >= kMaxNumOfRecentTags) {
       print('removing last');
       getUser.recentTags.removeLast();
     }
