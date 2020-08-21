@@ -21,7 +21,6 @@ import 'package:picPics/database_manager.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/admob_manager.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:hive_flutter/hive_flutter.dart';

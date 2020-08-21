@@ -251,25 +251,25 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void checkPicHasTags(String photoId) {
-    print('Checking photoId $photoId has tags...');
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-
-    Pic getPic = getPicInfo(photoId);
-    int indexOfOrderedList = pathProvider.orderedList.indexWhere((element) => element.id == photoId);
-
-    if (indexOfOrderedList == null) {
-      print('### ERROR DID NOT FIND INDEX IN ORDERED LIST');
-      return;
-    }
-
-    if (getPic.tags.length > 0) {
-      print('pic has tags!!!');
-      picHasTag[indexOfOrderedList] = true;
-    } else {
-      print('pic has no tags!!!');
-      picHasTag[indexOfOrderedList] = false;
-    }
+//    print('Checking photoId $photoId has tags...');
+//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+////    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
+//
+//    Pic getPic = getPicInfo(photoId);
+//    int indexOfOrderedList = pathProvider.orderedList.indexWhere((element) => element.id == photoId);
+//
+//    if (indexOfOrderedList == null) {
+//      print('### ERROR DID NOT FIND INDEX IN ORDERED LIST');
+//      return;
+//    }
+//
+//    if (getPic.tags.length > 0) {
+//      print('pic has tags!!!');
+//      picHasTag[indexOfOrderedList] = true;
+//    } else {
+//      print('pic has no tags!!!');
+//      picHasTag[indexOfOrderedList] = false;
+//    }
   }
 
   void resetSlider() {
@@ -724,92 +724,6 @@ class DatabaseManager extends ChangeNotifier {
     print('final tags in recent: ${getUser.recentTags}');
   }
 
-  Future<void> addTagToPic({String tagKey, String photoId, List<AssetEntity> entities}) async {
-    var picsBox = Hive.box('pics');
-
-    if (picsBox.containsKey(photoId)) {
-      print('this picture is in db going to update');
-
-      Pic getPic = picsBox.get(photoId);
-
-      if (getPic.tags.contains(tagKey)) {
-        print('this tag is already in this picture');
-        return;
-      }
-
-      if (noTaggedPhoto == true) {
-        noTaggedPhoto = false;
-      }
-
-      getPic.tags.add(tagKey);
-      print('photoId: ${getPic.photoId} - tags: ${getPic.tags}');
-      picsBox.put(photoId, getPic);
-      print('updated picture');
-
-      checkPicHasTags(photoId);
-      Analytics.sendEvent(Event.added_tag);
-      return;
-    }
-
-    print('this picture is not in db, adding it...');
-    print('Photo Id: $photoId');
-
-    Pic pic;
-
-    if (selectedPhoto != null) {
-      print('Pic Info Localization: ${selectedPhoto.latitude} - ${selectedPhoto.longitude} - ${selectedPhoto.createDateTime}');
-
-      pic = Pic(
-        photoId,
-        selectedPhoto.createDateTime,
-        selectedPhoto.latitude,
-        selectedPhoto.longitude,
-        null,
-        null,
-        null,
-        null,
-        [tagKey],
-      );
-    } else {
-      AssetEntity entity = entities.firstWhere((element) => element.id == photoId, orElse: () => null);
-      if (entity == null) {
-        pic = Pic(
-          photoId,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          null,
-          [tagKey],
-        );
-      } else {
-        pic = Pic(
-          photoId,
-          entity.createDateTime,
-          entity.latitude,
-          entity.longitude,
-          null,
-          null,
-          null,
-          null,
-          [tagKey],
-        );
-      }
-    }
-    await picsBox.put(photoId, pic);
-    print('@@@@@@@@ tagsKey: ${tagKey}');
-    checkPicHasTags(photoId);
-    if (noTaggedPhoto == true) {
-      noTaggedPhoto = false;
-    }
-
-    // Increase today tagged pics everytime it adds a new pic to database.
-    DatabaseManager.instance.increaseTodayTaggedPics();
-    Analytics.sendEvent(Event.added_tag);
-  }
-
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
     Directory tempDir = await getTemporaryDirectory();
     File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
@@ -959,71 +873,71 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void addTagsToPics({List<String> tagsKeys, List<String> photosIds, List<AssetEntity> entities}) {
-    var tagsBox = Hive.box('tags');
-
-    for (String photoId in photosIds) {
-      for (String tagKey in tagsKeys) {
-        Tag getTag = tagsBox.get(tagKey);
-
-        if (getTag.photoId.contains(photoId)) {
-          print('this tag is already in this picture');
-          continue;
-        }
-
-        getTag.photoId.add(photoId);
-        tagsBox.put(tagKey, getTag);
-        addTagToPic(
-          tagKey: tagKey,
-          photoId: photoId,
-          entities: entities,
-        );
-        print('update pictures in tag');
-        Analytics.sendEvent(Event.added_tag);
-      }
-    }
-
-    notifyListeners();
+//    var tagsBox = Hive.box('tags');
+//
+//    for (String photoId in photosIds) {
+//      for (String tagKey in tagsKeys) {
+//        Tag getTag = tagsBox.get(tagKey);
+//
+//        if (getTag.photoId.contains(photoId)) {
+//          print('this tag is already in this picture');
+//          continue;
+//        }
+//
+//        getTag.photoId.add(photoId);
+//        tagsBox.put(tagKey, getTag);
+//        addTagToPic(
+//          tagKey: tagKey,
+//          photoId: photoId,
+//          entities: entities,
+//        );
+//        print('update pictures in tag');
+//        Analytics.sendEvent(Event.added_tag);
+//      }
+//    }
+//
+//    notifyListeners();
   }
 
-  Future<void> addTag({String tagName, String photoId}) async {
-    var tagsBox = Hive.box('tags');
-    print(tagsBox.keys);
-
-    String tagKey = encryptTag(tagName);
-    print('Adding tag: $tagName');
-
-    if (tagsBox.containsKey(tagKey)) {
-      print('user already has this tag');
-
-      Tag getTag = tagsBox.get(tagKey);
-
-      if (getTag.photoId.contains(photoId)) {
-        print('this tag is already in this picture');
-        return;
-      }
-
-      getTag.photoId.add(photoId);
-      tagsBox.put(tagKey, getTag);
-      await addTagToPic(
-        tagKey: tagKey,
-        photoId: photoId,
-      );
-      addTagToRecent(tagKey: tagKey);
-      print('updated pictures in tag');
-      notifyListeners();
-      return;
-    }
-
-    Analytics.sendEvent(Event.created_tag);
-    print('adding tag to database...');
-    tagsBox.put(tagKey, Tag(tagName, [photoId]));
-    await addTagToPic(
-      tagKey: tagKey,
-      photoId: photoId,
-    );
-    addTagToRecent(tagKey: tagKey);
-    notifyListeners();
-  }
+//  Future<void> addTag({String tagName, String photoId}) async {
+//    var tagsBox = Hive.box('tags');
+//    print(tagsBox.keys);
+//
+//    String tagKey = encryptTag(tagName);
+//    print('Adding tag: $tagName');
+//
+//    if (tagsBox.containsKey(tagKey)) {
+//      print('user already has this tag');
+//
+//      Tag getTag = tagsBox.get(tagKey);
+//
+//      if (getTag.photoId.contains(photoId)) {
+//        print('this tag is already in this picture');
+//        return;
+//      }
+//
+//      getTag.photoId.add(photoId);
+//      tagsBox.put(tagKey, getTag);
+//      await addTagToPic(
+//        tagKey: tagKey,
+//        photoId: photoId,
+//      );
+//      addTagToRecent(tagKey: tagKey);
+//      print('updated pictures in tag');
+//      notifyListeners();
+//      return;
+//    }
+//
+//    Analytics.sendEvent(Event.created_tag);
+//    print('adding tag to database...');
+//    tagsBox.put(tagKey, Tag(tagName, [photoId]));
+//    await addTagToPic(
+//      tagKey: tagKey,
+//      photoId: photoId,
+//    );
+//    addTagToRecent(tagKey: tagKey);
+//    notifyListeners();
+//  }
 
   Future findLocation(double latitude, double longitude) async {
     print('Finding location...');

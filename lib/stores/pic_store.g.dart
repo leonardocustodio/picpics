@@ -9,6 +9,14 @@ part of 'pic_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PicStore on _PicStore, Store {
+  Computed<List<String>> _$tagsKeysComputed;
+
+  @override
+  List<String> get tagsKeys =>
+      (_$tagsKeysComputed ??= Computed<List<String>>(() => super.tagsKeys,
+              name: '_PicStore.tagsKeys'))
+          .value;
+
   final _$latitudeAtom = Atom(name: '_PicStore.latitude');
 
   @override
@@ -69,13 +77,37 @@ mixin _$PicStore on _PicStore, Store {
     });
   }
 
+  final _$addTagAsyncAction = AsyncAction('_PicStore.addTag');
+
+  @override
+  Future<void> addTag({String tagName, String photoId}) {
+    return _$addTagAsyncAction
+        .run(() => super.addTag(tagName: tagName, photoId: photoId));
+  }
+
+  final _$addTagToPicAsyncAction = AsyncAction('_PicStore.addTagToPic');
+
+  @override
+  Future<void> addTagToPic(
+      {String tagKey,
+      String tagName,
+      String photoId,
+      List<AssetEntity> entities}) {
+    return _$addTagToPicAsyncAction.run(() => super.addTagToPic(
+        tagKey: tagKey,
+        tagName: tagName,
+        photoId: photoId,
+        entities: entities));
+  }
+
   @override
   String toString() {
     return '''
 latitude: ${latitude},
 longitude: ${longitude},
 specificLocation: ${specificLocation},
-generalLocation: ${generalLocation}
+generalLocation: ${generalLocation},
+tagsKeys: ${tagsKeys}
     ''';
   }
 }

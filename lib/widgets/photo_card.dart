@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
@@ -18,7 +18,6 @@ import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-//import 'package:facebook_audience_network/facebook_audience_network.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'dart:math';
@@ -57,7 +56,6 @@ class _PhotoCardState extends State<PhotoCard> {
           onPressedWatchAdd: () {
             Navigator.pop(context);
             Ads.showRewarded();
-//            FacebookInterstitialAd.showInterstitialAd(delay: 0);
           },
           onPressedGetPremium: () {
             Navigator.popAndPushNamed(context, PremiumScreen.id);
@@ -378,60 +376,62 @@ class _PhotoCardState extends State<PhotoCard> {
                     ),
                   ],
                 ),
-                TagsList(
-                  tagsKeys: picInfo.tags,
-                  addTagField: true,
-                  textEditingController: tagsEditingController,
-                  textFocusNode: tagsFocusNode,
-                  showEditTagModal: widget.showEditTagModal,
-                  shouldChangeToSwipeMode: true,
-                  onTap: (tagName) {
-                    print('do nothing');
-                  },
-                  onDoubleTap: () {
-                    print('do nothing');
-                  },
-                  onPanUpdate: () {
-                    if (!DatabaseManager.instance.canTagToday()) {
-                      showWatchAdModal(context);
-                      return;
-                    }
-
-                    DatabaseManager.instance.removeTagFromPic(
-                      tagKey: DatabaseManager.instance.selectedTagKey,
-                      photoId: picInfo.photoId,
-                    );
-
-                    refreshTagSuggestions(picInfo);
-                  },
-                  onChanged: (text) {
-                    refreshTagSuggestions(picInfo);
-                  },
-                  onSubmitted: (text) async {
-                    print('return');
-
-                    if (text != '') {
+                Observer(builder: (_) {
+                  return TagsList(
+                    tagsKeys: picStore.tagsKeys,
+                    addTagField: true,
+                    textEditingController: tagsEditingController,
+                    textFocusNode: tagsFocusNode,
+                    showEditTagModal: widget.showEditTagModal,
+                    shouldChangeToSwipeMode: true,
+                    onTap: (tagName) {
+                      print('do nothing');
+                    },
+                    onDoubleTap: () {
+                      print('do nothing');
+                    },
+                    onPanUpdate: () {
                       if (!DatabaseManager.instance.canTagToday()) {
-                        tagsEditingController.clear();
-                        refreshTagSuggestions(picInfo);
                         showWatchAdModal(context);
                         return;
                       }
 
-                      DatabaseManager.instance.selectedPhoto = picStore.entity;
-                      DatabaseManager.instance.addTag(
-                        tagName: text,
-                        photoId: picStore.entity.id,
+                      DatabaseManager.instance.removeTagFromPic(
+                        tagKey: DatabaseManager.instance.selectedTagKey,
+                        photoId: picInfo.photoId,
                       );
-                      Vibrate.feedback(FeedbackType.success);
-                      tagsEditingController.clear();
 
-                      Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
-                      print('Updated picinfo - tags length: ${updatedPicInfo.tags.length}');
-                      refreshTagSuggestions(updatedPicInfo);
-                    }
-                  },
-                ),
+                      refreshTagSuggestions(picInfo);
+                    },
+                    onChanged: (text) {
+                      refreshTagSuggestions(picInfo);
+                    },
+                    onSubmitted: (text) async {
+                      print('return');
+
+                      if (text != '') {
+                        if (!DatabaseManager.instance.canTagToday()) {
+                          tagsEditingController.clear();
+                          refreshTagSuggestions(picInfo);
+                          showWatchAdModal(context);
+                          return;
+                        }
+
+                        DatabaseManager.instance.selectedPhoto = picStore.entity;
+                        await picStore.addTag(
+                          tagName: text,
+                          photoId: picStore.entity.id,
+                        );
+                        Vibrate.feedback(FeedbackType.success);
+                        tagsEditingController.clear();
+
+                        Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
+                        print('Updated picinfo - tags length: ${updatedPicInfo.tags.length}');
+                        refreshTagSuggestions(updatedPicInfo);
+                      }
+                    },
+                  );
+                }),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: TagsList(
@@ -446,7 +446,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       }
 
                       DatabaseManager.instance.selectedPhoto = picStore.entity;
-                      await DatabaseManager.instance.addTag(
+                      await picStore.addTag(
                         tagName: tagName,
                         photoId: picInfo.photoId,
                       );
