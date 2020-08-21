@@ -236,7 +236,7 @@ class _TaggedTabState extends State<TaggedTab> {
 //                    widget.showPhotoCardModal();
 
                     // Call expanded screen directly
-                    DatabaseManager.instance.selectedPhoto = data;
+//                    DatabaseManager.instance.selectedPhoto = data;
                     print('Selected photo: ${data.id}');
                     int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
                     Navigator.push(
@@ -375,7 +375,7 @@ class _TaggedTabState extends State<TaggedTab> {
 //                      widget.showPhotoCardModal();
 
                       // Call expanded screen directly
-                      DatabaseManager.instance.selectedPhoto = data;
+//                      DatabaseManager.instance.selectedPhoto = data;
                       print('Selected photo: ${data.id}');
                       int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
                       Navigator.push(

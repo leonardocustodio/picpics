@@ -341,7 +341,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                         ),
                                       ),
                                       Text(
-                                        dateFormat(DatabaseManager.instance.selectedPhoto.createDateTime),
+                                        dateFormat(galleryStore.currentPic.entity.createDateTime),
                                         textScaleFactor: 1.0,
                                         style: TextStyle(
                                           fontFamily: 'Lato',

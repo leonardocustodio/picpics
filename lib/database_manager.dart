@@ -38,8 +38,7 @@ class DatabaseManager extends ChangeNotifier {
   static const maxNumOfSuggestions = 6;
   static const maxNumOfRecentTags = 5;
 
-//  int swiperIndex = 0;
-  int dailyPicsForAds = 50;
+  int dailyPicsForAds = 25;
 
   List<bool> picHasTag;
   List<int> sliderIndex;
@@ -54,8 +53,6 @@ class DatabaseManager extends ChangeNotifier {
 
   List<String> slideThumbPhotoIds = [];
 
-//  AssetProvider assetProvider = AssetProvider();
-  AssetEntity selectedPhoto;
   List<double> lastLocationRequest = [0.0, 0.0];
 
   String currentPhotoCity;
@@ -70,8 +67,6 @@ class DatabaseManager extends ChangeNotifier {
   String selectedTagKey;
 
   User userSettings;
-
-  int currentTab = 1;
 
   double adOffset = 48.0;
 

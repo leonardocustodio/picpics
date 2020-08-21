@@ -167,7 +167,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/expandnobackground.png'),
                     color: kSecondaryColor,
                     onTap: () {
-                      DatabaseManager.instance.selectedPhoto = picStore.entity;
+//                      DatabaseManager.instance.selectedPhoto = picStore.entity;
                       print('Selected photo: ${picStore.entity.id}');
 
                       int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
@@ -221,7 +221,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () async {
-                        DatabaseManager.instance.selectedPhoto = picStore.entity;
+//                        DatabaseManager.instance.selectedPhoto = picStore.entity;
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: FutureBuilder(
@@ -378,7 +378,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           return;
                         }
 
-                        DatabaseManager.instance.selectedPhoto = picStore.entity;
+//                        DatabaseManager.instance.selectedPhoto = picStore.entity;
                         await picStore.addTag(
                           tagName: text,
                         );
@@ -403,7 +403,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           return;
                         }
 
-                        DatabaseManager.instance.selectedPhoto = picStore.entity;
+//                        DatabaseManager.instance.selectedPhoto = picStore.entity;
                         await picStore.addTag(
                           tagName: tagName,
                         );

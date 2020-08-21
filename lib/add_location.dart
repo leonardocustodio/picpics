@@ -77,11 +77,11 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       if (location != null) {
         LatLng latLng = selectedGeolocation.coordinates;
         DatabaseManager.instance.saveLocationToPic(
-            lat: latLng.latitude, long: latLng.longitude, specifLocation: location, generalLocation: city, photoId: DatabaseManager.instance.selectedPhoto.id);
+            lat: latLng.latitude, long: latLng.longitude, specifLocation: location, generalLocation: city, photoId: galleryStore.currentPic.photoId);
       } else {
         LatLng latLng = selectedGeolocation.coordinates;
         DatabaseManager.instance.saveLocationToPic(
-            lat: latLng.latitude, long: latLng.longitude, specifLocation: city, generalLocation: country, photoId: DatabaseManager.instance.selectedPhoto.id);
+            lat: latLng.latitude, long: latLng.longitude, specifLocation: city, generalLocation: country, photoId: galleryStore.currentPic.photoId);
       }
     }
 
@@ -208,7 +208,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
                               child: ImageItem(
-                                entity: DatabaseManager.instance.selectedPhoto,
+                                entity: galleryStore.currentPic.entity,
                                 size: 140,
                               ),
                             ),
