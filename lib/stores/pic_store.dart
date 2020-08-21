@@ -25,9 +25,35 @@ abstract class _PicStore with Store {
     this.originalLatitude,
     this.originalLongitude,
   }) {
+    loadPicInfo();
+
     autorun((_) {
       print('autorun');
     });
+  }
+
+  @action
+  void loadPicInfo() {
+    var picsBox = Hive.box('pics');
+    var tagsBox = Hive.box('tags');
+
+    if (picsBox.containsKey(photoId)) {
+      print('pic $photoId exists, loading data....');
+      Pic pic = picsBox.get(photoId);
+
+      latitude = pic.latitude;
+      longitude = pic.longitude;
+      specificLocation = pic.specificLocation;
+      generalLocation = pic.generalLocation;
+
+      for (String tagKey in pic.tags) {
+        Tag tag = tagsBox.get(tagKey);
+        TagsStore tagsStore = TagsStore(id: tagKey, name: tag.name);
+        tags.add(tagsStore);
+      }
+    } else {
+      print('pic $photoId doesnt exists in database');
+    }
   }
 
   @observable

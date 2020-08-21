@@ -100,6 +100,19 @@ mixin _$PicStore on _PicStore, Store {
         entities: entities));
   }
 
+  final _$_PicStoreActionController = ActionController(name: '_PicStore');
+
+  @override
+  void loadPicInfo() {
+    final _$actionInfo =
+        _$_PicStoreActionController.startAction(name: '_PicStore.loadPicInfo');
+    try {
+      return super.loadPicInfo();
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
