@@ -39,21 +39,6 @@ class _PicTabState extends State<PicTab> {
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
     var data = galleryStore.pics[index].entity;
-    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-
-    if (picInfo == null) {
-      picInfo = Pic(
-        data.id,
-        data.createDateTime,
-        data.latitude,
-        data.longitude,
-        null,
-        null,
-        null,
-        null,
-        [],
-      );
-    }
 
     print('photo id: ${data.id}');
     double latitude = data.latitude;

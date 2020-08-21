@@ -70,12 +70,12 @@ class _PhotoCardState extends State<PhotoCard> {
     return formatter.format(dateTime);
   }
 
-  Future<List<String>> reverseGeocoding(BuildContext context, Pic picInfo) async {
+  Future<List<String>> reverseGeocoding(BuildContext context) async {
     if (picStore.specificLocation != null && picStore.generalLocation != null) {
       return [picStore.specificLocation, '  ${picStore.generalLocation}'];
     }
 
-    if ((picInfo.originalLatitude == null || picInfo.originalLongitude == null) || (picInfo.originalLatitude == 0 && picInfo.originalLongitude == 0)) {
+    if ((picStore.originalLatitude == null || picStore.originalLongitude == null) || (picStore.originalLatitude == 0 && picStore.originalLongitude == 0)) {
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
@@ -89,11 +89,11 @@ class _PhotoCardState extends State<PhotoCard> {
     if (placemark.isNotEmpty) {
       print('Saving pic!!!');
       DatabaseManager.instance.saveLocationToPic(
-        lat: picInfo.originalLatitude,
-        long: picInfo.originalLongitude,
+        lat: picStore.originalLatitude,
+        long: picStore.originalLongitude,
         specifLocation: placemark[0].locality,
         generalLocation: placemark[0].country,
-        photoId: picInfo.photoId,
+        photoId: picStore.photoId,
         notify: false,
       );
       return [placemark[0].locality, '  ${placemark[0].country}'];
@@ -124,13 +124,11 @@ class _PhotoCardState extends State<PhotoCard> {
     super.dispose();
   }
 
-  void refreshTagSuggestions(Pic picInfo, {bool notify = true}) {
-    print('@@@ Pic Info Tags: ${picInfo.tags}');
-
+  void refreshTagSuggestions({bool notify = true}) {
     DatabaseManager.instance.tagsSuggestions(
       tagsEditingController.text,
-      picInfo.photoId,
-      excludeTags: picInfo.tags,
+      picStore.photoId,
+      excludeTags: picStore.tagsKeys,
       notify: notify,
     );
   }
@@ -143,30 +141,13 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   Widget build(BuildContext context) {
-    Pic picInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
-    print('Suggestions: ${DatabaseManager.instance.suggestionTags}');
-
-    if (picInfo == null) {
-      picInfo = Pic(
-        picStore.entity.id,
-        picStore.entity.createDateTime,
-        picStore.entity.latitude,
-        picStore.entity.longitude,
-        null,
-        null,
-        null,
-        null,
-        [],
-      );
-    }
-
-    if (DatabaseManager.instance.suggestionTags.length == 0) {
-      print('###### calling init tag suggestions!!!!');
-      refreshTagSuggestions(
-        picInfo,
-        notify: false,
-      );
-    }
+//    if (DatabaseManager.instance.suggestionTags.length == 0) {
+//      print('###### calling init tag suggestions!!!!');
+//      refreshTagSuggestions(
+//        picStore,
+//        notify: false,
+//      );
+//    }
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
@@ -262,7 +243,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: FutureBuilder(
-                          future: reverseGeocoding(context, picInfo),
+                          future: reverseGeocoding(context),
                           initialData: [S.of(context).photo_location, '  ${S.of(context).country}'],
                           builder: (context, snapshot) {
                             if (snapshot.hasData) {
@@ -398,13 +379,13 @@ class _PhotoCardState extends State<PhotoCard> {
 
                       DatabaseManager.instance.removeTagFromPic(
                         tagKey: DatabaseManager.instance.selectedTagKey,
-                        photoId: picInfo.photoId,
+                        photoId: picStore.photoId,
                       );
 
-                      refreshTagSuggestions(picInfo);
+                      refreshTagSuggestions();
                     },
                     onChanged: (text) {
-                      refreshTagSuggestions(picInfo);
+                      refreshTagSuggestions();
                     },
                     onSubmitted: (text) async {
                       print('return');
@@ -412,7 +393,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       if (text != '') {
                         if (!DatabaseManager.instance.canTagToday()) {
                           tagsEditingController.clear();
-                          refreshTagSuggestions(picInfo);
+                          refreshTagSuggestions();
                           showWatchAdModal(context);
                           return;
                         }
@@ -420,14 +401,11 @@ class _PhotoCardState extends State<PhotoCard> {
                         DatabaseManager.instance.selectedPhoto = picStore.entity;
                         await picStore.addTag(
                           tagName: text,
-                          photoId: picStore.entity.id,
                         );
                         Vibrate.feedback(FeedbackType.success);
                         tagsEditingController.clear();
 
-                        Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
-                        print('Updated picinfo - tags length: ${updatedPicInfo.tags.length}');
-                        refreshTagSuggestions(updatedPicInfo);
+                        refreshTagSuggestions();
                       }
                     },
                   );
@@ -448,13 +426,10 @@ class _PhotoCardState extends State<PhotoCard> {
                       DatabaseManager.instance.selectedPhoto = picStore.entity;
                       await picStore.addTag(
                         tagName: tagName,
-                        photoId: picInfo.photoId,
                       );
                       tagsEditingController.clear();
 
-                      Pic updatedPicInfo = DatabaseManager.instance.getPicInfo(picStore.photoId);
-                      print('Updated picinfo - tags length: ${updatedPicInfo.tags.length}');
-                      refreshTagSuggestions(updatedPicInfo);
+                      refreshTagSuggestions();
                     },
                     onDoubleTap: () {
                       print('do nothing');

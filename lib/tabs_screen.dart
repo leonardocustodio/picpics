@@ -98,7 +98,7 @@ class _TabsScreenState extends State<TabsScreen> {
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
-      Pic getPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
+//      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
       String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
       alertInputController.text = tagName;
 
@@ -114,7 +114,7 @@ class _TabsScreenState extends State<TabsScreen> {
               DatabaseManager.instance.tagsSuggestions(
                 tagsEditingController.text,
                 DatabaseManager.instance.selectedPhoto.id,
-                excludeTags: getPic.tags,
+                excludeTags: galleryStore.currentPic.tagsKeys,
                 notify: false,
               );
               Navigator.of(context).pop();

@@ -291,30 +291,30 @@ class DatabaseManager extends ChangeNotifier {
 
   void sliderHasPics() {
 //    GalleryStore galleryStore = Provider.of<GalleryStore>(context, listen: false);
-
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-
-    if (itemCount > 0) {
-      sliderIndex = [];
-      picHasTag = [];
-      for (int x = 0; x < pathProvider.orderedList.length; x++) {
-        var item = pathProvider.orderedList[x];
-        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
-        if (pic != null) {
-          if (pic.tags.length > 0) {
-            picHasTag.add(true);
-            continue;
-          }
-        }
-        picHasTag.add(false);
-        sliderIndex.add(x);
-      }
-    }
-
-    print('## Total Item Count: $itemCount');
-    print('## Slider Count: ${sliderIndex.length}');
-    notifyListeners();
+//
+//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
+//
+//    if (itemCount > 0) {
+//      sliderIndex = [];
+//      picHasTag = [];
+//      for (int x = 0; x < pathProvider.orderedList.length; x++) {
+//        var item = pathProvider.orderedList[x];
+//        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
+//        if (pic != null) {
+//          if (pic.tags.length > 0) {
+//            picHasTag.add(true);
+//            continue;
+//          }
+//        }
+//        picHasTag.add(false);
+//        sliderIndex.add(x);
+//      }
+//    }
+//
+//    print('## Total Item Count: $itemCount');
+//    print('## Slider Count: ${sliderIndex.length}');
+//    notifyListeners();
   }
 
   Future<bool> checkPremiumStatus() async {
@@ -550,20 +550,20 @@ class DatabaseManager extends ChangeNotifier {
 //    notifyListeners();
   }
 
-  Pic getPicInfo(String photoId) {
-//    print('loading pic info from: $photoId');
-    var picsBox = Hive.box('pics');
-
-    if (picsBox.containsKey(photoId)) {
-//      print('found pic!!!');
-      Pic getPic = picsBox.get(photoId);
-//      print('@@@ Lat: ${getPic.latitude} - Long ${getPic.longitude} - PhotoId: $photoId');
-      return getPic;
-    }
-//    print('did not found pic!!!');
-
-    return null;
-  }
+//  Pic getPicInfo(String photoId) {
+////    print('loading pic info from: $photoId');
+//    var picsBox = Hive.box('pics');
+//
+//    if (picsBox.containsKey(photoId)) {
+////      print('found pic!!!');
+//      Pic getPic = picsBox.get(photoId);
+////      print('@@@ Lat: ${getPic.latitude} - Long ${getPic.longitude} - PhotoId: $photoId');
+//      return getPic;
+//    }
+////    print('did not found pic!!!');
+//
+//    return null;
+//  }
 
   void removeTagFromPic({String tagKey, String photoId}) {
     print('removing tag: $tagKey from pic $photoId');
@@ -898,46 +898,6 @@ class DatabaseManager extends ChangeNotifier {
 //
 //    notifyListeners();
   }
-
-//  Future<void> addTag({String tagName, String photoId}) async {
-//    var tagsBox = Hive.box('tags');
-//    print(tagsBox.keys);
-//
-//    String tagKey = encryptTag(tagName);
-//    print('Adding tag: $tagName');
-//
-//    if (tagsBox.containsKey(tagKey)) {
-//      print('user already has this tag');
-//
-//      Tag getTag = tagsBox.get(tagKey);
-//
-//      if (getTag.photoId.contains(photoId)) {
-//        print('this tag is already in this picture');
-//        return;
-//      }
-//
-//      getTag.photoId.add(photoId);
-//      tagsBox.put(tagKey, getTag);
-//      await addTagToPic(
-//        tagKey: tagKey,
-//        photoId: photoId,
-//      );
-//      addTagToRecent(tagKey: tagKey);
-//      print('updated pictures in tag');
-//      notifyListeners();
-//      return;
-//    }
-//
-//    Analytics.sendEvent(Event.created_tag);
-//    print('adding tag to database...');
-//    tagsBox.put(tagKey, Tag(tagName, [photoId]));
-//    await addTagToPic(
-//      tagKey: tagKey,
-//      photoId: photoId,
-//    );
-//    addTagToRecent(tagKey: tagKey);
-//    notifyListeners();
-//  }
 
   Future findLocation(double latitude, double longitude) async {
     print('Finding location...');

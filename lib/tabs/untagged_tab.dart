@@ -122,35 +122,14 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 return;
               }
 
-              Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
               tagsEditingController.text = '';
-
-              if (picInfo == null) {
-                picInfo = Pic(
-                  data.id,
-                  data.createDateTime,
-                  data.latitude,
-                  data.longitude,
-                  null,
-                  null,
-                  null,
-                  null,
-                  [],
-                );
-              }
 
               DatabaseManager.instance.tagsSuggestions(
                 tagsEditingController.text,
                 data.id,
-                excludeTags: picInfo.tags,
+                excludeTags: galleryStore.pics[index].tagsKeys,
                 notify: false,
               );
-
-              print('PicTags: ${picInfo.tags}');
-
-              DatabaseManager.instance.selectedPhotoData = data;
-              DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
-              DatabaseManager.instance.selectedPhotoIndex = index;
 
               galleryStore.setCurrentPic(galleryStore.pics[index]);
               tabsStore.setModalCard(true);

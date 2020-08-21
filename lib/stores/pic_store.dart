@@ -77,7 +77,7 @@ abstract class _PicStore with Store {
   }
 
   @action
-  Future<void> addTag({String tagName, String photoId}) async {
+  Future<void> addTag({String tagName}) async {
     var tagsBox = Hive.box('tags');
     print(tagsBox.keys);
 

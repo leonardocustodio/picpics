@@ -37,9 +37,6 @@ class PhotoScreen extends StatefulWidget {
 class _PhotoScreenState extends State<PhotoScreen> {
   GalleryStore galleryStore;
 
-  DateTime createdDate;
-  Pic picInfo;
-
   bool overlay = true;
   bool showSlideshow = false;
 
@@ -51,26 +48,26 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   void loadPicInfo(int index) {
     return;
-    AssetEntity entity = getEntity(DatabaseManager.instance.slideThumbPhotoIds[index]);
-
-    setState(() {
-      createdDate = entity.createDateTime;
-      picInfo = DatabaseManager.instance.getPicInfo(entity.id);
-
-      if (picInfo == null) {
-        picInfo = Pic(
-          entity.id,
-          entity.createDateTime,
-          entity.latitude,
-          entity.longitude,
-          entity.latitude,
-          entity.longitude,
-          null,
-          null,
-          [],
-        );
-      }
-    });
+//    AssetEntity entity = getEntity(DatabaseManager.instance.slideThumbPhotoIds[index]);
+//
+//    setState(() {
+//      createdDate = entity.createDateTime;
+//      picInfo = DatabaseManager.instance.getPicInfo(entity.id);
+//
+//      if (picInfo == null) {
+//        picInfo = Pic(
+//          entity.id,
+//          entity.createDateTime,
+//          entity.latitude,
+//          entity.longitude,
+//          entity.latitude,
+//          entity.longitude,
+//          null,
+//          null,
+//          [],
+//        );
+//      }
+//    });
   }
 
   void changeOverlay() {
@@ -200,23 +197,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     galleryStore = Provider.of<GalleryStore>(context);
-
-    createdDate = galleryStore.currentPic.entity.createDateTime;
-    picInfo = DatabaseManager.instance.getPicInfo(galleryStore.currentPic.photoId);
-
-    if (picInfo == null) {
-      picInfo = Pic(
-        galleryStore.currentPic.photoId,
-        galleryStore.currentPic.entity.createDateTime,
-        galleryStore.currentPic.entity.latitude,
-        galleryStore.currentPic.entity.longitude,
-        galleryStore.currentPic.entity.latitude,
-        galleryStore.currentPic.entity.longitude,
-        null,
-        null,
-        [],
-      );
-    }
   }
 
   @override
@@ -289,7 +269,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                               CupertinoButton(
                                 padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-                                  DatabaseManager.instance.sharePic(getEntity(picInfo.photoId));
+//                                  DatabaseManager.instance.sharePic(getEntity(picInfo.photoId));
                                 },
                                 child: Image.asset('lib/images/sharebuttonwithdropshadow.png'),
                               ),
@@ -377,7 +357,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 16.0),
                                     child: TagsList(
-                                      tagsKeys: picInfo.tags,
+                                      tagsKeys: galleryStore.currentPic.tagsKeys,
                                       tagStyle: TagStyle.MultiColored,
                                       addTagButton: () {
                                         Navigator.pop(context, 'show_keyboard');
@@ -388,7 +368,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       onDoubleTap: () {
                                         DatabaseManager.instance.removeTagFromPic(
                                           tagKey: DatabaseManager.instance.selectedTagKey,
-                                          photoId: picInfo.photoId,
+                                          photoId: galleryStore.currentPic.photoId,
                                         );
                                       },
                                       showEditTagModal: showEditTagModal,

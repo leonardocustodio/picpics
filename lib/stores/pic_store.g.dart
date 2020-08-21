@@ -80,9 +80,8 @@ mixin _$PicStore on _PicStore, Store {
   final _$addTagAsyncAction = AsyncAction('_PicStore.addTag');
 
   @override
-  Future<void> addTag({String tagName, String photoId}) {
-    return _$addTagAsyncAction
-        .run(() => super.addTag(tagName: tagName, photoId: photoId));
+  Future<void> addTag({String tagName}) {
+    return _$addTagAsyncAction.run(() => super.addTag(tagName: tagName));
   }
 
   final _$addTagToPicAsyncAction = AsyncAction('_PicStore.addTagToPic');

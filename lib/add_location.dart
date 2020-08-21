@@ -12,6 +12,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/gallery_store.dart';
+import 'package:provider/provider.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 //GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
@@ -27,6 +29,8 @@ final homeScaffoldKey = GlobalKey<ScaffoldState>();
 final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
 class _AddLocationScreenState extends State<AddLocationScreen> {
+  GalleryStore galleryStore;
+
   Completer<GoogleMapController> _mapController = Completer();
   Set<Marker> _markers = {};
   Geolocation selectedGeolocation;
@@ -73,19 +77,11 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       if (location != null) {
         LatLng latLng = selectedGeolocation.coordinates;
         DatabaseManager.instance.saveLocationToPic(
-            lat: latLng.latitude,
-            long: latLng.longitude,
-            specifLocation: location,
-            generalLocation: city,
-            photoId: DatabaseManager.instance.selectedPhoto.id);
+            lat: latLng.latitude, long: latLng.longitude, specifLocation: location, generalLocation: city, photoId: DatabaseManager.instance.selectedPhoto.id);
       } else {
         LatLng latLng = selectedGeolocation.coordinates;
         DatabaseManager.instance.saveLocationToPic(
-            lat: latLng.latitude,
-            long: latLng.longitude,
-            specifLocation: city,
-            generalLocation: country,
-            photoId: DatabaseManager.instance.selectedPhoto.id);
+            lat: latLng.latitude, long: latLng.longitude, specifLocation: city, generalLocation: country, photoId: DatabaseManager.instance.selectedPhoto.id);
       }
     }
 
@@ -124,20 +120,11 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   void findInitialCamera() async {
     LatLng latLng;
 
-    Pic getPic = DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-    if (getPic != null) {
-      if (getPic.latitude != null && getPic.longitude != null) {
-        latLng = LatLng(getPic.latitude, getPic.longitude);
-      } else if (getPic.originalLatitude != null && getPic.originalLongitude != null) {
-        latLng = LatLng(getPic.originalLatitude, getPic.originalLongitude);
-      }
-    } else {
-      if (DatabaseManager.instance.selectedPhoto.latitude != null && DatabaseManager.instance.selectedPhoto.latitude != null) {
-        latLng = LatLng(DatabaseManager.instance.selectedPhoto.latitude, DatabaseManager.instance.selectedPhoto.longitude);
-      }
+    if (galleryStore.currentPic.latitude != null && galleryStore.currentPic.longitude != null) {
+      latLng = LatLng(galleryStore.currentPic.latitude, galleryStore.currentPic.longitude);
+    } else if (galleryStore.currentPic.originalLatitude != null && galleryStore.currentPic.originalLongitude != null) {
+      latLng = LatLng(galleryStore.currentPic.originalLatitude, galleryStore.currentPic.originalLongitude);
     }
-
-    print('### testing....');
 
     if (latLng != null) {
       final destination = Marker(
@@ -171,6 +158,12 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   void initState() {
     super.initState();
     Analytics.sendCurrentScreen(Screen.add_location_screen);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    galleryStore = Provider.of<GalleryStore>(context);
     findInitialCamera();
   }
 
