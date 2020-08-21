@@ -17,14 +17,11 @@ import 'package:picPics/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/languages.dart';
-import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:share_extend/share_extend.dart';
-import 'dart:typed_data';
-import 'package:path_provider/path_provider.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -341,13 +338,6 @@ class DatabaseManager extends ChangeNotifier {
     String appLanguage = userSettings.appLanguage.split('_')[0];
     var language = LanguageLocal();
     return '${language.getDisplayLanguage(appLanguage)['nativeName']}';
-  }
-
-  void changeUserGoal(int goal) {
-    var userBox = Hive.box('user');
-    userSettings.goal = goal;
-    userBox.putAt(0, userSettings);
-    notifyListeners();
   }
 
   void addTagToSearchFilter() {

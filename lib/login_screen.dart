@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/tabs_screen.dart';

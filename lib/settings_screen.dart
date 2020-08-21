@@ -5,7 +5,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
-import 'package:picPics/database_manager.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/utils/languages.dart';
@@ -13,8 +12,6 @@ import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
-import 'package:notification_permissions/notification_permissions.dart';
-import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:picPics/generated/l10n.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -154,85 +151,85 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
   }
 
-  void showGoalPicker(BuildContext context) async {
-    int goalIndex = DatabaseManager.instance.userSettings.goal - 1;
-
-    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: goalIndex);
-
-    await showModalBottomSheet(
-      context: context,
-      builder: (BuildContext builder) {
-        int temporaryGoal = goalIndex;
-
-        return Container(
-          height: MediaQuery.of(context).copyWith().size.height / 3,
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  CupertinoButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        textScaleFactor: 1.0,
-                        style: kBottomSheetTextStyle,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    S.of(context).how_many_pics,
-                    textScaleFactor: 1.0,
-                    style: kBottomSheetTitleTextStyle,
-                  ),
-                  CupertinoButton(
-                    onPressed: () {
-                      DatabaseManager.instance.changeUserGoal(temporaryGoal);
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.end,
-                        style: kBottomSheetTextStyle,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: CupertinoPicker.builder(
-                  scrollController: extentScrollController,
-                  childCount: 200,
-                  itemExtent: 36.0,
-                  useMagnifier: true,
-                  magnification: 1.2,
-                  onSelectedItemChanged: (int index) {
-                    if (mounted) {
-                      temporaryGoal = index + 1;
-                    }
-                  },
-                  itemBuilder: (BuildContext context, int index) {
-                    return Center(
-                        child: Text(
-                      '${index + 1}',
-                      textScaleFactor: 1.0,
-                    ));
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+//  void showGoalPicker(BuildContext context) async {
+//    int goalIndex = DatabaseManager.instance.userSettings.goal - 1;
+//
+//    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: goalIndex);
+//
+//    await showModalBottomSheet(
+//      context: context,
+//      builder: (BuildContext builder) {
+//        int temporaryGoal = goalIndex;
+//
+//        return Container(
+//          height: MediaQuery.of(context).copyWith().size.height / 3,
+//          child: Column(
+//            children: <Widget>[
+//              Row(
+//                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                children: <Widget>[
+//                  CupertinoButton(
+//                    onPressed: () {
+//                      Navigator.pop(context);
+//                    },
+//                    child: Container(
+//                      width: 80.0,
+//                      child: Text(
+//                        S.of(context).cancel,
+//                        textScaleFactor: 1.0,
+//                        style: kBottomSheetTextStyle,
+//                      ),
+//                    ),
+//                  ),
+//                  Text(
+//                    S.of(context).how_many_pics,
+//                    textScaleFactor: 1.0,
+//                    style: kBottomSheetTitleTextStyle,
+//                  ),
+//                  CupertinoButton(
+//                    onPressed: () {
+//                      DatabaseManager.instance.changeUserGoal(temporaryGoal);
+//                      Navigator.pop(context);
+//                    },
+//                    child: Container(
+//                      width: 80.0,
+//                      child: Text(
+//                        S.of(context).ok,
+//                        textScaleFactor: 1.0,
+//                        textAlign: TextAlign.end,
+//                        style: kBottomSheetTextStyle,
+//                      ),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//              Expanded(
+//                child: CupertinoPicker.builder(
+//                  scrollController: extentScrollController,
+//                  childCount: 200,
+//                  itemExtent: 36.0,
+//                  useMagnifier: true,
+//                  magnification: 1.2,
+//                  onSelectedItemChanged: (int index) {
+//                    if (mounted) {
+//                      temporaryGoal = index + 1;
+//                    }
+//                  },
+//                  itemBuilder: (BuildContext context, int index) {
+//                    return Center(
+//                        child: Text(
+//                      '${index + 1}',
+//                      textScaleFactor: 1.0,
+//                    ));
+//                  },
+//                ),
+//              ),
+//            ],
+//          ),
+//        );
+//      },
+//    );
+//  }
 
   void showTimePicker(BuildContext context) async {
     await showModalBottomSheet(
