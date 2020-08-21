@@ -125,10 +125,14 @@ class _PicPicsAppState extends State<PicPicsApp> {
           value: appStore,
         ),
         Provider<GalleryStore>.value(
-          value: GalleryStore(),
+          value: GalleryStore(
+            appStore: appStore,
+          ),
         ),
         Provider<TabsStore>.value(
-          value: TabsStore(appStore: appStore),
+          value: TabsStore(
+            appStore: appStore,
+          ),
         ),
         ChangeNotifierProvider<DatabaseManager>(
           create: (_) => DatabaseManager.instance,

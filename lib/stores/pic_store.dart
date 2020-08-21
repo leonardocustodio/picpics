@@ -19,7 +19,6 @@ class PicStore = _PicStore with _$PicStore;
 
 abstract class _PicStore with Store {
   final AppStore appStore;
-
   final AssetEntity entity;
   final String photoId;
   final DateTime createdAt;

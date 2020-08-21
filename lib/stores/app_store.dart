@@ -71,6 +71,7 @@ abstract class _AppStore with Store {
     hasSwiped = user.hasSwiped;
     appLanguage = user.appLanguage;
     hasGalleryPermission = user.hasGalleryPermission;
+    canTagToday = user.canTagToday;
 
     if (user.hasGalleryPermission != null || user.tutorialCompleted) {
       requestGalleryPermission();
@@ -232,41 +233,48 @@ abstract class _AppStore with Store {
   bool canTagToday;
 
   @action
-  void setCanTagToday(bool value) => canTagToday = value;
+  void setCanTagToday(bool value) {
+    canTagToday = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.canTagToday = value;
+    currentUser.save();
+  }
 
   @action
   Future<void> increaseTodayTaggedPics() async {
     var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
 
-    User userInfo = userBox.getAt(0);
-
-    DateTime lastTaggedPicDate = userInfo.lastTaggedPicDate;
+    DateTime lastTaggedPicDate = currentUser.lastTaggedPicDate;
     DateTime dateNow = DateTime.now();
 
     if (lastTaggedPicDate == null) {
       print('date is null....');
-      userInfo.picsTaggedToday = 1;
-      userInfo.lastTaggedPicDate = dateNow;
+      currentUser.picsTaggedToday = 1;
+      currentUser.lastTaggedPicDate = dateNow;
     } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
-      userInfo.picsTaggedToday += 1;
-      userInfo.lastTaggedPicDate = dateNow;
-      print('same day... increasing number of tagged photos today, now it is: ${userInfo.picsTaggedToday}');
+      currentUser.picsTaggedToday += 1;
+      currentUser.lastTaggedPicDate = dateNow;
+      print('same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
 
       final RemoteConfig remoteConfig = await RemoteConfig.instance;
       DatabaseManager.instance.dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
-      int mod = userInfo.picsTaggedToday % DatabaseManager.instance.dailyPicsForAds;
+      int mod = currentUser.picsTaggedToday % DatabaseManager.instance.dailyPicsForAds;
 
       if (mod == 0) {
         print('### CALL ADS!!!');
+        currentUser.save();
         setCanTagToday(false);
         return;
       }
     } else {
       print('not same day... resetting counter....');
-      userInfo.picsTaggedToday = 1;
-      userInfo.lastTaggedPicDate = dateNow;
+      currentUser.picsTaggedToday = 1;
+      currentUser.lastTaggedPicDate = dateNow;
     }
-    userBox.putAt(0, userInfo);
+    currentUser.save();
     setCanTagToday(true);
   }
 

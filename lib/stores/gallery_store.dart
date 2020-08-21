@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:mobx/mobx.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 
@@ -61,6 +58,7 @@ abstract class _GalleryStore with Store {
 
     for (AssetEntity entity in list) {
       PicStore pic = PicStore(
+        appStore: appStore,
         entity: entity,
         photoId: entity.id,
         createdAt: entity.createDateTime,
