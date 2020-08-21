@@ -121,6 +121,13 @@ mixin _$PicStore on _PicStore, Store {
         entities: entities));
   }
 
+  final _$sharePicAsyncAction = AsyncAction('_PicStore.sharePic');
+
+  @override
+  Future<void> sharePic() {
+    return _$sharePicAsyncAction.run(() => super.sharePic());
+  }
+
   final _$_PicStoreActionController = ActionController(name: '_PicStore');
 
   @override

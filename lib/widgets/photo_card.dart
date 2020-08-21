@@ -167,15 +167,8 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/expandnobackground.png'),
                     color: kSecondaryColor,
                     onTap: () {
-//                      DatabaseManager.instance.selectedPhoto = picStore.entity;
-                      print('Selected photo: ${picStore.entity.id}');
-
+                      galleryStore.setCurrentPic(picStore);
                       int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
-
-//                      Navigator.pushNamed(context, PhotoScreen.id);
-
-                      galleryStore.currentPic = picStore;
-
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -189,7 +182,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/sharenobackground.png'),
                     color: kPrimaryColor,
                     onTap: () {
-                      DatabaseManager.instance.sharePic(picStore.entity);
+                      picStore.sharePic();
                     }),
                 CircularMenuItem(
                   image: Image.asset('lib/images/trashnobackground.png'),
@@ -221,7 +214,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () async {
-//                        DatabaseManager.instance.selectedPhoto = picStore.entity;
+                        galleryStore.setCurrentPic(picStore);
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: FutureBuilder(

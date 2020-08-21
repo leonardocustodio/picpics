@@ -1,22 +1,19 @@
+import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:picPics/analytics_manager.dart';
-import 'dart:async';
-
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/image_item.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:provider/provider.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
-//GoogleMapsPlaces _places = GoogleMapsPlaces(apiKey: kGoogleApiKey);
 
 class AddLocationScreen extends StatefulWidget {
   static const id = 'add_location_screen';

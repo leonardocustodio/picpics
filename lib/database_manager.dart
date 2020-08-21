@@ -666,39 +666,6 @@ class DatabaseManager extends ChangeNotifier {
     print('final tags in recent: ${getUser.recentTags}');
   }
 
-  Future<String> _writeByteToImageFile(Uint8List byteData) async {
-    Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
-    imageFile.createSync(recursive: true);
-    imageFile.writeAsBytesSync(byteData);
-    return imageFile.path;
-  }
-
-  Future<void> sharePic(AssetEntity data) async {
-    if (data == null) {
-      return;
-    }
-
-    String path = '';
-    if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(await data.originBytes);
-    } else {
-      var bytes = await data.thumbDataWithSize(
-        data.size.width.toInt(),
-        data.size.height.toInt(),
-        format: ThumbFormat.jpeg,
-      );
-      path = await _writeByteToImageFile(bytes);
-    }
-
-    if (path == '' || path == null) {
-      return;
-    }
-
-    Analytics.sendEvent(Event.shared_photo);
-    ShareExtend.share(path, "image");
-  }
-
   Future<void> sharePics({List<String> photoIds}) async {
 //    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 ////    Map<String, dynamic> bytesPhotos = {};

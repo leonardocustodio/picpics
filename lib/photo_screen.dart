@@ -1,12 +1,10 @@
 import 'dart:ui';
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -14,7 +12,6 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:picPics/widgets/edit_tag_modal.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/generated/l10n.dart';

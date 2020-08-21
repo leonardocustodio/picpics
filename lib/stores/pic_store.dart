@@ -1,5 +1,8 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/database_manager.dart';
@@ -7,6 +10,7 @@ import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:share_extend/share_extend.dart';
 
 part 'pic_store.g.dart';
 
@@ -278,5 +282,36 @@ abstract class _PicStore with Store {
     // Increase today tagged pics everytime it adds a new pic to database.
     DatabaseManager.instance.increaseTodayTaggedPics();
     Analytics.sendEvent(Event.added_tag);
+  }
+
+  Future<String> _writeByteToImageFile(Uint8List byteData) async {
+    Directory tempDir = await getTemporaryDirectory();
+    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    imageFile.createSync(recursive: true);
+    imageFile.writeAsBytesSync(byteData);
+    return imageFile.path;
+  }
+
+  @action
+  Future<void> sharePic() async {
+    String path = '';
+
+    if (Platform.isAndroid) {
+      path = await _writeByteToImageFile(await entity.originBytes);
+    } else {
+      var bytes = await entity.thumbDataWithSize(
+        entity.size.width.toInt(),
+        entity.size.height.toInt(),
+        format: ThumbFormat.jpeg,
+      );
+      path = await _writeByteToImageFile(bytes);
+    }
+
+    if (path == '' || path == null) {
+      return;
+    }
+
+    Analytics.sendEvent(Event.shared_photo);
+    ShareExtend.share(path, "image");
   }
 }
