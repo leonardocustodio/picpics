@@ -408,59 +408,6 @@ class DatabaseManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  void tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
-    var userBox = Hive.box('user');
-    var tagsBox = Hive.box('tags');
-    User getUser = userBox.getAt(0);
-
-    suggestionTags.clear();
-
-    if (excludeTags == null) {
-      excludeTags = [];
-    }
-
-    if (text == '') {
-      for (var recent in getUser.recentTags) {
-        if (excludeTags.contains(recent)) {
-          continue;
-        }
-        suggestionTags.add(recent);
-      }
-
-      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: $maxNumOfSuggestions');
-
-//      while (suggestions.length < maxNumOfSuggestions) {
-//          if (excludeTags.contains('Hey}')) {
-//            continue;
-//          }
-      if (suggestionTags.length < maxNumOfSuggestions) {
-        for (var tagKey in tagsBox.keys) {
-          if (suggestionTags.length == maxNumOfSuggestions) {
-            break;
-          }
-          if (excludeTags.contains(tagKey) || suggestionTags.contains(tagKey)) {
-            continue;
-          }
-          suggestionTags.add(tagKey);
-        }
-      }
-//      }
-    } else {
-      for (var tagKey in tagsBox.keys) {
-        String tagName = decryptTag(tagKey);
-        if (tagName.startsWith(stripTag(text))) {
-          suggestionTags.add(tagKey);
-        }
-      }
-    }
-    print('find suggestions: $text - exclude: $excludeTags');
-    print(suggestionTags);
-
-    if (notify) {
-      notifyListeners();
-    }
-  }
-
   void addTagToSearchFilter() {
     if (searchActiveTags.contains(selectedTagKey)) {
       return;

@@ -5,6 +5,7 @@ import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
+import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/tags_store.dart';
 
 part 'pic_store.g.dart';
@@ -68,12 +69,67 @@ abstract class _PicStore with Store {
   @observable
   String generalLocation;
 
+  @observable
+  String searchText = '';
+
+  @action
+  void setSearchText(String value) => searchText = value;
+
   ObservableList<TagsStore> tags = ObservableList<TagsStore>();
 
   @computed
   List<String> get tagsKeys {
     print('####!!!! Tags Keys: $tags');
     return tags.map((element) => element.id).toList();
+  }
+
+  @computed
+  List<String> get tagsSuggestions {
+//    tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
+    var userBox = Hive.box('user');
+    var tagsBox = Hive.box('tags');
+    User getUser = userBox.getAt(0);
+
+    List<String> suggestionTags = [];
+
+    if (searchText == '') {
+      for (var recent in getUser.recentTags) {
+        if (tagsKeys.contains(recent)) {
+          continue;
+        }
+        suggestionTags.add(recent);
+      }
+
+      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${DatabaseManager.maxNumOfSuggestions}');
+
+//      while (suggestions.length < maxNumOfSuggestions) {
+//          if (excludeTags.contains('Hey}')) {
+//            continue;
+//          }
+      if (suggestionTags.length < DatabaseManager.maxNumOfSuggestions) {
+        for (var tagKey in tagsBox.keys) {
+          if (suggestionTags.length == DatabaseManager.maxNumOfSuggestions) {
+            break;
+          }
+          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey)) {
+            continue;
+          }
+          suggestionTags.add(tagKey);
+        }
+      }
+//      }
+    } else {
+      for (var tagKey in tagsBox.keys) {
+        String tagName = DatabaseManager.instance.decryptTag(tagKey);
+        if (tagName.startsWith(DatabaseManager.instance.stripTag(searchText))) {
+          suggestionTags.add(tagKey);
+        }
+      }
+    }
+    print('find suggestions: $searchText - exclude: $tagsKeys');
+    print(suggestionTags);
+
+    return suggestionTags;
   }
 
   @action

@@ -25,7 +25,6 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -111,12 +110,12 @@ class _TabsScreenState extends State<TabsScreen> {
             alertInputController: alertInputController,
             onPressedDelete: () {
               DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
-              DatabaseManager.instance.tagsSuggestions(
-                tagsEditingController.text,
-                DatabaseManager.instance.selectedPhoto.id,
-                excludeTags: galleryStore.currentPic.tagsKeys,
-                notify: false,
-              );
+//              DatabaseManager.instance.tagsSuggestions(
+//                tagsEditingController.text,
+//                DatabaseManager.instance.selectedPhoto.id,
+//                excludeTags: galleryStore.currentPic.tagsKeys,
+//                notify: false,
+//              );
               Navigator.of(context).pop();
             },
             onPressedOk: () {
@@ -179,13 +178,6 @@ class _TabsScreenState extends State<TabsScreen> {
         DatabaseManager.instance.adsIsLoaded = false;
       }
     };
-
-    // Added for the case of buying premium from appstore
-//    WidgetsBinding.instance.addPostFrameCallback((_) {
-//      if (DatabaseManager.instance.appStartInPremium) {
-//        Navigator.pushNamed(context, PremiumScreen.id);
-//      }
-//    });
   }
 
   @override
@@ -265,11 +257,11 @@ class _TabsScreenState extends State<TabsScreen> {
         //        showMultiTagSheet();
 
         // Verificar se multipic não existe antes
-        DatabaseManager.instance.tagsSuggestions(
-          bottomTagsEditingController.text,
-          'MULTIPIC',
-          // excludeTags: picInfo.tags,
-        );
+//        DatabaseManager.instance.tagsSuggestions(
+//          bottomTagsEditingController.text,
+//          'MULTIPIC',
+//          // excludeTags: picInfo.tags,
+//        );
 
         tabsStore.setMultiTagSheet(true);
 
@@ -331,6 +323,13 @@ class _TabsScreenState extends State<TabsScreen> {
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
     }
+
+    // Added for the case of buying premium from appstore
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (DatabaseManager.instance.appStartInPremium) {
+        Navigator.pushNamed(context, PremiumScreen.id);
+      }
+    });
   }
 
   @override
@@ -454,8 +453,6 @@ class _TabsScreenState extends State<TabsScreen> {
                       );
                     else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission)
                       wgt = TaggedTab(
-                        setTabIndex: setTabIndex,
-                        deviceHasNoPics: !galleryStore.deviceHasPics,
                         showEditTagModal: showEditTagModal,
                       );
                     return wgt;
@@ -579,11 +576,11 @@ class _TabsScreenState extends State<TabsScreen> {
                                             multiPic.remove(DatabaseManager.instance.selectedTagKey);
                                             DatabaseManager.instance.setMultiPicTagKeys(multiPic);
 
-                                            DatabaseManager.instance.tagsSuggestions(
-                                              bottomTagsEditingController.text,
-                                              'MULTIPIC',
-                                              excludeTags: DatabaseManager.instance.multiPicTagKeys,
-                                            );
+//                                            DatabaseManager.instance.tagsSuggestions(
+//                                              bottomTagsEditingController.text,
+//                                              'MULTIPIC',
+//                                              excludeTags: DatabaseManager.instance.multiPicTagKeys,
+//                                            );
                                           }
                                         },
                                         onDoubleTap: () {
@@ -595,11 +592,11 @@ class _TabsScreenState extends State<TabsScreen> {
                                         },
                                         onChanged: (text) {
                                           print('calling tag suggestions');
-                                          DatabaseManager.instance.tagsSuggestions(
-                                            text,
-                                            'MULTIPIC',
-                                            excludeTags: DatabaseManager.instance.multiPicTagKeys,
-                                          );
+//                                          DatabaseManager.instance.tagsSuggestions(
+//                                            text,
+//                                            'MULTIPIC',
+//                                            excludeTags: DatabaseManager.instance.multiPicTagKeys,
+//                                          );
                                         },
                                         onSubmitted: (text) {
                                           if (!appStore.isPremium) {
@@ -620,11 +617,11 @@ class _TabsScreenState extends State<TabsScreen> {
                                               multiPic.add(tagKey);
                                               DatabaseManager.instance.setMultiPicTagKeys(multiPic);
 
-                                              DatabaseManager.instance.tagsSuggestions(
-                                                '',
-                                                'MULTIPIC',
-                                                excludeTags: DatabaseManager.instance.multiPicTagKeys,
-                                              );
+//                                              DatabaseManager.instance.tagsSuggestions(
+//                                                '',
+//                                                'MULTIPIC',
+//                                                excludeTags: DatabaseManager.instance.multiPicTagKeys,
+//                                              );
                                             }
                                           }
                                         }),
@@ -648,11 +645,11 @@ class _TabsScreenState extends State<TabsScreen> {
                                             multiPic.add(tagKey);
                                             DatabaseManager.instance.setMultiPicTagKeys(multiPic);
 
-                                            DatabaseManager.instance.tagsSuggestions(
-                                              '',
-                                              'MULTIPIC',
-                                              excludeTags: DatabaseManager.instance.multiPicTagKeys,
-                                            );
+//                                            DatabaseManager.instance.tagsSuggestions(
+//                                              '',
+//                                              'MULTIPIC',
+//                                              excludeTags: DatabaseManager.instance.multiPicTagKeys,
+//                                            );
                                           }
                                         },
                                         onDoubleTap: () {

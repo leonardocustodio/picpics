@@ -16,6 +16,13 @@ mixin _$PicStore on _PicStore, Store {
       (_$tagsKeysComputed ??= Computed<List<String>>(() => super.tagsKeys,
               name: '_PicStore.tagsKeys'))
           .value;
+  Computed<List<String>> _$tagsSuggestionsComputed;
+
+  @override
+  List<String> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
+          Computed<List<String>>(() => super.tagsSuggestions,
+              name: '_PicStore.tagsSuggestions'))
+      .value;
 
   final _$latitudeAtom = Atom(name: '_PicStore.latitude');
 
@@ -77,6 +84,21 @@ mixin _$PicStore on _PicStore, Store {
     });
   }
 
+  final _$searchTextAtom = Atom(name: '_PicStore.searchText');
+
+  @override
+  String get searchText {
+    _$searchTextAtom.reportRead();
+    return super.searchText;
+  }
+
+  @override
+  set searchText(String value) {
+    _$searchTextAtom.reportWrite(value, super.searchText, () {
+      super.searchText = value;
+    });
+  }
+
   final _$addTagAsyncAction = AsyncAction('_PicStore.addTag');
 
   @override
@@ -113,13 +135,26 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   @override
+  void setSearchText(String value) {
+    final _$actionInfo = _$_PicStoreActionController.startAction(
+        name: '_PicStore.setSearchText');
+    try {
+      return super.setSearchText(value);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 latitude: ${latitude},
 longitude: ${longitude},
 specificLocation: ${specificLocation},
 generalLocation: ${generalLocation},
-tagsKeys: ${tagsKeys}
+searchText: ${searchText},
+tagsKeys: ${tagsKeys},
+tagsSuggestions: ${tagsSuggestions}
     ''';
   }
 }

@@ -5,6 +5,7 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
@@ -14,24 +15,15 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/image_item.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 
 class TaggedTab extends StatefulWidget {
   static const id = 'tagged_tab';
 
-  final bool deviceHasNoPics;
-  final Function setTabIndex;
-  final Function setIsLoading;
   final Function showEditTagModal;
-  final Function showPhotoCardModal;
 
   TaggedTab({
-    @required this.setTabIndex,
-    @required this.setIsLoading,
     @required this.showEditTagModal,
-    @required this.showPhotoCardModal,
-    this.deviceHasNoPics = false,
   });
 
   @override
@@ -39,6 +31,7 @@ class TaggedTab extends StatefulWidget {
 }
 
 class _TaggedTabState extends State<TaggedTab> {
+  GalleryStore galleryStore;
   TabsStore tabsStore;
 
   ScrollController scrollControllerThirdTab;
@@ -153,9 +146,9 @@ class _TaggedTabState extends State<TaggedTab> {
               padding: const EdgeInsets.all(10),
               onPressed: () async {
                 print('share pics');
-                widget.setIsLoading(true);
+                tabsStore.setIsLoading(true);
                 await DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.searchPhotosIds);
-                widget.setIsLoading(false);
+                tabsStore.setIsLoading(false);
               },
               child: Image.asset('lib/images/sharepicsico.png'),
             ),
@@ -308,9 +301,9 @@ class _TaggedTabState extends State<TaggedTab> {
               CupertinoButton(
                 onPressed: () async {
                   print('share pics');
-                  widget.setIsLoading(true);
+                  tabsStore.setIsLoading(true);
                   await DatabaseManager.instance.sharePics(photoIds: tag.photoId);
-                  widget.setIsLoading(false);
+                  tabsStore.setIsLoading(false);
                 },
                 child: Image.asset('lib/images/sharepicsico.png'),
               ),
@@ -445,6 +438,7 @@ class _TaggedTabState extends State<TaggedTab> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     tabsStore = Provider.of<TabsStore>(context);
+    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   @override
@@ -456,8 +450,8 @@ class _TaggedTabState extends State<TaggedTab> {
       child: SafeArea(
         child: Stack(
           children: <Widget>[
-            if (widget.deviceHasNoPics) DeviceHasNoPics(),
-            if (Provider.of<DatabaseManager>(context).noTaggedPhoto && !widget.deviceHasNoPics)
+            if (!galleryStore.deviceHasPics) DeviceHasNoPics(),
+            if (Provider.of<DatabaseManager>(context).noTaggedPhoto && galleryStore.deviceHasPics)
               TopBar(
                 children: <Widget>[
                   Expanded(
@@ -486,7 +480,7 @@ class _TaggedTabState extends State<TaggedTab> {
                           ),
                           CupertinoButton(
                             padding: const EdgeInsets.all(0),
-                            onPressed: () => widget.setTabIndex(1),
+                            onPressed: () => tabsStore.setCurrentTab(1),
                             child: Container(
                               width: 201.0,
                               height: 44.0,
@@ -516,7 +510,7 @@ class _TaggedTabState extends State<TaggedTab> {
                   ),
                 ],
               ),
-            if (!Provider.of<DatabaseManager>(context).noTaggedPhoto && !widget.deviceHasNoPics)
+            if (!Provider.of<DatabaseManager>(context).noTaggedPhoto && galleryStore.deviceHasPics)
               TopBar(
                 searchEditingController: searchEditingController,
                 searchFocusNode: searchFocusNode,
@@ -617,7 +611,7 @@ class _TaggedTabState extends State<TaggedTab> {
             if (!Provider.of<DatabaseManager>(context).noTaggedPhoto &&
                 !hideTitleThirdTab &&
                 !Provider.of<DatabaseManager>(context).searchingTags &&
-                !widget.deviceHasNoPics)
+                galleryStore.deviceHasPics)
               Positioned(
                 left: 19.0,
                 top: topOffsetThirdTab,

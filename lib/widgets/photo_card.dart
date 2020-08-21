@@ -12,7 +12,6 @@ import 'package:picPics/premium_screen.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
@@ -124,15 +123,6 @@ class _PhotoCardState extends State<PhotoCard> {
     super.dispose();
   }
 
-  void refreshTagSuggestions({bool notify = true}) {
-    DatabaseManager.instance.tagsSuggestions(
-      tagsEditingController.text,
-      picStore.photoId,
-      excludeTags: picStore.tagsKeys,
-      notify: notify,
-    );
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -141,14 +131,6 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   Widget build(BuildContext context) {
-//    if (DatabaseManager.instance.suggestionTags.length == 0) {
-//      print('###### calling init tag suggestions!!!!');
-//      refreshTagSuggestions(
-//        picStore,
-//        notify: false,
-//      );
-//    }
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
@@ -381,11 +363,9 @@ class _PhotoCardState extends State<PhotoCard> {
                         tagKey: DatabaseManager.instance.selectedTagKey,
                         photoId: picStore.photoId,
                       );
-
-                      refreshTagSuggestions();
                     },
                     onChanged: (text) {
-                      refreshTagSuggestions();
+                      picStore.setSearchText(text);
                     },
                     onSubmitted: (text) async {
                       print('return');
@@ -393,7 +373,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       if (text != '') {
                         if (!DatabaseManager.instance.canTagToday()) {
                           tagsEditingController.clear();
-                          refreshTagSuggestions();
+                          picStore.setSearchText('');
                           showWatchAdModal(context);
                           return;
                         }
@@ -404,40 +384,40 @@ class _PhotoCardState extends State<PhotoCard> {
                         );
                         Vibrate.feedback(FeedbackType.success);
                         tagsEditingController.clear();
-
-                        refreshTagSuggestions();
+                        picStore.setSearchText('');
                       }
                     },
                   );
                 }),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: TagsList(
-                    title: S.of(context).suggestions,
-                    tagsKeys: DatabaseManager.instance.suggestionTags,
-                    tagStyle: TagStyle.GrayOutlined,
-                    showEditTagModal: widget.showEditTagModal,
-                    onTap: (tagName) async {
-                      if (!DatabaseManager.instance.canTagToday()) {
-                        showWatchAdModal(context);
-                        return;
-                      }
+                  child: Observer(builder: (_) {
+                    return TagsList(
+                      title: S.of(context).suggestions,
+                      tagsKeys: picStore.tagsSuggestions,
+                      tagStyle: TagStyle.GrayOutlined,
+                      showEditTagModal: widget.showEditTagModal,
+                      onTap: (tagName) async {
+                        if (!DatabaseManager.instance.canTagToday()) {
+                          showWatchAdModal(context);
+                          return;
+                        }
 
-                      DatabaseManager.instance.selectedPhoto = picStore.entity;
-                      await picStore.addTag(
-                        tagName: tagName,
-                      );
-                      tagsEditingController.clear();
-
-                      refreshTagSuggestions();
-                    },
-                    onDoubleTap: () {
-                      print('do nothing');
-                    },
-                    onPanUpdate: () {
-                      print('do nothing');
-                    },
-                  ),
+                        DatabaseManager.instance.selectedPhoto = picStore.entity;
+                        await picStore.addTag(
+                          tagName: tagName,
+                        );
+                        tagsEditingController.clear();
+                        picStore.setSearchText('');
+                      },
+                      onDoubleTap: () {
+                        print('do nothing');
+                      },
+                      onPanUpdate: () {
+                        print('do nothing');
+                      },
+                    );
+                  }),
                 ),
               ],
             ),
