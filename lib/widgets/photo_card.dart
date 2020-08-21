@@ -27,12 +27,10 @@ import 'package:provider/provider.dart';
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
   final Function showEditTagModal;
-  final Function onPressedTrash;
 
   PhotoCard({
     this.picStore,
     this.showEditTagModal,
-    this.onPressedTrash,
   });
 
   @override
@@ -185,7 +183,9 @@ class _PhotoCardState extends State<PhotoCard> {
                 CircularMenuItem(
                   image: Image.asset('lib/images/trashnobackground.png'),
                   color: kPinkColor,
-                  onTap: widget.onPressedTrash,
+                  onTap: () {
+                    galleryStore.trashPic(picStore);
+                  },
                 ),
               ],
               backgroundWidget: ClipRRect(

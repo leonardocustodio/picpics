@@ -128,6 +128,13 @@ mixin _$PicStore on _PicStore, Store {
     return _$sharePicAsyncAction.run(() => super.sharePic());
   }
 
+  final _$deletePicAsyncAction = AsyncAction('_PicStore.deletePic');
+
+  @override
+  Future<bool> deletePic() {
+    return _$deletePicAsyncAction.run(() => super.deletePic());
+  }
+
   final _$_PicStoreActionController = ActionController(name: '_PicStore');
 
   @override

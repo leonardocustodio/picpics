@@ -318,4 +318,34 @@ abstract class _PicStore with Store {
     Analytics.sendEvent(Event.shared_photo);
     ShareExtend.share(path, "image");
   }
+
+  @action
+  Future<bool> deletePic() async {
+    print('Before photo manager delete');
+    List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+    print('Photo Editor Result: ${result}');
+
+    if (result.isNotEmpty) {
+      var picsBox = Hive.box('pics');
+      var tagsBox = Hive.box('tags');
+
+      Pic pic = picsBox.get(photoId);
+      if (pic != null) {
+        print('pic is in db... removing it from db!');
+
+        for (var tag in pic.tags) {
+          String tagKey = DatabaseManager.instance.stripTag(tag);
+
+          Tag getTag = tagsBox.get(tagKey);
+          getTag.photoId.remove(entity.id);
+          print('removed ${entity.id} from $tag');
+          tagsBox.put(tagKey, getTag);
+        }
+        print('removed ${entity.id} from database');
+        picsBox.delete(photoId);
+      }
+      return true;
+    }
+    return false;
+  }
 }

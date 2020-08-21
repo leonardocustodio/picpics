@@ -18,11 +18,9 @@ class PicTab extends StatefulWidget {
   static const id = 'pic_tab';
 
   final Function showEditTagModal;
-  final Function trashPic;
 
   PicTab({
     @required this.showEditTagModal,
-    @required this.trashPic,
   });
 
   @override
@@ -74,9 +72,6 @@ class _PicTabState extends State<PicTab> {
       child: PhotoCard(
         picStore: galleryStore.pics[index],
         showEditTagModal: widget.showEditTagModal,
-        onPressedTrash: () {
-          widget.trashPic(data);
-        },
       ),
     );
   }

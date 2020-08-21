@@ -62,6 +62,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$trashedPicAtom = Atom(name: '_GalleryStore.trashedPic');
+
+  @override
+  bool get trashedPic {
+    _$trashedPicAtom.reportRead();
+    return super.trashedPic;
+  }
+
+  @override
+  set trashedPic(bool value) {
+    _$trashedPicAtom.reportWrite(value, super.trashedPic, () {
+      super.trashedPic = value;
+    });
+  }
+
   final _$loadEntitiesAsyncAction = AsyncAction('_GalleryStore.loadEntities');
 
   @override
@@ -75,6 +90,13 @@ mixin _$GalleryStore on _GalleryStore, Store {
   @override
   Future<void> loadAssetsPath() {
     return _$loadAssetsPathAsyncAction.run(() => super.loadAssetsPath());
+  }
+
+  final _$trashPicAsyncAction = AsyncAction('_GalleryStore.trashPic');
+
+  @override
+  Future<void> trashPic(PicStore picStore) {
+    return _$trashPicAsyncAction.run(() => super.trashPic(picStore));
   }
 
   final _$_GalleryStoreActionController =
@@ -103,11 +125,23 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void setTrashedPic(bool value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setTrashedPic');
+    try {
+      return super.setTrashedPic(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
 currentPic: ${currentPic},
+trashedPic: ${trashedPic},
 deviceHasPics: ${deviceHasPics}
     ''';
   }

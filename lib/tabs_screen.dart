@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:picPics/asset_provider.dart';
 import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
@@ -44,6 +45,7 @@ class _TabsScreenState extends State<TabsScreen> {
   AppStore appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
+  ReactionDisposer disposer;
 
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
@@ -56,42 +58,27 @@ class _TabsScreenState extends State<TabsScreen> {
   Throttle _changeThrottle;
 
   void trashPics() async {
-    print('trashing selected pics....');
-
-    List<String> entitiesIds = [];
-    List<AssetEntity> entities = [];
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-
-    for (var photoId in DatabaseManager.instance.picsSelected) {
-      AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-      entitiesIds.add(photoId);
-      entities.add(entity);
-    }
-
-    final List<String> result = await PhotoManager.editor.deleteWithIds(entitiesIds);
-    if (result.isNotEmpty) {
-      for (AssetEntity entity in entities) {
-        DatabaseManager.instance.deletedPic(entity);
-      }
-
-      DatabaseManager.instance.setPicsSelected(Set());
-      tabsStore.setMultiPicBar(false);
-    }
-  }
-
-  trashPic(AssetEntity entity) async {
-    print('trashing pic');
-    final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
-    if (result.isNotEmpty) {
-      DatabaseManager.instance.deletedPic(entity);
-
-      if (tabsStore.modalCard) {
-        DatabaseManager.instance.selectedPhotoPicInfo = null;
-        DatabaseManager.instance.selectedPhotoIndex = null;
-        DatabaseManager.instance.selectedPhotoData = null;
-        tabsStore.setModalCard(false);
-      }
-    }
+//    print('trashing selected pics....');
+//
+//    List<String> entitiesIds = [];
+//    List<AssetEntity> entities = [];
+//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//
+//    for (var photoId in DatabaseManager.instance.picsSelected) {
+//      AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+//      entitiesIds.add(photoId);
+//      entities.add(entity);
+//    }
+//
+//    final List<String> result = await PhotoManager.editor.deleteWithIds(entitiesIds);
+//    if (result.isNotEmpty) {
+//      for (AssetEntity entity in entities) {
+//        DatabaseManager.instance.deletedPic(entity);
+//      }
+//
+//      DatabaseManager.instance.setPicsSelected(Set());
+//      tabsStore.setMultiPicBar(false);
+//    }
   }
 
   showEditTagModal() {
@@ -185,6 +172,7 @@ class _TabsScreenState extends State<TabsScreen> {
     PhotoManager.removeChangeCallback(_changeThrottle.call);
     PhotoManager.stopChangeNotify();
     _changeThrottle.dispose();
+    disposer();
     super.dispose();
   }
 
@@ -199,15 +187,16 @@ class _TabsScreenState extends State<TabsScreen> {
       print('### deleted pics from library!');
       for (var pic in deletedPics) {
         print('Pic deleted Id: ${pic['id']}');
-        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
-
-        if (entity != null) {
-          DatabaseManager.instance.deletedPic(
-            entity,
-            removeFromDb: false,
-          );
-        }
+//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
+//
+//        if (entity != null) {
+//          galleryStore.trashPic(picStore)
+//          DatabaseManager.instance.deletedPic(
+//            entity,
+//            removeFromDb: false,
+//          );
+//        }
       }
     }
 
@@ -318,6 +307,15 @@ class _TabsScreenState extends State<TabsScreen> {
     appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+
+    disposer = reaction((_) => galleryStore.trashedPic, (trashedPic) {
+      if (trashedPic) {
+        if (tabsStore.modalCard) {
+          tabsStore.setModalCard(false);
+        }
+        galleryStore.setTrashedPic(false);
+      }
+    });
 
     if (appStore.tutorialCompleted == true && appStore.notifications == true) {
       PushNotificationsManager push = PushNotificationsManager();
@@ -447,14 +445,8 @@ class _TabsScreenState extends State<TabsScreen> {
                     } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
                       wgt = UntaggedTab();
                     else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
-                      wgt = PicTab(
-                        showEditTagModal: showEditTagModal,
-                        trashPic: trashPic,
-                      );
-                    else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission)
-                      wgt = TaggedTab(
-                        showEditTagModal: showEditTagModal,
-                      );
+                      wgt = PicTab(showEditTagModal: showEditTagModal);
+                    else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
                     return wgt;
                   }),
                 ],
@@ -784,9 +776,6 @@ class _TabsScreenState extends State<TabsScreen> {
                           child: PhotoCard(
                             picStore: galleryStore.currentPic,
                             showEditTagModal: showEditTagModal,
-                            onPressedTrash: () {
-                              trashPic(DatabaseManager.instance.selectedPhotoData);
-                            },
                           ),
                         ),
                       ),

@@ -1,5 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 
@@ -96,5 +97,41 @@ abstract class _GalleryStore with Store {
     assetsPath.addAll(assets);
     print('#@#@#@# Total galleries: ${assetsPath.length}');
     loadEntities();
+  }
+
+  @observable
+  bool trashedPic = false;
+
+  @action
+  void setTrashedPic(bool value) => trashedPic = value;
+
+  @action
+  Future<void> trashPic(PicStore picStore) async {
+    print('Going to trash pic!');
+    bool deleted = await picStore.deletePic();
+    print('Deleted pic: $deleted');
+
+    if (deleted) {
+      int indexOfPic = pics.indexWhere((element) => element.photoId == picStore.photoId);
+      if (indexOfPic != null) {
+        pics.removeAt(indexOfPic);
+        print('Removed pic from gallery...');
+      }
+    }
+
+    Analytics.sendEvent(Event.deleted_photo);
+    print('Reaction!');
+    setTrashedPic(true);
+
+//    if (indexInOrderedList != null) {
+//      pathProvider.orderedList.remove(entity);
+//
+//      // Supondo que pic está nas não taggeadas
+//      DatabaseManager.instance.reorderSliderIndex(indexInOrderedList);
+//      DatabaseManager.instance.picHasTag.removeAt(indexInOrderedList);
+//      print('Removed pic in ordered list number $indexInOrderedList');
+//    }
+//
+//
   }
 }

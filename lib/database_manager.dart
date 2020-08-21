@@ -166,42 +166,6 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void deletedPic(AssetEntity entity, {bool removeFromDb = true}) {
-    var picsBox = Hive.box('pics');
-    var tagsBox = Hive.box('tags');
-
-    Pic getPic = picsBox.get(entity.id);
-    if (getPic != null && removeFromDb == true) {
-      print('found pic');
-
-      for (var tag in getPic.tags) {
-        String tagKey = stripTag(tag);
-
-        Tag getTag = tagsBox.get(tagKey);
-        getTag.photoId.remove(entity.id);
-        print('removed ${entity.id} from $tag');
-        tagsBox.put(tagKey, getTag);
-      }
-      print('removed ${entity.id} from database');
-      picsBox.delete(entity.id);
-    }
-
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-    int indexInOrderedList = pathProvider.orderedList.indexOf(entity);
-
-    if (indexInOrderedList != null) {
-      pathProvider.orderedList.remove(entity);
-
-      // Supondo que pic está nas não taggeadas
-      reorderSliderIndex(indexInOrderedList);
-      picHasTag.removeAt(indexInOrderedList);
-      print('Removed pic in ordered list number $indexInOrderedList');
-    }
-
-    Analytics.sendEvent(Event.deleted_photo);
-    notifyListeners();
-  }
-
   void reorderSliderIndex(int removeIndex) {
     int indexOfValue = sliderIndex.indexOf(removeIndex);
 
@@ -423,21 +387,6 @@ class DatabaseManager extends ChangeNotifier {
     print('new scale value: $scale');
 //    notifyListeners();
   }
-
-//  Pic getPicInfo(String photoId) {
-////    print('loading pic info from: $photoId');
-//    var picsBox = Hive.box('pics');
-//
-//    if (picsBox.containsKey(photoId)) {
-////      print('found pic!!!');
-//      Pic getPic = picsBox.get(photoId);
-////      print('@@@ Lat: ${getPic.latitude} - Long ${getPic.longitude} - PhotoId: $photoId');
-//      return getPic;
-//    }
-////    print('did not found pic!!!');
-//
-//    return null;
-//  }
 
   void removeTagFromPic({String tagKey, String photoId}) {
     print('removing tag: $tagKey from pic $photoId');
