@@ -216,6 +216,17 @@ mixin _$AppStore on _AppStore, Store {
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
 
   @override
+  void setTryBuyId(String value) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.setTryBuyId');
+    try {
+      return super.setTryBuyId(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void requestNotificationPermission() {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.requestNotificationPermission');

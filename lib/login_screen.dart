@@ -5,10 +5,7 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/tabs_screen.dart';
-import 'package:picPics/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:hive/hive.dart';
-import 'package:picPics/model/tag.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {

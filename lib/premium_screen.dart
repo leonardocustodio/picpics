@@ -39,16 +39,15 @@ class _PremiumScreenState extends State<PremiumScreen> {
           _items = offerings.current.availablePackages;
         });
 
-        if (DatabaseManager.instance.appStartInPremium) {
-          var getPackage = _items.firstWhere((element) => element.product.identifier == DatabaseManager.instance.trybuyId, orElse: () => null);
+        if (appStore.tryBuyId != null) {
+          var getPackage = _items.firstWhere((element) => element.product.identifier == appStore.tryBuyId, orElse: () => null);
 
           if (getPackage != null) {
             print(getPackage);
             print('making purchase!!!');
             makePurchase(context, getPackage);
 
-            DatabaseManager.instance.appStartInPremium = false;
-            DatabaseManager.instance.trybuyId = null;
+            appStore.setTryBuyId(null);
           }
         }
       }
@@ -73,7 +72,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     });
 
     if (kDebugMode) {
-      DatabaseManager.instance.userSettings.isPremium = true;
+      appStore.setIsPremium(true);
       Navigator.pop(context);
       return;
     }

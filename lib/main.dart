@@ -29,17 +29,14 @@ import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'dart:io';
 
-//void checkForAppStoreInitiatedProducts() async {
-//  print('Checking if appstore initiated products');
-//  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
-//  if (appStoreProducts.length > 0) {
-//    DatabaseManager.instance.appStartInPremium = true;
-//    DatabaseManager.instance.trybuyId = appStoreProducts.last.productId;
-//  } else {
-//    DatabaseManager.instance.appStartInPremium = false;
-//    DatabaseManager.instance.trybuyId = null;
-//  }
-//}
+Future<String> checkForAppStoreInitiatedProducts() async {
+  print('Checking if appstore initiated products');
+  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
+  if (appStoreProducts.length > 0) {
+    return appStoreProducts.last.productId;
+  }
+  return null;
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +55,6 @@ void main() async {
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
 
-//  String initialRoute = TabsScreen.id;
   String deviceLocale = await DeviceLocale.getCurrentLocale().toString();
 
 //  if (DatabaseManager.instance.userSettings.appLanguage == null) {
@@ -70,16 +66,16 @@ void main() async {
 //  }
 //
 //  Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
-  DatabaseManager.instance.loadRemoteConfig();
-//  initPlatformState();
 
   String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
     return packageInfo.version;
   });
 
-//  if (Platform.isIOS) {
-//    await checkForAppStoreInitiatedProducts();
-//  }
+  String initiatedWithProduct;
+
+  if (Platform.isIOS) {
+    initiatedWithProduct = await checkForAppStoreInitiatedProducts();
+  }
 
   runZonedGuarded(() {
     runApp(
@@ -87,6 +83,7 @@ void main() async {
 //        userLocale: userLocale,
         appVersion: appVersion,
         deviceLocale: deviceLocale,
+        initiatedWithProduct: initiatedWithProduct,
       ),
     );
   }, (Object error, StackTrace stack) {
@@ -98,11 +95,13 @@ class PicPicsApp extends StatefulWidget {
 //  final Locale userLocale;
   final String appVersion;
   final String deviceLocale;
+  final String initiatedWithProduct;
 
   PicPicsApp({
 //    @required this.userLocale,
     @required this.appVersion,
     @required this.deviceLocale,
+    @required this.initiatedWithProduct,
   });
 
   @override
@@ -115,6 +114,7 @@ class _PicPicsAppState extends State<PicPicsApp> {
     AppStore appStore = AppStore(
       appVersion: widget.appVersion,
       deviceLocale: widget.deviceLocale,
+      initiatedWithProduct: widget.initiatedWithProduct,
     );
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

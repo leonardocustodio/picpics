@@ -24,8 +24,13 @@ class AppStore = _AppStore with _$AppStore;
 abstract class _AppStore with Store {
   final String appVersion;
   final String deviceLocale;
+  final String initiatedWithProduct;
 
-  _AppStore({this.appVersion, this.deviceLocale}) {
+  _AppStore({
+    this.appVersion,
+    this.deviceLocale,
+    this.initiatedWithProduct,
+  }) {
     var userBox = Hive.box('user');
     User user;
 
@@ -74,6 +79,7 @@ abstract class _AppStore with Store {
     hasGalleryPermission = user.hasGalleryPermission;
     canTagToday = user.canTagToday;
     loggedIn = user.loggedIn ?? false;
+    tryBuyId = initiatedWithProduct;
 
     if (loggedIn) {
       initialRoute = TabsScreen.id;
@@ -89,6 +95,7 @@ abstract class _AppStore with Store {
     checkNotificationPermission();
 
     DatabaseManager.instance.initPlatformState(user.id);
+    DatabaseManager.instance.loadRemoteConfig();
 
     if (user.isPremium) {
       checkPremiumStatus();
@@ -100,6 +107,11 @@ abstract class _AppStore with Store {
   }
 
   String initialRoute;
+
+  String tryBuyId;
+
+  @action
+  void setTryBuyId(String value) => tryBuyId = value;
 
   @observable
   bool notifications = false;
