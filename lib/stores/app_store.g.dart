@@ -271,6 +271,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setLoggedIn(bool value) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.setLoggedIn');
+    try {
+      return super.setLoggedIn(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setCanTagToday(bool value) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.setCanTagToday');
@@ -298,6 +309,17 @@ mixin _$AppStore on _AppStore, Store {
         name: '_AppStore.changeUserLanguage');
     try {
       return super.changeUserLanguage(language);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void createDefaultTags(BuildContext context) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.createDefaultTags');
+    try {
+      return super.createDefaultTags(context);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }

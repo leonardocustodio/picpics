@@ -8,7 +8,9 @@ import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/login_screen.dart';
+import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/tabs_screen.dart';
@@ -47,17 +49,16 @@ abstract class _AppStore with Store {
         appLanguage: deviceLocale,
         hasSwiped: false,
         hasGalleryPermission: null,
+        loggedIn: false,
       );
 
       user = createUser;
       userBox.put(0, createUser);
 
-      initialRoute = LoginScreen.id;
       Analytics.setUserId(user.id);
       Analytics.sendEvent(Event.created_user);
     } else {
       user = userBox.getAt(0);
-      initialRoute = TabsScreen.id;
       Analytics.setUserId(user.id);
       Analytics.sendEvent(Event.user_returned);
     }
@@ -72,6 +73,13 @@ abstract class _AppStore with Store {
     appLanguage = user.appLanguage;
     hasGalleryPermission = user.hasGalleryPermission;
     canTagToday = user.canTagToday;
+    loggedIn = user.loggedIn ?? false;
+
+    if (loggedIn) {
+      initialRoute = TabsScreen.id;
+    } else {
+      initialRoute = LoginScreen.id;
+    }
 
     if (user.hasGalleryPermission != null || user.tutorialCompleted) {
       requestGalleryPermission();
@@ -229,6 +237,18 @@ abstract class _AppStore with Store {
 
   DateTime lastTaggedPicDate;
 
+  bool loggedIn;
+
+  @action
+  void setLoggedIn(bool value) {
+    loggedIn = true;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.loggedIn = true;
+    currentUser.save();
+  }
+
   @observable
   bool canTagToday;
 
@@ -333,5 +353,41 @@ abstract class _AppStore with Store {
     String lang = appLanguage.split('_')[0];
     var local = LanguageLocal();
     return '${local.getDisplayLanguage(lang)['nativeName']}';
+  }
+
+  @action
+  void createDefaultTags(BuildContext context) {
+    var tagsBox = Hive.box('tags');
+
+    if (tagsBox.length > 0) {
+      print('Default tags already created');
+      return;
+    }
+
+    print('adding default tags...');
+    Tag tag1 = Tag(S.of(context).family_tag, []);
+    Tag tag2 = Tag(S.of(context).travel_tag, []);
+    Tag tag3 = Tag(S.of(context).pets_tag, []);
+    Tag tag4 = Tag(S.of(context).work_tag, []);
+    Tag tag5 = Tag(S.of(context).selfies_tag, []);
+    Tag tag6 = Tag(S.of(context).parties_tag, []);
+    Tag tag7 = Tag(S.of(context).sports_tag, []);
+    Tag tag8 = Tag(S.of(context).home_tag, []);
+    Tag tag9 = Tag(S.of(context).foods_tag, []);
+    Tag tag10 = Tag(S.of(context).screenshots_tag, []);
+
+    Map<String, Tag> entries = {
+      DatabaseManager.instance.encryptTag(S.of(context).family_tag): tag1,
+      DatabaseManager.instance.encryptTag(S.of(context).travel_tag): tag2,
+      DatabaseManager.instance.encryptTag(S.of(context).pets_tag): tag3,
+      DatabaseManager.instance.encryptTag(S.of(context).work_tag): tag4,
+      DatabaseManager.instance.encryptTag(S.of(context).selfies_tag): tag5,
+      DatabaseManager.instance.encryptTag(S.of(context).parties_tag): tag6,
+      DatabaseManager.instance.encryptTag(S.of(context).sports_tag): tag7,
+      DatabaseManager.instance.encryptTag(S.of(context).home_tag): tag8,
+      DatabaseManager.instance.encryptTag(S.of(context).foods_tag): tag9,
+      DatabaseManager.instance.encryptTag(S.of(context).screenshots_tag): tag10,
+    };
+    tagsBox.putAll(entries);
   }
 }
