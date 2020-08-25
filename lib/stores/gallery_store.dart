@@ -15,7 +15,19 @@ abstract class _GalleryStore with Store {
     loadAssetsPath();
 
     autorun((_) {
-      print('autorun');
+      if (currentPic.tags.length > 0) {
+        if (untaggedPics.contains(currentPic)) {
+          taggedPics.add(currentPic);
+          untaggedPics.remove(currentPic);
+          print('this pic now has tags!');
+        }
+      } else {
+        if (taggedPics.contains(currentPic)) {
+          untaggedPics.add(currentPic);
+          taggedPics.remove(currentPic);
+          print('this pic now doesnt have tags!');
+        }
+      }
     });
   }
 
@@ -31,7 +43,8 @@ abstract class _GalleryStore with Store {
   bool isLoaded = false;
 
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
-  ObservableList<PicStore> pics = ObservableList<PicStore>();
+  ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
+  ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
 
   @observable
   PicStore currentPic;
@@ -43,7 +56,7 @@ abstract class _GalleryStore with Store {
 
   @computed
   bool get deviceHasPics {
-    if (pics.length == 0) {
+    if (untaggedPics.length == 0 && taggedPics.length == 0) {
       return false;
     } else {
       return true;
@@ -55,8 +68,6 @@ abstract class _GalleryStore with Store {
     AssetPathEntity assetPathEntity = assetsPath[0];
     final List<AssetEntity> list = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
 
-    List<PicStore> picsList = [];
-
     for (AssetEntity entity in list) {
       PicStore pic = PicStore(
         appStore: appStore,
@@ -66,24 +77,17 @@ abstract class _GalleryStore with Store {
         originalLatitude: entity.latitude,
         originalLongitude: entity.longitude,
       );
-      picsList.add(pic);
+
+      if (pic.tags.length > 0) {
+        print('has pic info! and this pic has tags in it!!!!');
+        taggedPics.add(pic);
+      } else {
+        print('has pic info! and this pic doesnt have tag!!!!');
+        untaggedPics.add(pic);
+      }
     }
-    pics.addAll(picsList);
 
-    print('#@#@#@# Total photos: ${pics.length}');
-
-    //    _checkTaggedPics()
-//
-//    DatabaseManager.instance.sliderHasPics();
-////      setState(() {
-////        deviceHasNoPics = false;
-////      });
-//  }
-//
-//  DatabaseManager.instance.checkHasTaggedPhotos();
-//  tabsStore.setCurrentTab(1);
-//  setTabIndex(1);
-
+    print('#@#@#@# Total photos: ${taggedPics.length + untaggedPics.length}');
     isLoaded = true;
   }
 
@@ -107,21 +111,21 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> trashPic(PicStore picStore) async {
-    print('Going to trash pic!');
-    bool deleted = await picStore.deletePic();
-    print('Deleted pic: $deleted');
-
-    if (deleted) {
-      int indexOfPic = pics.indexWhere((element) => element.photoId == picStore.photoId);
-      if (indexOfPic != null) {
-        pics.removeAt(indexOfPic);
-        print('Removed pic from gallery...');
-      }
-    }
-
-    Analytics.sendEvent(Event.deleted_photo);
-    print('Reaction!');
-    setTrashedPic(true);
+//    print('Going to trash pic!');
+//    bool deleted = await picStore.deletePic();
+//    print('Deleted pic: $deleted');
+//
+//    if (deleted) {
+//      int indexOfPic = pics.indexWhere((element) => element.photoId == picStore.photoId);
+//      if (indexOfPic != null) {
+//        pics.removeAt(indexOfPic);
+//        print('Removed pic from gallery...');
+//      }
+//    }
+//
+//    Analytics.sendEvent(Event.deleted_photo);
+//    print('Reaction!');
+//    setTrashedPic(true);
 
 //    if (indexInOrderedList != null) {
 //      pathProvider.orderedList.remove(entity);

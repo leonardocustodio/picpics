@@ -36,7 +36,7 @@ class _PicTabState extends State<PicTab> {
 //  TextEditingController tagsEditingController = TextEditingController();
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
-    var data = galleryStore.pics[index].entity;
+    var data = galleryStore.untaggedPics[index].entity;
 
     print('photo id: ${data.id}');
     double latitude = data.latitude;
@@ -70,7 +70,7 @@ class _PicTabState extends State<PicTab> {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
-        picStore: galleryStore.pics[index],
+        picStore: galleryStore.untaggedPics[index],
         showEditTagModal: widget.showEditTagModal,
       ),
     );
@@ -132,7 +132,7 @@ class _PicTabState extends State<PicTab> {
                 children: <Widget>[
                   Observer(builder: (_) {
                     return CarouselSlider.builder(
-                      itemCount: galleryStore.pics.length,
+                      itemCount: galleryStore.untaggedPics.length,
                       carouselController: carouselController,
                       itemBuilder: (BuildContext context, int index) {
                         print('calling index $index');

@@ -62,14 +62,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
       movedGridPositionFirstTab();
     });
 
-    int itemCount = galleryStore.isLoaded ? galleryStore.pics.length : 0;
-    print('#!#@#!# Number of photos: $itemCount');
-
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
       padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
       crossAxisCount: 3,
-      itemCount: itemCount,
+      itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
       itemBuilder: _buildItem,
       staggeredTileBuilder: (int index) {
 //        if (DatabaseManager.instance.picHasTag[index] == true) return StaggeredTile.count(0, 0);
@@ -87,8 +84,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //      return Container();
 //    }
 
-    print('Item Count: ${galleryStore.pics.length}');
-    var data = galleryStore.pics[index].entity;
+    print('Item Count: ${galleryStore.untaggedPics.length}');
+    var data = galleryStore.untaggedPics[index].entity;
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     print('Build Item: $index');
 
@@ -131,7 +128,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //                notify: false,
 //              );
 
-              galleryStore.setCurrentPic(galleryStore.pics[index]);
+              galleryStore.setCurrentPic(galleryStore.untaggedPics[index]);
               tabsStore.setModalCard(true);
             },
             child: ImageItem(

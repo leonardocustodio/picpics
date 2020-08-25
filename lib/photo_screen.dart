@@ -128,8 +128,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
 //    String photoId = DatabaseManager.instance.slideThumbPhotoIds[index]; corrigir isso porém por enquanto vamo fazer diferente
-    String photoId = galleryStore.pics[index].photoId;
-    PicStore picStore = galleryStore.pics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
+    String photoId = galleryStore.untaggedPics[index].photoId;
+    PicStore picStore = galleryStore.untaggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
     AssetEntity entity = picStore.entity;
 
     return PhotoViewGalleryPageOptions.customChild(
@@ -186,7 +186,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   AssetEntity getEntity(String photoId) {
-    PicStore picStore = galleryStore.pics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
+    PicStore picStore = galleryStore.untaggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
     return picStore.entity;
   }
 
@@ -209,7 +209,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: _buildItem,
-                itemCount: galleryStore.pics.length, // DatabaseManager.instance.slideThumbPhotoIds.length,
+                itemCount: galleryStore.untaggedPics.length, // DatabaseManager.instance.slideThumbPhotoIds.length,
                 loadingBuilder: (context, event) => Center(
                   child: Container(
                     width: 20.0,

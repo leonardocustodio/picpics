@@ -34,6 +34,7 @@ abstract class _PicStore with Store {
     this.originalLatitude,
     this.originalLongitude,
   }) {
+    print('loading pic info......');
     loadPicInfo();
 
     autorun((_) {
