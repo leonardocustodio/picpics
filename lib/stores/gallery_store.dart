@@ -46,6 +46,16 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
 
+  @computed
+  List<String> get taggedKeys {
+    Set<String> tags = Set();
+    taggedPics.forEach((element) {
+      tags.addAll(element.tagsKeys);
+    });
+    print('Tagged Keys: ${tags}');
+    return tags.toList();
+  }
+
   @observable
   PicStore currentPic;
 

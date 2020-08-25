@@ -13,7 +13,6 @@ import 'package:picPics/widgets/top_bar.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hive/hive.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/model/tag.dart';
 
@@ -70,15 +69,16 @@ class _TaggedTabState extends State<TaggedTab> {
   }
 
   bool checkTagHasOneValidPic(Tag tag) {
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-
-    for (String photoId in tag.photoId) {
-      var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-      if (data != null) {
-        return true;
-      }
-    }
-    return false;
+//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//
+//    for (String photoId in tag.photoId) {
+//      var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+//      if (data != null) {
+//        return true;
+//      }
+//    }
+//    return false;
+    return true;
   }
 
   Widget _buildTaggedGridView(BuildContext context) {
@@ -108,20 +108,174 @@ class _TaggedTabState extends State<TaggedTab> {
     List<Widget> widgetsArray = [];
     List<bool> isTitleWidget = [];
 
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-
 //    if (!isFiltered) {
     List<String> slideThumbPhotoIds = [];
 
     List<String> tagsList = isFiltered ? DatabaseManager.instance.searchActiveTags : tagsBox.keys.toList().cast<String>();
     print('Tags List: $tagsList');
 
-    if (isFiltered) {
-      String tagName = '';
-      if (tagsList.length == 1) {
-        Tag tag = tagsBox.get(tagsList[0]);
-        tagName = tag.name;
-      }
+//    if (isFiltered) {
+//      String tagName = '';
+//      if (tagsList.length == 1) {
+//        Tag tag = tagsBox.get(tagsList[0]);
+//        tagName = tag.name;
+//      }
+//
+//      totalTags += 1;
+//      isTitleWidget.add(true);
+//      widgetsArray.add(Container(
+//        padding: const EdgeInsets.only(left: 2.0, right: 8.0),
+//        child: Row(
+//          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//          children: <Widget>[
+//            Text(
+//              tagsList.length == 1 ? tagName : S.of(context).all_search_tags,
+//              textScaleFactor: 1.0,
+//              style: TextStyle(
+//                fontFamily: 'Lato',
+//                color: Color(0xff606566),
+//                fontSize: 24,
+//                fontWeight: FontWeight.w400,
+//                fontStyle: FontStyle.normal,
+//                letterSpacing: -0.4099999964237213,
+//              ),
+//            ),
+//            CupertinoButton(
+//              padding: const EdgeInsets.all(10),
+//              onPressed: () async {
+//                print('share pics');
+//                tabsStore.setIsLoading(true);
+//                await DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.searchPhotosIds);
+//                tabsStore.setIsLoading(false);
+//              },
+//              child: Image.asset('lib/images/sharepicsico.png'),
+//            ),
+//          ],
+//        ),
+//      ));
+//
+//      if (DatabaseManager.instance.searchPhotosIds.length == 0) {
+//        totalPics += 1;
+//        isTitleWidget.add(true);
+//        widgetsArray.add(Container(
+//          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+//          child: Text(
+//            S.of(context).search_all_tags_not_found,
+//            textScaleFactor: 1.0,
+//            style: TextStyle(
+//              fontFamily: 'Lato',
+//              color: Color(0xff979a9b),
+//              fontSize: 18,
+//              fontWeight: FontWeight.w400,
+//              fontStyle: FontStyle.normal,
+//            ),
+//          ),
+//        ));
+//      }
+//
+//      for (var photoId in DatabaseManager.instance.searchPhotosIds) {
+//        var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+//        if (data == null) {
+//          print('Found a deleted picture');
+//          continue;
+//        }
+//
+//        totalPics += 1;
+//        isTitleWidget.add(false);
+//        slideThumbPhotoIds.add(data.id);
+//        widgetsArray.add(RepaintBoundary(
+//          child: Padding(
+//            padding: const EdgeInsets.all(5.0),
+//            child: ClipRRect(
+//              borderRadius: BorderRadius.circular(5.0),
+//              child: GestureDetector(
+//                onLongPress: () {
+//                  print('LongPress');
+//                  if (tabsStore.multiPicBar == false) {
+//                    Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+//                    picsCopy.add(data.id);
+//                    DatabaseManager.instance.setPicsSelected(picsCopy);
+//                    tabsStore.setMultiPicBar(true);
+//                  }
+//                },
+//                child: CupertinoButton(
+//                  padding: const EdgeInsets.all(0),
+//                  onPressed: () {
+//                    if (tabsStore.multiPicBar) {
+//                      if (DatabaseManager.instance.picsSelected.contains(data.id)) {
+//                        Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+//                        picsCopy.remove(data.id);
+//                        DatabaseManager.instance.setPicsSelected(picsCopy);
+//                      } else {
+//                        Set<String> picsCopy = DatabaseManager.instance.picsSelected;
+//                        picsCopy.add(data.id);
+//                        DatabaseManager.instance.setPicsSelected(picsCopy);
+//                      }
+//                      print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
+//                      return;
+//                    }
+//
+//                    // Call photocard
+////                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
+////                    tagsEditingController.text = '';
+////
+////                    DatabaseManager.instance.tagsSuggestions(
+////                      tagsEditingController.text,
+////                      data.id,
+////                      excludeTags: picInfo.tags,
+////                      notify: false,
+////                    );
+////
+////                    print('PicTags: ${picInfo.tags}');
+////
+////                    DatabaseManager.instance.selectedPhotoData = data;
+////                    DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
+////
+////                    widget.showPhotoCardModal();
+//
+//                    // Call expanded screen directly
+////                    DatabaseManager.instance.selectedPhoto = data;
+//                    print('Selected photo: ${data.id}');
+//                    int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
+//                    Navigator.push(
+//                      context,
+//                      MaterialPageRoute(
+//                        builder: (context) => PhotoScreen(
+//                          initialIndex: initialIndex,
+//                        ),
+//                      ),
+//                    );
+//                    // Call expanded screen directly
+//                  },
+//                  child: ImageItem(
+//                    entity: data,
+//                    size: 150,
+//                    backgroundColor: Colors.grey[400],
+//                    showOverlay: tabsStore.multiPicBar ? true : false,
+//                    isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
+//                  ),
+//                ),
+//              ),
+//            ),
+//          ),
+//        ));
+//      }
+//    }
+//
+//    if (!isFiltered || tagsList.length > 1) {
+    for (String tagKey in galleryStore.taggedKeys) {
+      Tag tag = tagsBox.get(tagKey);
+
+//      if (tag.photoId.length == 0) {
+//        print('skipping ${tag.name} because tag has no pictures...');
+//        continue;
+//      }
+//
+//      bool oneValidPic = checkTagHasOneValidPic(tag);
+//      if (!oneValidPic) {
+//        print('skipping ${tag.name} because tag has no valid pictures...');
+//        continue;
+//      }
 
       totalTags += 1;
       isTitleWidget.add(true);
@@ -131,7 +285,7 @@ class _TaggedTabState extends State<TaggedTab> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Text(
-              tagsList.length == 1 ? tagName : S.of(context).all_search_tags,
+              tag.name,
               textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
@@ -143,11 +297,10 @@ class _TaggedTabState extends State<TaggedTab> {
               ),
             ),
             CupertinoButton(
-              padding: const EdgeInsets.all(10),
               onPressed: () async {
                 print('share pics');
                 tabsStore.setIsLoading(true);
-                await DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.searchPhotosIds);
+                await DatabaseManager.instance.sharePics(photoIds: tag.photoId);
                 tabsStore.setIsLoading(false);
               },
               child: Image.asset('lib/images/sharepicsico.png'),
@@ -155,28 +308,9 @@ class _TaggedTabState extends State<TaggedTab> {
           ],
         ),
       ));
+      for (String photoId in tag.photoId) {
+        var data = galleryStore.taggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
 
-      if (DatabaseManager.instance.searchPhotosIds.length == 0) {
-        totalPics += 1;
-        isTitleWidget.add(true);
-        widgetsArray.add(Container(
-          padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
-          child: Text(
-            S.of(context).search_all_tags_not_found,
-            textScaleFactor: 1.0,
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: Color(0xff979a9b),
-              fontSize: 18,
-              fontWeight: FontWeight.w400,
-              fontStyle: FontStyle.normal,
-            ),
-          ),
-        ));
-      }
-
-      for (var photoId in DatabaseManager.instance.searchPhotosIds) {
-        var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
         if (data == null) {
           print('Found a deleted picture');
           continue;
@@ -184,7 +318,8 @@ class _TaggedTabState extends State<TaggedTab> {
 
         totalPics += 1;
         isTitleWidget.add(false);
-        slideThumbPhotoIds.add(data.id);
+
+        slideThumbPhotoIds.add(data.entity.id);
         widgetsArray.add(RepaintBoundary(
           child: Padding(
             padding: const EdgeInsets.all(5.0),
@@ -195,7 +330,7 @@ class _TaggedTabState extends State<TaggedTab> {
                   print('LongPress');
                   if (tabsStore.multiPicBar == false) {
                     Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                    picsCopy.add(data.id);
+                    picsCopy.add(data.entity.id);
                     DatabaseManager.instance.setPicsSelected(picsCopy);
                     tabsStore.setMultiPicBar(true);
                   }
@@ -204,41 +339,21 @@ class _TaggedTabState extends State<TaggedTab> {
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
                     if (tabsStore.multiPicBar) {
-                      if (DatabaseManager.instance.picsSelected.contains(data.id)) {
+                      if (DatabaseManager.instance.picsSelected.contains(data.entity.id)) {
                         Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                        picsCopy.remove(data.id);
+                        picsCopy.remove(data.entity.id);
                         DatabaseManager.instance.setPicsSelected(picsCopy);
                       } else {
                         Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                        picsCopy.add(data.id);
+                        picsCopy.add(data.entity.id);
                         DatabaseManager.instance.setPicsSelected(picsCopy);
                       }
                       print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
                       return;
                     }
 
-                    // Call photocard
-//                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-//                    tagsEditingController.text = '';
-//
-//                    DatabaseManager.instance.tagsSuggestions(
-//                      tagsEditingController.text,
-//                      data.id,
-//                      excludeTags: picInfo.tags,
-//                      notify: false,
-//                    );
-//
-//                    print('PicTags: ${picInfo.tags}');
-//
-//                    DatabaseManager.instance.selectedPhotoData = data;
-//                    DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
-//
-//                    widget.showPhotoCardModal();
-
-                    // Call expanded screen directly
-//                    DatabaseManager.instance.selectedPhoto = data;
-                    print('Selected photo: ${data.id}');
-                    int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
+                    print('Selected photo: ${data.entity.id}');
+                    int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.entity.id);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -250,11 +365,11 @@ class _TaggedTabState extends State<TaggedTab> {
                     // Call expanded screen directly
                   },
                   child: ImageItem(
-                    entity: data,
+                    entity: data.entity,
                     size: 150,
                     backgroundColor: Colors.grey[400],
                     showOverlay: tabsStore.multiPicBar ? true : false,
-                    isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
+                    isSelected: DatabaseManager.instance.picsSelected.contains(data.entity.id),
                   ),
                 ),
               ),
@@ -263,153 +378,8 @@ class _TaggedTabState extends State<TaggedTab> {
         ));
       }
     }
-
-    if (!isFiltered || tagsList.length > 1) {
-      for (String tagKey in tagsList) {
-        Tag tag = tagsBox.get(tagKey);
-
-        if (tag.photoId.length == 0) {
-          print('skipping ${tag.name} because tag has no pictures...');
-          continue;
-        }
-
-        bool oneValidPic = checkTagHasOneValidPic(tag);
-        if (!oneValidPic) {
-          print('skipping ${tag.name} because tag has no valid pictures...');
-          continue;
-        }
-
-        totalTags += 1;
-        isTitleWidget.add(true);
-        widgetsArray.add(Container(
-          padding: const EdgeInsets.only(left: 2.0, right: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                tag.name,
-                textScaleFactor: 1.0,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff606566),
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: -0.4099999964237213,
-                ),
-              ),
-              CupertinoButton(
-                onPressed: () async {
-                  print('share pics');
-                  tabsStore.setIsLoading(true);
-                  await DatabaseManager.instance.sharePics(photoIds: tag.photoId);
-                  tabsStore.setIsLoading(false);
-                },
-                child: Image.asset('lib/images/sharepicsico.png'),
-              ),
-            ],
-          ),
-        ));
-        for (String photoId in tag.photoId) {
-          var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-
-          if (data == null) {
-            print('Found a deleted picture');
-            continue;
-          }
-
-          totalPics += 1;
-          isTitleWidget.add(false);
-
-          slideThumbPhotoIds.add(data.id);
-          widgetsArray.add(RepaintBoundary(
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: GestureDetector(
-                  onLongPress: () {
-                    print('LongPress');
-                    if (tabsStore.multiPicBar == false) {
-                      Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                      picsCopy.add(data.id);
-                      DatabaseManager.instance.setPicsSelected(picsCopy);
-                      tabsStore.setMultiPicBar(true);
-                    }
-                  },
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () {
-                      if (tabsStore.multiPicBar) {
-                        if (DatabaseManager.instance.picsSelected.contains(data.id)) {
-                          Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                          picsCopy.remove(data.id);
-                          DatabaseManager.instance.setPicsSelected(picsCopy);
-                        } else {
-                          Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                          picsCopy.add(data.id);
-                          DatabaseManager.instance.setPicsSelected(picsCopy);
-                        }
-                        print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
-                        return;
-                      }
-
-//                      Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-//                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//                      int indexOfPic = pathProvider.orderedList.indexWhere((element) => element.id == data.id);
-//                      tagsEditingController.text = '';
-//
-//                      DatabaseManager.instance.tagsSuggestions(
-//                        tagsEditingController.text,
-//                        data.id,
-//                        excludeTags: picInfo.tags,
-//                        notify: false,
-//                      );
-//
-//                      print('PicTags: ${picInfo.tags}');
-//
-//                      DatabaseManager.instance.selectedPhotoData = data;
-//                      DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
-//                      DatabaseManager.instance.selectedPhotoIndex = indexOfPic;
-//
-//                      widget.showPhotoCardModal();
-
-                      // Call expanded screen directly
-//                      DatabaseManager.instance.selectedPhoto = data;
-                      print('Selected photo: ${data.id}');
-                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.id);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PhotoScreen(
-                            initialIndex: initialIndex,
-                          ),
-                        ),
-                      );
-                      // Call expanded screen directly
-                    },
-                    child: ImageItem(
-                      entity: data,
-                      size: 150,
-                      backgroundColor: Colors.grey[400],
-                      showOverlay: tabsStore.multiPicBar ? true : false,
-                      isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ));
-        }
-      }
-    }
+//    }
     DatabaseManager.instance.slideThumbPhotoIds = slideThumbPhotoIds;
-
-//    print('Number of pics: ${DatabaseManager.instance.allPics.length}');
-//    print('Number of tags: ${DatabaseManager.instance.allTags.length}');
-
-    print('New Padding: $newPadding');
-//    print('Deleted pic index: $isDeletedPic');
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,
@@ -419,7 +389,7 @@ class _TaggedTabState extends State<TaggedTab> {
         left: 6.0,
       ),
       crossAxisCount: 3,
-      itemCount: totalTags + totalPics, // picsBox.length + 1,
+      itemCount: totalTags + totalPics,
       itemBuilder: (BuildContext context, int index) {
         return widgetsArray[index];
       },
