@@ -1,8 +1,13 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:mobx/mobx.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:share_extend/share_extend.dart';
 
 part 'gallery_store.g.dart';
 
@@ -46,18 +51,21 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
+  bool selectedPicsAreTagged;
 
   @action
-  void setSelectedPics(String photoId) {
+  void setSelectedPics({String photoId, bool picIsTagged}) {
     if (selectedPics.contains(photoId)) {
       selectedPics.remove(photoId);
     } else {
       selectedPics.add(photoId);
     }
+    selectedPicsAreTagged = picIsTagged;
   }
 
   @action
   void clearSelectedPics() {
+    selectedPicsAreTagged = null;
     selectedPics.clear();
   }
 
@@ -164,67 +172,80 @@ abstract class _GalleryStore with Store {
 //
   }
 
+  Future<String> _writeByteToImageFile(Uint8List byteData) async {
+    Directory tempDir = await getTemporaryDirectory();
+    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    imageFile.createSync(recursive: true);
+    imageFile.writeAsBytesSync(byteData);
+    return imageFile.path;
+  }
+
+  @observable
+  bool sharedPic = false;
+
+  @action
+  void setSharedPic(bool value) => sharedPic = value;
+
   @action
   Future<void> sharePics({List<String> photoIds}) async {
-//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-////    Map<String, dynamic> bytesPhotos = {};
-////    int x = 0;
-//
-//    var imageList = List<String>();
-//
-//    for (var photoId in photoIds) {
-//      AssetEntity data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-//
-//      if (data == null) {
-//        continue;
-//      }
-//
+    var imageList = List<String>();
+
+    for (var photoId in photoIds) {
+      AssetEntity data;
+
+      if (selectedPicsAreTagged) {
+        data = taggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null).entity;
+      } else {
+        data = untaggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null).entity;
+      }
+
+      if (data == null) {
+        continue;
+      }
+
+      if (Platform.isAndroid) {
+        String path = await _writeByteToImageFile(await data.originBytes);
+        imageList.add(path);
+      } else {
+        var bytes = await data.thumbDataWithSize(
+          data.size.width.toInt(),
+          data.size.height.toInt(),
+          format: ThumbFormat.jpeg,
+        );
+        String path = await _writeByteToImageFile(bytes);
+        imageList.add(path);
+      }
+
 //      if (Platform.isAndroid) {
-//        String path = await _writeByteToImageFile(await data.originBytes);
-//        imageList.add(path);
+//        var bytes = await data.originBytes;
+//        bytesPhotos['$x.jpg'] = bytes;
 //      } else {
 //        var bytes = await data.thumbDataWithSize(
 //          data.size.width.toInt(),
 //          data.size.height.toInt(),
 //          format: ThumbFormat.jpeg,
 //        );
-//        String path = await _writeByteToImageFile(bytes);
-//        imageList.add(path);
+//        bytesPhotos['$x.jpg'] = bytes;
 //      }
-//
-////      if (Platform.isAndroid) {
-////        var bytes = await data.originBytes;
-////        bytesPhotos['$x.jpg'] = bytes;
-////      } else {
-////        var bytes = await data.thumbDataWithSize(
-////          data.size.width.toInt(),
-////          data.size.height.toInt(),
-////          format: ThumbFormat.jpeg,
-////        );
-////        bytesPhotos['$x.jpg'] = bytes;
-////      }
-////      x++;
-//    }
-//
-//    Analytics.sendEvent(Event.shared_photos);
-//    ShareExtend.shareMultiple(
-//      imageList,
-//      "image",
+//      x++;
+    }
+
+    Analytics.sendEvent(Event.shared_photos);
+    ShareExtend.shareMultiple(
+      imageList,
+      "image",
+    );
+
+    setSharedPic(true);
+
+    //    await Share.files(
+//      'images',
+//      {
+//        ...bytesPhotos,
+//      },
+//      'image/jpeg',
 //    );
-//
-//    if (DatabaseManager.instance.multiPicBar) {
-//      DatabaseManager.instance.setPicsSelected(Set());
-//      DatabaseManager.instance.setMultiPicBar(false);
-//    }
-//
-//    //    await Share.files(
-////      'images',
-////      {
-////        ...bytesPhotos,
-////      },
-////      'image/jpeg',
-////    );
-//
-//    return;
+
+    return;
   }
 }

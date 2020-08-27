@@ -46,6 +46,7 @@ class _TabsScreenState extends State<TabsScreen> {
   TabsStore tabsStore;
   GalleryStore galleryStore;
   ReactionDisposer disposer;
+  ReactionDisposer disposer2;
 
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
@@ -173,6 +174,7 @@ class _TabsScreenState extends State<TabsScreen> {
     PhotoManager.stopChangeNotify();
     _changeThrottle.dispose();
     disposer();
+    disposer2();
     super.dispose();
   }
 
@@ -312,6 +314,15 @@ class _TabsScreenState extends State<TabsScreen> {
           tabsStore.setModalCard(false);
         }
         galleryStore.setTrashedPic(false);
+      }
+    });
+
+    disposer2 = reaction((_) => galleryStore.sharedPic, (sharedPic) {
+      if (sharedPic) {
+        if (tabsStore.multiPicBar) {
+          galleryStore.clearSelectedPics();
+          tabsStore.setMultiPicBar(false);
+        }
       }
     });
 

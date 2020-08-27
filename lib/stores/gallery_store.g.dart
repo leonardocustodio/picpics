@@ -84,6 +84,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$sharedPicAtom = Atom(name: '_GalleryStore.sharedPic');
+
+  @override
+  bool get sharedPic {
+    _$sharedPicAtom.reportRead();
+    return super.sharedPic;
+  }
+
+  @override
+  set sharedPic(bool value) {
+    _$sharedPicAtom.reportWrite(value, super.sharedPic, () {
+      super.sharedPic = value;
+    });
+  }
+
   final _$loadEntitiesAsyncAction = AsyncAction('_GalleryStore.loadEntities');
 
   @override
@@ -129,11 +144,11 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void setSelectedPics(String photoId) {
+  void setSelectedPics({String photoId, bool picIsTagged}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setSelectedPics');
     try {
-      return super.setSelectedPics(photoId);
+      return super.setSelectedPics(photoId: photoId, picIsTagged: picIsTagged);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -173,12 +188,24 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void setSharedPic(bool value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setSharedPic');
+    try {
+      return super.setSharedPic(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
 currentPic: ${currentPic},
 trashedPic: ${trashedPic},
+sharedPic: ${sharedPic},
 taggedKeys: ${taggedKeys},
 deviceHasPics: ${deviceHasPics}
     ''';

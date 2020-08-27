@@ -329,7 +329,10 @@ class _TaggedTabState extends State<TaggedTab> {
                 onLongPress: () {
                   print('LongPress');
                   if (tabsStore.multiPicBar == false) {
-                    galleryStore.setSelectedPics(data.entity.id);
+                    galleryStore.setSelectedPics(
+                      photoId: data.entity.id,
+                      picIsTagged: true,
+                    );
                     tabsStore.setMultiPicBar(true);
                   }
                 },
@@ -337,7 +340,10 @@ class _TaggedTabState extends State<TaggedTab> {
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
                     if (tabsStore.multiPicBar) {
-                      galleryStore.setSelectedPics(data.entity.id);
+                      galleryStore.setSelectedPics(
+                        photoId: data.entity.id,
+                        picIsTagged: true,
+                      );
                       print('Pics Selected Length: ${galleryStore.selectedPics.length}');
                       return;
                     }
