@@ -26,7 +26,7 @@ class TagsList extends StatefulWidget {
   final TagStyle tagStyle;
   final Function onTap;
   final Function onDoubleTap;
-  final Function onPanUpdate;
+  final Function onPanEnd;
   final Function onSubmitted;
   final Function onChanged;
   final Function showEditTagModal;
@@ -42,7 +42,7 @@ class TagsList extends StatefulWidget {
     this.addTagButton,
     @required this.onTap,
     @required this.onDoubleTap,
-    @required this.onPanUpdate,
+    @required this.onPanEnd,
     this.onSubmitted,
     this.onChanged,
     this.title,
@@ -57,6 +57,7 @@ class TagsList extends StatefulWidget {
 class _TagsListState extends State<TagsList> {
   int showSwiperInIndex;
   String tagBeingPanned;
+  bool swipedRightDirection = false;
 
   Widget _buildTagsWidget(BuildContext context) {
     if (widget.tagsKeys == null) {
@@ -139,10 +140,16 @@ class _TagsListState extends State<TagsList> {
             if (details.delta.dy < 0) {
               // swiping in right direction
               print(details.delta.dy);
+              swipedRightDirection = true;
+            }
+          },
+          onPanEnd: (details) {
+            if (swipedRightDirection) {
               showSwiperInIndex = null;
               Vibrate.feedback(FeedbackType.success);
               DatabaseManager.instance.selectedTagKey = tagKey;
-              widget.onPanUpdate();
+              widget.onPanEnd();
+              swipedRightDirection = false;
             }
           },
           child: CupertinoButton(

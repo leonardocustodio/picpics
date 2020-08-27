@@ -502,7 +502,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                   DatabaseManager.instance.switchSearchingTags(false);
                                 }
                               },
-                              onPanUpdate: () {
+                              onPanEnd: () {
                                 DatabaseManager.instance.removeTagFromSearchFilter();
                                 if (DatabaseManager.instance.searchActiveTags.isEmpty && searchFocusNode.hasFocus == false) {
                                   DatabaseManager.instance.switchSearchingTags(false);

@@ -160,6 +160,17 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   @override
+  void removeTagFromPic({String tagKey}) {
+    final _$actionInfo = _$_PicStoreActionController.startAction(
+        name: '_PicStore.removeTagFromPic');
+    try {
+      return super.removeTagFromPic(tagKey: tagKey);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 latitude: ${latitude},

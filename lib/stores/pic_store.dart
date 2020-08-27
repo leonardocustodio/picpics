@@ -168,6 +168,7 @@ abstract class _PicStore with Store {
       );
       DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
       print('updated pictures in tag');
+      print('Tag photos ids: ${getTag.photoId}');
       return;
     }
 
@@ -348,5 +349,34 @@ abstract class _PicStore with Store {
       return true;
     }
     return false;
+  }
+
+  @action
+  void removeTagFromPic({String tagKey}) {
+    print('removing tag: $tagKey from pic $photoId');
+    var tagsBox = Hive.box('tags');
+    var picsBox = Hive.box('pics');
+
+    Tag getTag = tagsBox.get(tagKey);
+
+    print('Tag photos ids: ${getTag.photoId}');
+    int indexOfPicInTag = getTag.photoId.indexOf(photoId);
+    print('Tag index to remove: $indexOfPicInTag');
+    if (indexOfPicInTag != null) {
+      getTag.photoId.removeAt(indexOfPicInTag);
+      tagsBox.put(tagKey, getTag);
+      print('removed pic from tag');
+    }
+
+    Pic getPic = picsBox.get(photoId);
+    int indexOfTagInPic = getPic.tags.indexOf(tagKey);
+
+    if (indexOfTagInPic != null) {
+      getPic.tags.removeAt(indexOfTagInPic);
+      picsBox.put(photoId, getPic);
+      print('removed tag from pic');
+      tags.removeWhere((element) => element.id == tagKey);
+    }
+    Analytics.sendEvent(Event.removed_tag);
   }
 }

@@ -363,10 +363,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                         print('ignore click');
                                       },
                                       onDoubleTap: () {
-                                        DatabaseManager.instance.removeTagFromPic(
-                                          tagKey: DatabaseManager.instance.selectedTagKey,
-                                          photoId: galleryStore.currentPic.photoId,
-                                        );
+                                        galleryStore.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                                       },
                                       showEditTagModal: showEditTagModal,
                                     ),

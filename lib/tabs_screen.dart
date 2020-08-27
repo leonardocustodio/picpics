@@ -557,7 +557,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                           }
                                           print('do nothing');
                                         },
-                                        onPanUpdate: () {
+                                        onPanEnd: () {
                                           if (!DatabaseManager.instance.userSettings.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
@@ -652,7 +652,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
                                           print('do nothing');
                                         },
-                                        onPanUpdate: () {
+                                        onPanEnd: () {
                                           if (!DatabaseManager.instance.userSettings.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;

@@ -388,38 +388,6 @@ class DatabaseManager extends ChangeNotifier {
 //    notifyListeners();
   }
 
-  void removeTagFromPic({String tagKey, String photoId}) {
-    print('removing tag: $tagKey from pic $photoId');
-    var tagsBox = Hive.box('tags');
-    var picsBox = Hive.box('pics');
-
-    Tag getTag = tagsBox.get(tagKey);
-
-    int indexOfPicInTag = getTag.photoId.indexOf(photoId);
-    if (indexOfPicInTag != null) {
-      getTag.photoId.removeAt(indexOfPicInTag);
-      tagsBox.put(tagKey, getTag);
-      print('removed pic from tag');
-    }
-
-    Pic getPic = picsBox.get(photoId);
-
-    int indexOfTagInPic = getPic.tags.indexOf(tagKey);
-    if (indexOfTagInPic != null) {
-      getPic.tags.removeAt(indexOfTagInPic);
-      picsBox.put(photoId, getPic);
-      print('removed tag from pic');
-      checkPicHasTags(photoId);
-
-      if (getPic.tags.length == 0) {
-        print('pic has no tags anymore!!!!');
-      }
-    }
-    checkHasTaggedPhotos();
-    Analytics.sendEvent(Event.removed_tag);
-    notifyListeners();
-  }
-
   void deleteTag({String tagKey}) {
     var tagsBox = Hive.box('tags');
     var picsBox = Hive.box('pics');

@@ -344,16 +344,12 @@ class _PhotoCardState extends State<PhotoCard> {
                     onDoubleTap: () {
                       print('do nothing');
                     },
-                    onPanUpdate: () {
+                    onPanEnd: () {
                       if (!appStore.canTagToday) {
                         showWatchAdModal(context);
                         return;
                       }
-
-                      DatabaseManager.instance.removeTagFromPic(
-                        tagKey: DatabaseManager.instance.selectedTagKey,
-                        photoId: picStore.photoId,
-                      );
+                      picStore.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                     },
                     onChanged: (text) {
                       picStore.setSearchText(text);
@@ -402,7 +398,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       onDoubleTap: () {
                         print('do nothing');
                       },
-                      onPanUpdate: () {
+                      onPanEnd: () {
                         print('do nothing');
                       },
                     );
