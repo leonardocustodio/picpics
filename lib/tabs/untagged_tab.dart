@@ -96,9 +96,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
           onLongPress: () {
             print('LongPress');
             if (tabsStore.multiPicBar == false) {
-              Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-              picsCopy.add(data.id);
-              DatabaseManager.instance.setPicsSelected(picsCopy);
+              galleryStore.setSelectedPics(data.id);
               tabsStore.setMultiPicBar(true);
             }
           },
@@ -106,16 +104,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
             padding: const EdgeInsets.all(0),
             onPressed: () {
               if (tabsStore.multiPicBar) {
-                if (DatabaseManager.instance.picsSelected.contains(data.id)) {
-                  Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                  picsCopy.remove(data.id);
-                  DatabaseManager.instance.setPicsSelected(picsCopy);
-                } else {
-                  Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                  picsCopy.add(data.id);
-                  DatabaseManager.instance.setPicsSelected(picsCopy);
-                }
-                print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
+                galleryStore.setSelectedPics(data.id);
+                print('Pics Selected Length: ${galleryStore.selectedPics.length}');
                 return;
               }
 
@@ -136,7 +126,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               size: 150,
               backgroundColor: Colors.grey[400],
               showOverlay: tabsStore.multiPicBar ? true : false,
-              isSelected: DatabaseManager.instance.picsSelected.contains(data.id),
+              isSelected: galleryStore.selectedPics.contains(data.id),
             ),
           ),
         ),
@@ -220,9 +210,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                         ),
                       if (!hideSubtitleFirstTab)
                         Text(
-                          tabsStore.multiPicBar
-                              ? S.of(context).photo_gallery_count(Provider.of<DatabaseManager>(context).picsSelected.length)
-                              : S.of(context).photo_gallery_description,
+                          tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
                           textScaleFactor: 1.0,
                           style: TextStyle(
                             fontFamily: 'Lato',

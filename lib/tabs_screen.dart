@@ -231,16 +231,14 @@ class _TabsScreenState extends State<TabsScreen> {
 
     if (tabsStore.multiPicBar) {
       if (index == 0) {
-        DatabaseManager.instance.setPicsSelected(Set());
+        galleryStore.clearSelectedPics();
         tabsStore.setMultiPicBar(false);
       } else if (index == 1) {
         trashPics();
       } else if (index == 2) {
         print('sharing selected pics....');
         tabsStore.setIsLoading(true);
-
-        await DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.picsSelected.toList());
-
+        await galleryStore.sharePics(photoIds: galleryStore.selectedPics.toList());
         tabsStore.setIsLoading(false);
       } else {
         //        showMultiTagSheet();
@@ -500,7 +498,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                       List<String> photosIds = [];
                                       List<AssetEntity> entities = [];
                                       AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                                      for (var photoId in DatabaseManager.instance.picsSelected) {
+                                      for (var photoId in galleryStore.selectedPics) {
                                         AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
                                         photosIds.add(photoId);
                                         entities.add(entity);
@@ -513,7 +511,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
                                       tabsStore.setMultiTagSheet(false);
                                       tabsStore.setMultiPicBar(false);
-                                      DatabaseManager.instance.setPicsSelected(Set());
+                                      galleryStore.clearSelectedPics();
                                       DatabaseManager.instance.setMultiPicTagKeys([]);
                                     },
                                     child: Container(
@@ -732,7 +730,7 @@ class _TabsScreenState extends State<TabsScreen> {
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
                               icon: Opacity(
-                                opacity: Provider.of<DatabaseManager>(context).picsSelected.length > 0 ? 1.0 : 0.35,
+                                opacity: galleryStore.selectedPics.length > 0 ? 1.0 : 0.35,
                                 child: Image.asset('lib/images/trashbarbutton.png'),
                               ),
                               title: Text(''),
@@ -740,7 +738,7 @@ class _TabsScreenState extends State<TabsScreen> {
                             BubbleBottomBarItem(
                               backgroundColor: kWhiteColor,
                               icon: Opacity(
-                                opacity: Provider.of<DatabaseManager>(context).picsSelected.length > 0 ? 1.0 : 0.35,
+                                opacity: galleryStore.selectedPics.length > 0 ? 1.0 : 0.35,
                                 child: Image.asset('lib/images/sharebutton.png'),
                               ),
                               title: Text(''),

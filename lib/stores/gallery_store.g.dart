@@ -106,6 +106,14 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return _$trashPicAsyncAction.run(() => super.trashPic(picStore));
   }
 
+  final _$sharePicsAsyncAction = AsyncAction('_GalleryStore.sharePics');
+
+  @override
+  Future<void> sharePics({List<String> photoIds}) {
+    return _$sharePicsAsyncAction
+        .run(() => super.sharePics(photoIds: photoIds));
+  }
+
   final _$_GalleryStoreActionController =
       ActionController(name: '_GalleryStore');
 
@@ -115,6 +123,28 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.setSwipeIndex');
     try {
       return super.setSwipeIndex(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedPics(String photoId) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setSelectedPics');
+    try {
+      return super.setSelectedPics(photoId);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearSelectedPics() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.clearSelectedPics');
+    try {
+      return super.clearSelectedPics();
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

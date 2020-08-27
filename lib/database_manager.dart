@@ -68,7 +68,7 @@ class DatabaseManager extends ChangeNotifier {
 
   // For multipic work
 //  bool multiPicBar = false;
-  Set<String> picsSelected = Set();
+//  Set<String> picsSelected = Set();
   List<String> multiPicTagKeys = [];
 
   bool adsIsLoaded = false;
@@ -76,11 +76,6 @@ class DatabaseManager extends ChangeNotifier {
 
 //  bool appStartInPremium = false;
 //  String trybuyId;
-
-  void setPicsSelected(Set<String> pics) {
-    picsSelected = pics;
-    notifyListeners();
-  }
 
   void setMultiPicTagKeys(List<String> pics) {
     multiPicTagKeys = pics;
@@ -513,69 +508,6 @@ class DatabaseManager extends ChangeNotifier {
     getUser.recentTags.insert(0, tagKey);
     userBox.putAt(0, getUser);
     print('final tags in recent: ${getUser.recentTags}');
-  }
-
-  Future<void> sharePics({List<String> photoIds}) async {
-//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-////    Map<String, dynamic> bytesPhotos = {};
-////    int x = 0;
-//
-//    var imageList = List<String>();
-//
-//    for (var photoId in photoIds) {
-//      AssetEntity data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-//
-//      if (data == null) {
-//        continue;
-//      }
-//
-//      if (Platform.isAndroid) {
-//        String path = await _writeByteToImageFile(await data.originBytes);
-//        imageList.add(path);
-//      } else {
-//        var bytes = await data.thumbDataWithSize(
-//          data.size.width.toInt(),
-//          data.size.height.toInt(),
-//          format: ThumbFormat.jpeg,
-//        );
-//        String path = await _writeByteToImageFile(bytes);
-//        imageList.add(path);
-//      }
-//
-////      if (Platform.isAndroid) {
-////        var bytes = await data.originBytes;
-////        bytesPhotos['$x.jpg'] = bytes;
-////      } else {
-////        var bytes = await data.thumbDataWithSize(
-////          data.size.width.toInt(),
-////          data.size.height.toInt(),
-////          format: ThumbFormat.jpeg,
-////        );
-////        bytesPhotos['$x.jpg'] = bytes;
-////      }
-////      x++;
-//    }
-//
-//    Analytics.sendEvent(Event.shared_photos);
-//    ShareExtend.shareMultiple(
-//      imageList,
-//      "image",
-//    );
-//
-//    if (DatabaseManager.instance.multiPicBar) {
-//      DatabaseManager.instance.setPicsSelected(Set());
-//      DatabaseManager.instance.setMultiPicBar(false);
-//    }
-//
-//    //    await Share.files(
-////      'images',
-////      {
-////        ...bytesPhotos,
-////      },
-////      'image/jpeg',
-////    );
-//
-//    return;
   }
 
   String stripTag(String tag) {

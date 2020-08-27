@@ -300,7 +300,7 @@ class _TaggedTabState extends State<TaggedTab> {
               onPressed: () async {
                 print('share pics');
                 tabsStore.setIsLoading(true);
-                await DatabaseManager.instance.sharePics(photoIds: tag.photoId);
+                await galleryStore.sharePics(photoIds: tag.photoId); // DatabaseManager.instance.sharePics(photoIds: tag.photoId);
                 tabsStore.setIsLoading(false);
               },
               child: Image.asset('lib/images/sharepicsico.png'),
@@ -329,9 +329,7 @@ class _TaggedTabState extends State<TaggedTab> {
                 onLongPress: () {
                   print('LongPress');
                   if (tabsStore.multiPicBar == false) {
-                    Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                    picsCopy.add(data.entity.id);
-                    DatabaseManager.instance.setPicsSelected(picsCopy);
+                    galleryStore.setSelectedPics(data.entity.id);
                     tabsStore.setMultiPicBar(true);
                   }
                 },
@@ -339,16 +337,8 @@ class _TaggedTabState extends State<TaggedTab> {
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
                     if (tabsStore.multiPicBar) {
-                      if (DatabaseManager.instance.picsSelected.contains(data.entity.id)) {
-                        Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                        picsCopy.remove(data.entity.id);
-                        DatabaseManager.instance.setPicsSelected(picsCopy);
-                      } else {
-                        Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-                        picsCopy.add(data.entity.id);
-                        DatabaseManager.instance.setPicsSelected(picsCopy);
-                      }
-                      print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
+                      galleryStore.setSelectedPics(data.entity.id);
+                      print('Pics Selected Length: ${galleryStore.selectedPics.length}');
                       return;
                     }
 
@@ -369,7 +359,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     size: 150,
                     backgroundColor: Colors.grey[400],
                     showOverlay: tabsStore.multiPicBar ? true : false,
-                    isSelected: DatabaseManager.instance.picsSelected.contains(data.entity.id),
+                    isSelected: galleryStore.selectedPics.contains(data.entity.id),
                   ),
                 ),
               ),
@@ -606,7 +596,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     if (!hideSubtitleThirdTab)
                       Text(
                         tabsStore.multiPicBar
-                            ? S.of(context).photo_gallery_count(Provider.of<DatabaseManager>(context).picsSelected.length)
+                            ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length)
                             : S.of(context).organized_photos_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
