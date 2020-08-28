@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/settings_screen.dart';
-import 'package:picPics/database_manager.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
 class TopBar extends StatelessWidget {
@@ -13,7 +12,7 @@ class TopBar extends StatelessWidget {
   final List<Widget> children;
 
   TopBar({
-    this.galleryStore,
+    @required this.galleryStore,
     this.searchEditingController,
     this.searchFocusNode,
     this.children,

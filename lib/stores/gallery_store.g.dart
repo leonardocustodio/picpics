@@ -69,6 +69,23 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$showSearchTagsResultsAtom =
+      Atom(name: '_GalleryStore.showSearchTagsResults');
+
+  @override
+  bool get showSearchTagsResults {
+    _$showSearchTagsResultsAtom.reportRead();
+    return super.showSearchTagsResults;
+  }
+
+  @override
+  set showSearchTagsResults(bool value) {
+    _$showSearchTagsResultsAtom.reportWrite(value, super.showSearchTagsResults,
+        () {
+      super.showSearchTagsResults = value;
+    });
+  }
+
   final _$currentPicAtom = Atom(name: '_GalleryStore.currentPic');
 
   @override
@@ -164,6 +181,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.setIsSearching');
     try {
       return super.setIsSearching(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setShowSearchTagsResults(bool value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setShowSearchTagsResults');
+    try {
+      return super.setShowSearchTagsResults(value);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -311,6 +339,7 @@ mixin _$GalleryStore on _GalleryStore, Store {
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
 isSearching: ${isSearching},
+showSearchTagsResults: ${showSearchTagsResults},
 currentPic: ${currentPic},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},

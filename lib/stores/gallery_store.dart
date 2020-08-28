@@ -70,6 +70,12 @@ abstract class _GalleryStore with Store {
   ObservableList<String> searchingTagsKeys = ObservableList<String>();
   ObservableList<String> searchTagsResults = ObservableList<String>();
 
+  @observable
+  bool showSearchTagsResults = false;
+
+  @action
+  void setShowSearchTagsResults(bool value) => showSearchTagsResults = value;
+
   bool selectedPicsAreTagged;
 
   @action
@@ -457,10 +463,12 @@ abstract class _GalleryStore with Store {
     var tagsBox = Hive.box('tags');
 
     if (text == '') {
+      setShowSearchTagsResults(false);
       searchTagsResults.clear();
       return;
     }
 
+    setShowSearchTagsResults(true);
     searchTagsResults.clear();
     for (var tagKey in tagsBox.keys) {
       String tagName = DatabaseManager.instance.decryptTag(tagKey);
