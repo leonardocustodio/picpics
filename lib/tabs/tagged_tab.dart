@@ -417,205 +417,214 @@ class _TaggedTabState extends State<TaggedTab> {
       child: SafeArea(
         child: Stack(
           children: <Widget>[
-            if (!galleryStore.deviceHasPics) DeviceHasNoPics(),
-            if (Provider.of<DatabaseManager>(context).noTaggedPhoto && galleryStore.deviceHasPics)
-              TopBar(
-                children: <Widget>[
-                  Expanded(
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Image.asset('lib/images/notaggedphotos.png'),
-                          SizedBox(
-                            height: 21.0,
-                          ),
-                          Text(
-                            S.of(context).no_tagged_photos,
-                            textScaleFactor: 1.0,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: Color(0xff979a9b),
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
+            Observer(builder: (_) {
+              if (!galleryStore.deviceHasPics) {
+                return DeviceHasNoPics();
+              } else if (Provider.of<DatabaseManager>(context).noTaggedPhoto && galleryStore.deviceHasPics) {
+                return TopBar(
+                  children: <Widget>[
+                    Expanded(
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Image.asset('lib/images/notaggedphotos.png'),
+                            SizedBox(
+                              height: 21.0,
                             ),
-                          ),
-                          SizedBox(
-                            height: 17.0,
-                          ),
-                          CupertinoButton(
-                            padding: const EdgeInsets.all(0),
-                            onPressed: () => tabsStore.setCurrentTab(1),
-                            child: Container(
-                              width: 201.0,
-                              height: 44.0,
-                              decoration: BoxDecoration(
-                                gradient: kPrimaryGradient,
-                                borderRadius: BorderRadius.circular(8),
+                            Text(
+                              S.of(context).no_tagged_photos,
+                              textScaleFactor: 1.0,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff979a9b),
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
                               ),
-                              child: Center(
-                                child: Text(
-                                  S.of(context).start_tagging,
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: kWhiteColor,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w700,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
+                            ),
+                            SizedBox(
+                              height: 17.0,
+                            ),
+                            CupertinoButton(
+                              padding: const EdgeInsets.all(0),
+                              onPressed: () => tabsStore.setCurrentTab(1),
+                              child: Container(
+                                width: 201.0,
+                                height: 44.0,
+                                decoration: BoxDecoration(
+                                  gradient: kPrimaryGradient,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    S.of(context).start_tagging,
+                                    textScaleFactor: 1.0,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: kWhiteColor,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w700,
+                                      fontStyle: FontStyle.normal,
+                                      letterSpacing: -0.4099999964237213,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            if (!Provider.of<DatabaseManager>(context).noTaggedPhoto && galleryStore.deviceHasPics)
-              TopBar(
-                galleryStore: galleryStore,
-                searchEditingController: searchEditingController,
-                searchFocusNode: searchFocusNode,
-                children: <Widget>[
-                  Observer(builder: (_) {
-                    if (galleryStore.isSearching) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          if (galleryStore.searchingTagsKeys.length > 0)
-                            Padding(
-                              padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
-                              child: TagsList(
-                                tagsKeys: galleryStore.searchingTagsKeys.toList(),
-                                tagStyle: TagStyle.MultiColored,
-                                onTap: (tagName) {
-                                  print('do nothing');
-                                  galleryStore.removeTagFromSearchFilter();
-                                  if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
-                                    galleryStore.setIsSearching(false);
-                                  }
-                                },
-                                onPanEnd: () {
-                                  galleryStore.removeTagFromSearchFilter();
-                                  if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
-                                    galleryStore.setIsSearching(false);
-                                  }
-                                },
-                                onDoubleTap: () {
-                                  print('do nothing');
-                                },
-                                showEditTagModal: widget.showEditTagModal,
-                              ),
-                            ),
-                          if (galleryStore.showSearchTagsResults) ...[
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text(
-                                S.of(context).search_results,
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff979a9b),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                            ),
-                            if (galleryStore.searchTagsResults.isNotEmpty)
+                  ],
+                );
+              } else if (!Provider.of<DatabaseManager>(context).noTaggedPhoto && galleryStore.deviceHasPics) {
+                return TopBar(
+                  galleryStore: galleryStore,
+                  searchEditingController: searchEditingController,
+                  searchFocusNode: searchFocusNode,
+                  children: <Widget>[
+                    Observer(builder: (_) {
+                      if (galleryStore.isSearching) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            if (galleryStore.searchingTagsKeys.length > 0)
                               Padding(
-                                padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
+                                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
-                                  tagsKeys: galleryStore.searchTagsResults.toList(),
-                                  tagStyle: TagStyle.GrayOutlined,
-                                  showEditTagModal: widget.showEditTagModal,
+                                  tagsKeys: galleryStore.searchingTagsKeys.toList(),
+                                  tagStyle: TagStyle.MultiColored,
                                   onTap: (tagName) {
-                                    galleryStore.addTagToSearchFilter();
-                                    searchEditingController.clear();
-                                    galleryStore.searchResultsTags(searchEditingController.text);
+                                    print('do nothing');
+                                    galleryStore.removeTagFromSearchFilter();
+                                    if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
+                                      galleryStore.setIsSearching(false);
+                                    }
+                                  },
+                                  onPanEnd: () {
+                                    galleryStore.removeTagFromSearchFilter();
+                                    if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
+                                      galleryStore.setIsSearching(false);
+                                    }
                                   },
                                   onDoubleTap: () {
                                     print('do nothing');
                                   },
+                                  showEditTagModal: widget.showEditTagModal,
                                 ),
                               ),
-                            if (galleryStore.searchTagsResults.isEmpty)
-                              Container(
-                                padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
+                            if (galleryStore.showSearchTagsResults) ...[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                 child: Text(
-                                  S.of(context).no_tags_found,
+                                  S.of(context).search_results,
                                   textScaleFactor: 1.0,
-                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'Lato',
                                     color: Color(0xff979a9b),
                                     fontSize: 12,
-                                    fontWeight: FontWeight.w700,
+                                    fontWeight: FontWeight.w300,
                                     fontStyle: FontStyle.normal,
                                     letterSpacing: -0.4099999964237213,
                                   ),
                                 ),
-                              )
+                              ),
+                              if (galleryStore.searchTagsResults.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
+                                  child: TagsList(
+                                    tagsKeys: galleryStore.searchTagsResults.toList(),
+                                    tagStyle: TagStyle.GrayOutlined,
+                                    showEditTagModal: widget.showEditTagModal,
+                                    onTap: (tagName) {
+                                      galleryStore.addTagToSearchFilter();
+                                      searchEditingController.clear();
+                                      galleryStore.searchResultsTags(searchEditingController.text);
+                                    },
+                                    onDoubleTap: () {
+                                      print('do nothing');
+                                    },
+                                  ),
+                                ),
+                              if (galleryStore.searchTagsResults.isEmpty)
+                                Container(
+                                  padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
+                                  child: Text(
+                                    S.of(context).no_tags_found,
+                                    textScaleFactor: 1.0,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff979a9b),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w700,
+                                      fontStyle: FontStyle.normal,
+                                      letterSpacing: -0.4099999964237213,
+                                    ),
+                                  ),
+                                )
+                            ],
+                            Container(
+                              height: 1,
+                              color: kLightGrayColor,
+                            ),
                           ],
-                          Container(
-                            height: 1,
-                            color: kLightGrayColor,
-                          ),
-                        ],
+                        );
+                      }
+                      return Expanded(
+                        child: _buildTaggedGridView(context),
                       );
-                    }
-                    return Expanded(
-                      child: _buildTaggedGridView(context),
-                    );
-                  }),
-                ],
-              ),
-            if (!Provider.of<DatabaseManager>(context).noTaggedPhoto && !hideTitleThirdTab && !galleryStore.isSearching && galleryStore.deviceHasPics)
-              Positioned(
-                left: 19.0,
-                top: topOffsetThirdTab,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      S.of(context).organized_photos_title,
-                      textScaleFactor: 1.0,
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff979a9b),
-                        fontSize: 28,
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                      ),
-                    ),
-                    if (!hideSubtitleThirdTab)
-                      SizedBox(
-                        height: 8.0,
-                      ),
-                    if (!hideSubtitleThirdTab)
+                    }),
+                  ],
+                );
+              }
+              return Container();
+            }),
+            Observer(builder: (_) {
+              if (!Provider.of<DatabaseManager>(context).noTaggedPhoto && !hideTitleThirdTab && !galleryStore.isSearching && galleryStore.deviceHasPics) {
+                return Positioned(
+                  left: 19.0,
+                  top: topOffsetThirdTab,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar
-                            ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length)
-                            : S.of(context).organized_photos_description,
+                        S.of(context).organized_photos_title,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
-                          color: Color(0xff606566),
-                          fontSize: 18,
-                          fontWeight: FontWeight.w400,
+                          color: Color(0xff979a9b),
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
                           fontStyle: FontStyle.normal,
                         ),
                       ),
-                  ],
-                ),
-              ),
+                      if (!hideSubtitleThirdTab)
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                      if (!hideSubtitleThirdTab)
+                        Text(
+                          tabsStore.multiPicBar
+                              ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length)
+                              : S.of(context).organized_photos_description,
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff606566),
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              }
+              return Container();
+            }),
           ],
         ),
       ),
