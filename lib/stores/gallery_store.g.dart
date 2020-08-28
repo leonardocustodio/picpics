@@ -54,6 +54,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$isSearchingAtom = Atom(name: '_GalleryStore.isSearching');
+
+  @override
+  bool get isSearching {
+    _$isSearchingAtom.reportRead();
+    return super.isSearching;
+  }
+
+  @override
+  set isSearching(bool value) {
+    _$isSearchingAtom.reportWrite(value, super.isSearching, () {
+      super.isSearching = value;
+    });
+  }
+
   final _$currentPicAtom = Atom(name: '_GalleryStore.currentPic');
 
   @override
@@ -144,6 +159,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void setIsSearching(bool value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setIsSearching');
+    try {
+      return super.setIsSearching(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setSelectedPics({String photoId, bool picIsTagged}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setSelectedPics');
@@ -210,10 +236,81 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void deleteTag({String tagKey}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.deleteTag');
+    try {
+      return super.deleteTag(tagKey: tagKey);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addTagToSearchFilter() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addTagToSearchFilter');
+    try {
+      return super.addTagToSearchFilter();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void searchPicsWithTags() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.searchPicsWithTags');
+    try {
+      return super.searchPicsWithTags();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void searchResultsTags(String text) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.searchResultsTags');
+    try {
+      return super.searchResultsTags(text);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addTagsToPics(
+      {List<String> tagsKeys,
+      List<String> photosIds,
+      List<AssetEntity> entities}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addTagsToPics');
+    try {
+      return super.addTagsToPics(
+          tagsKeys: tagsKeys, photosIds: photosIds, entities: entities);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addTagToRecent({String tagKey}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addTagToRecent');
+    try {
+      return super.addTagToRecent(tagKey: tagKey);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
+isSearching: ${isSearching},
 currentPic: ${currentPic},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},

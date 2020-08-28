@@ -102,7 +102,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
           return EditTagModal(
             alertInputController: alertInputController,
             onPressedDelete: () {
-              DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
+              galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
             onPressedOk: () {

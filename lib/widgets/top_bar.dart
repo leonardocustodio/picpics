@@ -4,13 +4,16 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:picPics/stores/gallery_store.dart';
 
 class TopBar extends StatelessWidget {
+  final GalleryStore galleryStore;
   final FocusNode searchFocusNode;
   final TextEditingController searchEditingController;
   final List<Widget> children;
 
   TopBar({
+    this.galleryStore,
     this.searchEditingController,
     this.searchFocusNode,
     this.children,
@@ -33,9 +36,9 @@ class TopBar extends StatelessWidget {
                       onFocusChange: (focus) {
                         print('hasFocus: ${searchFocusNode.hasFocus}');
                         if (searchFocusNode.hasFocus == true) {
-                          DatabaseManager.instance.switchSearchingTags(true);
-                        } else if (searchFocusNode.hasFocus == false && DatabaseManager.instance.searchActiveTags.isEmpty) {
-                          DatabaseManager.instance.switchSearchingTags(false);
+                          galleryStore.setIsSearching(true);
+                        } else if (searchFocusNode.hasFocus == false && galleryStore.searchingTagsKeys.length == 0) {
+                          galleryStore.setIsSearching(false);
                         }
                       },
                       child: TextField(
@@ -43,12 +46,13 @@ class TopBar extends StatelessWidget {
                         focusNode: searchFocusNode,
                         onChanged: (text) {
                           print('searching: $text');
-                          DatabaseManager.instance.searchResultsTags(text);
+                          galleryStore.searchResultsTags(text);
                         },
                         onSubmitted: (text) {
                           print('return');
                           searchEditingController.clear();
-                          DatabaseManager.instance.searchResults = null;
+                          galleryStore.searchTagsResults.clear();
+//                          DatabaseManager.instance.searchResults = null;
                         },
                         keyboardType: TextInputType.text,
                         maxLines: 1,

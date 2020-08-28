@@ -82,7 +82,7 @@ class _TaggedTabState extends State<TaggedTab> {
   }
 
   Widget _buildTaggedGridView(BuildContext context) {
-    bool isFiltered = DatabaseManager.instance.searchActiveTags.isNotEmpty;
+    bool isFiltered = galleryStore.isSearching; // DatabaseManager.instance.searchActiveTags.isNotEmpty;
     var picsBox = Hive.box('pics');
     var tagsBox = Hive.box('tags');
 
@@ -92,7 +92,7 @@ class _TaggedTabState extends State<TaggedTab> {
     });
 
     double newPadding = 0.0;
-    if (DatabaseManager.instance.searchingTags == true) {
+    if (galleryStore.isSearching) {
       newPadding = 140 - offsetThirdTab;
       if (newPadding > 140) {
         newPadding = 140.0;
@@ -111,7 +111,7 @@ class _TaggedTabState extends State<TaggedTab> {
 //    if (!isFiltered) {
     List<String> slideThumbPhotoIds = [];
 
-    List<String> tagsList = isFiltered ? DatabaseManager.instance.searchActiveTags : tagsBox.keys.toList().cast<String>();
+    List<String> tagsList = isFiltered ? galleryStore.searchingTagsKeys.toList() : tagsBox.keys.toList().cast<String>();
     print('Tags List: $tagsList');
 
 //    if (isFiltered) {
@@ -481,27 +481,27 @@ class _TaggedTabState extends State<TaggedTab> {
                 searchEditingController: searchEditingController,
                 searchFocusNode: searchFocusNode,
                 children: <Widget>[
-                  if (Provider.of<DatabaseManager>(context).searchingTags)
+                  if (galleryStore.isSearching)
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        if (Provider.of<DatabaseManager>(context).searchActiveTags.isNotEmpty)
+                        if (galleryStore.searchingTagsKeys.length > 0)
                           Padding(
                             padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                             child: TagsList(
-                              tagsKeys: Provider.of<DatabaseManager>(context).searchActiveTags,
+                              tagsKeys: galleryStore.searchingTagsKeys.toList(),
                               tagStyle: TagStyle.MultiColored,
                               onTap: (tagName) {
                                 print('do nothing');
-                                DatabaseManager.instance.removeTagFromSearchFilter();
-                                if (DatabaseManager.instance.searchActiveTags.isEmpty && searchFocusNode.hasFocus == false) {
-                                  DatabaseManager.instance.switchSearchingTags(false);
+                                galleryStore.removeTagFromSearchFilter();
+                                if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
+                                  galleryStore.setIsSearching(false);
                                 }
                               },
                               onPanEnd: () {
-                                DatabaseManager.instance.removeTagFromSearchFilter();
-                                if (DatabaseManager.instance.searchActiveTags.isEmpty && searchFocusNode.hasFocus == false) {
-                                  DatabaseManager.instance.switchSearchingTags(false);
+                                galleryStore.removeTagFromSearchFilter();
+                                if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
+                                  galleryStore.setIsSearching(false);
                                 }
                               },
                               onDoubleTap: () {
@@ -510,7 +510,7 @@ class _TaggedTabState extends State<TaggedTab> {
                               showEditTagModal: widget.showEditTagModal,
                             ),
                           ),
-                        if (Provider.of<DatabaseManager>(context).searchResults != null)
+                        if (galleryStore.searchTagsResults != null)
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
@@ -526,26 +526,26 @@ class _TaggedTabState extends State<TaggedTab> {
                               ),
                             ),
                           ),
-                        if (Provider.of<DatabaseManager>(context).searchResults != null)
-                          if (Provider.of<DatabaseManager>(context).searchResults.isNotEmpty)
+                        if (galleryStore.searchTagsResults != null)
+                          if (galleryStore.searchTagsResults.isNotEmpty)
                             Padding(
                               padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                               child: TagsList(
-                                tagsKeys: Provider.of<DatabaseManager>(context).searchResults,
+                                tagsKeys: galleryStore.searchTagsResults.toList(),
                                 tagStyle: TagStyle.GrayOutlined,
                                 showEditTagModal: widget.showEditTagModal,
                                 onTap: (tagName) {
-                                  DatabaseManager.instance.addTagToSearchFilter();
+                                  galleryStore.addTagToSearchFilter();
                                   searchEditingController.clear();
-                                  DatabaseManager.instance.searchResultsTags(searchEditingController.text);
+                                  galleryStore.searchResultsTags(searchEditingController.text);
                                 },
                                 onDoubleTap: () {
                                   print('do nothing');
                                 },
                               ),
                             ),
-                        if (Provider.of<DatabaseManager>(context).searchResults != null)
-                          if (Provider.of<DatabaseManager>(context).searchResults.isEmpty)
+                        if (galleryStore.searchTagsResults != null)
+                          if (galleryStore.searchTagsResults.isEmpty)
                             Container(
                               padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
                               child: Text(
@@ -574,10 +574,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     ),
                 ],
               ),
-            if (!Provider.of<DatabaseManager>(context).noTaggedPhoto &&
-                !hideTitleThirdTab &&
-                !Provider.of<DatabaseManager>(context).searchingTags &&
-                galleryStore.deviceHasPics)
+            if (!Provider.of<DatabaseManager>(context).noTaggedPhoto && !hideTitleThirdTab && !galleryStore.isSearching && galleryStore.deviceHasPics)
               Positioned(
                 left: 19.0,
                 top: topOffsetThirdTab,

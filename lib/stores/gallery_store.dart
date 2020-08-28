@@ -1,11 +1,13 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
@@ -58,6 +60,16 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
+
+  @observable
+  bool isSearching = false;
+
+  @action
+  void setIsSearching(bool value) => isSearching = value;
+
+  ObservableList<String> searchingTagsKeys = ObservableList<String>();
+  ObservableList<String> searchTagsResults = ObservableList<String>();
+
   bool selectedPicsAreTagged;
 
   @action
@@ -330,5 +342,203 @@ abstract class _GalleryStore with Store {
       print('finished updating all tags');
       Analytics.sendEvent(Event.edited_tag);
     }
+  }
+
+  @action
+  void deleteTag({String tagKey}) {
+    var tagsBox = Hive.box('tags');
+    var picsBox = Hive.box('pics');
+    var userBox = Hive.box('user');
+
+    if (tagsBox.containsKey(tagKey)) {
+      print('found tag going to delete it');
+
+      Tag getTag = tagsBox.get(tagKey);
+
+      for (String photoId in getTag.photoId) {
+        Pic pic = picsBox.get(photoId);
+        int indexOfTagInPic = pic.tags.indexOf(tagKey);
+        print('getting pic: $photoId');
+
+        if (indexOfTagInPic != null) {
+          pic.tags.removeAt(indexOfTagInPic);
+          picsBox.put(photoId, pic);
+          print('removed tag from pic');
+        }
+      }
+
+      // Remove a tag das fotos já taggeadas
+      taggedPics.forEach((element) {
+        if (getTag.photoId.contains(element.photoId)) {
+          element.tags.removeWhere((tagStore) => tagStore.id == tagKey);
+          if (element.tags.length == 0 && element != currentPic) {
+            print('this pic is not tagged anymore!');
+            untaggedPics.add(element);
+            taggedPics.remove(element);
+          }
+        }
+      });
+
+      User getUser = userBox.getAt(0);
+      if (getUser.recentTags.contains(tagKey)) {
+        print('recent tags: ${getUser.recentTags}');
+        print('removing from recent tags');
+        getUser.recentTags.remove(tagKey);
+        userBox.putAt(0, getUser);
+        print('recent tags after removed: ${getUser.recentTags}');
+      }
+
+      tagsBox.delete(tagKey);
+      print('deleted from tags db');
+      Analytics.sendEvent(Event.deleted_tag);
+    }
+  }
+
+  @action
+  void addTagToSearchFilter() {
+    if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+      return;
+    }
+    searchingTagsKeys.add(DatabaseManager.instance.selectedTagKey);
+    print('searching tags: $searchingTagsKeys');
+    searchPicsWithTags();
+  }
+
+  void removeTagFromSearchFilter() {
+    if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+      searchingTagsKeys.remove(DatabaseManager.instance.selectedTagKey);
+      print('searching tags: $searchingTagsKeys');
+      searchPicsWithTags();
+    }
+  }
+
+  @action
+  void searchPicsWithTags() {
+//    var tagsBox = Hive.box('tags');
+//
+//    searchPhotosIds.clear();
+//    List<String> tempPhotosIds = [];
+//    bool firstInteraction = true;
+//
+//    for (var tagKey in searchingTagsKeys) {
+//      print('filtering tag: $tagKey');
+//      Tag getTag = tagsBox.get(tagKey);
+//      List<String> photosIds = getTag.photoId;
+//      print('photos Ids in this tag: $photosIds');
+//
+//      if (firstInteraction) {
+//        print('adding all photos because it is firt interaction');
+//        tempPhotosIds.addAll(photosIds);
+//        firstInteraction = false;
+//      } else {
+//        print('tempPhotoId: $tempPhotosIds');
+//        List<String> auxArray = [];
+//        auxArray.addAll(tempPhotosIds);
+//
+//        for (var photoId in tempPhotosIds) {
+//          print('checking if photoId is there: $photoId');
+//          if (!photosIds.contains(photoId)) {
+//            auxArray.remove(photoId);
+//            print('removing $photoId because doesnt have $tagKey');
+//          }
+//        }
+//        tempPhotosIds = auxArray;
+//      }
+//    }
+//    searchPhotosIds = tempPhotosIds;
+//    slideThumbPhotoIds = tempPhotosIds;
+//    print('Search Photos Ids: $searchPhotosIds');
+//
+//    Analytics.sendEvent(Event.searched_photos);
+  }
+
+  @action
+  void searchResultsTags(String text) {
+    var tagsBox = Hive.box('tags');
+
+    if (text == '') {
+      searchTagsResults.clear();
+      return;
+    }
+
+    searchTagsResults.clear();
+    for (var tagKey in tagsBox.keys) {
+      String tagName = DatabaseManager.instance.decryptTag(tagKey);
+      if (tagName.startsWith(DatabaseManager.instance.stripTag(text))) {
+        searchTagsResults.add(tagKey);
+      }
+    }
+  }
+
+  // Create tag for using in multipic
+  void createTag(String tagName) {
+    var tagsBox = Hive.box('tags');
+    print(tagsBox.keys);
+
+    String tagKey = DatabaseManager.instance.encryptTag(tagName);
+    print('Adding tag: $tagName');
+
+    if (tagsBox.containsKey(tagKey)) {
+      print('user already has this tag');
+      return;
+    }
+
+    print('adding tag to database...');
+    tagsBox.put(tagKey, Tag(tagName, []));
+    addTagToRecent(tagKey: tagKey);
+
+    Analytics.sendEvent(Event.created_tag);
+  }
+
+  @action
+  void addTagsToPics({List<String> tagsKeys, List<String> photosIds, List<AssetEntity> entities}) {
+//    var tagsBox = Hive.box('tags');
+//
+//    for (String photoId in photosIds) {
+//      for (String tagKey in tagsKeys) {
+//        Tag getTag = tagsBox.get(tagKey);
+//
+//        if (getTag.photoId.contains(photoId)) {
+//          print('this tag is already in this picture');
+//          continue;
+//        }
+//
+//        getTag.photoId.add(photoId);
+//        tagsBox.put(tagKey, getTag);
+//        addTagToPic(
+//          tagKey: tagKey,
+//          photoId: photoId,
+//          entities: entities,
+//        );
+//        print('update pictures in tag');
+//        Analytics.sendEvent(Event.added_tag);
+//      }
+//    }
+//
+//    notifyListeners();
+  }
+
+  @action
+  void addTagToRecent({String tagKey}) {
+    print('adding tag to recent: $tagKey');
+
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+
+    if (getUser.recentTags.contains(tagKey)) {
+      getUser.recentTags.remove(tagKey);
+      getUser.recentTags.insert(0, tagKey);
+      userBox.putAt(0, getUser);
+      return;
+    }
+
+    if (getUser.recentTags.length >= kMaxNumOfRecentTags) {
+      print('removing last');
+      getUser.recentTags.removeLast();
+    }
+
+    getUser.recentTags.insert(0, tagKey);
+    userBox.putAt(0, getUser);
+    print('final tags in recent: ${getUser.recentTags}');
   }
 }

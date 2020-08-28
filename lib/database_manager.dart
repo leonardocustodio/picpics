@@ -36,11 +36,11 @@ class DatabaseManager extends ChangeNotifier {
 
   bool noTaggedPhoto = false;
 //  bool editingTags = false;
-  bool searchingTags = false;
-
-  List<String> searchActiveTags = [];
-  List<String> searchResults;
-  List<String> searchPhotosIds = [];
+//  bool searchingTags = false;
+//
+//  List<String> searchActiveTags = [];
+//  List<String> searchResults;
+//  List<String> searchPhotosIds = [];
 
   List<String> slideThumbPhotoIds = [];
 
@@ -293,156 +293,10 @@ class DatabaseManager extends ChangeNotifier {
     return '${language.getDisplayLanguage(appLanguage)['nativeName']}';
   }
 
-  void addTagToSearchFilter() {
-    if (searchActiveTags.contains(selectedTagKey)) {
-      return;
-    }
-    searchActiveTags.add(selectedTagKey);
-    print('search tags: $searchActiveTags');
-    searchPicsWithTags();
-  }
-
-  void removeTagFromSearchFilter() {
-    if (searchActiveTags.contains(selectedTagKey)) {
-      searchActiveTags.remove(selectedTagKey);
-      print('search tags: $searchActiveTags');
-      searchPicsWithTags();
-    }
-  }
-
-  void searchPicsWithTags() {
-    var tagsBox = Hive.box('tags');
-
-    searchPhotosIds.clear();
-    List<String> tempPhotosIds = [];
-    bool firstInteraction = true;
-
-    for (var tagKey in searchActiveTags) {
-      print('filtering tag: $tagKey');
-      Tag getTag = tagsBox.get(tagKey);
-      List<String> photosIds = getTag.photoId;
-      print('photos Ids in this tag: $photosIds');
-
-      if (firstInteraction) {
-        print('adding all photos because it is firt interaction');
-        tempPhotosIds.addAll(photosIds);
-        firstInteraction = false;
-      } else {
-        print('tempPhotoId: $tempPhotosIds');
-        List<String> auxArray = [];
-        auxArray.addAll(tempPhotosIds);
-
-        for (var photoId in tempPhotosIds) {
-          print('checking if photoId is there: $photoId');
-          if (!photosIds.contains(photoId)) {
-            auxArray.remove(photoId);
-            print('removing $photoId because doesnt have $tagKey');
-          }
-        }
-        tempPhotosIds = auxArray;
-      }
-    }
-    searchPhotosIds = tempPhotosIds;
-    slideThumbPhotoIds = tempPhotosIds;
-    print('Search Photos Ids: $searchPhotosIds');
-
-    Analytics.sendEvent(Event.searched_photos);
-    notifyListeners();
-  }
-
-  void searchResultsTags(String text) {
-    var tagsBox = Hive.box('tags');
-
-    if (text == '') {
-      searchResults = null;
-      notifyListeners();
-      return;
-    }
-
-    searchResults = [];
-
-    for (var tagKey in tagsBox.keys) {
-      String tagName = decryptTag(tagKey);
-      if (tagName.startsWith(stripTag(text))) {
-        searchResults.add(tagKey);
-      }
-    }
-
-    notifyListeners();
-  }
-
-  void switchSearchingTags(bool searching) {
-    searchingTags = searching;
-    notifyListeners();
-  }
-
   void gridScale(double multiplier) {
     scale = scale;
     print('new scale value: $scale');
 //    notifyListeners();
-  }
-
-  void deleteTag({String tagKey}) {
-    var tagsBox = Hive.box('tags');
-    var picsBox = Hive.box('pics');
-    var userBox = Hive.box('user');
-
-    if (tagsBox.containsKey(tagKey)) {
-      print('found tag going to delete it');
-
-      Tag getTag = tagsBox.get(tagKey);
-
-      for (String photoId in getTag.photoId) {
-        Pic pic = picsBox.get(photoId);
-        int indexOfTagInPic = pic.tags.indexOf(tagKey);
-        print('getting pic: $photoId');
-
-        if (indexOfTagInPic != null) {
-          pic.tags.removeAt(indexOfTagInPic);
-          picsBox.put(photoId, pic);
-          print('removed tag from pic');
-          checkPicHasTags(photoId);
-        }
-      }
-
-      User getUser = userBox.getAt(0);
-      if (getUser.recentTags.contains(tagKey)) {
-        print('recent tags: ${getUser.recentTags}');
-        print('removing from recent tags');
-        getUser.recentTags.remove(tagKey);
-        userBox.putAt(0, getUser);
-        print('recent tags after removed: ${getUser.recentTags}');
-      }
-
-      tagsBox.delete(tagKey);
-      checkHasTaggedPhotos();
-      print('deleted from tags db');
-      Analytics.sendEvent(Event.deleted_tag);
-      notifyListeners();
-    }
-  }
-
-  void addTagToRecent({String tagKey}) {
-    print('adding tag to recent: $tagKey');
-
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
-
-    if (getUser.recentTags.contains(tagKey)) {
-      getUser.recentTags.remove(tagKey);
-      getUser.recentTags.insert(0, tagKey);
-      userBox.putAt(0, getUser);
-      return;
-    }
-
-    if (getUser.recentTags.length >= kMaxNumOfRecentTags) {
-      print('removing last');
-      getUser.recentTags.removeLast();
-    }
-
-    getUser.recentTags.insert(0, tagKey);
-    userBox.putAt(0, getUser);
-    print('final tags in recent: ${getUser.recentTags}');
   }
 
   String stripTag(String tag) {
@@ -474,54 +328,6 @@ class DatabaseManager extends ChangeNotifier {
 
     print('Decrypted tag: $decrypted');
     return decrypted;
-  }
-
-  // Create tag for using in multipic
-  void createTag(String tagName) {
-    var tagsBox = Hive.box('tags');
-    print(tagsBox.keys);
-
-    String tagKey = encryptTag(tagName);
-    print('Adding tag: $tagName');
-
-    if (tagsBox.containsKey(tagKey)) {
-      print('user already has this tag');
-      return;
-    }
-
-    print('adding tag to database...');
-    tagsBox.put(tagKey, Tag(tagName, []));
-    addTagToRecent(tagKey: tagKey);
-
-    Analytics.sendEvent(Event.created_tag);
-    notifyListeners();
-  }
-
-  void addTagsToPics({List<String> tagsKeys, List<String> photosIds, List<AssetEntity> entities}) {
-//    var tagsBox = Hive.box('tags');
-//
-//    for (String photoId in photosIds) {
-//      for (String tagKey in tagsKeys) {
-//        Tag getTag = tagsBox.get(tagKey);
-//
-//        if (getTag.photoId.contains(photoId)) {
-//          print('this tag is already in this picture');
-//          continue;
-//        }
-//
-//        getTag.photoId.add(photoId);
-//        tagsBox.put(tagKey, getTag);
-//        addTagToPic(
-//          tagKey: tagKey,
-//          photoId: photoId,
-//          entities: entities,
-//        );
-//        print('update pictures in tag');
-//        Analytics.sendEvent(Event.added_tag);
-//      }
-//    }
-//
-//    notifyListeners();
   }
 
   Future findLocation(double latitude, double longitude) async {

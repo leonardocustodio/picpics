@@ -166,7 +166,7 @@ abstract class _PicStore with Store {
         photoId: photoId,
         tagName: tagName,
       );
-      DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
+//      DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
       print('updated pictures in tag');
       print('Tag photos ids: ${getTag.photoId}');
       return;
@@ -180,7 +180,7 @@ abstract class _PicStore with Store {
       tagName: tagName,
       photoId: photoId,
     );
-    DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
+//    DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
   }
 
   @action

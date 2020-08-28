@@ -97,13 +97,7 @@ class _TabsScreenState extends State<TabsScreen> {
           return EditTagModal(
             alertInputController: alertInputController,
             onPressedDelete: () {
-              DatabaseManager.instance.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
-//              DatabaseManager.instance.tagsSuggestions(
-//                tagsEditingController.text,
-//                DatabaseManager.instance.selectedPhoto.id,
-//                excludeTags: galleryStore.currentPic.tagsKeys,
-//                notify: false,
-//              );
+              galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
             onPressedOk: () {
@@ -514,7 +508,8 @@ class _TabsScreenState extends State<TabsScreen> {
                                         photosIds.add(photoId);
                                         entities.add(entity);
                                       }
-                                      DatabaseManager.instance.addTagsToPics(
+
+                                      galleryStore.addTagsToPics(
                                         tagsKeys: DatabaseManager.instance.multiPicTagKeys,
                                         photosIds: photosIds,
                                         entities: entities,
@@ -612,7 +607,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                             if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
                                               if (DatabaseManager.instance.getTagName(tagKey) == null) {
                                                 print('tag does not exist! creating it!');
-                                                DatabaseManager.instance.createTag(text);
+                                                galleryStore.createTag(text);
                                               }
                                               List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
                                               multiPic.add(tagKey);
