@@ -630,7 +630,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
                                         title: S.of(context).suggestions,
-                                        tagsKeys: DatabaseManager.instance.suggestionTags,
+                                        tagsKeys: [], // DatabaseManager.instance.suggestionTags,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagName) {

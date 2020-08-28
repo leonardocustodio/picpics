@@ -48,6 +48,7 @@ abstract class _GalleryStore with Store {
   @action
   void setSwipeIndex(int value) {
     swipeIndex = value;
+    setCurrentPic(untaggedPics[value]);
   }
 
   @observable
@@ -292,6 +293,9 @@ abstract class _GalleryStore with Store {
           element.tags[indexOfTagStore] = tagsStore;
         }
       });
+
+      // Recarrega as infos da foto atual // rever isso pois muda a ordem das sugestions
+//      currentPic.tagsSuggestions[1] = 'abc';
 
       User getUser = userBox.getAt(0);
       if (getUser.recentTags.contains(oldTagKey)) {

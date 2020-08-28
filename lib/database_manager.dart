@@ -49,7 +49,7 @@ class DatabaseManager extends ChangeNotifier {
   String currentPhotoCity;
   String currentPhotoState;
 
-  List<String> suggestionTags = [];
+//  List<String> suggestionTags = [];
 
   double scale = 1.0;
 
