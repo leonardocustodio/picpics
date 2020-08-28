@@ -109,7 +109,7 @@ class _TabsScreenState extends State<TabsScreen> {
             onPressedOk: () {
               print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
-                DatabaseManager.instance.editTag(
+                galleryStore.editTag(
                   oldTagKey: DatabaseManager.instance.selectedTagKey,
                   newName: alertInputController.text,
                 );

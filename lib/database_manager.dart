@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/analytics_manager.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
@@ -419,70 +418,6 @@ class DatabaseManager extends ChangeNotifier {
       checkHasTaggedPhotos();
       print('deleted from tags db');
       Analytics.sendEvent(Event.deleted_tag);
-      notifyListeners();
-    }
-  }
-
-  void editTag({String oldTagKey, String newName}) {
-    var tagsBox = Hive.box('tags');
-    var picsBox = Hive.box('pics');
-    var userBox = Hive.box('user');
-
-    String newTagKey = encryptTag(newName);
-
-    if (tagsBox.containsKey(oldTagKey)) {
-      print('found tag with this name');
-
-      Tag getTag = tagsBox.get(oldTagKey);
-
-      Tag newTag = Tag(newName, getTag.photoId);
-      tagsBox.put(newTagKey, newTag);
-      tagsBox.delete(oldTagKey);
-
-      print('updated tag');
-
-      for (String photoId in newTag.photoId) {
-        Pic pic = picsBox.get(photoId);
-
-        int indexOfOldTag = pic.tags.indexOf(oldTagKey);
-        print('Tags in this picture: ${pic.tags}');
-        pic.tags[indexOfOldTag] = newTagKey;
-        picsBox.put(photoId, pic);
-        print('updated tag in pic ${pic.photoId}');
-      }
-
-      User getUser = userBox.getAt(0);
-      if (getUser.recentTags.contains(oldTagKey)) {
-        print('updating tag name in recent tags');
-        int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
-        getUser.recentTags[indexOfRecentTag] = newTagKey;
-        userBox.putAt(0, getUser);
-      }
-
-      print('updating in all suggestions');
-      if (suggestionTags.contains(oldTagKey)) {
-        int indexOfSuggestionTag = suggestionTags.indexOf(oldTagKey);
-        suggestionTags[indexOfSuggestionTag] = newTagKey;
-      }
-
-      if (searchResults.isNotEmpty) {
-        print('fixing in search result');
-        if (searchResults.contains(oldTagKey)) {
-          int indexOfSearchResultTag = searchResults.indexOf(oldTagKey);
-          searchResults[indexOfSearchResultTag] = newTagKey;
-        }
-      }
-
-      if (searchActiveTags.isNotEmpty) {
-        print('fixing in search active tags');
-        if (searchActiveTags.contains(oldTagKey)) {
-          int indexOfSearchActiveTags = searchActiveTags.indexOf(oldTagKey);
-          searchActiveTags[indexOfSearchActiveTags] = newTagKey;
-        }
-      }
-
-      print('finished updating all tags');
-      Analytics.sendEvent(Event.edited_tag);
       notifyListeners();
     }
   }

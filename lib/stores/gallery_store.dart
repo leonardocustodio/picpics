@@ -1,12 +1,18 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/database_manager.dart';
+import 'package:picPics/model/pic.dart';
+import 'package:picPics/model/tag.dart';
+import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/tags_store.dart';
 import 'package:share_extend/share_extend.dart';
 
 part 'gallery_store.g.dart';
@@ -247,5 +253,78 @@ abstract class _GalleryStore with Store {
 //    );
 
     return;
+  }
+
+  @action
+  void editTag({String oldTagKey, String newName}) {
+    var tagsBox = Hive.box('tags');
+    var picsBox = Hive.box('pics');
+    var userBox = Hive.box('user');
+
+    String newTagKey = DatabaseManager.instance.encryptTag(newName);
+
+    if (tagsBox.containsKey(oldTagKey)) {
+      print('found tag with this name');
+
+      Tag getTag = tagsBox.get(oldTagKey);
+
+      Tag newTag = Tag(newName, getTag.photoId);
+      tagsBox.put(newTagKey, newTag);
+      tagsBox.delete(oldTagKey);
+
+      print('updated tag');
+
+      for (String photoId in newTag.photoId) {
+        Pic pic = picsBox.get(photoId);
+
+        int indexOfOldTag = pic.tags.indexOf(oldTagKey);
+        print('Tags in this picture: ${pic.tags}');
+        pic.tags[indexOfOldTag] = newTagKey;
+        picsBox.put(photoId, pic);
+        print('updated tag in pic ${pic.photoId}');
+      }
+
+      // Substitui as tags nas fotos já taggeadas
+      taggedPics.forEach((element) {
+        if (newTag.photoId.contains(element.photoId)) {
+          int indexOfTagStore = element.tags.indexWhere((tagStore) => tagStore.id == oldTagKey);
+          TagsStore tagsStore = TagsStore(id: newTagKey, name: newName);
+          element.tags[indexOfTagStore] = tagsStore;
+        }
+      });
+
+      User getUser = userBox.getAt(0);
+      if (getUser.recentTags.contains(oldTagKey)) {
+        print('updating tag name in recent tags');
+        int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
+        getUser.recentTags[indexOfRecentTag] = newTagKey;
+        userBox.putAt(0, getUser);
+      }
+
+//      print('updating in all suggestions');
+//      if (DatabaseManager.instance.suggestionTags.contains(oldTagKey)) {
+//        int indexOfSuggestionTag = DatabaseManager.instance.suggestionTags.indexOf(oldTagKey);
+//        DatabaseManager.instance.suggestionTags[indexOfSuggestionTag] = newTagKey;
+//      }
+//
+//      if (DatabaseManager.instance.searchResults.isNotEmpty) {
+//        print('fixing in search result');
+//        if (DatabaseManager.instance.searchResults.contains(oldTagKey)) {
+//          int indexOfSearchResultTag = DatabaseManager.instance.searchResults.indexOf(oldTagKey);
+//          DatabaseManager.instance.searchResults[indexOfSearchResultTag] = newTagKey;
+//        }
+//      }
+//
+//      if (DatabaseManager.instance.searchActiveTags.isNotEmpty) {
+//        print('fixing in search active tags');
+//        if (DatabaseManager.instance.searchActiveTags.contains(oldTagKey)) {
+//          int indexOfSearchActiveTags = DatabaseManager.instance.searchActiveTags.indexOf(oldTagKey);
+//          DatabaseManager.instance.searchActiveTags[indexOfSearchActiveTags] = newTagKey;
+//        }
+//      }
+
+      print('finished updating all tags');
+      Analytics.sendEvent(Event.edited_tag);
+    }
   }
 }

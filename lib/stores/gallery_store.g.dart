@@ -199,6 +199,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void editTag({String oldTagKey, String newName}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.editTag');
+    try {
+      return super.editTag(oldTagKey: oldTagKey, newName: newName);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 swipeIndex: ${swipeIndex},
