@@ -16,6 +16,13 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$isFilteredComputed ??= Computed<bool>(() => super.isFiltered,
               name: '_GalleryStore.isFiltered'))
           .value;
+  Computed<List<String>> _$tagsSuggestionsComputed;
+
+  @override
+  List<String> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
+          Computed<List<String>>(() => super.tagsSuggestions,
+              name: '_GalleryStore.tagsSuggestions'))
+      .value;
   Computed<List<String>> _$taggedKeysComputed;
 
   @override
@@ -90,6 +97,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
     _$showSearchTagsResultsAtom.reportWrite(value, super.showSearchTagsResults,
         () {
       super.showSearchTagsResults = value;
+    });
+  }
+
+  final _$searchTextAtom = Atom(name: '_GalleryStore.searchText');
+
+  @override
+  String get searchText {
+    _$searchTextAtom.reportRead();
+    return super.searchText;
+  }
+
+  @override
+  set searchText(String value) {
+    _$searchTextAtom.reportWrite(value, super.searchText, () {
+      super.searchText = value;
     });
   }
 
@@ -227,6 +249,50 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void addToMultiPicTagKeys(String tagKey) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addToMultiPicTagKeys');
+    try {
+      return super.addToMultiPicTagKeys(tagKey);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeFromMultiPicTagKeys(String tagKey) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.removeFromMultiPicTagKeys');
+    try {
+      return super.removeFromMultiPicTagKeys(tagKey);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearMultiPicTagKeys() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.clearMultiPicTagKeys');
+    try {
+      return super.clearMultiPicTagKeys();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSearchText(String value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setSearchText');
+    try {
+      return super.setSearchText(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setCurrentPic(PicStore pic) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setCurrentPic');
@@ -347,10 +413,12 @@ swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
 isSearching: ${isSearching},
 showSearchTagsResults: ${showSearchTagsResults},
+searchText: ${searchText},
 currentPic: ${currentPic},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
 isFiltered: ${isFiltered},
+tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
 deviceHasPics: ${deviceHasPics}
     ''';

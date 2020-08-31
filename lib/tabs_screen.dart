@@ -522,7 +522,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                         tabsStore.setMultiTagSheet(false);
                                         tabsStore.setMultiPicBar(false);
                                         galleryStore.clearSelectedPics();
-                                        DatabaseManager.instance.setMultiPicTagKeys([]);
+                                        galleryStore.clearMultiPicTagKeys();
                                       },
                                       child: Container(
                                         width: 80.0,
@@ -555,118 +555,85 @@ class _TabsScreenState extends State<TabsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tagsKeys: Provider.of<DatabaseManager>(context).multiPicTagKeys, //picI
+                                        tagsKeys: galleryStore.multiPicTagKeys.toList(),
                                         addTagField: true,
                                         textEditingController: bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagName) {
-                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
                                           print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
-
-                                          if (DatabaseManager.instance.multiPicTagKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-                                            List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
-                                            multiPic.remove(DatabaseManager.instance.selectedTagKey);
-                                            DatabaseManager.instance.setMultiPicTagKeys(multiPic);
-
-//                                            DatabaseManager.instance.tagsSuggestions(
-//                                              bottomTagsEditingController.text,
-//                                              'MULTIPIC',
-//                                              excludeTags: DatabaseManager.instance.multiPicTagKeys,
-//                                            );
-                                          }
+                                          galleryStore.removeFromMultiPicTagKeys(DatabaseManager.instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
-                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
                                           print('do nothing');
                                         },
                                         onChanged: (text) {
-                                          print('calling tag suggestions');
-//                                          DatabaseManager.instance.tagsSuggestions(
-//                                            text,
-//                                            'MULTIPIC',
-//                                            excludeTags: DatabaseManager.instance.multiPicTagKeys,
-//                                          );
+                                          galleryStore.setSearchText(text);
                                         },
                                         onSubmitted: (text) {
                                           if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
-
-                                          print('return');
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
+                                            galleryStore.setSearchText('');
                                             String tagKey = DatabaseManager.instance.encryptTag(text);
-                                            if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
-                                              if (DatabaseManager.instance.getTagName(tagKey) == null) {
-                                                print('tag does not exist! creating it!');
-                                                galleryStore.createTag(text);
-                                              }
-                                              List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
-                                              multiPic.add(tagKey);
-                                              DatabaseManager.instance.setMultiPicTagKeys(multiPic);
 
-//                                              DatabaseManager.instance.tagsSuggestions(
-//                                                '',
-//                                                'MULTIPIC',
-//                                                excludeTags: DatabaseManager.instance.multiPicTagKeys,
-//                                              );
-                                            }
+//                                            if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
+//                                              if (DatabaseManager.instance.getTagName(tagKey) == null) {
+//                                                print('tag does not exist! creating it!');
+//                                                galleryStore.createTag(text);
+//                                              }
+//                                              List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
+//                                              multiPic.add(tagKey);
+//                                              DatabaseManager.instance.setMultiPicTagKeys(multiPic);
+//                                            }
                                           }
                                         }),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
                                         title: S.of(context).suggestions,
-                                        tagsKeys: [], // DatabaseManager.instance.suggestionTags,
+                                        tagsKeys: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagName) {
-                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
 
                                           bottomTagsEditingController.clear();
+                                          galleryStore.setSearchText('');
                                           String tagKey = DatabaseManager.instance.encryptTag(tagName);
-                                          if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
-                                            List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
-                                            multiPic.add(tagKey);
-                                            DatabaseManager.instance.setMultiPicTagKeys(multiPic);
-
-//                                            DatabaseManager.instance.tagsSuggestions(
-//                                              '',
-//                                              'MULTIPIC',
-//                                              excludeTags: DatabaseManager.instance.multiPicTagKeys,
-//                                            );
-                                          }
+                                          galleryStore.addToMultiPicTagKeys(tagKey);
                                         },
                                         onDoubleTap: () {
-                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
-
                                           print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          if (!DatabaseManager.instance.userSettings.isPremium) {
+                                          if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
-
                                           print('do nothing');
                                         },
                                       ),

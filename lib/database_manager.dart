@@ -53,15 +53,14 @@ class DatabaseManager extends ChangeNotifier {
   // For multipic work
 //  bool multiPicBar = false;
 //  Set<String> picsSelected = Set();
-  List<String> multiPicTagKeys = [];
 
   bool adsIsLoaded = false;
   bool showShowAdAfterReload = false;
 
-  void setMultiPicTagKeys(List<String> pics) {
-    multiPicTagKeys = pics;
-    notifyListeners();
-  }
+//  void setMultiPicTagKeys(List<String> pics) {
+//    multiPicTagKeys = pics;
+//    notifyListeners();
+//  }
 
 //  Pic selectedPic;
   void requestNotification() {

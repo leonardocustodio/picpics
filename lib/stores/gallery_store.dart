@@ -103,52 +103,80 @@ abstract class _GalleryStore with Store {
     selectedPics.clear();
   }
 
+  ObservableList<String> multiPicTagKeys = ObservableList<String>();
+
+  @action
+  void addToMultiPicTagKeys(String tagKey) {
+    if (!multiPicTagKeys.contains(tagKey)) {
+      multiPicTagKeys.add(tagKey);
+    }
+  }
+
+  @action
+  void removeFromMultiPicTagKeys(String tagKey) {
+    if (multiPicTagKeys.contains(tagKey)) {
+      multiPicTagKeys.remove(tagKey);
+    }
+  }
+
+  @action
+  void clearMultiPicTagKeys() {
+    multiPicTagKeys.clear();
+  }
+
+  @observable
+  String searchText = '';
+
+  @action
+  void setSearchText(String value) => searchText = value;
+
   @computed
   List<String> get tagsSuggestions {
-//    var userBox = Hive.box('user');
-//    var tagsBox = Hive.box('tags');
-//    User getUser = userBox.getAt(0);
-//
-//    List<String> suggestionTags = [];
-//
-//    if (searchText == '') {
-//      for (var recent in getUser.recentTags) {
-//        if (tagsKeys.contains(recent)) {
-//          continue;
-//        }
-//        suggestionTags.add(recent);
-//      }
-//
-//      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
-//
-////      while (suggestions.length < maxNumOfSuggestions) {
-////          if (excludeTags.contains('Hey}')) {
-////            continue;
-////          }
-//      if (suggestionTags.length < kMaxNumOfSuggestions) {
-//        for (var tagKey in tagsBox.keys) {
-//          if (suggestionTags.length == kMaxNumOfSuggestions) {
-//            break;
-//          }
-//          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey)) {
+    var userBox = Hive.box('user');
+    var tagsBox = Hive.box('tags');
+    User getUser = userBox.getAt(0);
+
+    List<String> multiPicTags = multiPicTagKeys.toList();
+    List<String> suggestionTags = [];
+
+    if (searchText == '') {
+      for (var recent in getUser.recentTags) {
+        if (multiPicTags.contains(recent)) {
+          continue;
+        }
+        suggestionTags.add(recent);
+      }
+
+      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+
+//      while (suggestions.length < maxNumOfSuggestions) {
+//          if (excludeTags.contains('Hey}')) {
 //            continue;
 //          }
-//          suggestionTags.add(tagKey);
-//        }
+      if (suggestionTags.length < kMaxNumOfSuggestions) {
+        for (var tagKey in tagsBox.keys) {
+          if (suggestionTags.length == kMaxNumOfSuggestions) {
+            break;
+          }
+          if (multiPicTags.contains(tagKey) || suggestionTags.contains(tagKey)) {
+            continue;
+          }
+          suggestionTags.add(tagKey);
+        }
+      }
 //      }
-////      }
-//    } else {
-//      for (var tagKey in tagsBox.keys) {
-//        String tagName = DatabaseManager.instance.decryptTag(tagKey);
-//        if (tagName.startsWith(DatabaseManager.instance.stripTag(searchText))) {
-//          suggestionTags.add(tagKey);
-//        }
-//      }
-//    }
-//    print('find suggestions: $searchText - exclude: $tagsKeys');
-//    print(suggestionTags);
-//
-//    return suggestionTags;
+    } else {
+      for (var tagKey in tagsBox.keys) {
+        String tagName = DatabaseManager.instance.decryptTag(tagKey);
+        if (tagName.startsWith(DatabaseManager.instance.stripTag(searchText))) {
+          suggestionTags.add(tagKey);
+        }
+      }
+    }
+    print('find suggestions: $searchText - exclude tags: $multiPicTags');
+    print(suggestionTags);
+
+    return suggestionTags;
   }
 
   @computed
