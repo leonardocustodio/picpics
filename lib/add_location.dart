@@ -4,16 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/database_manager.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:provider/provider.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
+final homeScaffoldKey = GlobalKey<ScaffoldState>();
+final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
 class AddLocationScreen extends StatefulWidget {
   static const id = 'add_location_screen';
@@ -22,19 +24,20 @@ class AddLocationScreen extends StatefulWidget {
   _AddLocationScreenState createState() => _AddLocationScreenState();
 }
 
-final homeScaffoldKey = GlobalKey<ScaffoldState>();
-final searchScaffoldKey = GlobalKey<ScaffoldState>();
-
 class _AddLocationScreenState extends State<AddLocationScreen> {
   GalleryStore galleryStore;
+  PicStore get picStore => galleryStore.currentPic;
 
   Completer<GoogleMapController> _mapController = Completer();
   Set<Marker> _markers = {};
   Geolocation selectedGeolocation;
 
+  static final LatLng nullLocation = LatLng(0.0, 0.0);
+  static final LatLng rioDeJaneiro = LatLng(-22.951911, -52.2126759);
+
   static final CameraPosition _initialCamera = CameraPosition(
-    target: LatLng(0.0, 0.0),
-    zoom: 0,
+    target: rioDeJaneiro,
+    zoom: 0.0,
   );
 
   void saveLocation(BuildContext context) {
@@ -73,12 +76,20 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
       if (location != null) {
         LatLng latLng = selectedGeolocation.coordinates;
-        DatabaseManager.instance.saveLocationToPic(
-            lat: latLng.latitude, long: latLng.longitude, specifLocation: location, generalLocation: city, photoId: galleryStore.currentPic.photoId);
+        picStore.saveLocation(
+          lat: latLng.latitude,
+          long: latLng.longitude,
+          specific: location,
+          general: city,
+        );
       } else {
         LatLng latLng = selectedGeolocation.coordinates;
-        DatabaseManager.instance.saveLocationToPic(
-            lat: latLng.latitude, long: latLng.longitude, specifLocation: city, generalLocation: country, photoId: galleryStore.currentPic.photoId);
+        picStore.saveLocation(
+          lat: latLng.latitude,
+          long: latLng.longitude,
+          specific: city,
+          general: country,
+        );
       }
     }
 
@@ -117,13 +128,13 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   void findInitialCamera() async {
     LatLng latLng;
 
-    if (galleryStore.currentPic.latitude != null && galleryStore.currentPic.longitude != null) {
-      latLng = LatLng(galleryStore.currentPic.latitude, galleryStore.currentPic.longitude);
-    } else if (galleryStore.currentPic.originalLatitude != null && galleryStore.currentPic.originalLongitude != null) {
-      latLng = LatLng(galleryStore.currentPic.originalLatitude, galleryStore.currentPic.originalLongitude);
+    if (picStore.latitude != null && picStore.longitude != null) {
+      latLng = LatLng(picStore.latitude, picStore.longitude);
+    } else if (picStore.originalLatitude != null && picStore.originalLongitude != null) {
+      latLng = LatLng(picStore.originalLatitude, picStore.originalLongitude);
     }
 
-    if (latLng != null) {
+    if (latLng != null && latLng != nullLocation) {
       final destination = Marker(
         markerId: MarkerId('user-destination'),
         icon: await BitmapDescriptor.fromAssetImage(
@@ -144,8 +155,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       print(latLng);
 
       final CameraPosition position = CameraPosition(
-        target: latLng,
-        zoom: 14.0,
+        target: latLng == nullLocation ? rioDeJaneiro : latLng,
+        zoom: latLng == nullLocation ? 0.0 : 14.0,
       );
       controller.animateCamera(CameraUpdate.newCameraPosition(position));
     }
@@ -178,6 +189,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
               markers: _markers,
               initialCameraPosition: _initialCamera,
               myLocationButtonEnabled: false,
+              zoomControlsEnabled: false,
               onMapCreated: (GoogleMapController controller) {
                 _mapController.complete(controller);
               },
@@ -205,7 +217,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
                               child: ImageItem(
-                                entity: galleryStore.currentPic.entity,
+                                entity: picStore.entity,
                                 size: 140,
                               ),
                             ),
@@ -256,6 +268,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
             SearchMapPlaceWidget(
               apiKey: kGoogleApiKey,
               placeholder: S.of(context).search,
+              language: 'pt', // arrumar isso
               onSelected: (place) async {
                 final geolocation = await place.geolocation;
                 selectedGeolocation = geolocation;

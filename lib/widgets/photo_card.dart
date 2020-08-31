@@ -87,13 +87,11 @@ class _PhotoCardState extends State<PhotoCard> {
 
     if (placemark.isNotEmpty) {
       print('Saving pic!!!');
-      DatabaseManager.instance.saveLocationToPic(
+      picStore.saveLocation(
         lat: picStore.originalLatitude,
         long: picStore.originalLongitude,
-        specifLocation: placemark[0].locality,
-        generalLocation: placemark[0].country,
-        photoId: picStore.photoId,
-        notify: false,
+        specific: placemark[0].locality,
+        general: placemark[0].country,
       );
       return [placemark[0].locality, '  ${placemark[0].country}'];
     }
@@ -215,106 +213,37 @@ class _PhotoCardState extends State<PhotoCard> {
                         galleryStore.setCurrentPic(picStore);
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
-                      child: FutureBuilder(
-                          future: reverseGeocoding(context),
-                          initialData: [S.of(context).photo_location, '  ${S.of(context).country}'],
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return RichText(
-                                textScaleFactor: 1.0,
-                                text: new TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: snapshot.data[0],
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: '  ${snapshot.data[1]}',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                  ],
+                      child: Observer(builder: (_) {
+                        return RichText(
+                          textScaleFactor: 1.0,
+                          text: new TextSpan(
+                            children: [
+                              TextSpan(
+                                text: picStore.specificLocation ?? S.of(context).photo_location,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
                                 ),
-                              );
-                            } else if (snapshot.hasError) {
-                              return RichText(
-                                textScaleFactor: 1.0,
-                                text: new TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: S.of(context).photo_location,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: '  ${S.of(context).country}',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                  ],
+                              ),
+                              TextSpan(
+                                text: '  ${picStore.generalLocation ?? S.of(context).country}',
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
                                 ),
-                              );
-                            } else {
-                              return Row(
-                                children: <Widget>[
-                                  RichText(
-                                    textScaleFactor: 1.0,
-                                    text: new TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: snapshot.data[0],
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: Color(0xff606566),
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '  ${snapshot.data[1]}',
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: Color(0xff606566),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          }),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                     ),
                     Text(
                       dateFormat(picStore.entity.createDateTime),

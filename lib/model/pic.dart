@@ -30,7 +30,7 @@ class Pic extends HiveObject {
   @HiveField(8)
   final List<String> tags;
 
-  Pic(
+  Pic({
     this.photoId,
     this.createdAt,
     this.originalLatitude,
@@ -40,5 +40,5 @@ class Pic extends HiveObject {
     this.specificLocation,
     this.generalLocation,
     this.tags,
-  );
+  });
 }

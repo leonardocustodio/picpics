@@ -171,6 +171,19 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   @override
+  void saveLocation(
+      {double lat, double long, String specific, String general}) {
+    final _$actionInfo =
+        _$_PicStoreActionController.startAction(name: '_PicStore.saveLocation');
+    try {
+      return super.saveLocation(
+          lat: lat, long: long, specific: specific, general: general);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 latitude: ${latitude},

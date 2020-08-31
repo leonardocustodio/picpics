@@ -99,7 +99,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
   void initState() {
     geocode = Geocoding(apiKey: widget.apiKey, language: widget.language);
     _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
-    _containerHeight = Tween<double>(begin: 96, end: 420).animate(
+    _containerHeight = Tween<double>(begin: 72, end: 420).animate(
       CurvedAnimation(
         curve: Interval(0.0, 0.5, curve: Curves.easeInOut),
         parent: _animationController,
@@ -333,8 +333,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
 
   /// API request function. Returns the Predictions
   Future<dynamic> _makeRequest(input) async {
-    String url =
-        "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=${widget.apiKey}&language=${widget.language}";
+    String url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=${widget.apiKey}&language=${widget.language}";
     if (widget.location != null && widget.radius != null) {
       url += "&location=${widget.location.latitude},${widget.location.longitude}&radius=${widget.radius}";
       if (widget.strictBounds) {
@@ -350,8 +349,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget> with Ticker
 
     if (json["error_message"] != null) {
       var error = json["error_message"];
-      if (error == "This API project is not authorized to use this API.")
-        error += " Make sure the Places API is activated on your Google Cloud Platform";
+      if (error == "This API project is not authorized to use this API.") error += " Make sure the Places API is activated on your Google Cloud Platform";
       throw Exception(error);
     } else {
       final predictions = json["predictions"];

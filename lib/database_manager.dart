@@ -119,28 +119,6 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void saveLocationToPic({double lat, double long, String specifLocation, String generalLocation, String photoId, bool notify = true}) {
-    var picsBox = Hive.box('pics');
-
-    Pic getPic = picsBox.get(photoId);
-
-    if (getPic != null) {
-      print('found pic');
-
-      getPic.latitude = lat;
-      getPic.longitude = long;
-      getPic.specificLocation = specifLocation;
-      getPic.generalLocation = generalLocation;
-
-      picsBox.put(photoId, getPic);
-      print('updated pic with new values');
-    }
-
-    if (notify) {
-      notifyListeners();
-    }
-  }
-
   void reorderSliderIndex(int removeIndex) {
     int indexOfValue = sliderIndex.indexOf(removeIndex);
 

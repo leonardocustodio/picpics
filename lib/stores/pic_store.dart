@@ -225,15 +225,15 @@ abstract class _PicStore with Store {
     ));
 
     Pic pic = Pic(
-      photoId,
-      createdAt,
-      latitude,
-      longitude,
-      null,
-      null,
-      null,
-      null,
-      [tagKey],
+      photoId: photoId,
+      createdAt: createdAt,
+      originalLatitude: originalLatitude,
+      originalLongitude: originalLongitude,
+      latitude: null,
+      longitude: null,
+      specificLocation: null,
+      generalLocation: null,
+      tags: [tagKey],
     );
 
 //    if (selectedPhoto != null) {
@@ -378,5 +378,42 @@ abstract class _PicStore with Store {
       tags.removeWhere((element) => element.id == tagKey);
     }
     Analytics.sendEvent(Event.removed_tag);
+  }
+
+  @action
+  void saveLocation({double lat, double long, String specific, String general}) {
+    var picsBox = Hive.box('pics');
+
+    Pic getPic = picsBox.get(photoId);
+    if (getPic != null) {
+      print('found pic');
+
+      getPic.latitude = lat;
+      getPic.longitude = long;
+      getPic.specificLocation = specific;
+      getPic.generalLocation = general;
+      getPic.save();
+      print('updated pic with new values');
+    } else {
+      print('Did not found pic!');
+      Pic createPic = Pic(
+        photoId: photoId,
+        createdAt: createdAt,
+        originalLatitude: originalLatitude,
+        originalLongitude: originalLongitude,
+        latitude: latitude,
+        longitude: longitude,
+        specificLocation: specificLocation,
+        generalLocation: generalLocation,
+        tags: [],
+      );
+      picsBox.put(photoId, createPic);
+      print('Saved pic to database!');
+    }
+
+    latitude = lat;
+    longitude = long;
+    specificLocation = specific;
+    generalLocation = general;
   }
 }
