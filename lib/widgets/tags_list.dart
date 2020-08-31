@@ -26,7 +26,7 @@ class TagsList extends StatefulWidget {
   final TagStyle tagStyle;
   final Function onTap;
   final Function onDoubleTap;
-  final Function onPanUpdate;
+  final Function onPanEnd;
   final Function onSubmitted;
   final Function onChanged;
   final Function showEditTagModal;
@@ -42,7 +42,7 @@ class TagsList extends StatefulWidget {
     this.addTagButton,
     @required this.onTap,
     @required this.onDoubleTap,
-    @required this.onPanUpdate,
+    @required this.onPanEnd,
     this.onSubmitted,
     this.onChanged,
     this.title,
@@ -57,6 +57,7 @@ class TagsList extends StatefulWidget {
 class _TagsListState extends State<TagsList> {
   int showSwiperInIndex;
   String tagBeingPanned;
+  bool swipedRightDirection = false;
 
   Widget _buildTagsWidget(BuildContext context) {
     if (widget.tagsKeys == null) {
@@ -118,21 +119,6 @@ class _TagsListState extends State<TagsList> {
 
       tagsWidgets.add(
         GestureDetector(
-          onTap: () {
-            if (widget.shouldChangeToSwipeMode) {
-              setState(() {
-                if (showSwiperInIndex == null) {
-                  showSwiperInIndex = widget.tagsKeys.indexOf(tagKey);
-                } else {
-                  showSwiperInIndex = null;
-                }
-              });
-            }
-
-            Vibrate.feedback(FeedbackType.success);
-            DatabaseManager.instance.selectedTagKey = tagKey;
-            widget.onTap(tagName);
-          },
           onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
             DatabaseManager.instance.selectedTagKey = tagKey;
@@ -154,117 +140,142 @@ class _TagsListState extends State<TagsList> {
             if (details.delta.dy < 0) {
               // swiping in right direction
               print(details.delta.dy);
+              swipedRightDirection = true;
+            }
+          },
+          onPanEnd: (details) {
+            if (swipedRightDirection) {
               showSwiperInIndex = null;
               Vibrate.feedback(FeedbackType.success);
               DatabaseManager.instance.selectedTagKey = tagKey;
-              widget.onPanUpdate();
+              widget.onPanEnd();
+              swipedRightDirection = false;
             }
           },
-          child: Container(
-            decoration: widget.tagStyle == TagStyle.MultiColored
-                ? BoxDecoration(
-                    gradient: getGradient(mod),
-                    borderRadius: BorderRadius.circular(19.0),
-                  )
-                : kGrayBoxDecoration,
-            child: showSwiperInIndex != i
-                ? Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Text(
-                      tagName,
-                      textScaleFactor: 1.0,
-                      style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
-                    ),
-                  )
-                : CustomAnimation<double>(
-                    control: CustomAnimationControl.LOOP,
-                    tween: 0.0.tweenTo(600.0),
-                    duration: 7.seconds,
-                    startPosition: 0.0,
-                    builder: (context, child, value) {
-                      double firstOpct = 0.0;
-                      double secondOpct = 0.0;
-                      double thirdOpct = 0.0;
+          child: CupertinoButton(
+            minSize: 0,
+            padding: const EdgeInsets.all(0),
+            onPressed: () {
+              if (widget.shouldChangeToSwipeMode) {
+                setState(() {
+                  if (showSwiperInIndex == null) {
+                    showSwiperInIndex = widget.tagsKeys.indexOf(tagKey);
+                  } else {
+                    showSwiperInIndex = null;
+                  }
+                });
+              }
 
-                      if (value <= 300) {
-                        firstOpct = 0.0;
-                        thirdOpct = 0.0;
-                        secondOpct = 1.0;
+              Vibrate.feedback(FeedbackType.success);
+              DatabaseManager.instance.selectedTagKey = tagKey;
+              widget.onTap(tagName);
+            },
+            child: Container(
+              decoration: widget.tagStyle == TagStyle.MultiColored
+                  ? BoxDecoration(
+                      gradient: getGradient(mod),
+                      borderRadius: BorderRadius.circular(19.0),
+                    )
+                  : kGrayBoxDecoration,
+              child: showSwiperInIndex != i
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      child: Text(
+                        tagName,
+                        textScaleFactor: 1.0,
+                        style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                      ),
+                    )
+                  : CustomAnimation<double>(
+                      control: CustomAnimationControl.LOOP,
+                      tween: 0.0.tweenTo(600.0),
+                      duration: 7.seconds,
+                      startPosition: 0.0,
+                      builder: (context, child, value) {
+                        double firstOpct = 0.0;
+                        double secondOpct = 0.0;
+                        double thirdOpct = 0.0;
 
-                        if (value <= 20) {
-                          secondOpct = value / 20.0;
-                        } else if (value <= 280) {
+                        if (value <= 300) {
+                          firstOpct = 0.0;
+                          thirdOpct = 0.0;
                           secondOpct = 1.0;
-                        } else {
-                          secondOpct = 1.0 - ((value - 280.0) / 20.0);
-                        }
-                      } else if (value <= 500) {
-                        firstOpct = 0.0;
-                        secondOpct = 0.0;
 
-                        if (value <= 380) {
-                          thirdOpct = (value - 300.0) / 80.0;
-                        } else if (value <= 420) {
-                          thirdOpct = 1.0;
-                        } else {
-                          thirdOpct = 1.0 - ((value - 420.0) / 80);
-                        }
-                      } else if (value <= 700) {
-                        secondOpct = 0.0;
-                        thirdOpct = 0.0;
+                          if (value <= 20) {
+                            secondOpct = value / 20.0;
+                          } else if (value <= 280) {
+                            secondOpct = 1.0;
+                          } else {
+                            secondOpct = 1.0 - ((value - 280.0) / 20.0);
+                          }
+                        } else if (value <= 500) {
+                          firstOpct = 0.0;
+                          secondOpct = 0.0;
 
-                        if (value <= 580) {
-                          firstOpct = (value - 500.0) / 80.0;
-                        } else if (value <= 620) {
-                          firstOpct = 1.0;
-                        } else {
-                          firstOpct = 1.0 - ((value - 620) / 80.0);
-                        }
-                      }
+                          if (value <= 380) {
+                            thirdOpct = (value - 300.0) / 80.0;
+                          } else if (value <= 420) {
+                            thirdOpct = 1.0;
+                          } else {
+                            thirdOpct = 1.0 - ((value - 420.0) / 80);
+                          }
+                        } else if (value <= 700) {
+                          secondOpct = 0.0;
+                          thirdOpct = 0.0;
 
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: <Widget>[
-                          Opacity(
-                            opacity: firstOpct,
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          if (value <= 580) {
+                            firstOpct = (value - 500.0) / 80.0;
+                          } else if (value <= 620) {
+                            firstOpct = 1.0;
+                          } else {
+                            firstOpct = 1.0 - ((value - 620) / 80.0);
+                          }
+                        }
+
+                        return Stack(
+                          alignment: Alignment.center,
+                          children: <Widget>[
+                            Opacity(
+                              opacity: firstOpct,
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                child: Text(
+                                  tagName,
+                                  textScaleFactor: 1.0,
+                                  style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                                ),
+                              ),
+                            ),
+                            Opacity(
+                              opacity: secondOpct,
+                              child: Container(
+                                height: 30.0,
+                                width: 30.0,
+                                child: Transform.rotate(
+                                  angle: pi / 2,
+                                  child: FlareActor(
+                                    'lib/anims/swipe_arrow.flr',
+                                    alignment: Alignment.center,
+                                    fit: BoxFit.contain,
+                                    animation: 'arrow_left',
+                                    color: kWhiteColor,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Opacity(
+                              opacity: thirdOpct,
                               child: Text(
-                                tagName,
+                                S.of(context).delete,
                                 textScaleFactor: 1.0,
                                 style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                               ),
                             ),
-                          ),
-                          Opacity(
-                            opacity: secondOpct,
-                            child: Container(
-                              height: 30.0,
-                              width: 30.0,
-                              child: Transform.rotate(
-                                angle: pi / 2,
-                                child: FlareActor(
-                                  'lib/anims/swipe_arrow.flr',
-                                  alignment: Alignment.center,
-                                  fit: BoxFit.contain,
-                                  animation: 'arrow_left',
-                                  color: kWhiteColor,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Opacity(
-                            opacity: thirdOpct,
-                            child: Text(
-                              S.of(context).delete,
-                              textScaleFactor: 1.0,
-                              style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+                          ],
+                        );
+                      },
+                    ),
+            ),
           ),
         ),
       );

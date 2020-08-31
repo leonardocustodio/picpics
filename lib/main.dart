@@ -1,59 +1,51 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
-import 'package:picPics/asset_provider.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/login_screen.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/photo_screen.dart';
+import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/premium_screen.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/database_manager.dart';
-import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/admob_manager.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:package_info/package_info.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'dart:io';
 
-Future<void> initPlatformState() async {
-  if (kDebugMode) {
-    Purchases.setDebugLogsEnabled(true);
+Future<String> checkForAppStoreInitiatedProducts() async {
+  print('Checking if appstore initiated products');
+  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
+  if (appStoreProducts.length > 0) {
+    return appStoreProducts.last.productId;
   }
-  await Purchases.setup(
-    'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
-    appUserId: DatabaseManager.instance.userSettings.id,
-  );
+  return null;
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   Crashlytics.instance.enableInDevMode = true;
   FlutterError.onError = Crashlytics.instance.recordFlutterError;
 
   Ads.initialize();
-//  Ads.loadInterstitial();
   Ads.loadRewarded();
 
-  DatabaseManager.instance.analytics = FirebaseAnalytics();
-  DatabaseManager.instance.observer = FirebaseAnalyticsObserver(analytics: DatabaseManager.instance.analytics);
-
   await Hive.initFlutter();
-//  var dir = await getApplicationDocumentsDirectory();
-//  Hive.init(dir.path);
-
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
   Hive.registerAdapter(TagAdapter());
@@ -62,64 +54,33 @@ void main() async {
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
 
-  String initialRoute = TabsScreen.id;
+  String deviceLocale = await DeviceLocale.getCurrentLocale().then((Locale locale) => locale.toString());
+  String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);
+  print('Device Locale: $deviceLocale');
 
-  if (userBox.length == 0) {
-    Locale locale = await DeviceLocale.getCurrentLocale();
+//  if (DatabaseManager.instance.userSettings.appLanguage == null) {
+//    Locale locale = await DeviceLocale.getCurrentLocale();
+//    DatabaseManager.instance.changeUserLanguage(
+//      locale.toString().split('_')[0],
+//      notify: false,
+//    );
+//  }
+//
+//  Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
 
-    var uuid = Uuid();
-    User user = User(
-      id: uuid.v4(),
-      email: null,
-      password: null,
-      notifications: false,
-      dailyChallenges: false,
-      goal: 20,
-      hourOfDay: 21,
-      minutesOfDay: 30,
-      isPremium: false,
-      recentTags: [],
-      tutorialCompleted: false,
-      picsTaggedToday: 0,
-      lastTaggedPicDate: DateTime.now(),
-      canTagToday: true,
-      appLanguage: locale.toString(),
-      hasSwiped: false,
-    );
+  String initiatedWithProduct;
 
-    userBox.add(user);
-    DatabaseManager.instance.userSettings = user;
-    initialRoute = LoginScreen.id;
-  } else {
-    DatabaseManager.instance.loadUserSettings();
-    DatabaseManager.instance.checkNotificationPermission();
-
-    if (DatabaseManager.instance.userSettings.hasSwiped == null) {
-      DatabaseManager.instance.userSettings.hasSwiped = false;
-    }
+  if (Platform.isIOS) {
+    initiatedWithProduct = await checkForAppStoreInitiatedProducts();
   }
-
-  if (DatabaseManager.instance.userSettings.appLanguage == null) {
-    Locale locale = await DeviceLocale.getCurrentLocale();
-    DatabaseManager.instance.changeUserLanguage(
-      locale.toString().split('_')[0],
-      notify: false,
-    );
-  }
-
-  Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
-  DatabaseManager.instance.loadRemoteConfig();
-  initPlatformState();
-
-  PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-    DatabaseManager.instance.setAppVersion(packageInfo.version);
-  });
 
   runZonedGuarded(() {
     runApp(
       PicPicsApp(
-        initialRoute: initialRoute,
-        userLocale: userLocale,
+//        userLocale: userLocale,
+        appVersion: appVersion,
+        deviceLocale: deviceLocale,
+        initiatedWithProduct: initiatedWithProduct,
       ),
     );
   }, (Object error, StackTrace stack) {
@@ -128,12 +89,16 @@ void main() async {
 }
 
 class PicPicsApp extends StatefulWidget {
-  final String initialRoute;
-  final Locale userLocale;
+//  final Locale userLocale;
+  final String appVersion;
+  final String deviceLocale;
+  final String initiatedWithProduct;
 
   PicPicsApp({
-    @required this.initialRoute,
-    @required this.userLocale,
+//    @required this.userLocale,
+    @required this.appVersion,
+    @required this.deviceLocale,
+    @required this.initiatedWithProduct,
   });
 
   @override
@@ -143,15 +108,31 @@ class PicPicsApp extends StatefulWidget {
 class _PicPicsAppState extends State<PicPicsApp> {
   @override
   Widget build(BuildContext context) {
+    AppStore appStore = AppStore(
+      appVersion: widget.appVersion,
+      deviceLocale: widget.deviceLocale,
+      initiatedWithProduct: widget.initiatedWithProduct,
+    );
+
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MultiProvider(
       providers: [
+        Provider<AppStore>.value(
+          value: appStore,
+        ),
+        Provider<GalleryStore>.value(
+          value: GalleryStore(
+            appStore: appStore,
+          ),
+        ),
+        Provider<TabsStore>.value(
+          value: TabsStore(
+            appStore: appStore,
+          ),
+        ),
         ChangeNotifierProvider<DatabaseManager>(
           create: (_) => DatabaseManager.instance,
-        ),
-        ChangeNotifierProvider<PhotoProvider>(
-          create: (_) => PhotoProvider.instance,
         ),
       ],
       child: MaterialApp(
@@ -161,11 +142,11 @@ class _PicPicsAppState extends State<PicPicsApp> {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        locale: widget.userLocale,
+        locale: appStore.appLocale,
         supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: false, // kDebugMode
-        initialRoute: widget.initialRoute,
-        navigatorObservers: [DatabaseManager.instance.observer],
+        debugShowCheckedModeBanner: kDebugMode,
+        initialRoute: appStore.initialRoute,
+        navigatorObservers: [Analytics.observer],
         routes: {
           LoginScreen.id: (context) => LoginScreen(),
           TabsScreen.id: (context) => TabsScreen(),

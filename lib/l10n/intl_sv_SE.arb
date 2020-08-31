@@ -29,7 +29,7 @@
 
   "photo_gallery_title": "Fotogalleri",
   "photo_gallery_description": "Foton ännu inte organiserade",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{Inga foton har valts} one{1 foto valt} other{{howMany} foton valda}}",
 
   "organized_photos_title": "Organiserade foton",
   "organized_photos_description": "Foton som redan har taggats",
@@ -112,5 +112,7 @@
   "auto_renewable_second_part": "auto-förnybar.",
   "cancel_anytime": "Avbryt när som helst",
 
-  "language": "Språk"
+  "language": "Språk",
+  "all_search_tags": "Alla söktaggar",
+  "search_all_tags_not_found": "Inga bilder hittades med alla taggar på den."
 }

@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
-import 'package:picPics/database_manager.dart';
 import 'package:picPics/premium_screen.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
-import 'package:notification_permissions/notification_permissions.dart';
-import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:picPics/generated/l10n.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -22,6 +22,8 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
+  AppStore appStore;
+
   @override
   void dispose() {
     super.dispose();
@@ -33,19 +35,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   );
 
   void shareApp(BuildContext context) {
-    if (Platform.isAndroid) {
-      Share.text(
-        S.of(context).take_a_look,
-        S.of(context).take_a_look_description('https://play.google.com/store/apps/details?id=br.com.inovatso.picPics'),
-        'text/plain',
-      );
-    } else {
-      Share.text(
-        S.of(context).take_a_look,
-        S.of(context).take_a_look_description('https://apps.apple.com/us/app/id1503352127'),
-        'text/plain',
-      );
-    }
+    Share.text(
+      S.of(context).take_a_look,
+      S.of(context).take_a_look_description('https://picpics.link/get'),
+      'text/plain',
+    );
+    Analytics.sendEvent(Event.shared_app);
   }
 
   void rateDialog() {
@@ -55,22 +50,26 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       } else {
         rateMyApp.showStarRateDialog(
           context,
-          ignoreIOS: false,
+          ignoreNativeDialog: false,
           onDismissed: () => rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
         );
       }
     });
+    Analytics.sendEvent(Event.rated_app);
   }
 
   void showLanguagePicker(BuildContext context) async {
     var language = LanguageLocal();
     var supportedLocales = S.delegate.supportedLocales;
+    List<String> supportedLanguages = supportedLocales.map((e) => e.languageCode).toList();
 
-    List<String> appSplit = DatabaseManager.instance.userSettings.appLanguage.split('_');
-    int languageIndex = supportedLocales.indexOf(Locale(
-      appSplit[0],
-      appSplit.length > 1 ? appSplit[1] : '',
-    ));
+    print('Supported Locales: $supportedLocales');
+    print('Supported languages: $supportedLanguages');
+    print('AppLanguage: ${appStore.appLanguage}');
+
+    List<String> appSplit = appStore.appLanguage.split('_');
+    int languageIndex = supportedLanguages.indexOf(appSplit[0]);
+    print('Index: $languageIndex');
 
     FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: languageIndex);
 
@@ -106,7 +105,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      DatabaseManager.instance.changeUserLanguage(supportedLocales[temporaryLanguage].toString());
+                      appStore.changeUserLanguage(supportedLocales[temporaryLanguage].toString());
                       Navigator.pop(context);
                       setState(() {
                         S.load(supportedLocales[temporaryLanguage]);
@@ -152,93 +151,92 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
   }
 
-  void showGoalPicker(BuildContext context) async {
-    int goalIndex = DatabaseManager.instance.userSettings.goal - 1;
-
-    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: goalIndex);
-
-    await showModalBottomSheet(
-      context: context,
-      builder: (BuildContext builder) {
-        int temporaryGoal = goalIndex;
-
-        return Container(
-          height: MediaQuery.of(context).copyWith().size.height / 3,
-          child: Column(
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  CupertinoButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        textScaleFactor: 1.0,
-                        style: kBottomSheetTextStyle,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    S.of(context).how_many_pics,
-                    textScaleFactor: 1.0,
-                    style: kBottomSheetTitleTextStyle,
-                  ),
-                  CupertinoButton(
-                    onPressed: () {
-                      DatabaseManager.instance.changeUserGoal(temporaryGoal);
-                      Navigator.pop(context);
-                    },
-                    child: Container(
-                      width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.end,
-                        style: kBottomSheetTextStyle,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              Expanded(
-                child: CupertinoPicker.builder(
-                  scrollController: extentScrollController,
-                  childCount: 200,
-                  itemExtent: 36.0,
-                  useMagnifier: true,
-                  magnification: 1.2,
-                  onSelectedItemChanged: (int index) {
-                    if (mounted) {
-                      temporaryGoal = index + 1;
-                    }
-                  },
-                  itemBuilder: (BuildContext context, int index) {
-                    return Center(
-                        child: Text(
-                      '${index + 1}',
-                      textScaleFactor: 1.0,
-                    ));
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
+//  void showGoalPicker(BuildContext context) async {
+//    int goalIndex = DatabaseManager.instance.userSettings.goal - 1;
+//
+//    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: goalIndex);
+//
+//    await showModalBottomSheet(
+//      context: context,
+//      builder: (BuildContext builder) {
+//        int temporaryGoal = goalIndex;
+//
+//        return Container(
+//          height: MediaQuery.of(context).copyWith().size.height / 3,
+//          child: Column(
+//            children: <Widget>[
+//              Row(
+//                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                children: <Widget>[
+//                  CupertinoButton(
+//                    onPressed: () {
+//                      Navigator.pop(context);
+//                    },
+//                    child: Container(
+//                      width: 80.0,
+//                      child: Text(
+//                        S.of(context).cancel,
+//                        textScaleFactor: 1.0,
+//                        style: kBottomSheetTextStyle,
+//                      ),
+//                    ),
+//                  ),
+//                  Text(
+//                    S.of(context).how_many_pics,
+//                    textScaleFactor: 1.0,
+//                    style: kBottomSheetTitleTextStyle,
+//                  ),
+//                  CupertinoButton(
+//                    onPressed: () {
+//                      DatabaseManager.instance.changeUserGoal(temporaryGoal);
+//                      Navigator.pop(context);
+//                    },
+//                    child: Container(
+//                      width: 80.0,
+//                      child: Text(
+//                        S.of(context).ok,
+//                        textScaleFactor: 1.0,
+//                        textAlign: TextAlign.end,
+//                        style: kBottomSheetTextStyle,
+//                      ),
+//                    ),
+//                  ),
+//                ],
+//              ),
+//              Expanded(
+//                child: CupertinoPicker.builder(
+//                  scrollController: extentScrollController,
+//                  childCount: 200,
+//                  itemExtent: 36.0,
+//                  useMagnifier: true,
+//                  magnification: 1.2,
+//                  onSelectedItemChanged: (int index) {
+//                    if (mounted) {
+//                      temporaryGoal = index + 1;
+//                    }
+//                  },
+//                  itemBuilder: (BuildContext context, int index) {
+//                    return Center(
+//                        child: Text(
+//                      '${index + 1}',
+//                      textScaleFactor: 1.0,
+//                    ));
+//                  },
+//                ),
+//              ),
+//            ],
+//          ),
+//        );
+//      },
+//    );
+//  }
 
   void showTimePicker(BuildContext context) async {
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
         DateTime now = DateTime.now();
-        DateTime time = DateTime(now.year, now.month, now.day, DatabaseManager.instance.userSettings.hourOfDay,
-            DatabaseManager.instance.userSettings.minutesOfDay);
+        DateTime time = DateTime(now.year, now.month, now.day, appStore.hourOfDay, appStore.minutesOfDay);
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -267,7 +265,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      DatabaseManager.instance.changeUserTimeOfDay(time.hour, time.minute);
+                      appStore.changeUserTimeOfDay(time.hour, time.minute);
                       Navigator.pop(context);
                     },
                     child: Container(
@@ -300,62 +298,68 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     );
   }
 
-  void changeDailyChallenges(BuildContext context, bool value) async {
-    if (value == false) {
-      DatabaseManager.instance.changeDailyChallenges();
-    } else if (value == true && DatabaseManager.instance.userSettings.notifications == false) {
-      showDialog<void>(
-        context: context,
-        builder: (BuildContext context) {
-          return PlatformAlertDialog(
-            title: Text(
-              S.of(context).notifications,
-              textScaleFactor: 1.0,
-            ),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    S.of(context).daily_challenge_permission_description,
-                    textScaleFactor: 1.0,
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              PlatformDialogAction(
-                child: Text(
-                  S.of(context).ok,
-                  textScaleFactor: 1.0,
-                ),
-                actionType: ActionType.Preferred,
-                onPressed: () {
-                  NotificationPermissions.requestNotificationPermissions(
-                          iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true))
-                      .then((_) {});
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      DatabaseManager.instance.changeDailyChallenges();
-    }
-  }
+//  void changeDailyChallenges(BuildContext context, bool value) async {
+//    if (value == false) {
+//      DatabaseManager.instance.changeDailyChallenges();
+//    } else if (value == true && DatabaseManager.instance.userSettings.notifications == false) {
+//      showDialog<void>(
+//        context: context,
+//        builder: (BuildContext context) {
+//          return PlatformAlertDialog(
+//            title: Text(
+//              S.of(context).notifications,
+//              textScaleFactor: 1.0,
+//            ),
+//            content: SingleChildScrollView(
+//              child: ListBody(
+//                children: <Widget>[
+//                  Text(
+//                    S.of(context).daily_challenge_permission_description,
+//                    textScaleFactor: 1.0,
+//                  ),
+//                ],
+//              ),
+//            ),
+//            actions: <Widget>[
+//              PlatformDialogAction(
+//                child: Text(
+//                  S.of(context).ok,
+//                  textScaleFactor: 1.0,
+//                ),
+//                actionType: ActionType.Preferred,
+//                onPressed: () {
+//                  NotificationPermissions.requestNotificationPermissions(iosSettings: const NotificationSettingsIos(sound: true, badge: true, alert: true))
+//                      .then((_) {});
+//                  Navigator.of(context).pop();
+//                },
+//              ),
+//            ],
+//          );
+//        },
+//      );
+//    } else {
+//      DatabaseManager.instance.changeDailyChallenges();
+//    }
+//  }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    Analytics.sendCurrentScreen(Screen.settings_screen);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      DatabaseManager.instance.checkNotificationPermission(shouldNotify: true);
+      appStore.checkNotificationPermission();
     }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
   }
 
   @override
@@ -384,7 +388,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
-                          onPressed: () => DatabaseManager.instance.changeDailyChallenges(),
+                          onPressed: appStore.switchDailyChallenges,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -393,11 +397,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsFieldTextStyle,
                               ),
-                              CupertinoSwitch(
-                                value: Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-                                activeColor: kSecondaryColor,
-                                onChanged: (value) {
-                                  changeDailyChallenges(context, value);
+                              Observer(
+                                builder: (_) {
+                                  return CupertinoSwitch(
+                                      value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                      activeColor: kSecondaryColor,
+                                      onChanged: (value) => appStore.switchDailyChallenges());
                                 },
                               ),
                             ],
@@ -424,10 +429,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsFieldTextStyle,
                               ),
-                              Text(
-                                '${'${Provider.of<DatabaseManager>(context).userSettings.hourOfDay}'.padLeft(2, '0')}: ${'${Provider.of<DatabaseManager>(context).userSettings.minutesOfDay}'.padLeft(2, '0')}',
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsValueTextStyle,
+                              Observer(
+                                builder: (_) {
+                                  return Text(
+                                    '${'${appStore.hourOfDay}'.padLeft(2, '0')}: ${'${appStore.minutesOfDay}'.padLeft(2, '0')}',
+                                    textScaleFactor: 1.0,
+                                    style: kGraySettingsValueTextStyle,
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -478,10 +487,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 textScaleFactor: 1.0,
                                 style: kGraySettingsFieldTextStyle,
                               ),
-                              Text(
-                                DatabaseManager.instance.getUserLanguage(),
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsValueTextStyle,
+                              Observer(
+                                builder: (_) {
+                                  return Text(
+                                    appStore.currentLanguage,
+                                    textScaleFactor: 1.0,
+                                    style: kGraySettingsValueTextStyle,
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -538,7 +551,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       padding: const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 80.0),
                       child: CupertinoButton(
                         onPressed: () {
-                          if (DatabaseManager.instance.userSettings.isPremium) {
+                          if (appStore.isPremium) {
                             return;
                           }
                           Navigator.pushNamed(context, PremiumScreen.id);
@@ -556,14 +569,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 width: 16.0,
                               ),
                               Flexible(
-                                child: Text(
-                                  Provider.of<DatabaseManager>(context).userSettings.isPremium
-                                      ? S.of(context).you_are_premium
-                                      : S.of(context).get_premium_now,
-                                  maxLines: 2,
-                                  textAlign: TextAlign.left,
-                                  textScaleFactor: 1.0,
-                                  style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
+                                child: Observer(
+                                  builder: (_) {
+                                    return Text(
+                                      appStore.isPremium ? S.of(context).you_are_premium : S.of(context).get_premium_now,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.left,
+                                      textScaleFactor: 1.0,
+                                      style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
+                                    );
+                                  },
                                 ),
                               ),
                               SizedBox(
@@ -582,11 +597,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         ),
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        'VERSION ${DatabaseManager.instance.userSettings.appVersion}',
-                        textScaleFactor: 1.0,
-                        style: kGraySettingsFieldTextStyle,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Center(
+                        child: Text(
+                          'VERSION: ${appStore.appVersion}',
+                          textScaleFactor: 1.0,
+                          style: kGraySettingsFieldTextStyle,
+                        ),
                       ),
                     ),
                   ],

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+const kMaxNumOfSuggestions = 6;
+const kMaxNumOfRecentTags = 5;
+
 const kPrimaryColor = Color(0xFF52CECE);
 const kSecondaryColor = Color(0xFFFF6666);
 const kYellowColor = Color(0xFFFEE067);

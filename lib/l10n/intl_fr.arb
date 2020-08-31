@@ -29,7 +29,7 @@
 
   "photo_gallery_title": "Galerie de photos",
   "photo_gallery_description": "Photos pas encore organisées",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{Aucune photo sélectionnée} one{1 photo sélectionnée} other{{howMany} photos sélectionnées}}",
 
   "organized_photos_title": "Photos organisées",
   "organized_photos_description": "Photos déjà étiquetées",
@@ -112,5 +112,7 @@
   "auto_renewable_second_part": "renouvelable automatiquement.",
   "cancel_anytime": "Annuler à tout moment",
 
-  "language": "Langue"
+  "language": "Langue",
+  "all_search_tags": "Tous les tags de recherche",
+  "search_all_tags_not_found": "Aucune image n'a été trouvée avec tous les tags dessus."
 }

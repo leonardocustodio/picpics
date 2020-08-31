@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 part 'user.g.dart';
 
 @HiveType(typeId: 2)
-class User {
+class User extends HiveObject {
   @HiveField(0)
   final String id;
 
@@ -54,6 +54,12 @@ class User {
   @HiveField(16)
   bool hasSwiped;
 
+  @HiveField(17)
+  bool hasGalleryPermission;
+
+  @HiveField(18)
+  bool loggedIn;
+
   User({
     this.id,
     this.email,
@@ -72,5 +78,7 @@ class User {
     this.appLanguage,
     this.appVersion,
     this.hasSwiped,
+    this.hasGalleryPermission,
+    this.loggedIn,
   });
 }

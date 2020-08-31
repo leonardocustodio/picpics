@@ -19,9 +19,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja_JP';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: '写真が選択されていません', one: '1 枚の写真を選択しました', other: '${howMany} 枚の写真を選択しました')}";
 
-  static m1(number) => "You completed your ${number} free daily pics, do you want to continue?";
+  static m1(number) => "${number}無料のデイリー写真を完了しました。続けますか？";
 
   static m2(url) => "すべての写真を整理するには、${url} にアクセスしてください";
 
@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("タグを付ける"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("タグを付ける"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("すべての検索タグ"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("サブスクリプションは"),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("自動更新可能。"),
     "cancel" : MessageLookupByLibrary.simpleMessage("キャンセル"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("位置を保存"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("スクリーンショット"),
     "search" : MessageLookupByLibrary.simpleMessage("検索..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("すべてのタグが付いた画像は見つかりませんでした。"),
     "search_results" : MessageLookupByLibrary.simpleMessage("結果を検索"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("自撮り"),
     "settings" : MessageLookupByLibrary.simpleMessage("設定"),

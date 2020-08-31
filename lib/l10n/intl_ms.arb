@@ -29,7 +29,7 @@
 
   "photo_gallery_title": "Galeri Gambar",
   "photo_gallery_description": "Gambar belum diuruskan",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{Tiada gambar yang dipilih} one{1 gambar dipilih} other{{howMany} gambar dipilih}}",
 
   "organized_photos_title": "Gambar Terurus",
   "organized_photos_description": "Gambar yang sudah ditag",
@@ -112,5 +112,7 @@
   "auto_renewable_second_part": "boleh diperbaharui secara automatik.",
   "cancel_anytime": "Batalkan bila-bila",
 
-  "language": "Bahasa"
+  "language": "Bahasa",
+  "all_search_tags": "Semua Tag Carian",
+  "search_all_tags_not_found": "Tiada gambar dijumpai dengan semua tanda di atasnya."
 }

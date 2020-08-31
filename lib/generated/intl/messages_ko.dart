@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ko';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: '선택된 사진이 없습니다', one: '사진 1장이 선택됨', other: '사진 ${howMany}장이 선택됨')}";
 
   static m1(number) => "${number} 무료 일일 사진을 완성했습니다. 계속 하시겠습니까?";
 
@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("태그 추가"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("태그 추가"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("모든 검색 태그"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("구독은"),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("자동 갱신 가능."),
     "cancel" : MessageLookupByLibrary.simpleMessage("취소"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("위치 저장"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("스크린샷"),
     "search" : MessageLookupByLibrary.simpleMessage("검색..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("태그가 모두 포함 된 사진이 없습니다."),
     "search_results" : MessageLookupByLibrary.simpleMessage("검색 결과"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("셀카"),
     "settings" : MessageLookupByLibrary.simpleMessage("설정"),

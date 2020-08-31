@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/tabs_screen.dart';
-import 'package:picPics/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:hive/hive.dart';
-import 'package:picPics/model/tag.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -17,45 +16,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  void createDefaultTags(BuildContext context) async {
-    var tagsBox = await Hive.openBox('tags');
-
-    if (tagsBox.length == 0) {
-      print('adding default tags...');
-      Tag tag1 = Tag(S.of(context).family_tag, []);
-      Tag tag2 = Tag(S.of(context).travel_tag, []);
-      Tag tag3 = Tag(S.of(context).pets_tag, []);
-      Tag tag4 = Tag(S.of(context).work_tag, []);
-      Tag tag5 = Tag(S.of(context).selfies_tag, []);
-      Tag tag6 = Tag(S.of(context).parties_tag, []);
-      Tag tag7 = Tag(S.of(context).sports_tag, []);
-      Tag tag8 = Tag(S.of(context).home_tag, []);
-      Tag tag9 = Tag(S.of(context).foods_tag, []);
-      Tag tag10 = Tag(S.of(context).screenshots_tag, []);
-
-      Map<String, Tag> entries = {
-        DatabaseManager.instance.encryptTag(S.of(context).family_tag): tag1,
-        DatabaseManager.instance.encryptTag(S.of(context).travel_tag): tag2,
-        DatabaseManager.instance.encryptTag(S.of(context).pets_tag): tag3,
-        DatabaseManager.instance.encryptTag(S.of(context).work_tag): tag4,
-        DatabaseManager.instance.encryptTag(S.of(context).selfies_tag): tag5,
-        DatabaseManager.instance.encryptTag(S.of(context).parties_tag): tag6,
-        DatabaseManager.instance.encryptTag(S.of(context).sports_tag): tag7,
-        DatabaseManager.instance.encryptTag(S.of(context).home_tag): tag8,
-        DatabaseManager.instance.encryptTag(S.of(context).foods_tag): tag9,
-        DatabaseManager.instance.encryptTag(S.of(context).screenshots_tag): tag10,
-      };
-      tagsBox.putAll(entries);
-    }
-  }
+  AppStore appStore;
 
   @override
   void initState() {
     super.initState();
+    Analytics.sendCurrentScreen(Screen.login_screen);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    appStore.createDefaultTags(context);
+
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -96,15 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   CupertinoButton(
                     padding: const EdgeInsets.all(0),
                     onPressed: () async {
-                      createDefaultTags(context);
-                      var result = await PhotoManager.requestPermission();
-                      if (result) {
-                        DatabaseManager.instance.setupPathList();
-                        Navigator.pushReplacementNamed(context, TabsScreen.id);
-                      } else {
-                        // fail
-                        /// if result is fail, you can call `PhotoManager.openSetting();`  to open android/ios applicaton's setting to get permission
-                      }
+                      await appStore.requestGalleryPermission();
+                      appStore.setLoggedIn(true);
+                      Navigator.pushReplacementNamed(context, TabsScreen.id);
                     },
                     child: Container(
                       height: 44.0,

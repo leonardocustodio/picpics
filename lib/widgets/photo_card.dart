@@ -1,6 +1,7 @@
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:picPics/admob_manager.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/add_location.dart';
@@ -8,30 +9,28 @@ import 'package:picPics/photo_screen.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/premium_screen.dart';
+import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:facebook_audience_network/facebook_audience_network.dart';
+import 'package:picPics/components/circular_menu.dart';
+import 'package:picPics/components/circular_menu_item.dart';
+import 'dart:math';
+import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:provider/provider.dart';
 
 class PhotoCard extends StatefulWidget {
-  final AssetEntity data;
-  final String photoId;
-  final String specificLocation;
-  final String generalLocation;
+  final PicStore picStore;
   final Function showEditTagModal;
-  final Function onPressedTrash;
 
   PhotoCard({
-    this.data,
-    this.photoId,
-    this.specificLocation,
-    this.generalLocation,
+    this.picStore,
     this.showEditTagModal,
-    this.onPressedTrash,
   });
 
   @override
@@ -39,10 +38,15 @@ class PhotoCard extends StatefulWidget {
 }
 
 class _PhotoCardState extends State<PhotoCard> {
+  AppStore appStore;
+  GalleryStore galleryStore;
+  PicStore get picStore => widget.picStore;
+
   TextEditingController tagsEditingController = TextEditingController();
   FocusNode tagsFocusNode;
 
   showWatchAdModal(BuildContext context) {
+    Analytics.sendEvent(Event.watch_ads_modal);
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -50,8 +54,7 @@ class _PhotoCardState extends State<PhotoCard> {
         return WatchAdModal(
           onPressedWatchAdd: () {
             Navigator.pop(context);
-            RewardedVideoAd.instance.show();
-//            FacebookInterstitialAd.showInterstitialAd(delay: 0);
+            Ads.showRewarded();
           },
           onPressedGetPremium: () {
             Navigator.popAndPushNamed(context, PremiumScreen.id);
@@ -66,17 +69,16 @@ class _PhotoCardState extends State<PhotoCard> {
     return formatter.format(dateTime);
   }
 
-  Future<List<String>> reverseGeocoding(BuildContext context, Pic picInfo) async {
-    if (widget.specificLocation != null && widget.generalLocation != null) {
-      return [widget.specificLocation, '  ${widget.generalLocation}'];
+  Future<List<String>> reverseGeocoding(BuildContext context) async {
+    if (picStore.specificLocation != null && picStore.generalLocation != null) {
+      return [picStore.specificLocation, '  ${picStore.generalLocation}'];
     }
 
-    if ((picInfo.originalLatitude == null || picInfo.originalLongitude == null) ||
-        (picInfo.originalLatitude == 0 && picInfo.originalLongitude == 0)) {
+    if ((picStore.originalLatitude == null || picStore.originalLongitude == null) || (picStore.originalLatitude == 0 && picStore.originalLongitude == 0)) {
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
-    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(widget.data.latitude, widget.data.longitude);
+    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(picStore.entity.latitude, picStore.entity.longitude);
 
     print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -85,13 +87,11 @@ class _PhotoCardState extends State<PhotoCard> {
 
     if (placemark.isNotEmpty) {
       print('Saving pic!!!');
-      DatabaseManager.instance.saveLocationToPic(
-        lat: picInfo.originalLatitude,
-        long: picInfo.originalLongitude,
-        specifLocation: placemark[0].locality,
-        generalLocation: placemark[0].country,
-        photoId: picInfo.photoId,
-        notify: false,
+      picStore.saveLocation(
+        lat: picStore.originalLatitude,
+        long: picStore.originalLongitude,
+        specific: placemark[0].locality,
+        general: placemark[0].country,
       );
       return [placemark[0].locality, '  ${placemark[0].country}'];
     }
@@ -108,11 +108,6 @@ class _PhotoCardState extends State<PhotoCard> {
       print('#### keyboard is visible!!!!');
       tagsFocusNode.requestFocus();
     }
-
-//    KeyboardVisibility.onChange.listen((bool visible) {
-//      print('Keyboard visibility update. Is visible: ${visible}');
-//
-//    });
   }
 
   @override
@@ -121,37 +116,15 @@ class _PhotoCardState extends State<PhotoCard> {
     super.dispose();
   }
 
-  void initTagSuggestions(Pic picInfo) {
-    DatabaseManager.instance.tagsSuggestions(
-      '',
-      picInfo.photoId,
-      excludeTags: picInfo.tags,
-      notify: false,
-    );
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
+    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    Pic picInfo = DatabaseManager.instance.getPicInfo(widget.photoId);
-
-    if (picInfo == null) {
-      picInfo = Pic(
-        widget.data.id,
-        widget.data.createDateTime,
-        widget.data.latitude,
-        widget.data.longitude,
-        null,
-        null,
-        null,
-        null,
-        [],
-      );
-    }
-
-    if (DatabaseManager.instance.suggestionTags[picInfo.photoId] == null) {
-      initTagSuggestions(picInfo);
-    }
-
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
@@ -170,41 +143,26 @@ class _PhotoCardState extends State<PhotoCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: Stack(
-              children: <Widget>[
-                ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(12.0),
-                    topRight: Radius.circular(12.0),
-                  ),
-                  child: ImageItem(
-                    entity: widget.data,
-                    size: 600,
-                    backgroundColor: Colors.grey[400],
-                  ),
-                ),
-                Positioned(
-                  top: 0.0,
-                  right: 6.0,
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
-                    onPressed: widget.onPressedTrash,
-                    child: Image.asset('lib/images/pictrashicon.png'),
-                  ),
-                ),
-                Positioned(
-                  bottom: 0.0,
-                  right: 6.0,
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.symmetric(vertical: 14.0, horizontal: 16.0),
-                    onPressed: () {
-                      DatabaseManager.instance.selectedPhoto = widget.data;
-                      print('Selected photo: ${widget.data.id}');
-
-                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(widget.data.id);
-
-//                      Navigator.pushNamed(context, PhotoScreen.id);
-
+            child: CircularMenu(
+              alignment: Alignment.bottomRight,
+              radius: 80,
+              startingAngleInRadian: pi,
+              endingAngleInRadian: pi + pi / 2,
+              toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
+              toggleButtonBoxShadow: [
+                BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),
+              ],
+              toggleButtonIconColor: Colors.white,
+              toggleButtonMargin: 12.0,
+              toggleButtonPadding: 8.0,
+              toggleButtonSize: 18.0,
+              items: [
+                CircularMenuItem(
+                    image: Image.asset('lib/images/expandnobackground.png'),
+                    color: kSecondaryColor,
+                    onTap: () {
+                      galleryStore.setCurrentPic(picStore);
+                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -213,11 +171,32 @@ class _PhotoCardState extends State<PhotoCard> {
                           ),
                         ),
                       );
-                    },
-                    child: Image.asset('lib/images/expandphotoico.png'),
-                  ),
+                    }),
+                CircularMenuItem(
+                    image: Image.asset('lib/images/sharenobackground.png'),
+                    color: kPrimaryColor,
+                    onTap: () {
+                      picStore.sharePic();
+                    }),
+                CircularMenuItem(
+                  image: Image.asset('lib/images/trashnobackground.png'),
+                  color: kPinkColor,
+                  onTap: () {
+                    galleryStore.trashPic(picStore);
+                  },
                 ),
               ],
+              backgroundWidget: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(12.0),
+                  topRight: Radius.circular(12.0),
+                ),
+                child: ImageItem(
+                  entity: picStore.entity,
+                  size: 600,
+                  backgroundColor: Colors.grey[400],
+                ),
+              ),
             ),
           ),
           Padding(
@@ -231,112 +210,43 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () async {
-                        DatabaseManager.instance.selectedPhoto = widget.data;
+                        galleryStore.setCurrentPic(picStore);
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
-                      child: FutureBuilder(
-                          future: reverseGeocoding(context, picInfo),
-                          initialData: [S.of(context).photo_location, '  ${S.of(context).country}'],
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return RichText(
-                                textScaleFactor: 1.0,
-                                text: new TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: snapshot.data[0],
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: '  ${snapshot.data[1]}',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                  ],
+                      child: Observer(builder: (_) {
+                        return RichText(
+                          textScaleFactor: 1.0,
+                          text: new TextSpan(
+                            children: [
+                              TextSpan(
+                                text: picStore.specificLocation ?? S.of(context).photo_location,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
                                 ),
-                              );
-                            } else if (snapshot.hasError) {
-                              return RichText(
-                                textScaleFactor: 1.0,
-                                text: new TextSpan(
-                                  children: [
-                                    TextSpan(
-                                      text: S.of(context).photo_location,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: '  ${S.of(context).country}',
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff606566),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w300,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                  ],
+                              ),
+                              TextSpan(
+                                text: '  ${picStore.generalLocation ?? S.of(context).country}',
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff606566),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
                                 ),
-                              );
-                            } else {
-                              return Row(
-                                children: <Widget>[
-                                  RichText(
-                                    textScaleFactor: 1.0,
-                                    text: new TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: snapshot.data[0],
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: Color(0xff606566),
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w400,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '  ${snapshot.data[1]}',
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: Color(0xff606566),
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-                          }),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
                     ),
                     Text(
-                      dateFormat(widget.data.createDateTime),
+                      dateFormat(picStore.entity.createDateTime),
                       textScaleFactor: 1.0,
                       style: TextStyle(
                         fontFamily: 'Lato',
@@ -349,96 +259,79 @@ class _PhotoCardState extends State<PhotoCard> {
                     ),
                   ],
                 ),
-                TagsList(
-                  tagsKeys: picInfo.tags,
-                  addTagField: true,
-                  textEditingController: tagsEditingController,
-                  textFocusNode: tagsFocusNode,
-                  showEditTagModal: widget.showEditTagModal,
-                  shouldChangeToSwipeMode: true,
-                  onTap: (tagName) {
-                    print('do nothing');
-                  },
-                  onDoubleTap: () {
-                    print('do nothing');
-                  },
-                  onPanUpdate: () {
-                    if (!DatabaseManager.instance.canTagToday()) {
-                      showWatchAdModal(context);
-                      return;
-                    }
-
-                    DatabaseManager.instance.removeTagFromPic(
-                      tagKey: DatabaseManager.instance.selectedTagKey,
-                      photoId: picInfo.photoId,
-                    );
-
-                    setState(() {});
-                  },
-                  onChanged: (text) {
-                    DatabaseManager.instance.tagsSuggestions(
-                      text,
-                      picInfo.photoId,
-                      excludeTags: picInfo.tags,
-                    );
-
-                    setState(() {});
-                  },
-                  onSubmitted: (text) {
-                    print('return');
-
-                    if (text != '') {
-                      if (!DatabaseManager.instance.canTagToday()) {
-                        tagsEditingController.clear();
-                        DatabaseManager.instance.tagsSuggestions(
-                          '',
-                          widget.data.id,
-                          excludeTags: picInfo.tags,
-                        );
-                        setState(() {});
-                        showWatchAdModal(context);
-                        return;
-                      }
-
-                      DatabaseManager.instance.selectedPhoto = widget.data;
-                      DatabaseManager.instance.addTag(
-                        tagName: text,
-                        photoId: widget.data.id,
-                      );
-                      tagsEditingController.clear();
-                    }
-
-                    setState(() {});
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: TagsList(
-                    title: S.of(context).suggestions,
-                    tagsKeys: DatabaseManager.instance.suggestionTags[picInfo.photoId],
-                    tagStyle: TagStyle.GrayOutlined,
+                Observer(builder: (_) {
+                  return TagsList(
+                    tagsKeys: picStore.tagsKeys,
+                    addTagField: true,
+                    textEditingController: tagsEditingController,
+                    textFocusNode: tagsFocusNode,
                     showEditTagModal: widget.showEditTagModal,
+                    shouldChangeToSwipeMode: true,
                     onTap: (tagName) {
-                      if (!DatabaseManager.instance.canTagToday()) {
-                        showWatchAdModal(context);
-                        return;
-                      }
-
-                      DatabaseManager.instance.selectedPhoto = widget.data;
-                      DatabaseManager.instance.addTag(
-                        tagName: tagName,
-                        photoId: picInfo.photoId,
-                      );
-
-                      setState(() {});
+                      print('do nothing');
                     },
                     onDoubleTap: () {
                       print('do nothing');
                     },
-                    onPanUpdate: () {
-                      print('do nothing');
+                    onPanEnd: () {
+                      if (!appStore.canTagToday) {
+                        showWatchAdModal(context);
+                        return;
+                      }
+                      picStore.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                     },
-                  ),
+                    onChanged: (text) {
+                      picStore.setSearchText(text);
+                    },
+                    onSubmitted: (text) async {
+                      print('return');
+
+                      if (text != '') {
+                        if (!appStore.canTagToday) {
+                          tagsEditingController.clear();
+                          picStore.setSearchText('');
+                          showWatchAdModal(context);
+                          return;
+                        }
+
+                        await picStore.addTag(
+                          tagName: text,
+                        );
+                        Vibrate.feedback(FeedbackType.success);
+                        tagsEditingController.clear();
+                        picStore.setSearchText('');
+                      }
+                    },
+                  );
+                }),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: Observer(builder: (_) {
+                    return TagsList(
+                      title: S.of(context).suggestions,
+                      tagsKeys: picStore.tagsSuggestions,
+                      tagStyle: TagStyle.GrayOutlined,
+                      showEditTagModal: widget.showEditTagModal,
+                      onTap: (tagName) async {
+                        if (!appStore.canTagToday) {
+                          showWatchAdModal(context);
+                          return;
+                        }
+
+                        await picStore.addTag(
+                          tagName: tagName,
+                        );
+                        tagsEditingController.clear();
+                        picStore.setSearchText('');
+                      },
+                      onDoubleTap: () {
+                        print('do nothing');
+                      },
+                      onPanEnd: () {
+                        print('do nothing');
+                      },
+                    );
+                  }),
                 ),
               ],
             ),

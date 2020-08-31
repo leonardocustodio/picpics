@@ -1,27 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/database_manager.dart';
-import 'package:picPics/constants.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/settings_screen.dart';
+import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
 import 'package:provider/provider.dart';
-import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:picPics/asset_provider.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
 class PicTab extends StatefulWidget {
   static const id = 'pic_tab';
 
-  final bool deviceHasNoPics;
   final Function showEditTagModal;
-  final Function trashPic;
 
   PicTab({
     @required this.showEditTagModal,
-    @required this.trashPic,
-    this.deviceHasNoPics = false,
   });
 
   @override
@@ -29,34 +24,15 @@ class PicTab extends StatefulWidget {
 }
 
 class _PicTabState extends State<PicTab> {
+  AppStore appStore;
+  GalleryStore galleryStore;
+
   CarouselController carouselController = CarouselController();
-//  int picSwiper = 0;
 
 //  TextEditingController tagsEditingController = TextEditingController();
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
-    print('photo slides index: $index');
-    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-
-    int orderedIndex = DatabaseManager.instance.sliderIndex[index];
-    print('Slider index in index $index: $orderedIndex');
-    var data = pathProvider.orderedList[orderedIndex];
-
-    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-
-    if (picInfo == null) {
-      picInfo = Pic(
-        data.id,
-        data.createDateTime,
-        data.latitude,
-        data.longitude,
-        null,
-        null,
-        null,
-        null,
-        [],
-      );
-    }
+    var data = galleryStore.untaggedPics[index].entity;
 
     print('photo id: ${data.id}');
     double latitude = data.latitude;
@@ -88,16 +64,17 @@ class _PicTabState extends State<PicTab> {
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
-        data: data,
-        photoId: picInfo.photoId,
-        specificLocation: picInfo.specificLocation,
-        generalLocation: picInfo.generalLocation,
+        picStore: galleryStore.untaggedPics[index],
         showEditTagModal: widget.showEditTagModal,
-        onPressedTrash: () {
-          widget.trashPic(data);
-        },
       ),
     );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
+    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   @override
@@ -131,46 +108,51 @@ class _PicTabState extends State<PicTab> {
                 ],
               ),
             ),
-            if (Provider.of<DatabaseManager>(context).sliderIndex == null && !widget.deviceHasNoPics)
-              Expanded(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-                  ),
-                ),
-              ),
-            if (Provider.of<DatabaseManager>(context).sliderIndex == null && widget.deviceHasNoPics)
-              Expanded(
-                child: DeviceHasNoPics(),
-              ),
-            if (Provider.of<DatabaseManager>(context).sliderIndex != null)
-              Expanded(
-                child: Stack(
-                  children: <Widget>[
-                    CarouselSlider.builder(
-                      itemCount: Provider.of<DatabaseManager>(context).sliderIndex.length,
+//            if (Provider.of<DatabaseManager>(context).sliderIndex == null && galleryStore.deviceHasPics)
+//              Expanded(
+//                child: Center(
+//                  child: CircularProgressIndicator(
+//                    valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+//                  ),
+//                ),
+//              ),
+//            if (Provider.of<DatabaseManager>(context).sliderIndex == null && !galleryStore.deviceHasPics)
+//              Expanded(
+//                child: DeviceHasNoPics(),
+//              ),
+//            if (Provider.of<DatabaseManager>(context).sliderIndex != null)
+            Expanded(
+              child: Stack(
+                children: <Widget>[
+                  Observer(builder: (_) {
+                    return CarouselSlider.builder(
+                      itemCount: galleryStore.untaggedPics.length,
                       carouselController: carouselController,
                       itemBuilder: (BuildContext context, int index) {
                         print('calling index $index');
                         return _buildPhotoSlider(context, index);
                       },
                       options: CarouselOptions(
-                        initialPage: DatabaseManager.instance.swiperIndex,
+                        initialPage: galleryStore.swipeIndex,
                         enableInfiniteScroll: true,
                         height: double.maxFinite,
                         viewportFraction: 1.0,
                         enlargeCenterPage: true,
                         autoPlayCurve: Curves.fastOutSlowIn,
                         onPageChanged: (index, reason) async {
-                          if (!DatabaseManager.instance.userSettings.hasSwiped) {
-                            DatabaseManager.instance.setUserHasSwiped();
+                          if (!appStore.hasSwiped) {
+                            appStore.setHasSwiped(true);
                           }
+                          galleryStore.setSwipeIndex(index);
+                          Analytics.sendEvent(Event.swiped_photo);
                           print('### Swiper Index: $index');
                         },
                       ),
-                    ),
-                    if (!Provider.of<DatabaseManager>(context).userSettings.hasSwiped)
-                      IgnorePointer(
+                    );
+                  }),
+                  Observer(builder: (_) {
+                    if (!appStore.hasSwiped) {
+                      return IgnorePointer(
                         child: Container(
                           padding: const EdgeInsets.only(top: 150.0),
                           child: FlareActor(
@@ -178,13 +160,15 @@ class _PicTabState extends State<PicTab> {
                             alignment: Alignment.topCenter,
                             fit: BoxFit.contain,
                             animation: 'Animations',
-//                            color: kWhiteColor,
                           ),
                         ),
-                      ),
-                  ],
-                ),
+                      );
+                    }
+                    return Container();
+                  }),
+                ],
               ),
+            ),
           ],
         ),
       ),

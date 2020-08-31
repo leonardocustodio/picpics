@@ -8,24 +8,24 @@ part of 'pic.dart';
 
 class PicAdapter extends TypeAdapter<Pic> {
   @override
-  final typeId = 0;
+  final int typeId = 0;
 
   @override
   Pic read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Pic(
-      fields[0] as String,
-      fields[1] as DateTime,
-      fields[2] as double,
-      fields[3] as double,
-      fields[4] as double,
-      fields[5] as double,
-      fields[6] as String,
-      fields[7] as String,
-      (fields[8] as List)?.cast<String>(),
+      photoId: fields[0] as String,
+      createdAt: fields[1] as DateTime,
+      originalLatitude: fields[2] as double,
+      originalLongitude: fields[3] as double,
+      latitude: fields[4] as double,
+      longitude: fields[5] as double,
+      specificLocation: fields[6] as String,
+      generalLocation: fields[7] as String,
+      tags: (fields[8] as List)?.cast<String>(),
     );
   }
 

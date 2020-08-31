@@ -29,7 +29,7 @@
 
   "photo_gallery_title": "フォトギャラリー",
   "photo_gallery_description": "写真はまだ整理されていません",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{写真が選択されていません} one{1 枚の写真を選択しました} other{{howMany} 枚の写真を選択しました}}",
 
   "organized_photos_title": "整理された写真",
   "organized_photos_description": "タグ付けされている写真",
@@ -89,7 +89,7 @@
 
   "export_library": "ライブラリをエクスポート",
 
-  "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
+  "premium_modal_description": "{number}無料のデイリー写真を完了しました。続けますか？",
   "premium_modal_watch_ad": "続行するにはビデオ広告をご覧ください",
   "premium_modal_get_premium_title": "プレミアムアカウントを購入",
   "premium_modal_get_premium_description": "広告なしのすべての機能",
@@ -112,5 +112,7 @@
   "auto_renewable_second_part": "自動更新可能。",
   "cancel_anytime": "いつでもキャンセル",
 
-  "language": "言語"
+  "language": "言語",
+  "all_search_tags": "すべての検索タグ",
+  "search_all_tags_not_found": "すべてのタグが付いた画像は見つかりませんでした。"
 }

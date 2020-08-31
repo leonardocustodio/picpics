@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'sv_SE';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: 'Inga foton har valts', one: '1 foto valt', other: '${howMany} foton valda')}";
 
   static m1(number) => "Du har slutfört dina ${number} gratis dagliga bilder, vill du fortsätta?";
 
@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Lägg till tagg"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Lägg till taggar"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("Alla söktaggar"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("Prenumerationen är "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("auto-förnybar."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Avbryt"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("Spara plats"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Skärmdumpar"),
     "search" : MessageLookupByLibrary.simpleMessage("Sök..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("Inga bilder hittades med alla taggar på den."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Sökresultat"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("Selfies"),
     "settings" : MessageLookupByLibrary.simpleMessage("Inställningar"),

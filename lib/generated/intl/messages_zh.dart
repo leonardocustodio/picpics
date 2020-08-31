@@ -19,7 +19,7 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(howMany) => "${Intl.plural(howMany, zero: '未选择照片', one: '已选择1张照片', other: '已选择${howMany}张照片')}";
 
   static m1(number) => "您已完成您的${number}张免费每日图片，是否要继续？";
 
@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("添加标签"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("添加标签"),
+    "all_search_tags" : MessageLookupByLibrary.simpleMessage("所有搜寻标签"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("订阅为"),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("自动续订。"),
     "cancel" : MessageLookupByLibrary.simpleMessage("取消"),
@@ -88,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "save_location" : MessageLookupByLibrary.simpleMessage("保存位置"),
     "screenshots_tag" : MessageLookupByLibrary.simpleMessage("截屏"),
     "search" : MessageLookupByLibrary.simpleMessage("搜索..."),
+    "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("未找到带有所有标签的图片。"),
     "search_results" : MessageLookupByLibrary.simpleMessage("搜索结果"),
     "selfies_tag" : MessageLookupByLibrary.simpleMessage("自拍"),
     "settings" : MessageLookupByLibrary.simpleMessage("设置"),

@@ -28,7 +28,7 @@
 
   "photo_gallery_title": "चित्र प्रदर्शनी",
   "photo_gallery_description": "तस्वीरें अभी तक व्यवस्थित नहीं हैं",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{कोई फ़ोटो नहीं चुना गया} one{1 फ़ोटो चयनित} other{{howMany} फ़ोटो चयनित}}",
 
   "organized_photos_title": "आयोजित फोटो",
   "organized_photos_description": "तस्वीरें जो पहले ही टैग की जा चुकी हैं",
@@ -111,5 +111,7 @@
   "auto_renewable_second_part": "ऑटो-नवीकरणीय",
   "cancel_anytime": "कभी भी रद्द करें",
 
-  "language": "भाषा"
+  "language": "भाषा",
+  "all_search_tags": "सभी खोज टैग",
+  "search_all_tags_not_found": "इस पर सभी टैग के साथ कोई चित्र नहीं मिला।"
 }

@@ -28,7 +28,7 @@
 
   "photo_gallery_title": "Fotogallerij",
   "photo_gallery_description": "Foto's nog niet geordend",
-  "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
+  "photo_gallery_count": "{howMany, plural, zero{Geen foto's geselecteerd} one{1 foto geselecteerd} other{{howMany} foto's geselecteerd}}",
 
   "organized_photos_title": "Geordende foto's",
   "organized_photos_description": "Foto's die al zijn getagd",
@@ -111,5 +111,7 @@
   "auto_renewable_second_part": "automatisch vernieuwbaar.",
   "cancel_anytime": "U kunt op elk moment annuleren",
 
-  "language": "Taal"
+  "language": "Taal",
+  "all_search_tags": "Alle zoektags",
+  "search_all_tags_not_found": "Er zijn geen foto's gevonden met alle tags erop."
 }

@@ -113,5 +113,7 @@
   "auto_renewable_second_part": "auto-renovável.",
   "cancel_anytime": "Cancele a qualquer momento",
 
-  "language": "Lingua"
+  "language": "Lingua",
+  "all_search_tags": "Todas as tags da pesquisa",
+  "search_all_tags_not_found": "Nenhuma foto foi encontrada com todas as tags."
 }
