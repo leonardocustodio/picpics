@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/analytics_manager.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/constants.dart';
@@ -28,8 +27,6 @@ class DatabaseManager extends ChangeNotifier {
   static DatabaseManager get instance {
     return _instance ??= DatabaseManager._();
   }
-
-  int dailyPicsForAds = 25;
 
   List<bool> picHasTag;
   List<int> sliderIndex;
@@ -60,10 +57,6 @@ class DatabaseManager extends ChangeNotifier {
   User userSettings;
 
   double adOffset = 48.0;
-
-  AssetEntity selectedPhotoData;
-  Pic selectedPhotoPicInfo;
-  int selectedPhotoIndex;
 
   // For multipic work
 //  bool multiPicBar = false;

@@ -107,8 +107,8 @@ abstract class _AppStore with Store {
   }
 
   String initialRoute;
-
   String tryBuyId;
+  int dailyPicsForAds = 25;
 
   @action
   void setTryBuyId(String value) => tryBuyId = value;
@@ -292,8 +292,8 @@ abstract class _AppStore with Store {
       print('same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
 
       final RemoteConfig remoteConfig = await RemoteConfig.instance;
-      DatabaseManager.instance.dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
-      int mod = currentUser.picsTaggedToday % DatabaseManager.instance.dailyPicsForAds;
+      dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
+      int mod = currentUser.picsTaggedToday % dailyPicsForAds;
 
       if (mod == 0) {
         print('### CALL ADS!!!');
