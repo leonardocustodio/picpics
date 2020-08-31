@@ -104,6 +104,54 @@ abstract class _GalleryStore with Store {
   }
 
   @computed
+  List<String> get tagsSuggestions {
+//    var userBox = Hive.box('user');
+//    var tagsBox = Hive.box('tags');
+//    User getUser = userBox.getAt(0);
+//
+//    List<String> suggestionTags = [];
+//
+//    if (searchText == '') {
+//      for (var recent in getUser.recentTags) {
+//        if (tagsKeys.contains(recent)) {
+//          continue;
+//        }
+//        suggestionTags.add(recent);
+//      }
+//
+//      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+//
+////      while (suggestions.length < maxNumOfSuggestions) {
+////          if (excludeTags.contains('Hey}')) {
+////            continue;
+////          }
+//      if (suggestionTags.length < kMaxNumOfSuggestions) {
+//        for (var tagKey in tagsBox.keys) {
+//          if (suggestionTags.length == kMaxNumOfSuggestions) {
+//            break;
+//          }
+//          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey)) {
+//            continue;
+//          }
+//          suggestionTags.add(tagKey);
+//        }
+//      }
+////      }
+//    } else {
+//      for (var tagKey in tagsBox.keys) {
+//        String tagName = DatabaseManager.instance.decryptTag(tagKey);
+//        if (tagName.startsWith(DatabaseManager.instance.stripTag(searchText))) {
+//          suggestionTags.add(tagKey);
+//        }
+//      }
+//    }
+//    print('find suggestions: $searchText - exclude: $tagsKeys');
+//    print(suggestionTags);
+//
+//    return suggestionTags;
+  }
+
+  @computed
   List<String> get taggedKeys {
     Set<String> tags = Set();
     taggedPics.forEach((element) {

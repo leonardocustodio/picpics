@@ -471,34 +471,36 @@ class _TabsScreenState extends State<TabsScreen> {
                             },
                             child: SafeArea(
                               bottom: !expandableController.expanded,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  CupertinoButton(
-                                    onPressed: () {
-                                      tabsStore.setMultiTagSheet(false);
-                                    },
-                                    child: Container(
-                                      width: 80.0,
-                                      child: Text(
-                                        S.of(context).cancel,
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                          color: Color(0xff707070),
-                                          fontSize: 16,
-                                          fontFamily: 'Lato',
-                                          fontWeight: FontWeight.w700,
+                              child: Container(
+                                color: Color(0xFFF1F3F5),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    CupertinoButton(
+                                      onPressed: () {
+                                        tabsStore.setMultiTagSheet(false);
+                                      },
+                                      child: Container(
+                                        width: 80.0,
+                                        child: Text(
+                                          S.of(context).cancel,
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                            color: Color(0xff707070),
+                                            fontSize: 16,
+                                            fontFamily: 'Lato',
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Spacer(),
-                                  CupertinoButton(
-                                    onPressed: () {
-                                      if (!appStore.isPremium) {
-                                        Navigator.pushNamed(context, PremiumScreen.id);
-                                        return;
-                                      }
+                                    Spacer(),
+                                    CupertinoButton(
+                                      onPressed: () {
+                                        if (!appStore.isPremium) {
+                                          Navigator.pushNamed(context, PremiumScreen.id);
+                                          return;
+                                        }
 
 //                                      List<String> photosIds = [];
 //                                      List<AssetEntity> entities = [];
@@ -517,27 +519,28 @@ class _TabsScreenState extends State<TabsScreen> {
 //                                        entities: entities,
 //                                      );
 
-                                      tabsStore.setMultiTagSheet(false);
-                                      tabsStore.setMultiPicBar(false);
-                                      galleryStore.clearSelectedPics();
-                                      DatabaseManager.instance.setMultiPicTagKeys([]);
-                                    },
-                                    child: Container(
-                                      width: 80.0,
-                                      child: Text(
-                                        S.of(context).ok,
-                                        textScaleFactor: 1.0,
-                                        textAlign: TextAlign.end,
-                                        style: TextStyle(
-                                          color: Color(0xff707070),
-                                          fontSize: 16,
-                                          fontFamily: 'Lato',
-                                          fontWeight: FontWeight.w700,
+                                        tabsStore.setMultiTagSheet(false);
+                                        tabsStore.setMultiPicBar(false);
+                                        galleryStore.clearSelectedPics();
+                                        DatabaseManager.instance.setMultiPicTagKeys([]);
+                                      },
+                                      child: Container(
+                                        width: 80.0,
+                                        child: Text(
+                                          S.of(context).ok,
+                                          textScaleFactor: 1.0,
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(
+                                            color: Color(0xff707070),
+                                            fontSize: 16,
+                                            fontFamily: 'Lato',
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
