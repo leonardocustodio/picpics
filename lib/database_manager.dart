@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive/hive.dart';
-import 'package:picPics/constants.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
@@ -32,13 +31,6 @@ class DatabaseManager extends ChangeNotifier {
   List<int> sliderIndex;
 
   bool noTaggedPhoto = false;
-//  bool editingTags = false;
-//  bool searchingTags = false;
-//
-//  List<String> searchActiveTags = [];
-//  List<String> searchResults;
-//  List<String> searchPhotosIds = [];
-
   List<String> slideThumbPhotoIds = [];
 
   List<double> lastLocationRequest = [0.0, 0.0];
@@ -65,9 +57,6 @@ class DatabaseManager extends ChangeNotifier {
 
   bool adsIsLoaded = false;
   bool showShowAdAfterReload = false;
-
-//  bool appStartInPremium = false;
-//  String trybuyId;
 
   void setMultiPicTagKeys(List<String> pics) {
     multiPicTagKeys = pics;

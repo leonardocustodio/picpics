@@ -57,6 +57,7 @@ abstract class _GalleryStore with Store {
   bool isLoaded = false;
 
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
+  ObservableList<PicStore> allPics = ObservableList<PicStore>();
   ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
@@ -124,7 +125,7 @@ abstract class _GalleryStore with Store {
 
   @computed
   bool get deviceHasPics {
-    if (untaggedPics.length == 0 && taggedPics.length == 0) {
+    if (allPics.length == 0) {
       return false;
     } else {
       return true;
@@ -146,6 +147,8 @@ abstract class _GalleryStore with Store {
         originalLongitude: entity.longitude,
       );
 
+      allPics.add(pic);
+
       if (pic.tags.length > 0) {
         print('has pic info! and this pic has tags in it!!!!');
         taggedPics.add(pic);
@@ -155,7 +158,7 @@ abstract class _GalleryStore with Store {
       }
     }
 
-    print('#@#@#@# Total photos: ${taggedPics.length + untaggedPics.length}');
+    print('#@#@#@# Total photos: ${allPics.length}');
     isLoaded = true;
   }
 
@@ -228,11 +231,7 @@ abstract class _GalleryStore with Store {
     for (var photoId in photoIds) {
       AssetEntity data;
 
-      if (selectedPicsAreTagged) {
-        data = taggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null).entity;
-      } else {
-        data = untaggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null).entity;
-      }
+      data = allPics.firstWhere((element) => element.photoId == photoId, orElse: () => null).entity;
 
       if (data == null) {
         continue;
