@@ -11,6 +11,7 @@ import 'package:picPics/model/user.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/premium_screen.dart';
@@ -36,6 +37,12 @@ Future<String> checkForAppStoreInitiatedProducts() async {
     return appStoreProducts.last.productId;
   }
   return null;
+}
+
+class Test {
+  String testing;
+
+  Test({this.testing});
 }
 
 void main() async {

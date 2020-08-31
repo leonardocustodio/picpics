@@ -59,6 +59,7 @@ abstract class _GalleryStore with Store {
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
   ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
+  ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
 
   @observable
@@ -67,7 +68,16 @@ abstract class _GalleryStore with Store {
   @action
   void setIsSearching(bool value) => isSearching = value;
 
-  ObservableList<String> searchingTagsKeys = ObservableList<String>();
+  ObservableList<String> searchingTagsKeys = ObservableList<String>.of([]);
+
+  @computed
+  bool get isFiltered {
+    if (searchingTagsKeys.length > 0) {
+      return true;
+    }
+    return false;
+  }
+
   ObservableList<String> searchTagsResults = ObservableList<String>();
 
   @observable
@@ -402,10 +412,11 @@ abstract class _GalleryStore with Store {
 
   @action
   void addTagToSearchFilter() {
-    if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-      return;
-    }
-    searchingTagsKeys.add(DatabaseManager.instance.selectedTagKey);
+//    if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+//      return;
+//    }
+    searchingTagsKeys.add('4ad59db7a1f9f4c403dfee41c570fa79');
+//    searchingTagsKeys.add(DatabaseManager.instance.selectedTagKey);
     print('searching tags: $searchingTagsKeys');
     searchPicsWithTags();
   }
@@ -420,42 +431,43 @@ abstract class _GalleryStore with Store {
 
   @action
   void searchPicsWithTags() {
-//    var tagsBox = Hive.box('tags');
-//
-//    searchPhotosIds.clear();
-//    List<String> tempPhotosIds = [];
-//    bool firstInteraction = true;
-//
-//    for (var tagKey in searchingTagsKeys) {
-//      print('filtering tag: $tagKey');
-//      Tag getTag = tagsBox.get(tagKey);
-//      List<String> photosIds = getTag.photoId;
-//      print('photos Ids in this tag: $photosIds');
-//
-//      if (firstInteraction) {
-//        print('adding all photos because it is firt interaction');
-//        tempPhotosIds.addAll(photosIds);
-//        firstInteraction = false;
-//      } else {
-//        print('tempPhotoId: $tempPhotosIds');
-//        List<String> auxArray = [];
-//        auxArray.addAll(tempPhotosIds);
-//
-//        for (var photoId in tempPhotosIds) {
-//          print('checking if photoId is there: $photoId');
-//          if (!photosIds.contains(photoId)) {
-//            auxArray.remove(photoId);
-//            print('removing $photoId because doesnt have $tagKey');
-//          }
-//        }
-//        tempPhotosIds = auxArray;
-//      }
-//    }
-//    searchPhotosIds = tempPhotosIds;
+    var tagsBox = Hive.box('tags');
+
+    filteredPics.clear();
+    List<String> tempPhotosIds = [];
+    bool firstInteraction = true;
+
+    for (var tagKey in searchingTagsKeys) {
+      print('filtering tag: $tagKey');
+      Tag getTag = tagsBox.get(tagKey);
+      List<String> photosIds = getTag.photoId;
+      print('photos Ids in this tag: $photosIds');
+
+      if (firstInteraction) {
+        print('adding all photos because it is firt interaction');
+        tempPhotosIds.addAll(photosIds);
+        firstInteraction = false;
+      } else {
+        print('tempPhotoId: $tempPhotosIds');
+        List<String> auxArray = [];
+        auxArray.addAll(tempPhotosIds);
+
+        for (var photoId in tempPhotosIds) {
+          print('checking if photoId is there: $photoId');
+          if (!photosIds.contains(photoId)) {
+            auxArray.remove(photoId);
+            print('removing $photoId because doesnt have $tagKey');
+          }
+        }
+        tempPhotosIds = auxArray;
+      }
+    }
+    filteredPics.addAll(taggedPics.where((element) => tempPhotosIds.contains(element.photoId)).toList());
 //    slideThumbPhotoIds = tempPhotosIds;
-//    print('Search Photos Ids: $searchPhotosIds');
-//
-//    Analytics.sendEvent(Event.searched_photos);
+    print('Search Photos: $filteredPics');
+    print('Searcing Tags Keys: $searchingTagsKeys');
+
+    Analytics.sendEvent(Event.searched_photos);
   }
 
   @action
