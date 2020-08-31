@@ -114,14 +114,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
               }
 
               tagsEditingController.text = '';
-
-//              DatabaseManager.instance.tagsSuggestions(
-//                tagsEditingController.text,
-//                data.id,
-//                excludeTags: galleryStore.pics[index].tagsKeys,
-//                notify: false,
-//              );
-
               galleryStore.setCurrentPic(galleryStore.untaggedPics[index]);
               tabsStore.setModalCard(true);
             },

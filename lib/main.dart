@@ -11,7 +11,6 @@ import 'package:picPics/model/user.dart';
 import 'package:picPics/photo_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/premium_screen.dart';
@@ -144,9 +143,9 @@ class _PicPicsAppState extends State<PicPicsApp> {
         ChangeNotifierProvider<DatabaseManager>(
           create: (_) => DatabaseManager.instance,
         ),
-        ChangeNotifierProvider<PhotoProvider>(
-          create: (_) => PhotoProvider.instance,
-        ),
+//        ChangeNotifierProvider<PhotoProvider>(
+//          create: (_) => PhotoProvider.instance,
+//        ),
       ],
       child: MaterialApp(
         localizationsDelegates: [

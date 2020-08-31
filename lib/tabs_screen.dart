@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
@@ -45,6 +43,7 @@ class _TabsScreenState extends State<TabsScreen> {
   AppStore appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
+
   ReactionDisposer disposer;
   ReactionDisposer disposer2;
 
@@ -197,25 +196,26 @@ class _TabsScreenState extends State<TabsScreen> {
     }
 
     if (createdPics.length > 0) {
-      print('#### created pics!!!');
-      for (var pic in createdPics) {
-        print('Pic created Id: ${pic['id']}');
-        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
-        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-        pathProvider.addAsset(picEntity);
-      }
-
-      DatabaseManager.instance.sliderHasPics();
-      setState(() {
-//        Conferir isso aqui que eu tive que comentar!!!!
-
-        // picSwiper = 0;
-        // carouselController.jumpToPage(0);
-        if (!galleryStore.deviceHasPics) {
-          // ver isso aqui - mudei hoje 17/08
-//          deviceHasNoPics = false;
-        }
-      });
+      // Comentei toda essa função agora dia 31/08
+//      print('#### created pics!!!');
+//      for (var pic in createdPics) {
+//        print('Pic created Id: ${pic['id']}');
+//        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
+//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//        pathProvider.addAsset(picEntity);
+//      }
+//
+//      DatabaseManager.instance.sliderHasPics();
+//      setState(() {
+////        Conferir isso aqui que eu tive que comentar!!!!
+//
+//        // picSwiper = 0;
+//        // carouselController.jumpToPage(0);
+//        if (!galleryStore.deviceHasPics) {
+//          // ver isso aqui - mudei hoje 17/08
+////          deviceHasNoPics = false;
+//        }
+//      });
     }
   }
 
@@ -500,20 +500,22 @@ class _TabsScreenState extends State<TabsScreen> {
                                         return;
                                       }
 
-                                      List<String> photosIds = [];
-                                      List<AssetEntity> entities = [];
-                                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-                                      for (var photoId in galleryStore.selectedPics) {
-                                        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-                                        photosIds.add(photoId);
-                                        entities.add(entity);
-                                      }
-
-                                      galleryStore.addTagsToPics(
-                                        tagsKeys: DatabaseManager.instance.multiPicTagKeys,
-                                        photosIds: photosIds,
-                                        entities: entities,
-                                      );
+//                                      List<String> photosIds = [];
+//                                      List<AssetEntity> entities = [];
+//                                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//
+//
+//                                      for (var photoId in galleryStore.selectedPics) {
+//                                        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
+//                                        photosIds.add(photoId);
+//                                        entities.add(entity);
+//                                      }
+//
+//                                      galleryStore.addTagsToPics(
+//                                        tagsKeys: DatabaseManager.instance.multiPicTagKeys,
+//                                        photosIds: photosIds,
+//                                        entities: entities,
+//                                      );
 
                                       tabsStore.setMultiTagSheet(false);
                                       tabsStore.setMultiPicBar(false);
