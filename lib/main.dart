@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
 import 'package:picPics/analytics_manager.dart';
-import 'package:picPics/asset_provider.dart';
 import 'package:picPics/login_screen.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
@@ -38,12 +37,6 @@ Future<String> checkForAppStoreInitiatedProducts() async {
   return null;
 }
 
-class Test {
-  String testing;
-
-  Test({this.testing});
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Crashlytics.instance.enableInDevMode = true;
@@ -61,7 +54,9 @@ void main() async {
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
 
-  String deviceLocale = await DeviceLocale.getCurrentLocale().toString();
+  String deviceLocale = await DeviceLocale.getCurrentLocale().then((Locale locale) => locale.toString());
+  String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);
+  print('Device Locale: $deviceLocale');
 
 //  if (DatabaseManager.instance.userSettings.appLanguage == null) {
 //    Locale locale = await DeviceLocale.getCurrentLocale();
@@ -72,10 +67,6 @@ void main() async {
 //  }
 //
 //  Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
-
-  String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-    return packageInfo.version;
-  });
 
   String initiatedWithProduct;
 
@@ -143,9 +134,6 @@ class _PicPicsAppState extends State<PicPicsApp> {
         ChangeNotifierProvider<DatabaseManager>(
           create: (_) => DatabaseManager.instance,
         ),
-//        ChangeNotifierProvider<PhotoProvider>(
-//          create: (_) => PhotoProvider.instance,
-//        ),
       ],
       child: MaterialApp(
         localizationsDelegates: [
