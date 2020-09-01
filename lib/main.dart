@@ -58,18 +58,7 @@ void main() async {
   String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);
   print('Device Locale: $deviceLocale');
 
-//  if (DatabaseManager.instance.userSettings.appLanguage == null) {
-//    Locale locale = await DeviceLocale.getCurrentLocale();
-//    DatabaseManager.instance.changeUserLanguage(
-//      locale.toString().split('_')[0],
-//      notify: false,
-//    );
-//  }
-//
-//  Locale userLocale = Locale(DatabaseManager.instance.userSettings.appLanguage.split('_')[0]);
-
   String initiatedWithProduct;
-
   if (Platform.isIOS) {
     initiatedWithProduct = await checkForAppStoreInitiatedProducts();
   }
@@ -77,7 +66,6 @@ void main() async {
   runZonedGuarded(() {
     runApp(
       PicPicsApp(
-//        userLocale: userLocale,
         appVersion: appVersion,
         deviceLocale: deviceLocale,
         initiatedWithProduct: initiatedWithProduct,
@@ -89,13 +77,11 @@ void main() async {
 }
 
 class PicPicsApp extends StatefulWidget {
-//  final Locale userLocale;
   final String appVersion;
   final String deviceLocale;
   final String initiatedWithProduct;
 
   PicPicsApp({
-//    @required this.userLocale,
     @required this.appVersion,
     @required this.deviceLocale,
     @required this.initiatedWithProduct,
