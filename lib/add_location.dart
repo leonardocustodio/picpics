@@ -96,10 +96,10 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     Navigator.pop(context);
   }
 
-  void getCurrentPosition() async {
+  void getUserPosition() async {
     print('getting current location');
 
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
     final geolocation = LatLng(position.latitude, position.longitude);
 
@@ -226,7 +226,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         CupertinoButton(
                           padding: const EdgeInsets.only(left: 14.0, right: 0, bottom: 0.0, top: 14.0),
                           onPressed: () {
-                            getCurrentPosition();
+                            getUserPosition();
                           },
                           child: Image.asset('lib/images/getcurrentlocationico.png'),
                         ),

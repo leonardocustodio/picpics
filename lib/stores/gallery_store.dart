@@ -13,6 +13,7 @@ import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:share_extend/share_extend.dart';
 
 part 'gallery_store.g.dart';
@@ -167,8 +168,8 @@ abstract class _GalleryStore with Store {
 //      }
     } else {
       for (var tagKey in tagsBox.keys) {
-        String tagName = DatabaseManager.instance.decryptTag(tagKey);
-        if (tagName.startsWith(DatabaseManager.instance.stripTag(searchText))) {
+        String tagName = Helpers.decryptTag(tagKey);
+        if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
         }
       }
@@ -363,7 +364,7 @@ abstract class _GalleryStore with Store {
     var picsBox = Hive.box('pics');
     var userBox = Hive.box('user');
 
-    String newTagKey = DatabaseManager.instance.encryptTag(newName);
+    String newTagKey = Helpers.encryptTag(newName);
 
     if (tagsBox.containsKey(oldTagKey)) {
       print('found tag with this name');
@@ -556,8 +557,8 @@ abstract class _GalleryStore with Store {
     setShowSearchTagsResults(true);
     searchTagsResults.clear();
     for (var tagKey in tagsBox.keys) {
-      String tagName = DatabaseManager.instance.decryptTag(tagKey);
-      if (tagName.startsWith(DatabaseManager.instance.stripTag(text))) {
+      String tagName = Helpers.decryptTag(tagKey);
+      if (tagName.startsWith(Helpers.stripTag(text))) {
         searchTagsResults.add(tagKey);
       }
     }
@@ -568,7 +569,7 @@ abstract class _GalleryStore with Store {
     var tagsBox = Hive.box('tags');
     print(tagsBox.keys);
 
-    String tagKey = DatabaseManager.instance.encryptTag(tagName);
+    String tagKey = Helpers.encryptTag(tagName);
     print('Adding tag: $tagName');
 
     if (tagsBox.containsKey(tagKey)) {
