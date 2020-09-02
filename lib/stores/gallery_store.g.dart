@@ -9,19 +9,19 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
-  Computed<PicStore> _$currentThumbnailPicComputed;
-
-  @override
-  PicStore get currentThumbnailPic => (_$currentThumbnailPicComputed ??=
-          Computed<PicStore>(() => super.currentThumbnailPic,
-              name: '_GalleryStore.currentThumbnailPic'))
-      .value;
   Computed<ObservableList<PicStore>> _$thumbnailsPicsComputed;
 
   @override
   ObservableList<PicStore> get thumbnailsPics => (_$thumbnailsPicsComputed ??=
           Computed<ObservableList<PicStore>>(() => super.thumbnailsPics,
               name: '_GalleryStore.thumbnailsPics'))
+      .value;
+  Computed<PicStore> _$currentThumbnailPicComputed;
+
+  @override
+  PicStore get currentThumbnailPic => (_$currentThumbnailPicComputed ??=
+          Computed<PicStore>(() => super.currentThumbnailPic,
+              name: '_GalleryStore.currentThumbnailPic'))
       .value;
   Computed<bool> _$isFilteredComputed;
 
@@ -485,8 +485,8 @@ searchText: ${searchText},
 currentPic: ${currentPic},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
-currentThumbnailPic: ${currentThumbnailPic},
 thumbnailsPics: ${thumbnailsPics},
+currentThumbnailPic: ${currentThumbnailPic},
 isFiltered: ${isFiltered},
 tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
