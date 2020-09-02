@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/constants.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
@@ -26,44 +28,13 @@ class PicTab extends StatefulWidget {
 class _PicTabState extends State<PicTab> {
   AppStore appStore;
   GalleryStore galleryStore;
-
   CarouselController carouselController = CarouselController();
 
-//  TextEditingController tagsEditingController = TextEditingController();
-
   Widget _buildPhotoSlider(BuildContext context, int index) {
-    var data = galleryStore.untaggedPics[index].entity;
-
-    print('photo id: ${data.id}');
-    double latitude = data.latitude;
-    double longitude = data.longitude;
-
-    print('lat: $latitude - long: $longitude');
-
-//    if (latitude == 0.0 && longitude == 0.0) {
-//      DatabaseManager.instance.currentPhotoCity = 'Local da foto';
-//      DatabaseManager.instance.currentPhotoState = ' estado';
-//    } else if (DatabaseManager.instance.lastLocationRequest[0] == latitude &&
-//        DatabaseManager.instance.lastLocationRequest[1] == longitude) {
-//      print('skipping location request');
-//    } else {
-//      DatabaseManager.instance.findLocation(latitude, longitude);
-//    }
-
-//    if (suggestions == null) {
-//      suggestions = DatabaseManager.instance.tagsSuggestions(
-//        '',
-//        picInfo.photoId,
-//        excludeTags: picInfo.tags,
-//      );
-//    }
-
-//    print('using picSwiper id: $picSwiper');
-//
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
-        picStore: galleryStore.untaggedPics[index],
+        picStore: galleryStore.swipePics[index],
         picsInThumbnails: PicsInThumbnails.SWIPE,
         picsInThumbnailIndex: index,
         showEditTagModal: widget.showEditTagModal,
@@ -109,67 +80,69 @@ class _PicTabState extends State<PicTab> {
                 ],
               ),
             ),
-//            if (Provider.of<DatabaseManager>(context).sliderIndex == null && galleryStore.deviceHasPics)
-//              Expanded(
-//                child: Center(
-//                  child: CircularProgressIndicator(
-//                    valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-//                  ),
-//                ),
-//              ),
-//            if (Provider.of<DatabaseManager>(context).sliderIndex == null && !galleryStore.deviceHasPics)
-//              Expanded(
-//                child: DeviceHasNoPics(),
-//              ),
-//            if (Provider.of<DatabaseManager>(context).sliderIndex != null)
-            Expanded(
-              child: Stack(
-                children: <Widget>[
-                  Observer(builder: (_) {
-                    return CarouselSlider.builder(
-                      itemCount: galleryStore.untaggedPics.length,
-                      carouselController: carouselController,
-                      itemBuilder: (BuildContext context, int index) {
-                        print('calling index $index');
-                        return _buildPhotoSlider(context, index);
-                      },
-                      options: CarouselOptions(
-                        initialPage: galleryStore.swipeIndex,
-                        enableInfiniteScroll: true,
-                        height: double.maxFinite,
-                        viewportFraction: 1.0,
-                        enlargeCenterPage: true,
-                        autoPlayCurve: Curves.fastOutSlowIn,
-                        onPageChanged: (index, reason) async {
-                          if (!appStore.hasSwiped) {
-                            appStore.setHasSwiped(true);
-                          }
-                          galleryStore.setSwipeIndex(index);
-                          Analytics.sendEvent(Event.swiped_photo);
-                          print('### Swiper Index: $index');
+            Observer(builder: (_) {
+              if (!galleryStore.isLoaded) {
+                return Expanded(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                    ),
+                  ),
+                );
+              } else if (!galleryStore.deviceHasPics) {
+                return Expanded(
+                  child: DeviceHasNoPics(),
+                );
+              }
+              return Expanded(
+                child: Stack(
+                  children: <Widget>[
+                    Observer(builder: (_) {
+                      return CarouselSlider.builder(
+                        itemCount: galleryStore.swipePics.length,
+                        carouselController: carouselController,
+                        itemBuilder: (BuildContext context, int index) {
+                          print('calling index $index');
+                          return _buildPhotoSlider(context, index);
                         },
-                      ),
-                    );
-                  }),
-                  Observer(builder: (_) {
-                    if (!appStore.hasSwiped) {
-                      return IgnorePointer(
-                        child: Container(
-                          padding: const EdgeInsets.only(top: 150.0),
-                          child: FlareActor(
-                            'lib/anims/swipe_left.flr',
-                            alignment: Alignment.topCenter,
-                            fit: BoxFit.contain,
-                            animation: 'Animations',
-                          ),
+                        options: CarouselOptions(
+                          initialPage: galleryStore.swipeIndex,
+                          enableInfiniteScroll: true,
+                          height: double.maxFinite,
+                          viewportFraction: 1.0,
+                          enlargeCenterPage: true,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          onPageChanged: (index, reason) async {
+                            if (!appStore.hasSwiped) {
+                              appStore.setHasSwiped(true);
+                            }
+                            galleryStore.setSwipeIndex(index);
+                            Analytics.sendEvent(Event.swiped_photo);
+                            print('### Swiper Index: $index');
+                          },
                         ),
                       );
-                    }
-                    return Container();
-                  }),
-                ],
-              ),
-            ),
+                    }),
+                    Observer(builder: (_) {
+                      if (!appStore.hasSwiped) {
+                        return IgnorePointer(
+                          child: Container(
+                            padding: const EdgeInsets.only(top: 150.0),
+                            child: FlareActor(
+                              'lib/anims/swipe_left.flr',
+                              alignment: Alignment.topCenter,
+                              fit: BoxFit.contain,
+                              animation: 'Animations',
+                            ),
+                          ),
+                        );
+                      }
+                      return Container();
+                    }),
+                  ],
+                ),
+              );
+            }),
           ],
         ),
       ),

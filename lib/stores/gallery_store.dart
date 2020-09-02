@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -59,6 +58,7 @@ abstract class _GalleryStore with Store {
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
   ObservableList<PicStore> allPics = ObservableList<PicStore>();
   ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
+  ObservableList<PicStore> swipePics = ObservableList<PicStore>();
   ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
@@ -73,21 +73,23 @@ abstract class _GalleryStore with Store {
   void setSelectedThumbnail(int value) => selectedThumbnail = value;
 
   @computed
-  PicStore get currentThumbnailPic {
-    return thumbnailsPics[selectedThumbnail];
+  ObservableList<PicStore> get thumbnailsPics {
+    if (picsInThumbnails == PicsInThumbnails.TAGGED) {
+      return taggedPics;
+    } else if (picsInThumbnails == PicsInThumbnails.FILTERED) {
+      return filteredPics;
+    } else if (picsInThumbnails == PicsInThumbnails.SWIPE) {
+      return swipePics;
+    }
+    return untaggedPics;
   }
 
   @computed
-  ObservableList<PicStore> get thumbnailsPics {
-    if (picsInThumbnails == PicsInThumbnails.UNTAGGED) {
-      return untaggedPics;
-    } else if (picsInThumbnails == PicsInThumbnails.SWIPE) {
-      return untaggedPics;
-    } else if (picsInThumbnails == PicsInThumbnails.FILTERED) {
-      return filteredPics;
-    } else {
-      return taggedPics;
+  PicStore get currentThumbnailPic {
+    if (thumbnailsPics == null) {
+      return null;
     }
+    return thumbnailsPics[selectedThumbnail];
   }
 
   @action
@@ -262,11 +264,13 @@ abstract class _GalleryStore with Store {
         taggedPics.add(pic);
       } else {
         print('has pic info! and this pic doesnt have tag!!!!');
+        swipePics.add(pic);
         untaggedPics.add(pic);
       }
     }
 
     print('#@#@#@# Total photos: ${allPics.length}');
+    setSwipeIndex(0);
     isLoaded = true;
   }
 
