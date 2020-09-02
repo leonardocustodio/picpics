@@ -28,10 +28,14 @@ import 'package:provider/provider.dart';
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
   final Function showEditTagModal;
+  final PicsInThumbnails picsInThumbnails;
+  final int picsInThumbnailIndex;
 
   PhotoCard({
     this.picStore,
     this.showEditTagModal,
+    this.picsInThumbnails,
+    this.picsInThumbnailIndex,
   });
 
   @override
@@ -163,15 +167,21 @@ class _PhotoCardState extends State<PhotoCard> {
                     color: kSecondaryColor,
                     onTap: () {
                       galleryStore.setCurrentPic(picStore);
-                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PhotoScreen(
-                            initialIndex: initialIndex,
-                          ),
-                        ),
-                      );
+                      galleryStore.setPicsInThumbnails(widget.picsInThumbnails);
+                      if (widget.picsInThumbnails == PicsInThumbnails.SWIPE) {
+                        galleryStore.setSelectedThumbnail(widget.picsInThumbnailIndex);
+                      }
+
+                      Navigator.pushNamed(context, PhotoScreen.id);
+//                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(
+//                          builder: (context) => PhotoScreen(
+//                            initialIndex: initialIndex,
+//                          ),
+//                        ),
+//                      );
                     }),
                 CircularMenuItem(
                     image: Image.asset('lib/images/sharenobackground.png'),

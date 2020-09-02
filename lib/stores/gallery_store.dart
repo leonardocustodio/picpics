@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -61,6 +62,38 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
+
+  @observable
+  PicsInThumbnails picsInThumbnails = PicsInThumbnails.UNTAGGED;
+
+  @observable
+  int selectedThumbnail = 0;
+
+  @action
+  void setSelectedThumbnail(int value) => selectedThumbnail = value;
+
+  @computed
+  PicStore get currentThumbnailPic {
+    return thumbnailsPics[selectedThumbnail];
+  }
+
+  @computed
+  ObservableList<PicStore> get thumbnailsPics {
+    if (picsInThumbnails == PicsInThumbnails.UNTAGGED) {
+      return untaggedPics;
+    } else if (picsInThumbnails == PicsInThumbnails.SWIPE) {
+      return untaggedPics;
+    } else if (picsInThumbnails == PicsInThumbnails.FILTERED) {
+      return filteredPics;
+    } else {
+      return taggedPics;
+    }
+  }
+
+  @action
+  void setPicsInThumbnails(PicsInThumbnails picsType) {
+    picsInThumbnails = picsType;
+  }
 
   @observable
   bool isSearching = false;
@@ -635,4 +668,11 @@ abstract class _GalleryStore with Store {
     userBox.putAt(0, getUser);
     print('final tags in recent: ${getUser.recentTags}');
   }
+}
+
+enum PicsInThumbnails {
+  UNTAGGED,
+  SWIPE,
+  TAGGED,
+  FILTERED,
 }

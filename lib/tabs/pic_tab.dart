@@ -60,11 +60,12 @@ class _PicTabState extends State<PicTab> {
 
 //    print('using picSwiper id: $picSwiper');
 //
-
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
         picStore: galleryStore.untaggedPics[index],
+        picsInThumbnails: PicsInThumbnails.SWIPE,
+        picsInThumbnailIndex: index,
         showEditTagModal: widget.showEditTagModal,
       ),
     );

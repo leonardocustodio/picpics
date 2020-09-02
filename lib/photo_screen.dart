@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -20,18 +20,13 @@ import 'package:provider/provider.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
-  final int initialIndex;
-  final PageController galleryPageController;
-
-  PhotoScreen({
-    this.initialIndex = 0,
-  }) : galleryPageController = PageController(initialPage: initialIndex);
 
   @override
   _PhotoScreenState createState() => _PhotoScreenState();
 }
 
 class _PhotoScreenState extends State<PhotoScreen> {
+  PageController galleryPageController;
   GalleryStore galleryStore;
 
   bool overlay = true;
@@ -41,30 +36,6 @@ class _PhotoScreenState extends State<PhotoScreen> {
   void initState() {
     super.initState();
     Analytics.sendCurrentScreen(Screen.photo_screen);
-  }
-
-  void loadPicInfo(int index) {
-    return;
-//    AssetEntity entity = getEntity(DatabaseManager.instance.slideThumbPhotoIds[index]);
-//
-//    setState(() {
-//      createdDate = entity.createDateTime;
-//      picInfo = DatabaseManager.instance.getPicInfo(entity.id);
-//
-//      if (picInfo == null) {
-//        picInfo = Pic(
-//          entity.id,
-//          entity.createDateTime,
-//          entity.latitude,
-//          entity.longitude,
-//          entity.latitude,
-//          entity.longitude,
-//          null,
-//          null,
-//          [],
-//        );
-//      }
-//    });
   }
 
   void changeOverlay() {
@@ -127,10 +98,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-//    String photoId = DatabaseManager.instance.slideThumbPhotoIds[index]; corrigir isso porém por enquanto vamo fazer diferente
-    String photoId = galleryStore.untaggedPics[index].photoId;
-    PicStore picStore = galleryStore.untaggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
-    AssetEntity entity = picStore.entity;
+    AssetEntity entity = galleryStore.thumbnailsPics[index].entity;
 
     return PhotoViewGalleryPageOptions.customChild(
       child: Container(
@@ -169,14 +137,15 @@ class _PhotoScreenState extends State<PhotoScreen> {
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
       onPressed: () {
-        widget.galleryPageController.jumpToPage(index);
+        galleryStore.setSelectedThumbnail(index);
+        galleryPageController.jumpToPage(index);
       },
       child: Container(
         height: 98,
         width: 98,
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
         child: ImageItem(
-          entity: getEntity(DatabaseManager.instance.slideThumbPhotoIds[index]),
+          entity: galleryStore.thumbnailsPics[index].entity,
           size: 98,
           fit: BoxFit.cover,
           backgroundColor: Colors.black,
@@ -185,15 +154,11 @@ class _PhotoScreenState extends State<PhotoScreen> {
     );
   }
 
-  AssetEntity getEntity(String photoId) {
-    PicStore picStore = galleryStore.untaggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
-    return picStore.entity;
-  }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     galleryStore = Provider.of<GalleryStore>(context);
+    galleryPageController = PageController(initialPage: galleryStore.selectedThumbnail);
   }
 
   @override
@@ -209,7 +174,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: _buildItem,
-                itemCount: galleryStore.untaggedPics.length, // DatabaseManager.instance.slideThumbPhotoIds.length,
+                itemCount: galleryStore.thumbnailsPics.length,
                 loadingBuilder: (context, event) => Center(
                   child: Container(
                     width: 20.0,
@@ -222,9 +187,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
                 backgroundDecoration: const BoxDecoration(
                   color: Colors.black,
                 ),
-                pageController: widget.galleryPageController,
+                pageController: galleryPageController,
                 onPageChanged: (index) {
-                  loadPicInfo(index);
+                  galleryStore.setSelectedThumbnail(index);
                 },
                 scrollDirection: Axis.horizontal,
               ),
@@ -266,7 +231,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                               CupertinoButton(
                                 padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-//                                  DatabaseManager.instance.sharePic(getEntity(picInfo.photoId));
+                                  galleryStore.currentThumbnailPic.sharePic();
                                 },
                                 child: Image.asset('lib/images/sharebuttonwithdropshadow.png'),
                               ),
@@ -306,68 +271,76 @@ class _PhotoScreenState extends State<PhotoScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: <Widget>[
-                                      RichText(
-                                        textScaleFactor: 1.0,
-                                        text: new TextSpan(
-                                          children: [
-                                            new TextSpan(
-                                                text: S.of(context).photo_location,
+                                  Observer(builder: (_) {
+                                    return Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        RichText(
+                                          textScaleFactor: 1.0,
+                                          text: new TextSpan(
+                                            children: [
+                                              new TextSpan(
+                                                  text: galleryStore.currentThumbnailPic.specificLocation ?? S.of(context).photo_location,
+                                                  style: TextStyle(
+                                                    fontFamily: 'NotoSans',
+                                                    color: kWhiteColor,
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w400,
+                                                    fontStyle: FontStyle.normal,
+                                                    letterSpacing: -0.4099999964237213,
+                                                  )),
+                                              new TextSpan(
+                                                text: '  ${galleryStore.currentThumbnailPic.generalLocation ?? S.of(context).country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,
-                                                  fontSize: 17,
-                                                  fontWeight: FontWeight.w400,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w300,
                                                   fontStyle: FontStyle.normal,
                                                   letterSpacing: -0.4099999964237213,
-                                                )),
-                                            new TextSpan(
-                                              text: '  ${S.of(context).country}',
-                                              style: TextStyle(
-                                                fontFamily: 'NotoSans',
-                                                color: kWhiteColor,
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.w300,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        dateFormat(galleryStore.currentPic.entity.createDateTime),
-                                        textScaleFactor: 1.0,
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          color: kWhiteColor,
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w300,
-                                          fontStyle: FontStyle.normal,
-                                          letterSpacing: -0.4099999964237213,
+                                        Text(
+                                          dateFormat(galleryStore.currentThumbnailPic.createdAt),
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: kWhiteColor,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                            fontStyle: FontStyle.normal,
+                                            letterSpacing: -0.4099999964237213,
+                                          ),
                                         ),
+                                      ],
+                                    );
+                                  }),
+                                  Observer(builder: (_) {
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 16.0),
+                                      child: TagsList(
+                                        tagsKeys: galleryStore.currentThumbnailPic.tagsKeys,
+                                        tagStyle: TagStyle.MultiColored,
+                                        addTagButton: () {
+                                          Navigator.pop(context, 'show_keyboard');
+                                        },
+                                        onTap: (tagName) {
+                                          print('ignore click');
+                                        },
+                                        onDoubleTap: () {
+//                                        galleryStore.currentThumbnailPic
+//                                        galleryStore.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+                                        },
+                                        onPanEnd: () {
+                                          print('teste');
+                                        },
+                                        showEditTagModal: showEditTagModal,
                                       ),
-                                    ],
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 16.0),
-                                    child: TagsList(
-                                      tagsKeys: galleryStore.currentPic.tagsKeys,
-                                      tagStyle: TagStyle.MultiColored,
-                                      addTagButton: () {
-                                        Navigator.pop(context, 'show_keyboard');
-                                      },
-                                      onTap: (tagName) {
-                                        print('ignore click');
-                                      },
-                                      onDoubleTap: () {
-                                        galleryStore.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                                      },
-                                      showEditTagModal: showEditTagModal,
-                                    ),
-                                  ),
+                                    );
+                                  }),
                                 ],
                               ),
                             ),
@@ -401,7 +374,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: _buildThumbnails,
-                                    itemCount: DatabaseManager.instance.slideThumbPhotoIds.length,
+                                    itemCount: galleryStore.thumbnailsPics.length,
                                     padding: const EdgeInsets.only(left: 8.0),
                                   ),
                                 ),

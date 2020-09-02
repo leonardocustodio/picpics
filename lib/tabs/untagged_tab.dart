@@ -116,6 +116,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
               tagsEditingController.text = '';
               galleryStore.setCurrentPic(galleryStore.untaggedPics[index]);
               tabsStore.setModalCard(true);
+              galleryStore.setSelectedThumbnail(index);
             },
             child: ImageItem(
               entity: data,
