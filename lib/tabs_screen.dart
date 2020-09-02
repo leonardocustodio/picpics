@@ -17,6 +17,7 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/tabs/pic_tab.dart';
 import 'package:picPics/tabs/tagged_tab.dart';
 import 'package:picPics/tabs/untagged_tab.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:provider/provider.dart';
@@ -591,7 +592,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
                                             galleryStore.setSearchText('');
-                                            String tagKey = DatabaseManager.instance.encryptTag(text);
+                                            String tagKey = Helpers.encryptTag(text);
 
 //                                            if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
 //                                              if (DatabaseManager.instance.getTagName(tagKey) == null) {
@@ -619,7 +620,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
                                           bottomTagsEditingController.clear();
                                           galleryStore.setSearchText('');
-                                          String tagKey = DatabaseManager.instance.encryptTag(tagName);
+                                          String tagKey = Helpers.encryptTag(tagName);
                                           galleryStore.addToMultiPicTagKeys(tagKey);
                                         },
                                         onDoubleTap: () {
@@ -751,6 +752,7 @@ class _TabsScreenState extends State<TabsScreen> {
                           ),
                           child: PhotoCard(
                             picStore: galleryStore.currentPic,
+                            picsInThumbnails: PicsInThumbnails.UNTAGGED,
                             showEditTagModal: showEditTagModal,
                           ),
                         ),

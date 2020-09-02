@@ -14,6 +14,7 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/push_notifications_manager.dart';
 import 'package:picPics/tabs_screen.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:uuid/uuid.dart';
 
@@ -389,16 +390,16 @@ abstract class _AppStore with Store {
     Tag tag10 = Tag(S.of(context).screenshots_tag, []);
 
     Map<String, Tag> entries = {
-      DatabaseManager.instance.encryptTag(S.of(context).family_tag): tag1,
-      DatabaseManager.instance.encryptTag(S.of(context).travel_tag): tag2,
-      DatabaseManager.instance.encryptTag(S.of(context).pets_tag): tag3,
-      DatabaseManager.instance.encryptTag(S.of(context).work_tag): tag4,
-      DatabaseManager.instance.encryptTag(S.of(context).selfies_tag): tag5,
-      DatabaseManager.instance.encryptTag(S.of(context).parties_tag): tag6,
-      DatabaseManager.instance.encryptTag(S.of(context).sports_tag): tag7,
-      DatabaseManager.instance.encryptTag(S.of(context).home_tag): tag8,
-      DatabaseManager.instance.encryptTag(S.of(context).foods_tag): tag9,
-      DatabaseManager.instance.encryptTag(S.of(context).screenshots_tag): tag10,
+      Helpers.encryptTag(S.of(context).family_tag): tag1,
+      Helpers.encryptTag(S.of(context).travel_tag): tag2,
+      Helpers.encryptTag(S.of(context).pets_tag): tag3,
+      Helpers.encryptTag(S.of(context).work_tag): tag4,
+      Helpers.encryptTag(S.of(context).selfies_tag): tag5,
+      Helpers.encryptTag(S.of(context).parties_tag): tag6,
+      Helpers.encryptTag(S.of(context).sports_tag): tag7,
+      Helpers.encryptTag(S.of(context).home_tag): tag8,
+      Helpers.encryptTag(S.of(context).foods_tag): tag9,
+      Helpers.encryptTag(S.of(context).screenshots_tag): tag10,
     };
     tagsBox.putAll(entries);
   }

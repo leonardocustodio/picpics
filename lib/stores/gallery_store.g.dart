@@ -9,6 +9,20 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
+  Computed<PicStore> _$currentThumbnailPicComputed;
+
+  @override
+  PicStore get currentThumbnailPic => (_$currentThumbnailPicComputed ??=
+          Computed<PicStore>(() => super.currentThumbnailPic,
+              name: '_GalleryStore.currentThumbnailPic'))
+      .value;
+  Computed<ObservableList<PicStore>> _$thumbnailsPicsComputed;
+
+  @override
+  ObservableList<PicStore> get thumbnailsPics => (_$thumbnailsPicsComputed ??=
+          Computed<ObservableList<PicStore>>(() => super.thumbnailsPics,
+              name: '_GalleryStore.thumbnailsPics'))
+      .value;
   Computed<bool> _$isFilteredComputed;
 
   @override
@@ -65,6 +79,36 @@ mixin _$GalleryStore on _GalleryStore, Store {
   set isLoaded(bool value) {
     _$isLoadedAtom.reportWrite(value, super.isLoaded, () {
       super.isLoaded = value;
+    });
+  }
+
+  final _$picsInThumbnailsAtom = Atom(name: '_GalleryStore.picsInThumbnails');
+
+  @override
+  PicsInThumbnails get picsInThumbnails {
+    _$picsInThumbnailsAtom.reportRead();
+    return super.picsInThumbnails;
+  }
+
+  @override
+  set picsInThumbnails(PicsInThumbnails value) {
+    _$picsInThumbnailsAtom.reportWrite(value, super.picsInThumbnails, () {
+      super.picsInThumbnails = value;
+    });
+  }
+
+  final _$selectedThumbnailAtom = Atom(name: '_GalleryStore.selectedThumbnail');
+
+  @override
+  int get selectedThumbnail {
+    _$selectedThumbnailAtom.reportRead();
+    return super.selectedThumbnail;
+  }
+
+  @override
+  set selectedThumbnail(int value) {
+    _$selectedThumbnailAtom.reportWrite(value, super.selectedThumbnail, () {
+      super.selectedThumbnail = value;
     });
   }
 
@@ -199,6 +243,28 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.setSwipeIndex');
     try {
       return super.setSwipeIndex(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedThumbnail(int value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setSelectedThumbnail');
+    try {
+      return super.setSelectedThumbnail(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPicsInThumbnails(PicsInThumbnails picsType) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setPicsInThumbnails');
+    try {
+      return super.setPicsInThumbnails(picsType);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -411,12 +477,16 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return '''
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
+picsInThumbnails: ${picsInThumbnails},
+selectedThumbnail: ${selectedThumbnail},
 isSearching: ${isSearching},
 showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
 currentPic: ${currentPic},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
+currentThumbnailPic: ${currentThumbnailPic},
+thumbnailsPics: ${thumbnailsPics},
 isFiltered: ${isFiltered},
 tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},

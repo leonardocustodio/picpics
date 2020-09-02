@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:picPics/admob_manager.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
@@ -15,7 +16,7 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
@@ -27,10 +28,14 @@ import 'package:provider/provider.dart';
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
   final Function showEditTagModal;
+  final PicsInThumbnails picsInThumbnails;
+  final int picsInThumbnailIndex;
 
   PhotoCard({
     this.picStore,
     this.showEditTagModal,
+    this.picsInThumbnails,
+    this.picsInThumbnailIndex,
   });
 
   @override
@@ -78,7 +83,7 @@ class _PhotoCardState extends State<PhotoCard> {
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
-    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(picStore.entity.latitude, picStore.entity.longitude);
+    List<Placemark> placemark = await placemarkFromCoordinates(picStore.entity.latitude, picStore.entity.longitude);
 
     print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -162,15 +167,21 @@ class _PhotoCardState extends State<PhotoCard> {
                     color: kSecondaryColor,
                     onTap: () {
                       galleryStore.setCurrentPic(picStore);
-                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PhotoScreen(
-                            initialIndex: initialIndex,
-                          ),
-                        ),
-                      );
+                      galleryStore.setPicsInThumbnails(widget.picsInThumbnails);
+                      if (widget.picsInThumbnails == PicsInThumbnails.SWIPE) {
+                        galleryStore.setSelectedThumbnail(widget.picsInThumbnailIndex);
+                      }
+
+                      Navigator.pushNamed(context, PhotoScreen.id);
+//                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(
+//                          builder: (context) => PhotoScreen(
+//                            initialIndex: initialIndex,
+//                          ),
+//                        ),
+//                      );
                     }),
                 CircularMenuItem(
                     image: Image.asset('lib/images/sharenobackground.png'),

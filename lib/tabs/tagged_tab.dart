@@ -183,6 +183,7 @@ class _TaggedTabState extends State<TaggedTab> {
 //          continue;
 //        }
 
+        int thumbnailIndex = totalPics;
         totalPics += 1;
         isTitleWidget.add(false);
         slideThumbPhotoIds.add(pic.entity.id);
@@ -218,37 +219,9 @@ class _TaggedTabState extends State<TaggedTab> {
                       return;
                     }
 
-                    // Call photocard
-//                    Pic picInfo = DatabaseManager.instance.getPicInfo(data.id);
-//                    tagsEditingController.text = '';
-//
-//                    DatabaseManager.instance.tagsSuggestions(
-//                      tagsEditingController.text,
-//                      data.id,
-//                      excludeTags: picInfo.tags,
-//                      notify: false,
-//                    );
-//
-//                    print('PicTags: ${picInfo.tags}');
-//
-//                    DatabaseManager.instance.selectedPhotoData = data;
-//                    DatabaseManager.instance.selectedPhotoPicInfo = picInfo;
-//
-//                    widget.showPhotoCardModal();
-
-                    // Call expanded screen directly
-//                    DatabaseManager.instance.selectedPhoto = data;
-                    print('Selected photo: ${pic.entity.id}');
-                    int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(pic.entity.id);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PhotoScreen(
-                          initialIndex: initialIndex,
-                        ),
-                      ),
-                    );
-                    // Call expanded screen directly
+                    galleryStore.setPicsInThumbnails(PicsInThumbnails.FILTERED);
+                    galleryStore.setSelectedThumbnail(thumbnailIndex);
+                    Navigator.pushNamed(context, PhotoScreen.id);
                   },
                   child: ImageItem(
                     entity: pic.entity,
@@ -319,6 +292,7 @@ class _TaggedTabState extends State<TaggedTab> {
             continue;
           }
 
+          int thumbnailIndex = totalPics;
           totalPics += 1;
           isTitleWidget.add(false);
 
@@ -351,16 +325,22 @@ class _TaggedTabState extends State<TaggedTab> {
                         return;
                       }
 
+//                      int thumbnailIndex = totalPics.toInt() - 1;
+
                       print('Selected photo: ${data.entity.id}');
-                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.entity.id);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PhotoScreen(
-                            initialIndex: initialIndex,
-                          ),
-                        ),
-                      );
+                      galleryStore.setPicsInThumbnails(PicsInThumbnails.TAGGED);
+                      galleryStore.setSelectedThumbnail(thumbnailIndex);
+                      Navigator.pushNamed(context, PhotoScreen.id);
+
+//                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.entity.id);
+//                      Navigator.push(
+//                        context,
+//                        MaterialPageRoute(
+//                          builder: (context) => PhotoScreen(
+//                            initialIndex: initialIndex,
+//                          ),
+//                        ),
+//                      );
                       // Call expanded screen directly
                     },
                     child: ImageItem(

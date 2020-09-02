@@ -12,6 +12,7 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:share_extend/share_extend.dart';
 
 part 'pic_store.g.dart';
@@ -129,8 +130,8 @@ abstract class _PicStore with Store {
 //      }
     } else {
       for (var tagKey in tagsBox.keys) {
-        String tagName = DatabaseManager.instance.decryptTag(tagKey);
-        if (tagName.startsWith(DatabaseManager.instance.stripTag(searchText))) {
+        String tagName = Helpers.decryptTag(tagKey);
+        if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
         }
       }
@@ -146,7 +147,7 @@ abstract class _PicStore with Store {
     var tagsBox = Hive.box('tags');
     print(tagsBox.keys);
 
-    String tagKey = DatabaseManager.instance.encryptTag(tagName);
+    String tagKey = Helpers.encryptTag(tagName);
     print('Adding tag: $tagName');
 
     if (tagsBox.containsKey(tagKey)) {
@@ -336,7 +337,7 @@ abstract class _PicStore with Store {
         print('pic is in db... removing it from db!');
 
         for (var tag in pic.tags) {
-          String tagKey = DatabaseManager.instance.stripTag(tag);
+          String tagKey = Helpers.stripTag(tag);
 
           Tag getTag = tagsBox.get(tagKey);
           getTag.photoId.remove(entity.id);
