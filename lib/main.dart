@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/add_location.dart';
@@ -39,8 +40,10 @@ Future<String> checkForAppStoreInitiatedProducts() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Crashlytics.instance.enableInDevMode = true;
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
+  await Firebase.initializeApp();
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
   Ads.initialize();
   Ads.loadRewarded();
@@ -63,7 +66,7 @@ void main() async {
     initiatedWithProduct = await checkForAppStoreInitiatedProducts();
   }
 
-  runZonedGuarded(() {
+  runZonedGuarded<Future<void>>(() async {
     runApp(
       PicPicsApp(
         appVersion: appVersion,
@@ -71,9 +74,7 @@ void main() async {
         initiatedWithProduct: initiatedWithProduct,
       ),
     );
-  }, (Object error, StackTrace stack) {
-    Crashlytics.instance.recordError(error, stack);
-  });
+  }, FirebaseCrashlytics.instance.recordError);
 }
 
 class PicPicsApp extends StatefulWidget {
