@@ -560,6 +560,7 @@ abstract class _GalleryStore with Store {
     print('%%%% Tags Keys: ${tagsBox.keys}');
 
     filteredPics.clear();
+
     List<String> tempPhotosIds = [];
     bool firstInteraction = true;
 
@@ -588,8 +589,8 @@ abstract class _GalleryStore with Store {
         tempPhotosIds = auxArray;
       }
     }
+
     filteredPics.addAll(taggedPics.where((element) => tempPhotosIds.contains(element.photoId)).toList());
-//    slideThumbPhotoIds = tempPhotosIds;
     print('Search Photos: $filteredPics');
     print('Searcing Tags Keys: $searchingTagsKeys');
 

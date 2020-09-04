@@ -555,12 +555,11 @@ class _TaggedTabState extends State<TaggedTab> {
                           ],
                         );
                       }
-                      bool isFiltered = galleryStore.isFiltered;
-                      print('@@@@ isFiltered: $isFiltered');
-                      return Expanded(
-                        child: _buildTaggedGridView(isFiltered: galleryStore.searchingTagsKeys.length > 0),
-                      );
+                      return Container();
                     }),
+                    Expanded(
+                      child: _buildTaggedGridView(isFiltered: galleryStore.searchingTagsKeys.length > 0),
+                    ),
                   ],
                 );
               }
