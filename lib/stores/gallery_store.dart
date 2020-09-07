@@ -309,32 +309,21 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> trashPic(PicStore picStore) async {
-//    print('Going to trash pic!');
-//    bool deleted = await picStore.deletePic();
-//    print('Deleted pic: $deleted');
-//
-//    if (deleted) {
-//      int indexOfPic = pics.indexWhere((element) => element.photoId == picStore.photoId);
-//      if (indexOfPic != null) {
-//        pics.removeAt(indexOfPic);
-//        print('Removed pic from gallery...');
-//      }
-//    }
-//
-//    Analytics.sendEvent(Event.deleted_photo);
-//    print('Reaction!');
-//    setTrashedPic(true);
+    print('Going to trash pic!');
+    bool deleted = await picStore.deletePic();
+    print('Deleted pic: $deleted');
 
-//    if (indexInOrderedList != null) {
-//      pathProvider.orderedList.remove(entity);
-//
-//      // Supondo que pic está nas não taggeadas
-//      DatabaseManager.instance.reorderSliderIndex(indexInOrderedList);
-//      DatabaseManager.instance.picHasTag.removeAt(indexInOrderedList);
-//      print('Removed pic in ordered list number $indexInOrderedList');
-//    }
-//
-//
+    if (deleted) {
+      filteredPics.remove(picStore);
+      taggedPics.remove(picStore);
+      swipePics.remove(picStore);
+      untaggedPics.remove(picStore);
+      allPics.remove(picStore);
+    }
+
+    Analytics.sendEvent(Event.deleted_photo);
+    print('Reaction!');
+    setTrashedPic(true);
   }
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {

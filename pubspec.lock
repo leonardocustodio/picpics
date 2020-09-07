@@ -808,7 +808,7 @@ packages:
       name: provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.3.2+1"
+    version: "4.3.2+2"
   pub_semver:
     dependency: transitive
     description:
@@ -843,28 +843,28 @@ packages:
       name: rate_my_app
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.0+1"
+    version: "0.7.1"
   sa_anicoto:
     dependency: transitive
     description:
       name: sa_anicoto
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   sa_multi_tween:
     dependency: transitive
     description:
       name: sa_multi_tween
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "1.1.2"
   sa_stateless_animation:
     dependency: transitive
     description:
       name: sa_stateless_animation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.3"
   sa_v1_migration:
     dependency: transitive
     description:
@@ -934,7 +934,7 @@ packages:
       name: simple_animations
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.2"
   sky_engine:
     dependency: transitive
     description: flutter
