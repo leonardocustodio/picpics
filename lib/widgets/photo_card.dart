@@ -100,6 +100,8 @@ class _PhotoCardState extends State<PhotoCard> {
       );
       return [placemark[0].locality, '  ${placemark[0].country}'];
     }
+
+    return [S.of(context).photo_location, '  ${S.of(context).country}'];
   }
 
   void focusTagsEditingController() {}

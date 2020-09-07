@@ -42,7 +42,7 @@ class PushNotificationsManager {
       var initializationSettings = InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
       print('scheduling notification');
-      scheduleNotification();
+//      scheduleNotification();
     }
   }
 

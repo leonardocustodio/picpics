@@ -46,10 +46,25 @@ abstract class _GalleryStore with Store {
   @observable
   int swipeIndex = 0;
 
+  int swipeCutOff = 0;
+
   @action
   void setSwipeIndex(int value) {
+    if (!appStore.hasSwiped) {
+      appStore.setHasSwiped(true);
+    }
+
+//    if (value > swipeIndex && value > 5) {
+//      int val = value - 5;
+//      if (val > swipeCutOff) {
+//        swipeCutOff = value - 5;
+//        print('&&&&&&&&& setting cutoff to $swipeCutOff');
+//      }
+//    }
+
     swipeIndex = value;
-    setCurrentPic(untaggedPics[value]);
+    setCurrentPic(swipePics[value]);
+    Analytics.sendEvent(Event.swiped_photo);
   }
 
   @observable
@@ -294,32 +309,21 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> trashPic(PicStore picStore) async {
-//    print('Going to trash pic!');
-//    bool deleted = await picStore.deletePic();
-//    print('Deleted pic: $deleted');
-//
-//    if (deleted) {
-//      int indexOfPic = pics.indexWhere((element) => element.photoId == picStore.photoId);
-//      if (indexOfPic != null) {
-//        pics.removeAt(indexOfPic);
-//        print('Removed pic from gallery...');
-//      }
-//    }
-//
-//    Analytics.sendEvent(Event.deleted_photo);
-//    print('Reaction!');
-//    setTrashedPic(true);
+    print('Going to trash pic!');
+    bool deleted = await picStore.deletePic();
+    print('Deleted pic: $deleted');
 
-//    if (indexInOrderedList != null) {
-//      pathProvider.orderedList.remove(entity);
-//
-//      // Supondo que pic está nas não taggeadas
-//      DatabaseManager.instance.reorderSliderIndex(indexInOrderedList);
-//      DatabaseManager.instance.picHasTag.removeAt(indexInOrderedList);
-//      print('Removed pic in ordered list number $indexInOrderedList');
-//    }
-//
-//
+    if (deleted) {
+      filteredPics.remove(picStore);
+      taggedPics.remove(picStore);
+      swipePics.remove(picStore);
+      untaggedPics.remove(picStore);
+      allPics.remove(picStore);
+    }
+
+    Analytics.sendEvent(Event.deleted_photo);
+    print('Reaction!');
+    setTrashedPic(true);
   }
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
@@ -523,11 +527,10 @@ abstract class _GalleryStore with Store {
 
   @action
   void addTagToSearchFilter() {
-//    if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-//      return;
-//    }
-    searchingTagsKeys.add('4ad59db7a1f9f4c403dfee41c570fa79');
-//    searchingTagsKeys.add(DatabaseManager.instance.selectedTagKey);
+    if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+      return;
+    }
+    searchingTagsKeys.add(DatabaseManager.instance.selectedTagKey);
     print('searching tags: $searchingTagsKeys');
     searchPicsWithTags();
   }
@@ -543,8 +546,10 @@ abstract class _GalleryStore with Store {
   @action
   void searchPicsWithTags() {
     var tagsBox = Hive.box('tags');
+    print('%%%% Tags Keys: ${tagsBox.keys}');
 
     filteredPics.clear();
+
     List<String> tempPhotosIds = [];
     bool firstInteraction = true;
 
@@ -573,8 +578,8 @@ abstract class _GalleryStore with Store {
         tempPhotosIds = auxArray;
       }
     }
+
     filteredPics.addAll(taggedPics.where((element) => tempPhotosIds.contains(element.photoId)).toList());
-//    slideThumbPhotoIds = tempPhotosIds;
     print('Search Photos: $filteredPics');
     print('Searcing Tags Keys: $searchingTagsKeys');
 

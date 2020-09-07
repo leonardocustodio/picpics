@@ -177,12 +177,6 @@ class _TaggedTabState extends State<TaggedTab> {
       }
 
       for (PicStore pic in galleryStore.filteredPics) {
-//      var data = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-//        if (data == null) {
-//          print('Found a deleted picture');
-//          continue;
-//        }
-
         int thumbnailIndex = totalPics;
         totalPics += 1;
         isTitleWidget.add(false);
@@ -196,26 +190,22 @@ class _TaggedTabState extends State<TaggedTab> {
                 onLongPress: () {
                   print('LongPress');
                   if (tabsStore.multiPicBar == false) {
-//                    Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-//                    picsCopy.add(data.id);
-//                    DatabaseManager.instance.setPicsSelected(picsCopy);
-//                    tabsStore.setMultiPicBar(true);
+                    galleryStore.setSelectedPics(
+                      photoId: pic.entity.id,
+                      picIsTagged: true,
+                    );
+                    tabsStore.setMultiPicBar(true);
                   }
                 },
                 child: CupertinoButton(
                   padding: const EdgeInsets.all(0),
                   onPressed: () {
                     if (tabsStore.multiPicBar) {
-//                      if (DatabaseManager.instance.picsSelected.contains(data.id)) {
-//                        Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-//                        picsCopy.remove(data.id);
-//                        DatabaseManager.instance.setPicsSelected(picsCopy);
-//                      } else {
-//                        Set<String> picsCopy = DatabaseManager.instance.picsSelected;
-//                        picsCopy.add(data.id);
-//                        DatabaseManager.instance.setPicsSelected(picsCopy);
-//                      }
-//                      print('Pics Selected Length: ${DatabaseManager.instance.picsSelected.length}');
+                      galleryStore.setSelectedPics(
+                        photoId: pic.entity.id,
+                        picIsTagged: true,
+                      );
+                      print('Pics Selected Length: ${galleryStore.selectedPics.length}');
                       return;
                     }
 
@@ -237,16 +227,16 @@ class _TaggedTabState extends State<TaggedTab> {
         ));
       }
     }
-//
-    if (!isFiltered || tagsList.length > 1) {
-      for (String tagKey in galleryStore.taggedKeys) {
+
+    if (tagsList.length > 1) {
+      for (String tagKey in tagsList) {
         Tag tag = tagsBox.get(tagKey);
 
-//      if (tag.photoId.length == 0) {
-//        print('skipping ${tag.name} because tag has no pictures...');
-//        continue;
-//      }
-//
+        if (tag.photoId.length == 0) {
+          print('skipping ${tag.name} because tag has no pictures...');
+          continue;
+        }
+
 //      bool oneValidPic = checkTagHasOneValidPic(tag);
 //      if (!oneValidPic) {
 //        print('skipping ${tag.name} because tag has no valid pictures...');
@@ -325,23 +315,10 @@ class _TaggedTabState extends State<TaggedTab> {
                         return;
                       }
 
-//                      int thumbnailIndex = totalPics.toInt() - 1;
-
                       print('Selected photo: ${data.entity.id}');
                       galleryStore.setPicsInThumbnails(PicsInThumbnails.TAGGED);
                       galleryStore.setSelectedThumbnail(thumbnailIndex);
                       Navigator.pushNamed(context, PhotoScreen.id);
-
-//                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(data.entity.id);
-//                      Navigator.push(
-//                        context,
-//                        MaterialPageRoute(
-//                          builder: (context) => PhotoScreen(
-//                            initialIndex: initialIndex,
-//                          ),
-//                        ),
-//                      );
-                      // Call expanded screen directly
                     },
                     child: ImageItem(
                       entity: data.entity,
@@ -555,12 +532,11 @@ class _TaggedTabState extends State<TaggedTab> {
                           ],
                         );
                       }
-                      bool isFiltered = galleryStore.isFiltered;
-                      print('@@@@ isFiltered: $isFiltered');
-                      return Expanded(
-                        child: _buildTaggedGridView(isFiltered: galleryStore.searchingTagsKeys.length > 0),
-                      );
+                      return Container();
                     }),
+                    Expanded(
+                      child: _buildTaggedGridView(isFiltered: galleryStore.searchingTagsKeys.length > 0),
+                    ),
                   ],
                 );
               }

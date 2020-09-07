@@ -324,32 +324,36 @@ abstract class _PicStore with Store {
 
   @action
   Future<bool> deletePic() async {
-    print('Before photo manager delete');
-    List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
-    print('Photo Editor Result: ${result}');
+    print('Before photo manager delete: ${entity.id}');
+    await PhotoManager.editor.deleteWithIds([entity.id]).then((value) {
+      print('Photo Editor Result: ${value}');
 
-    if (result.isNotEmpty) {
-      var picsBox = Hive.box('pics');
-      var tagsBox = Hive.box('tags');
+      if (value.isNotEmpty) {
+        var picsBox = Hive.box('pics');
+        var tagsBox = Hive.box('tags');
 
-      Pic pic = picsBox.get(photoId);
-      if (pic != null) {
-        print('pic is in db... removing it from db!');
+        Pic pic = picsBox.get(photoId);
+        if (pic != null) {
+          print('pic is in db... removing it from db!');
 
-        for (var tag in pic.tags) {
-          String tagKey = Helpers.stripTag(tag);
+          for (var tag in pic.tags) {
+            String tagKey = Helpers.stripTag(tag);
 
-          Tag getTag = tagsBox.get(tagKey);
-          getTag.photoId.remove(entity.id);
-          print('removed ${entity.id} from $tag');
-          tagsBox.put(tagKey, getTag);
+            Tag getTag = tagsBox.get(tagKey);
+            getTag.photoId.remove(entity.id);
+            print('removed ${entity.id} from $tag');
+            tagsBox.put(tagKey, getTag);
+          }
+          print('removed ${entity.id} from database');
+          picsBox.delete(photoId);
         }
-        print('removed ${entity.id} from database');
-        picsBox.delete(photoId);
       }
-      return true;
-    }
-    return false;
+    }).catchError((error) {
+      print(error);
+    });
+
+    return true;
+//    return false;
   }
 
   @action

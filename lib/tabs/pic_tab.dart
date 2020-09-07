@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
@@ -29,6 +28,7 @@ class _PicTabState extends State<PicTab> {
   AppStore appStore;
   GalleryStore galleryStore;
   CarouselController carouselController = CarouselController();
+  ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
     return Padding(
@@ -102,25 +102,32 @@ class _PicTabState extends State<PicTab> {
                         itemCount: galleryStore.swipePics.length,
                         carouselController: carouselController,
                         itemBuilder: (BuildContext context, int index) {
+                          if (index < galleryStore.swipeCutOff) {
+                            return Container();
+                          }
                           print('calling index $index');
                           return _buildPhotoSlider(context, index);
                         },
                         options: CarouselOptions(
-                          initialPage: galleryStore.swipeIndex,
-                          enableInfiniteScroll: true,
-                          height: double.maxFinite,
-                          viewportFraction: 1.0,
-                          enlargeCenterPage: true,
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          onPageChanged: (index, reason) async {
-                            if (!appStore.hasSwiped) {
-                              appStore.setHasSwiped(true);
-                            }
-                            galleryStore.setSwipeIndex(index);
-                            Analytics.sendEvent(Event.swiped_photo);
-                            print('### Swiper Index: $index');
-                          },
-                        ),
+                            initialPage: galleryStore.swipeIndex,
+                            enableInfiniteScroll: false,
+                            height: double.maxFinite,
+                            viewportFraction: 1.0,
+                            enlargeCenterPage: true,
+                            autoPlayCurve: Curves.fastOutSlowIn,
+                            scrollPhysics: scrollPhysics,
+                            onPageChanged: (index, reason) {
+                              galleryStore.setSwipeIndex(index);
+                            },
+                            onScrolled: (double) {
+//                              if (galleryStore.swipeIndex <= galleryStore.swipeCutOff && galleryStore.swipeIndex != 0) {
+//                                print('changing scroll physics');
+//                                setState(() {
+//                                  scrollPhysics = NeverScrollableScrollPhysics();
+//                                });
+//                              }
+//                              print('scrolled $double');
+                            }),
                       );
                     }),
                     Observer(builder: (_) {
