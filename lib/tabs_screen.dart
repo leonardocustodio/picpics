@@ -557,7 +557,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tagsKeys: galleryStore.multiPicTagKeys.toList(),
+                                        tags: [], // galleryStore.multiPicTagKeys.toList(),
                                         addTagField: true,
                                         textEditingController: bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
@@ -610,7 +610,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
                                         title: S.of(context).suggestions,
-                                        tagsKeys: galleryStore.tagsSuggestions,
+                                        tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagName) {

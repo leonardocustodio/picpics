@@ -9,13 +9,6 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
-  Computed<PicStore> _$currentPicComputed;
-
-  @override
-  PicStore get currentPic =>
-      (_$currentPicComputed ??= Computed<PicStore>(() => super.currentPic,
-              name: '_GalleryStore.currentPic'))
-          .value;
   Computed<ObservableList<PicStore>> _$thumbnailsPicsComputed;
 
   @override
@@ -37,11 +30,11 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$isFilteredComputed ??= Computed<bool>(() => super.isFiltered,
               name: '_GalleryStore.isFiltered'))
           .value;
-  Computed<List<String>> _$tagsSuggestionsComputed;
+  Computed<List<TagsStore>> _$tagsSuggestionsComputed;
 
   @override
-  List<String> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
-          Computed<List<String>>(() => super.tagsSuggestions,
+  List<TagsStore> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
+          Computed<List<TagsStore>>(() => super.tagsSuggestions,
               name: '_GalleryStore.tagsSuggestions'))
       .value;
   Computed<List<String>> _$taggedKeysComputed;
@@ -59,48 +52,18 @@ mixin _$GalleryStore on _GalleryStore, Store {
               name: '_GalleryStore.deviceHasPics'))
           .value;
 
-  final _$currentPicSourceAtom = Atom(name: '_GalleryStore.currentPicSource');
+  final _$currentPicAtom = Atom(name: '_GalleryStore.currentPic');
 
   @override
-  PicSource get currentPicSource {
-    _$currentPicSourceAtom.reportRead();
-    return super.currentPicSource;
+  PicStore get currentPic {
+    _$currentPicAtom.reportRead();
+    return super.currentPic;
   }
 
   @override
-  set currentPicSource(PicSource value) {
-    _$currentPicSourceAtom.reportWrite(value, super.currentPicSource, () {
-      super.currentPicSource = value;
-    });
-  }
-
-  final _$currentPhotoIdAtom = Atom(name: '_GalleryStore.currentPhotoId');
-
-  @override
-  String get currentPhotoId {
-    _$currentPhotoIdAtom.reportRead();
-    return super.currentPhotoId;
-  }
-
-  @override
-  set currentPhotoId(String value) {
-    _$currentPhotoIdAtom.reportWrite(value, super.currentPhotoId, () {
-      super.currentPhotoId = value;
-    });
-  }
-
-  final _$currentPhotoIndexAtom = Atom(name: '_GalleryStore.currentPhotoIndex');
-
-  @override
-  int get currentPhotoIndex {
-    _$currentPhotoIndexAtom.reportRead();
-    return super.currentPhotoIndex;
-  }
-
-  @override
-  set currentPhotoIndex(int value) {
-    _$currentPhotoIndexAtom.reportWrite(value, super.currentPhotoIndex, () {
-      super.currentPhotoIndex = value;
+  set currentPic(PicStore value) {
+    _$currentPicAtom.reportWrite(value, super.currentPic, () {
+      super.currentPic = value;
     });
   }
 
@@ -275,12 +238,11 @@ mixin _$GalleryStore on _GalleryStore, Store {
       ActionController(name: '_GalleryStore');
 
   @override
-  void setCurrentPic({PicSource source, String picId, int picIndex}) {
+  void setCurrentPic(PicStore picStore) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setCurrentPic');
     try {
-      return super
-          .setCurrentPic(source: source, picId: picId, picIndex: picIndex);
+      return super.setCurrentPic(picStore);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -509,9 +471,7 @@ mixin _$GalleryStore on _GalleryStore, Store {
   @override
   String toString() {
     return '''
-currentPicSource: ${currentPicSource},
-currentPhotoId: ${currentPhotoId},
-currentPhotoIndex: ${currentPhotoIndex},
+currentPic: ${currentPic},
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
 picsInThumbnails: ${picsInThumbnails},
@@ -521,7 +481,6 @@ showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
-currentPic: ${currentPic},
 thumbnailsPics: ${thumbnailsPics},
 currentThumbnailPic: ${currentThumbnailPic},
 isFiltered: ${isFiltered},

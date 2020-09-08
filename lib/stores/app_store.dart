@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
@@ -13,6 +14,7 @@ import 'package:picPics/login_screen.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/push_notifications_manager.dart';
+import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/tabs_screen.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
@@ -81,6 +83,12 @@ abstract class _AppStore with Store {
     canTagToday = user.canTagToday;
     loggedIn = user.loggedIn ?? false;
     tryBuyId = initiatedWithProduct;
+
+    loadTags();
+
+    for (String tagKey in user.recentTags) {
+      addRecentTags(tagKey);
+    }
 
     if (loggedIn) {
       initialRoute = TabsScreen.id;
@@ -231,7 +239,38 @@ abstract class _AppStore with Store {
     }
   }
 
-//  List<String> recentTags;
+  ObserverList<TagsStore> tags = ObserverList<TagsStore>();
+
+  @action
+  void loadTags() {
+    var tagsBox = Hive.box('tags');
+
+    for (Tag tag in tagsBox.values) {
+      TagsStore tagStore = TagsStore(id: tag.key, name: tag.name);
+      tags.add(tagStore);
+    }
+
+    print('******************* loaded tags **********');
+  }
+
+  @action
+  void editTag({String oldTagKey, String newTagKey, String newName}) {
+    TagsStore tagsStore = tags.firstWhere((element) => element.id == oldTagKey);
+    tagsStore.setTagInfo(tagId: newTagKey, tagName: newName);
+  }
+
+  ObservableList<String> recentTags = ObservableList<String>();
+
+  @action
+  void addRecentTags(String tagKey) {
+    recentTags.add(tagKey);
+  }
+
+  @action
+  void editRecentTags(String oldTagKey, String newTagKey) {
+    int indexOfTag = recentTags.indexOf(oldTagKey);
+    recentTags[indexOfTag] = newTagKey;
+  }
 
   @observable
   bool tutorialCompleted;
@@ -402,5 +441,6 @@ abstract class _AppStore with Store {
       Helpers.encryptTag(S.of(context).screenshots_tag): tag10,
     };
     tagsBox.putAll(entries);
+    loadTags();
   }
 }

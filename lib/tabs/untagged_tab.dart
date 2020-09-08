@@ -7,6 +7,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
@@ -83,7 +84,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //    }
 
     print('Item Count: ${galleryStore.untaggedPics.length}');
-    var data = galleryStore.untaggedPics[index].entity;
+    PicStore picStore = galleryStore.untaggedPics[index];
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     print('Build Item: $index');
 
@@ -95,7 +96,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
             print('LongPress');
             if (tabsStore.multiPicBar == false) {
               galleryStore.setSelectedPics(
-                photoId: data.id,
+                photoId: picStore.photoId,
                 picIsTagged: false,
               );
               tabsStore.setMultiPicBar(true);
@@ -106,7 +107,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
             onPressed: () {
               if (tabsStore.multiPicBar) {
                 galleryStore.setSelectedPics(
-                  photoId: data.id,
+                  photoId: picStore.photoId,
                   picIsTagged: false,
                 );
                 print('Pics Selected Length: ${galleryStore.selectedPics.length}');
@@ -114,16 +115,16 @@ class _UntaggedTabState extends State<UntaggedTab> {
               }
 
               tagsEditingController.text = '';
-              galleryStore.setCurrentPic(source: PicSource.UNTAGGED, picIndex: index);
+              galleryStore.setCurrentPic(picStore);
               tabsStore.setModalCard(true);
               galleryStore.setSelectedThumbnail(index);
             },
             child: ImageItem(
-              entity: data,
+              entity: picStore.entity,
               size: 150,
               backgroundColor: Colors.grey[400],
               showOverlay: tabsStore.multiPicBar ? true : false,
-              isSelected: galleryStore.selectedPics.contains(data.id),
+              isSelected: galleryStore.selectedPics.contains(picStore.photoId),
             ),
           ),
         ),

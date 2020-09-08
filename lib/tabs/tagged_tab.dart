@@ -209,7 +209,7 @@ class _TaggedTabState extends State<TaggedTab> {
                       return;
                     }
 
-                    galleryStore.setCurrentPic(source: PicSource.FILTERED, picId: pic.photoId);
+                    galleryStore.setCurrentPic(pic);
                     galleryStore.setPicsInThumbnails(PicSource.FILTERED);
                     galleryStore.setSelectedThumbnail(thumbnailIndex);
                     Navigator.pushNamed(context, PhotoScreen.id);
@@ -317,7 +317,7 @@ class _TaggedTabState extends State<TaggedTab> {
                       }
 
                       print('Selected photo: ${data.entity.id}');
-                      galleryStore.setCurrentPic(source: PicSource.TAGGED, picId: data.photoId);
+                      galleryStore.setCurrentPic(data);
                       galleryStore.setPicsInThumbnails(PicSource.TAGGED);
                       galleryStore.setSelectedThumbnail(thumbnailIndex);
                       Navigator.pushNamed(context, PhotoScreen.id);
@@ -455,7 +455,7 @@ class _TaggedTabState extends State<TaggedTab> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
-                                  tagsKeys: galleryStore.searchingTagsKeys.toList(),
+                                  tags: [], // galleryStore.searchingTagsKeys.toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (tagName) {
                                     print('do nothing');
@@ -496,7 +496,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                   child: TagsList(
-                                    tagsKeys: galleryStore.searchTagsResults.toList(),
+                                    tags: [], // galleryStore.searchTagsResults.toList(),
                                     tagStyle: TagStyle.GrayOutlined,
                                     showEditTagModal: widget.showEditTagModal,
                                     onTap: (tagName) {

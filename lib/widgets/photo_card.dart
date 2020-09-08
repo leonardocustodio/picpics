@@ -272,7 +272,7 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Observer(builder: (_) {
                   return TagsList(
-                    tagsKeys: picStore.tagsKeys,
+                    tags: picStore.tags.toList(),
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
@@ -320,7 +320,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   child: Observer(builder: (_) {
                     return TagsList(
                       title: S.of(context).suggestions,
-                      tagsKeys: picStore.tagsSuggestions,
+                      tags: picStore.tagsSuggestions,
                       tagStyle: TagStyle.GrayOutlined,
                       showEditTagModal: widget.showEditTagModal,
                       onTap: (tagName) async {
