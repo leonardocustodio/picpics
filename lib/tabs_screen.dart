@@ -520,6 +520,7 @@ class _TabsScreenState extends State<TabsScreen> {
 //                                        entities: entities,
 //                                      );
 
+                                        galleryStore.addTagsToSelectedPics();
                                         tabsStore.setMultiTagSheet(false);
                                         tabsStore.setMultiPicBar(false);
                                         galleryStore.clearSelectedPics();

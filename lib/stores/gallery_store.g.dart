@@ -447,15 +447,11 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void addTagsToPics(
-      {List<String> tagsKeys,
-      List<String> photosIds,
-      List<AssetEntity> entities}) {
+  void addTagsToSelectedPics() {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.addTagsToPics');
+        name: '_GalleryStore.addTagsToSelectedPics');
     try {
-      return super.addTagsToPics(
-          tagsKeys: tagsKeys, photosIds: photosIds, entities: entities);
+      return super.addTagsToSelectedPics();
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
