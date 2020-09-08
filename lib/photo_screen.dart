@@ -6,6 +6,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database_manager.dart';
+import 'package:picPics/full_image_item.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -101,30 +102,27 @@ class _PhotoScreenState extends State<PhotoScreen> {
     AssetEntity entity = galleryStore.thumbnailsPics[index].entity;
 
     return PhotoViewGalleryPageOptions.customChild(
-      child: Container(
-        color: Colors.black,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: ImageItem(
-          entity: entity,
-          size: MediaQuery.of(context).size.height.toInt(),
-          fit: BoxFit.contain,
-          backgroundColor: Colors.black,
-          onTap: () {
-            print('ON TAP');
-            changeOverlay();
-          },
+      child: GestureDetector(
+        onTap: () {
+          changeOverlay();
+        },
+        child: Container(
+          color: Colors.black,
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: FullImageItem(
+            entity: entity,
+            size: MediaQuery.of(context).size.height.toInt(),
+            fit: BoxFit.contain,
+            backgroundColor: Colors.black,
+          ),
         ),
       ),
       childSize: Size(
         MediaQuery.of(context).size.width,
         MediaQuery.of(context).size.height,
       ),
-      onTapUp: (context, details, controllerValue) {
-        print('On tap up');
-        changeOverlay();
-      },
-//      initialScale: PhotoViewComputedScale.contained,
+      //      initialScale: PhotoViewComputedScale.contained,
 //      minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
 //      maxScale: PhotoViewComputedScale.covered * 1.1,
       minScale: 0.7,
