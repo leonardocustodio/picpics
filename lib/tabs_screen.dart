@@ -753,7 +753,7 @@ class _TabsScreenState extends State<TabsScreen> {
                           ),
                           child: PhotoCard(
                             picStore: galleryStore.currentPic,
-                            picsInThumbnails: PicsInThumbnails.UNTAGGED,
+                            picsInThumbnails: PicSource.UNTAGGED,
                             showEditTagModal: showEditTagModal,
                           ),
                         ),

@@ -35,7 +35,7 @@ class _PicTabState extends State<PicTab> {
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
         picStore: galleryStore.swipePics[index],
-        picsInThumbnails: PicsInThumbnails.SWIPE,
+        picsInThumbnails: PicSource.SWIPE,
         picsInThumbnailIndex: index,
         showEditTagModal: widget.showEditTagModal,
       ),

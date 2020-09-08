@@ -209,7 +209,8 @@ class _TaggedTabState extends State<TaggedTab> {
                       return;
                     }
 
-                    galleryStore.setPicsInThumbnails(PicsInThumbnails.FILTERED);
+                    galleryStore.setCurrentPic(source: PicSource.FILTERED, picId: pic.photoId);
+                    galleryStore.setPicsInThumbnails(PicSource.FILTERED);
                     galleryStore.setSelectedThumbnail(thumbnailIndex);
                     Navigator.pushNamed(context, PhotoScreen.id);
                   },
@@ -316,7 +317,8 @@ class _TaggedTabState extends State<TaggedTab> {
                       }
 
                       print('Selected photo: ${data.entity.id}');
-                      galleryStore.setPicsInThumbnails(PicsInThumbnails.TAGGED);
+                      galleryStore.setCurrentPic(source: PicSource.TAGGED, picId: data.photoId);
+                      galleryStore.setPicsInThumbnails(PicSource.TAGGED);
                       galleryStore.setSelectedThumbnail(thumbnailIndex);
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },

@@ -181,7 +181,7 @@ class _TagsListState extends State<TagsList> {
                   ? Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       child: Text(
-                        tagName,
+                        tagName ?? '',
                         textScaleFactor: 1.0,
                         style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                       ),

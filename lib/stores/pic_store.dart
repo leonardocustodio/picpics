@@ -95,7 +95,6 @@ abstract class _PicStore with Store {
 
   @computed
   List<String> get tagsSuggestions {
-//    tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
     var userBox = Hive.box('user');
     var tagsBox = Hive.box('tags');
     User getUser = userBox.getAt(0);

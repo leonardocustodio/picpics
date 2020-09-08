@@ -43,6 +43,60 @@ abstract class _GalleryStore with Store {
     });
   }
 
+  @computed
+  PicStore get currentPic {
+    switch (currentPicSource) {
+      case PicSource.UNTAGGED:
+        {
+          return untaggedPics[currentPhotoIndex];
+        }
+        break;
+
+      case PicSource.SWIPE:
+        {
+          return swipePics[swipeIndex];
+        }
+        break;
+
+      case PicSource.TAGGED:
+        {
+          return taggedPics.firstWhere((element) => element.photoId == currentPhotoId);
+        }
+        break;
+
+      case PicSource.FILTERED:
+        {
+          return filteredPics.firstWhere((element) => element.photoId == currentPhotoId);
+        }
+        break;
+
+      default:
+        {
+          return null;
+        }
+    }
+  }
+
+  @observable
+  PicSource currentPicSource = PicSource.SWIPE;
+
+  @observable
+  String currentPhotoId;
+
+  @observable
+  int currentPhotoIndex;
+
+  @action
+  void setCurrentPic({PicSource source, String picId, int picIndex}) {
+    currentPicSource = source;
+
+    if (picIndex == null) {
+      currentPhotoId = picId;
+    } else {
+      currentPhotoIndex = picIndex;
+    }
+  }
+
   @observable
   int swipeIndex = 0;
 
@@ -63,7 +117,7 @@ abstract class _GalleryStore with Store {
 //    }
 
     swipeIndex = value;
-    setCurrentPic(swipePics[value]);
+    currentPicSource = PicSource.SWIPE;
     Analytics.sendEvent(Event.swiped_photo);
   }
 
@@ -79,7 +133,7 @@ abstract class _GalleryStore with Store {
   ObservableSet<String> selectedPics = ObservableSet<String>();
 
   @observable
-  PicsInThumbnails picsInThumbnails = PicsInThumbnails.UNTAGGED;
+  PicSource picsInThumbnails = PicSource.UNTAGGED;
 
   @observable
   int selectedThumbnail = 0;
@@ -89,11 +143,11 @@ abstract class _GalleryStore with Store {
 
   @computed
   ObservableList<PicStore> get thumbnailsPics {
-    if (picsInThumbnails == PicsInThumbnails.TAGGED) {
+    if (picsInThumbnails == PicSource.TAGGED) {
       return taggedPics;
-    } else if (picsInThumbnails == PicsInThumbnails.FILTERED) {
+    } else if (picsInThumbnails == PicSource.FILTERED) {
       return filteredPics;
-    } else if (picsInThumbnails == PicsInThumbnails.SWIPE) {
+    } else if (picsInThumbnails == PicSource.SWIPE) {
       return swipePics;
     }
     return untaggedPics;
@@ -108,7 +162,7 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void setPicsInThumbnails(PicsInThumbnails picsType) {
+  void setPicsInThumbnails(PicSource picsType) {
     picsInThumbnails = picsType;
   }
 
@@ -238,14 +292,6 @@ abstract class _GalleryStore with Store {
     });
     print('Tagged Keys: ${tags}');
     return tags.toList();
-  }
-
-  @observable
-  PicStore currentPic;
-
-  @action
-  void setCurrentPic(PicStore pic) {
-    currentPic = pic;
   }
 
   @computed
@@ -429,11 +475,15 @@ abstract class _GalleryStore with Store {
       }
 
       // Substitui as tags nas fotos já taggeadas
-      taggedPics.forEach((element) {
+      allPics.forEach((element) {
         if (newTag.photoId.contains(element.photoId)) {
-          int indexOfTagStore = element.tags.indexWhere((tagStore) => tagStore.id == oldTagKey);
+          element.tags.removeWhere((tag) => tag.id == oldTagKey);
           TagsStore tagsStore = TagsStore(id: newTagKey, name: newName);
-          element.tags[indexOfTagStore] = tagsStore;
+          element.tags.add(tagsStore);
+
+//          int indexOfTagStore = element.tags.indexWhere((tagStore) => tagStore.id == oldTagKey);
+//          TagsStore tagsStore = TagsStore(id: newTagKey, name: newName);
+//          element.tags[indexOfTagStore] = tagsStore;
         }
       });
 
@@ -689,7 +739,7 @@ abstract class _GalleryStore with Store {
   }
 }
 
-enum PicsInThumbnails {
+enum PicSource {
   UNTAGGED,
   SWIPE,
   TAGGED,

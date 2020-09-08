@@ -28,7 +28,7 @@ import 'package:provider/provider.dart';
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
   final Function showEditTagModal;
-  final PicsInThumbnails picsInThumbnails;
+  final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
   PhotoCard({
@@ -168,9 +168,8 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/expandnobackground.png'),
                     color: kSecondaryColor,
                     onTap: () {
-                      galleryStore.setCurrentPic(picStore);
                       galleryStore.setPicsInThumbnails(widget.picsInThumbnails);
-                      if (widget.picsInThumbnails == PicsInThumbnails.SWIPE) {
+                      if (widget.picsInThumbnails == PicSource.SWIPE) {
                         galleryStore.setSelectedThumbnail(widget.picsInThumbnailIndex);
                       }
 
@@ -223,7 +222,6 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () async {
-                        galleryStore.setCurrentPic(picStore);
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: Observer(builder: (_) {

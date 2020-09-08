@@ -9,6 +9,13 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
+  Computed<PicStore> _$currentPicComputed;
+
+  @override
+  PicStore get currentPic =>
+      (_$currentPicComputed ??= Computed<PicStore>(() => super.currentPic,
+              name: '_GalleryStore.currentPic'))
+          .value;
   Computed<ObservableList<PicStore>> _$thumbnailsPicsComputed;
 
   @override
@@ -52,6 +59,51 @@ mixin _$GalleryStore on _GalleryStore, Store {
               name: '_GalleryStore.deviceHasPics'))
           .value;
 
+  final _$currentPicSourceAtom = Atom(name: '_GalleryStore.currentPicSource');
+
+  @override
+  PicSource get currentPicSource {
+    _$currentPicSourceAtom.reportRead();
+    return super.currentPicSource;
+  }
+
+  @override
+  set currentPicSource(PicSource value) {
+    _$currentPicSourceAtom.reportWrite(value, super.currentPicSource, () {
+      super.currentPicSource = value;
+    });
+  }
+
+  final _$currentPhotoIdAtom = Atom(name: '_GalleryStore.currentPhotoId');
+
+  @override
+  String get currentPhotoId {
+    _$currentPhotoIdAtom.reportRead();
+    return super.currentPhotoId;
+  }
+
+  @override
+  set currentPhotoId(String value) {
+    _$currentPhotoIdAtom.reportWrite(value, super.currentPhotoId, () {
+      super.currentPhotoId = value;
+    });
+  }
+
+  final _$currentPhotoIndexAtom = Atom(name: '_GalleryStore.currentPhotoIndex');
+
+  @override
+  int get currentPhotoIndex {
+    _$currentPhotoIndexAtom.reportRead();
+    return super.currentPhotoIndex;
+  }
+
+  @override
+  set currentPhotoIndex(int value) {
+    _$currentPhotoIndexAtom.reportWrite(value, super.currentPhotoIndex, () {
+      super.currentPhotoIndex = value;
+    });
+  }
+
   final _$swipeIndexAtom = Atom(name: '_GalleryStore.swipeIndex');
 
   @override
@@ -85,13 +137,13 @@ mixin _$GalleryStore on _GalleryStore, Store {
   final _$picsInThumbnailsAtom = Atom(name: '_GalleryStore.picsInThumbnails');
 
   @override
-  PicsInThumbnails get picsInThumbnails {
+  PicSource get picsInThumbnails {
     _$picsInThumbnailsAtom.reportRead();
     return super.picsInThumbnails;
   }
 
   @override
-  set picsInThumbnails(PicsInThumbnails value) {
+  set picsInThumbnails(PicSource value) {
     _$picsInThumbnailsAtom.reportWrite(value, super.picsInThumbnails, () {
       super.picsInThumbnails = value;
     });
@@ -159,21 +211,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
-  final _$currentPicAtom = Atom(name: '_GalleryStore.currentPic');
-
-  @override
-  PicStore get currentPic {
-    _$currentPicAtom.reportRead();
-    return super.currentPic;
-  }
-
-  @override
-  set currentPic(PicStore value) {
-    _$currentPicAtom.reportWrite(value, super.currentPic, () {
-      super.currentPic = value;
-    });
-  }
-
   final _$trashedPicAtom = Atom(name: '_GalleryStore.trashedPic');
 
   @override
@@ -238,6 +275,18 @@ mixin _$GalleryStore on _GalleryStore, Store {
       ActionController(name: '_GalleryStore');
 
   @override
+  void setCurrentPic({PicSource source, String picId, int picIndex}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setCurrentPic');
+    try {
+      return super
+          .setCurrentPic(source: source, picId: picId, picIndex: picIndex);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setSwipeIndex(int value) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setSwipeIndex');
@@ -260,7 +309,7 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void setPicsInThumbnails(PicsInThumbnails picsType) {
+  void setPicsInThumbnails(PicSource picsType) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setPicsInThumbnails');
     try {
@@ -353,17 +402,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.setSearchText');
     try {
       return super.setSearchText(value);
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setCurrentPic(PicStore pic) {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.setCurrentPic');
-    try {
-      return super.setCurrentPic(pic);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -471,6 +509,9 @@ mixin _$GalleryStore on _GalleryStore, Store {
   @override
   String toString() {
     return '''
+currentPicSource: ${currentPicSource},
+currentPhotoId: ${currentPhotoId},
+currentPhotoIndex: ${currentPhotoIndex},
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
 picsInThumbnails: ${picsInThumbnails},
@@ -478,9 +519,9 @@ selectedThumbnail: ${selectedThumbnail},
 isSearching: ${isSearching},
 showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
-currentPic: ${currentPic},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
+currentPic: ${currentPic},
 thumbnailsPics: ${thumbnailsPics},
 currentThumbnailPic: ${currentThumbnailPic},
 isFiltered: ${isFiltered},
