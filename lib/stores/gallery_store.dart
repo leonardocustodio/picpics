@@ -627,31 +627,40 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void addTagsToPics({List<String> tagsKeys, List<String> photosIds, List<AssetEntity> entities}) {
-//    var tagsBox = Hive.box('tags');
-//
-//    for (String photoId in photosIds) {
-//      for (String tagKey in tagsKeys) {
-//        Tag getTag = tagsBox.get(tagKey);
-//
-//        if (getTag.photoId.contains(photoId)) {
-//          print('this tag is already in this picture');
-//          continue;
-//        }
-//
-//        getTag.photoId.add(photoId);
-//        tagsBox.put(tagKey, getTag);
-//        addTagToPic(
-//          tagKey: tagKey,
-//          photoId: photoId,
-//          entities: entities,
-//        );
-//        print('update pictures in tag');
-//        Analytics.sendEvent(Event.added_tag);
-//      }
-//    }
-//
-//    notifyListeners();
+  void addTagsToSelectedPics() {
+    var tagsBox = Hive.box('tags');
+
+    for (String photoId in selectedPics) {
+      PicStore picStore = selectedPicsAreTagged
+          ? taggedPics.firstWhere((element) => element.photoId == photoId)
+          : untaggedPics.firstWhere((element) => element.photoId == photoId);
+
+      if (!selectedPicsAreTagged) {
+        taggedPics.add(picStore);
+        untaggedPics.remove(picStore);
+      }
+
+      for (String tagKey in multiPicTagKeys) {
+        Tag getTag = tagsBox.get(tagKey);
+
+        if (getTag.photoId.contains(photoId)) {
+          print('this tag is already in this picture');
+          continue;
+        }
+
+        getTag.photoId.add(photoId);
+        tagsBox.put(tagKey, getTag);
+
+        picStore.addTagToPic(
+          tagKey: tagKey,
+          photoId: photoId,
+          tagName: getTag.name,
+        );
+
+        print('update pictures in tag');
+        Analytics.sendEvent(Event.added_tag);
+      }
+    }
   }
 
   @action

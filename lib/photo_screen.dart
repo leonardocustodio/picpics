@@ -120,7 +120,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
       onTapUp: (context, details, controller) {
         changeOverlay();
       },
-      //      initialScale: PhotoViewComputedScale.contained,
+//      initialScale: PhotoViewComputedScale.contained,
 //      minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
 //      maxScale: PhotoViewComputedScale.covered * 1.1,
       minScale: 0.7,
