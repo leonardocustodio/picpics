@@ -102,26 +102,24 @@ class _PhotoScreenState extends State<PhotoScreen> {
     AssetEntity entity = galleryStore.thumbnailsPics[index].entity;
 
     return PhotoViewGalleryPageOptions.customChild(
-      child: GestureDetector(
-        onTap: () {
-          changeOverlay();
-        },
-        child: Container(
-          color: Colors.black,
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: FullImageItem(
-            entity: entity,
-            size: MediaQuery.of(context).size.height.toInt(),
-            fit: BoxFit.contain,
-            backgroundColor: Colors.black,
-          ),
+      child: Container(
+        color: Colors.black,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: FullImageItem(
+          entity: entity,
+          size: MediaQuery.of(context).size.height.toInt(),
+          fit: BoxFit.contain,
+          backgroundColor: Colors.black,
         ),
       ),
       childSize: Size(
         MediaQuery.of(context).size.width,
         MediaQuery.of(context).size.height,
       ),
+      onTapUp: (context, details, controller) {
+        changeOverlay();
+      },
       //      initialScale: PhotoViewComputedScale.contained,
 //      minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
 //      maxScale: PhotoViewComputedScale.covered * 1.1,
