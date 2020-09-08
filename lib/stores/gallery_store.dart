@@ -638,6 +638,7 @@ abstract class _GalleryStore with Store {
       if (!selectedPicsAreTagged) {
         taggedPics.add(picStore);
         untaggedPics.remove(picStore);
+        swipePics.remove(picStore);
       }
 
       for (String tagKey in multiPicTagKeys) {
