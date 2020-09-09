@@ -46,7 +46,6 @@ abstract class _PicStore with Store {
   @action
   void loadPicInfo() {
     var picsBox = Hive.box('pics');
-    var tagsBox = Hive.box('tags');
 
     if (picsBox.containsKey(photoId)) {
       print('pic $photoId exists, loading data....');
@@ -58,8 +57,7 @@ abstract class _PicStore with Store {
       generalLocation = pic.generalLocation;
 
       for (String tagKey in pic.tags) {
-        Tag tag = tagsBox.get(tagKey);
-        TagsStore tagsStore = TagsStore(id: tagKey, name: tag.name);
+        TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
         tags.add(tagsStore);
       }
     } else {
@@ -94,16 +92,12 @@ abstract class _PicStore with Store {
   }
 
   @computed
-  List<String> get tagsSuggestions {
-//    tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
-    var userBox = Hive.box('user');
+  List<TagsStore> get tagsSuggestions {
     var tagsBox = Hive.box('tags');
-    User getUser = userBox.getAt(0);
-
     List<String> suggestionTags = [];
 
     if (searchText == '') {
-      for (var recent in getUser.recentTags) {
+      for (var recent in appStore.recentTags) {
         if (tagsKeys.contains(recent)) {
           continue;
         }
@@ -138,8 +132,8 @@ abstract class _PicStore with Store {
     }
     print('find suggestions: $searchText - exclude: $tagsKeys');
     print(suggestionTags);
-
-    return suggestionTags;
+    List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();
+    return suggestions;
   }
 
   @action
@@ -207,10 +201,8 @@ abstract class _PicStore with Store {
       picsBox.put(photoId, getPic);
       print('updated picture');
 
-      tags.add(TagsStore(
-        id: tagKey,
-        name: tagName,
-      ));
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      tags.add(tagsStore);
 
 //      checkPicHasTags(photoId);
       Analytics.sendEvent(Event.added_tag);
@@ -220,10 +212,8 @@ abstract class _PicStore with Store {
     print('this picture is not in db, adding it...');
     print('Photo Id: $photoId');
 
-    tags.add(TagsStore(
-      id: tagKey,
-      name: tagName,
-    ));
+    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+    tags.add(tagsStore);
 
     Pic pic = Pic(
       photoId: photoId,

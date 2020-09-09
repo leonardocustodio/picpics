@@ -209,7 +209,8 @@ class _TaggedTabState extends State<TaggedTab> {
                       return;
                     }
 
-                    galleryStore.setPicsInThumbnails(PicsInThumbnails.FILTERED);
+                    galleryStore.setCurrentPic(pic);
+                    galleryStore.setPicsInThumbnails(PicSource.FILTERED);
                     galleryStore.setSelectedThumbnail(thumbnailIndex);
                     Navigator.pushNamed(context, PhotoScreen.id);
                   },
@@ -316,7 +317,8 @@ class _TaggedTabState extends State<TaggedTab> {
                       }
 
                       print('Selected photo: ${data.entity.id}');
-                      galleryStore.setPicsInThumbnails(PicsInThumbnails.TAGGED);
+                      galleryStore.setCurrentPic(data);
+                      galleryStore.setPicsInThumbnails(PicSource.TAGGED);
                       galleryStore.setSelectedThumbnail(thumbnailIndex);
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },
@@ -453,7 +455,7 @@ class _TaggedTabState extends State<TaggedTab> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
-                                  tagsKeys: galleryStore.searchingTagsKeys.toList(),
+                                  tags: galleryStore.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (tagName) {
                                     print('do nothing');
@@ -494,7 +496,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                   child: TagsList(
-                                    tagsKeys: galleryStore.searchTagsResults.toList(),
+                                    tags: galleryStore.searchTagsResults.toList(),
                                     tagStyle: TagStyle.GrayOutlined,
                                     showEditTagModal: widget.showEditTagModal,
                                     onTap: (tagName) {
@@ -503,6 +505,9 @@ class _TaggedTabState extends State<TaggedTab> {
                                       galleryStore.searchResultsTags(searchEditingController.text);
                                     },
                                     onDoubleTap: () {
+                                      print('do nothing');
+                                    },
+                                    onPanEnd: () {
                                       print('do nothing');
                                     },
                                   ),

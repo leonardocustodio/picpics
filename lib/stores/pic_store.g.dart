@@ -16,11 +16,11 @@ mixin _$PicStore on _PicStore, Store {
       (_$tagsKeysComputed ??= Computed<List<String>>(() => super.tagsKeys,
               name: '_PicStore.tagsKeys'))
           .value;
-  Computed<List<String>> _$tagsSuggestionsComputed;
+  Computed<List<TagsStore>> _$tagsSuggestionsComputed;
 
   @override
-  List<String> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
-          Computed<List<String>>(() => super.tagsSuggestions,
+  List<TagsStore> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
+          Computed<List<TagsStore>>(() => super.tagsSuggestions,
               name: '_PicStore.tagsSuggestions'))
       .value;
 

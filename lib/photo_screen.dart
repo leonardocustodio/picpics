@@ -318,7 +318,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                     return Padding(
                                       padding: const EdgeInsets.only(top: 16.0),
                                       child: TagsList(
-                                        tagsKeys: galleryStore.currentThumbnailPic.tagsKeys,
+                                        tags: galleryStore.currentThumbnailPic.tags,
                                         tagStyle: TagStyle.MultiColored,
                                         addTagButton: () {
                                           Navigator.pop(context, 'show_keyboard');

@@ -28,7 +28,7 @@ import 'package:provider/provider.dart';
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
   final Function showEditTagModal;
-  final PicsInThumbnails picsInThumbnails;
+  final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
   PhotoCard({
@@ -168,9 +168,8 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/expandnobackground.png'),
                     color: kSecondaryColor,
                     onTap: () {
-                      galleryStore.setCurrentPic(picStore);
                       galleryStore.setPicsInThumbnails(widget.picsInThumbnails);
-                      if (widget.picsInThumbnails == PicsInThumbnails.SWIPE) {
+                      if (widget.picsInThumbnails == PicSource.SWIPE) {
                         galleryStore.setSelectedThumbnail(widget.picsInThumbnailIndex);
                       }
 
@@ -223,7 +222,6 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () async {
-                        galleryStore.setCurrentPic(picStore);
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: Observer(builder: (_) {
@@ -274,7 +272,7 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Observer(builder: (_) {
                   return TagsList(
-                    tagsKeys: picStore.tagsKeys,
+                    tags: picStore.tags.toList(),
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
@@ -322,7 +320,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   child: Observer(builder: (_) {
                     return TagsList(
                       title: S.of(context).suggestions,
-                      tagsKeys: picStore.tagsSuggestions,
+                      tags: picStore.tagsSuggestions,
                       tagStyle: TagStyle.GrayOutlined,
                       showEditTagModal: widget.showEditTagModal,
                       onTap: (tagName) async {

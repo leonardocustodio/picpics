@@ -271,6 +271,51 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void loadTags() {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.loadTags');
+    try {
+      return super.loadTags();
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void editTag({String oldTagKey, String newTagKey, String newName}) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.editTag');
+    try {
+      return super.editTag(
+          oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addRecentTags(String tagKey) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.addRecentTags');
+    try {
+      return super.addRecentTags(tagKey);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void editRecentTags(String oldTagKey, String newTagKey) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.editRecentTags');
+    try {
+      return super.editRecentTags(oldTagKey, newTagKey);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setTutorialCompleted(bool value) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.setTutorialCompleted');

@@ -44,6 +44,14 @@ abstract class _GalleryStore with Store {
   }
 
   @observable
+  PicStore currentPic;
+
+  @action
+  void setCurrentPic(PicStore picStore) {
+    currentPic = picStore;
+  }
+
+  @observable
   int swipeIndex = 0;
 
   int swipeCutOff = 0;
@@ -63,7 +71,7 @@ abstract class _GalleryStore with Store {
 //    }
 
     swipeIndex = value;
-    setCurrentPic(swipePics[value]);
+    setCurrentPic(swipePics[swipeIndex]);
     Analytics.sendEvent(Event.swiped_photo);
   }
 
@@ -79,7 +87,7 @@ abstract class _GalleryStore with Store {
   ObservableSet<String> selectedPics = ObservableSet<String>();
 
   @observable
-  PicsInThumbnails picsInThumbnails = PicsInThumbnails.UNTAGGED;
+  PicSource picsInThumbnails = PicSource.UNTAGGED;
 
   @observable
   int selectedThumbnail = 0;
@@ -89,11 +97,11 @@ abstract class _GalleryStore with Store {
 
   @computed
   ObservableList<PicStore> get thumbnailsPics {
-    if (picsInThumbnails == PicsInThumbnails.TAGGED) {
+    if (picsInThumbnails == PicSource.TAGGED) {
       return taggedPics;
-    } else if (picsInThumbnails == PicsInThumbnails.FILTERED) {
+    } else if (picsInThumbnails == PicSource.FILTERED) {
       return filteredPics;
-    } else if (picsInThumbnails == PicsInThumbnails.SWIPE) {
+    } else if (picsInThumbnails == PicSource.SWIPE) {
       return swipePics;
     }
     return untaggedPics;
@@ -108,7 +116,7 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void setPicsInThumbnails(PicsInThumbnails picsType) {
+  void setPicsInThumbnails(PicSource picsType) {
     picsInThumbnails = picsType;
   }
 
@@ -118,17 +126,22 @@ abstract class _GalleryStore with Store {
   @action
   void setIsSearching(bool value) => isSearching = value;
 
-  ObservableList<String> searchingTagsKeys = ObservableList<String>.of([]);
+  ObservableList<TagsStore> searchingTags = ObservableList<TagsStore>();
+
+  @computed
+  List<String> get searchingTagsKeys {
+    return searchingTags.map((element) => element.id).toList();
+  }
 
   @computed
   bool get isFiltered {
-    if (searchingTagsKeys.length > 0) {
+    if (searchingTags.length > 0) {
       return true;
     }
     return false;
   }
 
-  ObservableList<String> searchTagsResults = ObservableList<String>();
+  ObservableList<TagsStore> searchTagsResults = ObservableList<TagsStore>();
 
   @observable
   bool showSearchTagsResults = false;
@@ -182,7 +195,7 @@ abstract class _GalleryStore with Store {
   void setSearchText(String value) => searchText = value;
 
   @computed
-  List<String> get tagsSuggestions {
+  List<TagsStore> get tagsSuggestions {
     var userBox = Hive.box('user');
     var tagsBox = Hive.box('tags');
     User getUser = userBox.getAt(0);
@@ -226,8 +239,8 @@ abstract class _GalleryStore with Store {
     }
     print('find suggestions: $searchText - exclude tags: $multiPicTags');
     print(suggestionTags);
-
-    return suggestionTags;
+    List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();
+    return suggestions;
   }
 
   @computed
@@ -238,14 +251,6 @@ abstract class _GalleryStore with Store {
     });
     print('Tagged Keys: ${tags}');
     return tags.toList();
-  }
-
-  @observable
-  PicStore currentPic;
-
-  @action
-  void setCurrentPic(PicStore pic) {
-    currentPic = pic;
   }
 
   @computed
@@ -406,47 +411,35 @@ abstract class _GalleryStore with Store {
     var userBox = Hive.box('user');
 
     String newTagKey = Helpers.encryptTag(newName);
+    Tag oldTag = tagsBox.get(oldTagKey);
 
-    if (tagsBox.containsKey(oldTagKey)) {
-      print('found tag with this name');
+    // Creating new tag
+    Tag createTag = Tag(newName, oldTag.photoId);
+    tagsBox.put(newTagKey, createTag);
 
-      Tag getTag = tagsBox.get(oldTagKey);
+    for (String photoId in createTag.photoId) {
+      Pic pic = picsBox.get(photoId);
+      int indexOfOldTag = pic.tags.indexOf(oldTagKey);
+      print('Tags in this picture: ${pic.tags}');
+      pic.tags[indexOfOldTag] = newTagKey;
+      picsBox.put(photoId, pic);
+      print('updated tag in pic ${pic.photoId}');
+    }
 
-      Tag newTag = Tag(newName, getTag.photoId);
-      tagsBox.put(newTagKey, newTag);
-      tagsBox.delete(oldTagKey);
+    // Altera a tag
+    appStore.editTag(oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
 
-      print('updated tag');
+    // Altera o recent
+    User getUser = userBox.getAt(0);
+    if (getUser.recentTags.contains(oldTagKey)) {
+      print('updating tag name in recent tags');
+      int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
+      getUser.recentTags[indexOfRecentTag] = newTagKey;
+      userBox.putAt(0, getUser);
+      appStore.editRecentTags(oldTagKey, newTagKey);
+    }
 
-      for (String photoId in newTag.photoId) {
-        Pic pic = picsBox.get(photoId);
-
-        int indexOfOldTag = pic.tags.indexOf(oldTagKey);
-        print('Tags in this picture: ${pic.tags}');
-        pic.tags[indexOfOldTag] = newTagKey;
-        picsBox.put(photoId, pic);
-        print('updated tag in pic ${pic.photoId}');
-      }
-
-      // Substitui as tags nas fotos já taggeadas
-      taggedPics.forEach((element) {
-        if (newTag.photoId.contains(element.photoId)) {
-          int indexOfTagStore = element.tags.indexWhere((tagStore) => tagStore.id == oldTagKey);
-          TagsStore tagsStore = TagsStore(id: newTagKey, name: newName);
-          element.tags[indexOfTagStore] = tagsStore;
-        }
-      });
-
-      // Recarrega as infos da foto atual // rever isso pois muda a ordem das sugestions
-//      currentPic.tagsSuggestions[1] = 'abc';
-
-      User getUser = userBox.getAt(0);
-      if (getUser.recentTags.contains(oldTagKey)) {
-        print('updating tag name in recent tags');
-        int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
-        getUser.recentTags[indexOfRecentTag] = newTagKey;
-        userBox.putAt(0, getUser);
-      }
+    tagsBox.delete(oldTagKey);
 
 //      print('updating in all suggestions');
 //      if (DatabaseManager.instance.suggestionTags.contains(oldTagKey)) {
@@ -470,9 +463,8 @@ abstract class _GalleryStore with Store {
 //        }
 //      }
 
-      print('finished updating all tags');
-      Analytics.sendEvent(Event.edited_tag);
-    }
+    print('finished updating all tags');
+    Analytics.sendEvent(Event.edited_tag);
   }
 
   @action
@@ -530,15 +522,18 @@ abstract class _GalleryStore with Store {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
       return;
     }
-    searchingTagsKeys.add(DatabaseManager.instance.selectedTagKey);
-    print('searching tags: $searchingTagsKeys');
+
+    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == DatabaseManager.instance.selectedTagKey);
+    searchingTags.add(tagsStore);
+    print('searching tags: $searchingTags');
     searchPicsWithTags();
   }
 
   void removeTagFromSearchFilter() {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-      searchingTagsKeys.remove(DatabaseManager.instance.selectedTagKey);
-      print('searching tags: $searchingTagsKeys');
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == DatabaseManager.instance.selectedTagKey);
+      searchingTags.remove(tagsStore);
+      print('searching tags: $searchingTags');
       searchPicsWithTags();
     }
   }
@@ -581,15 +576,13 @@ abstract class _GalleryStore with Store {
 
     filteredPics.addAll(taggedPics.where((element) => tempPhotosIds.contains(element.photoId)).toList());
     print('Search Photos: $filteredPics');
-    print('Searcing Tags Keys: $searchingTagsKeys');
+    print('Searcing Tags Keys: $searchingTags');
 
     Analytics.sendEvent(Event.searched_photos);
   }
 
   @action
   void searchResultsTags(String text) {
-    var tagsBox = Hive.box('tags');
-
     if (text == '') {
       setShowSearchTagsResults(false);
       searchTagsResults.clear();
@@ -598,10 +591,10 @@ abstract class _GalleryStore with Store {
 
     setShowSearchTagsResults(true);
     searchTagsResults.clear();
-    for (var tagKey in tagsBox.keys) {
-      String tagName = Helpers.decryptTag(tagKey);
-      if (tagName.startsWith(Helpers.stripTag(text))) {
-        searchTagsResults.add(tagKey);
+
+    for (TagsStore tagStore in appStore.tags) {
+      if (Helpers.stripTag(tagStore.name).startsWith(Helpers.stripTag(text))) {
+        searchTagsResults.add(tagStore);
       }
     }
   }
@@ -689,7 +682,7 @@ abstract class _GalleryStore with Store {
   }
 }
 
-enum PicsInThumbnails {
+enum PicSource {
   UNTAGGED,
   SWIPE,
   TAGGED,
