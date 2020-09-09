@@ -126,17 +126,22 @@ abstract class _GalleryStore with Store {
   @action
   void setIsSearching(bool value) => isSearching = value;
 
-  ObservableList<String> searchingTagsKeys = ObservableList<String>.of([]);
+  ObservableList<TagsStore> searchingTags = ObservableList<TagsStore>();
+
+  @computed
+  List<String> get searchingTagsKeys {
+    return searchingTags.map((element) => element.id).toList();
+  }
 
   @computed
   bool get isFiltered {
-    if (searchingTagsKeys.length > 0) {
+    if (searchingTags.length > 0) {
       return true;
     }
     return false;
   }
 
-  ObservableList<String> searchTagsResults = ObservableList<String>();
+  ObservableList<TagsStore> searchTagsResults = ObservableList<TagsStore>();
 
   @observable
   bool showSearchTagsResults = false;
@@ -517,15 +522,18 @@ abstract class _GalleryStore with Store {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
       return;
     }
-    searchingTagsKeys.add(DatabaseManager.instance.selectedTagKey);
-    print('searching tags: $searchingTagsKeys');
+
+    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == DatabaseManager.instance.selectedTagKey);
+    searchingTags.add(tagsStore);
+    print('searching tags: $searchingTags');
     searchPicsWithTags();
   }
 
   void removeTagFromSearchFilter() {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-      searchingTagsKeys.remove(DatabaseManager.instance.selectedTagKey);
-      print('searching tags: $searchingTagsKeys');
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == DatabaseManager.instance.selectedTagKey);
+      searchingTags.remove(tagsStore);
+      print('searching tags: $searchingTags');
       searchPicsWithTags();
     }
   }
@@ -568,15 +576,13 @@ abstract class _GalleryStore with Store {
 
     filteredPics.addAll(taggedPics.where((element) => tempPhotosIds.contains(element.photoId)).toList());
     print('Search Photos: $filteredPics');
-    print('Searcing Tags Keys: $searchingTagsKeys');
+    print('Searcing Tags Keys: $searchingTags');
 
     Analytics.sendEvent(Event.searched_photos);
   }
 
   @action
   void searchResultsTags(String text) {
-    var tagsBox = Hive.box('tags');
-
     if (text == '') {
       setShowSearchTagsResults(false);
       searchTagsResults.clear();
@@ -585,10 +591,10 @@ abstract class _GalleryStore with Store {
 
     setShowSearchTagsResults(true);
     searchTagsResults.clear();
-    for (var tagKey in tagsBox.keys) {
-      String tagName = Helpers.decryptTag(tagKey);
-      if (tagName.startsWith(Helpers.stripTag(text))) {
-        searchTagsResults.add(tagKey);
+
+    for (TagsStore tagStore in appStore.tags) {
+      if (Helpers.stripTag(tagStore.name).startsWith(Helpers.stripTag(text))) {
+        searchTagsResults.add(tagStore);
       }
     }
   }

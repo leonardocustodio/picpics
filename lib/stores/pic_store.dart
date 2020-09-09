@@ -201,10 +201,8 @@ abstract class _PicStore with Store {
       picsBox.put(photoId, getPic);
       print('updated picture');
 
-      tags.add(TagsStore(
-        id: tagKey,
-        name: tagName,
-      ));
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      tags.add(tagsStore);
 
 //      checkPicHasTags(photoId);
       Analytics.sendEvent(Event.added_tag);
@@ -214,10 +212,8 @@ abstract class _PicStore with Store {
     print('this picture is not in db, adding it...');
     print('Photo Id: $photoId');
 
-    tags.add(TagsStore(
-      id: tagKey,
-      name: tagName,
-    ));
+    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+    tags.add(tagsStore);
 
     Pic pic = Pic(
       photoId: photoId,

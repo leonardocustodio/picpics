@@ -455,7 +455,7 @@ class _TaggedTabState extends State<TaggedTab> {
                               Padding(
                                 padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
-                                  tags: [], // galleryStore.searchingTagsKeys.toList(),
+                                  tags: galleryStore.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (tagName) {
                                     print('do nothing');
@@ -496,7 +496,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                 Padding(
                                   padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                   child: TagsList(
-                                    tags: [], // galleryStore.searchTagsResults.toList(),
+                                    tags: galleryStore.searchTagsResults.toList(),
                                     tagStyle: TagStyle.GrayOutlined,
                                     showEditTagModal: widget.showEditTagModal,
                                     onTap: (tagName) {
@@ -505,6 +505,9 @@ class _TaggedTabState extends State<TaggedTab> {
                                       galleryStore.searchResultsTags(searchEditingController.text);
                                     },
                                     onDoubleTap: () {
+                                      print('do nothing');
+                                    },
+                                    onPanEnd: () {
                                       print('do nothing');
                                     },
                                   ),

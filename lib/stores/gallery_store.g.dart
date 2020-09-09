@@ -23,6 +23,13 @@ mixin _$GalleryStore on _GalleryStore, Store {
           Computed<PicStore>(() => super.currentThumbnailPic,
               name: '_GalleryStore.currentThumbnailPic'))
       .value;
+  Computed<List<String>> _$searchingTagsKeysComputed;
+
+  @override
+  List<String> get searchingTagsKeys => (_$searchingTagsKeysComputed ??=
+          Computed<List<String>>(() => super.searchingTagsKeys,
+              name: '_GalleryStore.searchingTagsKeys'))
+      .value;
   Computed<bool> _$isFilteredComputed;
 
   @override
@@ -483,6 +490,7 @@ trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
 thumbnailsPics: ${thumbnailsPics},
 currentThumbnailPic: ${currentThumbnailPic},
+searchingTagsKeys: ${searchingTagsKeys},
 isFiltered: ${isFiltered},
 tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
