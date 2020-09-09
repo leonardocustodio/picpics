@@ -178,7 +178,6 @@ class _TaggedTabState extends State<TaggedTab> {
       }
 
       for (PicStore pic in galleryStore.filteredPics) {
-        int thumbnailIndex = totalPics;
         totalPics += 1;
         isTitleWidget.add(false);
 //        slideThumbPhotoIds.add(pic.entity.id);
@@ -216,8 +215,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     }
 
                     galleryStore.setCurrentPic(pic);
-                    galleryStore.setPicsInThumbnails(PicSource.FILTERED);
-                    galleryStore.setSelectedThumbnail(thumbnailIndex);
+                    galleryStore.setInitialSelectedThumbnail(pic);
                     Navigator.pushNamed(context, PhotoScreen.id);
                   },
                   child: ImageItem(
@@ -326,8 +324,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
                       print('Selected photo: ${picStore.photoId}');
                       galleryStore.setCurrentPic(picStore);
-
-                      galleryStore.setSelectedThumbnail(thumbnailIndex);
+                      galleryStore.setInitialSelectedThumbnail(picStore);
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },
                     child: ImageItem(

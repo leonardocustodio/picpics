@@ -101,8 +101,10 @@ abstract class _GalleryStore with Store {
     thumbnailsPics.add(picStore);
   }
 
-  @observable
-  PicSource picsInThumbnails = PicSource.UNTAGGED;
+  @action
+  void addPicsToThumbnails(List<PicStore> picStores) {
+    thumbnailsPics.addAll(picStores);
+  }
 
   @observable
   int selectedThumbnail = 0;
@@ -119,8 +121,9 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void setPicsInThumbnails(PicSource picsType) {
-    picsInThumbnails = picsType;
+  void setInitialSelectedThumbnail(PicStore picStore) {
+    int indexOf = thumbnailsPics.indexOf(picStore);
+    selectedThumbnail = indexOf;
   }
 
   @observable

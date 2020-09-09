@@ -97,21 +97,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
-  final _$picsInThumbnailsAtom = Atom(name: '_GalleryStore.picsInThumbnails');
-
-  @override
-  PicSource get picsInThumbnails {
-    _$picsInThumbnailsAtom.reportRead();
-    return super.picsInThumbnails;
-  }
-
-  @override
-  set picsInThumbnails(PicSource value) {
-    _$picsInThumbnailsAtom.reportWrite(value, super.picsInThumbnails, () {
-      super.picsInThumbnails = value;
-    });
-  }
-
   final _$selectedThumbnailAtom = Atom(name: '_GalleryStore.selectedThumbnail');
 
   @override
@@ -282,6 +267,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void addPicsToThumbnails(List<PicStore> picStores) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addPicsToThumbnails');
+    try {
+      return super.addPicsToThumbnails(picStores);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setSelectedThumbnail(int value) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setSelectedThumbnail');
@@ -293,11 +289,11 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void setPicsInThumbnails(PicSource picsType) {
+  void setInitialSelectedThumbnail(PicStore picStore) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.setPicsInThumbnails');
+        name: '_GalleryStore.setInitialSelectedThumbnail');
     try {
-      return super.setPicsInThumbnails(picsType);
+      return super.setInitialSelectedThumbnail(picStore);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -496,7 +492,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
 currentPic: ${currentPic},
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
-picsInThumbnails: ${picsInThumbnails},
 selectedThumbnail: ${selectedThumbnail},
 isSearching: ${isSearching},
 showSearchTagsResults: ${showSearchTagsResults},
