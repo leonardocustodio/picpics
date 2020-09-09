@@ -9,13 +9,6 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
-  Computed<ObservableList<PicStore>> _$thumbnailsPicsComputed;
-
-  @override
-  ObservableList<PicStore> get thumbnailsPics => (_$thumbnailsPicsComputed ??=
-          Computed<ObservableList<PicStore>>(() => super.thumbnailsPics,
-              name: '_GalleryStore.thumbnailsPics'))
-      .value;
   Computed<PicStore> _$currentThumbnailPicComputed;
 
   @override
@@ -101,21 +94,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
   set isLoaded(bool value) {
     _$isLoadedAtom.reportWrite(value, super.isLoaded, () {
       super.isLoaded = value;
-    });
-  }
-
-  final _$picsInThumbnailsAtom = Atom(name: '_GalleryStore.picsInThumbnails');
-
-  @override
-  PicSource get picsInThumbnails {
-    _$picsInThumbnailsAtom.reportRead();
-    return super.picsInThumbnails;
-  }
-
-  @override
-  set picsInThumbnails(PicSource value) {
-    _$picsInThumbnailsAtom.reportWrite(value, super.picsInThumbnails, () {
-      super.picsInThumbnails = value;
     });
   }
 
@@ -267,6 +245,39 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void clearPicThumbnails() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.clearPicThumbnails');
+    try {
+      return super.clearPicThumbnails();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addPicToThumbnails(PicStore picStore) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addPicToThumbnails');
+    try {
+      return super.addPicToThumbnails(picStore);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addPicsToThumbnails(List<PicStore> picStores) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addPicsToThumbnails');
+    try {
+      return super.addPicsToThumbnails(picStores);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setSelectedThumbnail(int value) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setSelectedThumbnail');
@@ -278,11 +289,11 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void setPicsInThumbnails(PicSource picsType) {
+  void setInitialSelectedThumbnail(PicStore picStore) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.setPicsInThumbnails');
+        name: '_GalleryStore.setInitialSelectedThumbnail');
     try {
-      return super.setPicsInThumbnails(picsType);
+      return super.setInitialSelectedThumbnail(picStore);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -481,14 +492,12 @@ mixin _$GalleryStore on _GalleryStore, Store {
 currentPic: ${currentPic},
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
-picsInThumbnails: ${picsInThumbnails},
 selectedThumbnail: ${selectedThumbnail},
 isSearching: ${isSearching},
 showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
-thumbnailsPics: ${thumbnailsPics},
 currentThumbnailPic: ${currentThumbnailPic},
 searchingTagsKeys: ${searchingTagsKeys},
 isFiltered: ${isFiltered},

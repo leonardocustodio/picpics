@@ -110,7 +110,8 @@ class _TaggedTabState extends State<TaggedTab> {
     List<Widget> widgetsArray = [];
     List<bool> isTitleWidget = [];
 
-    List<String> slideThumbPhotoIds = [];
+//    List<String> slideThumbPhotoIds = [];
+    galleryStore.clearPicThumbnails();
 
     List<String> tagsList = isFiltered ? galleryStore.searchingTagsKeys.toList() : tagsBox.keys.toList().cast<String>();
     print('Tags List: $tagsList');
@@ -177,10 +178,14 @@ class _TaggedTabState extends State<TaggedTab> {
       }
 
       for (PicStore pic in galleryStore.filteredPics) {
-        int thumbnailIndex = totalPics;
         totalPics += 1;
         isTitleWidget.add(false);
-        slideThumbPhotoIds.add(pic.entity.id);
+//        slideThumbPhotoIds.add(pic.entity.id);
+
+        if (tagsList.length == 1) {
+          galleryStore.addPicToThumbnails(pic);
+        }
+
         widgetsArray.add(RepaintBoundary(
           child: Padding(
             padding: const EdgeInsets.all(5.0),
@@ -210,8 +215,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     }
 
                     galleryStore.setCurrentPic(pic);
-                    galleryStore.setPicsInThumbnails(PicSource.FILTERED);
-                    galleryStore.setSelectedThumbnail(thumbnailIndex);
+                    galleryStore.setInitialSelectedThumbnail(pic);
                     Navigator.pushNamed(context, PhotoScreen.id);
                   },
                   child: ImageItem(
@@ -276,9 +280,9 @@ class _TaggedTabState extends State<TaggedTab> {
           ),
         ));
         for (String photoId in tag.photoId) {
-          var data = galleryStore.taggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
+          PicStore picStore = galleryStore.taggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
 
-          if (data == null) {
+          if (picStore == null) {
             print('Found a deleted picture');
             continue;
           }
@@ -287,7 +291,9 @@ class _TaggedTabState extends State<TaggedTab> {
           totalPics += 1;
           isTitleWidget.add(false);
 
-          slideThumbPhotoIds.add(data.entity.id);
+          galleryStore.addPicToThumbnails(picStore);
+//          slideThumbPhotoIds.add(data.entity.id);
+
           widgetsArray.add(RepaintBoundary(
             child: Padding(
               padding: const EdgeInsets.all(5.0),
@@ -298,7 +304,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     print('LongPress');
                     if (tabsStore.multiPicBar == false) {
                       galleryStore.setSelectedPics(
-                        photoId: data.entity.id,
+                        photoId: picStore.photoId,
                         picIsTagged: true,
                       );
                       tabsStore.setMultiPicBar(true);
@@ -309,25 +315,24 @@ class _TaggedTabState extends State<TaggedTab> {
                     onPressed: () {
                       if (tabsStore.multiPicBar) {
                         galleryStore.setSelectedPics(
-                          photoId: data.entity.id,
+                          photoId: picStore.photoId,
                           picIsTagged: true,
                         );
                         print('Pics Selected Length: ${galleryStore.selectedPics.length}');
                         return;
                       }
 
-                      print('Selected photo: ${data.entity.id}');
-                      galleryStore.setCurrentPic(data);
-                      galleryStore.setPicsInThumbnails(PicSource.TAGGED);
-                      galleryStore.setSelectedThumbnail(thumbnailIndex);
+                      print('Selected photo: ${picStore.photoId}');
+                      galleryStore.setCurrentPic(picStore);
+                      galleryStore.setInitialSelectedThumbnail(picStore);
                       Navigator.pushNamed(context, PhotoScreen.id);
                     },
                     child: ImageItem(
-                      entity: data.entity,
+                      entity: picStore.entity,
                       size: 150,
                       backgroundColor: Colors.grey[400],
                       showOverlay: tabsStore.multiPicBar ? true : false,
-                      isSelected: galleryStore.selectedPics.contains(data.entity.id),
+                      isSelected: galleryStore.selectedPics.contains(picStore.photoId),
                     ),
                   ),
                 ),
@@ -337,7 +342,7 @@ class _TaggedTabState extends State<TaggedTab> {
         }
       }
     }
-    DatabaseManager.instance.slideThumbPhotoIds = slideThumbPhotoIds;
+//    DatabaseManager.instance.slideThumbPhotoIds = slideThumbPhotoIds;
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,

@@ -98,6 +98,9 @@ class _PicTabState extends State<PicTab> {
                 child: Stack(
                   children: <Widget>[
                     Observer(builder: (_) {
+                      galleryStore.clearPicThumbnails();
+                      galleryStore.addPicsToThumbnails(galleryStore.swipePics);
+
                       return CarouselSlider.builder(
                         itemCount: galleryStore.swipePics.length,
                         carouselController: carouselController,

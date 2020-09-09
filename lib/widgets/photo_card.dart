@@ -168,21 +168,8 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/expandnobackground.png'),
                     color: kSecondaryColor,
                     onTap: () {
-                      galleryStore.setPicsInThumbnails(widget.picsInThumbnails);
-                      if (widget.picsInThumbnails == PicSource.SWIPE) {
-                        galleryStore.setSelectedThumbnail(widget.picsInThumbnailIndex);
-                      }
-
+                      galleryStore.setInitialSelectedThumbnail(picStore);
                       Navigator.pushNamed(context, PhotoScreen.id);
-//                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
-//                      Navigator.push(
-//                        context,
-//                        MaterialPageRoute(
-//                          builder: (context) => PhotoScreen(
-//                            initialIndex: initialIndex,
-//                          ),
-//                        ),
-//                      );
                     }),
                 CircularMenuItem(
                     image: Image.asset('lib/images/sharenobackground.png'),

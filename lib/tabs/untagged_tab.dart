@@ -61,6 +61,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
       movedGridPositionFirstTab();
     });
 
+    galleryStore.clearPicThumbnails();
+    galleryStore.addPicsToThumbnails(galleryStore.untaggedPics);
+
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
       padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
@@ -117,7 +120,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
               tagsEditingController.text = '';
               galleryStore.setCurrentPic(picStore);
               tabsStore.setModalCard(true);
-              galleryStore.setSelectedThumbnail(index);
             },
             child: ImageItem(
               entity: picStore.entity,
