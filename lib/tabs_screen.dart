@@ -97,6 +97,7 @@ class _TabsScreenState extends State<TabsScreen> {
           return EditTagModal(
             alertInputController: alertInputController,
             onPressedDelete: () {
+              print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
               galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },

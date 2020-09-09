@@ -9,6 +9,7 @@ import 'package:picPics/database_manager.dart';
 import 'package:picPics/full_image_item.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -29,6 +30,7 @@ class PhotoScreen extends StatefulWidget {
 class _PhotoScreenState extends State<PhotoScreen> {
   PageController galleryPageController;
   GalleryStore galleryStore;
+  TabsStore tabsStore;
 
   bool overlay = true;
   bool showSlideshow = false;
@@ -154,6 +156,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     galleryStore = Provider.of<GalleryStore>(context);
+    tabsStore = Provider.of<TabsStore>(context);
     galleryPageController = PageController(initialPage: galleryStore.selectedThumbnail);
   }
 
@@ -321,6 +324,11 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                         tags: galleryStore.currentThumbnailPic.tags,
                                         tagStyle: TagStyle.MultiColored,
                                         addTagButton: () {
+                                          galleryStore.setCurrentPic(galleryStore.currentThumbnailPic);
+
+                                          if (!tabsStore.modalCard) {
+                                            tabsStore.setModalCard(true);
+                                          }
                                           Navigator.pop(context, 'show_keyboard');
                                         },
                                         onTap: (tagName) {

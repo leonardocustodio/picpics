@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -84,7 +85,21 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> swipePics = ObservableList<PicStore>();
   ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
+  ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
+
+  @action
+  void clearPicThumbnails() {
+    thumbnailsPics.clear();
+  }
+
+  @action
+  void addPicToThumbnails(PicStore picStore) {
+    if (thumbnailsPics.contains(picStore)) {
+      return;
+    }
+    thumbnailsPics.add(picStore);
+  }
 
   @observable
   PicSource picsInThumbnails = PicSource.UNTAGGED;
@@ -94,18 +109,6 @@ abstract class _GalleryStore with Store {
 
   @action
   void setSelectedThumbnail(int value) => selectedThumbnail = value;
-
-  @computed
-  ObservableList<PicStore> get thumbnailsPics {
-    if (picsInThumbnails == PicSource.TAGGED) {
-      return taggedPics;
-    } else if (picsInThumbnails == PicSource.FILTERED) {
-      return filteredPics;
-    } else if (picsInThumbnails == PicSource.SWIPE) {
-      return swipePics;
-    }
-    return untaggedPics;
-  }
 
   @computed
   PicStore get currentThumbnailPic {
@@ -441,28 +444,6 @@ abstract class _GalleryStore with Store {
 
     tagsBox.delete(oldTagKey);
 
-//      print('updating in all suggestions');
-//      if (DatabaseManager.instance.suggestionTags.contains(oldTagKey)) {
-//        int indexOfSuggestionTag = DatabaseManager.instance.suggestionTags.indexOf(oldTagKey);
-//        DatabaseManager.instance.suggestionTags[indexOfSuggestionTag] = newTagKey;
-//      }
-//
-//      if (DatabaseManager.instance.searchResults.isNotEmpty) {
-//        print('fixing in search result');
-//        if (DatabaseManager.instance.searchResults.contains(oldTagKey)) {
-//          int indexOfSearchResultTag = DatabaseManager.instance.searchResults.indexOf(oldTagKey);
-//          DatabaseManager.instance.searchResults[indexOfSearchResultTag] = newTagKey;
-//        }
-//      }
-//
-//      if (DatabaseManager.instance.searchActiveTags.isNotEmpty) {
-//        print('fixing in search active tags');
-//        if (DatabaseManager.instance.searchActiveTags.contains(oldTagKey)) {
-//          int indexOfSearchActiveTags = DatabaseManager.instance.searchActiveTags.indexOf(oldTagKey);
-//          DatabaseManager.instance.searchActiveTags[indexOfSearchActiveTags] = newTagKey;
-//        }
-//      }
-
     print('finished updating all tags');
     Analytics.sendEvent(Event.edited_tag);
   }
@@ -491,9 +472,16 @@ abstract class _GalleryStore with Store {
       }
 
       // Remove a tag das fotos já taggeadas
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+
       taggedPics.forEach((element) {
         if (getTag.photoId.contains(element.photoId)) {
-          element.tags.removeWhere((tagStore) => tagStore.id == tagKey);
+          element.tags.remove(tagsStore);
+        }
+      });
+
+      taggedPics.forEach((element) {
+        if (getTag.photoId.contains(element.photoId)) {
           if (element.tags.length == 0 && element != currentPic) {
             print('this pic is not tagged anymore!');
             untaggedPics.add(element);
@@ -511,6 +499,7 @@ abstract class _GalleryStore with Store {
         print('recent tags after removed: ${getUser.recentTags}');
       }
 
+      appStore.tags.remove(tagsStore);
       tagsBox.delete(tagKey);
       print('deleted from tags db');
       Analytics.sendEvent(Event.deleted_tag);
