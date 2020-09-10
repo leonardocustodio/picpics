@@ -318,6 +318,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void clearSearchTags() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.clearSearchTags');
+    try {
+      return super.clearSearchTags();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setShowSearchTagsResults(bool value) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setShowSearchTagsResults');

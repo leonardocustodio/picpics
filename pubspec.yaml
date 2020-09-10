@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.4.0+236
+version: 1.4.0+238
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -18,7 +18,7 @@ dependencies:
   rate_my_app: ^0.7.1+1
   geolocator: ^6.0.0+4
   geocoding: ^1.0.3
-  google_maps_flutter: ^0.5.31
+  google_maps_flutter: ^0.5.32
   hive:
   hive_flutter:
     git:
