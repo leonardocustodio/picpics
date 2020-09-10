@@ -99,6 +99,13 @@ class DatabaseManager extends ChangeNotifier {
   Future<bool> checkPremiumStatus() async {
     try {
       PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
+      print('### ${purchaserInfo.entitlements}');
+      print('### ${purchaserInfo.entitlements.all}');
+      if (purchaserInfo.entitlements.all.isEmpty) {
+        print('Could not fetch information from premium status!!!');
+        return null;
+      }
+
       if (purchaserInfo.entitlements.all["Premium"].isActive) {
         // Grant user "pro" access
         print('you are still premium');
