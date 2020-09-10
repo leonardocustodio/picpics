@@ -234,7 +234,7 @@ abstract class _AppStore with Store {
   @action
   Future<void> checkPremiumStatus() async {
     bool premium = await DatabaseManager.instance.checkPremiumStatus();
-    if (!premium) {
+    if (premium == false) {
       setIsPremium(false);
     }
   }
