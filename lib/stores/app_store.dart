@@ -254,6 +254,14 @@ abstract class _AppStore with Store {
   }
 
   @action
+  void addTag(TagsStore tagsStore) {
+    if (tags.contains(tagsStore)) {
+      return;
+    }
+    tags.add(tagsStore);
+  }
+
+  @action
   void editTag({String oldTagKey, String newTagKey, String newName}) {
     TagsStore tagsStore = tags.firstWhere((element) => element.id == oldTagKey);
     tagsStore.setTagInfo(tagId: newTagKey, tagName: newName);

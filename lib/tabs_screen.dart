@@ -525,7 +525,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                         tabsStore.setMultiTagSheet(false);
                                         tabsStore.setMultiPicBar(false);
                                         galleryStore.clearSelectedPics();
-                                        galleryStore.clearMultiPicTagKeys();
+                                        galleryStore.clearMultiPicTags();
                                       },
                                       child: Container(
                                         width: 80.0,
@@ -558,7 +558,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tags: [], // galleryStore.multiPicTagKeys.toList(),
+                                        tags: galleryStore.multiPicTags.toList(),
                                         addTagField: true,
                                         textEditingController: bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
@@ -574,7 +574,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
-                                          galleryStore.removeFromMultiPicTagKeys(DatabaseManager.instance.selectedTagKey);
+                                          galleryStore.removeFromMultiPicTags(DatabaseManager.instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
                                           if (!appStore.isPremium) {
@@ -596,15 +596,13 @@ class _TabsScreenState extends State<TabsScreen> {
                                             galleryStore.setSearchText('');
                                             String tagKey = Helpers.encryptTag(text);
 
-//                                            if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
-//                                              if (DatabaseManager.instance.getTagName(tagKey) == null) {
-//                                                print('tag does not exist! creating it!');
-//                                                galleryStore.createTag(text);
-//                                              }
-//                                              List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
-//                                              multiPic.add(tagKey);
-//                                              DatabaseManager.instance.setMultiPicTagKeys(multiPic);
-//                                            }
+                                            if (!galleryStore.multiPicTagKeys.contains(tagKey)) {
+                                              if (appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null) == null) {
+                                                print('tag does not exist! creating it!');
+                                                galleryStore.createTag(text);
+                                              }
+                                              galleryStore.addToMultiPicTags(tagKey);
+                                            }
                                           }
                                         }),
                                     Padding(
@@ -623,7 +621,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                           bottomTagsEditingController.clear();
                                           galleryStore.setSearchText('');
                                           String tagKey = Helpers.encryptTag(tagName);
-                                          galleryStore.addToMultiPicTagKeys(tagKey);
+                                          galleryStore.addToMultiPicTags(tagKey);
                                         },
                                         onDoubleTap: () {
                                           if (!appStore.isPremium) {

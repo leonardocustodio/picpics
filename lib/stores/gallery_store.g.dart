@@ -30,6 +30,13 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$isFilteredComputed ??= Computed<bool>(() => super.isFiltered,
               name: '_GalleryStore.isFiltered'))
           .value;
+  Computed<List<String>> _$multiPicTagKeysComputed;
+
+  @override
+  List<String> get multiPicTagKeys => (_$multiPicTagKeysComputed ??=
+          Computed<List<String>>(() => super.multiPicTagKeys,
+              name: '_GalleryStore.multiPicTagKeys'))
+      .value;
   Computed<List<TagsStore>> _$tagsSuggestionsComputed;
 
   @override
@@ -344,33 +351,33 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void addToMultiPicTagKeys(String tagKey) {
+  void addToMultiPicTags(String tagKey) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.addToMultiPicTagKeys');
+        name: '_GalleryStore.addToMultiPicTags');
     try {
-      return super.addToMultiPicTagKeys(tagKey);
+      return super.addToMultiPicTags(tagKey);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void removeFromMultiPicTagKeys(String tagKey) {
+  void removeFromMultiPicTags(String tagKey) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.removeFromMultiPicTagKeys');
+        name: '_GalleryStore.removeFromMultiPicTags');
     try {
-      return super.removeFromMultiPicTagKeys(tagKey);
+      return super.removeFromMultiPicTags(tagKey);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void clearMultiPicTagKeys() {
+  void clearMultiPicTags() {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.clearMultiPicTagKeys');
+        name: '_GalleryStore.clearMultiPicTags');
     try {
-      return super.clearMultiPicTagKeys();
+      return super.clearMultiPicTags();
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -501,6 +508,7 @@ sharedPic: ${sharedPic},
 currentThumbnailPic: ${currentThumbnailPic},
 searchingTagsKeys: ${searchingTagsKeys},
 isFiltered: ${isFiltered},
+multiPicTagKeys: ${multiPicTagKeys},
 tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
 deviceHasPics: ${deviceHasPics}
