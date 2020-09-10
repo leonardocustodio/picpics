@@ -172,25 +172,32 @@ abstract class _GalleryStore with Store {
     selectedPics.clear();
   }
 
-  ObservableList<String> multiPicTagKeys = ObservableList<String>();
+  ObservableList<TagsStore> multiPicTags = ObservableList<TagsStore>();
+
+  @computed
+  List<String> get multiPicTagKeys {
+    return multiPicTags.map((element) => element.id).toList();
+  }
 
   @action
-  void addToMultiPicTagKeys(String tagKey) {
+  void addToMultiPicTags(String tagKey) {
     if (!multiPicTagKeys.contains(tagKey)) {
-      multiPicTagKeys.add(tagKey);
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      multiPicTags.add(tagsStore);
     }
   }
 
   @action
-  void removeFromMultiPicTagKeys(String tagKey) {
+  void removeFromMultiPicTags(String tagKey) {
     if (multiPicTagKeys.contains(tagKey)) {
-      multiPicTagKeys.remove(tagKey);
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      multiPicTags.remove(tagsStore);
     }
   }
 
   @action
-  void clearMultiPicTagKeys() {
-    multiPicTagKeys.clear();
+  void clearMultiPicTags() {
+    multiPicTags.clear();
   }
 
   @observable
@@ -605,6 +612,10 @@ abstract class _GalleryStore with Store {
 
     print('adding tag to database...');
     tagsBox.put(tagKey, Tag(tagName, []));
+
+    TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
+    appStore.addTag(tagsStore);
+
     addTagToRecent(tagKey: tagKey);
 
     Analytics.sendEvent(Event.created_tag);

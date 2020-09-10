@@ -169,6 +169,9 @@ abstract class _PicStore with Store {
 
     Analytics.sendEvent(Event.created_tag);
     print('adding tag to database...');
+    TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
+    appStore.addTag(tagsStore);
+
     tagsBox.put(tagKey, Tag(tagName, [photoId]));
     await addTagToPic(
       tagKey: tagKey,

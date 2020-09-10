@@ -282,6 +282,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void addTag(TagsStore tagsStore) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.addTag');
+    try {
+      return super.addTag(tagsStore);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void editTag({String oldTagKey, String newTagKey, String newName}) {
     final _$actionInfo =
         _$_AppStoreActionController.startAction(name: '_AppStore.editTag');
