@@ -85,7 +85,6 @@ class _TaggedTabState extends State<TaggedTab> {
   Widget _buildTaggedGridView({bool isFiltered}) {
     print('IsFiltered: $isFiltered');
 
-    var picsBox = Hive.box('pics');
     var tagsBox = Hive.box('tags');
 
     scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
@@ -110,7 +109,6 @@ class _TaggedTabState extends State<TaggedTab> {
     List<Widget> widgetsArray = [];
     List<bool> isTitleWidget = [];
 
-//    List<String> slideThumbPhotoIds = [];
     galleryStore.clearPicThumbnails();
 
     List<String> tagsList = isFiltered ? galleryStore.searchingTagsKeys.toList() : tagsBox.keys.toList().cast<String>();
@@ -180,7 +178,6 @@ class _TaggedTabState extends State<TaggedTab> {
       for (PicStore pic in galleryStore.filteredPics) {
         totalPics += 1;
         isTitleWidget.add(false);
-//        slideThumbPhotoIds.add(pic.entity.id);
 
         if (tagsList.length == 1) {
           galleryStore.addPicToThumbnails(pic);
@@ -287,12 +284,10 @@ class _TaggedTabState extends State<TaggedTab> {
             continue;
           }
 
-          int thumbnailIndex = totalPics;
           totalPics += 1;
           isTitleWidget.add(false);
 
           galleryStore.addPicToThumbnails(picStore);
-//          slideThumbPhotoIds.add(data.entity.id);
 
           widgetsArray.add(RepaintBoundary(
             child: Padding(
@@ -342,7 +337,6 @@ class _TaggedTabState extends State<TaggedTab> {
         }
       }
     }
-//    DatabaseManager.instance.slideThumbPhotoIds = slideThumbPhotoIds;
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,

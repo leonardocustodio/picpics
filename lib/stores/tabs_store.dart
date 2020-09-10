@@ -9,8 +9,9 @@ class TabsStore = _TabsStore with _$TabsStore;
 
 abstract class _TabsStore with Store {
   final AppStore appStore;
+  final GalleryStore galleryStore;
 
-  _TabsStore({this.appStore}) {
+  _TabsStore({this.appStore, this.galleryStore}) {
     autorun((_) {
       print('autorun!');
     });
@@ -21,6 +22,14 @@ abstract class _TabsStore with Store {
 
   @action
   void setCurrentTab(int value) {
+    if (currentTab == value) {
+      return;
+    }
+
+    if (currentTab == 2) {
+      galleryStore.clearSearchTags();
+    }
+
     Analytics.sendCurrentTab(value);
     currentTab = value;
   }

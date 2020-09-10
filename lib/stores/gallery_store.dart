@@ -131,6 +131,15 @@ abstract class _GalleryStore with Store {
   @action
   void setIsSearching(bool value) => isSearching = value;
 
+  @action
+  void clearSearchTags() {
+    setSearchText('');
+    setShowSearchTagsResults(false);
+    setIsSearching(false);
+    searchingTags.clear();
+    searchTagsResults.clear();
+  }
+
   ObservableList<TagsStore> searchingTags = ObservableList<TagsStore>();
 
   @computed

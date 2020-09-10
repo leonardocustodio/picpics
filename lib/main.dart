@@ -101,6 +101,10 @@ class _PicPicsAppState extends State<PicPicsApp> {
       initiatedWithProduct: widget.initiatedWithProduct,
     );
 
+    GalleryStore galleryStore = GalleryStore(
+      appStore: appStore,
+    );
+
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
     return MultiProvider(
@@ -109,13 +113,12 @@ class _PicPicsAppState extends State<PicPicsApp> {
           value: appStore,
         ),
         Provider<GalleryStore>.value(
-          value: GalleryStore(
-            appStore: appStore,
-          ),
+          value: galleryStore,
         ),
         Provider<TabsStore>.value(
           value: TabsStore(
             appStore: appStore,
+            galleryStore: galleryStore,
           ),
         ),
         ChangeNotifierProvider<DatabaseManager>(
