@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/settings_screen.dart';
+import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';

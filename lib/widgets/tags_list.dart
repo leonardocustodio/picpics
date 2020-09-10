@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/database_manager.dart';
+import 'package:picPics/managers/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:flare_flutter/flare_actor.dart';

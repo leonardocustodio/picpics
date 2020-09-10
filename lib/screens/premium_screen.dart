@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/components/arrow_painter.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/database_manager.dart';
+import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:provider/provider.dart';
