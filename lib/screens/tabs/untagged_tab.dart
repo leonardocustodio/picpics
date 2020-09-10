@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/settings_screen.dart';
+import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/generated/l10n.dart';

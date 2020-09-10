@@ -885,6 +885,306 @@ class S {
       args: [],
     );
   }
+
+  /// `picPics - Photo Manager`
+  String get picpics_photo_manager {
+    return Intl.message(
+      'picPics - Photo Manager',
+      name: 'picpics_photo_manager',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Adicione múltiplas tags`
+  String get add_multiple_tags {
+    return Intl.message(
+      'Adicione múltiplas tags',
+      name: 'add_multiple_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `NY`
+  String get ny_tag {
+    return Intl.message(
+      'NY',
+      name: 'ny_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Times Square`
+  String get tsqr_tag {
+    return Intl.message(
+      'Times Square',
+      name: 'tsqr_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Vacation`
+  String get vacation_tag {
+    return Intl.message(
+      'Vacation',
+      name: 'vacation_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Organize multiple photos at once`
+  String get all_at_once {
+    return Intl.message(
+      'Organize multiple photos at once',
+      name: 'all_at_once',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Easily find your photos`
+  String get find_easily {
+    return Intl.message(
+      'Easily find your photos',
+      name: 'find_easily',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Email`
+  String get email {
+    return Intl.message(
+      'Email',
+      name: 'email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secret Photos`
+  String get secret_photos {
+    return Intl.message(
+      'Secret Photos',
+      name: 'secret_photos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your secret key`
+  String get your_secret_key {
+    return Intl.message(
+      'Your secret key',
+      name: 'your_secret_key',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `New secret key`
+  String get new_secret_key {
+    return Intl.message(
+      'New secret key',
+      name: 'new_secret_key',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm secret key`
+  String get confirm_secret_key {
+    return Intl.message(
+      'Confirm secret key',
+      name: 'confirm_secret_key',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Confirm your registration email to receive your access code`
+  String get confirm_email {
+    return Intl.message(
+      'Confirm your registration email to receive your access code',
+      name: 'confirm_email',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Access code`
+  String get access_code {
+    return Intl.message(
+      'Access code',
+      name: 'access_code',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `An access key was sent to user@email.com`
+  String get access_code_sent {
+    return Intl.message(
+      'An access key was sent to user@email.com',
+      name: 'access_code_sent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Secret key successfully created!`
+  String get secret_key_created {
+    return Intl.message(
+      'Secret key successfully created!',
+      name: 'secret_key_created',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to unhide this photo?`
+  String get disable_secret {
+    return Intl.message(
+      'Do you want to unhide this photo?',
+      name: 'disable_secret',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Yes`
+  String get yes {
+    return Intl.message(
+      'Yes',
+      name: 'yes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No`
+  String get no {
+    return Intl.message(
+      'No',
+      name: 'no',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Your photo is now safe on picPics. Do you want to delete it from your camera roll?`
+  String get keep_safe {
+    return Intl.message(
+      'Your photo is now safe on picPics. Do you want to delete it from your camera roll?',
+      name: 'keep_safe',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Keep asking`
+  String get keep_asking {
+    return Intl.message(
+      'Keep asking',
+      name: 'keep_asking',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Don't ask again`
+  String get dont_ask_again {
+    return Intl.message(
+      'Don\'t ask again',
+      name: 'dont_ask_again',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `To view your hidden photos, release the lock in the application settings. You can unlock them with your PIN.`
+  String get view_hidden_photos {
+    return Intl.message(
+      'To view your hidden photos, release the lock in the application settings. You can unlock them with your PIN.',
+      name: 'view_hidden_photos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Require secret key`
+  String get require_secret_key {
+    return Intl.message(
+      'Require secret key',
+      name: 'require_secret_key',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Always`
+  String get always {
+    return Intl.message(
+      'Always',
+      name: 'always',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `20 min`
+  String get x_minutes {
+    return Intl.message(
+      '20 min',
+      name: 'x_minutes',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Forgot secret key?`
+  String get forgot_secret_key {
+    return Intl.message(
+      'Forgot secret key?',
+      name: 'forgot_secret_key',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lock your photos`
+  String get lock_your_photos {
+    return Intl.message(
+      'Lock your photos',
+      name: 'lock_your_photos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Lock down your private photos with a PIN passcode.`
+  String get lock_with_pin {
+    return Intl.message(
+      'Lock down your private photos with a PIN passcode.',
+      name: 'lock_with_pin',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Protect your personal photos with encryption only accessible with a PIN password.`
+  String get protect_with_encryption {
+    return Intl.message(
+      'Protect your personal photos with encryption only accessible with a PIN password.',
+      name: 'protect_with_encryption',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
