@@ -223,7 +223,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     size: 150,
                     backgroundColor: Colors.grey[400],
                     showOverlay: tabsStore.multiPicBar ? true : false,
-                    isSelected: false, // DatabaseManager.instance.picsSelected.contains(data.id),
+                    isSelected: galleryStore.selectedPics.contains(pic.photoId),
                   ),
                 ),
               ),

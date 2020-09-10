@@ -121,13 +121,15 @@ class _UntaggedTabState extends State<UntaggedTab> {
               galleryStore.setCurrentPic(picStore);
               tabsStore.setModalCard(true);
             },
-            child: ImageItem(
-              entity: picStore.entity,
-              size: 150,
-              backgroundColor: Colors.grey[400],
-              showOverlay: tabsStore.multiPicBar ? true : false,
-              isSelected: galleryStore.selectedPics.contains(picStore.photoId),
-            ),
+            child: Observer(builder: (_) {
+              return ImageItem(
+                entity: picStore.entity,
+                size: 150,
+                backgroundColor: Colors.grey[400],
+                showOverlay: tabsStore.multiPicBar ? true : false,
+                isSelected: galleryStore.selectedPics.contains(picStore.photoId),
+              );
+            }),
           ),
         ),
       ),
