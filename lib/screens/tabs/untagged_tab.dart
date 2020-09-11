@@ -30,7 +30,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   double offsetFirstTab = 0.0;
   double topOffsetFirstTab = 64.0;
-  bool hideSubtitleFirstTab = false;
 
   TextEditingController tagsEditingController = TextEditingController();
 
@@ -40,22 +39,17 @@ class _UntaggedTabState extends State<UntaggedTab> {
     if (offset >= 86) {
       setState(() {
         topOffsetFirstTab = 10;
-        hideSubtitleFirstTab = true;
       });
     } else if (offset >= 32) {
       setState(() {
         topOffsetFirstTab = 64.0 - (offset - 32.0);
-        hideSubtitleFirstTab = false;
       });
     } else if (offset <= 0) {
       setState(() {
         topOffsetFirstTab = 64;
-        hideSubtitleFirstTab = false;
       });
     }
-
     offsetFirstTab = scrollControllerFirstTab.offset;
-    print(scrollControllerFirstTab.offset);
   }
 
   Widget _buildGridView(BuildContext context) {
@@ -286,9 +280,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar
-                            ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length)
-                            : S.of(context).photo_gallery_description, //S.of(context).photo_gallery_title,
+                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -298,22 +290,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
                           fontStyle: FontStyle.normal,
                         ),
                       ),
-//                      if (!hideSubtitleFirstTab)
-//                        SizedBox(
-//                          height: 8.0,
-//                        ),
-//                      if (!hideSubtitleFirstTab)
-//                        Text(
-//                          tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
-//                          textScaleFactor: 1.0,
-//                          style: TextStyle(
-//                            fontFamily: 'Lato',
-//                            color: Color(0xff606566),
-//                            fontSize: 18,
-//                            fontWeight: FontWeight.w400,
-//                            fontStyle: FontStyle.normal,
-//                          ),
-//                        ),
                     ],
                   ),
                 ),

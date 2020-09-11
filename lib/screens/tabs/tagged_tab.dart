@@ -39,34 +39,24 @@ class _TaggedTabState extends State<TaggedTab> {
   FocusNode searchFocusNode = FocusNode();
 
   double offsetThirdTab = 0.0;
-  double topOffsetThirdTab = 64.0;
+//  double topOffsetThirdTab = 64.0;
   bool hideTitleThirdTab = false;
-  bool hideSubtitleThirdTab = false;
 
   TextEditingController tagsEditingController = TextEditingController();
 
   void movedGridPositionThirdTab() {
     var offset = scrollControllerThirdTab.offset;
 
-    if (offset >= 98) {
+    if (offset >= 40) {
       setState(() {
         hideTitleThirdTab = true;
       });
-    } else if (offset >= 52) {
-      setState(() {
-        hideTitleThirdTab = false;
-        hideSubtitleThirdTab = true;
-      });
     } else if (offset < 40) {
       setState(() {
-        topOffsetThirdTab = 64;
         hideTitleThirdTab = false;
-        hideSubtitleThirdTab = false;
       });
     }
-
     offsetThirdTab = scrollControllerThirdTab.offset;
-    print(scrollControllerThirdTab.offset);
   }
 
   bool checkTagHasOneValidPic(Tag tag) {
@@ -94,9 +84,9 @@ class _TaggedTabState extends State<TaggedTab> {
 
     double newPadding = 0.0;
     if (galleryStore.isSearching) {
-      newPadding = 140 - offsetThirdTab;
-      if (newPadding > 140) {
-        newPadding = 140.0;
+      newPadding = 86 - offsetThirdTab;
+      if (newPadding > 86) {
+        newPadding = 86.0;
       }
       if (newPadding < 0) {
         newPadding = 0;
@@ -341,7 +331,7 @@ class _TaggedTabState extends State<TaggedTab> {
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,
       padding: EdgeInsets.only(
-        top: 140 - newPadding,
+        top: 86 - newPadding,
         right: 6.0,
         left: 6.0,
       ),
@@ -550,39 +540,21 @@ class _TaggedTabState extends State<TaggedTab> {
               if (galleryStore.taggedPics.length > 0 && !hideTitleThirdTab && !galleryStore.isSearching && galleryStore.deviceHasPics) {
                 return Positioned(
                   left: 19.0,
-                  top: topOffsetThirdTab,
+                  top: 64.0,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        S.of(context).organized_photos_title,
+                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).organized_photos_title,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.w700,
                           fontStyle: FontStyle.normal,
                         ),
                       ),
-                      if (!hideSubtitleThirdTab)
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                      if (!hideSubtitleThirdTab)
-                        Text(
-                          tabsStore.multiPicBar
-                              ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length)
-                              : S.of(context).organized_photos_description,
-                          textScaleFactor: 1.0,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff606566),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                          ),
-                        ),
                     ],
                   ),
                 );
