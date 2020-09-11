@@ -1,7 +1,11 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/image_item.dart';
@@ -55,7 +59,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
     print(scrollControllerFirstTab.offset);
   }
 
-  Widget _buildGridView() {
+  Widget _buildGridView(BuildContext context) {
     scrollControllerFirstTab = ScrollController(initialScrollOffset: offsetFirstTab);
     scrollControllerFirstTab.addListener(() {
       movedGridPositionFirstTab();
@@ -69,7 +73,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
       padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
       crossAxisCount: 3,
       itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
-      itemBuilder: _buildItem,
+      itemBuilder: (BuildContext context, int index) {
+        return _buildItem(context, index);
+      },
       staggeredTileBuilder: (int index) {
 //        if (DatabaseManager.instance.picHasTag[index] == true) return StaggeredTile.count(0, 0);
         return StaggeredTile.count(1, 1);
@@ -79,6 +85,14 @@ class _UntaggedTabState extends State<UntaggedTab> {
     );
 //  }
   }
+
+  Widget get _failedItem => Center(
+        child: Text(
+          'Failed loading',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 18.0),
+        ),
+      );
 
   Widget _buildItem(BuildContext context, int index) {
 //    if (DatabaseManager.instance.picHasTag[index] == true) {
@@ -90,6 +104,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
     PicStore picStore = galleryStore.untaggedPics[index];
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     print('Build Item: $index');
+
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, isOriginal: false);
 
     return RepaintBoundary(
       child: Padding(
@@ -121,15 +137,56 @@ class _UntaggedTabState extends State<UntaggedTab> {
               galleryStore.setCurrentPic(picStore);
               tabsStore.setModalCard(true);
             },
-            child: Observer(builder: (_) {
-              return ImageItem(
-                entity: picStore.entity,
-                size: 150,
-                backgroundColor: Colors.grey[400],
-                showOverlay: tabsStore.multiPicBar ? true : false,
-                isSelected: galleryStore.selectedPics.contains(picStore.photoId),
-              );
-            }),
+            child: RepaintBoundary(
+              child: ExtendedImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+                loadStateChanged: (ExtendedImageState state) {
+                  Widget loader;
+                  switch (state.extendedImageLoadState) {
+                    case LoadState.loading:
+                      loader = const ColoredBox(color: Color(0x10ffffff));
+                      break;
+                    case LoadState.completed:
+                      SpecialImageType type;
+                      if (imageProvider.imageFileType == ImageFileType.gif) {
+                        type = SpecialImageType.gif;
+                      } else if (imageProvider.imageFileType == ImageFileType.heic) {
+                        type = SpecialImageType.heic;
+                      }
+                      loader = FadeImageBuilder(
+                        child: () {
+                          return Stack(
+                            children: <Widget>[
+                              Positioned.fill(
+                                child: RepaintBoundary(
+                                  child: state.completedWidget,
+                                ),
+                              ),
+//                                  _selectedBackdrop(context, index, asset),
+                            ],
+                          );
+                        }(),
+                      );
+                      break;
+                    case LoadState.failed:
+                      loader = _failedItem;
+                      break;
+                  }
+                  return loader;
+                },
+              ),
+            ),
+
+//            Observer(builder: (_) {
+//              return ImageItem(
+//                entity: picStore.entity,
+//                size: 150,
+//                backgroundColor: Colors.grey[400],
+//                showOverlay: tabsStore.multiPicBar ? true : false,
+//                isSelected: galleryStore.selectedPics.contains(picStore.photoId),
+//              );
+//            }),
           ),
         ),
       ),
@@ -232,7 +289,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //                                print(update.scale);
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
-                    child: _buildGridView(),
+                    child: _buildGridView(context),
                   ),
                 ),
               ],
