@@ -74,7 +74,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "parties_tag" : MessageLookupByLibrary.simpleMessage("Festas"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("Pets"),
     "photo_gallery_count" : m0,
-    "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("Fotos ainda não organizadas"),
+    "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("Fotos não organizadas"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Galeria de fotos"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Local da foto"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Agora suas fotos estarão sempre organizadas"),

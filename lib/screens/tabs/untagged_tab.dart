@@ -2,14 +2,12 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/image_item.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -39,14 +37,14 @@ class _UntaggedTabState extends State<UntaggedTab> {
   void movedGridPositionFirstTab() {
     var offset = scrollControllerFirstTab.offset;
 
-    if (offset >= 112) {
+    if (offset >= 86) {
       setState(() {
-        topOffsetFirstTab = 5;
+        topOffsetFirstTab = 10;
         hideSubtitleFirstTab = true;
       });
-    } else if (offset >= 52) {
+    } else if (offset >= 32) {
       setState(() {
-        topOffsetFirstTab = 64.0 - (offset - 52.0);
+        topOffsetFirstTab = 64.0 - (offset - 32.0);
         hideSubtitleFirstTab = false;
       });
     } else if (offset <= 0) {
@@ -72,7 +70,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
       physics: const CustomScrollPhysics(),
-      padding: EdgeInsets.only(top: 140.0),
+      padding: EdgeInsets.only(top: 82.0),
       crossAxisCount: 3,
       mainAxisSpacing: 2.0,
       crossAxisSpacing: 2.0,
@@ -120,12 +118,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
               loader = const ColoredBox(color: kGreyPlaceholder);
               break;
             case LoadState.completed:
-              SpecialImageType type;
-              if (imageProvider.imageFileType == ImageFileType.gif) {
-                type = SpecialImageType.gif;
-              } else if (imageProvider.imageFileType == ImageFileType.heic) {
-                type = SpecialImageType.heic;
-              }
               loader = FadeImageBuilder(
                 child: () {
                   return GestureDetector(
@@ -155,45 +147,47 @@ class _UntaggedTabState extends State<UntaggedTab> {
                         galleryStore.setCurrentPic(picStore);
                         tabsStore.setModalCard(true);
                       },
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: RepaintBoundary(
-                              child: state.completedWidget,
-                            ),
+                      child: Observer(builder: (_) {
+                        Widget image = Positioned.fill(
+                          child: RepaintBoundary(
+                            child: state.completedWidget,
                           ),
-                          Observer(builder: (_) {
-                            if (tabsStore.multiPicBar) {
-                              if (galleryStore.selectedPics.contains(picStore.photoId)) {
-                                return Stack(
-                                  children: [
-                                    Container(
-                                      constraints: BoxConstraints.expand(),
-                                      decoration: BoxDecoration(
-                                        color: kSecondaryColor.withOpacity(0.3),
-                                        border: Border.all(
-                                          color: kSecondaryColor,
-                                          width: 2.0,
-                                        ),
-                                      ),
+                        );
+                        if (tabsStore.multiPicBar) {
+                          if (galleryStore.selectedPics.contains(picStore.photoId)) {
+                            return Stack(
+                              children: [
+                                image,
+                                Container(
+                                  constraints: BoxConstraints.expand(),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryColor.withOpacity(0.3),
+                                    border: Border.all(
+                                      color: kSecondaryColor,
+                                      width: 2.0,
                                     ),
-                                    Positioned(
-                                      left: 8.0,
-                                      top: 6.0,
-                                      child: Container(
-                                        height: 20,
-                                        width: 20,
-                                        decoration: BoxDecoration(
-                                          gradient: kSecondaryGradient,
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                        child: Image.asset('lib/images/checkwhiteico.png'),
-                                      ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 8.0,
+                                  top: 6.0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      gradient: kSecondaryGradient,
+                                      borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                  ],
-                                );
-                              }
-                              return Positioned(
+                                    child: Image.asset('lib/images/checkwhiteico.png'),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Stack(
+                            children: [
+                              image,
+                              Positioned(
                                 left: 8.0,
                                 top: 6.0,
                                 child: Container(
@@ -207,12 +201,16 @@ class _UntaggedTabState extends State<UntaggedTab> {
                                     ),
                                   ),
                                 ),
-                              );
-                            }
-                            return Container();
-                          }),
-                        ],
-                      ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Stack(
+                          children: [
+                            image,
+                          ],
+                        );
+                      }),
                     ),
                   );
                 }(),
@@ -288,32 +286,34 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        S.of(context).photo_gallery_title,
+                        tabsStore.multiPicBar
+                            ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length)
+                            : S.of(context).photo_gallery_description, //S.of(context).photo_gallery_title,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.w700,
                           fontStyle: FontStyle.normal,
                         ),
                       ),
-                      if (!hideSubtitleFirstTab)
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                      if (!hideSubtitleFirstTab)
-                        Text(
-                          tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
-                          textScaleFactor: 1.0,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff606566),
-                            fontSize: 18,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                          ),
-                        ),
+//                      if (!hideSubtitleFirstTab)
+//                        SizedBox(
+//                          height: 8.0,
+//                        ),
+//                      if (!hideSubtitleFirstTab)
+//                        Text(
+//                          tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+//                          textScaleFactor: 1.0,
+//                          style: TextStyle(
+//                            fontFamily: 'Lato',
+//                            color: Color(0xff606566),
+//                            fontSize: 18,
+//                            fontWeight: FontWeight.w400,
+//                            fontStyle: FontStyle.normal,
+//                          ),
+//                        ),
                     ],
                   ),
                 ),
