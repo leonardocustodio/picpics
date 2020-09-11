@@ -72,8 +72,10 @@ class _UntaggedTabState extends State<UntaggedTab> {
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
       physics: const CustomScrollPhysics(),
-      padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
+      padding: EdgeInsets.only(top: 140.0),
       crossAxisCount: 3,
+      mainAxisSpacing: 2.0,
+      crossAxisSpacing: 2.0,
       itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
       itemBuilder: (BuildContext context, int index) {
         return _buildItem(context, index);
@@ -82,8 +84,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //        if (DatabaseManager.instance.picHasTag[index] == true) return StaggeredTile.count(0, 0);
         return StaggeredTile.count(1, 1);
       },
-//      mainAxisSpacing: 5.0,
-//      crossAxisSpacing: 5.0,
     );
 //  }
   }
@@ -110,127 +110,121 @@ class _UntaggedTabState extends State<UntaggedTab> {
     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, isOriginal: false);
 
     return RepaintBoundary(
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: ExtendedImage(
-          image: imageProvider,
-          fit: BoxFit.cover,
-          loadStateChanged: (ExtendedImageState state) {
-            Widget loader;
-            switch (state.extendedImageLoadState) {
-              case LoadState.loading:
-                loader = const ColoredBox(color: kGreyPlaceholder);
-                break;
-              case LoadState.completed:
-                SpecialImageType type;
-                if (imageProvider.imageFileType == ImageFileType.gif) {
-                  type = SpecialImageType.gif;
-                } else if (imageProvider.imageFileType == ImageFileType.heic) {
-                  type = SpecialImageType.heic;
-                }
-                loader = FadeImageBuilder(
-                  child: () {
-                    return GestureDetector(
-                      onLongPress: () {
-                        print('LongPress');
-                        if (tabsStore.multiPicBar == false) {
+      child: ExtendedImage(
+        image: imageProvider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = const ColoredBox(color: kGreyPlaceholder);
+              break;
+            case LoadState.completed:
+              SpecialImageType type;
+              if (imageProvider.imageFileType == ImageFileType.gif) {
+                type = SpecialImageType.gif;
+              } else if (imageProvider.imageFileType == ImageFileType.heic) {
+                type = SpecialImageType.heic;
+              }
+              loader = FadeImageBuilder(
+                child: () {
+                  return GestureDetector(
+                    onLongPress: () {
+                      print('LongPress');
+                      if (tabsStore.multiPicBar == false) {
+                        galleryStore.setSelectedPics(
+                          photoId: picStore.photoId,
+                          picIsTagged: false,
+                        );
+                        tabsStore.setMultiPicBar(true);
+                      }
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        if (tabsStore.multiPicBar) {
                           galleryStore.setSelectedPics(
                             photoId: picStore.photoId,
                             picIsTagged: false,
                           );
-                          tabsStore.setMultiPicBar(true);
+                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          return;
                         }
-                      },
-                      child: CupertinoButton(
-                        padding: const EdgeInsets.all(0),
-                        onPressed: () {
-                          if (tabsStore.multiPicBar) {
-                            galleryStore.setSelectedPics(
-                              photoId: picStore.photoId,
-                              picIsTagged: false,
-                            );
-                            print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-                            return;
-                          }
 
-                          tagsEditingController.text = '';
-                          galleryStore.setCurrentPic(picStore);
-                          tabsStore.setModalCard(true);
-                        },
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: RepaintBoundary(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(5.0),
-                                  child: state.completedWidget,
-                                ),
-                              ),
+                        tagsEditingController.text = '';
+                        galleryStore.setCurrentPic(picStore);
+                        tabsStore.setModalCard(true);
+                      },
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: RepaintBoundary(
+                              child: state.completedWidget,
                             ),
-                            Observer(builder: (_) {
-                              if (tabsStore.multiPicBar) {
-                                if (galleryStore.selectedPics.contains(picStore.photoId)) {
-                                  return Stack(
-                                    children: [
-                                      Container(
-                                        constraints: BoxConstraints.expand(),
-                                        decoration: BoxDecoration(
-                                          color: kSecondaryColor.withOpacity(0.3),
-                                          border: Border.all(
-                                            color: kSecondaryColor,
-                                            width: 2.0,
-                                          ),
-                                          borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          Observer(builder: (_) {
+                            if (tabsStore.multiPicBar) {
+                              if (galleryStore.selectedPics.contains(picStore.photoId)) {
+                                return Stack(
+                                  children: [
+                                    Container(
+                                      constraints: BoxConstraints.expand(),
+                                      decoration: BoxDecoration(
+                                        color: kSecondaryColor.withOpacity(0.3),
+                                        border: Border.all(
+                                          color: kSecondaryColor,
+                                          width: 2.0,
                                         ),
-                                      ),
-                                      Positioned(
-                                        left: 8.0,
-                                        top: 6.0,
-                                        child: Container(
-                                          height: 20,
-                                          width: 20,
-                                          decoration: BoxDecoration(
-                                            gradient: kSecondaryGradient,
-                                            borderRadius: BorderRadius.circular(10.0),
-                                          ),
-                                          child: Image.asset('lib/images/checkwhiteico.png'),
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }
-                                return Positioned(
-                                  left: 8.0,
-                                  top: 6.0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      border: Border.all(
-                                        color: kGrayColor,
-                                        width: 2.0,
+                                        borderRadius: BorderRadius.circular(5.0),
                                       ),
                                     ),
-                                  ),
+                                    Positioned(
+                                      left: 8.0,
+                                      top: 6.0,
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                          gradient: kSecondaryGradient,
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        child: Image.asset('lib/images/checkwhiteico.png'),
+                                      ),
+                                    ),
+                                  ],
                                 );
                               }
-                              return Container();
-                            }),
-                          ],
-                        ),
+                              return Positioned(
+                                left: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: kGrayColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                            return Container();
+                          }),
+                        ],
                       ),
-                    );
-                  }(),
-                );
-                break;
-              case LoadState.failed:
-                loader = _failedItem;
-                break;
-            }
-            return loader;
-          },
-        ),
+                    ),
+                  );
+                }(),
+              );
+              break;
+            case LoadState.failed:
+              loader = _failedItem;
+              break;
+          }
+          return loader;
+        },
       ),
     );
   }
