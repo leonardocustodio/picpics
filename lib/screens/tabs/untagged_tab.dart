@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -70,6 +71,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
+      physics: const CustomScrollPhysics(),
       padding: EdgeInsets.only(left: 4.0, right: 4.0, top: 140.0),
       crossAxisCount: 3,
       itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
