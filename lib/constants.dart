@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const List<int> kDefaultPreviewThumbSize = <int>[200, 200];
+
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;
 
