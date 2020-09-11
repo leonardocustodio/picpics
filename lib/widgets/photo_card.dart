@@ -133,7 +133,10 @@ class _PhotoCardState extends State<PhotoCard> {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
-    imageProvider = AssetEntityImageProvider(picStore.entity, isOriginal: true);
+
+    int height = MediaQuery.of(context).size.height * 2 ~/ 3;
+    List<int> photoSize = <int>[height, height];
+    imageProvider = AssetEntityImageProvider(picStore.entity, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
   }
 
   @override
