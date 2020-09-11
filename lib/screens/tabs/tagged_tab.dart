@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/photo_screen.dart';
@@ -39,7 +38,6 @@ class _TaggedTabState extends State<TaggedTab> {
   FocusNode searchFocusNode = FocusNode();
 
   double offsetThirdTab = 0.0;
-//  double topOffsetThirdTab = 64.0;
   bool hideTitleThirdTab = false;
 
   TextEditingController tagsEditingController = TextEditingController();

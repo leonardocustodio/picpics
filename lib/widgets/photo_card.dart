@@ -1,13 +1,15 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:picPics/asset_entity_image_provider.dart';
+import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/admob_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/image_item.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
@@ -46,6 +48,7 @@ class _PhotoCardState extends State<PhotoCard> {
   AppStore appStore;
   GalleryStore galleryStore;
   PicStore get picStore => widget.picStore;
+  AssetEntityImageProvider imageProvider;
 
   TextEditingController tagsEditingController = TextEditingController();
   FocusNode tagsFocusNode;
@@ -128,6 +131,7 @@ class _PhotoCardState extends State<PhotoCard> {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+    imageProvider = AssetEntityImageProvider(picStore.entity, isOriginal: true);
   }
 
   @override
@@ -190,10 +194,35 @@ class _PhotoCardState extends State<PhotoCard> {
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),
                 ),
-                child: ImageItem(
-                  entity: picStore.entity,
-                  size: 600,
-                  backgroundColor: Colors.grey[400],
+                child: RepaintBoundary(
+                  child: ExtendedImage(
+                    image: imageProvider,
+                    fit: BoxFit.cover,
+                    loadStateChanged: (ExtendedImageState state) {
+                      Widget loader;
+                      switch (state.extendedImageLoadState) {
+                        case LoadState.loading:
+                          loader = const ColoredBox(color: kGreyPlaceholder);
+                          break;
+                        case LoadState.completed:
+                          loader = FadeImageBuilder(
+                            child: () {
+                              return RepaintBoundary(
+                                child: Container(
+                                  constraints: BoxConstraints.expand(),
+                                  child: state.completedWidget,
+                                ),
+                              );
+                            }(),
+                          );
+                          break;
+                        case LoadState.failed:
+                          loader = Container();
+                          break;
+                      }
+                      return loader;
+                    },
+                  ),
                 ),
               ),
             ),
