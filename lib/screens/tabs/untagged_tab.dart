@@ -110,84 +110,124 @@ class _UntaggedTabState extends State<UntaggedTab> {
     return RepaintBoundary(
       child: Padding(
         padding: const EdgeInsets.all(5.0),
-        child: GestureDetector(
-          onLongPress: () {
-            print('LongPress');
-            if (tabsStore.multiPicBar == false) {
-              galleryStore.setSelectedPics(
-                photoId: picStore.photoId,
-                picIsTagged: false,
-              );
-              tabsStore.setMultiPicBar(true);
-            }
-          },
-          child: CupertinoButton(
-            padding: const EdgeInsets.all(0),
-            onPressed: () {
-              if (tabsStore.multiPicBar) {
-                galleryStore.setSelectedPics(
-                  photoId: picStore.photoId,
-                  picIsTagged: false,
-                );
-                print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-                return;
-              }
+        child: ExtendedImage(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          loadStateChanged: (ExtendedImageState state) {
+            Widget loader;
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                loader = const ColoredBox(color: kGreyPlaceholder);
+                break;
+              case LoadState.completed:
+                SpecialImageType type;
+                if (imageProvider.imageFileType == ImageFileType.gif) {
+                  type = SpecialImageType.gif;
+                } else if (imageProvider.imageFileType == ImageFileType.heic) {
+                  type = SpecialImageType.heic;
+                }
+                loader = FadeImageBuilder(
+                  child: () {
+                    return GestureDetector(
+                      onLongPress: () {
+                        print('LongPress');
+                        if (tabsStore.multiPicBar == false) {
+                          galleryStore.setSelectedPics(
+                            photoId: picStore.photoId,
+                            picIsTagged: false,
+                          );
+                          tabsStore.setMultiPicBar(true);
+                        }
+                      },
+                      child: CupertinoButton(
+                        padding: const EdgeInsets.all(0),
+                        onPressed: () {
+                          if (tabsStore.multiPicBar) {
+                            galleryStore.setSelectedPics(
+                              photoId: picStore.photoId,
+                              picIsTagged: false,
+                            );
+                            print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                            return;
+                          }
 
-              tagsEditingController.text = '';
-              galleryStore.setCurrentPic(picStore);
-              tabsStore.setModalCard(true);
-            },
-            child: RepaintBoundary(
-              child: ExtendedImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-                loadStateChanged: (ExtendedImageState state) {
-                  Widget loader;
-                  switch (state.extendedImageLoadState) {
-                    case LoadState.loading:
-                      loader = const ColoredBox(color: Color(0x10ffffff));
-                      break;
-                    case LoadState.completed:
-                      SpecialImageType type;
-                      if (imageProvider.imageFileType == ImageFileType.gif) {
-                        type = SpecialImageType.gif;
-                      } else if (imageProvider.imageFileType == ImageFileType.heic) {
-                        type = SpecialImageType.heic;
-                      }
-                      loader = FadeImageBuilder(
-                        child: () {
-                          return Stack(
-                            children: <Widget>[
-                              Positioned.fill(
-                                child: RepaintBoundary(
+                          tagsEditingController.text = '';
+                          galleryStore.setCurrentPic(picStore);
+                          tabsStore.setModalCard(true);
+                        },
+                        child: Stack(
+                          children: [
+                            Positioned.fill(
+                              child: RepaintBoundary(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5.0),
                                   child: state.completedWidget,
                                 ),
                               ),
-//                                  _selectedBackdrop(context, index, asset),
-                            ],
-                          );
-                        }(),
-                      );
-                      break;
-                    case LoadState.failed:
-                      loader = _failedItem;
-                      break;
-                  }
-                  return loader;
-                },
-              ),
-            ),
-
-//            Observer(builder: (_) {
-//              return ImageItem(
-//                entity: picStore.entity,
-//                size: 150,
-//                backgroundColor: Colors.grey[400],
-//                showOverlay: tabsStore.multiPicBar ? true : false,
-//                isSelected: galleryStore.selectedPics.contains(picStore.photoId),
-//              );
-//            }),
-          ),
+                            ),
+                            Observer(builder: (_) {
+                              if (tabsStore.multiPicBar) {
+                                if (galleryStore.selectedPics.contains(picStore.photoId)) {
+                                  return Stack(
+                                    children: [
+                                      Container(
+                                        constraints: BoxConstraints.expand(),
+                                        decoration: BoxDecoration(
+                                          color: kSecondaryColor.withOpacity(0.3),
+                                          border: Border.all(
+                                            color: kSecondaryColor,
+                                            width: 2.0,
+                                          ),
+                                          borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                      ),
+                                      Positioned(
+                                        left: 8.0,
+                                        top: 6.0,
+                                        child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                            gradient: kSecondaryGradient,
+                                            borderRadius: BorderRadius.circular(10.0),
+                                          ),
+                                          child: Image.asset('lib/images/checkwhiteico.png'),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }
+                                return Positioned(
+                                  left: 8.0,
+                                  top: 6.0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      border: Border.all(
+                                        color: kGrayColor,
+                                        width: 2.0,
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              return Container();
+                            }),
+                          ],
+                        ),
+                      ),
+                    );
+                  }(),
+                );
+                break;
+              case LoadState.failed:
+                loader = _failedItem;
+                break;
+            }
+            return loader;
+          },
         ),
       ),
     );
