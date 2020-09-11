@@ -1,7 +1,11 @@
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/custom_scroll_physics.dart';
+import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/gallery_store.dart';
@@ -105,44 +109,14 @@ class _TaggedTabState extends State<TaggedTab> {
     if (isFiltered) {
       print('#####!!!##### IS FILTERED !!!!@@@!!!');
 
-      String tagName = '';
+      Tag tag;
       if (tagsList.length == 1) {
-        Tag tag = tagsBox.get(tagsList[0]);
-        tagName = tag.name;
+        tag = tagsBox.get(tagsList[0]);
       }
 
       totalTags += 1;
       isTitleWidget.add(true);
-      widgetsArray.add(Container(
-        padding: const EdgeInsets.only(left: 2.0, right: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            Text(
-              tagsList.length == 1 ? tagName : S.of(context).all_search_tags,
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
-            ),
-            CupertinoButton(
-              padding: const EdgeInsets.all(10),
-              onPressed: () async {
-                print('share pics');
-                tabsStore.setIsLoading(true);
-                await galleryStore.sharePics(photoIds: []); // DatabaseManager.instance.sharePics(photoIds: DatabaseManager.instance.searchPhotosIds);
-                tabsStore.setIsLoading(false);
-              },
-              child: Image.asset('lib/images/sharepicsico.png'),
-            ),
-          ],
-        ),
-      ));
+      widgetsArray.add(_buildTagItem(tag));
 
       if (galleryStore.filteredPics.length == 0) {
         totalPics += 1;
@@ -170,51 +144,7 @@ class _TaggedTabState extends State<TaggedTab> {
         if (tagsList.length == 1) {
           galleryStore.addPicToThumbnails(pic);
         }
-
-        widgetsArray.add(RepaintBoundary(
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(5.0),
-              child: GestureDetector(
-                onLongPress: () {
-                  print('LongPress');
-                  if (tabsStore.multiPicBar == false) {
-                    galleryStore.setSelectedPics(
-                      photoId: pic.entity.id,
-                      picIsTagged: true,
-                    );
-                    tabsStore.setMultiPicBar(true);
-                  }
-                },
-                child: CupertinoButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () {
-                    if (tabsStore.multiPicBar) {
-                      galleryStore.setSelectedPics(
-                        photoId: pic.entity.id,
-                        picIsTagged: true,
-                      );
-                      print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-                      return;
-                    }
-
-                    galleryStore.setCurrentPic(pic);
-                    galleryStore.setInitialSelectedThumbnail(pic);
-                    Navigator.pushNamed(context, PhotoScreen.id);
-                  },
-                  child: ImageItem(
-                    entity: pic.entity,
-                    size: 150,
-                    backgroundColor: Colors.grey[400],
-                    showOverlay: tabsStore.multiPicBar ? true : false,
-                    isSelected: galleryStore.selectedPics.contains(pic.photoId),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ));
+        widgetsArray.add(_buildPicItem(pic));
       }
     }
 
@@ -235,35 +165,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
         totalTags += 1;
         isTitleWidget.add(true);
-        widgetsArray.add(Container(
-          padding: const EdgeInsets.only(left: 2.0, right: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                tag.name,
-                textScaleFactor: 1.0,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff606566),
-                  fontSize: 24,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: -0.4099999964237213,
-                ),
-              ),
-              CupertinoButton(
-                onPressed: () async {
-                  print('share pics');
-                  tabsStore.setIsLoading(true);
-                  await galleryStore.sharePics(photoIds: tag.photoId); // DatabaseManager.instance.sharePics(photoIds: tag.photoId);
-                  tabsStore.setIsLoading(false);
-                },
-                child: Image.asset('lib/images/sharepicsico.png'),
-              ),
-            ],
-          ),
-        ));
+        widgetsArray.add(_buildTagItem(tag));
         for (String photoId in tag.photoId) {
           PicStore picStore = galleryStore.taggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
 
@@ -274,66 +176,19 @@ class _TaggedTabState extends State<TaggedTab> {
 
           totalPics += 1;
           isTitleWidget.add(false);
-
           galleryStore.addPicToThumbnails(picStore);
-
-          widgetsArray.add(RepaintBoundary(
-            child: Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5.0),
-                child: GestureDetector(
-                  onLongPress: () {
-                    print('LongPress');
-                    if (tabsStore.multiPicBar == false) {
-                      galleryStore.setSelectedPics(
-                        photoId: picStore.photoId,
-                        picIsTagged: true,
-                      );
-                      tabsStore.setMultiPicBar(true);
-                    }
-                  },
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () {
-                      if (tabsStore.multiPicBar) {
-                        galleryStore.setSelectedPics(
-                          photoId: picStore.photoId,
-                          picIsTagged: true,
-                        );
-                        print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-                        return;
-                      }
-
-                      print('Selected photo: ${picStore.photoId}');
-                      galleryStore.setCurrentPic(picStore);
-                      galleryStore.setInitialSelectedThumbnail(picStore);
-                      Navigator.pushNamed(context, PhotoScreen.id);
-                    },
-                    child: ImageItem(
-                      entity: picStore.entity,
-                      size: 150,
-                      backgroundColor: Colors.grey[400],
-                      showOverlay: tabsStore.multiPicBar ? true : false,
-                      isSelected: galleryStore.selectedPics.contains(picStore.photoId),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ));
+          widgetsArray.add(_buildPicItem(picStore));
         }
       }
     }
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,
-      padding: EdgeInsets.only(
-        top: 86 - newPadding,
-        right: 6.0,
-        left: 6.0,
-      ),
+      padding: EdgeInsets.only(top: 86 - newPadding),
+      physics: const CustomScrollPhysics(),
       crossAxisCount: 3,
+      mainAxisSpacing: 2.0,
+      crossAxisSpacing: 2.0,
       itemCount: totalTags + totalPics,
       itemBuilder: (BuildContext context, int index) {
         return widgetsArray[index];
@@ -344,8 +199,167 @@ class _TaggedTabState extends State<TaggedTab> {
         }
         return StaggeredTile.count(1, 1);
       },
-      mainAxisSpacing: 4.0,
-      crossAxisSpacing: 4.0,
+    );
+  }
+
+  Widget _buildTagItem(Tag tag) {
+    return Container(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Text(
+            tag != null ? tag.name : S.of(context).all_search_tags,
+            textScaleFactor: 1.0,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff606566),
+              fontSize: 24,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
+          ),
+          CupertinoButton(
+            onPressed: () async {
+              print('share pics');
+              tabsStore.setIsLoading(true);
+
+              if (tag != null) {
+                await galleryStore.sharePics(photoIds: tag.photoId);
+              } else {
+                await galleryStore.sharePics(photoIds: galleryStore.filteredPicsKeys);
+              }
+
+              tabsStore.setIsLoading(false);
+            },
+            child: Image.asset('lib/images/sharepicsico.png'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPicItem(PicStore picStore) {
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, isOriginal: false);
+
+    return RepaintBoundary(
+      child: ExtendedImage(
+        image: imageProvider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = const ColoredBox(color: kGreyPlaceholder);
+              break;
+            case LoadState.completed:
+              loader = FadeImageBuilder(
+                child: () {
+                  return GestureDetector(
+                    onLongPress: () {
+                      print('LongPress');
+                      if (tabsStore.multiPicBar == false) {
+                        galleryStore.setSelectedPics(
+                          photoId: picStore.photoId,
+                          picIsTagged: true,
+                        );
+                        tabsStore.setMultiPicBar(true);
+                      }
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        if (tabsStore.multiPicBar) {
+                          galleryStore.setSelectedPics(
+                            photoId: picStore.photoId,
+                            picIsTagged: true,
+                          );
+                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          return;
+                        }
+
+                        print('Selected photo: ${picStore.photoId}');
+                        galleryStore.setCurrentPic(picStore);
+                        galleryStore.setInitialSelectedThumbnail(picStore);
+                        Navigator.pushNamed(context, PhotoScreen.id);
+                      },
+                      child: Observer(builder: (_) {
+                        Widget image = Positioned.fill(
+                          child: RepaintBoundary(
+                            child: state.completedWidget,
+                          ),
+                        );
+                        if (tabsStore.multiPicBar) {
+                          if (galleryStore.selectedPics.contains(picStore.photoId)) {
+                            return Stack(
+                              children: [
+                                image,
+                                Container(
+                                  constraints: BoxConstraints.expand(),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryColor.withOpacity(0.3),
+                                    border: Border.all(
+                                      color: kSecondaryColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 8.0,
+                                  top: 6.0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      gradient: kSecondaryGradient,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Image.asset('lib/images/checkwhiteico.png'),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Stack(
+                            children: [
+                              image,
+                              Positioned(
+                                left: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: kGrayColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Stack(
+                          children: [
+                            image,
+                          ],
+                        );
+                      }),
+                    ),
+                  );
+                }(),
+              );
+              break;
+            case LoadState.failed:
+              loader = Container();
+              break;
+          }
+          return loader;
+        },
+      ),
     );
   }
 

@@ -9,6 +9,13 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
+  Computed<List<String>> _$filteredPicsKeysComputed;
+
+  @override
+  List<String> get filteredPicsKeys => (_$filteredPicsKeysComputed ??=
+          Computed<List<String>>(() => super.filteredPicsKeys,
+              name: '_GalleryStore.filteredPicsKeys'))
+      .value;
   Computed<PicStore> _$currentThumbnailPicComputed;
 
   @override
@@ -516,6 +523,7 @@ showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
+filteredPicsKeys: ${filteredPicsKeys},
 currentThumbnailPic: ${currentThumbnailPic},
 searchingTagsKeys: ${searchingTagsKeys},
 isFiltered: ${isFiltered},
