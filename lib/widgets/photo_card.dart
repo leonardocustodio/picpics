@@ -1,4 +1,5 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geocoding/geocoding.dart';
@@ -49,6 +50,7 @@ class _PhotoCardState extends State<PhotoCard> {
   GalleryStore galleryStore;
   PicStore get picStore => widget.picStore;
   AssetEntityImageProvider imageProvider;
+  BoxFit boxFit = BoxFit.cover;
 
   TextEditingController tagsEditingController = TextEditingController();
   FocusNode tagsFocusNode;
@@ -197,7 +199,7 @@ class _PhotoCardState extends State<PhotoCard> {
                 child: RepaintBoundary(
                   child: ExtendedImage(
                     image: imageProvider,
-                    fit: BoxFit.cover,
+                    fit: boxFit,
                     loadStateChanged: (ExtendedImageState state) {
                       Widget loader;
                       switch (state.extendedImageLoadState) {
@@ -207,10 +209,24 @@ class _PhotoCardState extends State<PhotoCard> {
                         case LoadState.completed:
                           loader = FadeImageBuilder(
                             child: () {
-                              return RepaintBoundary(
-                                child: Container(
-                                  constraints: BoxConstraints.expand(),
-                                  child: state.completedWidget,
+                              return GestureDetector(
+                                onDoubleTap: () {
+                                  if (boxFit == BoxFit.cover) {
+                                    setState(() {
+                                      boxFit = BoxFit.contain;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      boxFit = BoxFit.cover;
+                                    });
+                                  }
+                                },
+                                child: RepaintBoundary(
+                                  child: Container(
+                                    color: Colors.black,
+                                    constraints: BoxConstraints.expand(),
+                                    child: state.completedWidget,
+                                  ),
                                 ),
                               );
                             }(),
