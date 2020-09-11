@@ -87,6 +87,11 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
 
+  @computed
+  List<String> get filteredPicsKeys {
+    return filteredPics.map((element) => element.photoId).toList();
+  }
+
   @action
   void clearPicThumbnails() {
     thumbnailsPics.clear();
