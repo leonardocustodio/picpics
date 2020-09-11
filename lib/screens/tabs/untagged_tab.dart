@@ -175,7 +175,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
                                           color: kSecondaryColor,
                                           width: 2.0,
                                         ),
-                                        borderRadius: BorderRadius.circular(5.0),
                                       ),
                                     ),
                                     Positioned(
