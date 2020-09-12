@@ -5,7 +5,6 @@ import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/asset_change_notifier.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/database_manager.dart';
@@ -17,6 +16,7 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:collection/collection.dart';
 
 part 'gallery_store.g.dart';
 
@@ -88,6 +88,11 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
   ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
+
+  @computed
+  Set<String> get allPicsKeys {
+    return allPics.map((element) => element.photoId).toSet();
+  }
 
   @computed
   List<String> get filteredPicsKeys {
@@ -291,8 +296,29 @@ abstract class _GalleryStore with Store {
   }
 
   @action
+  void deleteEntity(String entityId) {
+    print('Deleting entity...');
+
+    if (!allPicsKeys.contains(entityId)) {
+      print('This pic is not on picPics!!!');
+      return;
+    }
+
+    PicStore picStore = allPics.firstWhere((element) => element.photoId == entityId);
+    taggedPics.remove(picStore);
+    untaggedPics.remove(picStore);
+    filteredPics.remove(picStore);
+    swipePics.remove(picStore);
+    allPics.remove(picStore);
+
+    print('#@#@#@# Total photos: ${allPics.length}');
+  }
+
+  @action
   void addEntity(AssetEntity entity) {
-    if (allPics.map((element) => element.photoId).toList().contains(entity.id)) {
+    print('Adding new entity....');
+
+    if (allPicsKeys.contains(entity.id)) {
       print('This pic is already in picPics!!!');
       return;
     }
@@ -351,7 +377,7 @@ abstract class _GalleryStore with Store {
     isLoaded = true;
 
     // Change notifier
-    registerObserve();
+//    registerObserve();
 //    AssetChangeNotifier.registerObserve();
   }
 
@@ -664,8 +690,7 @@ abstract class _GalleryStore with Store {
 
     TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
     appStore.addTag(tagsStore);
-
-    addTagToRecent(tagKey: tagKey);
+    appStore.addTagToRecent(tagKey: tagKey);
 
     Analytics.sendEvent(Event.created_tag);
   }
@@ -708,70 +733,87 @@ abstract class _GalleryStore with Store {
     }
   }
 
-  @action
-  void addTagToRecent({String tagKey}) {
-    print('adding tag to recent: $tagKey');
-
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
-
-    if (getUser.recentTags.contains(tagKey)) {
-      getUser.recentTags.remove(tagKey);
-      getUser.recentTags.insert(0, tagKey);
-      userBox.putAt(0, getUser);
-      return;
-    }
-
-    if (getUser.recentTags.length >= kMaxNumOfRecentTags) {
-      print('removing last');
-      getUser.recentTags.removeLast();
-    }
-
-    getUser.recentTags.insert(0, tagKey);
-    userBox.putAt(0, getUser);
-    print('final tags in recent: ${getUser.recentTags}');
-  }
-
-  void registerObserve() {
-    try {
-      print('%%%%%% Registered change notifier');
-      PhotoManager.addChangeCallback(_onAssetChange);
-      PhotoManager.startChangeNotify();
-    } catch (e) {
-      print('Error when registering assets callback: $e');
-    }
-  }
+//  void registerObserve() {
+//    try {
+//      print('%%%%%% Registered change notifier');
+//      PhotoManager.addChangeCallback(_onAssetChange);
+//      PhotoManager.startChangeNotify();
+//    } catch (e) {
+//      print('Error when registering assets callback: $e');
+//    }
+//  }
 
   @action
   Future<void> _onAssetChange(MethodCall call) async {
-    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
-
-    List<dynamic> createdPics = call.arguments['create'];
-    List<dynamic> deletedPics = call.arguments['delete'];
-    print(deletedPics);
-
-    if (deletedPics.length > 0) {
-      print('### deleted pics from library!');
-      for (var pic in deletedPics) {
-        print('Pic deleted Id: ${pic['id']}');
-//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
+//    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
 //
-//        if (entity != null) {
-//          galleryStore.trashPic(picStore)
-//          DatabaseManager.instance.deletedPic(
-//            entity,
-//            removeFromDb: false,
-//          );
-//        }
-      }
-    }
+//    List<dynamic> createdPics = call.arguments['create'];
+//    List<dynamic> deletedPics = call.arguments['delete'];
+//
+//    return;
+//
+//    print(deletedPics);
+//
+//    if (deletedPics.length > 0) {
+//      print('### deleted pics from library!');
+//      for (var pic in deletedPics) {
+//        print('Pic deleted Id: ${pic['id']}');
+////        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+////        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
+////
+////        if (entity != null) {
+////          galleryStore.trashPic(picStore)
+////          DatabaseManager.instance.deletedPic(
+////            entity,
+////            removeFromDb: false,
+////          );
+////        }
+//      }
+//    }
+//
+//    if (createdPics.length > 0) {
+//      for (var pic in createdPics) {
+//        print('Pic created Id: ${pic['id']}');
+//        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
+//        addEntity(picEntity);
+//      }
+//    }
+  }
 
-    if (createdPics.length > 0) {
-      for (var pic in createdPics) {
-        print('Pic created Id: ${pic['id']}');
-        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
-        addEntity(picEntity);
+  @action
+  Future<void> checkIsLibraryUpdated() async {
+    print('Scanning library again....');
+
+    final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
+      hasAll: true,
+      type: RequestType.image,
+      onlyAll: true,
+    );
+
+    final AssetPathEntity assetPathEntity = assets[0];
+    final List<AssetEntity> assetList = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
+    final Set<String> entitiesIds = assetList.map((e) => e.id).toSet();
+    final bool isEqual = SetEquality().equals(entitiesIds, allPicsKeys);
+
+    if (isEqual) {
+      print('Library is updated!!!!!!');
+      print('#@#@#@# Total photos: ${allPics.length}');
+    } else {
+      print('Library not updated!!!');
+
+      final Set<String> createdPics = entitiesIds.difference(allPicsKeys);
+      final Set<String> deletedPics = allPicsKeys.difference(entitiesIds);
+
+      print('Created: $createdPics');
+      print('Deleted: $deletedPics');
+
+      for (String created in createdPics) {
+        AssetEntity entity = await AssetEntity.fromId(created);
+        addEntity(entity);
+      }
+
+      for (String deleted in deletedPics) {
+        deleteEntity(deleted);
       }
     }
   }

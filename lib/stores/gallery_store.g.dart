@@ -9,6 +9,13 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
+  Computed<Set<String>> _$allPicsKeysComputed;
+
+  @override
+  Set<String> get allPicsKeys =>
+      (_$allPicsKeysComputed ??= Computed<Set<String>>(() => super.allPicsKeys,
+              name: '_GalleryStore.allPicsKeys'))
+          .value;
   Computed<List<String>> _$filteredPicsKeysComputed;
 
   @override
@@ -241,6 +248,15 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return _$_onAssetChangeAsyncAction.run(() => super._onAssetChange(call));
   }
 
+  final _$checkIsLibraryUpdatedAsyncAction =
+      AsyncAction('_GalleryStore.checkIsLibraryUpdated');
+
+  @override
+  Future<void> checkIsLibraryUpdated() {
+    return _$checkIsLibraryUpdatedAsyncAction
+        .run(() => super.checkIsLibraryUpdated());
+  }
+
   final _$_GalleryStoreActionController =
       ActionController(name: '_GalleryStore');
 
@@ -421,6 +437,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void deleteEntity(String entityId) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.deleteEntity');
+    try {
+      return super.deleteEntity(entityId);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void addEntity(AssetEntity entity) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.addEntity');
@@ -520,17 +547,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void addTagToRecent({String tagKey}) {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.addTagToRecent');
-    try {
-      return super.addTagToRecent(tagKey: tagKey);
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   String toString() {
     return '''
 currentPic: ${currentPic},
@@ -542,6 +558,7 @@ showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
+allPicsKeys: ${allPicsKeys},
 filteredPicsKeys: ${filteredPicsKeys},
 currentThumbnailPic: ${currentThumbnailPic},
 searchingTagsKeys: ${searchingTagsKeys},

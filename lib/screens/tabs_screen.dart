@@ -165,7 +165,7 @@ class _TabsScreenState extends State<TabsScreen> {
   void dispose() {
 //    PhotoManager.removeChangeCallback(_changeThrottle.call);
 //    PhotoManager.stopChangeNotify();
-    _changeThrottle.dispose();
+//    _changeThrottle.dispose();
     disposer();
     disposer2();
     super.dispose();

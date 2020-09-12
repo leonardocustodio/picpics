@@ -7,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/constants.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -450,5 +451,34 @@ abstract class _AppStore with Store {
     };
     tagsBox.putAll(entries);
     loadTags();
+  }
+
+  @action
+  void addTagToRecent({String tagKey}) {
+    print('adding tag to recent: $tagKey');
+
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+
+    if (recentTags.contains(tagKey)) {
+      recentTags.remove(tagKey);
+      recentTags.insert(0, tagKey);
+      getUser.recentTags.remove(tagKey);
+      getUser.recentTags.insert(0, tagKey);
+      userBox.putAt(0, getUser);
+      print('final tags in recent: ${getUser.recentTags}');
+      return;
+    }
+
+    if (recentTags.length >= kMaxNumOfRecentTags) {
+      print('removing last');
+      recentTags.removeLast();
+      getUser.recentTags.removeLast();
+    }
+
+    recentTags.insert(0, tagKey);
+    getUser.recentTags.insert(0, tagKey);
+    userBox.putAt(0, getUser);
+    print('final tags in recent: ${getUser.recentTags}');
   }
 }

@@ -132,7 +132,11 @@ abstract class _PicStore with Store {
     }
     print('find suggestions: $searchText - exclude: $tagsKeys');
     print(suggestionTags);
-    List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();
+
+    List<TagsStore> suggestions = [];
+    for (String tagId in suggestionTags) {
+      suggestions.add(appStore.tags.firstWhere((element) => element.id == tagId));
+    }
     return suggestions;
   }
 
@@ -161,7 +165,8 @@ abstract class _PicStore with Store {
         photoId: photoId,
         tagName: tagName,
       );
-//      DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
+
+      appStore.addTagToRecent(tagKey: tagKey);
       print('updated pictures in tag');
       print('Tag photos ids: ${getTag.photoId}');
       return;
@@ -178,7 +183,7 @@ abstract class _PicStore with Store {
       tagName: tagName,
       photoId: photoId,
     );
-//    DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
+    appStore.addTagToRecent(tagKey: tagKey);
   }
 
   @action
@@ -230,48 +235,6 @@ abstract class _PicStore with Store {
       tags: [tagKey],
     );
 
-//    if (selectedPhoto != null) {
-//      print('Pic Info Localization: ${selectedPhoto.latitude} - ${selectedPhoto.longitude} - ${selectedPhoto.createDateTime}');
-//
-//      pic = Pic(
-//        photoId,
-//        selectedPhoto.createDateTime,
-//        selectedPhoto.latitude,
-//        selectedPhoto.longitude,
-//        null,
-//        null,
-//        null,
-//        null,
-//        [tagKey],
-//      );
-//    } else {
-//      AssetEntity entity = entities.firstWhere((element) => element.id == photoId, orElse: () => null);
-//      if (entity == null) {
-//        pic = Pic(
-//          photoId,
-//          null,
-//          null,
-//          null,
-//          null,
-//          null,
-//          null,
-//          null,
-//          [tagKey],
-//        );
-//      } else {
-//        pic = Pic(
-//          photoId,
-//          entity.createDateTime,
-//          entity.latitude,
-//          entity.longitude,
-//          null,
-//          null,
-//          null,
-//          null,
-//          [tagKey],
-//        );
-//      }
-//    }
     await picsBox.put(photoId, pic);
     print('@@@@@@@@ tagsKey: ${tagKey}');
 //    checkPicHasTags(photoId);
