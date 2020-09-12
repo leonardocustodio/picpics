@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const List<int> kDefaultPhotoSize = <int>[600, 600];
-const List<int> kDefaultPreviewThumbSize = <int>[200, 200];
+const List<int> kDefaultPreviewThumbSize = <int>[150, 150];
 
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;

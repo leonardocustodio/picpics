@@ -393,6 +393,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void addTagToRecent({String tagKey}) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.addTagToRecent');
+    try {
+      return super.addTagToRecent(tagKey: tagKey);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},

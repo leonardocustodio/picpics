@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/asset_change_notifier.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/screens/login_screen.dart';
@@ -92,21 +94,39 @@ class PicPicsApp extends StatefulWidget {
   _PicPicsAppState createState() => _PicPicsAppState();
 }
 
-class _PicPicsAppState extends State<PicPicsApp> {
+class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
+  AppStore appStore;
+  GalleryStore galleryStore;
+
   @override
-  Widget build(BuildContext context) {
-    AppStore appStore = AppStore(
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
+    appStore = AppStore(
       appVersion: widget.appVersion,
       deviceLocale: widget.deviceLocale,
       initiatedWithProduct: widget.initiatedWithProduct,
     );
-
-    GalleryStore galleryStore = GalleryStore(
+    galleryStore = GalleryStore(
       appStore: appStore,
     );
+  }
 
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      print('&&&&&&&&& App got back from background');
+      galleryStore.checkIsLibraryUpdated();
+//      appStore.checkNotificationPermission();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<AppStore>.value(
