@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/asset_change_notifier.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/database_manager.dart';
@@ -289,6 +291,35 @@ abstract class _GalleryStore with Store {
   }
 
   @action
+  void addEntity(AssetEntity entity) {
+    if (allPics.map((element) => element.photoId).toList().contains(entity.id)) {
+      print('This pic is already in picPics!!!');
+      return;
+    }
+
+    PicStore pic = PicStore(
+      appStore: appStore,
+      entity: entity,
+      photoId: entity.id,
+      createdAt: entity.createDateTime,
+      originalLatitude: entity.latitude,
+      originalLongitude: entity.longitude,
+    );
+
+    allPics.insert(0, pic);
+    if (pic.tags.length > 0) {
+      print('has pic info! and this pic has tags in it!!!!');
+      taggedPics.insert(0, pic);
+    } else {
+      print('has pic info! and this pic doesnt have tag!!!!');
+      swipePics.insert(0, pic);
+      untaggedPics.insert(0, pic);
+    }
+
+    print('#@#@#@# Total photos: ${allPics.length}');
+  }
+
+  @action
   Future<void> loadEntities() async {
     AssetPathEntity assetPathEntity = assetsPath[0];
     final List<AssetEntity> list = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
@@ -318,6 +349,10 @@ abstract class _GalleryStore with Store {
     print('#@#@#@# Total photos: ${allPics.length}');
     setSwipeIndex(0);
     isLoaded = true;
+
+    // Change notifier
+    registerObserve();
+//    AssetChangeNotifier.registerObserve();
   }
 
   @action
@@ -695,6 +730,50 @@ abstract class _GalleryStore with Store {
     getUser.recentTags.insert(0, tagKey);
     userBox.putAt(0, getUser);
     print('final tags in recent: ${getUser.recentTags}');
+  }
+
+  void registerObserve() {
+    try {
+      print('%%%%%% Registered change notifier');
+      PhotoManager.addChangeCallback(_onAssetChange);
+      PhotoManager.startChangeNotify();
+    } catch (e) {
+      print('Error when registering assets callback: $e');
+    }
+  }
+
+  @action
+  Future<void> _onAssetChange(MethodCall call) async {
+    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
+
+    List<dynamic> createdPics = call.arguments['create'];
+    List<dynamic> deletedPics = call.arguments['delete'];
+    print(deletedPics);
+
+    if (deletedPics.length > 0) {
+      print('### deleted pics from library!');
+      for (var pic in deletedPics) {
+        print('Pic deleted Id: ${pic['id']}');
+//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
+//        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
+//
+//        if (entity != null) {
+//          galleryStore.trashPic(picStore)
+//          DatabaseManager.instance.deletedPic(
+//            entity,
+//            removeFromDb: false,
+//          );
+//        }
+      }
+    }
+
+    if (createdPics.length > 0) {
+      for (var pic in createdPics) {
+        print('Pic created Id: ${pic['id']}');
+        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
+        addEntity(picEntity);
+      }
+    }
   }
 }
 

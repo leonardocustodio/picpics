@@ -137,8 +137,6 @@ class _TabsScreenState extends State<TabsScreen> {
 
 //    _changeThrottle = Throttle(onCall: _onAssetChange);
 //    PhotoManager.addChangeCallback(_changeThrottle.call);
-    PhotoManager.addChangeCallback(_onAssetChange);
-    PhotoManager.startChangeNotify();
 
     RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.loaded) {
@@ -165,60 +163,12 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   void dispose() {
-    PhotoManager.removeChangeCallback(_changeThrottle.call);
-    PhotoManager.stopChangeNotify();
+//    PhotoManager.removeChangeCallback(_changeThrottle.call);
+//    PhotoManager.stopChangeNotify();
     _changeThrottle.dispose();
     disposer();
     disposer2();
     super.dispose();
-  }
-
-  void _onAssetChange(MethodCall call) async {
-    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
-
-    List<dynamic> createdPics = call.arguments['create'];
-    List<dynamic> deletedPics = call.arguments['delete'];
-//    print(deletedPics);
-
-    if (deletedPics.length > 0) {
-      print('### deleted pics from library!');
-      for (var pic in deletedPics) {
-        print('Pic deleted Id: ${pic['id']}');
-//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
-//
-//        if (entity != null) {
-//          galleryStore.trashPic(picStore)
-//          DatabaseManager.instance.deletedPic(
-//            entity,
-//            removeFromDb: false,
-//          );
-//        }
-      }
-    }
-
-    if (createdPics.length > 0) {
-      // Comentei toda essa função agora dia 31/08
-//      print('#### created pics!!!');
-//      for (var pic in createdPics) {
-//        print('Pic created Id: ${pic['id']}');
-//        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
-//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//        pathProvider.addAsset(picEntity);
-//      }
-//
-//      DatabaseManager.instance.sliderHasPics();
-//      setState(() {
-////        Conferir isso aqui que eu tive que comentar!!!!
-//
-//        // picSwiper = 0;
-//        // carouselController.jumpToPage(0);
-//        if (!galleryStore.deviceHasPics) {
-//          // ver isso aqui - mudei hoje 17/08
-////          deviceHasNoPics = false;
-//        }
-//      });
-    }
   }
 
   setTabIndex(int index) async {

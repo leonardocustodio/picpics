@@ -233,6 +233,14 @@ mixin _$GalleryStore on _GalleryStore, Store {
         .run(() => super.sharePics(photoIds: photoIds));
   }
 
+  final _$_onAssetChangeAsyncAction =
+      AsyncAction('_GalleryStore._onAssetChange');
+
+  @override
+  Future<void> _onAssetChange(MethodCall call) {
+    return _$_onAssetChangeAsyncAction.run(() => super._onAssetChange(call));
+  }
+
   final _$_GalleryStoreActionController =
       ActionController(name: '_GalleryStore');
 
@@ -407,6 +415,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.setSearchText');
     try {
       return super.setSearchText(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addEntity(AssetEntity entity) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addEntity');
+    try {
+      return super.addEntity(entity);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

@@ -318,6 +318,9 @@ abstract class _PicStore with Store {
   @action
   Future<bool> deletePic() async {
     print('Before photo manager delete: ${entity.id}');
+    await PhotoManager.editor.deleteWithIds([entity.id]);
+    print('After delete with ids!!!');
+
     await PhotoManager.editor.deleteWithIds([entity.id]).then((value) {
       print('Photo Editor Result: ${value}');
 

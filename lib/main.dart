@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/asset_change_notifier.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/screens/login_screen.dart';
@@ -93,6 +95,12 @@ class PicPicsApp extends StatefulWidget {
 }
 
 class _PicPicsAppState extends State<PicPicsApp> {
+//  @override
+//  void dispose() {
+//    super.dispose();
+//    AssetChangeNotifier.unregisterObserve();
+//  }
+
   @override
   Widget build(BuildContext context) {
     AppStore appStore = AppStore(
