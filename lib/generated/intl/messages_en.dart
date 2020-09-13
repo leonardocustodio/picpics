@@ -33,6 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Add tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Add tags"),
     "all_at_once" : MessageLookupByLibrary.simpleMessage("Organize multiple photos at once"),
+    "all_photos_were_tagged" : MessageLookupByLibrary.simpleMessage("There are no more photos to organize."),
     "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
     "always" : MessageLookupByLibrary.simpleMessage("Always"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("The subscription is "),

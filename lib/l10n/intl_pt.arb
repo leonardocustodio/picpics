@@ -115,5 +115,8 @@
 
   "language": "Lingua",
   "all_search_tags": "Todas as tags da pesquisa",
-  "search_all_tags_not_found": "Nenhuma foto foi encontrada com todas as tags."
+  "search_all_tags_not_found": "Nenhuma foto foi encontrada com todas as tags.",
+
+
+  "all_photos_were_tagged": "Não há mais nenhuma foto para organizar."
 }

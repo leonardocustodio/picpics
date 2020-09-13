@@ -64,6 +64,9 @@ abstract class _GalleryStore with Store {
       appStore.setHasSwiped(true);
     }
 
+    if (swipePics.isEmpty) {
+      return;
+    }
 //    if (value > swipeIndex && value > 5) {
 //      int val = value - 5;
 //      if (val > swipeCutOff) {
