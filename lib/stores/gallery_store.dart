@@ -13,6 +13,7 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:share_extend/share_extend.dart';
@@ -26,23 +27,33 @@ abstract class _GalleryStore with Store {
   final AppStore appStore;
 
   _GalleryStore({this.appStore}) {
+    loadTaggedPicsStore();
     loadAssetsPath();
 
     autorun((_) {
       if (currentPic.tags.length > 0) {
         if (untaggedPics.contains(currentPic)) {
-          taggedPics.add(currentPic);
+          addPicToTaggedPics(picStore: currentPic);
           untaggedPics.remove(currentPic);
           print('this pic now has tags!');
         }
       } else {
         if (taggedPics.contains(currentPic)) {
           untaggedPics.add(currentPic);
-          taggedPics.remove(currentPic);
+          removePicFromTaggedPics(picStore: currentPic);
           print('this pic now doesnt have tags!');
         }
       }
     });
+  }
+
+  @action
+  void loadTaggedPicsStore() {
+    for (TagsStore tagsStore in appStore.tags) {
+      TaggedPicsStore taggedPicsStore = TaggedPicsStore(tag: tagsStore);
+      taggedPics.add(taggedPicsStore);
+    }
+    print('finished adding all tagged pics stores!');
   }
 
   @observable
@@ -87,7 +98,7 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> allPics = ObservableList<PicStore>();
   ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> swipePics = ObservableList<PicStore>();
-  ObservableList<PicStore> taggedPics = ObservableList<PicStore>();
+  ObservableList<TaggedPicsStore> taggedPics = ObservableList<TaggedPicsStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
   ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
   ObservableSet<String> selectedPics = ObservableSet<String>();
@@ -283,7 +294,7 @@ abstract class _GalleryStore with Store {
   List<String> get taggedKeys {
     Set<String> tags = Set();
     taggedPics.forEach((element) {
-      tags.addAll(element.tagsKeys);
+      tags.add(element.tag.id);
     });
     print('Tagged Keys: ${tags}');
     return tags.toList();
@@ -295,6 +306,35 @@ abstract class _GalleryStore with Store {
       return false;
     } else {
       return true;
+    }
+  }
+
+  @action
+  void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
+    print('%@%@%@%@%@%@%@%@%@%@ Adding pic to tagged pics!!! %@%@%@%@%@%@%@');
+    for (TagsStore tag in picStore.tags) {
+      TaggedPicsStore taggedPicsStore = taggedPics.firstWhere((element) => element.tag == tag, orElse: () => null);
+
+      if (taggedPicsStore == null) {
+        taggedPicsStore = TaggedPicsStore(tag: tag);
+      }
+
+      if (toInitialIndex) {
+        taggedPicsStore.pics.insert(0, picStore);
+      } else {
+        taggedPicsStore.pics.add(picStore);
+      }
+    }
+  }
+
+  @action
+  void removePicFromTaggedPics({PicStore picStore}) {
+    for (TaggedPicsStore taggedPicsStore in taggedPics) {
+      bool deleted = taggedPicsStore.pics.remove(picStore);
+      if (deleted) {
+        print('pic has been deleted from tagged pics');
+        break;
+      }
     }
   }
 
@@ -338,7 +378,7 @@ abstract class _GalleryStore with Store {
     allPics.insert(0, pic);
     if (pic.tags.length > 0) {
       print('has pic info! and this pic has tags in it!!!!');
-      taggedPics.insert(0, pic);
+      addPicToTaggedPics(picStore: pic, toInitialIndex: true);
     } else {
       print('has pic info! and this pic doesnt have tag!!!!');
       swipePics.insert(0, pic);
@@ -367,7 +407,7 @@ abstract class _GalleryStore with Store {
 
       if (pic.tags.length > 0) {
         print('has pic info! and this pic has tags in it!!!!');
-        taggedPics.add(pic);
+        addPicToTaggedPics(picStore: pic);
       } else {
         print('has pic info! and this pic doesnt have tag!!!!');
         swipePics.add(pic);
@@ -560,22 +600,15 @@ abstract class _GalleryStore with Store {
 
       // Remove a tag das fotos já taggeadas
       TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
-
-      taggedPics.forEach((element) {
-        if (getTag.photoId.contains(element.photoId)) {
-          element.tags.remove(tagsStore);
+      TaggedPicsStore taggedPicsStore = taggedPics.firstWhere((element) => element.tag == tagsStore);
+      for (PicStore picTagged in taggedPicsStore.pics) {
+        picTagged.tags.remove(tagsStore);
+        if (picTagged.tags.length == 0 && picTagged != currentPic) {
+          print('this pic is not tagged anymore!');
+          untaggedPics.add(picTagged);
         }
-      });
-
-      taggedPics.forEach((element) {
-        if (getTag.photoId.contains(element.photoId)) {
-          if (element.tags.length == 0 && element != currentPic) {
-            print('this pic is not tagged anymore!');
-            untaggedPics.add(element);
-            taggedPics.remove(element);
-          }
-        }
-      });
+      }
+      taggedPics.remove(taggedPicsStore);
 
       User getUser = userBox.getAt(0);
       if (getUser.recentTags.contains(tagKey)) {
@@ -650,7 +683,7 @@ abstract class _GalleryStore with Store {
       }
     }
 
-    filteredPics.addAll(taggedPics.where((element) => tempPhotosIds.contains(element.photoId)).toList());
+    filteredPics.addAll(allPics.where((element) => tempPhotosIds.contains(element.photoId)).toList()); // Verificar essa classe para otimizar
     print('Search Photos: $filteredPics');
     print('Searcing Tags Keys: $searchingTags');
 
@@ -704,14 +737,8 @@ abstract class _GalleryStore with Store {
 
     for (String photoId in selectedPics) {
       PicStore picStore = selectedPicsAreTagged
-          ? taggedPics.firstWhere((element) => element.photoId == photoId)
+          ? allPics.firstWhere((element) => element.photoId == photoId) // Verificar isso aqui mudar depois para otimizar
           : untaggedPics.firstWhere((element) => element.photoId == photoId);
-
-      if (!selectedPicsAreTagged) {
-        taggedPics.add(picStore);
-        untaggedPics.remove(picStore);
-        swipePics.remove(picStore);
-      }
 
       for (String tagKey in multiPicTagKeys) {
         Tag getTag = tagsBox.get(tagKey);
@@ -729,6 +756,12 @@ abstract class _GalleryStore with Store {
           photoId: photoId,
           tagName: getTag.name,
         );
+
+        if (!selectedPicsAreTagged) {
+          addPicToTaggedPics(picStore: picStore);
+          untaggedPics.remove(picStore);
+          swipePics.remove(picStore);
+        }
 
         print('update pictures in tag');
         Analytics.sendEvent(Event.added_tag);

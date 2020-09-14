@@ -261,6 +261,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
       ActionController(name: '_GalleryStore');
 
   @override
+  void loadTaggedPicsStore() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.loadTaggedPicsStore');
+    try {
+      return super.loadTaggedPicsStore();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setCurrentPic(PicStore picStore) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setCurrentPic');
@@ -431,6 +442,29 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.setSearchText');
     try {
       return super.setSearchText(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addPicToTaggedPics');
+    try {
+      return super.addPicToTaggedPics(
+          picStore: picStore, toInitialIndex: toInitialIndex);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removePicFromTaggedPics({PicStore picStore}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.removePicFromTaggedPics');
+    try {
+      return super.removePicFromTaggedPics(picStore: picStore);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

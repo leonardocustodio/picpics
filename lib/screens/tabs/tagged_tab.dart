@@ -11,13 +11,13 @@ import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hive/hive.dart';
-import 'package:picPics/image_item.dart';
 import 'package:picPics/model/tag.dart';
 
 class TaggedTab extends StatefulWidget {
@@ -103,15 +103,22 @@ class _TaggedTabState extends State<TaggedTab> {
 
     galleryStore.clearPicThumbnails();
 
-    List<String> tagsList = isFiltered ? galleryStore.searchingTagsKeys.toList() : tagsBox.keys.toList().cast<String>();
-    print('Tags List: $tagsList');
+    List<TaggedPicsStore> taggedPicsStore;
+
+    if (isFiltered) {
+      for (String tagKey in galleryStore.searchingTagsKeys) {
+        taggedPicsStore.add(galleryStore.taggedPics.firstWhere((element) => element.tag.id == tagKey));
+      }
+    } else {
+      taggedPicsStore = galleryStore.taggedPics;
+    }
 
     if (isFiltered) {
       print('#####!!!##### IS FILTERED !!!!@@@!!!');
 
       Tag tag;
-      if (tagsList.length == 1) {
-        tag = tagsBox.get(tagsList[0]);
+      if (taggedPicsStore.length == 1) {
+        tag = tagsBox.get(taggedPicsStore[0].tag.id);
       }
 
       totalTags += 1;
@@ -141,21 +148,21 @@ class _TaggedTabState extends State<TaggedTab> {
         totalPics += 1;
         isTitleWidget.add(false);
 
-        if (tagsList.length == 1) {
+        if (taggedPicsStore.length == 1) {
           galleryStore.addPicToThumbnails(pic);
         }
         widgetsArray.add(_buildPicItem(pic));
       }
     }
 
-    if (tagsList.length > 1) {
-      for (String tagKey in tagsList) {
-        Tag tag = tagsBox.get(tagKey);
-
-        if (tag.photoId.length == 0) {
-          print('skipping ${tag.name} because tag has no pictures...');
+    if (taggedPicsStore.length > 1) {
+      for (TaggedPicsStore taggedPicStore in taggedPicsStore) {
+        if (taggedPicStore.pics.length == 0) {
+          print('skipping ${taggedPicStore.tag.name} because tag has no pictures...');
           continue;
         }
+
+        Tag tag = tagsBox.get(taggedPicStore.tag.id);
 
 //      bool oneValidPic = checkTagHasOneValidPic(tag);
 //      if (!oneValidPic) {
@@ -166,14 +173,7 @@ class _TaggedTabState extends State<TaggedTab> {
         totalTags += 1;
         isTitleWidget.add(true);
         widgetsArray.add(_buildTagItem(tag));
-        for (String photoId in tag.photoId) {
-          PicStore picStore = galleryStore.taggedPics.firstWhere((element) => element.photoId == photoId, orElse: () => null);
-
-          if (picStore == null) {
-            print('Found a deleted picture');
-            continue;
-          }
-
+        for (PicStore picStore in taggedPicStore.pics) {
           totalPics += 1;
           isTitleWidget.add(false);
           galleryStore.addPicToThumbnails(picStore);
