@@ -116,7 +116,7 @@ PODS:
     - Flutter
   - geocoding (1.0.3):
     - Flutter
-  - "geolocator (6.0.0+3)":
+  - "geolocator (6.0.0+4)":
     - Flutter
   - Google-Mobile-Ads-SDK (7.64.0):
     - GoogleAppMeasurement (~> 6.0)
@@ -180,7 +180,7 @@ PODS:
     - PurchasesHybridCommon (= 1.2.0)
   - PurchasesHybridCommon (1.2.0):
     - Purchases (= 3.4.0)
-  - rate_my_app (0.7.0):
+  - rate_my_app (0.7.1):
     - Flutter
   - share_extend (0.0.1):
     - Flutter
@@ -322,7 +322,7 @@ SPEC CHECKSUMS:
   flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
   flutter_vibrate: c0ca4ac994ff97c3f147f69865458bbc0cc3508b
   geocoding: ba2dc798e5d24ea68a3ff47cccee2590b7f06345
-  geolocator: ba89529b110425143bd41707cc6853648df94b6a
+  geolocator: 1ae40084cc6c1586ce5ad12cfc3fd38c64d05f2f
   Google-Mobile-Ads-SDK: aec52559ce73ddf1e6478d1904dd71a741f1bc61
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
   GoogleAppMeasurement: 67458367830514fb20fd9e233496f1eef9d90185
@@ -341,7 +341,7 @@ SPEC CHECKSUMS:
   Purchases: b8cac232e403ca51541a425a65992b902cecc044
   purchases_flutter: b27e7df010dbf09f9b7bdd849cc83ac19c3444d9
   PurchasesHybridCommon: deba31751165f0a0f84eba3df68a54641f8a69b1
-  rate_my_app: a41f92c7b827e72b4b1afeca1075bf99c4d75587
+  rate_my_app: 3b64dd0876bd286001595ee2e69193e757c4d77c
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef

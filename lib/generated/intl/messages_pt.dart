@@ -29,6 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "add_tag" : MessageLookupByLibrary.simpleMessage("Add tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Add tags"),
+    "all_photos_were_tagged" : MessageLookupByLibrary.simpleMessage("Não há mais nenhuma foto para organizar."),
     "all_search_tags" : MessageLookupByLibrary.simpleMessage("Todas as tags da pesquisa"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("A assinatura é "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("auto-renovável."),

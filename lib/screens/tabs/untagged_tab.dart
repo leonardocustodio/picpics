@@ -252,7 +252,32 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     ],
                   ),
                 ),
-                DeviceHasNoPics(),
+                DeviceHasNoPics(
+                  message: S.of(context).device_has_no_pics,
+                ),
+              ],
+            );
+          } else if (galleryStore.isLoaded && galleryStore.untaggedPics.isEmpty) {
+            return Stack(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      CupertinoButton(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        onPressed: () {
+                          Navigator.pushNamed(context, SettingsScreen.id);
+                        },
+                        child: Image.asset('lib/images/settings.png'),
+                      ),
+                    ],
+                  ),
+                ),
+                DeviceHasNoPics(
+                  message: S.of(context).all_photos_were_tagged,
+                ),
               ],
             );
           } else if (galleryStore.isLoaded && galleryStore.deviceHasPics) {
@@ -280,7 +305,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+                        tabsStore.multiPicBar
+                            ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length)
+                            : S.of(context).photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',

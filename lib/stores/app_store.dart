@@ -315,11 +315,15 @@ abstract class _AppStore with Store {
 
   @action
   void setCanTagToday(bool value) {
-    canTagToday = value;
+    if (isPremium) {
+      canTagToday = true;
+    } else {
+      canTagToday = value;
+    }
 
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
-    currentUser.canTagToday = value;
+    currentUser.canTagToday = canTagToday;
     currentUser.save();
   }
 

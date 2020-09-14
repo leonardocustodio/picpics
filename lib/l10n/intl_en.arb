@@ -146,5 +146,8 @@
   "forgot_secret_key": "Forgot secret key?",
   "lock_your_photos": "Lock your photos",
   "lock_with_pin": "Lock down your private photos with a PIN passcode.",
-  "protect_with_encryption": "Protect your personal photos with encryption only accessible with a PIN password."
+  "protect_with_encryption": "Protect your personal photos with encryption only accessible with a PIN password.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
 }

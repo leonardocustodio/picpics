@@ -1185,6 +1185,16 @@ class S {
       args: [],
     );
   }
+
+  /// `There are no more photos to organize.`
+  String get all_photos_were_tagged {
+    return Intl.message(
+      'There are no more photos to organize.',
+      name: 'all_photos_were_tagged',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
@@ -91,7 +92,15 @@ class _PicTabState extends State<PicTab> {
                 );
               } else if (!galleryStore.deviceHasPics) {
                 return Expanded(
-                  child: DeviceHasNoPics(),
+                  child: DeviceHasNoPics(
+                    message: S.of(context).device_has_no_pics,
+                  ),
+                );
+              } else if (galleryStore.swipePics.isEmpty) {
+                return Expanded(
+                  child: DeviceHasNoPics(
+                    message: S.of(context).all_photos_were_tagged,
+                  ),
                 );
               }
               return Expanded(
