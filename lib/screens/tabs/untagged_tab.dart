@@ -27,26 +27,17 @@ class _UntaggedTabState extends State<UntaggedTab> {
   GalleryStore galleryStore;
 
   ScrollController scrollControllerFirstTab;
-
-  double topOffsetFirstTab = 64.0;
-
   TextEditingController tagsEditingController = TextEditingController();
 
   void refreshGridPositionFirstTab() {
     var offset = scrollControllerFirstTab.hasClients ? scrollControllerFirstTab.offset : scrollControllerFirstTab.initialScrollOffset;
 
     if (offset >= 86) {
-      setState(() {
-        topOffsetFirstTab = 10;
-      });
+      tabsStore.setTopOffsetFirstTab(10.0);
     } else if (offset >= 32) {
-      setState(() {
-        topOffsetFirstTab = 64.0 - (offset - 32.0);
-      });
+      tabsStore.setTopOffsetFirstTab(64.0 - (offset - 32.0));
     } else if (offset <= 0) {
-      setState(() {
-        topOffsetFirstTab = 64;
-      });
+      tabsStore.setTopOffsetFirstTab(64.0);
     }
 
     if (scrollControllerFirstTab.hasClients) {
@@ -296,7 +287,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 ),
                 Positioned(
                   left: 16.0,
-                  top: topOffsetFirstTab,
+                  top: tabsStore.topOffsetFirstTab,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

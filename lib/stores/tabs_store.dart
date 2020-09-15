@@ -79,4 +79,15 @@ abstract class _TabsStore with Store {
   void setTutorialIndex(int value) => tutorialIndex = value;
 
   double offsetFirstTab = 0.0;
+
+  @observable
+  double topOffsetFirstTab = 64.0;
+
+  @action
+  void setTopOffsetFirstTab(double value) {
+    if (value == topOffsetFirstTab) {
+      return;
+    }
+    topOffsetFirstTab = value;
+  }
 }
