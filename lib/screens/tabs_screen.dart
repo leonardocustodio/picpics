@@ -186,7 +186,7 @@ class _TabsScreenState extends State<TabsScreen> {
       } else if (index == 2) {
         print('sharing selected pics....');
         tabsStore.setIsLoading(true);
-        await galleryStore.sharePics(photoIds: galleryStore.selectedPics.toList());
+        await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
         tabsStore.setIsLoading(false);
       } else {
         //        showMultiTagSheet();
