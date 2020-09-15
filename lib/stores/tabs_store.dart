@@ -26,7 +26,9 @@ abstract class _TabsStore with Store {
       return;
     }
 
-    if (currentTab == 2) {
+    if (currentTab == 1) {
+      galleryStore.setSwipeIndex(galleryStore.swipeIndex);
+    } else if (currentTab == 2) {
       galleryStore.clearSearchTags();
     }
 
