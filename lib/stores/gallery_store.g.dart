@@ -9,6 +9,13 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
+  Computed<int> _$totalTaggedPicsComputed;
+
+  @override
+  int get totalTaggedPics =>
+      (_$totalTaggedPicsComputed ??= Computed<int>(() => super.totalTaggedPics,
+              name: '_GalleryStore.totalTaggedPics'))
+          .value;
   Computed<Set<String>> _$allPicsKeysComputed;
 
   @override
@@ -235,9 +242,9 @@ mixin _$GalleryStore on _GalleryStore, Store {
   final _$sharePicsAsyncAction = AsyncAction('_GalleryStore.sharePics');
 
   @override
-  Future<void> sharePics({List<String> photoIds}) {
+  Future<void> sharePics({List<PicStore> picsStores}) {
     return _$sharePicsAsyncAction
-        .run(() => super.sharePics(photoIds: photoIds));
+        .run(() => super.sharePics(picsStores: picsStores));
   }
 
   final _$_onAssetChangeAsyncAction =
@@ -259,17 +266,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
 
   final _$_GalleryStoreActionController =
       ActionController(name: '_GalleryStore');
-
-  @override
-  void loadTaggedPicsStore() {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.loadTaggedPicsStore');
-    try {
-      return super.loadTaggedPicsStore();
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
 
   @override
   void setCurrentPic(PicStore picStore) {
@@ -382,11 +378,12 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void setSelectedPics({String photoId, bool picIsTagged}) {
+  void setSelectedPics({PicStore picStore, bool picIsTagged}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setSelectedPics');
     try {
-      return super.setSelectedPics(photoId: photoId, picIsTagged: picIsTagged);
+      return super
+          .setSelectedPics(picStore: picStore, picIsTagged: picIsTagged);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -592,6 +589,7 @@ showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
+totalTaggedPics: ${totalTaggedPics},
 allPicsKeys: ${allPicsKeys},
 filteredPicsKeys: ${filteredPicsKeys},
 currentThumbnailPic: ${currentThumbnailPic},

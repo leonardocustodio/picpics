@@ -27,7 +27,7 @@ abstract class _GalleryStore with Store {
   final AppStore appStore;
 
   _GalleryStore({this.appStore}) {
-    loadTaggedPicsStore();
+//    loadTaggedPicsStore();
     loadAssetsPath();
 
     autorun((_) {
@@ -47,13 +47,18 @@ abstract class _GalleryStore with Store {
     });
   }
 
-  @action
-  void loadTaggedPicsStore() {
-    for (TagsStore tagsStore in appStore.tags) {
-      TaggedPicsStore taggedPicsStore = TaggedPicsStore(tag: tagsStore);
-      taggedPics.add(taggedPicsStore);
-    }
-    print('finished adding all tagged pics stores!');
+//  @action
+//  void loadTaggedPicsStore() {
+//    for (TagsStore tagsStore in appStore.tags) {
+//      TaggedPicsStore taggedPicsStore = TaggedPicsStore(tag: tagsStore);
+//      taggedPics.add(taggedPicsStore);
+//    }
+//    print('finished adding all tagged pics stores!');
+//  }
+
+  @computed
+  int get totalTaggedPics {
+    return taggedPics.map((element) => element.pics.length).toList().reduce((value, element) => value + element);
   }
 
   @observable
@@ -101,7 +106,7 @@ abstract class _GalleryStore with Store {
   ObservableList<TaggedPicsStore> taggedPics = ObservableList<TaggedPicsStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
   ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
-  ObservableSet<String> selectedPics = ObservableSet<String>();
+  ObservableSet<PicStore> selectedPics = ObservableSet<PicStore>();
 
   @computed
   Set<String> get allPicsKeys {
@@ -192,11 +197,11 @@ abstract class _GalleryStore with Store {
   bool selectedPicsAreTagged;
 
   @action
-  void setSelectedPics({String photoId, bool picIsTagged}) {
-    if (selectedPics.contains(photoId)) {
-      selectedPics.remove(photoId);
+  void setSelectedPics({PicStore picStore, bool picIsTagged}) {
+    if (selectedPics.contains(picStore)) {
+      selectedPics.remove(picStore);
     } else {
-      selectedPics.add(photoId);
+      selectedPics.add(picStore);
     }
     selectedPicsAreTagged = picIsTagged;
   }
@@ -317,6 +322,7 @@ abstract class _GalleryStore with Store {
 
       if (taggedPicsStore == null) {
         taggedPicsStore = TaggedPicsStore(tag: tag);
+        taggedPics.add(taggedPicsStore);
       }
 
       if (toInitialIndex) {
@@ -333,6 +339,10 @@ abstract class _GalleryStore with Store {
       bool deleted = taggedPicsStore.pics.remove(picStore);
       if (deleted) {
         print('pic has been deleted from tagged pics');
+        if (taggedPicsStore.pics.isEmpty) {
+          print('this tag is now empty removing it from third tab');
+          taggedPics.remove(taggedPicsStore);
+        }
         break;
       }
     }
@@ -476,17 +486,11 @@ abstract class _GalleryStore with Store {
   void setSharedPic(bool value) => sharedPic = value;
 
   @action
-  Future<void> sharePics({List<String> photoIds}) async {
+  Future<void> sharePics({List<PicStore> picsStores}) async {
     var imageList = List<String>();
 
-    for (var photoId in photoIds) {
-      AssetEntity data;
-
-      data = allPics.firstWhere((element) => element.photoId == photoId, orElse: () => null).entity;
-
-      if (data == null) {
-        continue;
-      }
+    for (PicStore pic in picsStores) {
+      AssetEntity data = pic.entity;
 
       if (Platform.isAndroid) {
         String path = await _writeByteToImageFile(await data.originBytes);
@@ -735,25 +739,20 @@ abstract class _GalleryStore with Store {
   void addTagsToSelectedPics() {
     var tagsBox = Hive.box('tags');
 
-    for (String photoId in selectedPics) {
-      PicStore picStore = selectedPicsAreTagged
-          ? allPics.firstWhere((element) => element.photoId == photoId) // Verificar isso aqui mudar depois para otimizar
-          : untaggedPics.firstWhere((element) => element.photoId == photoId);
-
+    for (PicStore picStore in selectedPics) {
       for (String tagKey in multiPicTagKeys) {
-        Tag getTag = tagsBox.get(tagKey);
-
-        if (getTag.photoId.contains(photoId)) {
+        if (picStore.tagsKeys.contains(tagKey)) {
           print('this tag is already in this picture');
           continue;
         }
 
-        getTag.photoId.add(photoId);
+        Tag getTag = tagsBox.get(tagKey);
+        getTag.photoId.add(picStore.photoId);
         tagsBox.put(tagKey, getTag);
 
         picStore.addTagToPic(
           tagKey: tagKey,
-          photoId: photoId,
+          photoId: picStore.photoId,
           tagName: getTag.name,
         );
 

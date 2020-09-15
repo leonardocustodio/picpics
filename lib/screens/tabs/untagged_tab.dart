@@ -53,10 +53,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
   }
 
   Widget _buildGridView(BuildContext context) {
-    scrollControllerFirstTab = ScrollController(initialScrollOffset: offsetFirstTab);
-    scrollControllerFirstTab.addListener(() {
-      movedGridPositionFirstTab();
-    });
+    print('&&&&& Building grid view');
 
     galleryStore.clearPicThumbnails();
     galleryStore.addPicsToThumbnails(galleryStore.untaggedPics);
@@ -119,7 +116,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       print('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
-                          photoId: picStore.photoId,
+                          picStore: picStore,
                           picIsTagged: false,
                         );
                         tabsStore.setMultiPicBar(true);
@@ -130,7 +127,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       onPressed: () {
                         if (tabsStore.multiPicBar) {
                           galleryStore.setSelectedPics(
-                            photoId: picStore.photoId,
+                            picStore: picStore,
                             picIsTagged: false,
                           );
                           print('Pics Selected Length: ${galleryStore.selectedPics.length}');
@@ -228,6 +225,15 @@ class _UntaggedTabState extends State<UntaggedTab> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    scrollControllerFirstTab = ScrollController(initialScrollOffset: offsetFirstTab);
+    scrollControllerFirstTab.addListener(() {
+      movedGridPositionFirstTab();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints.expand(),
@@ -305,9 +311,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar
-                            ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length)
-                            : S.of(context).photo_gallery_description,
+                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
