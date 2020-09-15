@@ -125,7 +125,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                           ),
                         );
                         if (tabsStore.multiPicBar) {
-                          if (galleryStore.selectedPics.contains(picStore.photoId)) {
+                          if (galleryStore.selectedPics.contains(picStore)) {
                             return Stack(
                               children: [
                                 image,

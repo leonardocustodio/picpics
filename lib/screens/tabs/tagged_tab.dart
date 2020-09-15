@@ -94,6 +94,7 @@ class _TaggedTabState extends State<TaggedTab> {
           taggedItems.add(null);
           isTitleWidget.addAll(List.filled(galleryStore.filteredPics.length, false));
           taggedItems.addAll(galleryStore.filteredPics);
+          galleryStore.addPicsToThumbnails(galleryStore.filteredPics);
         }
 
         if (galleryStore.searchingTagsKeys.length > 1) {
@@ -107,6 +108,7 @@ class _TaggedTabState extends State<TaggedTab> {
             taggedItems.add(taggedPicsStore);
             isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
             taggedItems.addAll(taggedPicsStore.pics);
+            galleryStore.addPicsToThumbnails(taggedPicsStore.pics);
           }
         }
       } else {
@@ -115,6 +117,7 @@ class _TaggedTabState extends State<TaggedTab> {
           taggedItems.add(taggedPicsStore);
           isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
           taggedItems.addAll(taggedPicsStore.pics);
+          galleryStore.addPicsToThumbnails(taggedPicsStore.pics);
         }
       }
 
@@ -255,7 +258,7 @@ class _TaggedTabState extends State<TaggedTab> {
                           ),
                         );
                         if (tabsStore.multiPicBar) {
-                          if (galleryStore.selectedPics.contains(picStore.photoId)) {
+                          if (galleryStore.selectedPics.contains(picStore)) {
                             return Stack(
                               children: [
                                 image,
