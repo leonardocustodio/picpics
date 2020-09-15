@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
@@ -17,7 +18,6 @@ import 'package:provider/provider.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/model/tag.dart';
 
 class TaggedTab extends StatefulWidget {
   static const id = 'tagged_tab';
@@ -35,6 +35,7 @@ class TaggedTab extends StatefulWidget {
 class _TaggedTabState extends State<TaggedTab> {
   GalleryStore galleryStore;
   TabsStore tabsStore;
+  ReactionDisposer disposer;
 
   ScrollController scrollControllerThirdTab;
   TextEditingController searchEditingController = TextEditingController();
@@ -42,6 +43,9 @@ class _TaggedTabState extends State<TaggedTab> {
 
   double offsetThirdTab = 0.0;
   bool hideTitleThirdTab = false;
+
+  var taggedItems = [];
+  List<bool> isTitleWidget = [];
 
   TextEditingController tagsEditingController = TextEditingController();
 
@@ -60,7 +64,7 @@ class _TaggedTabState extends State<TaggedTab> {
     offsetThirdTab = scrollControllerThirdTab.offset;
   }
 
-  Widget _buildTaggedGridView({BuildContext context, bool isFiltered}) {
+  Widget _buildTaggedGridView({BuildContext context, bool filtered}) {
     print('Rebuilding tagged gridview');
     print('&&&&&&&&&&&&&&&&& Build grid items!!!');
 
@@ -74,42 +78,48 @@ class _TaggedTabState extends State<TaggedTab> {
       }
     }
 
-    galleryStore.clearPicThumbnails();
+    if (isTitleWidget.isEmpty || galleryStore.shouldRefreshTaggedGallery == true) {
+      taggedItems = [];
+      isTitleWidget = [];
 
-    var taggedItems = [];
-    List<bool> isTitleWidget = [];
+      print('Refreshing tagged library!!!!!');
+      galleryStore.clearPicThumbnails();
 
-    if (isFiltered) {
-      if (galleryStore.filteredPics.isEmpty) {
-        isTitleWidget.addAll([true, true]);
-        taggedItems.addAll([null, null]);
-      } else {
-        isTitleWidget.add(true);
-        taggedItems.add(null);
-        isTitleWidget.addAll(List.filled(galleryStore.filteredPics.length, false));
-        taggedItems.addAll(galleryStore.filteredPics);
-      }
-
-      if (galleryStore.searchingTagsKeys.length > 1) {
-        List<TaggedPicsStore> taggedPicsStores = [];
-        for (String tagKey in galleryStore.searchingTagsKeys) {
-          taggedPicsStores.add(galleryStore.taggedPics.firstWhere((element) => element.tag.id == tagKey));
+      if (filtered) {
+        if (galleryStore.filteredPics.isEmpty) {
+          isTitleWidget.addAll([true, true]);
+          taggedItems.addAll([null, null]);
+        } else {
+          isTitleWidget.add(true);
+          taggedItems.add(null);
+          isTitleWidget.addAll(List.filled(galleryStore.filteredPics.length, false));
+          taggedItems.addAll(galleryStore.filteredPics);
         }
 
-        for (TaggedPicsStore taggedPicsStore in taggedPicsStores) {
+        if (galleryStore.searchingTagsKeys.length > 1) {
+          List<TaggedPicsStore> taggedPicsStores = [];
+          for (String tagKey in galleryStore.searchingTagsKeys) {
+            taggedPicsStores.add(galleryStore.taggedPics.firstWhere((element) => element.tag.id == tagKey));
+          }
+
+          for (TaggedPicsStore taggedPicsStore in taggedPicsStores) {
+            isTitleWidget.add(true);
+            taggedItems.add(taggedPicsStore);
+            isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
+            taggedItems.addAll(taggedPicsStore.pics);
+          }
+        }
+      } else {
+        for (TaggedPicsStore taggedPicsStore in galleryStore.taggedPics) {
           isTitleWidget.add(true);
           taggedItems.add(taggedPicsStore);
           isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
           taggedItems.addAll(taggedPicsStore.pics);
         }
       }
-    } else {
-      for (TaggedPicsStore taggedPicsStore in galleryStore.taggedPics) {
-        isTitleWidget.add(true);
-        taggedItems.add(taggedPicsStore);
-        isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
-        taggedItems.addAll(taggedPicsStore.pics);
-      }
+
+      print('@@@@@ Tagged Items Length: ${taggedItems.length}');
+      galleryStore.setShouldRefreshTaggedGallery(false);
     }
 
     return StaggeredGridView.countBuilder(
@@ -331,6 +341,20 @@ class _TaggedTabState extends State<TaggedTab> {
     super.didChangeDependencies();
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+
+    disposer = reaction((_) => galleryStore.shouldRefreshTaggedGallery, (refresh) {
+      if (refresh) {
+        setState(() {
+          print('##### Rebuild everything!');
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    disposer();
+    super.dispose();
   }
 
   @override
@@ -505,7 +529,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     }),
                     Expanded(
                       child: Observer(builder: (_) {
-                        return _buildTaggedGridView(context: context, isFiltered: galleryStore.searchingTagsKeys.isNotEmpty);
+                        return _buildTaggedGridView(context: context, filtered: galleryStore.searchingTagsKeys.isNotEmpty);
                       }),
                     ),
                   ],

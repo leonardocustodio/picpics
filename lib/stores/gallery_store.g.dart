@@ -217,6 +217,23 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$shouldRefreshTaggedGalleryAtom =
+      Atom(name: '_GalleryStore.shouldRefreshTaggedGallery');
+
+  @override
+  bool get shouldRefreshTaggedGallery {
+    _$shouldRefreshTaggedGalleryAtom.reportRead();
+    return super.shouldRefreshTaggedGallery;
+  }
+
+  @override
+  set shouldRefreshTaggedGallery(bool value) {
+    _$shouldRefreshTaggedGalleryAtom
+        .reportWrite(value, super.shouldRefreshTaggedGallery, () {
+      super.shouldRefreshTaggedGallery = value;
+    });
+  }
+
   final _$loadEntitiesAsyncAction = AsyncAction('_GalleryStore.loadEntities');
 
   @override
@@ -578,6 +595,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void setShouldRefreshTaggedGallery(bool value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setShouldRefreshTaggedGallery');
+    try {
+      return super.setShouldRefreshTaggedGallery(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 currentPic: ${currentPic},
@@ -589,6 +617,7 @@ showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
+shouldRefreshTaggedGallery: ${shouldRefreshTaggedGallery},
 totalTaggedPics: ${totalTaggedPics},
 allPicsKeys: ${allPicsKeys},
 filteredPicsKeys: ${filteredPicsKeys},
