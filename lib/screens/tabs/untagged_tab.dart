@@ -28,13 +28,12 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   ScrollController scrollControllerFirstTab;
 
-  double offsetFirstTab = 0.0;
   double topOffsetFirstTab = 64.0;
 
   TextEditingController tagsEditingController = TextEditingController();
 
-  void movedGridPositionFirstTab() {
-    var offset = scrollControllerFirstTab.offset;
+  void refreshGridPositionFirstTab() {
+    var offset = scrollControllerFirstTab.hasClients ? scrollControllerFirstTab.offset : scrollControllerFirstTab.initialScrollOffset;
 
     if (offset >= 86) {
       setState(() {
@@ -49,15 +48,14 @@ class _UntaggedTabState extends State<UntaggedTab> {
         topOffsetFirstTab = 64;
       });
     }
-    offsetFirstTab = scrollControllerFirstTab.offset;
+
+    if (scrollControllerFirstTab.hasClients) {
+      tabsStore.offsetFirstTab = scrollControllerFirstTab.offset;
+    }
   }
 
   Widget _buildGridView(BuildContext context) {
     print('&&&&& Building grid view');
-
-    galleryStore.clearPicThumbnails();
-    galleryStore.addPicsToThumbnails(galleryStore.untaggedPics);
-
     return StaggeredGridView.countBuilder(
       controller: scrollControllerFirstTab,
       physics: const CustomScrollPhysics(),
@@ -70,11 +68,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
         return _buildItem(context, index);
       },
       staggeredTileBuilder: (int index) {
-//        if (DatabaseManager.instance.picHasTag[index] == true) return StaggeredTile.count(0, 0);
         return StaggeredTile.count(1, 1);
       },
     );
-//  }
   }
 
   Widget get _failedItem => Center(
@@ -86,15 +82,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
       );
 
   Widget _buildItem(BuildContext context, int index) {
-//    if (DatabaseManager.instance.picHasTag[index] == true) {
-//      print('This pic has tag returning empty container');
-//      return Container();
-//    }
-
-    print('Item Count: ${galleryStore.untaggedPics.length}');
     PicStore picStore = galleryStore.untaggedPics[index];
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-    print('Build Item: $index');
 
     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, isOriginal: false);
 
@@ -220,17 +209,18 @@ class _UntaggedTabState extends State<UntaggedTab> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    galleryStore = Provider.of<GalleryStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
-  }
+    galleryStore = Provider.of<GalleryStore>(context);
 
-  @override
-  void initState() {
-    super.initState();
-    scrollControllerFirstTab = ScrollController(initialScrollOffset: offsetFirstTab);
+    scrollControllerFirstTab = ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
     scrollControllerFirstTab.addListener(() {
-      movedGridPositionFirstTab();
+      refreshGridPositionFirstTab();
     });
+    refreshGridPositionFirstTab();
+
+    print('change dependencies!');
+    galleryStore.clearPicThumbnails();
+    galleryStore.addPicsToThumbnails(galleryStore.untaggedPics);
   }
 
   @override

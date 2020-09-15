@@ -77,4 +77,6 @@ abstract class _TabsStore with Store {
 
   @action
   void setTutorialIndex(int value) => tutorialIndex = value;
+
+  double offsetFirstTab = 0.0;
 }
