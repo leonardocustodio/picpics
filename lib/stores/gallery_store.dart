@@ -331,6 +331,8 @@ abstract class _GalleryStore with Store {
         taggedPicsStore.pics.add(picStore);
       }
     }
+
+    setShouldRefreshTaggedGallery(true);
   }
 
   @action
@@ -346,6 +348,8 @@ abstract class _GalleryStore with Store {
         break;
       }
     }
+
+    setShouldRefreshTaggedGallery(true);
   }
 
   @action
@@ -358,7 +362,7 @@ abstract class _GalleryStore with Store {
     }
 
     PicStore picStore = allPics.firstWhere((element) => element.photoId == entityId);
-    taggedPics.remove(picStore);
+    removePicFromTaggedPics(picStore: picStore);
     untaggedPics.remove(picStore);
     filteredPics.remove(picStore);
     swipePics.remove(picStore);
@@ -428,10 +432,6 @@ abstract class _GalleryStore with Store {
     print('#@#@#@# Total photos: ${allPics.length}');
     setSwipeIndex(0);
     isLoaded = true;
-
-    // Change notifier
-//    registerObserve();
-//    AssetChangeNotifier.registerObserve();
   }
 
   @action
@@ -460,7 +460,7 @@ abstract class _GalleryStore with Store {
 
     if (deleted) {
       filteredPics.remove(picStore);
-      taggedPics.remove(picStore);
+      removePicFromTaggedPics(picStore: picStore);
       swipePics.remove(picStore);
       untaggedPics.remove(picStore);
       allPics.remove(picStore);
@@ -540,6 +540,8 @@ abstract class _GalleryStore with Store {
 
   @action
   void editTag({String oldTagKey, String newName}) {
+    // Verificar essa classe
+
     var tagsBox = Hive.box('tags');
     var picsBox = Hive.box('pics');
     var userBox = Hive.box('user');
@@ -581,6 +583,8 @@ abstract class _GalleryStore with Store {
 
   @action
   void deleteTag({String tagKey}) {
+    // Verificar essa classe
+
     var tagsBox = Hive.box('tags');
     var picsBox = Hive.box('pics');
     var userBox = Hive.box('user');
@@ -691,6 +695,7 @@ abstract class _GalleryStore with Store {
     print('Search Photos: $filteredPics');
     print('Searcing Tags Keys: $searchingTags');
 
+    setShouldRefreshTaggedGallery(true);
     Analytics.sendEvent(Event.searched_photos);
   }
 
@@ -852,6 +857,12 @@ abstract class _GalleryStore with Store {
       }
     }
   }
+
+  @observable
+  bool shouldRefreshTaggedGallery = false;
+
+  @action
+  void setShouldRefreshTaggedGallery(bool value) => shouldRefreshTaggedGallery = value;
 }
 
 enum PicSource {
