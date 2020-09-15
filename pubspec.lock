@@ -489,7 +489,7 @@ packages:
       name: geocoding
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.3+1"
   geocoding_platform_interface:
     dependency: transitive
     description:
@@ -696,7 +696,7 @@ packages:
       name: notification_permissions
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.7"
+    version: "0.4.8"
   outline_gradient_button:
     dependency: "direct main"
     description:

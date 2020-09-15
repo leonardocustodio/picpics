@@ -106,6 +106,7 @@ class _TaggedTabState extends State<TaggedTab> {
     List<TaggedPicsStore> taggedPicsStore;
 
     if (isFiltered) {
+      taggedPicsStore = [];
       for (String tagKey in galleryStore.searchingTagsKeys) {
         taggedPicsStore.add(galleryStore.taggedPics.firstWhere((element) => element.tag.id == tagKey));
       }
@@ -222,7 +223,7 @@ class _TaggedTabState extends State<TaggedTab> {
           ),
           CupertinoButton(
             onPressed: () async {
-              print('share pics');
+              print('share pics: ${tag.photoId}');
               tabsStore.setIsLoading(true);
 
               if (tag != null) {
