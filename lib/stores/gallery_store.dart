@@ -540,11 +540,8 @@ abstract class _GalleryStore with Store {
 
   @action
   void editTag({String oldTagKey, String newName}) {
-    // Verificar essa classe
-
     var tagsBox = Hive.box('tags');
     var picsBox = Hive.box('pics');
-    var userBox = Hive.box('user');
 
     String newTagKey = Helpers.encryptTag(newName);
     Tag oldTag = tagsBox.get(oldTagKey);
@@ -564,17 +561,7 @@ abstract class _GalleryStore with Store {
 
     // Altera a tag
     appStore.editTag(oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
-
-    // Altera o recent
-    User getUser = userBox.getAt(0);
-    if (getUser.recentTags.contains(oldTagKey)) {
-      print('updating tag name in recent tags');
-      int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
-      getUser.recentTags[indexOfRecentTag] = newTagKey;
-      userBox.putAt(0, getUser);
-      appStore.editRecentTags(oldTagKey, newTagKey);
-    }
-
+    appStore.editRecentTags(oldTagKey, newTagKey);
     tagsBox.delete(oldTagKey);
 
     print('finished updating all tags');
@@ -583,51 +570,26 @@ abstract class _GalleryStore with Store {
 
   @action
   void deleteTag({String tagKey}) {
-    // Verificar essa classe
-
     var tagsBox = Hive.box('tags');
-    var picsBox = Hive.box('pics');
-    var userBox = Hive.box('user');
 
     if (tagsBox.containsKey(tagKey)) {
       print('found tag going to delete it');
 
-      Tag getTag = tagsBox.get(tagKey);
-
-      for (String photoId in getTag.photoId) {
-        Pic pic = picsBox.get(photoId);
-        int indexOfTagInPic = pic.tags.indexOf(tagKey);
-        print('getting pic: $photoId');
-
-        if (indexOfTagInPic != null) {
-          pic.tags.removeAt(indexOfTagInPic);
-          picsBox.put(photoId, pic);
-          print('removed tag from pic');
-        }
-      }
-
       // Remove a tag das fotos já taggeadas
       TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      print('TagsStore Tag: ${tagsStore.name}');
       TaggedPicsStore taggedPicsStore = taggedPics.firstWhere((element) => element.tag == tagsStore);
       for (PicStore picTagged in taggedPicsStore.pics) {
-        picTagged.tags.remove(tagsStore);
+        print('Tagged Pic Store Pics: ${picTagged.photoId}');
+        picTagged.removeTagFromPic(tagKey: tagsStore.id);
         if (picTagged.tags.length == 0 && picTagged != currentPic) {
           print('this pic is not tagged anymore!');
-          untaggedPics.add(picTagged);
+          untaggedPics.insert(0, picTagged);
         }
       }
       taggedPics.remove(taggedPicsStore);
-
-      User getUser = userBox.getAt(0);
-      if (getUser.recentTags.contains(tagKey)) {
-        print('recent tags: ${getUser.recentTags}');
-        print('removing from recent tags');
-        getUser.recentTags.remove(tagKey);
-        userBox.putAt(0, getUser);
-        print('recent tags after removed: ${getUser.recentTags}');
-      }
-
-      appStore.tags.remove(tagsStore);
+      appStore.removeTagFromRecent(tagKey: tagKey);
+      appStore.removeTag(tagsStore: tagsStore);
       tagsBox.delete(tagKey);
       print('deleted from tags db');
       Analytics.sendEvent(Event.deleted_tag);
