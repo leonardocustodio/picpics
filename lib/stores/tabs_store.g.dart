@@ -99,6 +99,21 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
+  final _$topOffsetFirstTabAtom = Atom(name: '_TabsStore.topOffsetFirstTab');
+
+  @override
+  double get topOffsetFirstTab {
+    _$topOffsetFirstTabAtom.reportRead();
+    return super.topOffsetFirstTab;
+  }
+
+  @override
+  set topOffsetFirstTab(double value) {
+    _$topOffsetFirstTabAtom.reportWrite(value, super.topOffsetFirstTab, () {
+      super.topOffsetFirstTab = value;
+    });
+  }
+
   final _$_TabsStoreActionController = ActionController(name: '_TabsStore');
 
   @override
@@ -168,6 +183,17 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
+  void setTopOffsetFirstTab(double value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setTopOffsetFirstTab');
+    try {
+      return super.setTopOffsetFirstTab(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 currentTab: ${currentTab},
@@ -175,7 +201,8 @@ multiPicBar: ${multiPicBar},
 multiTagSheet: ${multiTagSheet},
 isLoading: ${isLoading},
 modalCard: ${modalCard},
-tutorialIndex: ${tutorialIndex}
+tutorialIndex: ${tutorialIndex},
+topOffsetFirstTab: ${topOffsetFirstTab}
     ''';
   }
 }

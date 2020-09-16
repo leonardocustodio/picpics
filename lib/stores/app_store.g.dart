@@ -271,6 +271,73 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void loadTags() {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.loadTags');
+    try {
+      return super.loadTags();
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addTag(TagsStore tagsStore) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.addTag');
+    try {
+      return super.addTag(tagsStore);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void editTag({String oldTagKey, String newTagKey, String newName}) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.editTag');
+    try {
+      return super.editTag(
+          oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeTag({TagsStore tagsStore}) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.removeTag');
+    try {
+      return super.removeTag(tagsStore: tagsStore);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addRecentTags(String tagKey) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.addRecentTags');
+    try {
+      return super.addRecentTags(tagKey);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void editRecentTags(String oldTagKey, String newTagKey) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.editRecentTags');
+    try {
+      return super.editRecentTags(oldTagKey, newTagKey);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setTutorialCompleted(bool value) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.setTutorialCompleted');
@@ -331,6 +398,28 @@ mixin _$AppStore on _AppStore, Store {
         name: '_AppStore.createDefaultTags');
     try {
       return super.createDefaultTags(context);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addTagToRecent({String tagKey}) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.addTagToRecent');
+    try {
+      return super.addTagToRecent(tagKey: tagKey);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeTagFromRecent({String tagKey}) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.removeTagFromRecent');
+    try {
+      return super.removeTagFromRecent(tagKey: tagKey);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }

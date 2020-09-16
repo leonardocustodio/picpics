@@ -176,7 +176,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				ACB72D0939DAF611BC026FE2 /* [CP] Embed Pods Frameworks */,
 				DCFD9DF9571A60A1034E7FC4 /* [CP] Copy Pods Resources */,
-				D5764B83244819C3005DF93A /* Crashlytics */,
+				D5764B83244819C3005DF93A /* FirebaseCrashlytics */,
 			);
 			buildRules = (
 			);
@@ -324,6 +324,7 @@
 				"${BUILT_PRODUCTS_DIR}/flutter_keyboard_visibility/flutter_keyboard_visibility.framework",
 				"${BUILT_PRODUCTS_DIR}/flutter_local_notifications/flutter_local_notifications.framework",
 				"${BUILT_PRODUCTS_DIR}/flutter_vibrate/flutter_vibrate.framework",
+				"${BUILT_PRODUCTS_DIR}/geocoding/geocoding.framework",
 				"${BUILT_PRODUCTS_DIR}/geolocator/geolocator.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 				"${BUILT_PRODUCTS_DIR}/notification_permissions/notification_permissions.framework",
@@ -350,6 +351,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_keyboard_visibility.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_local_notifications.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/flutter_vibrate.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/geocoding.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/geolocator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/notification_permissions.framework",
@@ -367,7 +369,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		D5764B83244819C3005DF93A /* Crashlytics */ = {
+		D5764B83244819C3005DF93A /* FirebaseCrashlytics */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -377,14 +379,14 @@
 			inputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(INFOPLIST_PATH)",
 			);
-			name = Crashlytics;
+			name = FirebaseCrashlytics;
 			outputFileListPaths = (
 			);
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "${PODS_ROOT}/Fabric/run\n";
+			shellScript = "${PODS_ROOT}/FirebaseCrashlytics/run\n";
 		};
 		DCFD9DF9571A60A1034E7FC4 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;

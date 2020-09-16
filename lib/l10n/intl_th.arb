@@ -113,6 +113,41 @@
   "cancel_anytime": "ยกเลิกได้เสมอ",
 
   "language": "ภาษา",
-  "all_search_tags": "แท็กค้นหาทั้งหมด",
-  "search_all_tags_not_found": "ไม่พบรูปภาพพร้อมแท็กทั้งหมดในนั้น"
+
+  "all_search_tags": "แท็กที่ค้นหาทั้งหมด",
+  "search_all_tags_not_found": "ไม่พบรูปภาพใดๆที่ใช้แท็กเหล่านี้",
+  "picpics_photo_manager": "picPics - ตัวจัดการภาพ",
+  "add_multiple_tags": "เพิ่มแท็กหลายรายการ",
+  "ny_tag": "NY",
+  "tsqr_tag": "ไทม์สแควร์",
+  "vacation_tag": "วันพักร้อน",
+  "all_at_once": "จัดหลายรูปภาพในครั้งเดียว",
+  "find_easily": "ค้นหารูปภาพของตัวเองได้อย่างง่ายดาย",
+  "email": "อีเมล",
+  "secret_photos": "รูปภาพลับ",
+  "your_secret_key": "รหัสลับของคุณ",
+  "new_secret_key": "รหัสลับใหม่",
+  "confirm_secret_key": "ยืนยันรหัสลับ",
+  "confirm_email": "ยืนยันอีเมลลงทะเบียนเพื่อรับรหัสเข้าใช้งาน",
+  "access_code": "รหัสเข้าใช้งาน",
+  "access_code_sent": "รหัสเข้าใช้งานส่งไปที่ user@email.com",
+  "secret_key_created": "สร้างรหัสลับเรียบร้อยแล้ว!",
+  "disable_secret": "คุณต้องการเปิดเผยรูปภาพนี้ใช่ไหม?",
+  "yes": "ใช่",
+  "no": "ไม่",
+  "keep_safe": "ขณะนี้รูปภาพของคุณถูกเก็บอย่างปลอดภัยใน picPics คุณต้องการลบรูปภาพออกจาก Camera roll ไหม?",
+  "keep_asking": "ถามทุกครั้ง",
+  "dont_ask_again": "ไม่ต้องถามอีกเลย",
+  "view_hidden_photos": "เพื่อดูรูปภาพที่ซ่อนอยู่, release the lock in the application settings. You can unlock them with your PIN.",
+  "require_secret_key": "ต้องมีรหัสลับ",
+  "always": "ตลอดเวลา",
+  "x_minutes": "20 นาที",
+  "forgot_secret_key": "ลืมรหัสลับ?",
+  "lock_your_photos": "ล็อกรูปภาพของคุณ",
+  "lock_with_pin": "ล็อกรูปภาพส่วนตัวด้วยการใช้ PIN",
+  "protect_with_encryption": "ใช้การเข้ารหัสที่เข้าถึงได้ด้วย PIN เพื่อปกป้องรูปภาพส่วนตัว",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
+
 }

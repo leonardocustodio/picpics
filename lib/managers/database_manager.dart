@@ -2,21 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/analytics_manager.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 import 'package:hive/hive.dart';
-import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
-import 'package:picPics/push_notifications_manager.dart';
+import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:encrypt/encrypt.dart' as E;
-import 'package:diacritic/diacritic.dart';
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -27,42 +26,22 @@ class DatabaseManager extends ChangeNotifier {
     return _instance ??= DatabaseManager._();
   }
 
-  List<bool> picHasTag;
-  List<int> sliderIndex;
-
-  bool noTaggedPhoto = false;
   List<String> slideThumbPhotoIds = [];
-
   List<double> lastLocationRequest = [0.0, 0.0];
 
   String currentPhotoCity;
   String currentPhotoState;
 
-//  List<String> suggestionTags = [];
-
   double scale = 1.0;
 
-  String addingTagId = '';
-  int addingTagIndex = 0;
   String selectedTagKey;
-
   User userSettings;
 
   double adOffset = 48.0;
 
-  // For multipic work
-//  bool multiPicBar = false;
-//  Set<String> picsSelected = Set();
-
   bool adsIsLoaded = false;
   bool showShowAdAfterReload = false;
 
-//  void setMultiPicTagKeys(List<String> pics) {
-//    multiPicTagKeys = pics;
-//    notifyListeners();
-//  }
-
-//  Pic selectedPic;
   void requestNotification() {
     var userBox = Hive.box('user');
     print('requesting notification...');
@@ -107,64 +86,6 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void checkHasTaggedPhotos() {
-    var picsBox = Hive.box('pics');
-
-    noTaggedPhoto = true;
-    for (Pic pic in picsBox.values) {
-      if (pic.tags.length > 0) {
-        noTaggedPhoto = false;
-        break;
-      }
-    }
-  }
-
-  void reorderSliderIndex(int removeIndex) {
-    int indexOfValue = sliderIndex.indexOf(removeIndex);
-
-    List<int> newSliderIndex = [];
-    for (int x = 0; x < sliderIndex.length; x++) {
-      if (x < indexOfValue) {
-        newSliderIndex.add(sliderIndex[x]);
-      } else if (x == indexOfValue) {
-        print('Skipping value ${sliderIndex[x]}');
-      } else {
-        newSliderIndex.add(sliderIndex[x - 1]);
-      }
-    }
-
-    sliderIndex = newSliderIndex;
-  }
-
-  void checkPicHasTags(String photoId) {
-//    print('Checking photoId $photoId has tags...');
-//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-////    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-//
-//    Pic getPic = getPicInfo(photoId);
-//    int indexOfOrderedList = pathProvider.orderedList.indexWhere((element) => element.id == photoId);
-//
-//    if (indexOfOrderedList == null) {
-//      print('### ERROR DID NOT FIND INDEX IN ORDERED LIST');
-//      return;
-//    }
-//
-//    if (getPic.tags.length > 0) {
-//      print('pic has tags!!!');
-//      picHasTag[indexOfOrderedList] = true;
-//    } else {
-//      print('pic has no tags!!!');
-//      picHasTag[indexOfOrderedList] = false;
-//    }
-  }
-
-  void resetSlider() {
-//    swiperIndex = 0;
-    sliderIndex = null;
-    picHasTag = null;
-    notifyListeners();
-  }
-
   Future<void> initPlatformState(String userId) async {
     if (kDebugMode) {
       Purchases.setDebugLogsEnabled(true);
@@ -175,37 +96,16 @@ class DatabaseManager extends ChangeNotifier {
     );
   }
 
-  void sliderHasPics() {
-//    GalleryStore galleryStore = Provider.of<GalleryStore>(context, listen: false);
-//
-//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//    int itemCount = pathProvider.isLoaded ? pathProvider.orderedList.length : 0;
-//
-//    if (itemCount > 0) {
-//      sliderIndex = [];
-//      picHasTag = [];
-//      for (int x = 0; x < pathProvider.orderedList.length; x++) {
-//        var item = pathProvider.orderedList[x];
-//        Pic pic = DatabaseManager.instance.getPicInfo(item.id);
-//        if (pic != null) {
-//          if (pic.tags.length > 0) {
-//            picHasTag.add(true);
-//            continue;
-//          }
-//        }
-//        picHasTag.add(false);
-//        sliderIndex.add(x);
-//      }
-//    }
-//
-//    print('## Total Item Count: $itemCount');
-//    print('## Slider Count: ${sliderIndex.length}');
-//    notifyListeners();
-  }
-
   Future<bool> checkPremiumStatus() async {
     try {
       PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
+      print('### ${purchaserInfo.entitlements}');
+      print('### ${purchaserInfo.entitlements.all}');
+      if (purchaserInfo.entitlements.all.isEmpty) {
+        print('Could not fetch information from premium status!!!');
+        return null;
+      }
+
       if (purchaserInfo.entitlements.all["Premium"].isActive) {
         // Grant user "pro" access
         print('you are still premium');
@@ -255,47 +155,14 @@ class DatabaseManager extends ChangeNotifier {
   void gridScale(double multiplier) {
     scale = scale;
     print('new scale value: $scale');
-//    notifyListeners();
-  }
-
-  String stripTag(String tag) {
-    return removeDiacritics(tag.toLowerCase());
-  }
-
-  String encryptTag(String tag) {
-    final plainText = stripTag(tag);
-
-    final key = E.Key.fromUtf8('picpics key for encrypting tags!');
-    final iv = E.IV.fromLength(16);
-    final encrypter = E.Encrypter(E.AES(key));
-    final encrypted = encrypter.encrypt(plainText, iv: iv);
-
-    print('Stripped tag: $tag');
-//    print(encrypted.bytes);
-    print('Encrypted tag: ${encrypted.base16}');
-//    print(encrypted.base64);
-
-    return encrypted.base16;
-  }
-
-  String decryptTag(String encrypted) {
-    final key = E.Key.fromUtf8('picpics key for encrypting tags!');
-    final iv = E.IV.fromLength(16);
-    final encrypter = E.Encrypter(E.AES(key));
-    var encrypt = E.Encrypted.fromBase16(encrypted);
-    final decrypted = encrypter.decrypt(encrypt, iv: iv);
-
-    print('Decrypted tag: $decrypted');
-    return decrypted;
   }
 
   Future findLocation(double latitude, double longitude) async {
     print('Finding location...');
-    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(latitude, longitude, localeIdentifier: 'pt_BR');
-    print('Placemark: ${placemark.first.locality}');
-    currentPhotoCity = placemark.first.locality;
-    currentPhotoState = placemark.first.administrativeArea;
+    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude, localeIdentifier: 'pt_BR');
+    print('Placemark: ${placemarks.first.locality}');
+    currentPhotoCity = placemarks.first.locality;
+    currentPhotoState = placemarks.first.administrativeArea;
     lastLocationRequest = [latitude, longitude];
-//    notifyListeners();
   }
 }

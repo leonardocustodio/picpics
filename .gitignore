@@ -77,3 +77,4 @@ Runner.ipa
 ios/fastlane/report.xml
 android/fastlane/report.xml
 firebase-tools
+fastlane-service.json

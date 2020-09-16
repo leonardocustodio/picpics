@@ -112,6 +112,41 @@
   "cancel_anytime": "kann jederzeit gekündigt werden.",
 
   "language": "Sprache",
-  "all_search_tags": "Alle Such-Tags",
-  "search_all_tags_not_found": "Es wurden keine Bilder mit allen Tags gefunden."
+
+  "all_search_tags": "Alle Suche-Tags",
+  "search_all_tags_not_found": "Es wurden keine Bilder mit allen Tags gefunden.",
+
+  "picpics_photo_manager": "picPics – Fotomanager",
+  "add_multiple_tags": "Mehrere Tags hinzufügen",
+  "ny_tag": "NY",
+  "tsqr_tag": "Times Square",
+  "vacation_tag": "Urlaub",
+  "all_at_once": "Organisieren Sie mehrere Fotos gleichzeitig.",
+  "find_easily": "Finden Sie leicht Ihre Fotos.",
+  "email": "E-Mail-Adresse",
+  "secret_photos": "Geheime Fotos",
+  "your_secret_key": "Ihr Geheimschlüssel",
+  "new_secret_key": "Neuer Geheimschlüssel",
+  "confirm_secret_key": "Bestätigen Sie den Geheimschlüssel.",
+  "confirm_email": "Bestätigen Sie Ihre Registrierungs-E-Mail und erhalten Sie Ihren Zugangscode.",
+  "access_code": "Zugangscode",
+  "access_code_sent": "Ein Zugangsschlüssel wurde an user@email.com gesendet.",
+  "secret_key_created": "Der Geheimschlüssel wurde erfolgreich erstellt!",
+  "disable_secret": "Möchten Sie dieses Foto anzeigen?",
+  "yes": "Ja",
+  "no": "Nein",
+  "keep_safe": "Ihr Foto in picPics ist jetzt sicher. Möchten Sie es von Ihrer Kamerarolle löschen?",
+  "keep_asking": "Erneut fragen",
+  "dont_ask_again": "Nicht erneut fragen",
+  "view_hidden_photos": "So zeigen Sie Ihre versteckten Fotos an., release the lock in the application settings. You can unlock them with your PIN.",
+  "require_secret_key": "Geheimschlüssel anfordern",
+  "always": "Immer",
+  "x_minutes": "20 Minuten",
+  "forgot_secret_key": "Geheimschlüssel vergessen?",
+  "lock_your_photos": "Sperren Sie Ihre Fotos",
+  "lock_with_pin": "Sperren Sie Ihre privaten Fotos mit einem PIN-Passcode.",
+  "protect_with_encryption": "Schützen Sie Ihre persönlichen Fotos mit einer Verschlüsselung, auf die nur mit einem PIN-Passwort zugegriffen werden kann.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
 }

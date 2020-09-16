@@ -1,25 +1,28 @@
 import 'dart:async';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:picPics/add_location.dart';
-import 'package:picPics/analytics_manager.dart';
-import 'package:picPics/login_screen.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/asset_change_notifier.dart';
+import 'package:picPics/screens/add_location.dart';
+import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
-import 'package:picPics/photo_screen.dart';
+import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
-import 'package:picPics/tabs_screen.dart';
-import 'package:picPics/premium_screen.dart';
-import 'package:picPics/settings_screen.dart';
+import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/screens/premium_screen.dart';
+import 'package:picPics/screens/settings_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/database_manager.dart';
+import 'package:picPics/managers/database_manager.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:hive/hive.dart';
-import 'package:picPics/admob_manager.dart';
+import 'package:picPics/managers/admob_manager.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -39,8 +42,10 @@ Future<String> checkForAppStoreInitiatedProducts() async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Crashlytics.instance.enableInDevMode = true;
-  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
+  await Firebase.initializeApp();
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
   Ads.initialize();
   Ads.loadRewarded();
@@ -63,7 +68,7 @@ void main() async {
     initiatedWithProduct = await checkForAppStoreInitiatedProducts();
   }
 
-  runZonedGuarded(() {
+  runZonedGuarded<Future<void>>(() async {
     runApp(
       PicPicsApp(
         appVersion: appVersion,
@@ -71,9 +76,7 @@ void main() async {
         initiatedWithProduct: initiatedWithProduct,
       ),
     );
-  }, (Object error, StackTrace stack) {
-    Crashlytics.instance.recordError(error, stack);
-  });
+  }, FirebaseCrashlytics.instance.recordError);
 }
 
 class PicPicsApp extends StatefulWidget {
@@ -91,30 +94,51 @@ class PicPicsApp extends StatefulWidget {
   _PicPicsAppState createState() => _PicPicsAppState();
 }
 
-class _PicPicsAppState extends State<PicPicsApp> {
+class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
+  AppStore appStore;
+  GalleryStore galleryStore;
+
   @override
-  Widget build(BuildContext context) {
-    AppStore appStore = AppStore(
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
+    appStore = AppStore(
       appVersion: widget.appVersion,
       deviceLocale: widget.deviceLocale,
       initiatedWithProduct: widget.initiatedWithProduct,
     );
+    galleryStore = GalleryStore(
+      appStore: appStore,
+    );
+  }
 
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      print('&&&&&&&&& App got back from background');
+      galleryStore.checkIsLibraryUpdated();
+//      appStore.checkNotificationPermission();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<AppStore>.value(
           value: appStore,
         ),
         Provider<GalleryStore>.value(
-          value: GalleryStore(
-            appStore: appStore,
-          ),
+          value: galleryStore,
         ),
         Provider<TabsStore>.value(
           value: TabsStore(
             appStore: appStore,
+            galleryStore: galleryStore,
           ),
         ),
         ChangeNotifierProvider<DatabaseManager>(

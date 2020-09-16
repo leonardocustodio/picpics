@@ -113,6 +113,40 @@
   "cancel_anytime": "随时取消",
 
   "language": "语言",
-  "all_search_tags": "所有搜寻标签",
-  "search_all_tags_not_found": "未找到带有所有标签的图片。"
+
+  "all_search_tags": "所有搜索标签",
+  "search_all_tags_not_found": "未找到带有所有标签的图片",
+  "picpics_photo_manager": "picPics - 照片管理器",
+  "add_multiple_tags": "添加多个标签",
+  "ny_tag": "纽约",
+  "tsqr_tag": "时报广场",
+  "vacation_tag": "假期",
+  "all_at_once": "一次整理多张照片",
+  "find_easily": "轻松找到您的照片",
+  "email": "电子邮箱",
+  "secret_photos": "秘密照片",
+  "your_secret_key": "您的密钥",
+  "new_secret_key": "新密钥",
+  "confirm_secret_key": "确认密钥",
+  "confirm_email": "确认您的注册电子邮箱以接收您的访问代码",
+  "access_code": "访问代码",
+  "access_code_sent": "访问密钥已发送至user@email.com",
+  "secret_key_created": "密钥成功创建！",
+  "disable_secret": "您要取消隐藏这张照片吗？",
+  "yes": "是",
+  "no": "否",
+  "keep_safe": "您的照片现在在picPics上是安全的。您要从相机胶卷中删除它吗？",
+  "keep_asking": "继续询问",
+  "dont_ask_again": "不再询问",
+  "view_hidden_photos": "查看隐藏的照片, release the lock in the application settings. You can unlock them with your PIN.",
+  "require_secret_key": "需要密钥",
+  "always": "总是",
+  "x_minutes": "20分钟",
+  "forgot_secret_key": "忘记密钥？",
+  "lock_your_photos": "锁定您的照片",
+  "lock_with_pin": "使用PIN密码锁定您的私人照片。",
+  "protect_with_encryption": "通过只能使用PIN密码进行访问的加密保护您的个人照片。",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
 }

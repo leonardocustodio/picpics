@@ -1,21 +1,25 @@
+import 'package:extended_image/extended_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:picPics/admob_manager.dart';
-import 'package:picPics/analytics_manager.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:picPics/asset_entity_image_provider.dart';
+import 'package:picPics/fade_image_builder.dart';
+import 'package:picPics/managers/admob_manager.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/add_location.dart';
-import 'package:picPics/photo_screen.dart';
-import 'package:picPics/image_item.dart';
-import 'package:picPics/database_manager.dart';
-import 'package:picPics/premium_screen.dart';
+import 'package:picPics/screens/add_location.dart';
+import 'package:picPics/screens/photo_screen.dart';
+import 'package:picPics/managers/database_manager.dart';
+import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
@@ -27,10 +31,14 @@ import 'package:provider/provider.dart';
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
   final Function showEditTagModal;
+  final PicSource picsInThumbnails;
+  final int picsInThumbnailIndex;
 
   PhotoCard({
     this.picStore,
     this.showEditTagModal,
+    this.picsInThumbnails,
+    this.picsInThumbnailIndex,
   });
 
   @override
@@ -41,6 +49,9 @@ class _PhotoCardState extends State<PhotoCard> {
   AppStore appStore;
   GalleryStore galleryStore;
   PicStore get picStore => widget.picStore;
+  List<int> photoSize;
+
+  BoxFit boxFit = BoxFit.cover;
 
   TextEditingController tagsEditingController = TextEditingController();
   FocusNode tagsFocusNode;
@@ -78,7 +89,7 @@ class _PhotoCardState extends State<PhotoCard> {
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
-    List<Placemark> placemark = await Geolocator().placemarkFromCoordinates(picStore.entity.latitude, picStore.entity.longitude);
+    List<Placemark> placemark = await placemarkFromCoordinates(picStore.entity.latitude, picStore.entity.longitude);
 
     print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -95,6 +106,8 @@ class _PhotoCardState extends State<PhotoCard> {
       );
       return [placemark[0].locality, '  ${placemark[0].country}'];
     }
+
+    return [S.of(context).photo_location, '  ${S.of(context).country}'];
   }
 
   void focusTagsEditingController() {}
@@ -121,10 +134,14 @@ class _PhotoCardState extends State<PhotoCard> {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+
+    int height = MediaQuery.of(context).size.height * 2 ~/ 3;
+    photoSize = <int>[height, height];
   }
 
   @override
   Widget build(BuildContext context) {
+    AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
@@ -161,16 +178,8 @@ class _PhotoCardState extends State<PhotoCard> {
                     image: Image.asset('lib/images/expandnobackground.png'),
                     color: kSecondaryColor,
                     onTap: () {
-                      galleryStore.setCurrentPic(picStore);
-                      int initialIndex = DatabaseManager.instance.slideThumbPhotoIds.indexOf(picStore.entity.id);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PhotoScreen(
-                            initialIndex: initialIndex,
-                          ),
-                        ),
-                      );
+                      galleryStore.setInitialSelectedThumbnail(picStore);
+                      Navigator.pushNamed(context, PhotoScreen.id);
                     }),
                 CircularMenuItem(
                     image: Image.asset('lib/images/sharenobackground.png'),
@@ -191,10 +200,49 @@ class _PhotoCardState extends State<PhotoCard> {
                   topLeft: Radius.circular(12.0),
                   topRight: Radius.circular(12.0),
                 ),
-                child: ImageItem(
-                  entity: picStore.entity,
-                  size: 600,
-                  backgroundColor: Colors.grey[400],
+                child: RepaintBoundary(
+                  child: ExtendedImage(
+                    image: imageProvider,
+                    fit: boxFit,
+                    loadStateChanged: (ExtendedImageState state) {
+                      Widget loader;
+                      switch (state.extendedImageLoadState) {
+                        case LoadState.loading:
+                          loader = const ColoredBox(color: kGreyPlaceholder);
+                          break;
+                        case LoadState.completed:
+                          loader = FadeImageBuilder(
+                            child: () {
+                              return GestureDetector(
+                                onDoubleTap: () {
+                                  if (boxFit == BoxFit.cover) {
+                                    setState(() {
+                                      boxFit = BoxFit.contain;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      boxFit = BoxFit.cover;
+                                    });
+                                  }
+                                },
+                                child: RepaintBoundary(
+                                  child: Container(
+                                    color: Colors.black,
+                                    constraints: BoxConstraints.expand(),
+                                    child: state.completedWidget,
+                                  ),
+                                ),
+                              );
+                            }(),
+                          );
+                          break;
+                        case LoadState.failed:
+                          loader = Container();
+                          break;
+                      }
+                      return loader;
+                    },
+                  ),
                 ),
               ),
             ),
@@ -210,7 +258,6 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () async {
-                        galleryStore.setCurrentPic(picStore);
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: Observer(builder: (_) {
@@ -261,7 +308,7 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Observer(builder: (_) {
                   return TagsList(
-                    tagsKeys: picStore.tagsKeys,
+                    tags: picStore.tags.toList(),
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
@@ -309,7 +356,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   child: Observer(builder: (_) {
                     return TagsList(
                       title: S.of(context).suggestions,
-                      tagsKeys: picStore.tagsSuggestions,
+                      tags: picStore.tagsSuggestions,
                       tagStyle: TagStyle.GrayOutlined,
                       showEditTagModal: widget.showEditTagModal,
                       onTap: (tagName) async {

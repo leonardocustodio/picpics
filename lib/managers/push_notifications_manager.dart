@@ -1,7 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
-import 'package:picPics/database_manager.dart';
+import 'package:picPics/managers/database_manager.dart';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
@@ -42,7 +42,7 @@ class PushNotificationsManager {
       var initializationSettings = InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
       print('scheduling notification');
-      scheduleNotification();
+//      scheduleNotification();
     }
   }
 

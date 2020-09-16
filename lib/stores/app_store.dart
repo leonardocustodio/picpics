@@ -2,18 +2,22 @@ import 'dart:io';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/analytics_manager.dart';
-import 'package:picPics/database_manager.dart';
+import 'package:picPics/constants.dart';
+import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/login_screen.dart';
+import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
-import 'package:picPics/push_notifications_manager.dart';
-import 'package:picPics/tabs_screen.dart';
+import 'package:picPics/managers/push_notifications_manager.dart';
+import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:uuid/uuid.dart';
 
@@ -43,8 +47,8 @@ abstract class _AppStore with Store {
         notifications: false,
         dailyChallenges: false,
         goal: 20,
-        hourOfDay: 21,
-        minutesOfDay: 30,
+        hourOfDay: 20,
+        minutesOfDay: 00,
         isPremium: false,
         recentTags: [],
         tutorialCompleted: false,
@@ -80,6 +84,12 @@ abstract class _AppStore with Store {
     canTagToday = user.canTagToday;
     loggedIn = user.loggedIn ?? false;
     tryBuyId = initiatedWithProduct;
+
+    loadTags();
+
+    for (String tagKey in user.recentTags) {
+      addRecentTags(tagKey);
+    }
 
     if (loggedIn) {
       initialRoute = TabsScreen.id;
@@ -225,12 +235,66 @@ abstract class _AppStore with Store {
   @action
   Future<void> checkPremiumStatus() async {
     bool premium = await DatabaseManager.instance.checkPremiumStatus();
-    if (!premium) {
+    if (premium == false) {
       setIsPremium(false);
     }
   }
 
-//  List<String> recentTags;
+  ObserverList<TagsStore> tags = ObserverList<TagsStore>();
+
+  @action
+  void loadTags() {
+    var tagsBox = Hive.box('tags');
+
+    for (Tag tag in tagsBox.values) {
+      TagsStore tagStore = TagsStore(id: tag.key, name: tag.name);
+      tags.add(tagStore);
+    }
+
+    print('******************* loaded tags **********');
+  }
+
+  @action
+  void addTag(TagsStore tagsStore) {
+    if (tags.contains(tagsStore)) {
+      return;
+    }
+    tags.add(tagsStore);
+  }
+
+  @action
+  void editTag({String oldTagKey, String newTagKey, String newName}) {
+    TagsStore tagsStore = tags.firstWhere((element) => element.id == oldTagKey);
+    tagsStore.setTagInfo(tagId: newTagKey, tagName: newName);
+  }
+
+  @action
+  void removeTag({TagsStore tagsStore}) {
+    tags.remove(tagsStore);
+  }
+
+  ObservableList<String> recentTags = ObservableList<String>();
+
+  @action
+  void addRecentTags(String tagKey) {
+    recentTags.add(tagKey);
+  }
+
+  @action
+  void editRecentTags(String oldTagKey, String newTagKey) {
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+
+    if (recentTags.contains(oldTagKey)) {
+      print('updating tag name in recent tags');
+      int indexOfTag = recentTags.indexOf(oldTagKey);
+      recentTags[indexOfTag] = newTagKey;
+
+      int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
+      getUser.recentTags[indexOfRecentTag] = newTagKey;
+      userBox.putAt(0, getUser);
+    }
+  }
 
   @observable
   bool tutorialCompleted;
@@ -266,11 +330,15 @@ abstract class _AppStore with Store {
 
   @action
   void setCanTagToday(bool value) {
-    canTagToday = value;
+    if (isPremium) {
+      canTagToday = true;
+    } else {
+      canTagToday = value;
+    }
 
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
-    currentUser.canTagToday = value;
+    currentUser.canTagToday = canTagToday;
     currentUser.save();
   }
 
@@ -389,17 +457,60 @@ abstract class _AppStore with Store {
     Tag tag10 = Tag(S.of(context).screenshots_tag, []);
 
     Map<String, Tag> entries = {
-      DatabaseManager.instance.encryptTag(S.of(context).family_tag): tag1,
-      DatabaseManager.instance.encryptTag(S.of(context).travel_tag): tag2,
-      DatabaseManager.instance.encryptTag(S.of(context).pets_tag): tag3,
-      DatabaseManager.instance.encryptTag(S.of(context).work_tag): tag4,
-      DatabaseManager.instance.encryptTag(S.of(context).selfies_tag): tag5,
-      DatabaseManager.instance.encryptTag(S.of(context).parties_tag): tag6,
-      DatabaseManager.instance.encryptTag(S.of(context).sports_tag): tag7,
-      DatabaseManager.instance.encryptTag(S.of(context).home_tag): tag8,
-      DatabaseManager.instance.encryptTag(S.of(context).foods_tag): tag9,
-      DatabaseManager.instance.encryptTag(S.of(context).screenshots_tag): tag10,
+      Helpers.encryptTag(S.of(context).family_tag): tag1,
+      Helpers.encryptTag(S.of(context).travel_tag): tag2,
+      Helpers.encryptTag(S.of(context).pets_tag): tag3,
+      Helpers.encryptTag(S.of(context).work_tag): tag4,
+      Helpers.encryptTag(S.of(context).selfies_tag): tag5,
+      Helpers.encryptTag(S.of(context).parties_tag): tag6,
+      Helpers.encryptTag(S.of(context).sports_tag): tag7,
+      Helpers.encryptTag(S.of(context).home_tag): tag8,
+      Helpers.encryptTag(S.of(context).foods_tag): tag9,
+      Helpers.encryptTag(S.of(context).screenshots_tag): tag10,
     };
     tagsBox.putAll(entries);
+    loadTags();
+  }
+
+  @action
+  void addTagToRecent({String tagKey}) {
+    print('adding tag to recent: $tagKey');
+
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+
+    if (recentTags.contains(tagKey)) {
+      recentTags.remove(tagKey);
+      recentTags.insert(0, tagKey);
+      getUser.recentTags.remove(tagKey);
+      getUser.recentTags.insert(0, tagKey);
+      userBox.putAt(0, getUser);
+      print('final tags in recent: ${getUser.recentTags}');
+      return;
+    }
+
+    if (recentTags.length >= kMaxNumOfRecentTags) {
+      print('removing last');
+      recentTags.removeLast();
+      getUser.recentTags.removeLast();
+    }
+
+    recentTags.insert(0, tagKey);
+    getUser.recentTags.insert(0, tagKey);
+    userBox.putAt(0, getUser);
+    print('final tags in recent: ${getUser.recentTags}');
+  }
+
+  @action
+  void removeTagFromRecent({String tagKey}) {
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+
+    if (recentTags.contains(tagKey)) {
+      recentTags.remove(tagKey);
+      getUser.recentTags.remove(tagKey);
+      userBox.putAt(0, getUser);
+      print('recent tags after removed: ${getUser.recentTags}');
+    }
   }
 }

@@ -113,6 +113,40 @@
   "cancel_anytime": "Avbryt när som helst",
 
   "language": "Språk",
+
   "all_search_tags": "Alla söktaggar",
-  "search_all_tags_not_found": "Inga bilder hittades med alla taggar på den."
+  "search_all_tags_not_found": "Inga bilder hittades med alla taggar på",
+  "picpics_photo_manager": "picPics - Photo Manager",
+  "add_multiple_tags": "Adicione múltiplas taggar",
+  "ny_tag": "NY",
+  "tsqr_tag": "Times Square",
+  "vacation_tag": "Semester",
+  "all_at_once": "Organisera flera bilder samtidigt",
+  "find_easily": "Hitta enkelt dina foton",
+  "email": "E-post",
+  "secret_photos": "Hemliga foton",
+  "your_secret_key": "Din hemliga nyckel",
+  "new_secret_key": "Ny hemlig nyckel",
+  "confirm_secret_key": "Bekräfta hemlig nyckel",
+  "confirm_email": "Bekräfta din registrerings-e-post för att få din åtkomstkod",
+  "access_code": "Åtkomstkod",
+  "access_code_sent": "En åtkomstnyckel skickades till user@email.com",
+  "secret_key_created": "Hemlig nyckel har skapats!",
+  "disable_secret": "Vill du visa detta foto?",
+  "yes": "Ja",
+  "no": "Nej",
+  "keep_safe": "Ditt foto är nu säkert på picPics. Vill du ta bort det från din kamerarulle?",
+  "keep_asking": "Fortsätt attfråga",
+  "dont_ask_again": "Fråga inte igen",
+  "view_hidden_photos": "För att visa dina dolda foton, release the lock in the application settings. You can unlock them with your PIN.",
+  "require_secret_key": "Kräv hemlig nyckel",
+  "always": "Alltid",
+  "x_minutes": "20 min",
+  "forgot_secret_key": "Har du glömt din hemliga nyckel?",
+  "lock_your_photos": "Lås dina foton",
+  "lock_with_pin": "Lås dina privata foton med enPIN-kod.",
+  "protect_with_encryption": "Skydda dina personliga foton med kryptering, endast tillgängliga med en PIN-kod.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
 }
