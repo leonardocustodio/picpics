@@ -249,6 +249,15 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return _$loadAssetsPathAsyncAction.run(() => super.loadAssetsPath());
   }
 
+  final _$trashMultiplePicsAsyncAction =
+      AsyncAction('_GalleryStore.trashMultiplePics');
+
+  @override
+  Future<void> trashMultiplePics(Set<PicStore> selectedPics) {
+    return _$trashMultiplePicsAsyncAction
+        .run(() => super.trashMultiplePics(selectedPics));
+  }
+
   final _$trashPicAsyncAction = AsyncAction('_GalleryStore.trashPic');
 
   @override

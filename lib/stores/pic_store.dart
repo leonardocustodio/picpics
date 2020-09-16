@@ -6,10 +6,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
-import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -281,38 +279,29 @@ abstract class _PicStore with Store {
   @action
   Future<bool> deletePic() async {
     print('Before photo manager delete: ${entity.id}');
-    await PhotoManager.editor.deleteWithIds([entity.id]);
-    print('After delete with ids!!!');
 
-    await PhotoManager.editor.deleteWithIds([entity.id]).then((value) {
-      print('Photo Editor Result: ${value}');
-
-      if (value.isNotEmpty) {
-        var picsBox = Hive.box('pics');
-        var tagsBox = Hive.box('tags');
-
-        Pic pic = picsBox.get(photoId);
-        if (pic != null) {
-          print('pic is in db... removing it from db!');
-
-          for (var tag in pic.tags) {
-            String tagKey = Helpers.stripTag(tag);
-
-            Tag getTag = tagsBox.get(tagKey);
-            getTag.photoId.remove(entity.id);
-            print('removed ${entity.id} from $tag');
-            tagsBox.put(tagKey, getTag);
-          }
-          print('removed ${entity.id} from database');
-          picsBox.delete(photoId);
-        }
+    if (Platform.isAndroid) {
+      PhotoManager.editor.deleteWithIds([entity.id]);
+    } else {
+      final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+      if (result.isEmpty) {
+        return false;
       }
-    }).catchError((error) {
-      print(error);
-    });
+    }
+
+    var picsBox = Hive.box('pics');
+    Pic pic = picsBox.get(photoId);
+
+    if (pic != null) {
+      print('pic is in db... removing it from db!');
+      for (String tagKey in pic.tags) {
+        removeTagFromPic(tagKey: tagKey);
+      }
+      picsBox.delete(photoId);
+      print('removed ${entity.id} from database');
+    }
 
     return true;
-//    return false;
   }
 
   @action

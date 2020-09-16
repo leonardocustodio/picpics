@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
@@ -31,7 +32,10 @@ class _PicTabState extends State<PicTab> {
   CarouselController carouselController = CarouselController();
   ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
 
+  ReactionDisposer disposer;
+
   Widget _buildPhotoSlider(BuildContext context, int index) {
+    print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
@@ -48,6 +52,13 @@ class _PicTabState extends State<PicTab> {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+
+    disposer = reaction((_) => galleryStore.trashedPic, (trashedPic) {
+      if (trashedPic) {
+        galleryStore.setSwipeIndex(galleryStore.swipeIndex);
+        galleryStore.setTrashedPic(false);
+      }
+    });
   }
 
   @override

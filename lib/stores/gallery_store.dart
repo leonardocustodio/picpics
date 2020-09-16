@@ -453,6 +453,54 @@ abstract class _GalleryStore with Store {
   void setTrashedPic(bool value) => trashedPic = value;
 
   @action
+  Future<void> trashMultiplePics(Set<PicStore> selectedPics) async {
+    List<String> selectedPicsIds = selectedPics.map((e) => e.entity.id).toList();
+
+    bool deleted = false;
+
+    if (Platform.isAndroid) {
+      PhotoManager.editor.deleteWithIds(selectedPicsIds);
+      deleted = true;
+    } else {
+      final List<String> result = await PhotoManager.editor.deleteWithIds(selectedPicsIds);
+      if (result.isNotEmpty) {
+        deleted = true;
+      }
+    }
+
+    if (deleted) {
+      var picsBox = Hive.box('pics');
+      var tagsBox = Hive.box('tags');
+
+      for (PicStore picStore in selectedPics) {
+        Pic pic = picsBox.get(picStore.photoId);
+
+        if (pic != null) {
+          print('pic is in db... removing it from db!');
+          for (String tagKey in pic.tags) {
+            Tag tag = tagsBox.get(tagKey);
+            tag.photoId.remove(picStore.photoId);
+            print('removed ${picStore.photoId} from tag ${tag.name}');
+            tagsBox.put(tagKey, tag);
+          }
+          picsBox.delete(picStore.photoId);
+          print('removed ${picStore.photoId} from database');
+        }
+
+        filteredPics.remove(picStore);
+        removePicFromTaggedPics(picStore: picStore);
+        swipePics.remove(picStore);
+        untaggedPics.remove(picStore);
+        allPics.remove(picStore);
+      }
+
+      Analytics.sendEvent(Event.deleted_photo);
+      print('Reaction!');
+      setTrashedPic(true);
+    }
+  }
+
+  @action
   Future<void> trashPic(PicStore picStore) async {
     print('Going to trash pic!');
     bool deleted = await picStore.deletePic();

@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.4.0+298
+version: 1.4.0+302
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -19,11 +19,11 @@ dependencies:
     git:
       url: https://github.com/fireslime/photo_view.git
       ref: master
-  photo_manager: ^0.5.8
-#  photo_manager:
-#    git:
-#      url: https://github.com/CaiJingLong/flutter_photo_manager.git
-#      ref: master
+#  photo_manager: ^0.5.8
+  photo_manager:
+    git:
+      url: https://github.com/CaiJingLong/flutter_photo_manager.git
+      ref: master
   flutter_swiper: ^1.1.6
   rate_my_app: ^0.7.2
   geolocator: ^6.0.0+4
