@@ -49,7 +49,8 @@ class _PhotoCardState extends State<PhotoCard> {
   AppStore appStore;
   GalleryStore galleryStore;
   PicStore get picStore => widget.picStore;
-  AssetEntityImageProvider imageProvider;
+  List<int> photoSize;
+
   BoxFit boxFit = BoxFit.cover;
 
   TextEditingController tagsEditingController = TextEditingController();
@@ -135,12 +136,12 @@ class _PhotoCardState extends State<PhotoCard> {
     galleryStore = Provider.of<GalleryStore>(context);
 
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
-    List<int> photoSize = <int>[height, height];
-    imageProvider = AssetEntityImageProvider(picStore.entity, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
+    photoSize = <int>[height, height];
   }
 
   @override
   Widget build(BuildContext context) {
+    AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(

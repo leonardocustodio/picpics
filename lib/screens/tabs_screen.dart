@@ -58,30 +58,6 @@ class _TabsScreenState extends State<TabsScreen> {
 
   Throttle _changeThrottle;
 
-  void trashPics() async {
-//    print('trashing selected pics....');
-//
-//    List<String> entitiesIds = [];
-//    List<AssetEntity> entities = [];
-//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//
-//    for (var photoId in DatabaseManager.instance.picsSelected) {
-//      AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-//      entitiesIds.add(photoId);
-//      entities.add(entity);
-//    }
-//
-//    final List<String> result = await PhotoManager.editor.deleteWithIds(entitiesIds);
-//    if (result.isNotEmpty) {
-//      for (AssetEntity entity in entities) {
-//        DatabaseManager.instance.deletedPic(entity);
-//      }
-//
-//      DatabaseManager.instance.setPicsSelected(Set());
-//      tabsStore.setMultiPicBar(false);
-//    }
-  }
-
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
@@ -182,24 +158,14 @@ class _TabsScreenState extends State<TabsScreen> {
         galleryStore.clearSelectedPics();
         tabsStore.setMultiPicBar(false);
       } else if (index == 1) {
-        trashPics();
+        galleryStore.trashMultiplePics(galleryStore.selectedPics);
       } else if (index == 2) {
         print('sharing selected pics....');
         tabsStore.setIsLoading(true);
         await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
         tabsStore.setIsLoading(false);
       } else {
-        //        showMultiTagSheet();
-
-        // Verificar se multipic não existe antes
-//        DatabaseManager.instance.tagsSuggestions(
-//          bottomTagsEditingController.text,
-//          'MULTIPIC',
-//          // excludeTags: picInfo.tags,
-//        );
-
         tabsStore.setMultiTagSheet(true);
-
         Future.delayed(Duration(milliseconds: 200), () {
           setState(() {
             expandableController.expanded = true;
@@ -209,29 +175,6 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
 
-    if (index == 0) {
-//      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//      List<String> photosIds = [];
-//      for (int x = 0; x < pathProvider.orderedList.length; x++) {
-//        bool hasTag = DatabaseManager.instance.picHasTag[x];
-//        AssetEntity entity = pathProvider.orderedList[x];
-//        if (!hasTag) {
-//          photosIds.add(entity.id);
-//        }
-//      }
-//      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
-    } else if (index == 1) {
-//      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//      List<String> photosIds = [];
-//      for (int x = 0; x < DatabaseManager.instance.sliderIndex.length; x++) {
-//        int orderedIndex = DatabaseManager.instance.sliderIndex[x];
-//        AssetEntity entity = pathProvider.orderedList[orderedIndex];
-//        photosIds.add(entity.id);
-//      }
-//      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
-    }
-
-//    print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
     tabsStore.setCurrentTab(index);
   }
 
@@ -259,7 +202,9 @@ class _TabsScreenState extends State<TabsScreen> {
         if (tabsStore.modalCard) {
           tabsStore.setModalCard(false);
         }
-        galleryStore.setTrashedPic(false);
+        if (tabsStore.currentTab != 1) {
+          galleryStore.setTrashedPic(false);
+        }
       }
     });
 
