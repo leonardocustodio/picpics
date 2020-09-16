@@ -113,6 +113,41 @@
   "cancel_anytime": "Puedes cancelar en cualquier momento",
 
   "language": "Idioma",
+
   "all_search_tags": "Todas las etiquetas de búsqueda",
-  "search_all_tags_not_found": "No se encontraron imágenes con todas las etiquetas."
+  "search_all_tags_not_found": "No se encontraron imágenes con todas las etiquetas",
+
+  "picpics_photo_manager": "picPics: Administrador de fotos",
+  "add_multiple_tags": "Añade múltiples etiquetas",
+  "ny_tag": "Nueva York",
+  "tsqr_tag": "Times Square",
+  "vacation_tag": "Vacaciones",
+  "all_at_once": "Organiza varias fotos a la vez",
+  "find_easily": "Encuentra tus fotos fácilmente",
+  "email": "Correo electrónico",
+  "secret_photos": "Fotos secretas",
+  "your_secret_key": "Tu clave secreta",
+  "new_secret_key": "Nueva clave secreta",
+  "confirm_secret_key": "Confirmar clave secreta",
+  "confirm_email": "Confirma tu correo electrónico de registro para recibir tu código de acceso",
+  "access_code": "Código de acceso",
+  "access_code_sent": "Se envió una clave de acceso a user@email.com",
+  "secret_key_created": "¡Clave secreta creada correctamente!",
+  "disable_secret": "¿Quieres mostrar esta foto?",
+  "yes": "Sí",
+  "no": "No",
+  "keep_safe": "Tu foto ahora está segura en picPics. ¿Quieres eliminarla del carrete de tu cámara?",
+  "keep_asking": "Seguir preguntando",
+  "dont_ask_again": "No volver a preguntar",
+  "view_hidden_photos": "Para ver tus fotos ocultas, release the lock in the application settings. You can unlock them with your PIN.",
+  "require_secret_key": "Requerir clave secreta",
+  "always": "Siempre",
+  "x_minutes": "20 minutos",
+  "forgot_secret_key": "¿Olvidaste la clave secreta?",
+  "lock_your_photos": "Bloquea tus fotos",
+  "lock_with_pin": "Bloquea tus fotos privadas con un código PIN.",
+  "protect_with_encryption": "Protege tus fotos personales con cifrado al que sólo se puede acceder con una contraseña PIN.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
 }

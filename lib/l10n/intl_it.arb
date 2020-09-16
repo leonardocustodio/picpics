@@ -113,6 +113,40 @@
   "cancel_anytime": "Annulla in qualsiasi momento",
 
   "language": "Linguaggio",
+
   "all_search_tags": "Tutti i tag di ricerca",
-  "search_all_tags_not_found": "Nessuna immagine trovata con tutti i tag su di essa."
+  "search_all_tags_not_found": "Non sono state trovate immagini con tutti i tag su di essa",
+  "picpics_photo_manager": "picPics - Gestore di foto",
+  "add_multiple_tags": "Adicione múltiplas tags",
+  "ny_tag": "NY",
+  "tsqr_tag": "Times Square",
+  "vacation_tag": "Vacanza",
+  "all_at_once": "Organizza più foto contemporaneamente",
+  "find_easily": "Trova facilmente le tue foto",
+  "email": "Email",
+  "secret_photos": "Foto segrete",
+  "your_secret_key": "La tua chiave segreta",
+  "new_secret_key": "Nuova chiave segreta",
+  "confirm_secret_key": "Conferma chiave segreta",
+  "confirm_email": "Conferma la tua email di registrazione per ricevere il tuo codice di accesso",
+  "access_code": "Codice d'accesso",
+  "access_code_sent": "Una chiave di accesso è stata inviata a utente@email.com",
+  "secret_key_created": "Chiave segreta creata con successo!",
+  "disable_secret": "Vuoi mostrare questa foto?",
+  "yes": "Sì",
+  "no": "No",
+  "keep_safe": "La tua foto è ora al sicuro su picPics. Vuoi eliminarlo dal rullino fotografico?",
+  "keep_asking": "Continua a chiedere",
+  "dont_ask_again": "Non chiedere di nuovo",
+  "view_hidden_photos": "Per visualizzare le tue foto nascoste, release the lock in the application settings. You can unlock them with your PIN.",
+  "require_secret_key": "Richiedi chiave segreta",
+  "always": "Sempre",
+  "x_minutes": "20 min",
+  "forgot_secret_key": "Hai dimenticato la chiave segreta?",
+  "lock_your_photos": "Blocca le tue foto",
+  "lock_with_pin": "Blocca le tue foto private con un codice PIN.",
+  "protect_with_encryption": "Proteggi le tue foto personali con la crittografia accessibile solo con una password PIN.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
 }

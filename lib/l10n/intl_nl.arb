@@ -112,6 +112,40 @@
   "cancel_anytime": "U kunt op elk moment annuleren",
 
   "language": "Taal",
+
   "all_search_tags": "Alle zoektags",
-  "search_all_tags_not_found": "Er zijn geen foto's gevonden met alle tags erop."
+  "search_all_tags_not_found": "Er zijn geen afbeeldingen gevonden met alle tags erop",
+  "picpics_photo_manager": "picPics - Fotomanager",
+  "add_multiple_tags": "Adicione múltiplas-tags",
+  "ny_tag": "NY",
+  "tsqr_tag": "Times Square",
+  "vacation_tag": "Vakantie",
+  "all_at_once": "Orden meerdere foto's tegelijk",
+  "find_easily": "Vind gemakkelijk uw foto's",
+  "email": "E-mail",
+  "secret_photos": "Geheime foto's",
+  "your_secret_key": "Uw geheime sleutel",
+  "new_secret_key": "Nieuwe geheime sleutel",
+  "confirm_secret_key": "Bevestig de geheime sleutel",
+  "confirm_email": "Bevestig uw registratie-e-mail om uw toegangscode te ontvangen",
+  "access_code": "Toegangscode",
+  "access_code_sent": "Er is een toegangssleutel verzonden naar gebruiker@email.com",
+  "secret_key_created": "Geheime sleutel met succes aangemaakt!",
+  "disable_secret": "Wilt u deze foto zichtbaar maken?",
+  "yes": "Ja",
+  "no": "Nee",
+  "keep_safe": "Je foto is nu veilig op picPics. Wilt u deze van uw filmrol verwijderen?",
+  "keep_asking": "Blijf vragen",
+  "dont_ask_again": "Vraag niet opnieuw",
+  "view_hidden_photos": "Om uw verborgen foto's te bekijken, release the lock in the application settings. You can unlock them with your PIN.",
+  "require_secret_key": "Stel geheime sleutel als vereist",
+  "always": "Altijd",
+  "x_minutes": "20 minuten",
+  "forgot_secret_key": "Geheime sleutel vergeten?",
+  "lock_your_photos": "Vergrendel uw foto's",
+  "lock_with_pin": "Vergrendel uw privéfoto's met een pincode.",
+  "protect_with_encryption": "Bescherm uw persoonlijke foto's met codering die alleen toegankelijk is met een pincode.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
 }
