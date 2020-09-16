@@ -98,7 +98,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Fotogalleri"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Fotoplats"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Nu är dina foton alltid organiserade"),
-    "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - Photo Manager "),
+    "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - Photo Manager"),
     "premium_modal_description" : m1,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("ALLA FUNKTIONER UTAN ANNONSER"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("Skaffa premiumkonto"),
