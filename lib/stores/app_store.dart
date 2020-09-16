@@ -268,6 +268,11 @@ abstract class _AppStore with Store {
     tagsStore.setTagInfo(tagId: newTagKey, tagName: newName);
   }
 
+  @action
+  void removeTag({TagsStore tagsStore}) {
+    tags.remove(tagsStore);
+  }
+
   ObservableList<String> recentTags = ObservableList<String>();
 
   @action
@@ -277,8 +282,18 @@ abstract class _AppStore with Store {
 
   @action
   void editRecentTags(String oldTagKey, String newTagKey) {
-    int indexOfTag = recentTags.indexOf(oldTagKey);
-    recentTags[indexOfTag] = newTagKey;
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+
+    if (recentTags.contains(oldTagKey)) {
+      print('updating tag name in recent tags');
+      int indexOfTag = recentTags.indexOf(oldTagKey);
+      recentTags[indexOfTag] = newTagKey;
+
+      int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
+      getUser.recentTags[indexOfRecentTag] = newTagKey;
+      userBox.putAt(0, getUser);
+    }
   }
 
   @observable
@@ -484,5 +499,18 @@ abstract class _AppStore with Store {
     getUser.recentTags.insert(0, tagKey);
     userBox.putAt(0, getUser);
     print('final tags in recent: ${getUser.recentTags}');
+  }
+
+  @action
+  void removeTagFromRecent({String tagKey}) {
+    var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0);
+
+    if (recentTags.contains(tagKey)) {
+      recentTags.remove(tagKey);
+      getUser.recentTags.remove(tagKey);
+      userBox.putAt(0, getUser);
+      print('recent tags after removed: ${getUser.recentTags}');
+    }
   }
 }

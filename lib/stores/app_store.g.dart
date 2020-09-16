@@ -305,6 +305,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void removeTag({TagsStore tagsStore}) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.removeTag');
+    try {
+      return super.removeTag(tagsStore: tagsStore);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void addRecentTags(String tagKey) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.addRecentTags');
@@ -398,6 +409,17 @@ mixin _$AppStore on _AppStore, Store {
         name: '_AppStore.addTagToRecent');
     try {
       return super.addTagToRecent(tagKey: tagKey);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removeTagFromRecent({String tagKey}) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.removeTagFromRecent');
+    try {
+      return super.removeTagFromRecent(tagKey: tagKey);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
