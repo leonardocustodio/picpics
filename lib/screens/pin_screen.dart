@@ -119,213 +119,9 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
                                     ),
                                   ),
                                   Spacer(),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        width: 16.0,
-                                        height: 16.0,
-                                        margin: const EdgeInsets.symmetric(horizontal: 12.0),
-                                        decoration: new BoxDecoration(
-                                          color: kWhiteColor,
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 16.0,
-                                        height: 16.0,
-                                        margin: const EdgeInsets.symmetric(horizontal: 12.0),
-                                        decoration: new BoxDecoration(
-                                          color: kWhiteColor,
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 16.0,
-                                        height: 16.0,
-                                        margin: const EdgeInsets.symmetric(horizontal: 12.0),
-                                        decoration: new BoxDecoration(
-                                          color: kWhiteColor,
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                      Container(
-                                        width: 16.0,
-                                        height: 16.0,
-                                        margin: const EdgeInsets.symmetric(horizontal: 12.0),
-                                        decoration: new BoxDecoration(
-                                          color: kWhiteColor,
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                  PinPlaceholder(),
                                   Spacer(),
-                                  Container(
-                                    height: 300.0,
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              "1",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                            Text(
-                                              "2",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                            Text(
-                                              "3",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              "4",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                            Text(
-                                              "5",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                            Text(
-                                              "6",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              "7",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                            Text(
-                                              "8",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                            Text(
-                                              "9",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Text(
-                                              "0",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                            Text(
-                                              "0",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                            Text(
-                                              "0",
-                                              style: TextStyle(
-                                                fontFamily: 'Lato',
-                                                color: kWhiteColor,
-                                                fontSize: 24,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.normal,
-                                                letterSpacing: -0.4099999964237213,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                                  NumberPad(),
                                   Spacer(),
                                 ],
                               ),
@@ -350,6 +146,109 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
               ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class PinPlaceholder extends StatelessWidget {
+  final int totalPositions;
+  final int filledPositions;
+
+  PinPlaceholder({
+    this.totalPositions = 6,
+    this.filledPositions = 0,
+  });
+
+  List<Widget> _buildPinPlaceholders() {
+    List<Widget> items = [];
+
+    for (int x = 0; x < totalPositions; x++) {
+      items.add(
+        Container(
+          width: 16.0,
+          height: 16.0,
+          margin: const EdgeInsets.symmetric(horizontal: 12.0),
+          decoration: new BoxDecoration(
+            color: x < filledPositions ? kWhiteColor : Colors.transparent,
+            borderRadius: BorderRadius.circular(8.0),
+            border: Border.all(
+              color: kWhiteColor,
+              width: 2.0,
+            ),
+          ),
+        ),
+      );
+    }
+    return items;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: _buildPinPlaceholders(),
+    );
+  }
+}
+
+class NumberPad extends StatelessWidget {
+  const NumberPad({
+    Key key,
+  }) : super(key: key);
+
+  List<Widget> _buildPinNumbers() {
+    List<Widget> items = [];
+
+    int pin = 1;
+    for (int x = 0; x < 4; x++) {
+      List<Widget> number = [];
+
+      for (int y = 0; y < 3; y++) {
+        if (pin == 10) {
+          number.add(
+            Image.asset('lib/images/backspacewhite.png'),
+          );
+          pin++;
+          continue;
+        }
+
+        number.add(
+          Text(
+            '${pin == 11 ? '0' : pin}',
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: pin == 12 ? Colors.transparent : kWhiteColor,
+              fontSize: 24,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
+          ),
+        );
+        pin++;
+      }
+
+      items.add(
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisSize: MainAxisSize.max,
+          children: number,
+        ),
+      );
+    }
+
+    return items;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 300.0,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisSize: MainAxisSize.max,
+        children: _buildPinNumbers(),
       ),
     );
   }
