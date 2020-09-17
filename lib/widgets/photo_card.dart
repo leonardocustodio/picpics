@@ -162,9 +162,7 @@ class _PhotoCardState extends State<PhotoCard> {
           Expanded(
             child: CircularMenu(
               alignment: Alignment.bottomRight,
-              radius: 80,
-              startingAngleInRadian: pi,
-              endingAngleInRadian: pi + pi / 2,
+              radius: 52,
               toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
               toggleButtonBoxShadow: [
                 BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),
@@ -172,26 +170,39 @@ class _PhotoCardState extends State<PhotoCard> {
               toggleButtonIconColor: Colors.white,
               toggleButtonMargin: 12.0,
               toggleButtonPadding: 8.0,
-              toggleButtonSize: 18.0,
+              toggleButtonSize: 19.2,
               items: [
                 CircularMenuItem(
-                    image: Image.asset('lib/images/expandnobackground.png'),
-                    color: kSecondaryColor,
-                    onTap: () {
-                      galleryStore.setInitialSelectedThumbnail(picStore);
-                      Navigator.pushNamed(context, PhotoScreen.id);
-                    }),
-                CircularMenuItem(
-                    image: Image.asset('lib/images/sharenobackground.png'),
-                    color: kPrimaryColor,
-                    onTap: () {
-                      picStore.sharePic();
-                    }),
-                CircularMenuItem(
-                  image: Image.asset('lib/images/trashnobackground.png'),
-                  color: kPinkColor,
+                  image: Image.asset('lib/images/trashmenu.png'),
+                  color: kWarningColor,
+                  iconSize: 19.2,
                   onTap: () {
                     galleryStore.trashPic(picStore);
+                  },
+                ),
+                CircularMenuItem(
+                  image: Image.asset('lib/images/lockmenu.png'),
+                  color: kYellowColor,
+                  iconSize: 19.2,
+                  onTap: () {
+                    galleryStore.trashPic(picStore);
+                  },
+                ),
+                CircularMenuItem(
+                  image: Image.asset('lib/images/sharemenu.png'),
+                  color: kPrimaryColor,
+                  iconSize: 19.2,
+                  onTap: () {
+                    picStore.sharePic();
+                  },
+                ),
+                CircularMenuItem(
+                  image: Image.asset('lib/images/expandmenu.png'),
+                  color: kSecondaryColor,
+                  iconSize: 19.2,
+                  onTap: () {
+                    galleryStore.setInitialSelectedThumbnail(picStore);
+                    Navigator.pushNamed(context, PhotoScreen.id);
                   },
                 ),
               ],
