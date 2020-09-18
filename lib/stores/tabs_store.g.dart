@@ -114,6 +114,23 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
+  final _$showDeleteSecretModalAtom =
+      Atom(name: '_TabsStore.showDeleteSecretModal');
+
+  @override
+  bool get showDeleteSecretModal {
+    _$showDeleteSecretModalAtom.reportRead();
+    return super.showDeleteSecretModal;
+  }
+
+  @override
+  set showDeleteSecretModal(bool value) {
+    _$showDeleteSecretModalAtom.reportWrite(value, super.showDeleteSecretModal,
+        () {
+      super.showDeleteSecretModal = value;
+    });
+  }
+
   final _$_TabsStoreActionController = ActionController(name: '_TabsStore');
 
   @override
@@ -194,6 +211,17 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
+  void setShowDeleteSecretModal(bool value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setShowDeleteSecretModal');
+    try {
+      return super.setShowDeleteSecretModal(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 currentTab: ${currentTab},
@@ -202,7 +230,8 @@ multiTagSheet: ${multiTagSheet},
 isLoading: ${isLoading},
 modalCard: ${modalCard},
 tutorialIndex: ${tutorialIndex},
-topOffsetFirstTab: ${topOffsetFirstTab}
+topOffsetFirstTab: ${topOffsetFirstTab},
+showDeleteSecretModal: ${showDeleteSecretModal}
     ''';
   }
 }

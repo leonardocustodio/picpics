@@ -16,10 +16,12 @@ import 'package:flare_flutter/flare_actor.dart';
 class PicTab extends StatefulWidget {
   static const id = 'pic_tab';
 
+  final Function showDeleteSecretModal;
   final Function showEditTagModal;
 
   PicTab({
     @required this.showEditTagModal,
+    @required this.showDeleteSecretModal,
   });
 
   @override
@@ -43,6 +45,7 @@ class _PicTabState extends State<PicTab> {
         picsInThumbnails: PicSource.SWIPE,
         picsInThumbnailIndex: index,
         showEditTagModal: widget.showEditTagModal,
+        showDeleteSecretModal: widget.showDeleteSecretModal,
       ),
     );
   }

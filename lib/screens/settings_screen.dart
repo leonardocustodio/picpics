@@ -408,7 +408,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                           Navigator.pushNamed(context, PinScreen.id);
                                           return;
                                         }
-
+                                        appStore.setWaitingAccessCode(false);
                                         appStore.switchSecretPhotos();
                                       });
                                 },

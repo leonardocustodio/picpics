@@ -205,6 +205,21 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$waitingAccessCodeAtom = Atom(name: '_AppStore.waitingAccessCode');
+
+  @override
+  bool get waitingAccessCode {
+    _$waitingAccessCodeAtom.reportRead();
+    return super.waitingAccessCode;
+  }
+
+  @override
+  set waitingAccessCode(bool value) {
+    _$waitingAccessCodeAtom.reportWrite(value, super.waitingAccessCode, () {
+      super.waitingAccessCode = value;
+    });
+  }
+
   final _$checkNotificationPermissionAsyncAction =
       AsyncAction('_AppStore.checkNotificationPermission');
 
@@ -478,6 +493,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setWaitingAccessCode(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setWaitingAccessCode');
+    try {
+      return super.setWaitingAccessCode(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},
@@ -492,6 +518,7 @@ canTagToday: ${canTagToday},
 hasSwiped: ${hasSwiped},
 appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},
+waitingAccessCode: ${waitingAccessCode},
 appLocale: ${appLocale},
 currentLanguage: ${currentLanguage}
     ''';

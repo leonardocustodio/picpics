@@ -8,6 +8,9 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/components/colorful_background.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/screens/email_screen.dart';
+import 'package:picPics/stores/app_store.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
@@ -19,12 +22,100 @@ class PinScreen extends StatefulWidget {
 }
 
 class _PinScreenState extends State<PinScreen> with AnimationMixin {
+  AppStore appStore;
+
   bool isLoading = false;
 
   AnimationController widthController;
   AnimationController heightController;
   Animation<double> moveByX;
   Animation<double> moveByY;
+
+  showCreatedKeyModal() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Container(
+            height: 187.0,
+            width: 270.0,
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: Color(0xFFF1F3F5),
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(14),
+                bottom: Radius.circular(19.0),
+              ),
+            ),
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      CupertinoButton(
+                        onPressed: () {
+                          print('teste');
+                        },
+                        child: Image.asset('lib/images/closegrayico.png'),
+                      ),
+                    ],
+                  ),
+                ),
+                Spacer(),
+                Text(
+                  "Secret Key successfully created!",
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: Color(0xff606566),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+                Spacer(
+                  flex: 2,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () async {
+                      widthController.stop();
+                      heightController.stop();
+
+//                                  await appStore.requestGalleryPermission();
+//                                  appStore.setLoggedIn(true);
+//                                  Navigator.pushReplacementNamed(context, TabsScreen.id);
+//                    appStore.setWaitingAccessCode(true);
+//                    Navigator.pushNamed(context, PinScreen.id);
+                    },
+                    child: Container(
+                      height: 44.0,
+                      decoration: BoxDecoration(
+                        gradient: kPrimaryGradient,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Center(
+                        child: Text(
+                          S.of(context).continue_string,
+                          textScaleFactor: 1.0,
+                          style: kLoginButtonTextStyle,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
@@ -35,6 +126,20 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
     moveByY = 0.0.tweenTo(40.0).animatedBy(heightController);
 
 //    Analytics.sendCurrentScreen(Screen.login_screen);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
+  }
+
+  void pinTapped() {
+    if (appStore.waitingAccessCode) {
+      showCreatedKeyModal();
+      return;
+    }
+    Navigator.pushNamed(context, EmailScreen.id);
   }
 
   @override
@@ -108,7 +213,7 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
                                 children: <Widget>[
                                   Spacer(),
                                   Text(
-                                    "New secret key",
+                                    appStore.waitingAccessCode ? 'Access code' : 'New secret key',
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: kSecondaryColor,
@@ -118,10 +223,27 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
                                       letterSpacing: -0.4099999964237213,
                                     ),
                                   ),
+                                  if (appStore.waitingAccessCode)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 16.0),
+                                      child: Text(
+                                        'An acess key was sended to\nola@pombastudio.com',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff979a9b),
+                                          fontSize: 15.0,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                        ),
+                                      ),
+                                    ),
                                   Spacer(),
                                   PinPlaceholder(),
                                   Spacer(),
-                                  NumberPad(),
+                                  NumberPad(
+                                    onPinTapped: pinTapped,
+                                  ),
                                   Spacer(),
                                 ],
                               ),
@@ -193,9 +315,11 @@ class PinPlaceholder extends StatelessWidget {
 }
 
 class NumberPad extends StatelessWidget {
+  final Function onPinTapped;
+
   const NumberPad({
-    Key key,
-  }) : super(key: key);
+    this.onPinTapped,
+  });
 
   List<Widget> _buildPinNumbers() {
     List<Widget> items = [];
@@ -214,15 +338,22 @@ class NumberPad extends StatelessWidget {
         }
 
         number.add(
-          Text(
-            '${pin == 11 ? '0' : pin}',
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: pin == 12 ? Colors.transparent : kWhiteColor,
-              fontSize: 24,
-              fontWeight: FontWeight.w400,
-              fontStyle: FontStyle.normal,
-              letterSpacing: -0.4099999964237213,
+          CupertinoButton(
+            padding: const EdgeInsets.all(0),
+            minSize: 0,
+            onPressed: () {
+              onPinTapped();
+            },
+            child: Text(
+              '${pin == 11 ? '0' : pin}',
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: pin == 12 ? Colors.transparent : kWhiteColor,
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
             ),
           ),
         );

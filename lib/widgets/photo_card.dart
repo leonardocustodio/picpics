@@ -16,6 +16,7 @@ import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
@@ -31,12 +32,14 @@ import 'package:provider/provider.dart';
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
   final Function showEditTagModal;
+  final Function showDeleteSecretModal;
   final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
   PhotoCard({
     this.picStore,
     this.showEditTagModal,
+    this.showDeleteSecretModal,
     this.picsInThumbnails,
     this.picsInThumbnailIndex,
   });
@@ -47,6 +50,7 @@ class PhotoCard extends StatefulWidget {
 
 class _PhotoCardState extends State<PhotoCard> {
   AppStore appStore;
+  TabsStore tabsStore;
   GalleryStore galleryStore;
   PicStore get picStore => widget.picStore;
   List<int> photoSize;
@@ -133,6 +137,7 @@ class _PhotoCardState extends State<PhotoCard> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
+    tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
@@ -185,7 +190,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   color: kYellowColor,
                   iconSize: 19.2,
                   onTap: () {
-                    galleryStore.trashPic(picStore);
+                    widget.showDeleteSecretModal();
                   },
                 ),
                 CircularMenuItem(

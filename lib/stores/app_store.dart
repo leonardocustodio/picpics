@@ -541,4 +541,10 @@ abstract class _AppStore with Store {
       print('recent tags after removed: ${getUser.recentTags}');
     }
   }
+
+  @observable
+  bool waitingAccessCode = false;
+
+  @action
+  void setWaitingAccessCode(bool value) => waitingAccessCode = value;
 }

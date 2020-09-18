@@ -9,6 +9,7 @@ import 'package:picPics/asset_change_notifier.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
@@ -174,6 +175,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           AddLocationScreen.id: (context) => AddLocationScreen(),
           PremiumScreen.id: (context) => PremiumScreen(),
           PinScreen.id: (context) => PinScreen(),
+          EmailScreen.id: (context) => EmailScreen(),
         },
       ),
     );

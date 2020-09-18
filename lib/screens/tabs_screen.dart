@@ -18,6 +18,7 @@ import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +48,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   ReactionDisposer disposer;
   ReactionDisposer disposer2;
+  ReactionDisposer disposer3;
 
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
@@ -57,6 +59,35 @@ class _TabsScreenState extends State<TabsScreen> {
   TextEditingController bottomTagsEditingController = TextEditingController();
 
   Throttle _changeThrottle;
+
+  showDeleteSecretModal() {
+    print('SHOW MODAL !!!');
+    TextEditingController alertInputController = TextEditingController();
+//      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
+//    String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
+    alertInputController.text = '';
+
+    print('showModal');
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return DeleteSecretModal(
+          alertInputController: alertInputController,
+          onPressedDelete: () {
+//            print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
+//            galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
+            Navigator.of(context).pop();
+          },
+          onPressedOk: () {
+//            print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
 
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
@@ -144,6 +175,7 @@ class _TabsScreenState extends State<TabsScreen> {
 //    _changeThrottle.dispose();
     disposer();
     disposer2();
+    disposer3();
     super.dispose();
   }
 
@@ -214,6 +246,16 @@ class _TabsScreenState extends State<TabsScreen> {
           galleryStore.clearSelectedPics();
           tabsStore.setMultiPicBar(false);
         }
+      }
+    });
+
+    disposer3 = reaction((_) => tabsStore.showDeleteSecretModal, (showModal) {
+      if (showModal) {
+        print('show delete secret modal!!!');
+//        setState(() {
+//          showEditTagModal();
+//        });
+//        showDeleteSecretModal(context);
       }
     });
 
@@ -345,7 +387,10 @@ class _TabsScreenState extends State<TabsScreen> {
                     } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
                       wgt = UntaggedTab();
                     else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
-                      wgt = PicTab(showEditTagModal: showEditTagModal);
+                      wgt = PicTab(
+                        showEditTagModal: showEditTagModal,
+                        showDeleteSecretModal: showDeleteSecretModal,
+                      );
                     else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
                     return wgt;
                   }),
