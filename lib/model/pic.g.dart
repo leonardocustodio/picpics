@@ -26,13 +26,14 @@ class PicAdapter extends TypeAdapter<Pic> {
       specificLocation: fields[6] as String,
       generalLocation: fields[7] as String,
       tags: (fields[8] as List)?.cast<String>(),
+      isPrivate: fields[9] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Pic obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.photoId)
       ..writeByte(1)
@@ -50,7 +51,9 @@ class PicAdapter extends TypeAdapter<Pic> {
       ..writeByte(7)
       ..write(obj.generalLocation)
       ..writeByte(8)
-      ..write(obj.tags);
+      ..write(obj.tags)
+      ..writeByte(9)
+      ..write(obj.isPrivate);
   }
 
   @override

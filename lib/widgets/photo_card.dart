@@ -25,7 +25,6 @@ import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
-import 'dart:math';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:provider/provider.dart';
 
@@ -165,102 +164,106 @@ class _PhotoCardState extends State<PhotoCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: CircularMenu(
-              alignment: Alignment.bottomRight,
-              radius: 52,
-              toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
-              toggleButtonBoxShadow: [
-                BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),
-              ],
-              toggleButtonIconColor: Colors.white,
-              toggleButtonMargin: 12.0,
-              toggleButtonPadding: 8.0,
-              toggleButtonSize: 19.2,
-              items: [
-                CircularMenuItem(
-                  image: Image.asset('lib/images/trashmenu.png'),
-                  color: kWarningColor,
-                  iconSize: 19.2,
-                  onTap: () {
-                    galleryStore.trashPic(picStore);
-                  },
-                ),
-                CircularMenuItem(
-                  image: Image.asset('lib/images/lockmenu.png'),
-                  color: kYellowColor,
-                  iconSize: 19.2,
-                  onTap: () {
-                    widget.showDeleteSecretModal();
-                  },
-                ),
-                CircularMenuItem(
-                  image: Image.asset('lib/images/sharemenu.png'),
-                  color: kPrimaryColor,
-                  iconSize: 19.2,
-                  onTap: () {
-                    picStore.sharePic();
-                  },
-                ),
-                CircularMenuItem(
-                  image: Image.asset('lib/images/expandmenu.png'),
-                  color: kSecondaryColor,
-                  iconSize: 19.2,
-                  onTap: () {
-                    galleryStore.setInitialSelectedThumbnail(picStore);
-                    Navigator.pushNamed(context, PhotoScreen.id);
-                  },
-                ),
-              ],
-              backgroundWidget: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(12.0),
-                  topRight: Radius.circular(12.0),
-                ),
-                child: RepaintBoundary(
-                  child: ExtendedImage(
-                    image: imageProvider,
-                    fit: boxFit,
-                    loadStateChanged: (ExtendedImageState state) {
-                      Widget loader;
-                      switch (state.extendedImageLoadState) {
-                        case LoadState.loading:
-                          loader = const ColoredBox(color: kGreyPlaceholder);
-                          break;
-                        case LoadState.completed:
-                          loader = FadeImageBuilder(
-                            child: () {
-                              return GestureDetector(
-                                onDoubleTap: () {
-                                  if (boxFit == BoxFit.cover) {
-                                    setState(() {
-                                      boxFit = BoxFit.contain;
-                                    });
-                                  } else {
-                                    setState(() {
-                                      boxFit = BoxFit.cover;
-                                    });
-                                  }
-                                },
-                                child: RepaintBoundary(
-                                  child: Container(
-                                    color: Colors.black,
-                                    constraints: BoxConstraints.expand(),
-                                    child: state.completedWidget,
-                                  ),
-                                ),
+            child: Observer(
+              builder: (_) {
+                return CircularMenu(
+                  alignment: Alignment.bottomRight,
+                  radius: 52,
+                  toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
+                  toggleButtonBoxShadow: [
+                    BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),
+                  ],
+                  toggleButtonIconColor: Colors.white,
+                  toggleButtonMargin: 12.0,
+                  toggleButtonPadding: 8.0,
+                  toggleButtonSize: 19.2,
+                  items: [
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/trashmenu.png'),
+                      color: kWarningColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        galleryStore.trashPic(picStore);
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: picStore.isPrivate ? Image.asset('lib/images/openlockmenu.png') : Image.asset('lib/images/lockmenu.png'),
+                      color: picStore.isPrivate ? Color(0xFFF5FAFA) : kYellowColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        widget.showDeleteSecretModal(picStore);
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/sharemenu.png'),
+                      color: kPrimaryColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        picStore.sharePic();
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/expandmenu.png'),
+                      color: kSecondaryColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        galleryStore.setInitialSelectedThumbnail(picStore);
+                        Navigator.pushNamed(context, PhotoScreen.id);
+                      },
+                    ),
+                  ],
+                  backgroundWidget: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12.0),
+                      topRight: Radius.circular(12.0),
+                    ),
+                    child: RepaintBoundary(
+                      child: ExtendedImage(
+                        image: imageProvider,
+                        fit: boxFit,
+                        loadStateChanged: (ExtendedImageState state) {
+                          Widget loader;
+                          switch (state.extendedImageLoadState) {
+                            case LoadState.loading:
+                              loader = const ColoredBox(color: kGreyPlaceholder);
+                              break;
+                            case LoadState.completed:
+                              loader = FadeImageBuilder(
+                                child: () {
+                                  return GestureDetector(
+                                    onDoubleTap: () {
+                                      if (boxFit == BoxFit.cover) {
+                                        setState(() {
+                                          boxFit = BoxFit.contain;
+                                        });
+                                      } else {
+                                        setState(() {
+                                          boxFit = BoxFit.cover;
+                                        });
+                                      }
+                                    },
+                                    child: RepaintBoundary(
+                                      child: Container(
+                                        color: Colors.black,
+                                        constraints: BoxConstraints.expand(),
+                                        child: state.completedWidget,
+                                      ),
+                                    ),
+                                  );
+                                }(),
                               );
-                            }(),
-                          );
-                          break;
-                        case LoadState.failed:
-                          loader = Container();
-                          break;
-                      }
-                      return loader;
-                    },
+                              break;
+                            case LoadState.failed:
+                              loader = Container();
+                              break;
+                          }
+                          return loader;
+                        },
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             ),
           ),
           Padding(

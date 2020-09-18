@@ -778,7 +778,6 @@ abstract class _GalleryStore with Store {
         picStore.addTagToPic(
           tagKey: tagKey,
           photoId: picStore.photoId,
-          tagName: getTag.name,
         );
 
         if (!selectedPicsAreTagged) {

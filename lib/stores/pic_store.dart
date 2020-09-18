@@ -53,6 +53,7 @@ abstract class _PicStore with Store {
       longitude = pic.longitude;
       specificLocation = pic.specificLocation;
       generalLocation = pic.generalLocation;
+      isPrivate = pic.isPrivate ?? false;
 
       for (String tagKey in pic.tags) {
         TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
@@ -74,6 +75,44 @@ abstract class _PicStore with Store {
 
   @observable
   String generalLocation;
+
+  @observable
+  bool isPrivate;
+
+  @action
+  void setIsPrivate(bool value) {
+    isPrivate = value;
+
+    if (isPrivate) {
+      addSecretTagToPic();
+    } else {
+      removeSecretTagFromPic();
+    }
+  }
+
+  Future<void> addSecretTagToPic() async {
+    var tagsBox = Hive.box('tags');
+    Tag getTag = tagsBox.get(kSecretTagKey);
+
+    if (getTag.photoId.contains(photoId)) {
+      print('this tag is already in this picture');
+      return;
+    }
+
+    getTag.photoId.add(photoId);
+    tagsBox.put(kSecretTagKey, getTag);
+
+    await addTagToPic(
+      tagKey: kSecretTagKey,
+      photoId: photoId,
+    );
+    print('Added secret tag to pic!');
+  }
+
+  Future<void> removeSecretTagFromPic() async {
+    await removeTagFromPic(tagKey: kSecretTagKey);
+    print('Added secret tag to pic!');
+  }
 
   @observable
   String searchText = '';
@@ -161,7 +200,6 @@ abstract class _PicStore with Store {
       await addTagToPic(
         tagKey: tagKey,
         photoId: photoId,
-        tagName: tagName,
       );
 
       appStore.addTagToRecent(tagKey: tagKey);
@@ -178,14 +216,13 @@ abstract class _PicStore with Store {
     tagsBox.put(tagKey, Tag(tagName, [photoId]));
     await addTagToPic(
       tagKey: tagKey,
-      tagName: tagName,
       photoId: photoId,
     );
     appStore.addTagToRecent(tagKey: tagKey);
   }
 
   @action
-  Future<void> addTagToPic({String tagKey, String tagName, String photoId, List<AssetEntity> entities}) async {
+  Future<void> addTagToPic({String tagKey, String tagNameX, String photoId, List<AssetEntity> entities}) async {
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
@@ -198,10 +235,6 @@ abstract class _PicStore with Store {
         return;
       }
 
-//      if (noTaggedPhoto == true) {
-//        noTaggedPhoto = false;
-//      }
-
       getPic.tags.add(tagKey);
       print('photoId: ${getPic.photoId} - tags: ${getPic.tags}');
       picsBox.put(photoId, getPic);
@@ -210,7 +243,6 @@ abstract class _PicStore with Store {
       TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
       tags.add(tagsStore);
 
-//      checkPicHasTags(photoId);
       Analytics.sendEvent(Event.added_tag);
       return;
     }
@@ -231,14 +263,11 @@ abstract class _PicStore with Store {
       specificLocation: null,
       generalLocation: null,
       tags: [tagKey],
+      isPrivate: isPrivate,
     );
 
     await picsBox.put(photoId, pic);
     print('@@@@@@@@ tagsKey: ${tagKey}');
-//    checkPicHasTags(photoId);
-//    if (noTaggedPhoto == true) {
-//      noTaggedPhoto = false;
-//    }
 
     // Increase today tagged pics everytime it adds a new pic to database.
     appStore.increaseTodayTaggedPics();

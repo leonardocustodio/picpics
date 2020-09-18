@@ -3,13 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 
-class DeleteSecretModal extends StatelessWidget {
-  final Function onPressedClose;
+class UnhideSecretModal extends StatelessWidget {
   final Function onPressedDelete;
   final Function onPressedOk;
 
-  DeleteSecretModal({
-    @required this.onPressedClose,
+  UnhideSecretModal({
     @required this.onPressedDelete,
     @required this.onPressedOk,
   });
@@ -56,7 +54,9 @@ class DeleteSecretModal extends StatelessWidget {
                     ),
                   ),
                   CupertinoButton(
-                    onPressed: onPressedClose,
+                    onPressed: () {
+                      print('teste');
+                    },
                     child: Image.asset('lib/images/closegrayico.png'),
                   ),
                 ],
@@ -66,7 +66,7 @@ class DeleteSecretModal extends StatelessWidget {
                 child: Image.asset('lib/images/lockmodalico.png'),
               ),
               Text(
-                'Your photo is now safe on picPics. Do you want to delete it from your camera roll?',
+                'Do you want to unhide this photo?',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Lato',
@@ -77,59 +77,7 @@ class DeleteSecretModal extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 20.0,
-                      width: 20.0,
-                      margin: const EdgeInsets.only(right: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFB2C2C3),
-                          width: 2.0,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    Text(
-                      "Keep asking",
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff707070),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                      ),
-                    ),
-                    Container(
-                      height: 20.0,
-                      width: 20.0,
-                      margin: const EdgeInsets.only(left: 24.0, right: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFB2C2C3),
-                          width: 2.0,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    Text(
-                      "Don’t ask again.",
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff707070),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 26.0),
+                padding: const EdgeInsets.only(top: 16.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   mainAxisSize: MainAxisSize.max,
@@ -184,17 +132,6 @@ class DeleteSecretModal extends StatelessWidget {
                       ),
                     ),
                   ],
-                ),
-              ),
-              Text(
-                'To view your hidden photos, release the lock in the application settings. You can unlock them with your PIN.',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff707070),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
                 ),
               ),
             ],
