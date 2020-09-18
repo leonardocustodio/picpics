@@ -110,7 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Restore purchase"),
     "save" : MessageLookupByLibrary.simpleMessage("save"),
     "save_location" : MessageLookupByLibrary.simpleMessage("Save location"),
-    "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Sreenshots"),
+    "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Screenshots"),
     "search" : MessageLookupByLibrary.simpleMessage("Search..."),
     "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Search results"),

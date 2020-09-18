@@ -53,6 +53,36 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$isPinRegisteredAtom = Atom(name: '_AppStore.isPinRegistered');
+
+  @override
+  bool get isPinRegistered {
+    _$isPinRegisteredAtom.reportRead();
+    return super.isPinRegistered;
+  }
+
+  @override
+  set isPinRegistered(bool value) {
+    _$isPinRegisteredAtom.reportWrite(value, super.isPinRegistered, () {
+      super.isPinRegistered = value;
+    });
+  }
+
+  final _$secretPhotosAtom = Atom(name: '_AppStore.secretPhotos');
+
+  @override
+  bool get secretPhotos {
+    _$secretPhotosAtom.reportRead();
+    return super.secretPhotos;
+  }
+
+  @override
+  set secretPhotos(bool value) {
+    _$secretPhotosAtom.reportWrite(value, super.secretPhotos, () {
+      super.secretPhotos = value;
+    });
+  }
+
   final _$hourOfDayAtom = Atom(name: '_AppStore.hourOfDay');
 
   @override
@@ -175,6 +205,21 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$waitingAccessCodeAtom = Atom(name: '_AppStore.waitingAccessCode');
+
+  @override
+  bool get waitingAccessCode {
+    _$waitingAccessCodeAtom.reportRead();
+    return super.waitingAccessCode;
+  }
+
+  @override
+  set waitingAccessCode(bool value) {
+    _$waitingAccessCodeAtom.reportWrite(value, super.waitingAccessCode, () {
+      super.waitingAccessCode = value;
+    });
+  }
+
   final _$checkNotificationPermissionAsyncAction =
       AsyncAction('_AppStore.checkNotificationPermission');
 
@@ -243,6 +288,28 @@ mixin _$AppStore on _AppStore, Store {
         name: '_AppStore.switchDailyChallenges');
     try {
       return super.switchDailyChallenges();
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setIsPinRegistered(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setIsPinRegistered');
+    try {
+      return super.setIsPinRegistered(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void switchSecretPhotos() {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.switchSecretPhotos');
+    try {
+      return super.switchSecretPhotos();
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
@@ -426,10 +493,23 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setWaitingAccessCode(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setWaitingAccessCode');
+    try {
+      return super.setWaitingAccessCode(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},
 dailyChallenges: ${dailyChallenges},
+isPinRegistered: ${isPinRegistered},
+secretPhotos: ${secretPhotos},
 hourOfDay: ${hourOfDay},
 minutesOfDay: ${minutesOfDay},
 isPremium: ${isPremium},
@@ -438,6 +518,7 @@ canTagToday: ${canTagToday},
 hasSwiped: ${hasSwiped},
 appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},
+waitingAccessCode: ${waitingAccessCode},
 appLocale: ${appLocale},
 currentLanguage: ${currentLanguage}
     ''';

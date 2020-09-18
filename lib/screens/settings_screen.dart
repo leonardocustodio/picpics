@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
+import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/utils/languages.dart';
@@ -381,10 +382,50 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Container(
-                        height: 60.0,
+                    Container(
+                      height: 60.0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          pressedOpacity: 1.0,
+                          onPressed: appStore.switchDailyChallenges,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'Secret photos',
+                                textScaleFactor: 1.0,
+                                style: kGraySettingsFieldTextStyle,
+                              ),
+                              Observer(
+                                builder: (_) {
+                                  return CupertinoSwitch(
+                                      value: appStore.secretPhotos, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                      activeColor: kSecondaryColor,
+                                      onChanged: (value) {
+                                        if (!appStore.isPinRegistered) {
+                                          Navigator.pushNamed(context, PinScreen.id);
+                                          return;
+                                        }
+                                        appStore.setWaitingAccessCode(false);
+                                        appStore.switchSecretPhotos();
+                                      });
+                                },
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    Divider(
+                      color: kLightGrayColor,
+                      thickness: 1.0,
+                    ),
+                    Container(
+                      height: 60.0,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
@@ -410,6 +451,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         ),
                       ),
                     ),
+
                     Divider(
                       color: kLightGrayColor,
                       thickness: 1.0,

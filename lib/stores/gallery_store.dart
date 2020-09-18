@@ -274,7 +274,7 @@ abstract class _GalleryStore with Store {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (multiPicTags.contains(tagKey) || suggestionTags.contains(tagKey)) {
+          if (multiPicTagKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
             continue;
           }
           suggestionTags.add(tagKey);
@@ -283,15 +283,25 @@ abstract class _GalleryStore with Store {
 //      }
     } else {
       for (var tagKey in tagsBox.keys) {
+        if (tagKey == kSecretTagKey) continue;
+
         String tagName = Helpers.decryptTag(tagKey);
         if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
         }
       }
     }
+
+    print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
+
+    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey)) {
+      suggestionTags.add(kSecretTagKey);
+    }
+
     print('find suggestions: $searchText - exclude tags: $multiPicTags');
     print(suggestionTags);
     List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();
+    print('Suggestions Tag Store: $suggestions');
     return suggestions;
   }
 
@@ -768,7 +778,6 @@ abstract class _GalleryStore with Store {
         picStore.addTagToPic(
           tagKey: tagKey,
           photoId: picStore.photoId,
-          tagName: getTag.name,
         );
 
         if (!selectedPicsAreTagged) {

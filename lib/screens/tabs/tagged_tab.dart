@@ -9,10 +9,12 @@ import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/photo_screen.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
+import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/widgets/top_bar.dart';
@@ -33,6 +35,7 @@ class TaggedTab extends StatefulWidget {
 }
 
 class _TaggedTabState extends State<TaggedTab> {
+  AppStore appStore;
   GalleryStore galleryStore;
   TabsStore tabsStore;
   ReactionDisposer disposer;
@@ -100,10 +103,25 @@ class _TaggedTabState extends State<TaggedTab> {
         if (galleryStore.searchingTagsKeys.length > 1) {
           List<TaggedPicsStore> taggedPicsStores = [];
           for (String tagKey in galleryStore.searchingTagsKeys) {
-            taggedPicsStores.add(galleryStore.taggedPics.firstWhere((element) => element.tag.id == tagKey));
+            TaggedPicsStore findTaggedPicStore = galleryStore.taggedPics.firstWhere((element) => element.tag.id == tagKey, orElse: () => null);
+            if (findTaggedPicStore != null) {
+              taggedPicsStores.add(findTaggedPicStore);
+            } else {
+              TaggedPicsStore createTaggedPicStore = TaggedPicsStore(tag: appStore.tags.firstWhere((element) => element.id == tagKey));
+              taggedPicsStores.add(createTaggedPicStore);
+            }
           }
 
           for (TaggedPicsStore taggedPicsStore in taggedPicsStores) {
+            if (taggedPicsStore.pics.isEmpty) {
+              print('&&&& IS EMPTY &&&&');
+              isTitleWidget.add(true);
+              taggedItems.add(taggedPicsStore);
+              isTitleWidget.add(true);
+              taggedItems.add(null);
+              continue;
+            }
+
             isTitleWidget.add(true);
             taggedItems.add(taggedPicsStore);
             isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
@@ -147,7 +165,7 @@ class _TaggedTabState extends State<TaggedTab> {
             return Container(
               padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
               child: Text(
-                S.of(context).search_all_tags_not_found,
+                index == 1 ? S.of(context).search_all_tags_not_found : 'No photos found with this tag',
                 textScaleFactor: 1.0,
                 style: TextStyle(
                   fontFamily: 'Lato',
@@ -342,6 +360,7 @@ class _TaggedTabState extends State<TaggedTab> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
@@ -467,24 +486,65 @@ class _TaggedTabState extends State<TaggedTab> {
                                   showEditTagModal: widget.showEditTagModal,
                                 ),
                               ),
-                            if (galleryStore.showSearchTagsResults) ...[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text(
-                                  S.of(context).search_results,
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff979a9b),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
-                                  ),
+//                            if (galleryStore.showSearchTagsResults) ...[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                galleryStore.showSearchTagsResults ? S.of(context).search_results : S.of(context).suggestions,
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff979a9b),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
                                 ),
                               ),
-                              if (galleryStore.searchTagsResults.isNotEmpty)
-                                Padding(
+                            ),
+                            Observer(
+                              builder: (_) {
+                                if (!galleryStore.showSearchTagsResults) {
+                                  print('############ ${galleryStore.tagsSuggestions}');
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
+                                    child: TagsList(
+                                      tags: galleryStore.tagsSuggestions,
+                                      tagStyle: TagStyle.GrayOutlined,
+                                      showEditTagModal: widget.showEditTagModal,
+                                      onTap: (tagName) {
+                                        galleryStore.addTagToSearchFilter();
+                                        searchEditingController.clear();
+                                        galleryStore.searchResultsTags(searchEditingController.text);
+                                      },
+                                      onDoubleTap: () {
+                                        print('do nothing');
+                                      },
+                                      onPanEnd: () {
+                                        print('do nothing');
+                                      },
+                                    ),
+                                  );
+                                }
+                                if (galleryStore.searchTagsResults.isEmpty) {
+                                  return Container(
+                                    padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
+                                    child: Text(
+                                      S.of(context).no_tags_found,
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff979a9b),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Padding(
                                   padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                   child: TagsList(
                                     tags: galleryStore.searchTagsResults.toList(),
@@ -502,25 +562,11 @@ class _TaggedTabState extends State<TaggedTab> {
                                       print('do nothing');
                                     },
                                   ),
-                                ),
-                              if (galleryStore.searchTagsResults.isEmpty)
-                                Container(
-                                  padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
-                                  child: Text(
-                                    S.of(context).no_tags_found,
-                                    textScaleFactor: 1.0,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff979a9b),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
-                                    ),
-                                  ),
-                                )
-                            ],
+                                );
+                              },
+                            ),
+
+//                            ],
                             Container(
                               height: 1,
                               color: kLightGrayColor,

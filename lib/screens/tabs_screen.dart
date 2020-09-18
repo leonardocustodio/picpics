@@ -13,13 +13,16 @@ import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
+import 'package:picPics/widgets/unhide_secret_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/database_manager.dart';
@@ -47,6 +50,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
   ReactionDisposer disposer;
   ReactionDisposer disposer2;
+  ReactionDisposer disposer3;
 
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
@@ -58,8 +62,44 @@ class _TabsScreenState extends State<TabsScreen> {
 
   Throttle _changeThrottle;
 
+  void showDeleteSecretModal(PicStore picStore) {
+    print('SHOW MODAL !!!');
+
+    print('showModal');
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        if (picStore.isPrivate) {
+          return UnhideSecretModal(
+            onPressedDelete: () {
+              Navigator.of(context).pop();
+            },
+            onPressedOk: () {
+              picStore.setIsPrivate(false);
+              Navigator.of(context).pop();
+            },
+          );
+        }
+        return DeleteSecretModal(
+          onPressedClose: () {
+            Navigator.of(context).pop();
+          },
+          onPressedDelete: () {
+            picStore.setIsPrivate(true);
+            Navigator.of(context).pop();
+          },
+          onPressedOk: () {
+            picStore.setIsPrivate(true);
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
+
   showEditTagModal() {
-    if (DatabaseManager.instance.selectedTagKey != '') {
+    if (DatabaseManager.instance.selectedTagKey != '' && DatabaseManager.instance.selectedTagKey != kSecretTagKey) {
       TextEditingController alertInputController = TextEditingController();
 //      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
       String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
@@ -144,6 +184,7 @@ class _TabsScreenState extends State<TabsScreen> {
 //    _changeThrottle.dispose();
     disposer();
     disposer2();
+    disposer3();
     super.dispose();
   }
 
@@ -214,6 +255,16 @@ class _TabsScreenState extends State<TabsScreen> {
           galleryStore.clearSelectedPics();
           tabsStore.setMultiPicBar(false);
         }
+      }
+    });
+
+    disposer3 = reaction((_) => tabsStore.showDeleteSecretModal, (showModal) {
+      if (showModal) {
+        print('show delete secret modal!!!');
+//        setState(() {
+//          showEditTagModal();
+//        });
+//        showDeleteSecretModal(context);
       }
     });
 
@@ -345,7 +396,10 @@ class _TabsScreenState extends State<TabsScreen> {
                     } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
                       wgt = UntaggedTab();
                     else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
-                      wgt = PicTab(showEditTagModal: showEditTagModal);
+                      wgt = PicTab(
+                        showEditTagModal: showEditTagModal,
+                        showDeleteSecretModal: showDeleteSecretModal,
+                      );
                     else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
                     return wgt;
                   }),

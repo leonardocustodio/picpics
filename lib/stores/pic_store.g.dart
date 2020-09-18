@@ -84,6 +84,21 @@ mixin _$PicStore on _PicStore, Store {
     });
   }
 
+  final _$isPrivateAtom = Atom(name: '_PicStore.isPrivate');
+
+  @override
+  bool get isPrivate {
+    _$isPrivateAtom.reportRead();
+    return super.isPrivate;
+  }
+
+  @override
+  set isPrivate(bool value) {
+    _$isPrivateAtom.reportWrite(value, super.isPrivate, () {
+      super.isPrivate = value;
+    });
+  }
+
   final _$searchTextAtom = Atom(name: '_PicStore.searchText');
 
   @override
@@ -111,12 +126,12 @@ mixin _$PicStore on _PicStore, Store {
   @override
   Future<void> addTagToPic(
       {String tagKey,
-      String tagName,
+      String tagNameX,
       String photoId,
       List<AssetEntity> entities}) {
     return _$addTagToPicAsyncAction.run(() => super.addTagToPic(
         tagKey: tagKey,
-        tagName: tagName,
+        tagNameX: tagNameX,
         photoId: photoId,
         entities: entities));
   }
@@ -143,6 +158,17 @@ mixin _$PicStore on _PicStore, Store {
         _$_PicStoreActionController.startAction(name: '_PicStore.loadPicInfo');
     try {
       return super.loadPicInfo();
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setIsPrivate(bool value) {
+    final _$actionInfo =
+        _$_PicStoreActionController.startAction(name: '_PicStore.setIsPrivate');
+    try {
+      return super.setIsPrivate(value);
     } finally {
       _$_PicStoreActionController.endAction(_$actionInfo);
     }
@@ -190,6 +216,7 @@ latitude: ${latitude},
 longitude: ${longitude},
 specificLocation: ${specificLocation},
 generalLocation: ${generalLocation},
+isPrivate: ${isPrivate},
 searchText: ${searchText},
 tagsKeys: ${tagsKeys},
 tagsSuggestions: ${tagsSuggestions}

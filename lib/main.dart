@@ -1,16 +1,21 @@
 import 'dart:async';
+import 'dart:ffi';
+import 'dart:typed_data';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/asset_change_notifier.dart';
+import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/screens/photo_screen.dart';
+import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
@@ -54,10 +59,15 @@ void main() async {
   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
   Hive.registerAdapter(TagAdapter());
+  Hive.registerAdapter(SecretAdapter());
 
   var userBox = await Hive.openBox('user');
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
+
+  var secretKey = Uint8List.fromList(
+      [76, 224, 117, 70, 57, 101, 39, 29, 48, 239, 215, 240, 41, 149, 198, 69, 64, 5, 207, 227, 190, 126, 8, 133, 136, 234, 130, 91, 254, 104, 196, 158]);
+  var secretBox = await Hive.openBox('secret', encryptionKey: secretKey);
 
   String deviceLocale = await DeviceLocale.getCurrentLocale().then((Locale locale) => locale.toString());
   String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);
@@ -164,6 +174,8 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           SettingsScreen.id: (context) => SettingsScreen(),
           AddLocationScreen.id: (context) => AddLocationScreen(),
           PremiumScreen.id: (context) => PremiumScreen(),
+          PinScreen.id: (context) => PinScreen(),
+          EmailScreen.id: (context) => EmailScreen(),
         },
       ),
     );

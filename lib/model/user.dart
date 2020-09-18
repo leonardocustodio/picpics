@@ -60,6 +60,9 @@ class User extends HiveObject {
   @HiveField(18)
   bool loggedIn;
 
+  @HiveField(19)
+  bool secretPhotos;
+
   User({
     this.id,
     this.email,
@@ -80,5 +83,6 @@ class User extends HiveObject {
     this.hasSwiped,
     this.hasGalleryPermission,
     this.loggedIn,
+    this.secretPhotos,
   });
 }

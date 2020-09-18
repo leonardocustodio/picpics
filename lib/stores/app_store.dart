@@ -11,6 +11,7 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
@@ -36,6 +37,7 @@ abstract class _AppStore with Store {
     this.initiatedWithProduct,
   }) {
     var userBox = Hive.box('user');
+    var secretBox = Hive.box('secret');
     User user;
 
     if (userBox.length == 0) {
@@ -84,6 +86,11 @@ abstract class _AppStore with Store {
     canTagToday = user.canTagToday;
     loggedIn = user.loggedIn ?? false;
     tryBuyId = initiatedWithProduct;
+
+    if (secretBox.length > 0) {
+      Secret secret = secretBox.getAt(0);
+      isPinRegistered = secret.pin == null ? false : true;
+    }
 
     loadTags();
 
@@ -191,6 +198,27 @@ abstract class _AppStore with Store {
     Analytics.sendEvent(Event.notification_switch);
   }
 
+  @observable
+  bool isPinRegistered = false;
+
+  @action
+  void setIsPinRegistered(bool value) => isPinRegistered = value;
+
+  @observable
+  bool secretPhotos = false;
+
+  @action
+  void switchSecretPhotos() {
+    secretPhotos = !secretPhotos;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.secretPhotos = secretPhotos;
+    currentUser.save();
+
+//    Analytics.sendEvent(Event.notification_switch);
+  }
+
 //  int goal;
 
   @observable
@@ -249,6 +277,14 @@ abstract class _AppStore with Store {
     for (Tag tag in tagsBox.values) {
       TagsStore tagStore = TagsStore(id: tag.key, name: tag.name);
       tags.add(tagStore);
+    }
+
+    if (tagsBox.get(kSecretTagKey) == null) {
+      Tag createSecretTag = Tag('Secret Pics', []);
+      tagsBox.put(kSecretTagKey, createSecretTag);
+
+      TagsStore tagsStore = TagsStore(id: kSecretTagKey, name: 'Secret Pics');
+      tags.add(tagsStore);
     }
 
     print('******************* loaded tags **********');
@@ -513,4 +549,10 @@ abstract class _AppStore with Store {
       print('recent tags after removed: ${getUser.recentTags}');
     }
   }
+
+  @observable
+  bool waitingAccessCode = false;
+
+  @action
+  void setWaitingAccessCode(bool value) => waitingAccessCode = value;
 }

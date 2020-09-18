@@ -36,13 +36,14 @@ class UserAdapter extends TypeAdapter<User> {
       hasSwiped: fields[16] as bool,
       hasGalleryPermission: fields[17] as bool,
       loggedIn: fields[18] as bool,
+      secretPhotos: fields[19] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(20)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -80,7 +81,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(17)
       ..write(obj.hasGalleryPermission)
       ..writeByte(18)
-      ..write(obj.loggedIn);
+      ..write(obj.loggedIn)
+      ..writeByte(19)
+      ..write(obj.secretPhotos);
   }
 
   @override

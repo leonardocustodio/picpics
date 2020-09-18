@@ -90,4 +90,10 @@ abstract class _TabsStore with Store {
     }
     topOffsetFirstTab = value;
   }
+
+  @observable
+  bool showDeleteSecretModal = false;
+
+  @action
+  void setShowDeleteSecretModal(bool value) => showDeleteSecretModal = value;
 }

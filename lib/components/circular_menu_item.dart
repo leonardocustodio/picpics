@@ -25,8 +25,8 @@ class CircularMenuItem extends StatelessWidget {
     this.boxShadow,
     this.iconColor,
     this.animatedIcon,
-    this.padding = 10,
-    this.margin = 10,
+    this.padding = 8.0,
+    this.margin = 12.0,
   })  : assert(onTap != null),
         assert(padding >= 0.0),
         assert(margin >= 0.0);
@@ -39,8 +39,10 @@ class CircularMenuItem extends StatelessWidget {
         boxShadow: boxShadow ??
             [
               BoxShadow(
-                color: color,
-                blurRadius: 10,
+                color: Colors.black.withOpacity(0.25),
+                blurRadius: 4.0,
+                spreadRadius: 0.0,
+                offset: Offset(0, 2),
               ),
             ],
         shape: BoxShape.circle,
@@ -51,7 +53,18 @@ class CircularMenuItem extends StatelessWidget {
           child: InkWell(
             child: Padding(
               padding: EdgeInsets.all(padding),
-              child: animatedIcon == null ? image : animatedIcon,
+              child: animatedIcon == null
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 1.0, bottom: 1.0),
+                      child: Container(
+                        height: iconSize,
+                        width: iconSize,
+                        child: Center(
+                          child: image,
+                        ),
+                      ),
+                    )
+                  : animatedIcon,
             ),
             onTap: onTap,
           ),
