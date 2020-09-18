@@ -90,7 +90,7 @@ class _TabsScreenState extends State<TabsScreen> {
   }
 
   showEditTagModal() {
-    if (DatabaseManager.instance.selectedTagKey != '') {
+    if (DatabaseManager.instance.selectedTagKey != '' && DatabaseManager.instance.selectedTagKey != kSecretTagKey) {
       TextEditingController alertInputController = TextEditingController();
 //      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
       String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
