@@ -279,6 +279,14 @@ abstract class _AppStore with Store {
       tags.add(tagStore);
     }
 
+    if (tagsBox.get(kSecretTagKey) == null) {
+      Tag createSecretTag = Tag('Secret Pics', []);
+      tagsBox.put(kSecretTagKey, createSecretTag);
+    }
+
+    TagsStore tagsStore = TagsStore(id: kSecretTagKey, name: 'Secret Pics');
+    tags.add(tagsStore);
+
     print('******************* loaded tags **********');
   }
 

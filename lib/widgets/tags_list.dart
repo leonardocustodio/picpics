@@ -177,14 +177,20 @@ class _TagsListState extends State<TagsList> {
                     )
                   : kGrayBoxDecoration,
               child: showSwiperInIndex != i
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                      child: Text(
-                        tag.name,
-                        textScaleFactor: 1.0,
-                        style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
-                      ),
-                    )
+                  ? tag.id != kSecretTagKey
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          child: Text(
+                            tag.name,
+                            textScaleFactor: 1.0,
+                            style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.2, horizontal: 19.0),
+                          child:
+                              widget.tagStyle == TagStyle.MultiColored ? Image.asset('lib/images/locktagwhite.png') : Image.asset('lib/images/locktaggray.png'),
+                        )
                   : CustomAnimation<double>(
                       control: CustomAnimationControl.LOOP,
                       tween: 0.0.tweenTo(600.0),

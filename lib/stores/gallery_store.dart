@@ -274,7 +274,7 @@ abstract class _GalleryStore with Store {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (multiPicTags.contains(tagKey) || suggestionTags.contains(tagKey)) {
+          if (multiPicTagKeys.contains(tagKey) || suggestionTags.contains(tagKey)) {
             continue;
           }
           suggestionTags.add(tagKey);
@@ -289,6 +289,11 @@ abstract class _GalleryStore with Store {
         }
       }
     }
+
+    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey)) {
+      suggestionTags.add(kSecretTagKey);
+    }
+
     print('find suggestions: $searchText - exclude tags: $multiPicTags');
     print(suggestionTags);
     List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();

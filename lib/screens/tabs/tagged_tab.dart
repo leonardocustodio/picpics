@@ -467,24 +467,64 @@ class _TaggedTabState extends State<TaggedTab> {
                                   showEditTagModal: widget.showEditTagModal,
                                 ),
                               ),
-                            if (galleryStore.showSearchTagsResults) ...[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text(
-                                  S.of(context).search_results,
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff979a9b),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
-                                  ),
+//                            if (galleryStore.showSearchTagsResults) ...[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                galleryStore.showSearchTagsResults ? S.of(context).search_results : S.of(context).suggestions,
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff979a9b),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
                                 ),
                               ),
-                              if (galleryStore.searchTagsResults.isNotEmpty)
-                                Padding(
+                            ),
+                            Observer(
+                              builder: (_) {
+                                if (!galleryStore.showSearchTagsResults) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
+                                    child: TagsList(
+                                      tags: galleryStore.tagsSuggestions,
+                                      tagStyle: TagStyle.GrayOutlined,
+                                      showEditTagModal: widget.showEditTagModal,
+                                      onTap: (tagName) {
+                                        galleryStore.addTagToSearchFilter();
+                                        searchEditingController.clear();
+                                        galleryStore.searchResultsTags(searchEditingController.text);
+                                      },
+                                      onDoubleTap: () {
+                                        print('do nothing');
+                                      },
+                                      onPanEnd: () {
+                                        print('do nothing');
+                                      },
+                                    ),
+                                  );
+                                }
+                                if (galleryStore.searchTagsResults.isEmpty) {
+                                  return Container(
+                                    padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
+                                    child: Text(
+                                      S.of(context).no_tags_found,
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff979a9b),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Padding(
                                   padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                   child: TagsList(
                                     tags: galleryStore.searchTagsResults.toList(),
@@ -502,25 +542,11 @@ class _TaggedTabState extends State<TaggedTab> {
                                       print('do nothing');
                                     },
                                   ),
-                                ),
-                              if (galleryStore.searchTagsResults.isEmpty)
-                                Container(
-                                  padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
-                                  child: Text(
-                                    S.of(context).no_tags_found,
-                                    textScaleFactor: 1.0,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff979a9b),
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
-                                    ),
-                                  ),
-                                )
-                            ],
+                                );
+                              },
+                            ),
+
+//                            ],
                             Container(
                               height: 1,
                               color: kLightGrayColor,
