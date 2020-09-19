@@ -70,7 +70,7 @@ class _TabsScreenState extends State<TabsScreen> {
       context: context,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
-        if (picStore.isPrivate) {
+        if (picStore.isPrivate == true) {
           return UnhideSecretModal(
             onPressedDelete: () {
               Navigator.of(context).pop();

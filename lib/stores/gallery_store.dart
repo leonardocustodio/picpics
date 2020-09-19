@@ -38,11 +38,11 @@ abstract class _GalleryStore with Store {
           print('this pic now has tags!');
         }
       } else {
-        if (taggedPics.contains(currentPic)) {
-          untaggedPics.add(currentPic);
-          removePicFromTaggedPics(picStore: currentPic);
-          print('this pic now doesnt have tags!');
-        }
+//        if (taggedPics.contains(currentPic)) {
+        untaggedPics.add(currentPic);
+        removePicFromTaggedPics(picStore: currentPic);
+        print('this pic now doesnt have tags!');
+//        }
       }
     });
   }
@@ -333,6 +333,10 @@ abstract class _GalleryStore with Store {
       if (taggedPicsStore == null) {
         taggedPicsStore = TaggedPicsStore(tag: tag);
         taggedPics.add(taggedPicsStore);
+      }
+
+      if (taggedPicsStore.pics.contains(picStore)) {
+        continue;
       }
 
       if (toInitialIndex) {

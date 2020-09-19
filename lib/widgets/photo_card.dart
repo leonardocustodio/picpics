@@ -187,8 +187,8 @@ class _PhotoCardState extends State<PhotoCard> {
                       },
                     ),
                     CircularMenuItem(
-                      image: picStore.isPrivate ? Image.asset('lib/images/openlockmenu.png') : Image.asset('lib/images/lockmenu.png'),
-                      color: picStore.isPrivate ? Color(0xFFF5FAFA) : kYellowColor,
+                      image: picStore.isPrivate == true ? Image.asset('lib/images/openlockmenu.png') : Image.asset('lib/images/lockmenu.png'),
+                      color: picStore.isPrivate == true ? Color(0xFFF5FAFA) : kYellowColor,
                       iconSize: 19.2,
                       onTap: () {
                         widget.showDeleteSecretModal(picStore);

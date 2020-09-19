@@ -53,7 +53,7 @@ abstract class _PicStore with Store {
       longitude = pic.longitude;
       specificLocation = pic.specificLocation;
       generalLocation = pic.generalLocation;
-      isPrivate = pic.isPrivate ?? false;
+      isPrivate = pic.isPrivate;
 
       for (String tagKey in pic.tags) {
         TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
@@ -77,7 +77,7 @@ abstract class _PicStore with Store {
   String generalLocation;
 
   @observable
-  bool isPrivate;
+  bool isPrivate = false;
 
   @action
   void setIsPrivate(bool value) {
@@ -152,7 +152,7 @@ abstract class _PicStore with Store {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey)) {
+          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
             continue;
           }
           suggestionTags.add(tagKey);
@@ -161,6 +161,8 @@ abstract class _PicStore with Store {
 //      }
     } else {
       for (var tagKey in tagsBox.keys) {
+        if (tagKey == kSecretTagKey) continue;
+
         String tagName = Helpers.decryptTag(tagKey);
         if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
