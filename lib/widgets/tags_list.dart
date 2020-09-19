@@ -61,10 +61,6 @@ class _TagsListState extends State<TagsList> {
   bool swipedRightDirection = false;
 
   Widget _buildTagsWidget(BuildContext context) {
-    if (widget.tags == null) {
-      return Container();
-    }
-
     LinearGradient getGradient(int num) {
       switch (num) {
         case 0:
@@ -93,7 +89,7 @@ class _TagsListState extends State<TagsList> {
     List<Widget> tagsWidgets = [];
     print('Tags in TagsList: ${widget.tags}');
 
-    if (widget.tags.length == 0 && widget.tagStyle == TagStyle.GrayOutlined) {
+    if (widget.tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.only(top: 10.0, left: 18.0, bottom: 8.0),

@@ -275,40 +275,40 @@ class _TaggedTabState extends State<TaggedTab> {
                             child: state.completedWidget,
                           ),
                         );
+
+                        List<Widget> items = [image];
+
                         if (tabsStore.multiPicBar) {
                           if (galleryStore.selectedPics.contains(picStore)) {
-                            return Stack(
-                              children: [
-                                image,
-                                Container(
-                                  constraints: BoxConstraints.expand(),
-                                  decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
-                                    border: Border.all(
-                                      color: kSecondaryColor,
-                                      width: 2.0,
-                                    ),
+                            items.add(
+                              Container(
+                                constraints: BoxConstraints.expand(),
+                                decoration: BoxDecoration(
+                                  color: kSecondaryColor.withOpacity(0.3),
+                                  border: Border.all(
+                                    color: kSecondaryColor,
+                                    width: 2.0,
                                   ),
                                 ),
-                                Positioned(
-                                  left: 8.0,
-                                  top: 6.0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      gradient: kSecondaryGradient,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Image.asset('lib/images/checkwhiteico.png'),
-                                  ),
-                                ),
-                              ],
+                              ),
                             );
-                          }
-                          return Stack(
-                            children: [
-                              image,
+                            items.add(
+                              Positioned(
+                                left: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    gradient: kSecondaryGradient,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Image.asset('lib/images/checkwhiteico.png'),
+                                ),
+                              ),
+                            );
+                          } else {
+                            items.add(
                               Positioned(
                                 left: 8.0,
                                 top: 6.0,
@@ -324,14 +324,37 @@ class _TaggedTabState extends State<TaggedTab> {
                                   ),
                                 ),
                               ),
-                            ],
+                            );
+                          }
+                        }
+
+                        if (picStore.isPrivate == true) {
+                          items.add(
+                            Positioned(
+                              right: 8.0,
+                              top: 6.0,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                padding: const EdgeInsets.only(bottom: 2.0),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  gradient: LinearGradient(
+                                    colors: [Color(0xffffcc00), Color(0xffffe98f)],
+                                    stops: [0.2291666716337204, 1],
+                                    begin: Alignment(-1.00, 0.00),
+                                    end: Alignment(1.00, -0.00),
+                                    // angle: 0,
+                                    // scale: undefined,
+                                  ),
+                                ),
+                                child: Image.asset('lib/images/smallwhitelock.png'),
+                              ),
+                            ),
                           );
                         }
-                        return Stack(
-                          children: [
-                            image,
-                          ],
-                        );
+
+                        return Stack(children: items);
                       }),
                     ),
                   );
