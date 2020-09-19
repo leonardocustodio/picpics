@@ -475,7 +475,8 @@ abstract class _AppStore with Store {
   void createDefaultTags(BuildContext context) {
     var tagsBox = Hive.box('tags');
 
-    if (tagsBox.length > 0) {
+    if (tagsBox.length > 1) {
+      // Criada a secret tag aqui por isso 1
       print('Default tags already created');
       return;
     }
