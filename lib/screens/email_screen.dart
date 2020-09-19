@@ -70,11 +70,12 @@ class _EmailScreenState extends State<EmailScreen> with AnimationMixin {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           CupertinoButton(
+                            padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                             onPressed: () {
                               appStore.setWaitingAccessCode(false);
                               Navigator.pop(context);
                             },
-                            child: Image.asset('lib/images/backarrowgray.png'),
+                            child: Image.asset('lib/images/backarrowwithdropshadow.png'),
                           ),
 //                          CupertinoButton(
 //                            onPressed: () {
@@ -151,6 +152,13 @@ class _EmailScreenState extends State<EmailScreen> with AnimationMixin {
                                             borderRadius: BorderRadius.circular(8.0),
                                           ),
                                           enabledBorder: OutlineInputBorder(
+                                            borderSide: BorderSide(
+                                              color: Color(0xFFE2E4E5),
+                                              width: 1.0,
+                                            ),
+                                            borderRadius: BorderRadius.circular(8.0),
+                                          ),
+                                          focusedBorder: OutlineInputBorder(
                                             borderSide: BorderSide(
                                               color: Color(0xFFE2E4E5),
                                               width: 1.0,
