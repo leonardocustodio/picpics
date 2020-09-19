@@ -1,9 +1,11 @@
 import 'dart:math';
 import 'dart:ui';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/components/colorful_background.dart';
 import 'package:picPics/constants.dart';
@@ -30,6 +32,12 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
   AnimationController heightController;
   Animation<double> moveByX;
   Animation<double> moveByY;
+
+  String pinValue = '';
+  String confirmValue = '';
+
+  CarouselController carouselController = CarouselController();
+  int carouselPage = 0;
 
   showCreatedKeyModal() {
     showDialog<void>(
@@ -134,12 +142,72 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
     appStore = Provider.of<AppStore>(context);
   }
 
-  void pinTapped() {
-    if (appStore.waitingAccessCode) {
-      showCreatedKeyModal();
+  Widget _buildPinPad(BuildContext context, int index) {
+//    print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 24.0,
+        vertical: 4.0,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Text(
+            index == 0 ? 'New secret key' : 'Confirm secret key',
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: kSecondaryColor,
+              fontSize: 24.0,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
+          ),
+          Spacer(),
+          PinPlaceholder(
+            filledPositions: index == 0 ? pinValue.length : confirmValue.length,
+            totalPositions: 6,
+          ),
+          Spacer(),
+          NumberPad(
+            onPinTapped: pinTapped,
+          ),
+          Spacer(),
+        ],
+      ),
+    );
+  }
+
+  void pinTapped(int value) {
+    print('Value: $value');
+
+    if (carouselPage == 0) {
+      pinValue = '${pinValue}${value}';
+
+      if (pinValue.length == 6) {
+        carouselPage = 1;
+        carouselController.nextPage();
+      }
       return;
     }
-    Navigator.pushNamed(context, EmailScreen.id);
+
+    confirmValue = '${confirmValue}${value}';
+
+    if (confirmValue.length == 6) {
+      if (pinValue == confirmValue) {
+        carouselPage = 0;
+        pinValue = '';
+        confirmValue = '';
+        Navigator.pushNamed(context, EmailScreen.id).whenComplete(() => carouselController.jumpToPage(0));
+      }
+    }
+
+//    if (appStore.waitingAccessCode) {
+//      showCreatedKeyModal();
+//      return;
+//    }
+//    Navigator.pushNamed(context, EmailScreen.id);
   }
 
   @override
@@ -177,10 +245,11 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               CupertinoButton(
+                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Image.asset('lib/images/backarrowgray.png'),
+                                child: Image.asset('lib/images/backarrowwithdropshadow.png'),
                               ),
 //                          CupertinoButton(
 //                            onPressed: () {
@@ -203,17 +272,27 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
                             ],
                           ),
                           Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0,
-                                vertical: 4.0,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Spacer(),
+                            child: Observer(builder: (_) {
+                              if (appStore.waitingAccessCode == false) {
+                                return CarouselSlider.builder(
+                                  carouselController: carouselController,
+                                  itemCount: 2,
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return _buildPinPad(context, index);
+                                  },
+                                  options: CarouselOptions(
+                                    initialPage: 0,
+                                    enableInfiniteScroll: false,
+                                    height: double.maxFinite,
+                                    viewportFraction: 1.0,
+                                    scrollPhysics: NeverScrollableScrollPhysics(),
+                                  ),
+                                );
+                              }
+                              return Column(
+                                children: [
                                   Text(
-                                    appStore.waitingAccessCode ? 'Access code' : 'New secret key',
+                                    'Access code',
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: kSecondaryColor,
@@ -223,31 +302,33 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
                                       letterSpacing: -0.4099999964237213,
                                     ),
                                   ),
-                                  if (appStore.waitingAccessCode)
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 16.0),
-                                      child: Text(
-                                        'An acess key was sended to\nola@pombastudio.com',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          color: Color(0xff979a9b),
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.w400,
-                                          fontStyle: FontStyle.normal,
-                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: Text(
+                                      'An acess key was sended to\nola@pombastudio.com',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff979a9b),
+                                        fontSize: 15.0,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
                                       ),
                                     ),
+                                  ),
                                   Spacer(),
-                                  PinPlaceholder(),
+                                  PinPlaceholder(
+                                    filledPositions: carouselPage == 0 ? pinValue.length : confirmValue.length,
+                                    totalPositions: 6,
+                                  ),
                                   Spacer(),
                                   NumberPad(
                                     onPinTapped: pinTapped,
                                   ),
                                   Spacer(),
                                 ],
-                              ),
-                            ),
+                              );
+                            }),
                           ),
                         ],
                       ),
@@ -337,12 +418,13 @@ class NumberPad extends StatelessWidget {
           continue;
         }
 
+        int value = pin;
         number.add(
           CupertinoButton(
             padding: const EdgeInsets.all(0),
             minSize: 0,
             onPressed: () {
-              onPinTapped();
+              onPinTapped(value);
             },
             child: Text(
               '${pin == 11 ? '0' : pin}',

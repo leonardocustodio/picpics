@@ -416,6 +416,9 @@ class _TaggedTabState extends State<TaggedTab> {
                 return DeviceHasNoPics();
               } else if (galleryStore.taggedPics.length == 0 && galleryStore.deviceHasPics) {
                 return TopBar(
+                  appStore: appStore,
+                  galleryStore: galleryStore,
+                  showSecretSwitch: appStore.secretPhotos,
                   children: <Widget>[
                     Expanded(
                       child: Center(
@@ -475,7 +478,9 @@ class _TaggedTabState extends State<TaggedTab> {
                 );
               } else if (galleryStore.taggedPics.length > 0 && galleryStore.deviceHasPics) {
                 return TopBar(
+                  appStore: appStore,
                   galleryStore: galleryStore,
+                  showSecretSwitch: appStore.secretPhotos,
                   searchEditingController: searchEditingController,
                   searchFocusNode: searchFocusNode,
                   children: <Widget>[

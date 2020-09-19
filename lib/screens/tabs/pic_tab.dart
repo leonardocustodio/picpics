@@ -135,17 +135,17 @@ class _PicTabState extends State<PicTab> {
                           return _buildPhotoSlider(context, index);
                         },
                         options: CarouselOptions(
-                            initialPage: galleryStore.swipeIndex,
-                            enableInfiniteScroll: false,
-                            height: double.maxFinite,
-                            viewportFraction: 1.0,
-                            enlargeCenterPage: true,
-                            autoPlayCurve: Curves.fastOutSlowIn,
-                            scrollPhysics: scrollPhysics,
-                            onPageChanged: (index, reason) {
-                              galleryStore.setSwipeIndex(index);
-                            },
-                            onScrolled: (double) {
+                          initialPage: galleryStore.swipeIndex,
+                          enableInfiniteScroll: false,
+                          height: double.maxFinite,
+                          viewportFraction: 1.0,
+                          enlargeCenterPage: true,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          scrollPhysics: scrollPhysics,
+                          onPageChanged: (index, reason) {
+                            galleryStore.setSwipeIndex(index);
+                          },
+                          onScrolled: (double) {
 //                              if (galleryStore.swipeIndex <= galleryStore.swipeCutOff && galleryStore.swipeIndex != 0) {
 //                                print('changing scroll physics');
 //                                setState(() {
@@ -153,7 +153,8 @@ class _PicTabState extends State<PicTab> {
 //                                });
 //                              }
 //                              print('scrolled $double');
-                            }),
+                          },
+                        ),
                       );
                     }),
                     Observer(builder: (_) {

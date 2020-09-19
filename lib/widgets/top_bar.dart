@@ -3,16 +3,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
 class TopBar extends StatelessWidget {
+  final AppStore appStore;
   final GalleryStore galleryStore;
   final FocusNode searchFocusNode;
   final TextEditingController searchEditingController;
   final List<Widget> children;
+  final bool showSecretSwitch;
 
   TopBar({
+    @required this.appStore,
     @required this.galleryStore,
+    @required this.showSecretSwitch,
     this.searchEditingController,
     this.searchFocusNode,
     this.children,
@@ -82,6 +87,18 @@ class TopBar extends StatelessWidget {
                       ),
                     ),
                   ),
+                ),
+              if (showSecretSwitch == false)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: CupertinoSwitch(
+                      value: true, // appStore.secretPhotos,
+                      activeColor: kSecondaryColor,
+                      onChanged: (value) {
+                        print('turn off');
+//                      appStore.setWaitingAccessCode(false);
+//                      appStore.switchSecretPhotos();
+                      }),
                 ),
               CupertinoButton(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
