@@ -746,10 +746,10 @@ class S {
     );
   }
 
-  /// `Sreenshots`
+  /// `Screenshots`
   String get screenshots_tag {
     return Intl.message(
-      'Sreenshots',
+      'Screenshots',
       name: 'screenshots_tag',
       desc: '',
       args: [],

@@ -87,7 +87,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Kauf wiederherstellen"),
     "save" : MessageLookupByLibrary.simpleMessage("speichern"),
     "save_location" : MessageLookupByLibrary.simpleMessage("Speicherort"),
-    "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Sreenshots"),
+    "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Screenshots"),
     "search" : MessageLookupByLibrary.simpleMessage("Suche..."),
     "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("Es wurden keine Bilder mit allen Tags gefunden."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Suchergebnisse"),
