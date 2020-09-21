@@ -135,7 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Atur foto Anda dengan menambahkan tag, seperti \'keluarga\', \'hewan peliharaan\', atau apa pun yang Anda inginkan."),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("Setelah menambahkan tag ke foto Anda, cukup geser untuk membuka yang berikutnya."),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("Liburan"),
-    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("Untuk melihat foto tersembunyi Anda, release the lock in the application settings. You can unlock them with your PIN."),
+    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("Untuk menampilkan foto tersembunyi Anda, lepaskan kunci pada pengaturan aplikasi. Anda dapat membukanya dengan PIN Anda."),
     "welcome" : MessageLookupByLibrary.simpleMessage("Selamat datang!"),
     "work_tag" : MessageLookupByLibrary.simpleMessage("Kerja"),
     "x_minutes" : MessageLookupByLibrary.simpleMessage("20 mnt"),

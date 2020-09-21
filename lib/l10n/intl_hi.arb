@@ -137,7 +137,7 @@
   "keep_safe": "आपकी तस्वीर अब पिकनिक पर सुरक्षित है. क्या आप इसे अपने कैमरा रोल से हटाना चाहते हैं?",
   "keep_asking": "पूछते रहो",
   "dont_ask_again": "फिर से मत पूछो",
-  "view_hidden_photos": "अपनी छिपी तस्वीरों को देखने के लिए release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "अपनी छिपी तस्वीरों को देखने के लिए, एप्लिकेशन सेटिंग में लॉक जारी करें। आप उन्हें अपने पिन से अनलॉक कर सकते हैं",
   "require_secret_key": "गुप्त कुंजी की आवश्यकता है",
   "always": "हमेशा",
   "x_minutes": "बीस मिनट",

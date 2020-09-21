@@ -138,7 +138,7 @@
   "keep_safe": "ขณะนี้รูปภาพของคุณถูกเก็บอย่างปลอดภัยใน picPics คุณต้องการลบรูปภาพออกจาก Camera roll ไหม?",
   "keep_asking": "ถามทุกครั้ง",
   "dont_ask_again": "ไม่ต้องถามอีกเลย",
-  "view_hidden_photos": "เพื่อดูรูปภาพที่ซ่อนอยู่, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "ปลดล็อกในการตั้งค่าเพื่อดูรูปภาพที่ซ่อนไว้ คุณสามารถปลดล็อกได้โดยใช้ PIN",
   "require_secret_key": "ต้องมีรหัสลับ",
   "always": "ตลอดเวลา",
   "x_minutes": "20 นาที",

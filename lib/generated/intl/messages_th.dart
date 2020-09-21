@@ -135,7 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("จัดหมวดหมู่ภาพด้วยการติดแท็ก อย่างเช่น \'ครอบครัว\' \'สัตว์เลี้ยง\' หรืออะไรก็ได้ที่คุณต้องการ"),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("หลังจากเพิ่มแท็กแล้วก็แค่ปัดไปที่ภาพต่อไป"),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("วันพักร้อน"),
-    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("เพื่อดูรูปภาพที่ซ่อนอยู่, release the lock in the application settings. You can unlock them with your PIN."),
+    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("ปลดล็อกในการตั้งค่าเพื่อดูรูปภาพที่ซ่อนไว้ คุณสามารถปลดล็อกได้โดยใช้ PIN"),
     "welcome" : MessageLookupByLibrary.simpleMessage("ยินดีต้อนรับ!"),
     "work_tag" : MessageLookupByLibrary.simpleMessage("ที่ทำงาน"),
     "x_minutes" : MessageLookupByLibrary.simpleMessage("20 นาที"),

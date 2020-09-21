@@ -137,7 +137,7 @@
   "keep_safe": "이제 picPics에서 사진이 안전합니다. 카메라 롤에서 삭제하시겠습니까?",
   "keep_asking": "계속 물어보기",
   "dont_ask_again": "다시 묻지 않기",
-  "view_hidden_photos": "숨겨진 사진을 보려면, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "숨겨진 사진을 보려면, 앱 설정에서 잠금을 해제하십시오. PIN으로 잠금 해제할 수 있습니다.",
   "require_secret_key": "비밀 키가 필요합니다",
   "always": "항상",
   "x_minutes": "20분",

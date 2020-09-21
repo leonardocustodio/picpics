@@ -138,7 +138,7 @@
   "keep_safe": "Twoje zdjęcie jest teraz bezpieczne na picPics. Czy chcesz go usunąć z rolki aparatu?",
   "keep_asking": "Pytaj dalej",
   "dont_ask_again": "Nie pytaj ponownie",
-  "view_hidden_photos": "Aby wyświetlić ukryte zdjęcia, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "Aby wyświetlić ukryte zdjęcia, odblokuj w ustawieniach aplikacji. Możesz je odblokować za pomocą kodu PIN.",
   "require_secret_key": "Wymagaj tajnego klucza",
   "always": "Zawsze",
   "x_minutes": "20 minut",

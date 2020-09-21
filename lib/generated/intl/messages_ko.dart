@@ -135,7 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("\'가족\', \'반려동물\' 등 원하는 태그를 추가하여 사진을 정리정돈하십시오."),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("사진에 태그를 추가한 후 스와이프하면 다음 태그로 이동합니다."),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("휴가"),
-    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("숨겨진 사진을 보려면, release the lock in the application settings. You can unlock them with your PIN."),
+    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("숨겨진 사진을 보려면, 앱 설정에서 잠금을 해제하십시오. PIN으로 잠금 해제할 수 있습니다."),
     "welcome" : MessageLookupByLibrary.simpleMessage("환영합니다!"),
     "work_tag" : MessageLookupByLibrary.simpleMessage("직장"),
     "x_minutes" : MessageLookupByLibrary.simpleMessage("20분"),

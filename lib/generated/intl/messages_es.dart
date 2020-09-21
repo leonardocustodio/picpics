@@ -135,7 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Organiza tus fotos añadiendo etiquetas, como \'familia\', \'mascotas\' o lo que quieras."),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("Después de añadir las etiquetas a tu foto, simplemente desliza para pasar a la siguiente."),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("Vacaciones"),
-    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("Para ver tus fotos ocultas, release the lock in the application settings. You can unlock them with your PIN."),
+    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("Para ver tus fotos ocultas, retira el bloqueo en los ajustes de la aplicación. Puedes desbloquearlas con tu PIN."),
     "welcome" : MessageLookupByLibrary.simpleMessage("¡Bienvenido!"),
     "work_tag" : MessageLookupByLibrary.simpleMessage("Trabajo"),
     "x_minutes" : MessageLookupByLibrary.simpleMessage("20 minutos"),

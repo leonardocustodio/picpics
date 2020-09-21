@@ -138,7 +138,7 @@
   "keep_safe": "これで写真は picPics で安全になりました。カメラロールから削除しますか？",
   "keep_asking": "質問を続ける",
   "dont_ask_again": "質問はもうしないでください。",
-  "view_hidden_photos": "非表示の写真を表示するには, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "非表示の写真を表示するには、アプリケーションの設定でロックを解除してください。ロックの解除はお持ちのPIN\nで行うことができます。",
   "require_secret_key": "秘密の鍵が必要",
   "always": "常時",
   "x_minutes": "20 分",
