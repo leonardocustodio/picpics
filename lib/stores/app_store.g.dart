@@ -195,6 +195,15 @@ mixin _$AppStore on _AppStore, Store {
         .run(() => super.checkPremiumStatus());
   }
 
+  final _$setTutorialCompletedAsyncAction =
+      AsyncAction('_AppStore.setTutorialCompleted');
+
+  @override
+  Future<void> setTutorialCompleted(bool value) {
+    return _$setTutorialCompletedAsyncAction
+        .run(() => super.setTutorialCompleted(value));
+  }
+
   final _$increaseTodayTaggedPicsAsyncAction =
       AsyncAction('_AppStore.increaseTodayTaggedPics');
 
@@ -332,17 +341,6 @@ mixin _$AppStore on _AppStore, Store {
         name: '_AppStore.editRecentTags');
     try {
       return super.editRecentTags(oldTagKey, newTagKey);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setTutorialCompleted(bool value) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setTutorialCompleted');
-    try {
-      return super.setTutorialCompleted(value);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
