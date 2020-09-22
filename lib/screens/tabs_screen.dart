@@ -310,7 +310,7 @@ class _TabsScreenState extends State<TabsScreen> {
                 children: <Widget>[
                   Observer(builder: (_) {
                     Widget wgt;
-                    if (!appStore.hasGalleryPermission) {
+                    if (appStore.hasGalleryPermission == null || appStore.hasGalleryPermission == false) {
                       wgt = Container(
                         constraints: BoxConstraints.expand(),
                         color: kWhiteColor,
@@ -853,13 +853,14 @@ class _TabsScreenState extends State<TabsScreen> {
                             height: 17.0,
                           ),
                           CupertinoButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (tabsStore.tutorialIndex == 2) {
                                 print('Requesting notification....');
 
                                 appStore.requestNotificationPermission();
                                 appStore.checkNotificationPermission(firstPermissionCheck: true);
-                                appStore.setTutorialCompleted(true);
+                                await appStore.setTutorialCompleted(true);
+                                await galleryStore.loadAssetsPath();
                                 return;
                               }
                               tutorialSwiperController.next(animation: true);
