@@ -211,6 +211,8 @@ abstract class _AppStore with Store {
   void switchSecretPhotos() {
     secretPhotos = !secretPhotos;
 
+    print('After Switch Secret: $secretPhotos');
+
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.secretPhotos = secretPhotos;
