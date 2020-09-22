@@ -88,8 +88,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                       onPressed: () async {
                         widthController.stop();
                         heightController.stop();
-
-                        await appStore.requestGalleryPermission();
                         appStore.setLoggedIn(true);
                         Navigator.pushReplacementNamed(context, TabsScreen.id);
                       },

@@ -336,13 +336,15 @@ abstract class _AppStore with Store {
   bool tutorialCompleted;
 
   @action
-  void setTutorialCompleted(bool value) {
+  Future<void> setTutorialCompleted(bool value) async {
     tutorialCompleted = value;
 
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.tutorialCompleted = value;
     currentUser.save();
+
+    await requestGalleryPermission();
   }
 
   int picsTaggedToday;
