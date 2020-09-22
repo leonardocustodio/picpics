@@ -138,7 +138,7 @@
   "keep_safe": "Foto Anda kini aman di picPics. Apakah Anda ingin menghapusnya dari rol kamera Anda?",
   "keep_asking": "Tetap tanyakan",
   "dont_ask_again": "Jangan tanya lagi",
-  "view_hidden_photos": "Untuk melihat foto tersembunyi Anda, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "Untuk menampilkan foto tersembunyi Anda, lepaskan kunci pada pengaturan aplikasi. Anda dapat membukanya dengan PIN Anda.",
   "require_secret_key": "Memerlukan kode rahasia",
   "always": "Selalu",
   "x_minutes": "20 mnt",

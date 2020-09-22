@@ -138,7 +138,7 @@
   "keep_safe": "Ihr Foto in picPics ist jetzt sicher. Möchten Sie es von Ihrer Kamerarolle löschen?",
   "keep_asking": "Erneut fragen",
   "dont_ask_again": "Nicht erneut fragen",
-  "view_hidden_photos": "So zeigen Sie Ihre versteckten Fotos an., release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "Deaktivieren Sie die Sperre in den App-Einstellungen, um versteckte Fotos anzuzeigen. Sie können diese Option mit Ihrer PIN freischalten.",
   "require_secret_key": "Geheimschlüssel anfordern",
   "always": "Immer",
   "x_minutes": "20 Minuten",

@@ -138,7 +138,7 @@
   "keep_safe": "Votre photo est désormais en sécurité sur picPics. Voulez-vous la supprimer de votre pellicule ?",
   "keep_asking": "Continuer à demander",
   "dont_ask_again": "Ne plus demander",
-  "view_hidden_photos": "Pour afficher vos photos cachées, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "Pour afficher vos photos occultes, libérez le verrouillage dans les paramètres de l'application. Vous pouvez le déverrouiller avec votre code PIN.",
   "require_secret_key": "Exiger une clé secrète",
   "always": "Toujours",
   "x_minutes": "20 min",

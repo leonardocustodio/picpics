@@ -135,7 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("通过添加标签（例如“家庭”、“宠物”或任何您想要的标签）来整理照片。"),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("将标签添加到照片后，只需滑动即可前往下一个。"),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("假期"),
-    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("查看隐藏的照片, release the lock in the application settings. You can unlock them with your PIN."),
+    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("要查看隐藏的照片，请在应用程序设置中释放锁。您可以用个人识别码解锁它们。"),
     "welcome" : MessageLookupByLibrary.simpleMessage("欢迎！"),
     "work_tag" : MessageLookupByLibrary.simpleMessage("工作"),
     "x_minutes" : MessageLookupByLibrary.simpleMessage("20分钟"),

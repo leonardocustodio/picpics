@@ -135,7 +135,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Организуйте свои фотографии, добавив к ним теги «семья», «питомцы», или какие вы сами хотите."),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("После добавления тегов к фотографии просто проведите пальцем, чтобы перейти к следующему."),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("Отпуск"),
-    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("Для просмотра ваших скрытых фотографий, release the lock in the application settings. You can unlock them with your PIN."),
+    "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("Чтобы просмотреть скрытые фотографии, снимите блокировку в настройках приложения. Вы можете разблокировать их с помощью PIN-кода."),
     "welcome" : MessageLookupByLibrary.simpleMessage("Добро пожаловать!"),
     "work_tag" : MessageLookupByLibrary.simpleMessage("Работа"),
     "x_minutes" : MessageLookupByLibrary.simpleMessage("20 мин"),

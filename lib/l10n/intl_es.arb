@@ -139,7 +139,7 @@
   "keep_safe": "Tu foto ahora está segura en picPics. ¿Quieres eliminarla del carrete de tu cámara?",
   "keep_asking": "Seguir preguntando",
   "dont_ask_again": "No volver a preguntar",
-  "view_hidden_photos": "Para ver tus fotos ocultas, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "Para ver tus fotos ocultas, retira el bloqueo en los ajustes de la aplicación. Puedes desbloquearlas con tu PIN.",
   "require_secret_key": "Requerir clave secreta",
   "always": "Siempre",
   "x_minutes": "20 minutos",

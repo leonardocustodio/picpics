@@ -137,7 +137,7 @@
   "keep_safe": "Ваша фотография теперь в безопасности на picPics. Вы хотите удалить ее с фотопленки?",
   "keep_asking": "Спросить еще",
   "dont_ask_again": "Больше не спрашивать",
-  "view_hidden_photos": "Для просмотра ваших скрытых фотографий, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "Чтобы просмотреть скрытые фотографии, снимите блокировку в настройках приложения. Вы можете разблокировать их с помощью PIN-кода.",
   "require_secret_key": "Запрашивать секретный ключ",
   "always": "Всегда",
   "x_minutes": "20 мин",

@@ -138,7 +138,7 @@
   "keep_safe": "La tua foto è ora al sicuro su picPics. Vuoi eliminarlo dal rullino fotografico?",
   "keep_asking": "Continua a chiedere",
   "dont_ask_again": "Non chiedere di nuovo",
-  "view_hidden_photos": "Per visualizzare le tue foto nascoste, release the lock in the application settings. You can unlock them with your PIN.",
+  "view_hidden_photos": "Per visualizzare le tue foto nascoste, disattiva il blocco nelle impostazioni dell'applicazione. Puoi sbloccarle con il tuo PIN.",
   "require_secret_key": "Richiedi chiave segreta",
   "always": "Sempre",
   "x_minutes": "20 min",
