@@ -221,6 +221,12 @@ abstract class _AppStore with Store {
 //    Analytics.sendEvent(Event.notification_switch);
   }
 
+  @observable
+  int requireSecret = 0;
+
+  @action
+  void setRequireSecret(int value) => requireSecret = value;
+
 //  int goal;
 
   @observable

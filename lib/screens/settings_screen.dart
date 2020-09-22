@@ -9,11 +9,14 @@ import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/utils/languages.dart';
+import 'package:picPics/widgets/fadein.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:supercharged/supercharged.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -57,6 +60,84 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       }
     });
     Analytics.sendEvent(Event.rated_app);
+  }
+
+  void showRequirePinPicker(BuildContext context) async {
+    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: appStore.requireSecret);
+
+    await showModalBottomSheet(
+      context: context,
+      builder: (BuildContext builder) {
+        int temporaryOption = appStore.requireSecret;
+
+        return Container(
+          height: MediaQuery.of(context).copyWith().size.height / 3,
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  CupertinoButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 80.0,
+                      child: Text(
+                        S.of(context).cancel,
+                        textScaleFactor: 1.0,
+                        style: kBottomSheetTextStyle,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    'Require secret key',
+                    textScaleFactor: 1.0,
+                    style: kBottomSheetTitleTextStyle,
+                  ),
+                  CupertinoButton(
+                    onPressed: () {
+                      appStore.setRequireSecret(temporaryOption);
+                      Navigator.pop(context);
+                    },
+                    child: Container(
+                      width: 80.0,
+                      child: Text(
+                        S.of(context).ok,
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.end,
+                        style: kBottomSheetTextStyle,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Expanded(
+                child: CupertinoPicker.builder(
+                  scrollController: extentScrollController,
+                  childCount: kRequireOptions.length,
+                  itemExtent: 36.0,
+                  useMagnifier: true,
+                  magnification: 1.2,
+                  onSelectedItemChanged: (int index) {
+                    if (mounted) {
+                      temporaryOption = index;
+                    }
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    return Center(
+                        child: Text(
+                      '${kRequireOptions[index]}',
+                      textScaleFactor: 1.0,
+                    ));
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void showLanguagePicker(BuildContext context) async {
@@ -404,11 +485,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                       value: appStore.secretPhotos, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
                                       activeColor: kSecondaryColor,
                                       onChanged: (value) {
-                                        if (!appStore.isPinRegistered) {
-                                          Navigator.pushNamed(context, PinScreen.id);
+                                        if (value == false) {
+                                          appStore.switchSecretPhotos();
                                           return;
                                         }
-                                        appStore.switchSecretPhotos();
+
+                                        Navigator.pushNamed(context, PinScreen.id);
                                       });
                                 },
                               ),
@@ -421,6 +503,58 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                       color: kLightGrayColor,
                       thickness: 1.0,
                     ),
+                    Observer(builder: (_) {
+                      if (appStore.secretPhotos == true) {
+                        return FadeIn(
+                          delay: 0,
+                          child: LayoutBuilder(
+                            builder: (context, constraint) {
+                              if (constraint.maxHeight < 30.0) {
+                                return Container();
+                              }
+                              return Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  Expanded(
+                                    child: Container(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                        child: CupertinoButton(
+                                          padding: const EdgeInsets.all(0),
+                                          onPressed: () => showRequirePinPicker(context),
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Text(
+                                                'Require Secret Key',
+                                                textScaleFactor: 1.0,
+                                                style: kGraySettingsFieldTextStyle,
+                                              ),
+                                              Observer(builder: (_) {
+                                                return Text(
+                                                  kRequireOptions[appStore.requireSecret],
+                                                  textScaleFactor: 1.0,
+                                                  style: kGraySettingsValueTextStyle,
+                                                );
+                                              }),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(
+                                    color: kLightGrayColor,
+                                    thickness: 1.0,
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        );
+                      }
+                      return Container();
+                    }),
                     Container(
                       height: 60.0,
                       child: Padding(
@@ -450,7 +584,6 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         ),
                       ),
                     ),
-
                     Divider(
                       color: kLightGrayColor,
                       thickness: 1.0,
@@ -585,11 +718,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         ),
                       ],
                     ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
+                    Spacer(),
                     Padding(
-                      padding: const EdgeInsets.only(left: 32.0, right: 32.0, bottom: 80.0),
+                      padding: const EdgeInsets.only(left: 32.0, right: 32.0),
                       child: CupertinoButton(
                         onPressed: () {
                           if (appStore.isPremium) {
@@ -638,6 +769,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         ),
                       ),
                     ),
+                    Spacer(),
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Center(

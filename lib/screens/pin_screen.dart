@@ -81,6 +81,7 @@ class _PinScreenState extends State<PinScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
+          Spacer(),
           Text(
             index == 0 ? 'New secret key' : 'Confirm secret key',
             style: TextStyle(
@@ -109,6 +110,20 @@ class _PinScreenState extends State<PinScreen> {
 
   void pinTapped(int value) {
     print('Value: $value');
+    if (appStore.isPinRegistered == true) {
+      setState(() {
+        pinValue = '${pinValue}${value}';
+      });
+
+      if (pinValue.length == 6) {
+        // set true
+        appStore.switchSecretPhotos();
+        Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+      }
+
+      return;
+    }
+
     if (appStore.waitingAccessCode == true) {
       setState(() {
         accessValue = '${accessValue}${value}';
@@ -196,6 +211,50 @@ class _PinScreenState extends State<PinScreen> {
                   ),
                   Expanded(
                     child: Observer(builder: (_) {
+                      if (appStore.isPinRegistered == true) {
+                        return Column(
+                          children: [
+                            Spacer(),
+                            Text(
+                              'Your secret key',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kSecondaryColor,
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
+                            ),
+                            Spacer(
+                              flex: 2,
+                            ),
+                            PinPlaceholder(
+                              filledPositions: pinValue.length,
+                              totalPositions: 6,
+                            ),
+                            Spacer(),
+                            NumberPad(
+                              onPinTapped: pinTapped,
+                            ),
+                            Spacer(),
+                            Text(
+                              'Forgot secret key?',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                            Spacer(
+                              flex: 2,
+                            ),
+                          ],
+                        );
+                      }
+
                       if (appStore.waitingAccessCode == false) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
@@ -214,6 +273,7 @@ class _PinScreenState extends State<PinScreen> {
                       }
                       return Column(
                         children: [
+                          Spacer(),
                           Text(
                             'Access code',
                             style: TextStyle(
