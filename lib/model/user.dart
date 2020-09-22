@@ -63,6 +63,9 @@ class User extends HiveObject {
   @HiveField(19)
   bool secretPhotos;
 
+  @HiveField(20)
+  bool isPinRegistered;
+
   User({
     this.id,
     this.email,
@@ -84,5 +87,6 @@ class User extends HiveObject {
     this.hasGalleryPermission,
     this.loggedIn,
     this.secretPhotos,
+    this.isPinRegistered,
   });
 }
