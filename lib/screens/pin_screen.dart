@@ -8,6 +8,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/email_screen.dart';
+import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:provider/provider.dart';
@@ -26,6 +27,7 @@ class _PinScreenState extends State<PinScreen> {
 
   String pinValue = '';
   String confirmValue = '';
+  String accessValue = '';
 
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
@@ -167,6 +169,20 @@ class _PinScreenState extends State<PinScreen> {
 
   void pinTapped(int value) {
     print('Value: $value');
+    if (appStore.waitingAccessCode == true) {
+      setState(() {
+        accessValue = '${accessValue}${value}';
+      });
+
+      if (accessValue.length == 6) {
+        // set true
+        appStore.setIsPinRegistered(true);
+        appStore.switchSecretPhotos();
+        Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+      }
+
+      return;
+    }
 
     if (carouselPage == 0) {
       setState(() {
@@ -189,15 +205,10 @@ class _PinScreenState extends State<PinScreen> {
         carouselPage = 0;
         pinValue = '';
         confirmValue = '';
-        Navigator.pushNamed(context, EmailScreen.id).whenComplete(() => carouselController.jumpToPage(0));
+        carouselController.animateToPage(0);
+        Navigator.pushNamed(context, EmailScreen.id);
       }
     }
-
-//    if (appStore.waitingAccessCode) {
-//      showCreatedKeyModal();
-//      return;
-//    }
-//    Navigator.pushNamed(context, EmailScreen.id);
   }
 
   @override
@@ -292,7 +303,7 @@ class _PinScreenState extends State<PinScreen> {
                           ),
                           Spacer(),
                           PinPlaceholder(
-                            filledPositions: carouselPage == 0 ? pinValue.length : confirmValue.length,
+                            filledPositions: accessValue.length,
                             totalPositions: 6,
                           ),
                           Spacer(),
