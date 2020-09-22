@@ -9,9 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_animations/simple_animations.dart';
-import 'package:supercharged/supercharged.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -20,22 +19,12 @@ class LoginScreen extends StatefulWidget {
   _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
+class _LoginScreenState extends State<LoginScreen> {
   AppStore appStore;
-
-  AnimationController widthController;
-  AnimationController heightController;
-  Animation<double> moveByX;
-  Animation<double> moveByY;
 
   @override
   void initState() {
     super.initState();
-    widthController = createController()..mirror(duration: 3.seconds);
-    heightController = createController()..mirror(duration: 3.seconds);
-    moveByX = 0.0.tweenTo(30.0).animatedBy(widthController);
-    moveByY = 0.0.tweenTo(20.0).animatedBy(heightController);
-
     Analytics.sendCurrentScreen(Screen.login_screen);
   }
 
@@ -51,13 +40,13 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: CustomPaint(
-          painter: ColorfulBackground(
-            moveBy: Point(moveByX.value, moveByY.value),
-          ),
-          child: Container(
-            constraints: BoxConstraints.expand(),
-            child: SafeArea(
+        child: Stack(
+          children: [
+            ColorAnimatedBackground(
+              moveByX: 30.0,
+              moveByY: 20.0,
+            ),
+            SafeArea(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
@@ -86,8 +75,6 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () async {
-                        widthController.stop();
-                        heightController.stop();
                         appStore.setLoggedIn(true);
                         Navigator.pushReplacementNamed(context, TabsScreen.id);
                       },
@@ -113,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> with AnimationMixin {
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
