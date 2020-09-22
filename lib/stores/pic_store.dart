@@ -85,16 +85,16 @@ abstract class _PicStore with Store {
   void setIsPrivate(bool value) {
     isPrivate = value;
 
-    var picsBox = Hive.box('pics');
-    Pic getPic = picsBox.get(photoId);
-    getPic.isPrivate = value;
-    picsBox.put(photoId, getPic);
-
     if (isPrivate) {
       addSecretTagToPic();
     } else {
       removeSecretTagFromPic();
     }
+
+    var picsBox = Hive.box('pics');
+    Pic getPic = picsBox.get(photoId);
+    getPic.isPrivate = value;
+    picsBox.put(photoId, getPic);
   }
 
   Future<void> addSecretTagToPic() async {

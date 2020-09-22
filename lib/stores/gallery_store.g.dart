@@ -80,21 +80,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
               name: '_GalleryStore.deviceHasPics'))
           .value;
 
-  final _$currentPicAtom = Atom(name: '_GalleryStore.currentPic');
-
-  @override
-  PicStore get currentPic {
-    _$currentPicAtom.reportRead();
-    return super.currentPic;
-  }
-
-  @override
-  set currentPic(PicStore value) {
-    _$currentPicAtom.reportWrite(value, super.currentPic, () {
-      super.currentPic = value;
-    });
-  }
-
   final _$swipeIndexAtom = Atom(name: '_GalleryStore.swipeIndex');
 
   @override
@@ -299,19 +284,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
         .run(() => super.checkIsLibraryUpdated());
   }
 
-  final _$_GalleryStoreActionController =
-      ActionController(name: '_GalleryStore');
+  final _$addTagToCurrentPicAsyncAction =
+      AsyncAction('_GalleryStore.addTagToCurrentPic');
 
   @override
-  void setCurrentPic(PicStore picStore) {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.setCurrentPic');
-    try {
-      return super.setCurrentPic(picStore);
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
+  Future<void> addTagToCurrentPic({String tagName}) {
+    return _$addTagToCurrentPicAsyncAction
+        .run(() => super.addTagToCurrentPic(tagName: tagName));
   }
+
+  final _$_GalleryStoreActionController =
+      ActionController(name: '_GalleryStore');
 
   @override
   void setSwipeIndex(int value) {
@@ -492,12 +475,12 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void removePicFromTaggedPics({PicStore picStore, bool deepScan = false}) {
+  void removePicFromTaggedPics({PicStore picStore, bool forceDelete = false}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.removePicFromTaggedPics');
     try {
-      return super
-          .removePicFromTaggedPics(picStore: picStore, deepScan: deepScan);
+      return super.removePicFromTaggedPics(
+          picStore: picStore, forceDelete: forceDelete);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -625,9 +608,30 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void removeTagFromCurrentPic({String tagKey}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.removeTagFromCurrentPic');
+    try {
+      return super.removeTagFromCurrentPic(tagKey: tagKey);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setPrivateCurrentPic(bool value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setPrivateCurrentPic');
+    try {
+      return super.setPrivateCurrentPic(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-currentPic: ${currentPic},
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
 selectedThumbnail: ${selectedThumbnail},

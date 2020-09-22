@@ -277,6 +277,10 @@ abstract class _AppStore with Store {
     User currentUser = userBox.getAt(0);
     currentUser.isPremium = value;
     currentUser.save();
+
+    if (isPremium == true) {
+      setCanTagToday(true);
+    }
   }
 
   @action

@@ -34,19 +34,7 @@ abstract class _GalleryStore with Store {
     }
 
     autorun((_) {
-      if (currentPic.tags.length > 0) {
-        if (untaggedPics.contains(currentPic)) {
-          addPicToTaggedPics(picStore: currentPic);
-          untaggedPics.remove(currentPic);
-          print('this pic now has tags!');
-        }
-      } else {
-//        if (taggedPics.contains(currentPic)) {
-        untaggedPics.add(currentPic);
-        removePicFromTaggedPics(picStore: currentPic);
-        print('this pic now doesnt have tags!');
-//        }
-      }
+      print('auto run');
     });
   }
 
@@ -64,10 +52,8 @@ abstract class _GalleryStore with Store {
     return taggedPics.map((element) => element.pics.length).toList().reduce((value, element) => value + element);
   }
 
-  @observable
   PicStore currentPic;
 
-  @action
   void setCurrentPic(PicStore picStore) {
     currentPic = picStore;
   }
@@ -354,17 +340,25 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void removePicFromTaggedPics({PicStore picStore, bool deepScan = false}) {
+  void removePicFromTaggedPics({PicStore picStore, bool forceDelete = false}) {
+    List<TaggedPicsStore> toDelete = [];
+
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
-      bool deleted = taggedPicsStore.pics.remove(picStore);
-      if (deleted == true && deepScan == false) {
-        print('pic has been deleted from tagged pics');
-        if (taggedPicsStore.pics.isEmpty) {
-          print('this tag is now empty removing it from third tab');
-          taggedPics.remove(taggedPicsStore);
-        }
-        break;
+      if (picStore.tags.contains(taggedPicsStore.tag) && forceDelete == false) {
+        print('this tag should not be removed');
+        continue;
       }
+
+      if (taggedPicsStore.pics.contains(picStore)) {
+        taggedPicsStore.pics.remove(picStore);
+        if (taggedPicsStore.pics.isEmpty) {
+          toDelete.add(taggedPicsStore);
+        }
+      }
+    }
+
+    for (TaggedPicsStore deleteStore in toDelete) {
+      taggedPics.remove(deleteStore);
     }
 
     setShouldRefreshTaggedGallery(true);
@@ -380,7 +374,7 @@ abstract class _GalleryStore with Store {
     }
 
     PicStore picStore = allPics.firstWhere((element) => element.photoId == entityId);
-    removePicFromTaggedPics(picStore: picStore);
+    removePicFromTaggedPics(picStore: picStore, forceDelete: true);
     untaggedPics.remove(picStore);
     filteredPics.remove(picStore);
     swipePics.remove(picStore);
@@ -526,7 +520,7 @@ abstract class _GalleryStore with Store {
         }
 
         filteredPics.remove(picStore);
-        removePicFromTaggedPics(picStore: picStore);
+        removePicFromTaggedPics(picStore: picStore, forceDelete: true);
         swipePics.remove(picStore);
         untaggedPics.remove(picStore);
         allPics.remove(picStore);
@@ -546,7 +540,7 @@ abstract class _GalleryStore with Store {
 
     if (deleted) {
       filteredPics.remove(picStore);
-      removePicFromTaggedPics(picStore: picStore);
+      removePicFromTaggedPics(picStore: picStore, forceDelete: true);
       swipePics.remove(picStore);
       untaggedPics.remove(picStore);
       allPics.remove(picStore);
@@ -870,7 +864,7 @@ abstract class _GalleryStore with Store {
   @action
   Future<void> removeAllPrivatePics() async {
     for (PicStore private in privatePics) {
-      removePicFromTaggedPics(picStore: private, deepScan: true);
+      removePicFromTaggedPics(picStore: private, forceDelete: true);
       filteredPics.remove(private);
       thumbnailsPics.remove(private);
       selectedPics.remove(private);
@@ -924,6 +918,61 @@ abstract class _GalleryStore with Store {
 
   @action
   void setShouldRefreshTaggedGallery(bool value) => shouldRefreshTaggedGallery = value;
+
+  @action
+  void removeTagFromCurrentPic({String tagKey}) {
+    currentPic.removeTagFromPic(tagKey: tagKey);
+    removePicFromTaggedPics(picStore: currentPic);
+
+    if (currentPic.tags.isEmpty) {
+      untaggedPics.insert(0, currentPic);
+      print('this pic now doesnt have tags!');
+    }
+  }
+
+  @action
+  Future<void> addTagToCurrentPic({String tagName}) async {
+    if (currentPic.tags.isEmpty) {
+      print('this pic now has tags!');
+      untaggedPics.remove(currentPic);
+    }
+
+    await currentPic.addTag(
+      tagName: tagName,
+    );
+
+    addPicToTaggedPics(picStore: currentPic);
+  }
+
+  @action
+  void setPrivateCurrentPic(bool value) {
+    currentPic.setIsPrivate(value);
+
+    if (currentPic.isPrivate == true) {
+      if (!privatePics.contains(currentPic)) {
+        print('this pic now is private');
+        privatePics.add(currentPic);
+
+        if (currentPic.tags.length == 1) {
+          print('this pic now has tags!');
+          untaggedPics.remove(currentPic);
+        }
+
+        addPicToTaggedPics(picStore: currentPic);
+      }
+    } else {
+      if (privatePics.contains(currentPic)) {
+        print('removing pic from private pics');
+        privatePics.remove(currentPic);
+        removePicFromTaggedPics(picStore: currentPic);
+
+        if (currentPic.tags.isEmpty) {
+          untaggedPics.insert(0, currentPic);
+          print('this pic now doesnt have tags!');
+        }
+      }
+    }
+  }
 }
 
 enum PicSource {
