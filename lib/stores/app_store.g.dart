@@ -83,6 +83,21 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$requireSecretAtom = Atom(name: '_AppStore.requireSecret');
+
+  @override
+  int get requireSecret {
+    _$requireSecretAtom.reportRead();
+    return super.requireSecret;
+  }
+
+  @override
+  set requireSecret(int value) {
+    _$requireSecretAtom.reportWrite(value, super.requireSecret, () {
+      super.requireSecret = value;
+    });
+  }
+
   final _$hourOfDayAtom = Atom(name: '_AppStore.hourOfDay');
 
   @override
@@ -325,6 +340,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setRequireSecret(int value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setRequireSecret');
+    try {
+      return super.setRequireSecret(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void changeUserTimeOfDay(int hour, int minute) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.changeUserTimeOfDay');
@@ -508,6 +534,7 @@ notifications: ${notifications},
 dailyChallenges: ${dailyChallenges},
 isPinRegistered: ${isPinRegistered},
 secretPhotos: ${secretPhotos},
+requireSecret: ${requireSecret},
 hourOfDay: ${hourOfDay},
 minutesOfDay: ${minutesOfDay},
 isPremium: ${isPremium},

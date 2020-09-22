@@ -211,6 +211,8 @@ abstract class _AppStore with Store {
   void switchSecretPhotos() {
     secretPhotos = !secretPhotos;
 
+    print('After Switch Secret: $secretPhotos');
+
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.secretPhotos = secretPhotos;
@@ -218,6 +220,12 @@ abstract class _AppStore with Store {
 
 //    Analytics.sendEvent(Event.notification_switch);
   }
+
+  @observable
+  int requireSecret = 0;
+
+  @action
+  void setRequireSecret(int value) => requireSecret = value;
 
 //  int goal;
 

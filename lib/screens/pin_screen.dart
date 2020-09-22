@@ -11,6 +11,7 @@ import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
+import 'package:picPics/widgets/general_modal.dart';
 import 'package:provider/provider.dart';
 
 class PinScreen extends StatefulWidget {
@@ -32,90 +33,29 @@ class _PinScreenState extends State<PinScreen> {
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
 
-  showCreatedKeyModal() {
+  void setPinAndPop() {
+    appStore.setIsPinRegistered(true);
+    appStore.switchSecretPhotos();
+    Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+  }
+
+  void showCreatedKeyModal() {
     showDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          child: Container(
-            height: 187.0,
-            width: 270.0,
-            clipBehavior: Clip.antiAlias,
-            decoration: BoxDecoration(
-              color: Color(0xFFF1F3F5),
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(14),
-                bottom: Radius.circular(19.0),
-              ),
-            ),
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      CupertinoButton(
-                        onPressed: () {
-                          print('teste');
-                        },
-                        child: Image.asset('lib/images/closegrayico.png'),
-                      ),
-                    ],
-                  ),
-                ),
-                Spacer(),
-                Text(
-                  "Secret Key successfully created!",
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    color: Color(0xff606566),
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                  ),
-                ),
-                Spacer(
-                  flex: 2,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () async {
-                      // widthController.stop();
-                      // heightController.stop();
-
-//                                  await appStore.requestGalleryPermission();
-//                                  appStore.setLoggedIn(true);
-//                                  Navigator.pushReplacementNamed(context, TabsScreen.id);
-//                    appStore.setWaitingAccessCode(true);
-//                    Navigator.pushNamed(context, PinScreen.id);
-                    },
-                    child: Container(
-                      height: 44.0,
-                      decoration: BoxDecoration(
-                        gradient: kPrimaryGradient,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Center(
-                        child: Text(
-                          S.of(context).continue_string,
-                          textScaleFactor: 1.0,
-                          style: kLoginButtonTextStyle,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+        return GeneralModal(
+          onPressedDelete: () {
+            Navigator.pop(context);
+          },
+          onPressedOk: () {
+            Navigator.pop(context);
+          },
         );
       },
-    );
+    ).then((_) {
+      setPinAndPop();
+    });
   }
 
   @override
@@ -141,6 +81,7 @@ class _PinScreenState extends State<PinScreen> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: [
+          Spacer(),
           Text(
             index == 0 ? 'New secret key' : 'Confirm secret key',
             style: TextStyle(
@@ -169,6 +110,20 @@ class _PinScreenState extends State<PinScreen> {
 
   void pinTapped(int value) {
     print('Value: $value');
+    if (appStore.isPinRegistered == true) {
+      setState(() {
+        pinValue = '${pinValue}${value}';
+      });
+
+      if (pinValue.length == 6) {
+        // set true
+        appStore.switchSecretPhotos();
+        Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+      }
+
+      return;
+    }
+
     if (appStore.waitingAccessCode == true) {
       setState(() {
         accessValue = '${accessValue}${value}';
@@ -176,9 +131,7 @@ class _PinScreenState extends State<PinScreen> {
 
       if (accessValue.length == 6) {
         // set true
-        appStore.setIsPinRegistered(true);
-        appStore.switchSecretPhotos();
-        Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+        showCreatedKeyModal();
       }
 
       return;
@@ -258,6 +211,50 @@ class _PinScreenState extends State<PinScreen> {
                   ),
                   Expanded(
                     child: Observer(builder: (_) {
+                      if (appStore.isPinRegistered == true) {
+                        return Column(
+                          children: [
+                            Spacer(),
+                            Text(
+                              'Your secret key',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kSecondaryColor,
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
+                            ),
+                            Spacer(
+                              flex: 2,
+                            ),
+                            PinPlaceholder(
+                              filledPositions: pinValue.length,
+                              totalPositions: 6,
+                            ),
+                            Spacer(),
+                            NumberPad(
+                              onPinTapped: pinTapped,
+                            ),
+                            Spacer(),
+                            Text(
+                              'Forgot secret key?',
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                            Spacer(
+                              flex: 2,
+                            ),
+                          ],
+                        );
+                      }
+
                       if (appStore.waitingAccessCode == false) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
@@ -276,6 +273,7 @@ class _PinScreenState extends State<PinScreen> {
                       }
                       return Column(
                         children: [
+                          Spacer(),
                           Text(
                             'Access code',
                             style: TextStyle(
