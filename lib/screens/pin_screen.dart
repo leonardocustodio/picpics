@@ -1,20 +1,17 @@
-import 'dart:math';
 import 'dart:ui';
-
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:picPics/components/colorful_background.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/email_screen.dart';
+import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_animations/simple_animations.dart';
-import 'package:supercharged/supercharged.dart';
 
 class PinScreen extends StatefulWidget {
   static const String id = 'pin_screen';
@@ -23,18 +20,14 @@ class PinScreen extends StatefulWidget {
   _PinScreenState createState() => _PinScreenState();
 }
 
-class _PinScreenState extends State<PinScreen> with AnimationMixin {
+class _PinScreenState extends State<PinScreen> {
   AppStore appStore;
 
   bool isLoading = false;
 
-  AnimationController widthController;
-  AnimationController heightController;
-  Animation<double> moveByX;
-  Animation<double> moveByY;
-
   String pinValue = '';
   String confirmValue = '';
+  String accessValue = '';
 
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
@@ -92,8 +85,8 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
                     onPressed: () async {
-                      widthController.stop();
-                      heightController.stop();
+                      // widthController.stop();
+                      // heightController.stop();
 
 //                                  await appStore.requestGalleryPermission();
 //                                  appStore.setLoggedIn(true);
@@ -128,11 +121,6 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
   @override
   void initState() {
     super.initState();
-    widthController = createController()..mirror(duration: 3.seconds);
-    heightController = createController()..mirror(duration: 3.seconds);
-    moveByX = 0.0.tweenTo(60.0).animatedBy(widthController);
-    moveByY = 0.0.tweenTo(40.0).animatedBy(heightController);
-
 //    Analytics.sendCurrentScreen(Screen.login_screen);
   }
 
@@ -143,7 +131,7 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
   }
 
   Widget _buildPinPad(BuildContext context, int index) {
-//    print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
+    print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 24.0,
@@ -181,9 +169,25 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
 
   void pinTapped(int value) {
     print('Value: $value');
+    if (appStore.waitingAccessCode == true) {
+      setState(() {
+        accessValue = '${accessValue}${value}';
+      });
+
+      if (accessValue.length == 6) {
+        // set true
+        appStore.setIsPinRegistered(true);
+        appStore.switchSecretPhotos();
+        Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+      }
+
+      return;
+    }
 
     if (carouselPage == 0) {
-      pinValue = '${pinValue}${value}';
+      setState(() {
+        pinValue = '${pinValue}${value}';
+      });
 
       if (pinValue.length == 6) {
         carouselPage = 1;
@@ -192,22 +196,19 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
       return;
     }
 
-    confirmValue = '${confirmValue}${value}';
+    setState(() {
+      confirmValue = '${confirmValue}${value}';
+    });
 
     if (confirmValue.length == 6) {
       if (pinValue == confirmValue) {
         carouselPage = 0;
         pinValue = '';
         confirmValue = '';
-        Navigator.pushNamed(context, EmailScreen.id).whenComplete(() => carouselController.jumpToPage(0));
+        carouselController.animateToPage(0);
+        Navigator.pushNamed(context, EmailScreen.id);
       }
     }
-
-//    if (appStore.waitingAccessCode) {
-//      showCreatedKeyModal();
-//      return;
-//    }
-//    Navigator.pushNamed(context, EmailScreen.id);
   }
 
   @override
@@ -217,40 +218,24 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
         value: SystemUiOverlayStyle.dark,
         child: Stack(
           children: <Widget>[
-            CustomPaint(
-              painter: ColorfulBackground(
-                moveBy: Point(moveByX.value, moveByY.value),
-              ),
-              child: Container(
-                constraints: BoxConstraints.expand(),
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(
-                    sigmaX: 18.0,
-                    sigmaY: 18.0,
-                  ),
-                  child: Container(
-                    decoration: new BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Color(0x66ffffff), Color(0x33ffffff)],
-                        stops: [0, 1],
+            ColorAnimatedBackground(
+              moveByX: 60.0,
+              moveByY: 40.0,
+            ),
+            SafeArea(
+              bottom: false,
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      CupertinoButton(
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Image.asset('lib/images/backarrowwithdropshadow.png'),
                       ),
-                    ),
-                    child: SafeArea(
-                      bottom: false,
-                      child: Column(
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              CupertinoButton(
-                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Image.asset('lib/images/backarrowwithdropshadow.png'),
-                              ),
 //                          CupertinoButton(
 //                            onPressed: () {
 ////                              restorePurchase();
@@ -269,72 +254,68 @@ class _PinScreenState extends State<PinScreen> with AnimationMixin {
 //                              ),
 //                            ),
 //                          ),
-                            ],
-                          ),
-                          Expanded(
-                            child: Observer(builder: (_) {
-                              if (appStore.waitingAccessCode == false) {
-                                return CarouselSlider.builder(
-                                  carouselController: carouselController,
-                                  itemCount: 2,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return _buildPinPad(context, index);
-                                  },
-                                  options: CarouselOptions(
-                                    initialPage: 0,
-                                    enableInfiniteScroll: false,
-                                    height: double.maxFinite,
-                                    viewportFraction: 1.0,
-                                    scrollPhysics: NeverScrollableScrollPhysics(),
-                                  ),
-                                );
-                              }
-                              return Column(
-                                children: [
-                                  Text(
-                                    'Access code',
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: kSecondaryColor,
-                                      fontSize: 24.0,
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 16.0),
-                                    child: Text(
-                                      'An acess key was sended to\nola@pombastudio.com',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff979a9b),
-                                        fontSize: 15.0,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                      ),
-                                    ),
-                                  ),
-                                  Spacer(),
-                                  PinPlaceholder(
-                                    filledPositions: carouselPage == 0 ? pinValue.length : confirmValue.length,
-                                    totalPositions: 6,
-                                  ),
-                                  Spacer(),
-                                  NumberPad(
-                                    onPinTapped: pinTapped,
-                                  ),
-                                  Spacer(),
-                                ],
-                              );
-                            }),
-                          ),
-                        ],
-                      ),
-                    ),
+                    ],
                   ),
-                ),
+                  Expanded(
+                    child: Observer(builder: (_) {
+                      if (appStore.waitingAccessCode == false) {
+                        return CarouselSlider.builder(
+                          carouselController: carouselController,
+                          itemCount: 2,
+                          itemBuilder: (BuildContext context, int index) {
+                            return _buildPinPad(context, index);
+                          },
+                          options: CarouselOptions(
+                            initialPage: 0,
+                            enableInfiniteScroll: false,
+                            height: double.maxFinite,
+                            viewportFraction: 1.0,
+                            scrollPhysics: NeverScrollableScrollPhysics(),
+                          ),
+                        );
+                      }
+                      return Column(
+                        children: [
+                          Text(
+                            'Access code',
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: kSecondaryColor,
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: -0.4099999964237213,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Text(
+                              'An acess key was sended to\nola@pombastudio.com',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff979a9b),
+                                fontSize: 15.0,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                              ),
+                            ),
+                          ),
+                          Spacer(),
+                          PinPlaceholder(
+                            filledPositions: accessValue.length,
+                            totalPositions: 6,
+                          ),
+                          Spacer(),
+                          NumberPad(
+                            onPinTapped: pinTapped,
+                          ),
+                          Spacer(),
+                        ],
+                      );
+                    }),
+                  ),
+                ],
               ),
             ),
             if (isLoading)
@@ -412,7 +393,16 @@ class NumberPad extends StatelessWidget {
       for (int y = 0; y < 3; y++) {
         if (pin == 10) {
           number.add(
-            Image.asset('lib/images/backspacewhite.png'),
+            CupertinoButton(
+              onPressed: () {
+                print('backspace');
+              },
+              child: Container(
+                height: 44.0,
+                width: 44.0,
+                child: Image.asset('lib/images/backspacewhite.png'),
+              ),
+            ),
           );
           pin++;
           continue;
@@ -421,20 +411,26 @@ class NumberPad extends StatelessWidget {
         int value = pin;
         number.add(
           CupertinoButton(
-            padding: const EdgeInsets.all(0),
-            minSize: 0,
+            // padding: const EdgeInsets.all(0),
+            minSize: 44.0,
             onPressed: () {
               onPinTapped(value);
             },
-            child: Text(
-              '${pin == 11 ? '0' : pin}',
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: pin == 12 ? Colors.transparent : kWhiteColor,
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
+            child: Container(
+              width: 44.0,
+              height: 44.0,
+              child: Center(
+                child: Text(
+                  '${pin == 11 ? '0' : pin}',
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: pin == 12 ? Colors.transparent : kWhiteColor,
+                    fontSize: 24,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: -0.4099999964237213,
+                  ),
+                ),
               ),
             ),
           ),
@@ -457,7 +453,7 @@ class NumberPad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 300.0,
+      height: 304.0,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         mainAxisSize: MainAxisSize.max,
