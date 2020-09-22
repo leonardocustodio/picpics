@@ -88,7 +88,7 @@ class TopBar extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (showSecretSwitch == false)
+              if (showSecretSwitch == true)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: CupertinoSwitch(
@@ -96,8 +96,8 @@ class TopBar extends StatelessWidget {
                       activeColor: kSecondaryColor,
                       onChanged: (value) {
                         print('turn off');
-//                      appStore.setWaitingAccessCode(false);
-//                      appStore.switchSecretPhotos();
+                        appStore.switchSecretPhotos();
+                        galleryStore.removeAllPrivatePics();
                       }),
                 ),
               CupertinoButton(

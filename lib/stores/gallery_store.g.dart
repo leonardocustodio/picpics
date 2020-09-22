@@ -281,6 +281,15 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return _$_onAssetChangeAsyncAction.run(() => super._onAssetChange(call));
   }
 
+  final _$removeAllPrivatePicsAsyncAction =
+      AsyncAction('_GalleryStore.removeAllPrivatePics');
+
+  @override
+  Future<void> removeAllPrivatePics() {
+    return _$removeAllPrivatePicsAsyncAction
+        .run(() => super.removeAllPrivatePics());
+  }
+
   final _$checkIsLibraryUpdatedAsyncAction =
       AsyncAction('_GalleryStore.checkIsLibraryUpdated');
 
@@ -483,11 +492,12 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void removePicFromTaggedPics({PicStore picStore}) {
+  void removePicFromTaggedPics({PicStore picStore, bool deepScan = false}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.removePicFromTaggedPics');
     try {
-      return super.removePicFromTaggedPics(picStore: picStore);
+      return super
+          .removePicFromTaggedPics(picStore: picStore, deepScan: deepScan);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

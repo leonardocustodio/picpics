@@ -8,6 +8,7 @@ import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:picPics/widgets/fadein.dart';
 import 'package:rate_my_app/rate_my_app.dart';
@@ -15,8 +16,6 @@ import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:supercharged/supercharged.dart';
-import 'package:simple_animations/simple_animations.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -27,6 +26,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
   AppStore appStore;
+  GalleryStore galleryStore;
 
   @override
   void dispose() {
@@ -442,6 +442,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void didChangeDependencies() {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
+    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   @override
@@ -487,6 +488,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                       onChanged: (value) {
                                         if (value == false) {
                                           appStore.switchSecretPhotos();
+                                          galleryStore.removeAllPrivatePics();
                                           return;
                                         }
 
