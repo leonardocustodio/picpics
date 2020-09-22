@@ -55,6 +55,8 @@ abstract class _PicStore with Store {
       generalLocation = pic.generalLocation;
       isPrivate = pic.isPrivate;
 
+      print('Is private: $isPrivate');
+
       for (String tagKey in pic.tags) {
         TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
         tags.add(tagsStore);
@@ -82,6 +84,11 @@ abstract class _PicStore with Store {
   @action
   void setIsPrivate(bool value) {
     isPrivate = value;
+
+    var picsBox = Hive.box('pics');
+    Pic getPic = picsBox.get(photoId);
+    getPic.isPrivate = value;
+    picsBox.put(photoId, getPic);
 
     if (isPrivate) {
       addSecretTagToPic();

@@ -110,6 +110,7 @@ abstract class _GalleryStore with Store {
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
   ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
   ObservableSet<PicStore> selectedPics = ObservableSet<PicStore>();
+  ObservableList<PicStore> privatePics = ObservableList<PicStore>();
 
   @computed
   Set<String> get allPicsKeys {
@@ -353,10 +354,10 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void removePicFromTaggedPics({PicStore picStore}) {
+  void removePicFromTaggedPics({PicStore picStore, bool deepScan = false}) {
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
       bool deleted = taggedPicsStore.pics.remove(picStore);
-      if (deleted) {
+      if (deleted == true && deepScan == false) {
         print('pic has been deleted from tagged pics');
         if (taggedPicsStore.pics.isEmpty) {
           print('this tag is now empty removing it from third tab');
@@ -406,6 +407,11 @@ abstract class _GalleryStore with Store {
       originalLongitude: entity.longitude,
     );
 
+    if (pic.isPrivate == true && appStore.secretPhotos != true) {
+      print('This pic is private not loading it!');
+      return;
+    }
+
     allPics.insert(0, pic);
     if (pic.tags.length > 0) {
       print('has pic info! and this pic has tags in it!!!!');
@@ -414,6 +420,11 @@ abstract class _GalleryStore with Store {
       print('has pic info! and this pic doesnt have tag!!!!');
       swipePics.insert(0, pic);
       untaggedPics.insert(0, pic);
+    }
+
+    if (pic.isPrivate == true) {
+      print('Adding pic to private pics!!!');
+      privatePics.add(pic);
     }
 
     print('#@#@#@# Total photos: ${allPics.length}');
@@ -434,6 +445,11 @@ abstract class _GalleryStore with Store {
         originalLongitude: entity.longitude,
       );
 
+      if (pic.isPrivate == true && appStore.secretPhotos != true) {
+        print('This pic is private not loading it!');
+        continue;
+      }
+
       allPics.add(pic);
 
       if (pic.tags.length > 0) {
@@ -443,6 +459,11 @@ abstract class _GalleryStore with Store {
         print('has pic info! and this pic doesnt have tag!!!!');
         swipePics.add(pic);
         untaggedPics.add(pic);
+      }
+
+      if (pic.isPrivate == true) {
+        print('Adding pic to private pics!!!');
+        privatePics.add(pic);
       }
     }
 
@@ -844,6 +865,20 @@ abstract class _GalleryStore with Store {
 //        addEntity(picEntity);
 //      }
 //    }
+  }
+
+  @action
+  Future<void> removeAllPrivatePics() async {
+    for (PicStore private in privatePics) {
+      removePicFromTaggedPics(picStore: private, deepScan: true);
+      filteredPics.remove(private);
+      thumbnailsPics.remove(private);
+      selectedPics.remove(private);
+      swipePics.remove(private);
+      untaggedPics.remove(private);
+      allPics.remove(private);
+    }
+    privatePics.clear();
   }
 
   @action

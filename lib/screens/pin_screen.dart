@@ -10,6 +10,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:picPics/widgets/general_modal.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,7 @@ class PinScreen extends StatefulWidget {
 
 class _PinScreenState extends State<PinScreen> {
   AppStore appStore;
+  GalleryStore galleryStore;
 
   bool isLoading = false;
 
@@ -68,6 +70,7 @@ class _PinScreenState extends State<PinScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
+    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   Widget _buildPinPad(BuildContext context, int index) {
@@ -118,6 +121,7 @@ class _PinScreenState extends State<PinScreen> {
       if (pinValue.length == 6) {
         // set true
         appStore.switchSecretPhotos();
+        galleryStore.checkIsLibraryUpdated();
         Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
       }
 
