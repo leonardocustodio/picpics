@@ -690,7 +690,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Image.asset('lib/images/sharewithfriends.png'),
+                              Image.asset('lib/images/sharegrayicon.png'),
                               SizedBox(
                                 width: 15.0,
                               ),
