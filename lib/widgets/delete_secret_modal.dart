@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 
-class DeleteSecretModal extends StatelessWidget {
+class DeleteSecretModal extends StatefulWidget {
   final Function onPressedClose;
   final Function onPressedDelete;
   final Function onPressedOk;
@@ -13,6 +13,13 @@ class DeleteSecretModal extends StatelessWidget {
     @required this.onPressedDelete,
     @required this.onPressedOk,
   });
+
+  @override
+  _DeleteSecretModalState createState() => _DeleteSecretModalState();
+}
+
+class _DeleteSecretModalState extends State<DeleteSecretModal> {
+  bool keepAsking = true;
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +63,7 @@ class DeleteSecretModal extends StatelessWidget {
                     ),
                   ),
                   CupertinoButton(
-                    onPressed: onPressedClose,
+                    onPressed: widget.onPressedClose,
                     child: Image.asset('lib/images/closegrayico.png'),
                   ),
                 ],
@@ -77,52 +84,96 @@ class DeleteSecretModal extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18.0),
+                padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      height: 20.0,
-                      width: 20.0,
-                      margin: const EdgeInsets.only(right: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFB2C2C3),
-                          width: 2.0,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
+                    CupertinoButton(
+                      onPressed: () {
+                        setState(() {
+                          keepAsking = true;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 20.0,
+                            width: 20.0,
+                            margin: const EdgeInsets.only(right: 8.0),
+                            child: keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
+                            decoration: keepAsking
+                                ? BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    gradient: LinearGradient(
+                                      colors: [kSecondaryColor, Color(0xffff7878)],
+                                      stops: [0, 1],
+                                      begin: Alignment(-1.00, 0.00),
+                                      end: Alignment(1.00, -0.00),
+                                    ),
+                                  )
+                                : BoxDecoration(
+                                    border: Border.all(
+                                      color: Color(0xFFB2C2C3),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                          ),
+                          Text(
+                            "Keep asking",
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: Color(0xff707070),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    Text(
-                      "Keep asking",
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff707070),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
-                      ),
-                    ),
-                    Container(
-                      height: 20.0,
-                      width: 20.0,
-                      margin: const EdgeInsets.only(left: 24.0, right: 8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Color(0xFFB2C2C3),
-                          width: 2.0,
-                        ),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                    ),
-                    Text(
-                      "Don’t ask again.",
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff707070),
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        fontStyle: FontStyle.normal,
+                    CupertinoButton(
+                      onPressed: () {
+                        setState(() {
+                          keepAsking = false;
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 20.0,
+                            width: 20.0,
+                            margin: const EdgeInsets.only(left: 24.0, right: 8.0),
+                            child: !keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
+                            decoration: !keepAsking
+                                ? BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    gradient: LinearGradient(
+                                      colors: [kSecondaryColor, Color(0xffff7878)],
+                                      stops: [0, 1],
+                                      begin: Alignment(-1.00, 0.00),
+                                      end: Alignment(1.00, -0.00),
+                                    ),
+                                  )
+                                : BoxDecoration(
+                                    border: Border.all(
+                                      color: Color(0xFFB2C2C3),
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                          ),
+                          Text(
+                            "Don’t ask again.",
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: Color(0xff707070),
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -137,7 +188,7 @@ class DeleteSecretModal extends StatelessWidget {
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),
-                        onPressed: onPressedDelete,
+                        onPressed: widget.onPressedDelete,
                         child: Container(
                           height: 44.0,
                           decoration: BoxDecoration(
@@ -166,7 +217,7 @@ class DeleteSecretModal extends StatelessWidget {
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),
-                        onPressed: onPressedOk,
+                        onPressed: widget.onPressedOk,
                         child: Container(
                           height: 44.0,
                           decoration: BoxDecoration(
