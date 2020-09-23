@@ -473,13 +473,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
                           onPressed: () {
-                            // if (appStore.secretPhotos == true) {
-                            //   appStore.switchSecretPhotos();
-                            //   galleryStore.removeAllPrivatePics();
-                            //   return;
-                            // }
-                            // appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
-                            // Navigator.pushNamed(context, PinScreen.id);
+                            if (appStore.secretPhotos == true) {
+                              appStore.switchSecretPhotos();
+                              galleryStore.removeAllPrivatePics();
+                              return;
+                            }
+                            appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                            Navigator.pushNamed(context, PinScreen.id);
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -494,14 +494,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   return SecretSwitch(
                                     value: appStore.secretPhotos,
                                     onChanged: (value) {
-                                      // if (value == false) {
-                                      appStore.switchSecretPhotos();
-                                      //   galleryStore.removeAllPrivatePics();
-                                      //   return;
-                                      // }
-                                      //
-                                      // appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
-                                      // Navigator.pushNamed(context, PinScreen.id);
+                                      if (value == false) {
+                                        appStore.switchSecretPhotos();
+                                        galleryStore.removeAllPrivatePics();
+                                        return;
+                                      }
+
+                                      appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                                      Navigator.pushNamed(context, PinScreen.id);
                                     },
                                   );
                                 },

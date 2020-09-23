@@ -20,29 +20,34 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
   CustomAnimationControl control = CustomAnimationControl.PLAY;
   bool goingRight = true;
   bool initRight;
+  bool positionRight;
 
   @override
   void initState() {
     super.initState();
     initRight = widget.value;
+    positionRight = widget.value;
   }
 
   void toggleDirection() {
     setState(() {
       goingRight = !goingRight;
+      positionRight = widget.value;
       control = (control == CustomAnimationControl.PLAY) ? CustomAnimationControl.PLAY_REVERSE : CustomAnimationControl.PLAY;
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.value != positionRight) {
+      toggleDirection();
+    }
     return Stack(
       children: [
         CupertinoSwitch(
           value: widget.value, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
           activeColor: kYellowColor,
           onChanged: (value) {
-            toggleDirection();
             widget.onChanged(value);
           },
         ),

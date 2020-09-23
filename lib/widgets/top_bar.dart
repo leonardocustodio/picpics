@@ -5,6 +5,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/widgets/secret_switch.dart';
 
 class TopBar extends StatelessWidget {
   final AppStore appStore;
@@ -91,9 +92,8 @@ class TopBar extends StatelessWidget {
               if (showSecretSwitch == true)
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: CupertinoSwitch(
-                      value: true, // appStore.secretPhotos,
-                      activeColor: kSecondaryColor,
+                  child: SecretSwitch(
+                      value: true,
                       onChanged: (value) {
                         print('turn off');
                         appStore.switchSecretPhotos();
