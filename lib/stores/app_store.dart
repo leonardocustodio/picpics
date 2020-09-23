@@ -581,4 +581,6 @@ abstract class _AppStore with Store {
 
   @action
   void setWaitingAccessCode(bool value) => waitingAccessCode = value;
+
+  bool hasObserver = false;
 }

@@ -122,7 +122,7 @@ class _PinScreenState extends State<PinScreen> {
         // set true
         appStore.switchSecretPhotos();
         galleryStore.checkIsLibraryUpdated();
-        Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+        Navigator.pop(context);
       }
 
       return;
