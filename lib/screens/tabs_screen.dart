@@ -8,6 +8,7 @@ import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
@@ -43,7 +44,7 @@ class TabsScreen extends StatefulWidget {
   _TabsScreenState createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
   AppStore appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
@@ -51,6 +52,7 @@ class _TabsScreenState extends State<TabsScreen> {
   ReactionDisposer disposer;
   ReactionDisposer disposer2;
   ReactionDisposer disposer3;
+  ReactionDisposer disposer4;
 
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
@@ -61,9 +63,13 @@ class _TabsScreenState extends State<TabsScreen> {
   TextEditingController bottomTagsEditingController = TextEditingController();
 
   Throttle _changeThrottle;
+  AppLifecycleState _appCycleState;
 
   void showDeleteSecretModal(PicStore picStore) {
-    print('SHOW MODAL !!!');
+    if (appStore.secretPhotos != true) {
+      Navigator.pushNamed(context, PinScreen.id);
+      return;
+    }
 
     print('showModal');
     showDialog<void>(
@@ -136,7 +142,6 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   void initState() {
     super.initState();
-
     KeyboardVisibility.onChange.listen((bool visible) {
       print('keyboard: $visible');
 
@@ -185,6 +190,11 @@ class _TabsScreenState extends State<TabsScreen> {
     disposer();
     disposer2();
     disposer3();
+    disposer4();
+
+    if (appStore.hasObserver) {
+      WidgetsBinding.instance.removeObserver(this);
+    }
     super.dispose();
   }
 
@@ -268,6 +278,22 @@ class _TabsScreenState extends State<TabsScreen> {
       }
     });
 
+    disposer4 = reaction((_) => appStore.secretPhotos, (secretPhotos) {
+      if (secretPhotos) {
+        if (appStore.hasObserver == false) {
+          print('adding observer to change screen!');
+          WidgetsBinding.instance.addObserver(this);
+          appStore.hasObserver = true;
+        }
+      } else {
+        if (appStore.hasObserver == true) {
+          print('removing observer of changing screen');
+          WidgetsBinding.instance.removeObserver(this);
+          appStore.hasObserver = false;
+        }
+      }
+    });
+
     if (appStore.tutorialCompleted == true && appStore.notifications == true) {
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
@@ -282,7 +308,41 @@ class _TabsScreenState extends State<TabsScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        print("&&&& Paused");
+        setState(() {
+          _appCycleState = state;
+        });
+        break;
+      case AppLifecycleState.inactive:
+        setState(() {
+          _appCycleState = state;
+        });
+        print("&&& inactive");
+        break;
+      case AppLifecycleState.detached:
+        setState(() {
+          _appCycleState = state;
+        });
+        print("&&&& detached");
+        break;
+      case AppLifecycleState.resumed:
+        setState(() {
+          _appCycleState = state;
+        });
+        print("&&&& resumed");
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (_appCycleState == AppLifecycleState.inactive) {
+      return Scaffold();
+    }
+
     Locale myLocale = Localizations.localeOf(context);
     print('Language Code: ${myLocale.languageCode}');
 
@@ -401,7 +461,7 @@ class _TabsScreenState extends State<TabsScreen> {
                         showDeleteSecretModal: showDeleteSecretModal,
                       );
                     else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
-                    return wgt;
+                    return wgt ?? Container();
                   }),
                 ],
               ),

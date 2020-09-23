@@ -128,8 +128,17 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      print('&&&& Here lifecycle!');
+    }
+
     if (state == AppLifecycleState.resumed) {
       print('&&&&&&&&& App got back from background');
+      if (appStore.secretPhotos) {
+        appStore.switchSecretPhotos();
+        galleryStore.removeAllPrivatePics();
+      }
+
       galleryStore.checkIsLibraryUpdated();
 //      appStore.checkNotificationPermission();
     }
@@ -137,6 +146,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    print('Main Build!!!');
     return MultiProvider(
       providers: [
         Provider<AppStore>.value(
