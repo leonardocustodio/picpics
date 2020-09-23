@@ -283,8 +283,7 @@ abstract class _GalleryStore with Store {
     }
 
     print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
-
-    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey)) {
+    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey) && appStore.secretPhotos == true) {
       suggestionTags.add(kSecretTagKey);
     }
 
@@ -754,6 +753,9 @@ abstract class _GalleryStore with Store {
 
     for (TagsStore tagStore in appStore.tags) {
       if (Helpers.stripTag(tagStore.name).startsWith(Helpers.stripTag(text))) {
+        if (tagStore.id == kSecretTagKey) {
+          continue;
+        }
         searchTagsResults.add(tagStore);
       }
     }
@@ -972,6 +974,15 @@ abstract class _GalleryStore with Store {
         }
       }
     }
+  }
+
+  @computed
+  List<TagsStore> get tagsFromCurrentPic {
+    List<TagsStore> tagsList = currentPic.tags.toList();
+    if (currentPic.isPrivate == true) {
+      tagsList.removeWhere((element) => element.id == kSecretTagKey);
+    }
+    return tagsList;
   }
 }
 

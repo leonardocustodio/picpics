@@ -328,7 +328,7 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Observer(builder: (_) {
                   return TagsList(
-                    tags: picStore.tags.toList(),
+                    tags: galleryStore.tagsFromCurrentPic,
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,

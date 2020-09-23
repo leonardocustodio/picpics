@@ -492,6 +492,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                           return;
                                         }
 
+                                        appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
                                         Navigator.pushNamed(context, PinScreen.id);
                                       });
                                 },
