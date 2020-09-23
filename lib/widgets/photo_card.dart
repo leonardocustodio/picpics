@@ -51,7 +51,7 @@ class _PhotoCardState extends State<PhotoCard> {
   AppStore appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
-  PicStore get picStore => widget.picStore;
+  PicStore get picStore => galleryStore.currentPic;
   List<int> photoSize;
 
   BoxFit boxFit = BoxFit.cover;
@@ -138,6 +138,7 @@ class _PhotoCardState extends State<PhotoCard> {
     appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+    galleryStore.setCurrentPic(widget.picStore);
 
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
     photoSize = <int>[height, height];
@@ -344,7 +345,8 @@ class _PhotoCardState extends State<PhotoCard> {
                         showWatchAdModal(context);
                         return;
                       }
-                      picStore.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+
+                      galleryStore.removeTagFromCurrentPic(tagKey: DatabaseManager.instance.selectedTagKey);
                     },
                     onChanged: (text) {
                       picStore.setSearchText(text);
@@ -360,7 +362,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           return;
                         }
 
-                        await picStore.addTag(
+                        await galleryStore.addTagToCurrentPic(
                           tagName: text,
                         );
                         Vibrate.feedback(FeedbackType.success);
@@ -384,7 +386,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           return;
                         }
 
-                        await picStore.addTag(
+                        await galleryStore.addTagToCurrentPic(
                           tagName: tagName,
                         );
                         tagsEditingController.clear();

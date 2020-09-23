@@ -61,6 +61,8 @@ abstract class _AppStore with Store {
         hasSwiped: false,
         hasGalleryPermission: null,
         loggedIn: false,
+        secretPhotos: false,
+        isPinRegistered: false,
       );
 
       user = createUser;
@@ -86,11 +88,13 @@ abstract class _AppStore with Store {
     canTagToday = user.canTagToday;
     loggedIn = user.loggedIn ?? false;
     tryBuyId = initiatedWithProduct;
+    secretPhotos = user.secretPhotos ?? false;
+    isPinRegistered = user.isPinRegistered ?? false;
 
-    if (secretBox.length > 0) {
-      Secret secret = secretBox.getAt(0);
-      isPinRegistered = secret.pin == null ? false : true;
-    }
+    // if (secretBox.length > 0) {
+    //   Secret secret = secretBox.getAt(0);
+    //   isPinRegistered = secret.pin == null ? false : true;
+    // }
 
     loadTags();
 
@@ -202,7 +206,14 @@ abstract class _AppStore with Store {
   bool isPinRegistered = false;
 
   @action
-  void setIsPinRegistered(bool value) => isPinRegistered = value;
+  void setIsPinRegistered(bool value) {
+    isPinRegistered = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.isPinRegistered = isPinRegistered;
+    currentUser.save();
+  }
 
   @observable
   bool secretPhotos = false;
@@ -266,6 +277,10 @@ abstract class _AppStore with Store {
     User currentUser = userBox.getAt(0);
     currentUser.isPremium = value;
     currentUser.save();
+
+    if (isPremium == true) {
+      setCanTagToday(true);
+    }
   }
 
   @action

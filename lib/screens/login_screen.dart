@@ -45,6 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ColorAnimatedBackground(
               moveByX: 30.0,
               moveByY: 20.0,
+              blurFilter: false,
             ),
             SafeArea(
               child: Padding(

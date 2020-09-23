@@ -76,7 +76,7 @@ class _TabsScreenState extends State<TabsScreen> {
               Navigator.of(context).pop();
             },
             onPressedOk: () {
-              picStore.setIsPrivate(false);
+              galleryStore.setPrivateCurrentPic(false);
               Navigator.of(context).pop();
             },
           );
@@ -86,11 +86,11 @@ class _TabsScreenState extends State<TabsScreen> {
             Navigator.of(context).pop();
           },
           onPressedDelete: () {
-            picStore.setIsPrivate(true);
+            galleryStore.setPrivateCurrentPic(true);
             Navigator.of(context).pop();
           },
           onPressedOk: () {
-            picStore.setIsPrivate(true);
+            galleryStore.setPrivateCurrentPic(true);
             Navigator.of(context).pop();
           },
         );
@@ -703,6 +703,7 @@ class _TabsScreenState extends State<TabsScreen> {
                             picStore: galleryStore.currentPic,
                             picsInThumbnails: PicSource.UNTAGGED,
                             showEditTagModal: showEditTagModal,
+                            showDeleteSecretModal: showDeleteSecretModal,
                           ),
                         ),
                       ),
