@@ -11,6 +11,7 @@ import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:picPics/widgets/fadein.dart';
+import 'package:picPics/widgets/secret_switch.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
@@ -471,7 +472,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
-                          onPressed: appStore.switchDailyChallenges,
+                          onPressed: () {
+                            if (appStore.secretPhotos == true) {
+                              appStore.switchSecretPhotos();
+                              galleryStore.removeAllPrivatePics();
+                              return;
+                            }
+                            appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                            Navigator.pushNamed(context, PinScreen.id);
+                          },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -482,18 +491,19 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               ),
                               Observer(
                                 builder: (_) {
-                                  return CupertinoSwitch(
-                                      value: appStore.secretPhotos, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-                                      activeColor: kSecondaryColor,
-                                      onChanged: (value) {
-                                        if (value == false) {
-                                          appStore.switchSecretPhotos();
-                                          galleryStore.removeAllPrivatePics();
-                                          return;
-                                        }
+                                  return SecretSwitch(
+                                    value: appStore.secretPhotos,
+                                    onChanged: (value) {
+                                      if (value == false) {
+                                        appStore.switchSecretPhotos();
+                                        galleryStore.removeAllPrivatePics();
+                                        return;
+                                      }
 
-                                        Navigator.pushNamed(context, PinScreen.id);
-                                      });
+                                      appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                                      Navigator.pushNamed(context, PinScreen.id);
+                                    },
+                                  );
                                 },
                               ),
                             ],
@@ -689,7 +699,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Image.asset('lib/images/sharewithfriends.png'),
+                              Image.asset('lib/images/sharegrayicon.png'),
                               SizedBox(
                                 width: 15.0,
                               ),

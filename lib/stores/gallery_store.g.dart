@@ -79,6 +79,13 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$deviceHasPicsComputed ??= Computed<bool>(() => super.deviceHasPics,
               name: '_GalleryStore.deviceHasPics'))
           .value;
+  Computed<List<TagsStore>> _$tagsFromCurrentPicComputed;
+
+  @override
+  List<TagsStore> get tagsFromCurrentPic => (_$tagsFromCurrentPicComputed ??=
+          Computed<List<TagsStore>>(() => super.tagsFromCurrentPic,
+              name: '_GalleryStore.tagsFromCurrentPic'))
+      .value;
 
   final _$swipeIndexAtom = Atom(name: '_GalleryStore.swipeIndex');
 
@@ -650,7 +657,8 @@ isFiltered: ${isFiltered},
 multiPicTagKeys: ${multiPicTagKeys},
 tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
-deviceHasPics: ${deviceHasPics}
+deviceHasPics: ${deviceHasPics},
+tagsFromCurrentPic: ${tagsFromCurrentPic}
     ''';
   }
 }

@@ -67,6 +67,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
   void showDeleteSecretModal(PicStore picStore) {
     if (appStore.secretPhotos != true) {
+      appStore.popPinScreen = PopPinScreenTo.TabsScreen;
       Navigator.pushNamed(context, PinScreen.id);
       return;
     }

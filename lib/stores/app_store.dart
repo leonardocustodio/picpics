@@ -583,4 +583,12 @@ abstract class _AppStore with Store {
   void setWaitingAccessCode(bool value) => waitingAccessCode = value;
 
   bool hasObserver = false;
+
+  PopPinScreenTo popPinScreen;
+}
+
+enum PopPinScreenTo {
+  TabsScreen,
+  SettingsScreen,
+  PhotoScreen,
 }

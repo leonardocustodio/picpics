@@ -9,6 +9,7 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
+import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
@@ -38,7 +39,12 @@ class _PinScreenState extends State<PinScreen> {
   void setPinAndPop() {
     appStore.setIsPinRegistered(true);
     appStore.switchSecretPhotos();
-    Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+
+    if (appStore.popPinScreen == PopPinScreenTo.SettingsScreen) {
+      Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
+    } else {
+      Navigator.popUntil(context, ModalRoute.withName(TabsScreen.id));
+    }
   }
 
   void showCreatedKeyModal() {
