@@ -1196,20 +1196,20 @@ class S {
     );
   }
 
-  /// `Desafio diário`
+  /// `Daily challenge`
   String get daily_notification_title {
     return Intl.message(
-      'Desafio diário',
+      'Daily challenge',
       name: 'daily_notification_title',
       desc: '',
       args: [],
     );
   }
 
-  /// `Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!`
+  /// `It's time to complete your picPics daily challenge!`
   String get daily_notification_description {
     return Intl.message(
-      'Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!',
+      'It\'s time to complete your picPics daily challenge!',
       name: 'daily_notification_description',
       desc: '',
       args: [],

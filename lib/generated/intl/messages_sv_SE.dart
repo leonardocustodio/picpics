@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("Daglig utmaning"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("För att vi ska kunna skicka dina dagliga utmaningar behöver vi behörighet för att skicka aviseringar, vilket innebär att du måste godkänna aviseringar i din mobiltelefons inställningar"),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("Dagligt mål"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("It\'s time to complete your picPics daily challenge!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "delete" : MessageLookupByLibrary.simpleMessage("Radera"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("Den här enheten har inga foton i galleriet, så det finns inga foton som kan taggas."),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("Vill du visa detta foto?"),

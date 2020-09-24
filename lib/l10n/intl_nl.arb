@@ -147,5 +147,8 @@
   "protect_with_encryption": "Bescherm uw persoonlijke foto's met codering die alleen toegankelijk is met een pincode.",
 
 
-  "all_photos_were_tagged": "There are no more photos to organize."
+  "all_photos_were_tagged": "There are no more photos to organize.",
+  "daily_notification_title": "Daily challenge",
+  "daily_notification_description": "It's time to complete your picPics daily challenge!"
+
 }

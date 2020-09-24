@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("Dagelijkse uitdaging"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("Om uw dagelijkse uitdagingen te kunnen verzenden, hebben we toestemming nodig om meldingen te verzenden, dus het is noodzakelijk dat u de meldingen autoriseert in de opties van uw mobiele telefoon"),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("Dagelijks doel"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("It\'s time to complete your picPics daily challenge!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "delete" : MessageLookupByLibrary.simpleMessage("Verwijderen"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("Dit apparaat heeft geen foto in de galerij, dus er is geen foto die kan worden getagd."),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("Wilt u deze foto zichtbaar maken?"),

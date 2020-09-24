@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("일일 챌린지"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("저희가 매일 챌린지를 보내려면 알림을 보낼 수있는 권한이 필요하므로 휴대 전화 옵션에서 알림을 승인해야합니다."),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("일일 목표"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("It\'s time to complete your picPics daily challenge!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "delete" : MessageLookupByLibrary.simpleMessage("삭제"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("이 기기에는 갤러리에 사진이 없으므로 태그를 지정할 수 있는 사진이 없습니다."),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("이 사진의 숨김을 해제하시겠습니까?"),

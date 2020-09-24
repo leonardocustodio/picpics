@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("デイリーチャレンジ"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("デイリーチャレンジをお届けするには、ユーザーの通知受信の許可が必要です。そのため、携帯電話のオプションで通知受信を許可にしてください。"),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("デイリーゴール"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("It\'s time to complete your picPics daily challenge!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "delete" : MessageLookupByLibrary.simpleMessage("削除"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("このデバイスのギャラリーには写真がないため、タグ付けできる写真はありません。"),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("この写真を非表示しますか？"),

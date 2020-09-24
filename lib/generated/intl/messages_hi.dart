@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("दैनिक चुनौती"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("हमें आपकी दैनिक चुनौतियों को भेजने में सक्षम होने के लिए, हमें सूचनाएं भेजने के लिए प्राधिकरण की आवश्यकता है, इसलिए, यह आवश्यक है कि आप अपने सेल फोन के विकल्पों में सूचनाओं को अधिकृत करें."),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("दैनिक लक्ष्य"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("It\'s time to complete your picPics daily challenge!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "delete" : MessageLookupByLibrary.simpleMessage("हटाएं"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("इस डिवाइस में गैलरी में कोई फोटो नहीं है, इसलिए कोई भी फोटो नहीं है जिसे टैग किया जा सके."),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("क्या आप इस फ़ोटो को अनहाइड करना चाहते हैं?"),

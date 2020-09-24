@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("每日挑战"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("为了让我们能够发送您的每日挑战，我们需要授权来发送通知，因此您需要在手机选项中授权通知权限"),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("每日目标"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("It\'s time to complete your picPics daily challenge!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "delete" : MessageLookupByLibrary.simpleMessage("删除"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("此设备的图库中没有照片，因此没有可以添加标签的照片。"),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("您要取消隐藏这张照片吗？"),
