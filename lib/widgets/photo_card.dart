@@ -30,6 +30,7 @@ import 'package:provider/provider.dart';
 
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
+
   final Function showEditTagModal;
   final Function showDeleteSecretModal;
   final PicSource picsInThumbnails;
@@ -51,7 +52,8 @@ class _PhotoCardState extends State<PhotoCard> {
   AppStore appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
-  PicStore get picStore => galleryStore.currentPic;
+  PicStore get picStore => widget.picStore;
+
   List<int> photoSize;
 
   BoxFit boxFit = BoxFit.cover;
@@ -138,7 +140,7 @@ class _PhotoCardState extends State<PhotoCard> {
     appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
-    galleryStore.setCurrentPic(widget.picStore);
+    // galleryStore.setCurrentPic(widget.picStore);
 
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
     photoSize = <int>[height, height];
@@ -328,7 +330,7 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Observer(builder: (_) {
                   return TagsList(
-                    tags: galleryStore.tagsFromCurrentPic,
+                    tags: galleryStore.tagsFromPic(picStore: picStore),
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
@@ -346,7 +348,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         return;
                       }
 
-                      galleryStore.removeTagFromCurrentPic(tagKey: DatabaseManager.instance.selectedTagKey);
+                      galleryStore.removeTagFromPic(picStore: picStore, tagKey: DatabaseManager.instance.selectedTagKey);
                     },
                     onChanged: (text) {
                       picStore.setSearchText(text);
@@ -362,7 +364,8 @@ class _PhotoCardState extends State<PhotoCard> {
                           return;
                         }
 
-                        await galleryStore.addTagToCurrentPic(
+                        await galleryStore.addTagToPic(
+                          picStore: picStore,
                           tagName: text,
                         );
                         Vibrate.feedback(FeedbackType.success);
@@ -386,7 +389,8 @@ class _PhotoCardState extends State<PhotoCard> {
                           return;
                         }
 
-                        await galleryStore.addTagToCurrentPic(
+                        await galleryStore.addTagToPic(
+                          picStore: picStore,
                           tagName: tagName,
                         );
                         tagsEditingController.clear();

@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("Toegangscode"),
     "access_code_sent" : MessageLookupByLibrary.simpleMessage("Er is een toegangssleutel verzonden naar gebruiker@email.com"),
-    "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("Adicione múltiplas-tags"),
+    "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("Voeg meerdere tags toe"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("Tag toevoegen"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Voeg tags toe"),
     "all_at_once" : MessageLookupByLibrary.simpleMessage("Orden meerdere foto\'s tegelijk"),

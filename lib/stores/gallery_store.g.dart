@@ -79,13 +79,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$deviceHasPicsComputed ??= Computed<bool>(() => super.deviceHasPics,
               name: '_GalleryStore.deviceHasPics'))
           .value;
-  Computed<List<TagsStore>> _$tagsFromCurrentPicComputed;
-
-  @override
-  List<TagsStore> get tagsFromCurrentPic => (_$tagsFromCurrentPicComputed ??=
-          Computed<List<TagsStore>>(() => super.tagsFromCurrentPic,
-              name: '_GalleryStore.tagsFromCurrentPic'))
-      .value;
 
   final _$swipeIndexAtom = Atom(name: '_GalleryStore.swipeIndex');
 
@@ -291,13 +284,12 @@ mixin _$GalleryStore on _GalleryStore, Store {
         .run(() => super.checkIsLibraryUpdated());
   }
 
-  final _$addTagToCurrentPicAsyncAction =
-      AsyncAction('_GalleryStore.addTagToCurrentPic');
+  final _$addTagToPicAsyncAction = AsyncAction('_GalleryStore.addTagToPic');
 
   @override
-  Future<void> addTagToCurrentPic({String tagName}) {
-    return _$addTagToCurrentPicAsyncAction
-        .run(() => super.addTagToCurrentPic(tagName: tagName));
+  Future<void> addTagToPic({PicStore picStore, String tagName}) {
+    return _$addTagToPicAsyncAction
+        .run(() => super.addTagToPic(picStore: picStore, tagName: tagName));
   }
 
   final _$_GalleryStoreActionController =
@@ -615,22 +607,22 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void removeTagFromCurrentPic({String tagKey}) {
+  void removeTagFromPic({PicStore picStore, String tagKey}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.removeTagFromCurrentPic');
+        name: '_GalleryStore.removeTagFromPic');
     try {
-      return super.removeTagFromCurrentPic(tagKey: tagKey);
+      return super.removeTagFromPic(picStore: picStore, tagKey: tagKey);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setPrivateCurrentPic(bool value) {
+  void setPrivatePic({PicStore picStore, bool private}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.setPrivateCurrentPic');
+        name: '_GalleryStore.setPrivatePic');
     try {
-      return super.setPrivateCurrentPic(value);
+      return super.setPrivatePic(picStore: picStore, private: private);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -657,8 +649,7 @@ isFiltered: ${isFiltered},
 multiPicTagKeys: ${multiPicTagKeys},
 tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
-deviceHasPics: ${deviceHasPics},
-tagsFromCurrentPic: ${tagsFromCurrentPic}
+deviceHasPics: ${deviceHasPics}
     ''';
   }
 }

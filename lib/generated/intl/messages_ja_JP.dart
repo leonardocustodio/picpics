@@ -29,7 +29,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("アクセスコード"),
     "access_code_sent" : MessageLookupByLibrary.simpleMessage("アクセスキーが user@email.com に送信されました"),
-    "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("Adicionemúltiplas タグ"),
+    "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("複数のタグを追加"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("タグを付ける"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("タグを付ける"),
     "all_at_once" : MessageLookupByLibrary.simpleMessage("一度に複数の写真を整理"),
