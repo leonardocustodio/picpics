@@ -922,33 +922,33 @@ abstract class _GalleryStore with Store {
   void setShouldRefreshTaggedGallery(bool value) => shouldRefreshTaggedGallery = value;
 
   @action
-  void removeTagFromCurrentPic({String tagKey}) {
-    currentPic.removeTagFromPic(tagKey: tagKey);
-    removePicFromTaggedPics(picStore: currentPic);
+  void removeTagFromPic({PicStore picStore, String tagKey}) {
+    picStore.removeTagFromPic(tagKey: tagKey);
+    removePicFromTaggedPics(picStore: picStore);
 
-    if (currentPic.tags.isEmpty) {
-      untaggedPics.insert(0, currentPic);
+    if (picStore.tags.isEmpty) {
+      untaggedPics.insert(0, picStore);
       print('this pic now doesnt have tags!');
     }
   }
 
   @action
-  Future<void> addTagToCurrentPic({String tagName}) async {
-    if (currentPic.tags.isEmpty) {
+  Future<void> addTagToPic({PicStore picStore, String tagName}) async {
+    if (picStore.tags.isEmpty) {
       print('this pic now has tags!');
-      untaggedPics.remove(currentPic);
+      untaggedPics.remove(picStore);
     }
 
-    await currentPic.addTag(
+    await picStore.addTag(
       tagName: tagName,
     );
 
-    addPicToTaggedPics(picStore: currentPic);
+    addPicToTaggedPics(picStore: picStore);
   }
 
   @action
-  void setPrivateCurrentPic(bool value) {
-    currentPic.setIsPrivate(value);
+  void setPrivatePic({PicStore picStore, bool private}) {
+    currentPic.setIsPrivate(private);
 
     if (currentPic.isPrivate == true) {
       if (!privatePics.contains(currentPic)) {
@@ -976,10 +976,9 @@ abstract class _GalleryStore with Store {
     }
   }
 
-  @computed
-  List<TagsStore> get tagsFromCurrentPic {
-    List<TagsStore> tagsList = currentPic.tags.toList();
-    if (currentPic.isPrivate == true) {
+  List<TagsStore> tagsFromPic({PicStore picStore}) {
+    List<TagsStore> tagsList = picStore.tags.toList();
+    if (picStore.isPrivate == true) {
       tagsList.removeWhere((element) => element.id == kSecretTagKey);
     }
     return tagsList;

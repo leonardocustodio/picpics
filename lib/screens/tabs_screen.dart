@@ -83,7 +83,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
               Navigator.of(context).pop();
             },
             onPressedOk: () {
-              galleryStore.setPrivateCurrentPic(false);
+              galleryStore.setPrivatePic(picStore: picStore, private: false);
               Navigator.of(context).pop();
             },
           );
@@ -93,11 +93,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
             Navigator.of(context).pop();
           },
           onPressedDelete: () {
-            galleryStore.setPrivateCurrentPic(true);
+            galleryStore.setPrivatePic(picStore: picStore, private: true);
             Navigator.of(context).pop();
           },
           onPressedOk: () {
-            galleryStore.setPrivateCurrentPic(true);
+            galleryStore.setPrivatePic(picStore: picStore, private: true);
             Navigator.of(context).pop();
           },
         );
