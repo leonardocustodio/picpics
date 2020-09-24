@@ -574,7 +574,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                         child: CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           pressedOpacity: 1.0,
-                          onPressed: appStore.switchDailyChallenges,
+                          onPressed: () {
+                            appStore.switchDailyChallenges(
+                              notificationTitle: S.of(context).daily_notification_title,
+                              notificationDescription: S.of(context).daily_notification_description,
+                            );
+                          },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -586,9 +591,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               Observer(
                                 builder: (_) {
                                   return CupertinoSwitch(
-                                      value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-                                      activeColor: kSecondaryColor,
-                                      onChanged: (value) => appStore.switchDailyChallenges());
+                                    value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                    activeColor: kSecondaryColor,
+                                    onChanged: (value) {
+                                      appStore.switchDailyChallenges(
+                                        notificationTitle: S.of(context).daily_notification_title,
+                                        notificationDescription: S.of(context).daily_notification_description,
+                                      );
+                                    },
+                                  );
                                 },
                               ),
                             ],

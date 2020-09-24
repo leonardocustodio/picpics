@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("Desafio diário"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("Para podermos enviar seus desafios diários, precisamos de autorização para enviar notificações; portanto, é necessário que você autorize as notificações nas opções do seu telefone celular."),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("Objetivo diário"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Desafio diário"),
     "delete" : MessageLookupByLibrary.simpleMessage("Deletar"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("Esse dispositivo não tem nenhuma foto na galeria, assim não há nenhuma foto que possa ser taggeada."),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("Do you want to unhide this photo?"),

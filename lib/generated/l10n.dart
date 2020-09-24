@@ -1195,6 +1195,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Desafio diário`
+  String get daily_notification_title {
+    return Intl.message(
+      'Desafio diário',
+      name: 'daily_notification_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!`
+  String get daily_notification_description {
+    return Intl.message(
+      'Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!',
+      name: 'daily_notification_description',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
