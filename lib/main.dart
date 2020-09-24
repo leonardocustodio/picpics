@@ -174,7 +174,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         ],
         locale: appStore.appLocale,
         supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: kDebugMode,
         initialRoute: appStore.initialRoute,
         navigatorObservers: [Analytics.observer],
         routes: {
