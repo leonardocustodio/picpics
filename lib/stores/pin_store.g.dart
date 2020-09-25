@@ -72,7 +72,7 @@ mixin _$PinStore on _PinStore, Store {
   final _$registerAsyncAction = AsyncAction('_PinStore.register');
 
   @override
-  Future<bool> register() {
+  Future<Map<String, dynamic>> register() {
     return _$registerAsyncAction.run(() => super.register());
   }
 

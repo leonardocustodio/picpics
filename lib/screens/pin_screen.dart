@@ -43,15 +43,15 @@ class _PinScreenState extends State<PinScreen> {
     bool valid = await pinStore.validateAccessCode();
 
     pinStore.setAccessCode('');
-
-    if (valid) {
-      print('Is valid: $valid');
-      showCreatedKeyModal();
-    }
-
     setState(() {
       isLoading = false;
     });
+    if (valid) {
+      print('Is valid: $valid');
+      showCreatedKeyModal();
+    } else {
+      showErrorModal('The access code you typed is invalid!');
+    }
   }
 
   void setPinAndPop() {
@@ -65,12 +65,31 @@ class _PinScreenState extends State<PinScreen> {
     }
   }
 
+  void showErrorModal(String message) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return GeneralModal(
+          message: message,
+          onPressedDelete: () {
+            Navigator.pop(context);
+          },
+          onPressedOk: () {
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
+  }
+
   void showCreatedKeyModal() {
     showDialog<void>(
       context: context,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return GeneralModal(
+          message: 'Secret Key successfully created!',
           onPressedDelete: () {
             Navigator.pop(context);
           },

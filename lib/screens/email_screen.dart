@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
+import 'package:picPics/widgets/general_modal.dart';
 import 'package:provider/provider.dart';
 
 class EmailScreen extends StatefulWidget {
@@ -41,21 +43,47 @@ class _EmailScreenState extends State<EmailScreen> {
     pinStore = Provider.of<PinStore>(context);
   }
 
+  void showErrorModal(String message) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return GeneralModal(
+          message: message,
+          onPressedDelete: () {
+            Navigator.pop(context);
+          },
+          onPressedOk: () {
+            Navigator.pop(context);
+          },
+        );
+      },
+    );
+  }
+
   Future<void> startRegistration() async {
     setState(() {
       isLoading = true;
     });
 
-    bool registered = await pinStore.register();
+    Map<String, dynamic> result = await pinStore.register();
 
-    if (registered == true) {
-      setState(() {
-        isLoading = false;
-      });
+    setState(() {
+      isLoading = false;
+    });
+
+    if (result['success'] == true) {
       appStore.setWaitingAccessCode(true);
       Navigator.pushNamed(context, PinScreen.id);
     } else {
-      print('Error !!!');
+      print('Result: $result');
+      if (result['errorCode'] == 'email-already-in-use') {
+        showErrorModal('This e-mail is already in use by another account.');
+        print('Error !!!');
+      } else {
+        showErrorModal('An error has occured. Please try again!');
+        print('Error !!!');
+      }
     }
   }
 

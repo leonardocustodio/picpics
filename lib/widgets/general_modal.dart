@@ -4,10 +4,12 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 
 class GeneralModal extends StatelessWidget {
+  final String message;
   final Function onPressedDelete;
   final Function onPressedOk;
 
   GeneralModal({
+    @required this.message,
     @required this.onPressedDelete,
     @required this.onPressedOk,
   });
@@ -43,7 +45,7 @@ class GeneralModal extends StatelessWidget {
             ),
             Spacer(),
             Text(
-              "Secret Key successfully created!",
+              message,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff606566),

@@ -38,24 +38,36 @@ abstract class _PinStore with Store {
   void setAccessCode(String value) => accessCode = value;
 
   @action
-  Future<bool> register() async {
+  Future<Map<String, dynamic>> register() async {
     print('Email: $email - Pin: $pin');
 
+    Map<String, dynamic> result = {};
+
     final FirebaseAuth auth = FirebaseAuth.instance;
+    User user;
 
-    UserCredential userCredential = await auth
-        .createUserWithEmailAndPassword(
-      email: email,
-      password: pin,
-    )
-        .catchError((error) {
-      print('$error');
-      return false;
-    });
+    try {
+      user = (await auth.createUserWithEmailAndPassword(
+        email: email,
+        password: pin,
+      ))
+          .user;
 
-    final User user = userCredential.user;
+      if (user == null) {
+        result['success'] = false;
+        result['errorCode'] = 'NULL_USER';
+        return result;
+      }
+    } catch (error) {
+      print('Error creating user: $error');
+      result['success'] = false;
+      result['errorCode'] = error.code;
+      return result;
+    }
+
     print('User: $user');
-    return true;
+    result['success'] = true;
+    return result;
   }
 
   @action
@@ -68,7 +80,6 @@ abstract class _PinStore with Store {
         },
       );
       print(result.data);
-
       return result.data;
       // setState(() {
       //   _response = result.data['repeat_message'];
@@ -84,6 +95,6 @@ abstract class _PinStore with Store {
       print(e);
     }
 
-    return true;
+    return false;
   }
 }
