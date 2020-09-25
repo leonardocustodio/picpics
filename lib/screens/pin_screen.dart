@@ -42,6 +42,8 @@ class _PinScreenState extends State<PinScreen> {
 
     bool valid = await pinStore.validateAccessCode();
 
+    pinStore.setAccessCode('');
+
     if (valid) {
       print('Is valid: $valid');
       showCreatedKeyModal();
@@ -189,8 +191,8 @@ class _PinScreenState extends State<PinScreen> {
     if (pinStore.confirmPin.length == 6) {
       if (pinStore.pin == pinStore.confirmPin) {
         carouselPage = 0;
-        // pinValue = '';
-        // confirmValue = '';
+        pinStore.setPin('');
+        pinStore.setConfirmPin('');
         carouselController.animateToPage(0);
         Navigator.pushNamed(context, EmailScreen.id);
       }
