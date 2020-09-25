@@ -202,14 +202,12 @@ PODS:
     - Flutter
   - PromisesObjC (1.2.10)
   - Protobuf (3.13.0)
-  - Purchases (3.7.1):
-    - PurchasesCoreSwift (= 3.7.1)
-  - purchases_flutter (1.3.0):
+  - Purchases (3.4.0)
+  - purchases_flutter (1.2.1):
     - Flutter
-    - PurchasesHybridCommon (= 1.4.2)
-  - PurchasesCoreSwift (3.7.1)
-  - PurchasesHybridCommon (1.4.2):
-    - Purchases (= 3.7.1)
+    - PurchasesHybridCommon (= 1.2.0)
+  - PurchasesHybridCommon (1.2.0):
+    - Purchases (= 3.4.0)
   - rate_my_app (0.7.1):
     - Flutter
   - share_extend (0.0.1):
@@ -277,7 +275,6 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - Purchases
-    - PurchasesCoreSwift
     - PurchasesHybridCommon
 
 EXTERNAL SOURCES:
@@ -385,10 +382,9 @@ SPEC CHECKSUMS:
   photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
   PromisesObjC: b14b1c6b68e306650688599de8a45e49fae81151
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
-  Purchases: 81efbd7dc9164247a0885ad12ddf6b043a58c1db
-  purchases_flutter: 8ca9b10162b2609fca1ea822a03617711f693be8
-  PurchasesCoreSwift: eca892b2a0eff34d55d70e7c3349c1eb4c7659f5
-  PurchasesHybridCommon: 871e4ac3d32b0e4c7759ff0acc302bce07528747
+  Purchases: b8cac232e403ca51541a425a65992b902cecc044
+  purchases_flutter: b27e7df010dbf09f9b7bdd849cc83ac19c3444d9
+  PurchasesHybridCommon: deba31751165f0a0f84eba3df68a54641f8a69b1
   rate_my_app: 3b64dd0876bd286001595ee2e69193e757c4d77c
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
