@@ -39,6 +39,8 @@ abstract class _PinStore with Store {
 
   @action
   Future<bool> register() async {
+    print('Email: $email - Pin: $pin');
+
     final FirebaseAuth auth = FirebaseAuth.instance;
 
     UserCredential userCredential = await auth
