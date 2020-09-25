@@ -12,6 +12,8 @@ import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pin_store.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:picPics/widgets/general_modal.dart';
 import 'package:provider/provider.dart';
@@ -26,15 +28,29 @@ class PinScreen extends StatefulWidget {
 class _PinScreenState extends State<PinScreen> {
   AppStore appStore;
   GalleryStore galleryStore;
+  PinStore pinStore;
 
   bool isLoading = false;
 
-  String pinValue = '';
-  String confirmValue = '';
-  String accessValue = '';
-
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
+
+  Future<void> validateAccessCode() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    bool valid = await pinStore.validateAccessCode();
+
+    if (valid) {
+      print('Is valid: $valid');
+      showCreatedKeyModal();
+    }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   void setPinAndPop() {
     appStore.setIsPinRegistered(true);
@@ -69,6 +85,7 @@ class _PinScreenState extends State<PinScreen> {
   @override
   void initState() {
     super.initState();
+
 //    Analytics.sendCurrentScreen(Screen.login_screen);
   }
 
@@ -77,6 +94,7 @@ class _PinScreenState extends State<PinScreen> {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+    pinStore = Provider.of<PinStore>(context);
   }
 
   Widget _buildPinPad(BuildContext context, int index) {
@@ -92,7 +110,7 @@ class _PinScreenState extends State<PinScreen> {
         children: [
           Spacer(),
           Text(
-            index == 0 ? 'New secret key' : 'Confirm secret key',
+            index == 0 ? S.of(context).new_secret_key : S.of(context).confirm_secret_key,
             style: TextStyle(
               fontFamily: 'Lato',
               color: kSecondaryColor,
@@ -103,10 +121,12 @@ class _PinScreenState extends State<PinScreen> {
             ),
           ),
           Spacer(),
-          PinPlaceholder(
-            filledPositions: index == 0 ? pinValue.length : confirmValue.length,
-            totalPositions: 6,
-          ),
+          Observer(builder: (_) {
+            return PinPlaceholder(
+              filledPositions: index == 0 ? pinStore.pin.length : pinStore.confirmPin.length,
+              totalPositions: 6,
+            );
+          }),
           Spacer(),
           NumberPad(
             onPinTapped: pinTapped,
@@ -117,14 +137,16 @@ class _PinScreenState extends State<PinScreen> {
     );
   }
 
-  void pinTapped(int value) {
+  void pinTapped(String value) {
     print('Value: $value');
     if (appStore.isPinRegistered == true) {
-      setState(() {
-        pinValue = '${pinValue}${value}';
-      });
+      if (value == '\u0008') {
+        pinStore.setPin(Helpers.removeLastCharacter(pinStore.pin));
+        return;
+      }
+      pinStore.setPin('${pinStore.pin}${value}');
 
-      if (pinValue.length == 6) {
+      if (pinStore.pin.length == 6) {
         // set true
         appStore.switchSecretPhotos();
         galleryStore.checkIsLibraryUpdated();
@@ -135,39 +157,40 @@ class _PinScreenState extends State<PinScreen> {
     }
 
     if (appStore.waitingAccessCode == true) {
-      setState(() {
-        accessValue = '${accessValue}${value}';
-      });
+      if (value == '\u0008') {
+        pinStore.setAccessCode(Helpers.removeLastCharacter(pinStore.accessCode));
+        return;
+      }
+      pinStore.setAccessCode('${pinStore.accessCode}${value}');
 
-      if (accessValue.length == 6) {
-        // set true
-        showCreatedKeyModal();
+      if (pinStore.accessCode.length == 6) {
+        validateAccessCode();
       }
 
       return;
     }
 
     if (carouselPage == 0) {
-      setState(() {
-        pinValue = '${pinValue}${value}';
-      });
+      pinStore.setPin('${pinStore.pin}${value}');
 
-      if (pinValue.length == 6) {
+      if (pinStore.pin.length == 6) {
         carouselPage = 1;
         carouselController.nextPage();
       }
       return;
     }
 
-    setState(() {
-      confirmValue = '${confirmValue}${value}';
-    });
+    if (value == '\u0008') {
+      pinStore.setConfirmPin(Helpers.removeLastCharacter(pinStore.confirmPin));
+      return;
+    }
+    pinStore.setConfirmPin('${pinStore.confirmPin}${value}');
 
-    if (confirmValue.length == 6) {
-      if (pinValue == confirmValue) {
+    if (pinStore.confirmPin.length == 6) {
+      if (pinStore.pin == pinStore.confirmPin) {
         carouselPage = 0;
-        pinValue = '';
-        confirmValue = '';
+        // pinValue = '';
+        // confirmValue = '';
         carouselController.animateToPage(0);
         Navigator.pushNamed(context, EmailScreen.id);
       }
@@ -226,7 +249,7 @@ class _PinScreenState extends State<PinScreen> {
                           children: [
                             Spacer(),
                             Text(
-                              'Your secret key',
+                              S.of(context).your_secret_key,
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 color: kSecondaryColor,
@@ -239,17 +262,19 @@ class _PinScreenState extends State<PinScreen> {
                             Spacer(
                               flex: 2,
                             ),
-                            PinPlaceholder(
-                              filledPositions: pinValue.length,
-                              totalPositions: 6,
-                            ),
+                            Observer(builder: (_) {
+                              return PinPlaceholder(
+                                filledPositions: pinStore.pin.length,
+                                totalPositions: 6,
+                              );
+                            }),
                             Spacer(),
                             NumberPad(
                               onPinTapped: pinTapped,
                             ),
                             Spacer(),
                             Text(
-                              'Forgot secret key?',
+                              S.of(context).forgot_secret_key,
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 color: kWhiteColor,
@@ -285,7 +310,7 @@ class _PinScreenState extends State<PinScreen> {
                         children: [
                           Spacer(),
                           Text(
-                            'Access code',
+                            S.of(context).access_code,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kSecondaryColor,
@@ -298,11 +323,11 @@ class _PinScreenState extends State<PinScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
                             child: Text(
-                              'An acess key was sended to\nola@pombastudio.com',
+                              S.of(context).access_code_sent,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',
-                                color: Color(0xff979a9b),
+                                color: kWhiteColor,
                                 fontSize: 15.0,
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.normal,
@@ -310,9 +335,13 @@ class _PinScreenState extends State<PinScreen> {
                             ),
                           ),
                           Spacer(),
-                          PinPlaceholder(
-                            filledPositions: accessValue.length,
-                            totalPositions: 6,
+                          Observer(
+                            builder: (_) {
+                              return PinPlaceholder(
+                                filledPositions: pinStore.accessCode.length,
+                                totalPositions: 6,
+                              );
+                            },
                           ),
                           Spacer(),
                           NumberPad(
@@ -403,7 +432,7 @@ class NumberPad extends StatelessWidget {
           number.add(
             CupertinoButton(
               onPressed: () {
-                print('backspace');
+                onPinTapped('\u0008');
               },
               child: Container(
                 height: 44.0,
@@ -422,7 +451,7 @@ class NumberPad extends StatelessWidget {
             // padding: const EdgeInsets.all(0),
             minSize: 44.0,
             onPressed: () {
-              onPinTapped(value);
+              onPinTapped('${value == 11 ? '0' : value}');
             },
             child: Container(
               width: 44.0,
