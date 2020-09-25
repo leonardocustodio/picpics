@@ -1195,6 +1195,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Daily challenge`
+  String get daily_notification_title {
+    return Intl.message(
+      'Daily challenge',
+      name: 'daily_notification_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It's time to complete your picPics daily challenge!`
+  String get daily_notification_description {
+    return Intl.message(
+      'It\'s time to complete your picPics daily challenge!',
+      name: 'daily_notification_description',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

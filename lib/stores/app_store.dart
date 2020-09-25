@@ -144,7 +144,7 @@ abstract class _AppStore with Store {
       User currentUser = userBox.getAt(0);
 
       currentUser.notifications = true;
-      currentUser.dailyChallenges = true;
+      currentUser.dailyChallenges = false;
       currentUser.save();
     } else {
       PushNotificationsManager push = PushNotificationsManager();
@@ -169,7 +169,7 @@ abstract class _AppStore with Store {
         print('user has notification permission');
         currentUser.notifications = true;
         if (firstPermissionCheck) {
-          currentUser.dailyChallenges = true;
+          currentUser.dailyChallenges = false;
         }
         currentUser.save();
       }
@@ -183,7 +183,7 @@ abstract class _AppStore with Store {
   bool dailyChallenges = false;
 
   @action
-  void switchDailyChallenges() {
+  void switchDailyChallenges({String notificationTitle, String notificationDescription}) {
     dailyChallenges = !dailyChallenges;
 
     var userBox = Hive.box('user');
@@ -191,13 +191,17 @@ abstract class _AppStore with Store {
     currentUser.dailyChallenges = dailyChallenges;
     currentUser.save();
 
-//    PushNotificationsManager push = PushNotificationsManager();
-//
-//    if (dailyChallenges) {
-//      push.deregister();
-//    } else {
-//      push.register();
-//    }
+    PushNotificationsManager push = PushNotificationsManager();
+    if (dailyChallenges) {
+      push.deregister();
+    } else {
+      push.register(
+        hourOfDay: hourOfDay,
+        minutesOfDay: minutesOfDay,
+        title: notificationTitle,
+        description: notificationDescription,
+      );
+    }
 
     Analytics.sendEvent(Event.notification_switch);
   }

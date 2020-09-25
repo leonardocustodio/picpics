@@ -48,6 +48,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("คำท้าประจำวัน"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("เนื่องจากการส่งคำท้าประจำวันจำเป็นต้องได้รับอนุญาตในการส่งการแจ้งเตือนด้วย เพราะฉะนั้นผู้ใช้จึงจำเป็นต้องเปิดให้อนุญาตแจ้งเตือนในโทรศัพท์มือถือ"),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("เป้าหมายประจำวัน"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("It\'s time to complete your picPics daily challenge!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "delete" : MessageLookupByLibrary.simpleMessage("ลบ"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("อุปกรณ์นี้ไม่มีภาพถ่ายในคลังภาพจึงไม่สามารถติดแท็กภาพถ่ายได้"),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("คุณต้องการเปิดเผยรูปภาพนี้ใช่ไหม?"),

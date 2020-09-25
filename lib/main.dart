@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ffi';
 import 'dart:typed_data';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/screens/premium_screen.dart';
@@ -51,6 +53,7 @@ void main() async {
   await Firebase.initializeApp();
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  // CloudFunctions.instance.useFunctionsEmulator(origin: Platform.isAndroid ? 'http://10.0.2.2:5001' : 'http://localhost:5001');
 
   Ads.initialize();
   Ads.loadRewarded();
@@ -161,6 +164,9 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
             galleryStore: galleryStore,
           ),
         ),
+        Provider<PinStore>.value(
+          value: PinStore(),
+        ),
         ChangeNotifierProvider<DatabaseManager>(
           create: (_) => DatabaseManager.instance,
         ),
@@ -174,7 +180,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         ],
         locale: appStore.appLocale,
         supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: false,
+        debugShowCheckedModeBanner: kDebugMode,
         initialRoute: appStore.initialRoute,
         navigatorObservers: [Analytics.observer],
         routes: {

@@ -307,11 +307,14 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void switchDailyChallenges() {
+  void switchDailyChallenges(
+      {String notificationTitle, String notificationDescription}) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.switchDailyChallenges');
     try {
-      return super.switchDailyChallenges();
+      return super.switchDailyChallenges(
+          notificationTitle: notificationTitle,
+          notificationDescription: notificationDescription);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }

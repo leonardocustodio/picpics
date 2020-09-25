@@ -46,28 +46,24 @@ class PushNotificationsManager {
     }
   }
 
-  void register() async {
+  void register({int hourOfDay, int minutesOfDay, String title, String description}) async {
     if (!_initialized) {
       init();
-
       print('subscribed');
-      var userBox = Hive.box('user');
-      DatabaseManager.instance.userSettings.dailyChallenges = true;
-      userBox.putAt(0, DatabaseManager.instance.userSettings);
-
       return;
     }
 
     _firebaseMessaging.requestNotificationPermissions();
     String token = await _firebaseMessaging.getToken();
     print("FirebaseMessaging token: $token");
-
     print('subscribed');
-    var userBox = Hive.box('user');
-    DatabaseManager.instance.userSettings.dailyChallenges = true;
-    userBox.putAt(0, DatabaseManager.instance.userSettings);
 
-    scheduleNotification();
+    scheduleNotification(
+      hourOfDay: hourOfDay,
+      minutesOfDay: minutesOfDay,
+      title: title,
+      description: description,
+    );
   }
 
 //  void register() {
@@ -92,12 +88,12 @@ class PushNotificationsManager {
     }
   }
 
-  void scheduleNotification() async {
+  void scheduleNotification({int hourOfDay, int minutesOfDay, String title, String description}) async {
     await _flutterLocalNotificationsPlugin.cancelAll();
 
     var time = Time(
-      DatabaseManager.instance.userSettings.hourOfDay,
-      DatabaseManager.instance.userSettings.minutesOfDay,
+      hourOfDay,
+      minutesOfDay,
       0,
     );
 
@@ -116,8 +112,8 @@ class PushNotificationsManager {
 
     await _flutterLocalNotificationsPlugin.showDailyAtTime(
       0,
-      'Desafio diário',
-      'Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!',
+      title,
+      description,
       time,
       platformChannelSpecifics,
     );

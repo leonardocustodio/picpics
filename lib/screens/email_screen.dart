@@ -8,11 +8,15 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:provider/provider.dart';
 
 class EmailScreen extends StatefulWidget {
   static const String id = 'email_screen';
+
+  final PinStore pinStore;
+  EmailScreen({this.pinStore});
 
   @override
   _EmailScreenState createState() => _EmailScreenState();
@@ -20,6 +24,7 @@ class EmailScreen extends StatefulWidget {
 
 class _EmailScreenState extends State<EmailScreen> {
   AppStore appStore;
+  PinStore pinStore;
 
   bool isLoading = false;
 
@@ -33,6 +38,25 @@ class _EmailScreenState extends State<EmailScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
+    pinStore = Provider.of<PinStore>(context);
+  }
+
+  Future<void> startRegistration() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    bool registered = await pinStore.register();
+
+    if (registered == true) {
+      setState(() {
+        isLoading = false;
+      });
+      appStore.setWaitingAccessCode(true);
+      Navigator.pushNamed(context, PinScreen.id);
+    } else {
+      print('Error !!!');
+    }
   }
 
   @override
@@ -74,7 +98,7 @@ class _EmailScreenState extends State<EmailScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           Text(
-                            "Confirme seu e-mail de cadastro para receber seu código de acesso",
+                            S.of(context).confirm_email,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kWhiteColor,
@@ -95,7 +119,7 @@ class _EmailScreenState extends State<EmailScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "E-mail",
+                                  S.of(context).email,
                                   style: TextStyle(
                                     fontFamily: 'Lato',
                                     color: Color(0xff606566),
@@ -109,6 +133,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                   height: 36.0,
                                   margin: const EdgeInsets.only(top: 6.0),
                                   child: TextField(
+                                    onChanged: pinStore.setEmail,
                                     decoration: InputDecoration(
                                       fillColor: Color(0xFFF1F3F5),
                                       border: OutlineInputBorder(
@@ -144,8 +169,7 @@ class _EmailScreenState extends State<EmailScreen> {
                           CupertinoButton(
                             padding: const EdgeInsets.all(0),
                             onPressed: () async {
-                              appStore.setWaitingAccessCode(true);
-                              Navigator.pushNamed(context, PinScreen.id);
+                              startRegistration();
                             },
                             child: Container(
                               height: 44.0,
