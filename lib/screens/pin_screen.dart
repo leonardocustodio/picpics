@@ -191,8 +191,8 @@ class _PinScreenState extends State<PinScreen> {
     if (pinStore.confirmPin.length == 6) {
       if (pinStore.pin == pinStore.confirmPin) {
         carouselPage = 0;
-        pinStore.setPin('');
-        pinStore.setConfirmPin('');
+        // pinStore.setPin('');
+        // pinStore.setConfirmPin('');
         carouselController.animateToPage(0);
         Navigator.pushNamed(context, EmailScreen.id);
       }
