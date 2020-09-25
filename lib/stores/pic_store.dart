@@ -60,7 +60,10 @@ abstract class _PicStore with Store {
       for (String tagKey in pic.tags) {
         TagsStore tagsStore = appStore.tags
             .firstWhere((element) => element.id == tagKey, orElse: () => null);
-        if (tagsStore == null) continue;
+        if (tagsStore == null) {
+          print('&&&&##### DID NOT FIND TAG: ${tagKey}');
+          continue;
+        }
         tags.add(tagsStore);
       }
     } else {
