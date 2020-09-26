@@ -119,7 +119,7 @@ packages:
       name: carousel_slider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.1"
+    version: "2.3.1"
   characters:
     dependency: transitive
     description:
@@ -433,6 +433,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_animator:
+    dependency: "direct main"
+    description:
+      name: flutter_animator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   flutter_device_locale:
     dependency: "direct main"
     description:

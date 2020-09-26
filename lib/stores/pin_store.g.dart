@@ -24,33 +24,33 @@ mixin _$PinStore on _PinStore, Store {
     });
   }
 
-  final _$pinAtom = Atom(name: '_PinStore.pin');
+  final _$pinTempAtom = Atom(name: '_PinStore.pinTemp');
 
   @override
-  String get pin {
-    _$pinAtom.reportRead();
-    return super.pin;
+  String get pinTemp {
+    _$pinTempAtom.reportRead();
+    return super.pinTemp;
   }
 
   @override
-  set pin(String value) {
-    _$pinAtom.reportWrite(value, super.pin, () {
-      super.pin = value;
+  set pinTemp(String value) {
+    _$pinTempAtom.reportWrite(value, super.pinTemp, () {
+      super.pinTemp = value;
     });
   }
 
-  final _$confirmPinAtom = Atom(name: '_PinStore.confirmPin');
+  final _$confirmPinTempAtom = Atom(name: '_PinStore.confirmPinTemp');
 
   @override
-  String get confirmPin {
-    _$confirmPinAtom.reportRead();
-    return super.confirmPin;
+  String get confirmPinTemp {
+    _$confirmPinTempAtom.reportRead();
+    return super.confirmPinTemp;
   }
 
   @override
-  set confirmPin(String value) {
-    _$confirmPinAtom.reportWrite(value, super.confirmPin, () {
-      super.confirmPin = value;
+  set confirmPinTemp(String value) {
+    _$confirmPinTempAtom.reportWrite(value, super.confirmPinTemp, () {
+      super.confirmPinTemp = value;
     });
   }
 
@@ -99,22 +99,22 @@ mixin _$PinStore on _PinStore, Store {
   }
 
   @override
-  void setPin(String value) {
+  void setPinTemp(String value) {
     final _$actionInfo =
-        _$_PinStoreActionController.startAction(name: '_PinStore.setPin');
+        _$_PinStoreActionController.startAction(name: '_PinStore.setPinTemp');
     try {
-      return super.setPin(value);
+      return super.setPinTemp(value);
     } finally {
       _$_PinStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setConfirmPin(String value) {
+  void setConfirmPinTemp(String value) {
     final _$actionInfo = _$_PinStoreActionController.startAction(
-        name: '_PinStore.setConfirmPin');
+        name: '_PinStore.setConfirmPinTemp');
     try {
-      return super.setConfirmPin(value);
+      return super.setConfirmPinTemp(value);
     } finally {
       _$_PinStoreActionController.endAction(_$actionInfo);
     }
@@ -135,8 +135,8 @@ mixin _$PinStore on _PinStore, Store {
   String toString() {
     return '''
 email: ${email},
-pin: ${pin},
-confirmPin: ${confirmPin},
+pinTemp: ${pinTemp},
+confirmPinTemp: ${confirmPinTemp},
 accessCode: ${accessCode}
     ''';
   }
