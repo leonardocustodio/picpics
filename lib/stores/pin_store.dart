@@ -16,26 +16,34 @@ abstract class _PinStore with Store {
   @observable
   String email = '';
 
+  String pin = '';
+
   @action
   void setEmail(String value) => email = value;
 
   @observable
-  String pin = '';
+  String pinTemp = '';
 
   @action
-  void setPin(String value) => pin = value;
+  void setPinTemp(String value) => pinTemp = value;
 
   @observable
-  String confirmPin = '';
+  String confirmPinTemp = '';
 
   @action
-  void setConfirmPin(String value) => confirmPin = value;
+  void setConfirmPinTemp(String value) => confirmPinTemp = value;
 
   @observable
   String accessCode = '';
 
   @action
   void setAccessCode(String value) => accessCode = value;
+
+  @observable
+  bool invalidAccessCode = false;
+
+  @action
+  void setInvalidAccessCode(bool value) => invalidAccessCode = value;
 
   @action
   Future<Map<String, dynamic>> register() async {

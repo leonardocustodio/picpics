@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -12,6 +11,7 @@ import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:picPics/widgets/general_modal.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:provider/provider.dart';
 
 class EmailScreen extends StatefulWidget {
@@ -62,6 +62,13 @@ class _EmailScreenState extends State<EmailScreen> {
   }
 
   Future<void> startRegistration() async {
+    bool isValid = EmailValidator.validate(pinStore.email);
+
+    if (!isValid) {
+      showErrorModal('Please type a valid e-mail address to proceed.');
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });

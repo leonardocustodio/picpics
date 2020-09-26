@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animator/animation/animator_play_states.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/constants.dart';
@@ -16,6 +17,7 @@ import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:picPics/widgets/general_modal.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:provider/provider.dart';
 
 class PinScreen extends StatefulWidget {
@@ -35,6 +37,9 @@ class _PinScreenState extends State<PinScreen> {
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
 
+  GlobalKey<AnimatorWidgetState> _shakeKey = GlobalKey<AnimatorWidgetState>();
+  GlobalKey<AnimatorWidgetState> _shakeKeyConfirm = GlobalKey<AnimatorWidgetState>();
+
   Future<void> validateAccessCode() async {
     setState(() {
       isLoading = true;
@@ -50,7 +55,9 @@ class _PinScreenState extends State<PinScreen> {
       print('Is valid: $valid');
       showCreatedKeyModal();
     } else {
-      showErrorModal('The access code you typed is invalid!');
+      _shakeKey.currentState.forward();
+      pinStore.setInvalidAccessCode(true);
+      // showErrorModal('The access code you typed is invalid!');
     }
   }
 
@@ -142,12 +149,16 @@ class _PinScreenState extends State<PinScreen> {
             ),
           ),
           Spacer(),
-          Observer(builder: (_) {
-            return PinPlaceholder(
-              filledPositions: index == 0 ? pinStore.pin.length : pinStore.confirmPin.length,
-              totalPositions: 6,
-            );
-          }),
+          Shake(
+            key: index == 0 ? _shakeKey : _shakeKeyConfirm,
+            preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
+            child: Observer(builder: (_) {
+              return PinPlaceholder(
+                filledPositions: index == 0 ? pinStore.pinTemp.length : pinStore.confirmPinTemp.length,
+                totalPositions: 6,
+              );
+            }),
+          ),
           Spacer(),
           NumberPad(
             onPinTapped: pinTapped,
@@ -162,12 +173,12 @@ class _PinScreenState extends State<PinScreen> {
     print('Value: $value');
     if (appStore.isPinRegistered == true) {
       if (value == '\u0008') {
-        pinStore.setPin(Helpers.removeLastCharacter(pinStore.pin));
+        pinStore.setPinTemp(Helpers.removeLastCharacter(pinStore.pinTemp));
         return;
       }
-      pinStore.setPin('${pinStore.pin}${value}');
+      pinStore.setPinTemp('${pinStore.pinTemp}${value}');
 
-      if (pinStore.pin.length == 6) {
+      if (pinStore.pinTemp.length == 6) {
         // set true
         appStore.switchSecretPhotos();
         galleryStore.checkIsLibraryUpdated();
@@ -192,9 +203,9 @@ class _PinScreenState extends State<PinScreen> {
     }
 
     if (carouselPage == 0) {
-      pinStore.setPin('${pinStore.pin}${value}');
+      pinStore.setPinTemp('${pinStore.pinTemp}${value}');
 
-      if (pinStore.pin.length == 6) {
+      if (pinStore.pinTemp.length == 6) {
         carouselPage = 1;
         carouselController.nextPage();
       }
@@ -202,18 +213,27 @@ class _PinScreenState extends State<PinScreen> {
     }
 
     if (value == '\u0008') {
-      pinStore.setConfirmPin(Helpers.removeLastCharacter(pinStore.confirmPin));
+      pinStore.setConfirmPinTemp(Helpers.removeLastCharacter(pinStore.confirmPinTemp));
       return;
     }
-    pinStore.setConfirmPin('${pinStore.confirmPin}${value}');
+    pinStore.setConfirmPinTemp('${pinStore.confirmPinTemp}${value}');
 
-    if (pinStore.confirmPin.length == 6) {
-      if (pinStore.pin == pinStore.confirmPin) {
+    if (pinStore.confirmPinTemp.length == 6) {
+      if (pinStore.pinTemp == pinStore.confirmPinTemp) {
         carouselPage = 0;
-        // pinStore.setPin('');
-        // pinStore.setConfirmPin('');
+        pinStore.pin = pinStore.pinTemp;
+        pinStore.setPinTemp('');
+        pinStore.setConfirmPinTemp('');
         carouselController.animateToPage(0);
         Navigator.pushNamed(context, EmailScreen.id);
+      } else {
+        _shakeKeyConfirm.currentState.forward();
+        Future.delayed(Duration(seconds: 1, milliseconds: 300), () {
+          carouselPage = 0;
+          pinStore.setPinTemp('');
+          pinStore.setConfirmPinTemp('');
+          carouselController.animateToPage(0);
+        });
       }
     }
   }
@@ -283,12 +303,16 @@ class _PinScreenState extends State<PinScreen> {
                             Spacer(
                               flex: 2,
                             ),
-                            Observer(builder: (_) {
-                              return PinPlaceholder(
-                                filledPositions: pinStore.pin.length,
-                                totalPositions: 6,
-                              );
-                            }),
+                            Shake(
+                              key: _shakeKey,
+                              preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                              child: Observer(builder: (_) {
+                                return PinPlaceholder(
+                                  filledPositions: pinStore.pinTemp.length,
+                                  totalPositions: 6,
+                                );
+                              }),
+                            ),
                             Spacer(),
                             NumberPad(
                               onPinTapped: pinTapped,
@@ -331,7 +355,7 @@ class _PinScreenState extends State<PinScreen> {
                         children: [
                           Spacer(),
                           Text(
-                            S.of(context).access_code,
+                            pinStore.invalidAccessCode ? 'Invalid Access Code' : S.of(context).access_code,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kSecondaryColor,
@@ -356,13 +380,17 @@ class _PinScreenState extends State<PinScreen> {
                             ),
                           ),
                           Spacer(),
-                          Observer(
-                            builder: (_) {
-                              return PinPlaceholder(
-                                filledPositions: pinStore.accessCode.length,
-                                totalPositions: 6,
-                              );
-                            },
+                          Shake(
+                            key: _shakeKey,
+                            preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                            child: Observer(
+                              builder: (_) {
+                                return PinPlaceholder(
+                                  filledPositions: pinStore.accessCode.length,
+                                  totalPositions: 6,
+                                );
+                              },
+                            ),
                           ),
                           Spacer(),
                           NumberPad(
