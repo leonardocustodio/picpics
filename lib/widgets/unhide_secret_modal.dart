@@ -43,7 +43,7 @@ class UnhideSecretModal extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    "Secret photos",
+                    S.of(context).secret_photos,
                     style: TextStyle(
                       fontFamily: 'Lato',
                       color: Color(0xff979a9b),
@@ -66,7 +66,7 @@ class UnhideSecretModal extends StatelessWidget {
                 child: Image.asset('lib/images/lockmodalico.png'),
               ),
               Text(
-                'Do you want to unhide this photo?',
+                S.of(context).disable_secret,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Lato',
@@ -94,7 +94,7 @@ class UnhideSecretModal extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              'No',
+                              S.of(context).no,
                               textScaleFactor: 1.0,
                               style: TextStyle(
                                 color: kSecondaryColor,
@@ -123,7 +123,7 @@ class UnhideSecretModal extends StatelessWidget {
                           ),
                           child: Center(
                             child: Text(
-                              'Yes',
+                              S.of(context).yes,
                               textScaleFactor: 1.0,
                               style: kLoginButtonTextStyle,
                             ),
