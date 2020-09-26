@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.5.0+357
+version: 1.5.0+358
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -72,6 +72,7 @@ dependencies:
   mobx: ^1.2.1+2
   flutter_mobx: ^1.1.0+2
   flutter_animator: ^2.1.0
+  email_validator: ^1.0.4
 
 dev_dependencies:
   flutter_test:

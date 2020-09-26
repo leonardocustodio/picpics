@@ -55,7 +55,9 @@ class _PinScreenState extends State<PinScreen> {
       print('Is valid: $valid');
       showCreatedKeyModal();
     } else {
-      showErrorModal('The access code you typed is invalid!');
+      _shakeKey.currentState.forward();
+      pinStore.setInvalidAccessCode(true);
+      // showErrorModal('The access code you typed is invalid!');
     }
   }
 
@@ -353,7 +355,7 @@ class _PinScreenState extends State<PinScreen> {
                         children: [
                           Spacer(),
                           Text(
-                            S.of(context).access_code,
+                            pinStore.invalidAccessCode ? 'Invalid Access Code' : S.of(context).access_code,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kSecondaryColor,

@@ -44,14 +44,18 @@ class GeneralModal extends StatelessWidget {
               ),
             ),
             Spacer(),
-            Text(
-              message,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 15,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff606566),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                ),
               ),
             ),
             Spacer(

@@ -39,6 +39,12 @@ abstract class _PinStore with Store {
   @action
   void setAccessCode(String value) => accessCode = value;
 
+  @observable
+  bool invalidAccessCode = false;
+
+  @action
+  void setInvalidAccessCode(bool value) => invalidAccessCode = value;
+
   @action
   Future<Map<String, dynamic>> register() async {
     print('Email: $email - Pin: $pin');
