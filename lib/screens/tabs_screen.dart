@@ -72,6 +72,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       return;
     }
 
+    if (appStore.keepAskingToDelete == false && picStore.isPrivate == false) {
+      galleryStore.setPrivatePic(picStore: picStore, private: true);
+      return;
+    }
+
     print('showModal');
     showDialog<void>(
       context: context,

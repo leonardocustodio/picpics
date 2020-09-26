@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/app_store.dart';
+import 'package:provider/provider.dart';
 
 class DeleteSecretModal extends StatefulWidget {
   final Function onPressedClose;
@@ -19,7 +21,14 @@ class DeleteSecretModal extends StatefulWidget {
 }
 
 class _DeleteSecretModalState extends State<DeleteSecretModal> {
+  AppStore appStore;
   bool keepAsking = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +197,12 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),
-                        onPressed: widget.onPressedDelete,
+                        onPressed: () {
+                          if (keepAsking == false) {
+                            appStore.setKeepAskingToDelete(false);
+                          }
+                          widget.onPressedDelete();
+                        },
                         child: Container(
                           height: 44.0,
                           decoration: BoxDecoration(
@@ -197,7 +211,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                           ),
                           child: Center(
                             child: Text(
-                              'No',
+                              S.of(context).no,
                               textScaleFactor: 1.0,
                               style: TextStyle(
                                 color: kSecondaryColor,
@@ -217,7 +231,12 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),
-                        onPressed: widget.onPressedOk,
+                        onPressed: () {
+                          if (keepAsking == false) {
+                            appStore.setKeepAskingToDelete(false);
+                          }
+                          widget.onPressedOk();
+                        },
                         child: Container(
                           height: 44.0,
                           decoration: BoxDecoration(
@@ -226,7 +245,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                           ),
                           child: Center(
                             child: Text(
-                              'Yes',
+                              S.of(context).yes,
                               textScaleFactor: 1.0,
                               style: kLoginButtonTextStyle,
                             ),
