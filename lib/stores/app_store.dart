@@ -63,6 +63,7 @@ abstract class _AppStore with Store {
         loggedIn: false,
         secretPhotos: false,
         isPinRegistered: false,
+        keepAskingToDelete: true,
       );
 
       user = createUser;
@@ -90,6 +91,7 @@ abstract class _AppStore with Store {
     tryBuyId = initiatedWithProduct;
     secretPhotos = user.secretPhotos ?? false;
     isPinRegistered = user.isPinRegistered ?? false;
+    keepAskingToDelete = user.keepAskingToDelete ?? true;
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -215,7 +217,20 @@ abstract class _AppStore with Store {
 
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
-    currentUser.isPinRegistered = isPinRegistered;
+    currentUser.isPinRegistered = value;
+    currentUser.save();
+  }
+
+  @observable
+  bool keepAskingToDelete;
+
+  @action
+  void setKeepAskingToDelete(bool value) {
+    keepAskingToDelete = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.keepAskingToDelete = value;
     currentUser.save();
   }
 

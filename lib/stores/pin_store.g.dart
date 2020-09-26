@@ -69,6 +69,21 @@ mixin _$PinStore on _PinStore, Store {
     });
   }
 
+  final _$invalidAccessCodeAtom = Atom(name: '_PinStore.invalidAccessCode');
+
+  @override
+  bool get invalidAccessCode {
+    _$invalidAccessCodeAtom.reportRead();
+    return super.invalidAccessCode;
+  }
+
+  @override
+  set invalidAccessCode(bool value) {
+    _$invalidAccessCodeAtom.reportWrite(value, super.invalidAccessCode, () {
+      super.invalidAccessCode = value;
+    });
+  }
+
   final _$registerAsyncAction = AsyncAction('_PinStore.register');
 
   @override
@@ -132,12 +147,24 @@ mixin _$PinStore on _PinStore, Store {
   }
 
   @override
+  void setInvalidAccessCode(bool value) {
+    final _$actionInfo = _$_PinStoreActionController.startAction(
+        name: '_PinStore.setInvalidAccessCode');
+    try {
+      return super.setInvalidAccessCode(value);
+    } finally {
+      _$_PinStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 email: ${email},
 pinTemp: ${pinTemp},
 confirmPinTemp: ${confirmPinTemp},
-accessCode: ${accessCode}
+accessCode: ${accessCode},
+invalidAccessCode: ${invalidAccessCode}
     ''';
   }
 }
