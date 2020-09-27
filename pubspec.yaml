@@ -73,6 +73,9 @@ dependencies:
   flutter_mobx: ^1.1.0+2
   flutter_animator: ^2.1.0
   email_validator: ^1.0.4
+  flutter_secure_storage: ^3.3.4
+  aes_crypt: ^0.1.1
+  path: ^1.7.0
 
 dev_dependencies:
   flutter_test:

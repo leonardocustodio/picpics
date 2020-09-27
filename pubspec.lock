@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.0"
+  aes_crypt:
+    dependency: "direct main"
+    description:
+      name: aes_crypt
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1"
   after_layout:
     dependency: "direct main"
     description:
@@ -508,6 +515,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.9"
+  flutter_secure_storage:
+    dependency: "direct main"
+    description:
+      name: flutter_secure_storage
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.3.4"
   flutter_spinkit:
     dependency: "direct main"
     description:
@@ -782,7 +796,7 @@ packages:
     source: hosted
     version: "0.4.3"
   path:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path
       url: "https://pub.dartlang.org"
@@ -1240,4 +1254,4 @@ packages:
     version: "2.2.1"
 sdks:
   dart: ">=2.10.0-0.0.dev <2.10.0"
-  flutter: ">=1.17.0 <2.0.0"
+  flutter: ">=1.20.0 <2.0.0"

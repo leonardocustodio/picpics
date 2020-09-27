@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
@@ -952,6 +953,8 @@ abstract class _GalleryStore with Store {
 
     if (currentPic.isPrivate == true) {
       if (!privatePics.contains(currentPic)) {
+        Crypto.encryptImage(picStore.entity);
+
         print('this pic now is private');
         privatePics.add(currentPic);
 

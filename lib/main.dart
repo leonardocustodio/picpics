@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:typed_data';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/asset_change_notifier.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
