@@ -125,7 +125,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
               case LoadState.completed:
                 loader = FadeImageBuilder(
                   child: () {
-                    return state.completedWidget;
+                    return RepaintBoundary(
+                      child: state.completedWidget,
+                    );
                   }(),
                 );
                 break;

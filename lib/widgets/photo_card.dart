@@ -94,7 +94,7 @@ class _PhotoCardState extends State<PhotoCard> {
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
-    List<Placemark> placemark = await placemarkFromCoordinates(picStore.entity.latitude, picStore.entity.longitude);
+    List<Placemark> placemark = await placemarkFromCoordinates(picStore.originalLatitude, picStore.originalLongitude);
 
     print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -315,7 +315,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       }),
                     ),
                     Text(
-                      dateFormat(picStore.entity.createDateTime),
+                      dateFormat(picStore.createdAt),
                       textScaleFactor: 1.0,
                       style: TextStyle(
                         fontFamily: 'Lato',

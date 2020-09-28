@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:picPics/asset_entity_image_provider.dart';
+import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
@@ -180,6 +183,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
     return Scaffold(
       key: homeScaffoldKey,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -219,7 +223,33 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                             height: 140.0,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
-                              child: Container(),
+                              child: ExtendedImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                                loadStateChanged: (ExtendedImageState state) {
+                                  Widget loader;
+                                  switch (state.extendedImageLoadState) {
+                                    case LoadState.loading:
+                                      loader = const ColoredBox(color: kGreyPlaceholder);
+                                      break;
+                                    case LoadState.completed:
+                                      loader = FadeImageBuilder(
+                                        child: () {
+                                          return RepaintBoundary(
+                                            child: state.completedWidget,
+                                          );
+                                        }(),
+                                      );
+                                      break;
+                                    case LoadState.failed:
+                                      loader = Container();
+                                      break;
+                                  }
+                                  return loader;
+                                },
+                              ),
+
+                              // Container(),
                               // ImageItem(
                               //   entity: picStore.entity,
                               //   size: 140,
