@@ -2,12 +2,13 @@ import 'dart:collection';
 import 'dart:typed_data';
 
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/stores/pic_store.dart';
 
 class ImageLruCache {
   static LRUMap<_ImageCacheEntity, Uint8List> _map = LRUMap(500);
 
-  static Uint8List getData(AssetEntity entity, [int size = 64]) {
-    return _map.get(_ImageCacheEntity(entity, size));
+  static Uint8List getData(PicStore picStore, [int size = 64]) {
+    return _map.get(_ImageCacheEntity(picStore.entity, size));
   }
 
   static void setData(AssetEntity entity, int size, Uint8List list) {

@@ -3,12 +3,15 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:picPics/asset_entity_image_provider.dart';
+import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/full_image_item.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
@@ -19,6 +22,7 @@ import 'package:flutter/services.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:extended_image/extended_image.dart';
 
 class PhotoScreen extends StatefulWidget {
   static const id = 'photo_screen';
@@ -101,19 +105,44 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    AssetEntity entity = galleryStore.thumbnailsPics[index].entity;
+    PicStore picStore = galleryStore.thumbnailsPics[index];
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
 
     return PhotoViewGalleryPageOptions.customChild(
       child: Container(
         color: Colors.black,
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
-        child: FullImageItem(
-          entity: entity,
-          size: MediaQuery.of(context).size.height.toInt(),
+        child: ExtendedImage(
+          image: imageProvider,
           fit: BoxFit.contain,
-          backgroundColor: Colors.black,
+          loadStateChanged: (ExtendedImageState state) {
+            Widget loader;
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                loader = const ColoredBox(color: kGreyPlaceholder);
+                break;
+              case LoadState.completed:
+                loader = FadeImageBuilder(
+                  child: () {
+                    return state.completedWidget;
+                  }(),
+                );
+                break;
+              case LoadState.failed:
+                loader = Container();
+                break;
+            }
+            return loader;
+          },
         ),
+
+        // FullImageItem(
+        //   picStore: picStore,
+        //   size: MediaQuery.of(context).size.height.toInt(),
+        //   fit: BoxFit.contain,
+        //   backgroundColor: Colors.black,
+        // ),
       ),
       childSize: Size(
         MediaQuery.of(context).size.width,
@@ -127,11 +156,13 @@ class _PhotoScreenState extends State<PhotoScreen> {
 //      maxScale: PhotoViewComputedScale.covered * 1.1,
       minScale: 0.7,
       maxScale: 3.0,
-      heroAttributes: PhotoViewHeroAttributes(tag: entity.id),
+      heroAttributes: PhotoViewHeroAttributes(tag: picStore.photoId),
     );
   }
 
   Widget _buildThumbnails(BuildContext context, int index) {
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(galleryStore.thumbnailsPics[index], isOriginal: false);
+
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
       onPressed: () {
@@ -142,12 +173,38 @@ class _PhotoScreenState extends State<PhotoScreen> {
         height: 98,
         width: 98,
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: ImageItem(
-          entity: galleryStore.thumbnailsPics[index].entity,
-          size: 98,
+        child: ExtendedImage(
+          image: imageProvider,
           fit: BoxFit.cover,
-          backgroundColor: Colors.black,
+          loadStateChanged: (ExtendedImageState state) {
+            Widget loader;
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                loader = const ColoredBox(color: kGreyPlaceholder);
+                break;
+              case LoadState.completed:
+                loader = FadeImageBuilder(
+                  child: () {
+                    return RepaintBoundary(
+                      child: state.completedWidget,
+                    );
+                  }(),
+                );
+                break;
+              case LoadState.failed:
+                loader = Container();
+                break;
+            }
+            return loader;
+          },
         ),
+
+        // ImageItem(
+        //   picStore: galleryStore.thumbnailsPics[index],
+        //   size: 98,
+        //   fit: BoxFit.cover,
+        //   backgroundColor: Colors.black,
+        // ),
       ),
     );
   }

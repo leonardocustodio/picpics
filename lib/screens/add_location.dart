@@ -219,10 +219,11 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                             height: 140.0,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
-                              child: ImageItem(
-                                entity: picStore.entity,
-                                size: 140,
-                              ),
+                              child: Container(),
+                              // ImageItem(
+                              //   entity: picStore.entity,
+                              //   size: 140,
+                              // ),
                             ),
                           ),
                         ),
