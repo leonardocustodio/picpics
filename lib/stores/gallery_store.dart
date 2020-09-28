@@ -614,16 +614,22 @@ abstract class _GalleryStore with Store {
       AssetEntity data = pic.entity;
 
       if (Platform.isAndroid) {
-        String path = await _writeByteToImageFile(await data.originBytes);
+        String path = await _writeByteToImageFile(data == null ? await pic.assetOriginBytes : await data.originBytes);
         imageList.add(path);
       } else {
-        var bytes = await data.thumbDataWithSize(
-          data.size.width.toInt(),
-          data.size.height.toInt(),
-          format: ThumbFormat.jpeg,
-        );
-        String path = await _writeByteToImageFile(bytes);
-        imageList.add(path);
+        if (data == null) {
+          var bytes = await pic.assetOriginBytes;
+          String path = await _writeByteToImageFile(bytes);
+          imageList.add(path);
+        } else {
+          var bytes = await data.thumbDataWithSize(
+            data.size.width.toInt(),
+            data.size.height.toInt(),
+            format: ThumbFormat.jpeg,
+          );
+          String path = await _writeByteToImageFile(bytes);
+          imageList.add(path);
+        }
       }
 
 //      if (Platform.isAndroid) {
