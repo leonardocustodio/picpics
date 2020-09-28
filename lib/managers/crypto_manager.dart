@@ -1,19 +1,21 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:aes_crypt/aes_crypt.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:picPics/stores/pic_store.dart';
 
 class Crypto {
-  static encryptImage(AssetEntity entity) async {
+  static encryptImage(PicStore picStore) async {
     print('Going to encrypt image!!!');
     var crypt = AesCrypt('my cool password');
     crypt.setOverwriteMode(AesCryptOwMode.rename);
 
-    File assetFile = await entity.originFile;
-    File assetOtherFile = await entity.file;
+    File assetFile = await picStore.entity.originFile;
+    File assetOtherFile = await picStore.entity.file;
 
-    print('Asset Name: ${entity.id}');
+    print('Asset Name: ${picStore.entity.id}');
     print('Origin file: ${assetFile.path} - File: ${assetOtherFile.path}');
 
     if (assetFile == null) {
@@ -35,8 +37,15 @@ class Crypto {
     String savedFile = crypt.encryptFileSync(assetFile.path, finalPath);
     print('Saved file: ${assetFile.path} to $savedFile');
 
-    AssetEntity entity = AssetEntity();
+    await picStore.setPrivatePath(savedFile);
+  }
 
-    final AssetEntity imageEntity = await PhotoManager.editor.saveImageWithPath(path);
+  static Future<Uint8List> decryptImage(String filePath) async {
+    var crypt = AesCrypt('my cool password');
+    print('Decrypting image...');
+    Uint8List decryptedData = await crypt.decryptDataFromFileSync(filePath);
+    print('Decrypted data');
+    return decryptedData;
+    // return File.fromRawPath(decryptedData);
   }
 }

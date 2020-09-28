@@ -6,7 +6,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
@@ -28,6 +30,7 @@ abstract class _PicStore with Store {
   _PicStore({
     this.appStore,
     this.entity,
+    this.privatePath,
     this.photoId,
     this.createdAt,
     this.originalLatitude,
@@ -41,9 +44,44 @@ abstract class _PicStore with Store {
     });
   }
 
+  Future<Uint8List> get assetOriginBytes async {
+    if (entity != null) {
+      return await entity.originBytes;
+    }
+    print('Returning decrypt image in privatePath: $privatePath');
+    return await Crypto.decryptImage(privatePath);
+  }
+
+  @observable
+  String privatePath;
+
+  @action
+  Future<void> setPrivatePath(String value) async {
+    var secretBox = Hive.box('secrets');
+    Secret secret = Secret(
+      photoId: photoId,
+      privatePath: value,
+      originalLatitude: originalLatitude,
+      originalLongitude: originalLongitude,
+      createDateTime: createdAt,
+    );
+    secretBox.put(photoId, secret);
+    privatePath = value;
+
+    if (Platform.isAndroid) {
+      PhotoManager.editor.deleteWithIds([entity.id]);
+    } else {
+      final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+      if (result.isEmpty) {
+        return false;
+      }
+    }
+  }
+
   @action
   void loadPicInfo() {
     var picsBox = Hive.box('pics');
+    var secretBox = Hive.box('secrets');
 
     if (picsBox.containsKey(photoId)) {
       print('pic $photoId exists, loading data....');
@@ -56,10 +94,14 @@ abstract class _PicStore with Store {
       isPrivate = pic.isPrivate;
 
       print('Is private: $isPrivate');
+      if (isPrivate == true) {
+        Secret secretPic = secretBox.get(photoId);
+        privatePath = secretPic.privatePath;
+        print('Setting private path to: $privatePath');
+      }
 
       for (String tagKey in pic.tags) {
-        TagsStore tagsStore = appStore.tags
-            .firstWhere((element) => element.id == tagKey, orElse: () => null);
+        TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
         if (tagsStore == null) {
           print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
@@ -153,8 +195,7 @@ abstract class _PicStore with Store {
         suggestionTags.add(recent);
       }
 
-      print(
-          'Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
@@ -165,9 +206,7 @@ abstract class _PicStore with Store {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (tagsKeys.contains(tagKey) ||
-              suggestionTags.contains(tagKey) ||
-              tagKey == kSecretTagKey) {
+          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
             continue;
           }
           suggestionTags.add(tagKey);
@@ -189,8 +228,7 @@ abstract class _PicStore with Store {
 
     List<TagsStore> suggestions = [];
     for (String tagId in suggestionTags) {
-      suggestions
-          .add(appStore.tags.firstWhere((element) => element.id == tagId));
+      suggestions.add(appStore.tags.firstWhere((element) => element.id == tagId));
     }
     return suggestions;
   }
@@ -240,11 +278,7 @@ abstract class _PicStore with Store {
   }
 
   @action
-  Future<void> addTagToPic(
-      {String tagKey,
-      String tagNameX,
-      String photoId,
-      List<AssetEntity> entities}) async {
+  Future<void> addTagToPic({String tagKey, String tagNameX, String photoId, List<AssetEntity> entities}) async {
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
@@ -262,8 +296,7 @@ abstract class _PicStore with Store {
       picsBox.put(photoId, getPic);
       print('updated picture');
 
-      TagsStore tagsStore =
-          appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
       tags.add(tagsStore);
 
       Analytics.sendEvent(Event.added_tag);
@@ -273,8 +306,7 @@ abstract class _PicStore with Store {
     print('this picture is not in db, adding it...');
     print('Photo Id: $photoId');
 
-    TagsStore tagsStore =
-        appStore.tags.firstWhere((element) => element.id == tagKey);
+    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
     tags.add(tagsStore);
 
     Pic pic = Pic(
@@ -300,8 +332,7 @@ abstract class _PicStore with Store {
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
     Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File(
-        '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
     return imageFile.path;
@@ -337,8 +368,7 @@ abstract class _PicStore with Store {
     if (Platform.isAndroid) {
       PhotoManager.editor.deleteWithIds([entity.id]);
     } else {
-      final List<String> result =
-          await PhotoManager.editor.deleteWithIds([entity.id]);
+      final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -389,8 +419,7 @@ abstract class _PicStore with Store {
   }
 
   @action
-  void saveLocation(
-      {double lat, double long, String specific, String general}) {
+  void saveLocation({double lat, double long, String specific, String general}) {
     var picsBox = Hive.box('pics');
 
     Pic getPic = picsBox.get(photoId);

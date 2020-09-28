@@ -17,16 +17,28 @@ class SecretAdapter extends TypeAdapter<Secret> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Secret(
-      pin: fields[0] as int,
+      photoId: fields[0] as String,
+      privatePath: fields[1] as String,
+      createDateTime: fields[2] as DateTime,
+      originalLatitude: fields[3] as double,
+      originalLongitude: fields[4] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, Secret obj) {
     writer
-      ..writeByte(1)
+      ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.pin);
+      ..write(obj.photoId)
+      ..writeByte(1)
+      ..write(obj.privatePath)
+      ..writeByte(2)
+      ..write(obj.createDateTime)
+      ..writeByte(3)
+      ..write(obj.originalLatitude)
+      ..writeByte(4)
+      ..write(obj.originalLongitude);
   }
 
   @override

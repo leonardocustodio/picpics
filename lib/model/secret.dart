@@ -4,9 +4,25 @@ part 'secret.g.dart';
 @HiveType(typeId: 3)
 class Secret extends HiveObject {
   @HiveField(0)
-  int pin;
+  String photoId;
+
+  @HiveField(1)
+  String privatePath;
+
+  @HiveField(2)
+  final DateTime createDateTime;
+
+  @HiveField(3)
+  final double originalLatitude;
+
+  @HiveField(4)
+  final double originalLongitude;
 
   Secret({
-    this.pin,
+    this.photoId,
+    this.privatePath,
+    this.createDateTime,
+    this.originalLatitude,
+    this.originalLongitude,
   });
 }

@@ -11,7 +11,6 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
@@ -37,7 +36,7 @@ abstract class _AppStore with Store {
     this.initiatedWithProduct,
   }) {
     var userBox = Hive.box('user');
-    var secretBox = Hive.box('secret');
+    var secretBox = Hive.box('secrets');
     User user;
 
     if (userBox.length == 0) {

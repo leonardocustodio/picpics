@@ -66,7 +66,7 @@ void main() async {
 
   var secretKey = Uint8List.fromList(
       [76, 224, 117, 70, 57, 101, 39, 29, 48, 239, 215, 240, 41, 149, 198, 69, 64, 5, 207, 227, 190, 126, 8, 133, 136, 234, 130, 91, 254, 104, 196, 158]);
-  var secretBox = await Hive.openBox('secret', encryptionKey: secretKey);
+  var secretBox = await Hive.openBox('secrets', encryptionKey: secretKey);
 
   String deviceLocale = await DeviceLocale.getCurrentLocale().then((Locale locale) => locale.toString());
   String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);

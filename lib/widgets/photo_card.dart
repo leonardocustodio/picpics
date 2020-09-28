@@ -148,7 +148,7 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   Widget build(BuildContext context) {
-    AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
+    AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(

@@ -10,6 +10,7 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
@@ -462,8 +463,6 @@ abstract class _GalleryStore with Store {
     }
 
     print('#@#@#@# Total photos: ${allPics.length}');
-    setSwipeIndex(0);
-    isLoaded = true;
   }
 
   @action
@@ -475,7 +474,49 @@ abstract class _GalleryStore with Store {
     );
     assetsPath.addAll(assets);
     print('#@#@#@# Total galleries: ${assetsPath.length}');
-    loadEntities();
+    await loadEntities();
+    await loadPrivateAssets();
+  }
+
+  @action
+  Future<void> loadPrivateAssets() async {
+    var secretBox = Hive.box('secrets');
+
+    for (Secret secretPic in secretBox.values) {
+      PicStore pic = PicStore(
+        appStore: appStore,
+        entity: null,
+        photoId: secretPic.photoId,
+        createdAt: secretPic.createDateTime,
+        originalLatitude: secretPic.originalLatitude,
+        originalLongitude: secretPic.originalLongitude,
+      );
+
+      if (pic.isPrivate == true && appStore.secretPhotos != true) {
+        print('This pic is private not loading it!');
+        continue;
+      }
+
+      allPics.insert(0, pic);
+
+      if (pic.tags.length > 0) {
+        print('has pic info! and this pic has tags in it!!!!');
+        addPicToTaggedPics(picStore: pic);
+      } else {
+        print('has pic info! and this pic doesnt have tag!!!!');
+        swipePics.insert(0, pic);
+        untaggedPics.insert(0, pic);
+      }
+
+      if (pic.isPrivate == true) {
+        print('Adding pic to private pics!!!');
+        privatePics.add(pic);
+      }
+    }
+
+    print('#@#@#@# Total photos with private photos: ${allPics.length}');
+    setSwipeIndex(0);
+    isLoaded = true;
   }
 
   @observable
@@ -948,12 +989,12 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void setPrivatePic({PicStore picStore, bool private}) {
+  Future<void> setPrivatePic({PicStore picStore, bool private}) async {
     currentPic.setIsPrivate(private);
 
     if (currentPic.isPrivate == true) {
       if (!privatePics.contains(currentPic)) {
-        Crypto.encryptImage(picStore.entity);
+        await Crypto.encryptImage(picStore);
 
         print('this pic now is private');
         privatePics.add(currentPic);
