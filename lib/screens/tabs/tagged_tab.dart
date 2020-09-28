@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +16,6 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
-import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/widgets/top_bar.dart';
@@ -226,7 +227,7 @@ class _TaggedTabState extends State<TaggedTab> {
   }
 
   Widget _buildPicItem(PicStore picStore) {
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, isOriginal: false);
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     return RepaintBoundary(
       child: ExtendedImage(

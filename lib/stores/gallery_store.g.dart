@@ -234,6 +234,14 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return _$loadAssetsPathAsyncAction.run(() => super.loadAssetsPath());
   }
 
+  final _$loadPrivateAssetsAsyncAction =
+      AsyncAction('_GalleryStore.loadPrivateAssets');
+
+  @override
+  Future<void> loadPrivateAssets() {
+    return _$loadPrivateAssetsAsyncAction.run(() => super.loadPrivateAssets());
+  }
+
   final _$trashMultiplePicsAsyncAction =
       AsyncAction('_GalleryStore.trashMultiplePics');
 
@@ -290,6 +298,14 @@ mixin _$GalleryStore on _GalleryStore, Store {
   Future<void> addTagToPic({PicStore picStore, String tagName}) {
     return _$addTagToPicAsyncAction
         .run(() => super.addTagToPic(picStore: picStore, tagName: tagName));
+  }
+
+  final _$setPrivatePicAsyncAction = AsyncAction('_GalleryStore.setPrivatePic');
+
+  @override
+  Future<void> setPrivatePic({PicStore picStore, bool private}) {
+    return _$setPrivatePicAsyncAction
+        .run(() => super.setPrivatePic(picStore: picStore, private: private));
   }
 
   final _$_GalleryStoreActionController =
@@ -612,17 +628,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.removeTagFromPic');
     try {
       return super.removeTagFromPic(picStore: picStore, tagKey: tagKey);
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setPrivatePic({PicStore picStore, bool private}) {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.setPrivatePic');
-    try {
-      return super.setPrivatePic(picStore: picStore, private: private);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

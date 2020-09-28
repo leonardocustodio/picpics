@@ -61,7 +61,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                     ),
                   ),
                   Text(
-                    "Secret photos",
+                    S.of(context).secret_photos,
                     style: TextStyle(
                       fontFamily: 'Lato',
                       color: Color(0xff979a9b),
@@ -82,7 +82,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                 child: Image.asset('lib/images/lockmodalico.png'),
               ),
               Text(
-                'Your photo is now safe on picPics. Do you want to delete it from your camera roll?',
+                S.of(context).keep_safe,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Lato',
@@ -98,6 +98,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CupertinoButton(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
                       onPressed: () {
                         setState(() {
                           keepAsking = true;
@@ -129,11 +130,11 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                                   ),
                           ),
                           Text(
-                            "Keep asking",
+                            S.of(context).keep_asking,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: Color(0xff707070),
-                              fontSize: 12,
+                              fontSize: 11.0,
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                             ),
@@ -141,7 +142,11 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                         ],
                       ),
                     ),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 16.0),
+                    ),
                     CupertinoButton(
+                      padding: const EdgeInsets.symmetric(vertical: 10.0),
                       onPressed: () {
                         setState(() {
                           keepAsking = false;
@@ -152,7 +157,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                           Container(
                             height: 20.0,
                             width: 20.0,
-                            margin: const EdgeInsets.only(left: 24.0, right: 8.0),
+                            margin: const EdgeInsets.only(right: 8.0),
                             child: !keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
                             decoration: !keepAsking
                                 ? BoxDecoration(
@@ -173,11 +178,11 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                                   ),
                           ),
                           Text(
-                            "Don’t ask again.",
+                            S.of(context).dont_ask_again,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: Color(0xff707070),
-                              fontSize: 12,
+                              fontSize: 11.0,
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                             ),
@@ -225,8 +230,8 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 16.0,
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 16.0),
                     ),
                     Expanded(
                       child: CupertinoButton(
@@ -257,7 +262,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                 ),
               ),
               Text(
-                'To view your hidden photos, release the lock in the application settings. You can unlock them with your PIN.',
+                S.of(context).view_hidden_photos,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Lato',

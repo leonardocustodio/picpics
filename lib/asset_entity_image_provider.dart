@@ -9,11 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/stores/pic_store.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   AssetEntityImageProvider(
-    this.entity, {
+    this.picStore, {
     this.scale = 1.0,
     this.thumbSize = kDefaultPreviewThumbSize,
     this.isOriginal = true,
@@ -28,7 +29,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     }
   }
 
-  final AssetEntity entity;
+  final PicStore picStore;
 
   /// Scale for image provider.
   /// 缩放
@@ -74,14 +75,22 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   ) async {
     assert(key == this);
     Uint8List data;
+
+    if (picStore.entity == null) {
+      print('entity is null!!!');
+      data = await key.picStore.assetOriginBytes;
+      print('before decode!!');
+      return decode(data);
+    }
+
     if (isOriginal ?? false) {
       if (imageFileType == ImageFileType.heic) {
-        data = await (await key.entity.file).readAsBytes();
+        data = await (await key.picStore.entity.file).readAsBytes();
       } else {
-        data = await key.entity.originBytes;
+        data = await key.picStore.entity.originBytes;
       }
     } else {
-      data = await key.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
+      data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     }
     return decode(data);
   }
@@ -94,7 +103,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的type。
   ImageFileType _getType() {
     ImageFileType type;
-    final String extension = entity.title?.split('.')?.last;
+    final String extension = picStore.entity == null ? picStore.privatePath?.split('.')?.last : picStore.entity.title?.split('.')?.last;
+    print('Extension: $extension');
     if (extension != null) {
       switch (extension.toLowerCase()) {
         case 'jpg':
@@ -129,11 +139,19 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     final AssetEntityImageProvider typedOther =
         // ignore: test_types_in_equals
         other as AssetEntityImageProvider;
-    return entity == typedOther.entity && scale == typedOther.scale && thumbSize == typedOther.thumbSize && isOriginal == typedOther.isOriginal;
+
+    if (picStore.entity == null) {
+      return picStore.privatePath == typedOther.picStore.privatePath;
+    }
+
+    return picStore.entity == typedOther.picStore.entity &&
+        scale == typedOther.scale &&
+        thumbSize == typedOther.thumbSize &&
+        isOriginal == typedOther.isOriginal;
   }
 
   @override
-  int get hashCode => hashValues(entity, scale, isOriginal);
+  int get hashCode => hashValues(picStore.entity, scale, isOriginal);
 }
 
 enum ImageFileType { jpg, png, gif, tiff, heic, other }

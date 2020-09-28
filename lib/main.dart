@@ -1,12 +1,8 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:typed_data';
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/asset_change_notifier.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -70,7 +66,7 @@ void main() async {
 
   var secretKey = Uint8List.fromList(
       [76, 224, 117, 70, 57, 101, 39, 29, 48, 239, 215, 240, 41, 149, 198, 69, 64, 5, 207, 227, 190, 126, 8, 133, 136, 234, 130, 91, 254, 104, 196, 158]);
-  var secretBox = await Hive.openBox('secret', encryptionKey: secretKey);
+  var secretBox = await Hive.openBox('secrets', encryptionKey: secretKey);
 
   String deviceLocale = await DeviceLocale.getCurrentLocale().then((Locale locale) => locale.toString());
   String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);
