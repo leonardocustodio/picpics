@@ -343,14 +343,19 @@ abstract class _PicStore with Store {
     String path = '';
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(await entity.originBytes);
+      path = await _writeByteToImageFile(entity == null ? await assetOriginBytes : await entity.originBytes);
     } else {
-      var bytes = await entity.thumbDataWithSize(
-        entity.size.width.toInt(),
-        entity.size.height.toInt(),
-        format: ThumbFormat.jpeg,
-      );
-      path = await _writeByteToImageFile(bytes);
+      if (entity == null) {
+        var bytes = await assetOriginBytes;
+        path = await _writeByteToImageFile(bytes);
+      } else {
+        var bytes = await entity.thumbDataWithSize(
+          entity.size.width.toInt(),
+          entity.size.height.toInt(),
+          format: ThumbFormat.jpeg,
+        );
+        path = await _writeByteToImageFile(bytes);
+      }
     }
 
     if (path == '' || path == null) {
