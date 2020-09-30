@@ -182,6 +182,8 @@ class _PinScreenState extends State<PinScreen> {
         // set true
         appStore.switchSecretPhotos();
         galleryStore.checkIsLibraryUpdated();
+        pinStore.setPinTemp('');
+        pinStore.setConfirmPinTemp('');
         Navigator.pop(context);
       }
 

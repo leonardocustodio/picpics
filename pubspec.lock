@@ -849,10 +849,10 @@ packages:
     description:
       path: "."
       ref: master
-      resolved-ref: c733473baf91e3e065d123d0c15a12c2eaaf4ae5
+      resolved-ref: ea09abe6e781e3295b5d3154dc902bfe2d725ac0
       url: "https://github.com/CaiJingLong/flutter_photo_manager.git"
     source: git
-    version: "0.6.0-dev.3"
+    version: "0.6.0-dev.4"
   photo_view:
     dependency: "direct main"
     description:

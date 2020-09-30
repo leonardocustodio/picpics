@@ -476,10 +476,18 @@ abstract class _GalleryStore with Store {
     print('#@#@#@# Total galleries: ${assetsPath.length}');
     await loadEntities();
     await loadPrivateAssets();
+
+    setSwipeIndex(0);
+    isLoaded = true;
   }
 
   @action
   Future<void> loadPrivateAssets() async {
+    if (appStore.secretPhotos != true) {
+      print('Secret photos is off - not loading private pics');
+      return;
+    }
+
     var secretBox = Hive.box('secrets');
 
     for (Secret secretPic in secretBox.values) {
@@ -491,11 +499,6 @@ abstract class _GalleryStore with Store {
         originalLatitude: secretPic.originalLatitude,
         originalLongitude: secretPic.originalLongitude,
       );
-
-      if (pic.isPrivate == true && appStore.secretPhotos != true) {
-        print('This pic is private not loading it!');
-        continue;
-      }
 
       allPics.insert(0, pic);
 
@@ -515,8 +518,6 @@ abstract class _GalleryStore with Store {
     }
 
     print('#@#@#@# Total photos with private photos: ${allPics.length}');
-    setSwipeIndex(0);
-    isLoaded = true;
   }
 
   @observable
@@ -961,6 +962,8 @@ abstract class _GalleryStore with Store {
         deleteEntity(deleted);
       }
     }
+
+    await loadPrivateAssets();
   }
 
   @observable
