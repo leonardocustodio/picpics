@@ -1,6 +1,7 @@
 build_android() {
   (
   cd android || exit
+  bundle install
   flutter build appbundle
   bundle exec fastlane beta
   )
@@ -9,6 +10,7 @@ build_android() {
 build_ios() {
   (
   cd ios || exit
+  bundle install
   flutter build ios --release --no-codesign
   bundle exec fastlane beta
   )
