@@ -71,7 +71,8 @@ abstract class _PicStore with Store {
     if (Platform.isAndroid) {
       PhotoManager.editor.deleteWithIds([entity.id]);
     } else {
-      final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+      final List<String> result =
+          await PhotoManager.editor.deleteWithIds([entity.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -96,12 +97,16 @@ abstract class _PicStore with Store {
       print('Is private: $isPrivate');
       if (isPrivate == true) {
         Secret secretPic = secretBox.get(photoId);
-        privatePath = secretPic.privatePath;
-        print('Setting private path to: $privatePath');
+
+        if (secretPic != null) {
+          privatePath = secretPic.privatePath;
+          print('Setting private path to: $privatePath');
+        }
       }
 
       for (String tagKey in pic.tags) {
-        TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
+        TagsStore tagsStore = appStore.tags
+            .firstWhere((element) => element.id == tagKey, orElse: () => null);
         if (tagsStore == null) {
           print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
@@ -195,7 +200,8 @@ abstract class _PicStore with Store {
         suggestionTags.add(recent);
       }
 
-      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+      print(
+          'Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
@@ -206,7 +212,9 @@ abstract class _PicStore with Store {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
+          if (tagsKeys.contains(tagKey) ||
+              suggestionTags.contains(tagKey) ||
+              tagKey == kSecretTagKey) {
             continue;
           }
           suggestionTags.add(tagKey);
@@ -228,7 +236,8 @@ abstract class _PicStore with Store {
 
     List<TagsStore> suggestions = [];
     for (String tagId in suggestionTags) {
-      suggestions.add(appStore.tags.firstWhere((element) => element.id == tagId));
+      suggestions
+          .add(appStore.tags.firstWhere((element) => element.id == tagId));
     }
     return suggestions;
   }
@@ -278,7 +287,11 @@ abstract class _PicStore with Store {
   }
 
   @action
-  Future<void> addTagToPic({String tagKey, String tagNameX, String photoId, List<AssetEntity> entities}) async {
+  Future<void> addTagToPic(
+      {String tagKey,
+      String tagNameX,
+      String photoId,
+      List<AssetEntity> entities}) async {
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
@@ -296,7 +309,8 @@ abstract class _PicStore with Store {
       picsBox.put(photoId, getPic);
       print('updated picture');
 
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore =
+          appStore.tags.firstWhere((element) => element.id == tagKey);
       tags.add(tagsStore);
 
       Analytics.sendEvent(Event.added_tag);
@@ -306,7 +320,8 @@ abstract class _PicStore with Store {
     print('this picture is not in db, adding it...');
     print('Photo Id: $photoId');
 
-    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+    TagsStore tagsStore =
+        appStore.tags.firstWhere((element) => element.id == tagKey);
     tags.add(tagsStore);
 
     Pic pic = Pic(
@@ -332,7 +347,8 @@ abstract class _PicStore with Store {
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
     Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    File imageFile = new File(
+        '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
     return imageFile.path;
@@ -343,7 +359,8 @@ abstract class _PicStore with Store {
     String path = '';
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(entity == null ? await assetOriginBytes : await entity.originBytes);
+      path = await _writeByteToImageFile(
+          entity == null ? await assetOriginBytes : await entity.originBytes);
     } else {
       if (entity == null) {
         var bytes = await assetOriginBytes;
@@ -373,7 +390,8 @@ abstract class _PicStore with Store {
     if (Platform.isAndroid) {
       PhotoManager.editor.deleteWithIds([entity.id]);
     } else {
-      final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+      final List<String> result =
+          await PhotoManager.editor.deleteWithIds([entity.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -424,7 +442,8 @@ abstract class _PicStore with Store {
   }
 
   @action
-  void saveLocation({double lat, double long, String specific, String general}) {
+  void saveLocation(
+      {double lat, double long, String specific, String general}) {
     var picsBox = Hive.box('pics');
 
     Pic getPic = picsBox.get(photoId);
