@@ -84,6 +84,71 @@ mixin _$PinStore on _PinStore, Store {
     });
   }
 
+  final _$isWaitingRecoveryKeyAtom =
+      Atom(name: '_PinStore.isWaitingRecoveryKey');
+
+  @override
+  bool get isWaitingRecoveryKey {
+    _$isWaitingRecoveryKeyAtom.reportRead();
+    return super.isWaitingRecoveryKey;
+  }
+
+  @override
+  set isWaitingRecoveryKey(bool value) {
+    _$isWaitingRecoveryKeyAtom.reportWrite(value, super.isWaitingRecoveryKey,
+        () {
+      super.isWaitingRecoveryKey = value;
+    });
+  }
+
+  final _$isSettingNewPinAtom = Atom(name: '_PinStore.isSettingNewPin');
+
+  @override
+  bool get isSettingNewPin {
+    _$isSettingNewPinAtom.reportRead();
+    return super.isSettingNewPin;
+  }
+
+  @override
+  set isSettingNewPin(bool value) {
+    _$isSettingNewPinAtom.reportWrite(value, super.isSettingNewPin, () {
+      super.isSettingNewPin = value;
+    });
+  }
+
+  final _$recoveryCodeAtom = Atom(name: '_PinStore.recoveryCode');
+
+  @override
+  String get recoveryCode {
+    _$recoveryCodeAtom.reportRead();
+    return super.recoveryCode;
+  }
+
+  @override
+  set recoveryCode(String value) {
+    _$recoveryCodeAtom.reportWrite(value, super.recoveryCode, () {
+      super.recoveryCode = value;
+    });
+  }
+
+  final _$requestRecoveryKeyAsyncAction =
+      AsyncAction('_PinStore.requestRecoveryKey');
+
+  @override
+  Future<bool> requestRecoveryKey() {
+    return _$requestRecoveryKeyAsyncAction
+        .run(() => super.requestRecoveryKey());
+  }
+
+  final _$isRecoveryCodeValidAsyncAction =
+      AsyncAction('_PinStore.isRecoveryCodeValid');
+
+  @override
+  Future<bool> isRecoveryCodeValid(AppStore appStore) {
+    return _$isRecoveryCodeValidAsyncAction
+        .run(() => super.isRecoveryCodeValid(appStore));
+  }
+
   final _$registerAsyncAction = AsyncAction('_PinStore.register');
 
   @override
@@ -165,13 +230,49 @@ mixin _$PinStore on _PinStore, Store {
   }
 
   @override
+  void setIsWaitingRecoveryKey(bool value) {
+    final _$actionInfo = _$_PinStoreActionController.startAction(
+        name: '_PinStore.setIsWaitingRecoveryKey');
+    try {
+      return super.setIsWaitingRecoveryKey(value);
+    } finally {
+      _$_PinStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setIsSettingNewPin(bool value) {
+    final _$actionInfo = _$_PinStoreActionController.startAction(
+        name: '_PinStore.setIsSettingNewPin');
+    try {
+      return super.setIsSettingNewPin(value);
+    } finally {
+      _$_PinStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setRecoveryCode(String value) {
+    final _$actionInfo = _$_PinStoreActionController.startAction(
+        name: '_PinStore.setRecoveryCode');
+    try {
+      return super.setRecoveryCode(value);
+    } finally {
+      _$_PinStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 email: ${email},
 pinTemp: ${pinTemp},
 confirmPinTemp: ${confirmPinTemp},
 accessCode: ${accessCode},
-invalidAccessCode: ${invalidAccessCode}
+invalidAccessCode: ${invalidAccessCode},
+isWaitingRecoveryKey: ${isWaitingRecoveryKey},
+isSettingNewPin: ${isSettingNewPin},
+recoveryCode: ${recoveryCode}
     ''';
   }
 }
