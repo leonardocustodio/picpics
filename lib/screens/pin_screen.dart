@@ -83,8 +83,10 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   void setPinAndPop() {
+    appStore.setEmail(pinStore.email);
     appStore.setIsPinRegistered(true);
     appStore.switchSecretPhotos();
+    appStore.setWaitingAccessCode(false);
 
     if (appStore.popPinScreen == PopPinScreenTo.SettingsScreen) {
       Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
@@ -344,9 +346,8 @@ class _PinScreenState extends State<PinScreen> {
       pinStore.setAccessCode('${pinStore.accessCode}${value}');
 
       if (pinStore.accessCode.length == 6) {
-        validateAccessCode();
+        await validateAccessCode();
       }
-
       return;
     }
 
