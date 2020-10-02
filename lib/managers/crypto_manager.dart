@@ -12,11 +12,28 @@ import 'package:uuid/uuid.dart';
 import 'package:crypto/crypto.dart';
 
 class Crypto {
+  static Future<void> reSaveSpKey(String userPin, AppStore appStore) async {
+    final storage = FlutterSecureStorage();
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+
+    print('Decrypted spKey is: ${appStore.tempEncryptionKey}');
+
+    final picKey = Key.fromUtf8('pic key password');
+    final String ivString = stringToBase64.encode('${userPin}leonardo@custodio.me').substring(0, 16);
+    print('New generated IV for encryption: $ivString');
+    final ivKey = IV.fromUtf8(ivString);
+
+    final encrypt = Encrypter(AES(picKey, mode: AESMode.ctr));
+    final encrypted = encrypt.encrypt(appStore.tempEncryptionKey, iv: ivKey);
+
+    print('New key encrypted with new pin: ${encrypted.base64}');
+    await storage.write(key: 'spkey', value: encrypted.base64);
+    print('New key saved to storage!');
+  }
+
   static Future<bool> checkRecoveryKey(String encryptedRecoveryKey, String recoveryCode, String randomIv, AppStore appStore) async {
     final storage = FlutterSecureStorage();
-    String ppkey = await storage.read(key: 'ppkey');
     String hpkey = await storage.read(key: 'hpkey');
-    String spkey = await storage.read(key: 'spkey');
 
     String generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
     String recoveryIv = '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
@@ -43,6 +60,7 @@ class Crypto {
 
       if (digest == hpkey) {
         print('It is the real key');
+        appStore.setTempEncryptionKey(decryptedFinal);
         return true;
       }
 

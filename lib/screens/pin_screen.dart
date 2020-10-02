@@ -250,6 +250,7 @@ class _PinScreenState extends State<PinScreen> {
           if (valid) {
             carouselController.nextPage();
             carouselPage = 1;
+            pinStore.setRecoveryCode('');
             return;
           }
 
@@ -282,6 +283,17 @@ class _PinScreenState extends State<PinScreen> {
       if (pinStore.confirmPinTemp.length == 6) {
         if (pinStore.pinTemp == pinStore.confirmPinTemp) {
           print('Setting new pin!!!!!');
+          carouselPage = 0;
+          pinStore.pin = pinStore.pinTemp;
+
+          await pinStore.saveNewPin(appStore);
+
+          appStore.switchSecretPhotos();
+          galleryStore.checkIsLibraryUpdated();
+          pinStore.setPinTemp('');
+          pinStore.setConfirmPinTemp('');
+          carouselController.animateToPage(0);
+
           Navigator.pop(context);
         } else {
           _shakeKeyConfirm.currentState.forward();
