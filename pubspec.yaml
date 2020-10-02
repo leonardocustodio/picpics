@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.5.0+369
+version: 1.5.0+370
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -28,7 +28,7 @@ dependencies:
   rate_my_app: ^0.7.2
   geolocator: ^6.0.0+4
   geocoding: ^1.0.4+1
-  google_maps_flutter: ^0.5.33
+  google_maps_flutter: ^1.0.2
   hive:
   hive_flutter:
     git:
@@ -37,14 +37,14 @@ dependencies:
   after_layout: ^1.0.7+2
   flutter_staggered_grid_view: ^0.3.2
   outline_gradient_button: ^1.0.0+2
-  flutter_local_notifications: ^1.4.4+4
+  flutter_local_notifications: ^1.4.4+5
   firebase_core: ^0.5.0
-  firebase_messaging: ^7.0.1
+  firebase_messaging: ^7.0.2
   firebase_analytics: ^6.0.1
   firebase_crashlytics: ^0.2.1
   firebase_remote_config: ^0.4.0+1
-  firebase_admob: ^0.10.0
-  firebase_auth: ^0.18.1
+  firebase_admob: ^0.10.0+1
+  firebase_auth: ^0.18.1+1
   cloud_functions: ^0.6.0+1
   esys_flutter_share: ^1.0.2
   flutter_vibrate: ^1.0.0
