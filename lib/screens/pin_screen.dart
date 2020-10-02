@@ -51,6 +51,7 @@ class _PinScreenState extends State<PinScreen> {
     setState(() {
       isLoading = false;
     });
+
     if (valid) {
       print('Is valid: $valid');
       showCreatedKeyModal();
@@ -169,7 +170,7 @@ class _PinScreenState extends State<PinScreen> {
     );
   }
 
-  void pinTapped(String value) {
+  void pinTapped(String value) async {
     print('Value: $value');
     if (appStore.isPinRegistered == true) {
       if (value == '\u0008') {
@@ -180,13 +181,21 @@ class _PinScreenState extends State<PinScreen> {
 
       if (pinStore.pinTemp.length == 6) {
         // set true
-        appStore.switchSecretPhotos();
-        galleryStore.checkIsLibraryUpdated();
+        bool valid = await pinStore.isPinValid();
+
+        if (valid) {
+          appStore.switchSecretPhotos();
+          galleryStore.checkIsLibraryUpdated();
+          pinStore.setPinTemp('');
+          pinStore.setConfirmPinTemp('');
+          Navigator.pop(context);
+          return;
+        }
+
+        _shakeKey.currentState.forward();
         pinStore.setPinTemp('');
         pinStore.setConfirmPinTemp('');
-        Navigator.pop(context);
       }
-
       return;
     }
 
