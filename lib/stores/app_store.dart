@@ -91,6 +91,7 @@ abstract class _AppStore with Store {
     secretPhotos = user.secretPhotos ?? false;
     isPinRegistered = user.isPinRegistered ?? false;
     keepAskingToDelete = user.keepAskingToDelete ?? true;
+    email = user.email;
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -239,6 +240,11 @@ abstract class _AppStore with Store {
   @action
   void switchSecretPhotos() {
     secretPhotos = !secretPhotos;
+
+    if (secretPhotos == false) {
+      print('Cleared encryption key in memory!!!');
+      setEncryptionKey(null);
+    }
 
     print('After Switch Secret: $secretPhotos');
 
@@ -609,6 +615,16 @@ abstract class _AppStore with Store {
 
   String tempEncryptionKey;
   void setTempEncryptionKey(String value) => tempEncryptionKey = value;
+
+  String email;
+  void setEmail(String value) {
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.email = value;
+    currentUser.save();
+
+    email = value;
+  }
 }
 
 enum PopPinScreenTo {

@@ -18,8 +18,8 @@ class Crypto {
 
     print('Decrypted spKey is: ${appStore.tempEncryptionKey}');
 
-    final picKey = Key.fromUtf8('pic key password');
-    final String ivString = stringToBase64.encode('${userPin}leonardo@custodio.me').substring(0, 16);
+    final picKey = Key.fromUtf8('1HxMbQeThWmZq3t6');
+    final String ivString = stringToBase64.encode('${userPin}${appStore.email}').substring(0, 16);
     print('New generated IV for encryption: $ivString');
     final ivKey = IV.fromUtf8(ivString);
 
@@ -79,8 +79,8 @@ class Crypto {
     String spkey = await storage.read(key: 'spkey');
 
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
-    final String ivString = stringToBase64.encode('${userPin}leonardo@custodio.me').substring(0, 16);
-    final picKey = Key.fromUtf8('pic key password');
+    final String ivString = stringToBase64.encode('${userPin}${appStore.email}').substring(0, 16);
+    final picKey = Key.fromUtf8('1HxMbQeThWmZq3t6');
     final iv = IV.fromUtf8(ivString);
 
     final encrypter = Encrypter(AES(picKey, mode: AESMode.ctr));
@@ -115,7 +115,7 @@ class Crypto {
     print('Secret salt: $secretSalt');
   }
 
-  static Future<void> saveSpKey(String accessKey, String spKey, String userPin) async {
+  static Future<void> saveSpKey(String accessKey, String spKey, String userPin, String userEmail) async {
     final storage = FlutterSecureStorage();
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
@@ -139,8 +139,8 @@ class Crypto {
     print('Saving hashed spKey: ${digest.toString()}');
     await storage.write(key: 'hpkey', value: digest.toString());
 
-    final picKey = Key.fromUtf8('pic key password');
-    final String ivString = stringToBase64.encode('${userPin}leonardo@custodio.me').substring(0, 16);
+    final picKey = Key.fromUtf8('1HxMbQeThWmZq3t6');
+    final String ivString = stringToBase64.encode('${userPin}${userEmail}').substring(0, 16);
     print('New generated IV for encryption: $ivString');
     final ivKey = IV.fromUtf8(ivString);
 

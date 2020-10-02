@@ -172,7 +172,7 @@ abstract class _PinStore with Store {
       if (result.data != false) {
         print('Saving ${result.data} with access code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
-        await Crypto.saveSpKey(accessCode, result.data, pin);
+        await Crypto.saveSpKey(accessCode, result.data, pin, email);
         return true;
       }
 
