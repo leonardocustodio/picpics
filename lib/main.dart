@@ -44,6 +44,7 @@ Future<String> checkForAppStoreInitiatedProducts() async {
 }
 
 void main() async {
+  GestureBinding.instance.resamplingEnabled = true;
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
