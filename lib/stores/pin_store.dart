@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/stores/app_store.dart';
 
 part 'pin_store.g.dart';
 
@@ -94,7 +95,6 @@ abstract class _PinStore with Store {
         print('Saving ${result.data} with access code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
         await Crypto.saveSpKey(accessCode, result.data, pin);
-        String value = await Crypto.getAesKey();
         return true;
       }
 
@@ -113,8 +113,8 @@ abstract class _PinStore with Store {
   }
 
   @action
-  Future<bool> isPinValid() async {
-    bool valid = await Crypto.checkIsPinValid(pinTemp);
+  Future<bool> isPinValid(AppStore appStore) async {
+    bool valid = await Crypto.checkIsPinValid(pinTemp, appStore);
     return valid;
   }
 }

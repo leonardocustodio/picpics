@@ -25,7 +25,6 @@ platform :ios do
 
     # build app
     build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
-    
-    upload_to_testflight(changelog: "New beta build")
+    upload_to_testflight(skip_waiting_for_build_processing: true)
   end
 end

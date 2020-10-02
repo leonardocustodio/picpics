@@ -181,7 +181,7 @@ class _PinScreenState extends State<PinScreen> {
 
       if (pinStore.pinTemp.length == 6) {
         // set true
-        bool valid = await pinStore.isPinValid();
+        bool valid = await pinStore.isPinValid(appStore);
 
         if (valid) {
           appStore.switchSecretPhotos();

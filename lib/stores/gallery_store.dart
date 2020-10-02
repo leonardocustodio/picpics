@@ -1003,7 +1003,7 @@ abstract class _GalleryStore with Store {
 
     if (currentPic.isPrivate == true) {
       if (!privatePics.contains(currentPic)) {
-        await Crypto.encryptImage(picStore);
+        await Crypto.encryptImage(picStore, appStore.encryptionKey);
 
         print('this pic now is private');
         privatePics.add(currentPic);
