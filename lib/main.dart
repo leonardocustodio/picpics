@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:typed_data';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/add_location.dart';
@@ -44,8 +45,8 @@ Future<String> checkForAppStoreInitiatedProducts() async {
 }
 
 void main() async {
-  GestureBinding.instance.resamplingEnabled = true;
   WidgetsFlutterBinding.ensureInitialized();
+  GestureBinding.instance.resamplingEnabled = true;
 
   await Firebase.initializeApp();
   await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
