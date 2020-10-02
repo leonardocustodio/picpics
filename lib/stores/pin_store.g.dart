@@ -100,6 +100,13 @@ mixin _$PinStore on _PinStore, Store {
         .run(() => super.validateAccessCode());
   }
 
+  final _$isPinValidAsyncAction = AsyncAction('_PinStore.isPinValid');
+
+  @override
+  Future<bool> isPinValid() {
+    return _$isPinValidAsyncAction.run(() => super.isPinValid());
+  }
+
   final _$_PinStoreActionController = ActionController(name: '_PinStore');
 
   @override

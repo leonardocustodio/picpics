@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 
 part 'pin_store.g.dart';
 
@@ -88,11 +89,16 @@ abstract class _PinStore with Store {
         },
       );
       print(result.data);
+
+      if (result.data != false) {
+        print('Saving ${result.data} with access code $accessCode and pin $pin');
+        await Crypto.saveSaltKey();
+        await Crypto.saveSpKey(accessCode, result.data, pin);
+        String value = await Crypto.getAesKey();
+        return true;
+      }
+
       return result.data;
-      // setState(() {
-      //   _response = result.data['repeat_message'];
-      //   _responseCount = result.data['repeat_count'];
-      // });
     } on CloudFunctionsException catch (e) {
       print('caught firebase functions exception');
       print(e.code);
@@ -104,5 +110,11 @@ abstract class _PinStore with Store {
     }
 
     return false;
+  }
+
+  @action
+  Future<bool> isPinValid() async {
+    bool valid = await Crypto.checkIsPinValid(pinTemp);
+    return valid;
   }
 }
