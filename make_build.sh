@@ -1,6 +1,6 @@
 build_android() {
   (
-  cd android || exit
+  cd android || exit 0
   flutter build appbundle
   bundle exec fastlane beta
   )
@@ -8,7 +8,7 @@ build_android() {
 
 build_ios() {
   (
-  cd ios || exit
+  cd ios || exit 0
   flutter build ios --release --no-codesign
   bundle exec fastlane beta
   )
@@ -17,7 +17,7 @@ build_ios() {
 if [ "$1" = "" ] ; then
   build_android
   build_ios
-  exit 1
+  exit 0
 fi
 
 while [ "$1" != "" ]; do
@@ -30,7 +30,7 @@ while [ "$1" != "" ]; do
                     ;;
         all | * )   build_android
                     build_ios
-                    exit 1
+                    exit 0
     esac
     shift
 done
