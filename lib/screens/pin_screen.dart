@@ -39,6 +39,7 @@ class _PinScreenState extends State<PinScreen> {
 
   GlobalKey<AnimatorWidgetState> _shakeKey = GlobalKey<AnimatorWidgetState>();
   GlobalKey<AnimatorWidgetState> _shakeKeyConfirm = GlobalKey<AnimatorWidgetState>();
+  GlobalKey<AnimatorWidgetState> _shakeRecovery = GlobalKey<AnimatorWidgetState>();
 
   Future<void> validateAccessCode() async {
     setState(() {
@@ -60,6 +61,25 @@ class _PinScreenState extends State<PinScreen> {
       pinStore.setInvalidAccessCode(true);
       // showErrorModal('The access code you typed is invalid!');
     }
+  }
+
+  Future<void> recoverPin() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    bool request = await pinStore.requestRecoveryKey();
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (request == true) {
+      showErrorModal('We will send an access code soon');
+      return;
+    }
+
+    showErrorModal('An error has occurred, please try again!');
   }
 
   void setPinAndPop() {
@@ -128,6 +148,31 @@ class _PinScreenState extends State<PinScreen> {
 
   Widget _buildPinPad(BuildContext context, int index) {
     print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
+
+    String title;
+    GlobalKey<AnimatorWidgetState> key;
+
+    if (pinStore.isWaitingRecoveryKey == true) {
+      if (index == 0) {
+        title = 'Recovery Code';
+        key = _shakeRecovery;
+      } else if (index == 1) {
+        title = S.of(context).new_secret_key;
+        key = _shakeKey;
+      } else {
+        title = S.of(context).confirm_secret_key;
+        key = _shakeKeyConfirm;
+      }
+    } else {
+      if (index == 0) {
+        title = S.of(context).new_secret_key;
+        key = _shakeKey;
+      } else {
+        title = S.of(context).confirm_secret_key;
+        key = _shakeKeyConfirm;
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 24.0,
@@ -139,7 +184,7 @@ class _PinScreenState extends State<PinScreen> {
         children: [
           Spacer(),
           Text(
-            index == 0 ? S.of(context).new_secret_key : S.of(context).confirm_secret_key,
+            title,
             style: TextStyle(
               fontFamily: 'Lato',
               color: kSecondaryColor,
@@ -151,11 +196,29 @@ class _PinScreenState extends State<PinScreen> {
           ),
           Spacer(),
           Shake(
-            key: index == 0 ? _shakeKey : _shakeKeyConfirm,
+            key: key,
             preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
             child: Observer(builder: (_) {
+              int filledPositions;
+
+              if (pinStore.isWaitingRecoveryKey == true) {
+                if (index == 0) {
+                  filledPositions = pinStore.recoveryCode.length;
+                } else if (index == 1) {
+                  filledPositions = pinStore.pinTemp.length;
+                } else {
+                  filledPositions = pinStore.confirmPinTemp.length;
+                }
+              } else {
+                if (index == 0) {
+                  filledPositions = pinStore.pinTemp.length;
+                } else {
+                  filledPositions = pinStore.confirmPinTemp.length;
+                }
+              }
+
               return PinPlaceholder(
-                filledPositions: index == 0 ? pinStore.pinTemp.length : pinStore.confirmPinTemp.length,
+                filledPositions: filledPositions,
                 totalPositions: 6,
               );
             }),
@@ -172,6 +235,68 @@ class _PinScreenState extends State<PinScreen> {
 
   void pinTapped(String value) async {
     print('Value: $value');
+    if (pinStore.isWaitingRecoveryKey == true) {
+      if (carouselPage == 0) {
+        if (value == '\u0008') {
+          pinStore.setRecoveryCode(Helpers.removeLastCharacter(pinStore.recoveryCode));
+          return;
+        }
+        pinStore.setRecoveryCode('${pinStore.recoveryCode}${value}');
+
+        if (pinStore.recoveryCode.length == 6) {
+          // set true
+          bool valid = await pinStore.isRecoveryCodeValid(appStore);
+
+          if (valid) {
+            carouselController.nextPage();
+            carouselPage = 1;
+            return;
+          }
+
+          _shakeRecovery.currentState.forward();
+          pinStore.setRecoveryCode('');
+        }
+        return;
+      }
+
+      if (carouselPage == 1) {
+        if (value == '\u0008') {
+          pinStore.setPinTemp(Helpers.removeLastCharacter(pinStore.pinTemp));
+          return;
+        }
+        pinStore.setPinTemp('${pinStore.pinTemp}${value}');
+
+        if (pinStore.pinTemp.length == 6) {
+          carouselPage = 2;
+          carouselController.nextPage();
+        }
+        return;
+      }
+
+      if (value == '\u0008') {
+        pinStore.setConfirmPinTemp(Helpers.removeLastCharacter(pinStore.confirmPinTemp));
+        return;
+      }
+      pinStore.setConfirmPinTemp('${pinStore.confirmPinTemp}${value}');
+
+      if (pinStore.confirmPinTemp.length == 6) {
+        if (pinStore.pinTemp == pinStore.confirmPinTemp) {
+          print('Setting new pin!!!!!');
+          Navigator.pop(context);
+        } else {
+          _shakeKeyConfirm.currentState.forward();
+          Future.delayed(Duration(seconds: 1, milliseconds: 300), () {
+            carouselPage = 1;
+            pinStore.setPinTemp('');
+            pinStore.setConfirmPinTemp('');
+            carouselController.animateToPage(1);
+          });
+        }
+      }
+
+      return;
+    }
+
     if (appStore.isPinRegistered == true) {
       if (value == '\u0008') {
         pinStore.setPinTemp(Helpers.removeLastCharacter(pinStore.pinTemp));
@@ -296,6 +421,56 @@ class _PinScreenState extends State<PinScreen> {
                   ),
                   Expanded(
                     child: Observer(builder: (_) {
+                      if (pinStore.isWaitingRecoveryKey == true) {
+                        return CarouselSlider.builder(
+                          carouselController: carouselController,
+                          itemCount: 3,
+                          itemBuilder: (BuildContext context, int index) {
+                            return _buildPinPad(context, index);
+                          },
+                          options: CarouselOptions(
+                            initialPage: 0,
+                            enableInfiniteScroll: false,
+                            height: double.maxFinite,
+                            viewportFraction: 1.0,
+                            scrollPhysics: NeverScrollableScrollPhysics(),
+                          ),
+                        );
+
+                        // return Column(
+                        //   children: [
+                        //     Spacer(),
+                        //     Text(
+                        //       'Recovery Code',
+                        //       style: TextStyle(
+                        //         fontFamily: 'Lato',
+                        //         color: kSecondaryColor,
+                        //         fontSize: 24.0,
+                        //         fontWeight: FontWeight.w400,
+                        //         fontStyle: FontStyle.normal,
+                        //         letterSpacing: -0.4099999964237213,
+                        //       ),
+                        //     ),
+                        //     Spacer(),
+                        //     Shake(
+                        //       key: _shakeRecovery,
+                        //       preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                        //       child: Observer(builder: (_) {
+                        //         return PinPlaceholder(
+                        //           filledPositions: pinStore.recoveryCode.length,
+                        //           totalPositions: 6,
+                        //         );
+                        //       }),
+                        //     ),
+                        //     Spacer(),
+                        //     NumberPad(
+                        //       onPinTapped: pinTapped,
+                        //     ),
+                        //     Spacer(),
+                        //   ],
+                        // );
+                      }
+
                       if (appStore.isPinRegistered == true) {
                         return Column(
                           children: [
@@ -329,14 +504,19 @@ class _PinScreenState extends State<PinScreen> {
                               onPinTapped: pinTapped,
                             ),
                             Spacer(),
-                            Text(
-                              S.of(context).forgot_secret_key,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: kWhiteColor,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
+                            CupertinoButton(
+                              onPressed: () {
+                                recoverPin();
+                              },
+                              child: Text(
+                                S.of(context).forgot_secret_key,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kWhiteColor,
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                ),
                               ),
                             ),
                             Spacer(

@@ -12,6 +12,48 @@ import 'package:uuid/uuid.dart';
 import 'package:crypto/crypto.dart';
 
 class Crypto {
+  static Future<bool> checkRecoveryKey(String encryptedRecoveryKey, String recoveryCode, String randomIv, AppStore appStore) async {
+    final storage = FlutterSecureStorage();
+    String ppkey = await storage.read(key: 'ppkey');
+    String hpkey = await storage.read(key: 'hpkey');
+    String spkey = await storage.read(key: 'spkey');
+
+    String generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
+    String recoveryIv = '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
+
+    final picAccessKey = Key.fromUtf8('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4');
+    final ivRecovery = IV.fromUtf8(recoveryIv);
+    final ivGenerated = IV.fromUtf8(generatedIv);
+
+    var encryptedValue = Encrypted.fromBase16(encryptedRecoveryKey);
+    print('Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv');
+
+    try {
+      final encrypter = Encrypter(AES(picAccessKey, mode: AESMode.ctr, padding: null));
+      final String decryptedFirstStep = encrypter.decrypt(encryptedValue, iv: ivRecovery);
+      print('First Step Decrypted: $decryptedFirstStep');
+      final String decryptedFinal = encrypter.decrypt(Encrypted.fromBase16(decryptedFirstStep), iv: ivGenerated);
+      print('Final decrypted value: $decryptedFinal');
+
+      // Check if final key is the real key
+      final bytes = utf8.encode(decryptedFinal); // data being hashed
+      final digest = sha256.convert(bytes).toString();
+      print('Final key hashed: $digest');
+      print('Saved hash: $hpkey');
+
+      if (digest == hpkey) {
+        print('It is the real key');
+        return true;
+      }
+
+      print('Not the real key');
+      return false;
+    } catch (error) {
+      print('Not the real key');
+      return false;
+    }
+  }
+
   static Future<bool> checkIsPinValid(String userPin, AppStore appStore) async {
     final storage = FlutterSecureStorage();
     String ppkey = await storage.read(key: 'ppkey');
@@ -132,6 +174,5 @@ class Crypto {
     Uint8List decryptedData = await crypt.decryptDataFromFileSync(filePath);
     print('Decrypted data');
     return decryptedData;
-    // return File.fromRawPath(decryptedData);
   }
 }
