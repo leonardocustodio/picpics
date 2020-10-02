@@ -603,6 +603,10 @@ abstract class _AppStore with Store {
   bool hasObserver = false;
 
   PopPinScreenTo popPinScreen;
+
+  String encryptionKey;
+
+  void setEncryptionKey(String value) => encryptionKey;
 }
 
 enum PopPinScreenTo {

@@ -6,12 +6,13 @@ import 'package:encrypt/encrypt.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:uuid/uuid.dart';
 import 'package:crypto/crypto.dart';
 
 class Crypto {
-  static Future<bool> checkIsPinValid(String userPin) async {
+  static Future<bool> checkIsPinValid(String userPin, AppStore appStore) async {
     final storage = FlutterSecureStorage();
     String ppkey = await storage.read(key: 'ppkey');
     String hpkey = await storage.read(key: 'hpkey');
@@ -35,6 +36,7 @@ class Crypto {
 
       if (digest == hpkey) {
         print('The key is valid!');
+        appStore.setEncryptionKey(stringToBase64.encode("$ppkey:$decryptedKey"));
         return true;
       }
 
@@ -91,31 +93,9 @@ class Crypto {
     print('key saved to storage!');
   }
 
-  static Future<String> getAesKey() async {
-    final storage = FlutterSecureStorage();
-    final String secretSalt = await storage.read(key: 'ppkey');
-    final String serverKey = await storage.read(key: 'spkey');
-    print('Server key encoded as base64: $serverKey');
-
-    Codec<String, String> stringToBase64 = utf8.fuse(base64);
-    final String ivString = stringToBase64.encode('111111leonardo@custodio.me').substring(0, 16);
-
-    final picKey = Key.fromUtf8('pic key password');
-    final iv = IV.fromUtf8(ivString);
-
-    final encrypter = Encrypter(AES(picKey, mode: AESMode.ctr));
-    final String decryptedKey = encrypter.decrypt(Encrypted.fromBase64(serverKey), iv: iv);
-    print('Server key after decrypt: $decryptedKey');
-    print('Key used for encrypting files: ${stringToBase64.encode("${secretSalt}:${decryptedKey}")}');
-    return stringToBase64.encode("${secretSalt}:${decryptedKey}");
-  }
-
-  static encryptImage(PicStore picStore) async {
+  static encryptImage(PicStore picStore, String encryptionKey) async {
     print('Going to encrypt image!!!');
-    String key = await getAesKey();
-    print('final key: $key');
-
-    var crypt = AesCrypt(key);
+    var crypt = AesCrypt(encryptionKey);
     crypt.setOverwriteMode(AesCryptOwMode.rename);
 
     File assetFile = await picStore.entity.originFile;
@@ -146,11 +126,8 @@ class Crypto {
     await picStore.setPrivatePath(savedFile);
   }
 
-  static Future<Uint8List> decryptImage(String filePath) async {
-    String key = await getAesKey();
-    print('final key: $key');
-
-    var crypt = AesCrypt(key);
+  static Future<Uint8List> decryptImage(String filePath, String encryptionKey) async {
+    var crypt = AesCrypt(encryptionKey);
     print('Decrypting image...');
     Uint8List decryptedData = await crypt.decryptDataFromFileSync(filePath);
     print('Decrypted data');
