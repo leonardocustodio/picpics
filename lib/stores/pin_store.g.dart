@@ -149,6 +149,13 @@ mixin _$PinStore on _PinStore, Store {
         .run(() => super.isRecoveryCodeValid(appStore));
   }
 
+  final _$saveNewPinAsyncAction = AsyncAction('_PinStore.saveNewPin');
+
+  @override
+  Future<void> saveNewPin(AppStore appStore) {
+    return _$saveNewPinAsyncAction.run(() => super.saveNewPin(appStore));
+  }
+
   final _$registerAsyncAction = AsyncAction('_PinStore.register');
 
   @override

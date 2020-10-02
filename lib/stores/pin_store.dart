@@ -110,13 +110,19 @@ abstract class _PinStore with Store {
     print('Typed Recovery Code: $recoveryCode');
 
     bool valid = await Crypto.checkRecoveryKey(encryptedRecoveryKey, recoveryCode, '145789', appStore);
-    // Salvar a nova key em algm lugar.
     if (valid == true) {
       return true;
     }
-
     return false;
-    ;
+  }
+
+  @action
+  Future<void> saveNewPin(AppStore appStore) async {
+    await Crypto.reSaveSpKey(pin, appStore);
+    appStore.setTempEncryptionKey(null);
+    pin = null;
+    setIsWaitingRecoveryKey(false);
+    print('Saved new pin!!!');
   }
 
   @action

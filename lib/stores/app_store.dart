@@ -605,8 +605,10 @@ abstract class _AppStore with Store {
   PopPinScreenTo popPinScreen;
 
   String encryptionKey;
+  void setEncryptionKey(String value) => encryptionKey = value;
 
-  void setEncryptionKey(String value) => encryptionKey;
+  String tempEncryptionKey;
+  void setTempEncryptionKey(String value) => tempEncryptionKey = value;
 }
 
 enum PopPinScreenTo {
