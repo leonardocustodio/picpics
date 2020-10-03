@@ -68,7 +68,7 @@ class _PinScreenState extends State<PinScreen> {
       isLoading = true;
     });
 
-    bool request = await pinStore.requestRecoveryKey();
+    bool request = await pinStore.requestRecoveryKey(appStore.email);
 
     setState(() {
       isLoading = false;

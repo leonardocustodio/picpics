@@ -12,6 +12,21 @@ import 'package:uuid/uuid.dart';
 import 'package:crypto/crypto.dart';
 
 class Crypto {
+  static String encryptAccessKey(String accessCode, String email, String randomIv) {
+    final picKey = Key.fromUtf8('bQeThWmZq3t6w9z9CxF0JLNcRfUjXn2r');
+    final String ivString = '$randomIv$randomIv${randomIv.substring(0, 4)}';
+    final ivKey = IV.fromUtf8(ivString);
+
+    String encryptValue = '$accessCode:${email}';
+    final encrypt = Encrypter(AES(picKey, mode: AESMode.ctr, padding: null));
+    final encrypted = encrypt.encrypt(encryptValue, iv: ivKey);
+
+    print('Encrypting $encryptValue - With ivString: $ivString');
+    print('Encrypted value: ${encrypted.base16}');
+
+    return encrypted.base16;
+  }
+
   static Future<void> reSaveSpKey(String userPin, AppStore appStore) async {
     final storage = FlutterSecureStorage();
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
@@ -43,7 +58,7 @@ class Crypto {
     final ivGenerated = IV.fromUtf8(generatedIv);
 
     var encryptedValue = Encrypted.fromBase16(encryptedRecoveryKey);
-    print('Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv');
+    print('Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
 
     try {
       final encrypter = Encrypter(AES(picAccessKey, mode: AESMode.ctr, padding: null));

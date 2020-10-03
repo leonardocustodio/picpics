@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -67,15 +68,22 @@ abstract class _PinStore with Store {
   @action
   void setRecoveryCode(String value) => recoveryCode = value;
 
+  String generatedIv;
+  void setGeneratedIv(String value) => generatedIv = value;
+
   @action
-  Future<bool> requestRecoveryKey() async {
+  Future<bool> requestRecoveryKey(String userEmail) async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'requestRecoveryKey')..timeout = const Duration(seconds: 30);
+
+    Random rand = new Random();
+    int randomNumber = rand.nextInt(900000) + 100000;
+    setGeneratedIv('$randomNumber');
 
     try {
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
-          'user_mail': 'leonardo@custodio.me',
-          'random_iv': '145789',
+          'user_mail': userEmail,
+          'random_iv': randomNumber,
         },
       );
 
@@ -109,7 +117,7 @@ abstract class _PinStore with Store {
   Future<bool> isRecoveryCodeValid(AppStore appStore) async {
     print('Typed Recovery Code: $recoveryCode');
 
-    bool valid = await Crypto.checkRecoveryKey(encryptedRecoveryKey, recoveryCode, '145789', appStore);
+    bool valid = await Crypto.checkRecoveryKey(encryptedRecoveryKey, recoveryCode, generatedIv, appStore);
     if (valid == true) {
       return true;
     }
@@ -161,10 +169,16 @@ abstract class _PinStore with Store {
   @action
   Future<bool> validateAccessCode() async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'validateAccessCode')..timeout = const Duration(seconds: 30);
+
+    Random rand = new Random();
+    int randomNumber = rand.nextInt(900000) + 100000;
+    String accessKey = await Crypto.encryptAccessKey(accessCode, email, '$randomNumber');
+
     try {
       final HttpsCallableResult result = await callable.call(
         <String, dynamic>{
-          'access_code': int.parse(accessCode),
+          'access_key': accessKey,
+          'random_iv': randomNumber,
         },
       );
       print(result.data);
