@@ -135,9 +135,9 @@ mixin _$PinStore on _PinStore, Store {
       AsyncAction('_PinStore.requestRecoveryKey');
 
   @override
-  Future<bool> requestRecoveryKey() {
+  Future<bool> requestRecoveryKey(String userEmail) {
     return _$requestRecoveryKeyAsyncAction
-        .run(() => super.requestRecoveryKey());
+        .run(() => super.requestRecoveryKey(userEmail));
   }
 
   final _$isRecoveryCodeValidAsyncAction =
