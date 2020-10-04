@@ -405,6 +405,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Container(
       padding: const EdgeInsets.only(bottom: 0.0),
 //                    constraints: BoxConstraints.expand(),
@@ -414,7 +415,9 @@ class _TaggedTabState extends State<TaggedTab> {
           children: <Widget>[
             Observer(builder: (_) {
               if (!galleryStore.deviceHasPics) {
-                return DeviceHasNoPics();
+                return DeviceHasNoPics(
+                  message: S.of(context).device_has_no_pics,
+                );
               } else if (galleryStore.taggedPics.length == 0 && galleryStore.deviceHasPics) {
                 return TopBar(
                   appStore: appStore,
@@ -426,7 +429,10 @@ class _TaggedTabState extends State<TaggedTab> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Image.asset('lib/images/notaggedphotos.png'),
+                            SizedBox(
+                              height: height / 2,
+                              child: Image.asset('lib/images/notaggedphotos.png'),
+                            ),
                             SizedBox(
                               height: 21.0,
                             ),

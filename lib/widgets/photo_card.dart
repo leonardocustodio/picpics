@@ -148,6 +148,8 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),

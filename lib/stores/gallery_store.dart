@@ -427,6 +427,10 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> loadEntities() async {
+    if (assetsPath.isEmpty) {
+      return;
+    }
+
     AssetPathEntity assetPathEntity = assetsPath[0];
     final List<AssetEntity> list = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
 

@@ -96,6 +96,9 @@ class _EmailScreenState extends State<EmailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    print('Height: ${size.height} - Width: ${size.width}');
+
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -137,14 +140,13 @@ class _EmailScreenState extends State<EmailScreen> {
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kWhiteColor,
-                              fontSize: 28,
+                              fontSize: size.width < 400 ? 22.0 : 28.0,
                               fontWeight: FontWeight.w700,
                               fontStyle: FontStyle.normal,
                             ),
                           ),
                           Spacer(),
                           Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 24.0),
                             padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
                             decoration: BoxDecoration(
                               color: Colors.white,
