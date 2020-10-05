@@ -130,7 +130,7 @@
   "confirm_secret_key": "Potwierdź tajny klucz",
   "confirm_email": "Potwierdź swój e-mail rejestracyjny, aby otrzymać kod dostępu",
   "access_code": "Kod dostępu",
-  "access_code_sent": "Klucz dostępu został wysłany na adres user@email.com",
+  "access_code_sent": "Klucz dostępu został wysłany na adres {email}",
   "secret_key_created": "Tajny klucz został pomyślnie utworzony!",
   "disable_secret": "Chcesz odkryć to zdjęcie?",
   "yes": "tak",

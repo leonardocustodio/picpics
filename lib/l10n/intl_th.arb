@@ -130,7 +130,7 @@
   "confirm_secret_key": "ยืนยันรหัสลับ",
   "confirm_email": "ยืนยันอีเมลลงทะเบียนเพื่อรับรหัสเข้าใช้งาน",
   "access_code": "รหัสเข้าใช้งาน",
-  "access_code_sent": "รหัสเข้าใช้งานส่งไปที่ user@email.com",
+  "access_code_sent": "รหัสเข้าใช้งานส่งไปที่ {email}",
   "secret_key_created": "สร้างรหัสลับเรียบร้อยแล้ว!",
   "disable_secret": "คุณต้องการเปิดเผยรูปภาพนี้ใช่ไหม?",
   "yes": "ใช่",

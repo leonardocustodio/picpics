@@ -129,7 +129,7 @@
   "confirm_secret_key": "Bevestig de geheime sleutel",
   "confirm_email": "Bevestig uw registratie-e-mail om uw toegangscode te ontvangen",
   "access_code": "Toegangscode",
-  "access_code_sent": "Er is een toegangssleutel verzonden naar gebruiker@email.com",
+  "access_code_sent": "Er is een toegangssleutel verzonden naar {email}",
   "secret_key_created": "Geheime sleutel met succes aangemaakt!",
   "disable_secret": "Wilt u deze foto zichtbaar maken?",
   "yes": "Ja",

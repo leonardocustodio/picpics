@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ja_JP';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: '写真が選択されていません', one: '1 枚の写真を選択しました', other: '${howMany} 枚の写真を選択しました')}";
+  static m0(email) => "アクセスキーが ${email} に送信されました";
 
-  static m1(number) => "${number}無料のデイリー写真を完了しました。続けますか？";
+  static m1(howMany) => "${Intl.plural(howMany, zero: '写真が選択されていません', one: '1 枚の写真を選択しました', other: '${howMany} 枚の写真を選択しました')}";
 
-  static m2(url) => "すべての写真を整理するには、${url} にアクセスしてください";
+  static m2(number) => "${number}無料のデイリー写真を完了しました。続けますか？";
+
+  static m3(url) => "すべての写真を整理するには、${url} にアクセスしてください";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("アクセスコード"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("アクセスキーが user@email.com に送信されました"),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("複数のタグを追加"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("タグを付ける"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("タグを付ける"),
@@ -95,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("整理された写真"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("パーティー"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("ペット"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("写真はまだ整理されていません"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("フォトギャラリー"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("写真の場所"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("これでいつでも写真が整理されます"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - フォトマネージャー"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("広告なしのすべての機能"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("プレミアムアカウントを購入"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("続行するにはビデオ広告をご覧ください"),
@@ -128,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("提案"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("一度に複数の写真にタグを付ける"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("このアプリを見てください！"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("利用規約"),
     "time" : MessageLookupByLibrary.simpleMessage("時間"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("旅行"),

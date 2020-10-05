@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'nl';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'Geen foto\'s geselecteerd', one: '1 foto geselecteerd', other: '${howMany} foto\'s geselecteerd')}";
+  static m0(email) => "Er is een toegangssleutel verzonden naar ${email}";
 
-  static m1(number) => "U heeft uw ${number} gratis dagelijkse foto\'s voltooid, wilt u doorgaan?";
+  static m1(howMany) => "${Intl.plural(howMany, zero: 'Geen foto\'s geselecteerd', one: '1 foto geselecteerd', other: '${howMany} foto\'s geselecteerd')}";
 
-  static m2(url) => "Ga naar ${url} om al uw foto\'s te ordenen";
+  static m2(number) => "U heeft uw ${number} gratis dagelijkse foto\'s voltooid, wilt u doorgaan?";
+
+  static m3(url) => "Ga naar ${url} om al uw foto\'s te ordenen";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("Toegangscode"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("Er is een toegangssleutel verzonden naar gebruiker@email.com"),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("Voeg meerdere tags toe"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("Tag toevoegen"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Voeg tags toe"),
@@ -95,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("Geordende foto\'s"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("Feestjes"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("Huisdieren"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("Foto\'s nog niet geordend"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Fotogallerij"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Fotolocatie"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Nu worden uw foto\'s altijd geordend"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - Fotomanager"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("ALLE FUNCTIES ZONDER ADVERTENTIES"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("Krijg Premium Account"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("Bekijk videoadvertentie om door te gaan"),
@@ -128,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("Suggesties"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Label meerdere foto\'s tegelijk"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("Bekijk deze app eens!"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("Gebruiksvoorwaarden"),
     "time" : MessageLookupByLibrary.simpleMessage("Tijd"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("Reizen"),

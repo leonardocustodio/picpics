@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'sv_SE';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'Inga foton har valts', one: '1 foto valt', other: '${howMany} foton valda')}";
+  static m0(email) => "En åtkomstnyckel skickades till ${email}";
 
-  static m1(number) => "Du har slutfört dina ${number} gratis dagliga bilder, vill du fortsätta?";
+  static m1(howMany) => "${Intl.plural(howMany, zero: 'Inga foton har valts', one: '1 foto valt', other: '${howMany} foton valda')}";
 
-  static m2(url) => "För att organisera alla dina foton går du till ${url}";
+  static m2(number) => "Du har slutfört dina ${number} gratis dagliga bilder, vill du fortsätta?";
+
+  static m3(url) => "För att organisera alla dina foton går du till ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("Åtkomstkod"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("En åtkomstnyckel skickades till user@email.com"),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("Lägg till flera taggar"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("Lägg till tagg"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Lägg till taggar"),
@@ -95,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("Organiserade foton"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("Fester"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("Husdjur"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("Foton ännu inte organiserade"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Fotogalleri"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Fotoplats"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Nu är dina foton alltid organiserade"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - Photo Manager"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("ALLA FUNKTIONER UTAN ANNONSER"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("Skaffa premiumkonto"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("Se videoannonsen för att fortsätta"),
@@ -128,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("Förslag"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Tagga flera foton samtidigt"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("Ta en titt på appen!"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("Användarvillkor"),
     "time" : MessageLookupByLibrary.simpleMessage("Tid"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("Resa"),

@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'th';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'ไม่มีรูปที่เลือก', one: 'เลือก 1 ภาพ', other: 'เลือก ${howMany} ภาพ')}";
+  static m0(email) => "รหัสเข้าใช้งานส่งไปที่ ${email}";
 
-  static m1(number) => "คุณทำภาพถ่ายฟรีประจำวันครบ ${number} แล้ว ต้องการทำต่อไหม?";
+  static m1(howMany) => "${Intl.plural(howMany, zero: 'ไม่มีรูปที่เลือก', one: 'เลือก 1 ภาพ', other: 'เลือก ${howMany} ภาพ')}";
 
-  static m2(url) => "ไปที่ ${url} เพื่อจัดหมวดหมู่ภาพถ่ายทั้งหมด";
+  static m2(number) => "คุณทำภาพถ่ายฟรีประจำวันครบ ${number} แล้ว ต้องการทำต่อไหม?";
+
+  static m3(url) => "ไปที่ ${url} เพื่อจัดหมวดหมู่ภาพถ่ายทั้งหมด";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("รหัสเข้าใช้งาน"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("รหัสเข้าใช้งานส่งไปที่ user@email.com"),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("เพิ่มแท็กหลายรายการ"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
@@ -95,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("ภาพถ่ายที่จัดหมวดหมู่แล้ว"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("ปาร์ตี้"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("สัตว์เลี้ยง"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("ภาพถ่ายที่ยังไม่ได้รับการจัดหมวดหมู่"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("คลังภาพ"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("สถานที่ที่ถ่ายภาพนี้"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("จากนี้ภาพถ่ายของคุณจะไม่กระจัดกระจายอีกต่อไปแล้ว"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - ตัวจัดการภาพ"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("ใช้ทุกคุณสมบัติแบบไร้โฆษณา"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("เปลี่ยนเป็นบัญชีแบบพรีเมียม"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("ดูวิดีโอโฆษณาเพื่อไปต่อ"),
@@ -128,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("แนะนำ"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("ติดแท็กภาพถ่ายหลายภาพในครั้งเดียว"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("ดูแอปนี้!"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("ข้อกำหนดการใช้งาน"),
     "time" : MessageLookupByLibrary.simpleMessage("เวลา"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("ท่องเที่ยว"),

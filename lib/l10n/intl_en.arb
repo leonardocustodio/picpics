@@ -131,7 +131,7 @@
   "confirm_secret_key": "Confirm secret key",
   "confirm_email": "Confirm your registration email to receive your access code",
   "access_code": "Access code",
-  "access_code_sent": "An access key was sent to user@email.com",
+  "access_code_sent": "An access key was sent to {email}",
   "secret_key_created": "Secret key successfully created!",
   "disable_secret": "Do you want to unhide this photo?",
   "yes": "Yes",

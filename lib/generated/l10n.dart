@@ -1026,13 +1026,13 @@ class S {
     );
   }
 
-  /// `An access key was sent to user@email.com`
-  String get access_code_sent {
+  /// `An access key was sent to {email}`
+  String access_code_sent(Object email) {
     return Intl.message(
-      'An access key was sent to user@email.com',
+      'An access key was sent to $email',
       name: 'access_code_sent',
       desc: '',
-      args: [],
+      args: [email],
     );
   }
 

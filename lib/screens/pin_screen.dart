@@ -572,7 +572,7 @@ class _PinScreenState extends State<PinScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
                             child: Text(
-                              S.of(context).access_code_sent,
+                              S.of(context).access_code_sent('${pinStore.email ?? 'user@email.com'}'),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',
