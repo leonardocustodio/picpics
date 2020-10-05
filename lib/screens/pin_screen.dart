@@ -46,7 +46,7 @@ class _PinScreenState extends State<PinScreen> {
       isLoading = true;
     });
 
-    bool valid = await pinStore.validateAccessCode();
+    bool valid = await pinStore.validateAccessCode(appStore);
 
     pinStore.setAccessCode('');
     setState(() {

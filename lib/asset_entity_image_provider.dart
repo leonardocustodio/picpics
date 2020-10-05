@@ -1,13 +1,8 @@
-///
-/// [Author] Alex (https://github.com/Alex525)
-/// [Date] 2020/3/20 14:07
-///
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/pic_store.dart';
 
@@ -76,7 +71,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     assert(key == this);
     Uint8List data;
 
-    if (picStore.entity == null) {
+    if (picStore.isPrivate == true) {
       print('entity is null!!!');
       data = await key.picStore.assetOriginBytes;
       print('before decode!!');

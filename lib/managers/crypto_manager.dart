@@ -29,9 +29,11 @@ class Crypto {
 
   static Future<void> reSaveSpKey(String userPin, AppStore appStore) async {
     final storage = FlutterSecureStorage();
+    String ppkey = await storage.read(key: 'ppkey');
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
     print('Decrypted spKey is: ${appStore.tempEncryptionKey}');
+    appStore.setEncryptionKey(stringToBase64.encode("$ppkey:${appStore.tempEncryptionKey}"));
 
     final picKey = Key.fromUtf8('1HxMbQeThWmZq3t6');
     final String ivString = stringToBase64.encode('${userPin}${appStore.email}').substring(0, 16);
@@ -130,8 +132,9 @@ class Crypto {
     print('Secret salt: $secretSalt');
   }
 
-  static Future<void> saveSpKey(String accessKey, String spKey, String userPin, String userEmail) async {
+  static Future<void> saveSpKey(String accessKey, String spKey, String userPin, String userEmail, AppStore appStore) async {
     final storage = FlutterSecureStorage();
+    String ppkey = await storage.read(key: 'ppkey');
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
     // String accessBase64 = stringToBase64.encode(accessKey);
@@ -148,6 +151,7 @@ class Crypto {
     final String decryptedKey = encrypter.decrypt(encryptedValue, iv: ivAccess);
 
     print('Decrypted spKey is: $decryptedKey');
+    appStore.setEncryptionKey(stringToBase64.encode("$ppkey:$decryptedKey"));
 
     final bytes = utf8.encode(decryptedKey); // data being hashed
     final digest = sha256.convert(bytes);
@@ -169,7 +173,7 @@ class Crypto {
   }
 
   static encryptImage(PicStore picStore, String encryptionKey) async {
-    print('Going to encrypt image!!!');
+    print('Going to encrypt image with encryption key: $encryptionKey');
     var crypt = AesCrypt(encryptionKey);
     crypt.setOverwriteMode(AesCryptOwMode.rename);
 

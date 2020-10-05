@@ -167,7 +167,7 @@ abstract class _PinStore with Store {
   }
 
   @action
-  Future<bool> validateAccessCode() async {
+  Future<bool> validateAccessCode(AppStore appStore) async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'validateAccessCode')..timeout = const Duration(seconds: 30);
 
     Random rand = new Random();
@@ -186,7 +186,7 @@ abstract class _PinStore with Store {
       if (result.data != false) {
         print('Saving ${result.data} with access code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
-        await Crypto.saveSpKey(accessCode, result.data, pin, email);
+        await Crypto.saveSpKey(accessCode, result.data, pin, email, appStore);
         return true;
       }
 
