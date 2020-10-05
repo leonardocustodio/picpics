@@ -134,13 +134,13 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     }
 
     if (state == AppLifecycleState.resumed) {
-      print('&&&&&&&&& App got back from background');
-      if (appStore.secretPhotos) {
-        appStore.switchSecretPhotos();
-        galleryStore.removeAllPrivatePics();
-      }
-
-      galleryStore.checkIsLibraryUpdated();
+      // print('&&&&&&&&& App got back from background');
+      // if (appStore.secretPhotos) {
+      //   appStore.switchSecretPhotos();
+      //   galleryStore.removeAllPrivatePics();
+      // }
+      //
+      // galleryStore.checkIsLibraryUpdated();
 //      appStore.checkNotificationPermission();
     }
   }

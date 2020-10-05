@@ -130,7 +130,7 @@
   "confirm_secret_key": "Bestätigen Sie den Geheimschlüssel.",
   "confirm_email": "Bestätigen Sie Ihre Registrierungs-E-Mail und erhalten Sie Ihren Zugangscode.",
   "access_code": "Zugangscode",
-  "access_code_sent": "Ein Zugangsschlüssel wurde an user@email.com gesendet.",
+  "access_code_sent": "Ein Zugangsschlüssel wurde an {email} gesendet.",
   "secret_key_created": "Der Geheimschlüssel wurde erfolgreich erstellt!",
   "disable_secret": "Möchten Sie dieses Foto anzeigen?",
   "yes": "Ja",

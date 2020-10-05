@@ -131,7 +131,7 @@
   "confirm_secret_key": "Confirme a chave",
   "confirm_email": "Confirm your registration email to receive your access code",
   "access_code": "Código de Acesso",
-  "access_code_sent": "Um código de acesso foi enviado para user@email.com",
+  "access_code_sent": "Um código de acesso foi enviado para {email}",
   "secret_key_created": "Chave secreta criada com sucesso!",
   "disable_secret": "Deseja desocultar esta foto?",
   "yes": "Sim",

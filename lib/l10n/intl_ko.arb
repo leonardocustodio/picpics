@@ -129,7 +129,7 @@
   "confirm_secret_key": "비밀 키 확인",
   "confirm_email": "액세스 코드를 받으려면 등록 이메일을 확인하세요.",
   "access_code": "액세스 코드",
-  "access_code_sent": "user@email.com으로 액세스 키를 보냈습니다.",
+  "access_code_sent": "{email}으로 액세스 키를 보냈습니다.",
   "secret_key_created": "비밀 키가 생성되었습니다!",
   "disable_secret": "이 사진의 숨김을 해제하시겠습니까?",
   "yes": "예",

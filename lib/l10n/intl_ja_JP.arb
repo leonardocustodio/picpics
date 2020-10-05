@@ -130,7 +130,7 @@
   "confirm_secret_key": "秘密の鍵を確認",
   "confirm_email": "登録メールを確認してアクセスコードを受け取る",
   "access_code": "アクセスコード",
-  "access_code_sent": "アクセスキーが user@email.com に送信されました",
+  "access_code_sent": "アクセスキーが {email} に送信されました",
   "secret_key_created": "秘密の鍵が正常に作成されました！",
   "disable_secret": "この写真を非表示しますか？",
   "yes": "はい",

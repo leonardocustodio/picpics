@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ko';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: '선택된 사진이 없습니다', one: '사진 1장이 선택됨', other: '사진 ${howMany}장이 선택됨')}";
+  static m0(email) => "${email}으로 액세스 키를 보냈습니다.";
 
-  static m1(number) => "${number} 무료 일일 사진을 완성했습니다. 계속 하시겠습니까?";
+  static m1(howMany) => "${Intl.plural(howMany, zero: '선택된 사진이 없습니다', one: '사진 1장이 선택됨', other: '사진 ${howMany}장이 선택됨')}";
 
-  static m2(url) => "모든 사진을 정리정돈하려면 ${url}로 이동하십시오.";
+  static m2(number) => "${number} 무료 일일 사진을 완성했습니다. 계속 하시겠습니까?";
+
+  static m3(url) => "모든 사진을 정리정돈하려면 ${url}로 이동하십시오.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("액세스 코드"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("user@email.com으로 액세스 키를 보냈습니다."),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("다수의 태그 추가"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("태그 추가"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("태그 추가"),
@@ -95,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("정리된 사진"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("파티"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("반려 동물"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("아직 정리되지 않은 사진"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("사진 갤러리"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("사진 위치"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("이제 항상 사진을 정리정돈할 수 있습니다"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - 사진 관리자"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("ADS가 없는 모든 기능"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("프리미엄 계정 가입"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("계속하려면 비디오 광고를 시청하세요"),
@@ -128,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("제안"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("한 번에 여러 장의 사진에 태그 달기"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("이 앱을 살펴보세요!"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("이용 약관"),
     "time" : MessageLookupByLibrary.simpleMessage("시간"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("여행"),

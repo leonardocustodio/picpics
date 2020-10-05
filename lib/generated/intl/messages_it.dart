@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'it';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'Nessuna foto selezionata', one: '1 foto selezionata', other: '${howMany} foto selezionate')}";
+  static m0(email) => "Una chiave di accesso è stata inviata a ${email}";
 
-  static m1(number) => "Hai completato ${number} immagini giornaliere gratuite, vuoi continuare?";
+  static m1(howMany) => "${Intl.plural(howMany, zero: 'Nessuna foto selezionata', one: '1 foto selezionata', other: '${howMany} foto selezionate')}";
 
-  static m2(url) => "Per organizzare tutte le tue foto vai a ${url}";
+  static m2(number) => "Hai completato ${number} immagini giornaliere gratuite, vuoi continuare?";
+
+  static m3(url) => "Per organizzare tutte le tue foto vai a ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("Codice d\'accesso"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("Una chiave di accesso è stata inviata a utente@email.com"),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("Aggiungi molteplici tag"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("Aggiungi Tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Aggiungi i tag"),
@@ -95,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("Foto organizzate"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("Feste"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("Animali"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("Foto non ancora organizzate"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Galleria foto"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Posizione della foto"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Ora le tue foto saranno sempre organizzate"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - Gestore di foto"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("TUTTE LE CARATTERISTICHE SENZA ANNUNCI"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("Ottieni un account Premium"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("Guarda l\'annuncio video per continuare"),
@@ -128,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("Suggerimenti"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Tagga più foto contemporaneamente"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("Dai un\'occhiata a questa app!"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("Condizioni d\'uso"),
     "time" : MessageLookupByLibrary.simpleMessage("Orario"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("Viaggio"),

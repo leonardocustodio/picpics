@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'ms';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'Tiada gambar yang dipilih', one: '1 gambar dipilih', other: '${howMany} gambar dipilih')}";
+  static m0(email) => "Kunci akses telah dihantar ke ${email}";
 
-  static m1(number) => "Anda telah melengkapkan ${number} gambar harian percuma anda, adakah anda ingin teruskan?";
+  static m1(howMany) => "${Intl.plural(howMany, zero: 'Tiada gambar yang dipilih', one: '1 gambar dipilih', other: '${howMany} gambar dipilih')}";
 
-  static m2(url) => "Untuk menguruskan semua gambar anda, pergi ke ${url}";
+  static m2(number) => "Anda telah melengkapkan ${number} gambar harian percuma anda, adakah anda ingin teruskan?";
+
+  static m3(url) => "Untuk menguruskan semua gambar anda, pergi ke ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("Kod akses"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("Kunci akses telah dihantar ke user@email.com"),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("Tambah beberapa tag"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("Tambah tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Tambah tag"),
@@ -95,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("Gambar Terurus"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("Pesta"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("Haiwan Peliharaan"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("Gambar belum diuruskan"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Galeri Gambar"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Lokasi gambar"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Kini gambar anda akan sentiasa terurus"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - Pengurus Gambar"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("SEMUA CIRI TANPA IKLAN"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("Dapatkan Akaun Premium"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("Tontoni iklan video untuk teruskan"),
@@ -128,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("Cadangan"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("ag banyak gambar sekaligus"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("Lihatlah aplikasi ini!"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("Syarat Penggunaan"),
     "time" : MessageLookupByLibrary.simpleMessage("Masa"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("Pengembaraan"),

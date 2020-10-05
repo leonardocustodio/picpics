@@ -45,7 +45,7 @@ abstract class _PicStore with Store {
   }
 
   Future<Uint8List> get assetOriginBytes async {
-    if (entity != null) {
+    if (isPrivate == false && entity != null) {
       return await entity.originBytes;
     }
     print('Returning decrypt image in privatePath: $privatePath');

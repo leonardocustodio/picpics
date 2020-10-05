@@ -130,7 +130,7 @@
   "confirm_secret_key": "确认密钥",
   "confirm_email": "确认您的注册电子邮箱以接收您的访问代码",
   "access_code": "访问代码",
-  "access_code_sent": "访问密钥已发送至user@email.com",
+  "access_code_sent": "访问密钥已发送至{email}",
   "secret_key_created": "密钥成功创建！",
   "disable_secret": "您要取消隐藏这张照片吗？",
   "yes": "是",

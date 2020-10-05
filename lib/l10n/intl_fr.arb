@@ -130,7 +130,7 @@
   "confirm_secret_key": "Confirmer la clé secrète",
   "confirm_email": "Confirmez votre courriel d'inscription pour recevoir votre code d'accès",
   "access_code": "Code d'accès",
-  "access_code_sent": "Une clé d'accès a été envoyée à user@email.com",
+  "access_code_sent": "Une clé d'accès a été envoyée à {email}",
   "secret_key_created": "Clé secrète créée avec succès !",
   "disable_secret": "Voulez-vous afficher cette photo ?",
   "yes": "Oui",

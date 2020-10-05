@@ -130,7 +130,7 @@
   "confirm_secret_key": "Bekräfta hemlig nyckel",
   "confirm_email": "Bekräfta din registrerings-e-post för att få din åtkomstkod",
   "access_code": "Åtkomstkod",
-  "access_code_sent": "En åtkomstnyckel skickades till user@email.com",
+  "access_code_sent": "En åtkomstnyckel skickades till {email}",
   "secret_key_created": "Hemlig nyckel har skapats!",
   "disable_secret": "Vill du visa detta foto?",
   "yes": "Ja",

@@ -167,9 +167,9 @@ mixin _$PinStore on _PinStore, Store {
       AsyncAction('_PinStore.validateAccessCode');
 
   @override
-  Future<bool> validateAccessCode() {
+  Future<bool> validateAccessCode(AppStore appStore) {
     return _$validateAccessCodeAsyncAction
-        .run(() => super.validateAccessCode());
+        .run(() => super.validateAccessCode(appStore));
   }
 
   final _$isPinValidAsyncAction = AsyncAction('_PinStore.isPinValid');

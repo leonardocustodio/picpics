@@ -167,12 +167,15 @@ class _EmailScreenState extends State<EmailScreen> {
                                   ),
                                 ),
                                 Container(
-                                  height: 36.0,
+                                  height: 42.0,
                                   margin: const EdgeInsets.only(top: 6.0),
                                   child: TextField(
+                                    maxLines: 1,
                                     onChanged: pinStore.setEmail,
                                     decoration: InputDecoration(
-                                      fillColor: Color(0xFFF1F3F5),
+                                      contentPadding: const EdgeInsets.only(left: 10.0, right: 5.0),
+                                      fillColor: Color(0xFFF1F3F5).withOpacity(0.3),
+                                      filled: true,
                                       border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Color(0xFFE2E4E5),

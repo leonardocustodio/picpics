@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: '未选择照片', one: '已选择1张照片', other: '已选择${howMany}张照片')}";
+  static m0(email) => "访问密钥已发送至${email}";
 
-  static m1(number) => "您已完成您的${number}张免费每日图片，是否要继续？";
+  static m1(howMany) => "${Intl.plural(howMany, zero: '未选择照片', one: '已选择1张照片', other: '已选择${howMany}张照片')}";
 
-  static m2(url) => "要整理所有照片，请访问${url}";
+  static m2(number) => "您已完成您的${number}张免费每日图片，是否要继续？";
+
+  static m3(url) => "要整理所有照片，请访问${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("访问代码"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("访问密钥已发送至user@email.com"),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("添加多个标签"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("添加标签"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("添加标签"),
@@ -95,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("已整理的照片"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("派对"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("宠物"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("尚未整理的照片"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("照片库"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("照片位置"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("现在，您的照片将始终井井有条"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - 照片管理器"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("所有功能，无广告"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("获取高级账户"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("观看视频广告以继续"),
@@ -128,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("建议"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("一次给多张照片添加标签"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("看看这个App！"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("使用条款"),
     "time" : MessageLookupByLibrary.simpleMessage("时间"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("旅行"),

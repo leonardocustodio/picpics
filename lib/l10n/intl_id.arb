@@ -130,7 +130,7 @@
   "confirm_secret_key": "Konfirmasikan kode rahasia",
   "confirm_email": "Konfirmasikan email pendaftaran Anda untuk menerima kode akses Anda",
   "access_code": "Kode akses",
-  "access_code_sent": "Kode akses telah dikirim ke user@email.com",
+  "access_code_sent": "Kode akses telah dikirim ke {email}",
   "secret_key_created": "Kode rahasia berhasil dibuat!",
   "disable_secret": "Apakah Anda ingin menampilkan foto ini?",
   "yes": "Ya",

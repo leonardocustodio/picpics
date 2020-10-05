@@ -130,7 +130,7 @@
   "confirm_secret_key": "Sahkan kunci rahsia",
   "confirm_email": "Sahkan e-mel pendaftaran anda untuk menerima kod akses anda",
   "access_code": "Kod akses",
-  "access_code_sent": "Kunci akses telah dihantar ke user@email.com",
+  "access_code_sent": "Kunci akses telah dihantar ke {email}",
   "secret_key_created": "Kunci rahsia berjaya dicipta!",
   "disable_secret": "Adakah anda ingin menyembunyikan gambar ini?",
   "yes": "Ya",
