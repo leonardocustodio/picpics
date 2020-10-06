@@ -601,7 +601,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         addTagField: true,
                                         textEditingController: bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
-                                        onTap: (tagName) {
+                                        onTap: (tagId, tagName) {
                                           if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
@@ -651,7 +651,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
-                                        onTap: (tagKey) {
+                                        onTap: (tagId, tagName) {
                                           if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
@@ -659,7 +659,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
                                           bottomTagsEditingController.clear();
                                           galleryStore.setSearchText('');
-                                          galleryStore.addToMultiPicTags(tagKey);
+                                          galleryStore.addToMultiPicTags(tagId);
                                         },
                                         onDoubleTap: () {
                                           if (!appStore.isPremium) {

@@ -385,7 +385,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       tags: picStore.tagsSuggestions,
                       tagStyle: TagStyle.GrayOutlined,
                       showEditTagModal: widget.showEditTagModal,
-                      onTap: (tagName) async {
+                      onTap: (tagId, tagName) async {
                         if (!appStore.canTagToday) {
                           showWatchAdModal(context);
                           return;
