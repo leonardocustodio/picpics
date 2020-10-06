@@ -502,7 +502,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                 child: TagsList(
                                   tags: galleryStore.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
-                                  onTap: (tagName) {
+                                  onTap: (tagId, tagName) {
                                     print('do nothing');
                                     galleryStore.removeTagFromSearchFilter();
                                     if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
@@ -547,7 +547,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                       tags: galleryStore.tagsSuggestions,
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: widget.showEditTagModal,
-                                      onTap: (tagName) {
+                                      onTap: (tagId, tagName) {
                                         galleryStore.addTagToSearchFilter();
                                         searchEditingController.clear();
                                         galleryStore.searchResultsTags(searchEditingController.text);

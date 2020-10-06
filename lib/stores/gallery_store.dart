@@ -249,7 +249,8 @@ abstract class _GalleryStore with Store {
 
     if (searchText == '') {
       for (var recent in getUser.recentTags) {
-        if (multiPicTags.contains(recent)) {
+        print('Recent Tag: $recent');
+        if (multiPicTags.contains(recent) || recent == kSecretTagKey) {
           continue;
         }
         suggestionTags.add(recent);
@@ -269,6 +270,7 @@ abstract class _GalleryStore with Store {
           if (multiPicTagKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
             continue;
           }
+          print('Adding tag key: $tagKey');
           suggestionTags.add(tagKey);
         }
       }
@@ -285,12 +287,13 @@ abstract class _GalleryStore with Store {
     }
 
     print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
-    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey) && appStore.secretPhotos == true) {
+    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey) && appStore.secretPhotos == true && searchText == '') {
       suggestionTags.add(kSecretTagKey);
     }
 
     print('find suggestions: $searchText - exclude tags: $multiPicTags');
     print(suggestionTags);
+    print('AppStore Tags: ${appStore.tags}');
     List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();
     print('Suggestions Tag Store: $suggestions');
     return suggestions;
@@ -861,14 +864,15 @@ abstract class _GalleryStore with Store {
           photoId: picStore.photoId,
         );
 
-        if (selectedPicsAreTagged != true) {
-          await addPicToTaggedPics(picStore: picStore);
-          untaggedPics.remove(picStore);
-          swipePics.remove(picStore);
-        }
-
         print('update pictures in tag');
         Analytics.sendEvent(Event.added_tag);
+      }
+
+      if (selectedPicsAreTagged != true) {
+        print('Adding pic to tagged pics!');
+        await addPicToTaggedPics(picStore: picStore);
+        untaggedPics.remove(picStore);
+        swipePics.remove(picStore);
       }
     }
 

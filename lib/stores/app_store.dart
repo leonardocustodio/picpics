@@ -329,23 +329,26 @@ abstract class _AppStore with Store {
     }
   }
 
-  ObserverList<TagsStore> tags = ObserverList<TagsStore>();
+  ObservableList<TagsStore> tags = ObservableList<TagsStore>();
 
   @action
   void loadTags() {
     var tagsBox = Hive.box('tags');
+    tags.clear();
 
     for (Tag tag in tagsBox.values) {
-      TagsStore tagStore = TagsStore(id: tag.key, name: tag.name);
-      tags.add(tagStore);
+      TagsStore tagsStore = TagsStore(id: tag.key, name: tag.name);
+      addTag(tagsStore);
     }
 
-    if (tagsBox.get(kSecretTagKey) == null) {
+    Tag secretTag = tagsBox.get(kSecretTagKey);
+    if (secretTag == null) {
+      print('Creating secret tag in db!');
       Tag createSecretTag = Tag('Secret Pics', []);
       tagsBox.put(kSecretTagKey, createSecretTag);
 
       TagsStore tagsStore = TagsStore(id: kSecretTagKey, name: 'Secret Pics');
-      tags.add(tagsStore);
+      addTag(tagsStore);
     }
 
     print('******************* loaded tags **********');
@@ -356,6 +359,7 @@ abstract class _AppStore with Store {
     if (tags.contains(tagsStore)) {
       return;
     }
+    print('Adding tag to AppStore: $tagsStore');
     tags.add(tagsStore);
   }
 
