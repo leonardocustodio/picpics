@@ -842,6 +842,7 @@ abstract class _GalleryStore with Store {
         if (tagKey == kSecretTagKey) {
           print('Should add secret tag in the end!!!');
           if (!privatePics.contains(picStore)) {
+            await picStore.setIsPrivate(true);
             await Crypto.encryptImage(picStore, appStore.encryptionKey);
             print('this pic now is private');
             privatePics.add(picStore);
