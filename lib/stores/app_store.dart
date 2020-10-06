@@ -91,6 +91,7 @@ abstract class _AppStore with Store {
     secretPhotos = user.secretPhotos ?? false;
     isPinRegistered = user.isPinRegistered ?? false;
     keepAskingToDelete = user.keepAskingToDelete ?? true;
+    shouldDeleteOnPrivate = user.shouldDeleteOnPrivate ?? false;
     email = user.email;
 
     // if (secretBox.length > 0) {
@@ -231,6 +232,19 @@ abstract class _AppStore with Store {
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.keepAskingToDelete = value;
+    currentUser.save();
+  }
+
+  @observable
+  bool shouldDeleteOnPrivate = false;
+
+  @action
+  void setShouldDeleteOnPrivate(bool value) {
+    shouldDeleteOnPrivate = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.shouldDeleteOnPrivate = value;
     currentUser.save();
   }
 

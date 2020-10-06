@@ -83,6 +83,23 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$shouldDeleteOnPrivateAtom =
+      Atom(name: '_AppStore.shouldDeleteOnPrivate');
+
+  @override
+  bool get shouldDeleteOnPrivate {
+    _$shouldDeleteOnPrivateAtom.reportRead();
+    return super.shouldDeleteOnPrivate;
+  }
+
+  @override
+  set shouldDeleteOnPrivate(bool value) {
+    _$shouldDeleteOnPrivateAtom.reportWrite(value, super.shouldDeleteOnPrivate,
+        () {
+      super.shouldDeleteOnPrivate = value;
+    });
+  }
+
   final _$secretPhotosAtom = Atom(name: '_AppStore.secretPhotos');
 
   @override
@@ -358,6 +375,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setShouldDeleteOnPrivate(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setShouldDeleteOnPrivate');
+    try {
+      return super.setShouldDeleteOnPrivate(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void switchSecretPhotos() {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.switchSecretPhotos');
@@ -563,6 +591,7 @@ notifications: ${notifications},
 dailyChallenges: ${dailyChallenges},
 isPinRegistered: ${isPinRegistered},
 keepAskingToDelete: ${keepAskingToDelete},
+shouldDeleteOnPrivate: ${shouldDeleteOnPrivate},
 secretPhotos: ${secretPhotos},
 requireSecret: ${requireSecret},
 hourOfDay: ${hourOfDay},

@@ -39,13 +39,14 @@ class UserAdapter extends TypeAdapter<User> {
       secretPhotos: fields[19] as bool,
       isPinRegistered: fields[20] as bool,
       keepAskingToDelete: fields[21] as bool,
+      shouldDeleteOnPrivate: fields[22] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(22)
+      ..writeByte(23)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -89,7 +90,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(20)
       ..write(obj.isPinRegistered)
       ..writeByte(21)
-      ..write(obj.keepAskingToDelete);
+      ..write(obj.keepAskingToDelete)
+      ..writeByte(22)
+      ..write(obj.shouldDeleteOnPrivate);
   }
 
   @override

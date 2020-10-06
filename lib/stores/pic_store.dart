@@ -68,12 +68,15 @@ abstract class _PicStore with Store {
     secretBox.put(photoId, secret);
     privatePath = value;
 
-    if (Platform.isAndroid) {
-      PhotoManager.editor.deleteWithIds([entity.id]);
-    } else {
-      final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
-      if (result.isEmpty) {
-        return false;
+    if (appStore.shouldDeleteOnPrivate == true) {
+      print('**** Deleted original pic!!!');
+      if (Platform.isAndroid) {
+        PhotoManager.editor.deleteWithIds([entity.id]);
+      } else {
+        final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+        if (result.isEmpty) {
+          return false;
+        }
       }
     }
   }
@@ -132,13 +135,13 @@ abstract class _PicStore with Store {
   bool isPrivate = false;
 
   @action
-  void setIsPrivate(bool value) {
+  Future<void> setIsPrivate(bool value) async {
     isPrivate = value;
 
     if (isPrivate) {
-      addSecretTagToPic();
+      await addSecretTagToPic();
     } else {
-      removeSecretTagFromPic();
+      await removeSecretTagFromPic();
     }
 
     var picsBox = Hive.box('pics');

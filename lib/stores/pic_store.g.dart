@@ -136,6 +136,13 @@ mixin _$PicStore on _PicStore, Store {
     return _$setPrivatePathAsyncAction.run(() => super.setPrivatePath(value));
   }
 
+  final _$setIsPrivateAsyncAction = AsyncAction('_PicStore.setIsPrivate');
+
+  @override
+  Future<void> setIsPrivate(bool value) {
+    return _$setIsPrivateAsyncAction.run(() => super.setIsPrivate(value));
+  }
+
   final _$addTagAsyncAction = AsyncAction('_PicStore.addTag');
 
   @override
@@ -180,17 +187,6 @@ mixin _$PicStore on _PicStore, Store {
         _$_PicStoreActionController.startAction(name: '_PicStore.loadPicInfo');
     try {
       return super.loadPicInfo();
-    } finally {
-      _$_PicStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setIsPrivate(bool value) {
-    final _$actionInfo =
-        _$_PicStoreActionController.startAction(name: '_PicStore.setIsPrivate');
-    try {
-      return super.setIsPrivate(value);
     } finally {
       _$_PicStoreActionController.endAction(_$actionInfo);
     }
