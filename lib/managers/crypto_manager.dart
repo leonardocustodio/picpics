@@ -172,7 +172,7 @@ class Crypto {
     print('key saved to storage!');
   }
 
-  static encryptImage(PicStore picStore, String encryptionKey) async {
+  static Future<void> encryptImage(PicStore picStore, String encryptionKey) async {
     print('Going to encrypt image with encryption key: $encryptionKey');
     var crypt = AesCrypt(encryptionKey);
     crypt.setOverwriteMode(AesCryptOwMode.rename);

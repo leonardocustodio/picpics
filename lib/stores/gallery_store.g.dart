@@ -266,6 +266,15 @@ mixin _$GalleryStore on _GalleryStore, Store {
         .run(() => super.sharePics(picsStores: picsStores));
   }
 
+  final _$addTagsToSelectedPicsAsyncAction =
+      AsyncAction('_GalleryStore.addTagsToSelectedPics');
+
+  @override
+  Future<void> addTagsToSelectedPics() {
+    return _$addTagsToSelectedPicsAsyncAction
+        .run(() => super.addTagsToSelectedPics());
+  }
+
   final _$_onAssetChangeAsyncAction =
       AsyncAction('_GalleryStore._onAssetChange');
 
@@ -595,17 +604,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.searchResultsTags');
     try {
       return super.searchResultsTags(text);
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void addTagsToSelectedPics() {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.addTagsToSelectedPics');
-    try {
-      return super.addTagsToSelectedPics();
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

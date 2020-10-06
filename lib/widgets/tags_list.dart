@@ -163,7 +163,7 @@ class _TagsListState extends State<TagsList> {
 
               Vibrate.feedback(FeedbackType.success);
               DatabaseManager.instance.selectedTagKey = tag.id;
-              widget.onTap(tag.name);
+              widget.onTap(tag.id);
             },
             child: Container(
               decoration: widget.tagStyle == TagStyle.MultiColored

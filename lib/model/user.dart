@@ -69,6 +69,9 @@ class User extends HiveObject {
   @HiveField(21)
   bool keepAskingToDelete;
 
+  @HiveField(22)
+  bool shouldDeleteOnPrivate;
+
   User({
     this.id,
     this.email,
@@ -92,5 +95,6 @@ class User extends HiveObject {
     this.secretPhotos,
     this.isPinRegistered,
     this.keepAskingToDelete,
+    this.shouldDeleteOnPrivate,
   });
 }
