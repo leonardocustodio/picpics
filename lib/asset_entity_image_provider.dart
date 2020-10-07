@@ -71,22 +71,29 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     assert(key == this);
     Uint8List data;
 
-    if (picStore.isPrivate == true) {
-      print('entity is null!!!');
-      data = await key.picStore.assetOriginBytes;
-      print('before decode!!');
-      return decode(data);
+    if (isOriginal ?? false) {
+      print('Loading original...');
+      data = picStore.isPrivate ? await key.picStore.assetOriginBytes : await key.picStore.entity.originBytes;
+    } else {
+      print('Loading thumbnail...');
+      data = picStore.isPrivate ? await key.picStore.assetThumbBytes : await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     }
 
-    if (isOriginal ?? false) {
-      if (imageFileType == ImageFileType.heic) {
-        data = await (await key.picStore.entity.file).readAsBytes();
-      } else {
-        data = await key.picStore.entity.originBytes;
-      }
-    } else {
-      data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
-    }
+    // if (picStore.isPrivate == true) {
+    //   print('entity is null!!!');
+    //   data = await key.picStore.assetOriginBytes;
+    //   return decode(data);
+    // }
+    //
+    // if (isOriginal ?? false) {
+    //   if (imageFileType == ImageFileType.heic) {
+    //     data = await (await key.picStore.entity.file).readAsBytes();
+    //   } else {
+    //     data = await key.picStore.entity.originBytes;
+    //   }
+    // } else {
+    //   data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
+    // }
     return decode(data);
   }
 
@@ -98,7 +105,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的type。
   ImageFileType _getType() {
     ImageFileType type;
-    final String extension = picStore.entity == null ? picStore.privatePath?.split('.')?.last : picStore.entity.title?.split('.')?.last;
+    final String extension = picStore.entity == null ? picStore.photoPath?.split('.')?.last : picStore.entity.title?.split('.')?.last;
     print('Extension: $extension');
     if (extension != null) {
       switch (extension.toLowerCase()) {
@@ -136,7 +143,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         other as AssetEntityImageProvider;
 
     if (picStore.entity == null) {
-      return picStore.privatePath == typedOther.picStore.privatePath;
+      return picStore.photoPath == typedOther.picStore.photoPath;
     }
 
     return picStore.entity == typedOther.picStore.entity &&

@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:uuid/uuid.dart';
@@ -173,45 +174,53 @@ class Crypto {
   static Future<void> encryptImage(PicStore picStore, SecretKey secretKey) async {
     print('Going to encrypt image with encryption key');
 
-    File assetFile = await picStore.entity.originFile;
+    Uint8List assetData = await picStore.entity.originBytes;
+    Uint8List thumbData = await picStore.entity.thumbDataWithSize(150, 150, format: ThumbFormat.jpeg, quality: 90);
     print('Asset Name: ${picStore.entity.id}');
-    print('Origin file: ${assetFile.path} - File: ');
+    print('Origin file: ${picStore.entity.title}');
 
-    if (assetFile == null) {
+    if (assetData == null) {
       return;
     }
 
     Directory appSupportDir = await getApplicationSupportDirectory();
-    String appSupportPath = p.join(appSupportDir.path, 'photos');
+    String photosPath = p.join(appSupportDir.path, 'photos');
+    String thumbnailsPath = p.join(appSupportDir.path, 'thumbnails');
 
-    final dirExists = await Directory(appSupportPath).exists();
+    final dirExists = await Directory(photosPath).exists();
     if (!dirExists) {
-      Directory(appSupportPath).create();
+      Directory(photosPath).create();
+      Directory(thumbnailsPath).create();
     }
 
-    String fileName = p.basename(assetFile.path);
-    String finalPath = p.join(appSupportPath, fileName);
+    String finalPhotoPath = p.join(photosPath, picStore.entity.title);
+    String finalThumbPath = p.join(thumbnailsPath, picStore.entity.title);
 
     print('Encrypting....');
-    var encryptedData;
-
     // Using 96 bytes nonce
     final Nonce nonce = Nonce.randomBytes(12);
 
+    var encryptedPicData;
+    var encryptedThumbData;
     if (Platform.isAndroid) {
-      encryptedData = await aesCtr.encrypt(assetFile.readAsBytesSync(), secretKey: secretKey, nonce: nonce);
+      encryptedPicData = await aesCtr.encrypt(assetData, secretKey: secretKey, nonce: nonce);
+      encryptedThumbData = await aesCtr.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
     } else {
-      encryptedData = await aesGcm.encrypt(assetFile.readAsBytesSync(), secretKey: secretKey, nonce: nonce);
+      encryptedPicData = await aesGcm.encrypt(assetData, secretKey: secretKey, nonce: nonce);
+      encryptedThumbData = await aesGcm.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
     }
 
     print('Saving to file...');
 
-    final File savedFile = File(finalPath);
-    savedFile.writeAsBytesSync(encryptedData);
+    final File savedPicFile = File(finalPhotoPath);
+    final File savedThumbFile = File(finalThumbPath);
+    savedPicFile.writeAsBytes(encryptedPicData);
+    savedThumbFile.writeAsBytes(encryptedThumbData);
 
-    print('Saved file: ${assetFile.path} to ${savedFile.path}');
+    print('Saved file: ${picStore.entity.title} to ${savedPicFile.path}');
+    // print('File sizes: ${savedPicFile.lengthSync()} - Thumb Size: ${savedThumbFile.lengthSync()}');
 
-    await picStore.setPrivatePath(savedFile.path, hex.encode(nonce.bytes));
+    await picStore.setPrivatePath(savedPicFile.path, savedThumbFile.path, hex.encode(nonce.bytes));
   }
 
   static Future<Uint8List> decryptImage(String filePath, SecretKey secretKey, Nonce nonce) async {

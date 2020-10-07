@@ -32,7 +32,8 @@ abstract class _PicStore with Store {
   _PicStore({
     this.appStore,
     this.entity,
-    this.privatePath,
+    this.photoPath,
+    this.thumbPath,
     this.photoId,
     this.createdAt,
     this.originalLatitude,
@@ -50,26 +51,36 @@ abstract class _PicStore with Store {
     if (isPrivate == false && entity != null) {
       return await entity.originBytes;
     }
-    print('Returning decrypt image in privatePath: $privatePath');
-    return await Crypto.decryptImage(privatePath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+    print('Returning decrypt image in privatePath: $photoPath');
+    return await Crypto.decryptImage(photoPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
-  @observable
-  String privatePath;
+  Future<Uint8List> get assetThumbBytes async {
+    if (isPrivate == false && entity != null) {
+      return await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+    }
+    print('Returning decrypt image in privatePath: $thumbPath');
+    return await Crypto.decryptImage(thumbPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+  }
+
+  String photoPath;
+  String thumbPath;
 
   @action
-  Future<void> setPrivatePath(String path, String picNonce) async {
+  Future<void> setPrivatePath(String picPath, String thumbnailPath, String picNonce) async {
     var secretBox = Hive.box('secrets');
     Secret secret = Secret(
       photoId: photoId,
-      privatePath: path,
+      photoPath: picPath,
+      thumbPath: thumbnailPath,
       originalLatitude: originalLatitude,
       originalLongitude: originalLongitude,
       createDateTime: createdAt,
       nonce: picNonce,
     );
     secretBox.put(photoId, secret);
-    privatePath = path;
+    photoPath = picPath;
+    thumbPath = thumbnailPath;
     nonce = picNonce;
 
     if (appStore.shouldDeleteOnPrivate == true) {
@@ -105,9 +116,10 @@ abstract class _PicStore with Store {
         Secret secretPic = secretBox.get(photoId);
 
         if (secretPic != null) {
-          privatePath = secretPic.privatePath;
+          photoPath = secretPic.photoPath;
+          thumbPath = secretPic.thumbPath;
           nonce = secretPic.nonce;
-          print('Setting private path to: $privatePath - Nonce: $nonce');
+          print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
         }
       }
 

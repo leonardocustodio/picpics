@@ -24,21 +24,6 @@ mixin _$PicStore on _PicStore, Store {
               name: '_PicStore.tagsSuggestions'))
       .value;
 
-  final _$privatePathAtom = Atom(name: '_PicStore.privatePath');
-
-  @override
-  String get privatePath {
-    _$privatePathAtom.reportRead();
-    return super.privatePath;
-  }
-
-  @override
-  set privatePath(String value) {
-    _$privatePathAtom.reportWrite(value, super.privatePath, () {
-      super.privatePath = value;
-    });
-  }
-
   final _$latitudeAtom = Atom(name: '_PicStore.latitude');
 
   @override
@@ -132,9 +117,10 @@ mixin _$PicStore on _PicStore, Store {
   final _$setPrivatePathAsyncAction = AsyncAction('_PicStore.setPrivatePath');
 
   @override
-  Future<void> setPrivatePath(String path, String picNonce) {
+  Future<void> setPrivatePath(
+      String picPath, String thumbnailPath, String picNonce) {
     return _$setPrivatePathAsyncAction
-        .run(() => super.setPrivatePath(path, picNonce));
+        .run(() => super.setPrivatePath(picPath, thumbnailPath, picNonce));
   }
 
   final _$setIsPrivateAsyncAction = AsyncAction('_PicStore.setIsPrivate');
@@ -231,7 +217,6 @@ mixin _$PicStore on _PicStore, Store {
   @override
   String toString() {
     return '''
-privatePath: ${privatePath},
 latitude: ${latitude},
 longitude: ${longitude},
 specificLocation: ${specificLocation},
