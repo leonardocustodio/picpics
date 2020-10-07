@@ -223,8 +223,10 @@ class Crypto {
 
     print('Encrypting....');
 
-    var encryptedData = await fcrypt.aesCtr.encrypt(assetFile.readAsBytesSync(),
+    var encryptedData = await fcrypt.aesGcm.encrypt(assetFile.readAsBytesSync(),
         secretKey: fcrypt.SecretKey(secretKey), nonce: fcrypt.Nonce(nounce));
+    // var encryptedData = await fcrypt.aesCtr.encrypt(assetFile.readAsBytesSync(),
+    //     secretKey: fcrypt.SecretKey(secretKey), nonce: fcrypt.Nonce(nounce));
 
     print('Saving to file...');
 
@@ -246,7 +248,7 @@ class Crypto {
     var secretKey = utf8.encode('abcdefghjiknslpwabcdefghjiknslpw');
     var nounce = utf8.encode('abcdefghijklonrp');
 
-    Uint8List decryptedData = await fcrypt.aesCtr.decrypt(
+    Uint8List decryptedData = await fcrypt.aesGcm.decrypt(
       file.readAsBytesSync(),
       secretKey: fcrypt.SecretKey(secretKey),
       nonce: fcrypt.Nonce(nounce),
