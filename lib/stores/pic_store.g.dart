@@ -132,8 +132,9 @@ mixin _$PicStore on _PicStore, Store {
   final _$setPrivatePathAsyncAction = AsyncAction('_PicStore.setPrivatePath');
 
   @override
-  Future<void> setPrivatePath(String value) {
-    return _$setPrivatePathAsyncAction.run(() => super.setPrivatePath(value));
+  Future<void> setPrivatePath(String path, String picNonce) {
+    return _$setPrivatePathAsyncAction
+        .run(() => super.setPrivatePath(path, picNonce));
   }
 
   final _$setIsPrivateAsyncAction = AsyncAction('_PicStore.setIsPrivate');

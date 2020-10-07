@@ -8,13 +8,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "7.0.0"
-  aes_crypt:
-    dependency: "direct main"
-    description:
-      name: aes_crypt
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.1"
   after_layout:
     dependency: "direct main"
     description:
@@ -198,21 +191,21 @@ packages:
     source: hosted
     version: "1.15.0-nullsafety.3"
   convert:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: convert
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
   crypto:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: crypto
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.5"
   cryptography:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: cryptography
       url: "https://pub.dartlang.org"

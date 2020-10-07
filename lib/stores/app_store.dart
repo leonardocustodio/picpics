@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
@@ -628,8 +628,8 @@ abstract class _AppStore with Store {
 
   PopPinScreenTo popPinScreen;
 
-  String encryptionKey;
-  void setEncryptionKey(String value) => encryptionKey = value;
+  SecretKey encryptionKey;
+  void setEncryptionKey(SecretKey value) => encryptionKey = value;
 
   String tempEncryptionKey;
   void setTempEncryptionKey(String value) => tempEncryptionKey = value;

@@ -22,13 +22,14 @@ class SecretAdapter extends TypeAdapter<Secret> {
       createDateTime: fields[2] as DateTime,
       originalLatitude: fields[3] as double,
       originalLongitude: fields[4] as double,
+      nonce: fields[5] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Secret obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.photoId)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class SecretAdapter extends TypeAdapter<Secret> {
       ..writeByte(3)
       ..write(obj.originalLatitude)
       ..writeByte(4)
-      ..write(obj.originalLongitude);
+      ..write(obj.originalLongitude)
+      ..writeByte(5)
+      ..write(obj.nonce);
   }
 
   @override

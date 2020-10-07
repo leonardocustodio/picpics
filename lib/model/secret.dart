@@ -18,11 +18,15 @@ class Secret extends HiveObject {
   @HiveField(4)
   final double originalLongitude;
 
+  @HiveField(5)
+  final String nonce;
+
   Secret({
     this.photoId,
     this.privatePath,
     this.createDateTime,
     this.originalLatitude,
     this.originalLongitude,
+    this.nonce,
   });
 }

@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.5.0+380
+version: 1.5.0+383
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -73,12 +73,10 @@ dependencies:
   flutter_animator: ^2.1.0
   email_validator: ^1.0.4
   flutter_secure_storage: ^3.3.4
-  aes_crypt: ^0.1.1
-  crypto: ^2.1.5
-  encrypt: ^4.0.3
   path: ^1.7.0
-  cryptography: ^1.4.1
   cryptography_flutter: ^1.0.0
+  convert: ^2.1.1
+  encrypt: ^4.0.3
 
 dev_dependencies:
   flutter_test:
