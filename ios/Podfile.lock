@@ -4,6 +4,8 @@ PODS:
     - Firebase/Functions (~> 6.26.0)
     - firebase_core
     - Flutter
+  - cryptography_flutter (0.1.0):
+    - Flutter
   - esys_flutter_share (0.0.1):
     - Flutter
   - Firebase/Analytics (6.26.0):
@@ -221,6 +223,7 @@ PODS:
 
 DEPENDENCIES:
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
+  - cryptography_flutter (from `.symlinks/plugins/cryptography_flutter/ios`)
   - esys_flutter_share (from `.symlinks/plugins/esys_flutter_share/ios`)
   - firebase_admob (from `.symlinks/plugins/firebase_admob/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -283,6 +286,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   cloud_functions:
     :path: ".symlinks/plugins/cloud_functions/ios"
+  cryptography_flutter:
+    :path: ".symlinks/plugins/cryptography_flutter/ios"
   esys_flutter_share:
     :path: ".symlinks/plugins/esys_flutter_share/ios"
   firebase_admob:
@@ -340,6 +345,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   cloud_functions: cc36e7b5ec30848fbf6ff5f240188d51104ce9dd
+  cryptography_flutter: a2c541ba25ff28549f989f856dde126c961defcd
   esys_flutter_share: 403498dab005b36ce1f8d7aff377e81f0621b0b4
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
   firebase_admob: 233f4bcc3b2855eefdad08bf9182a54d5e4ff4f1

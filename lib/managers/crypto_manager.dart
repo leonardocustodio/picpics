@@ -10,9 +10,12 @@ import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:uuid/uuid.dart';
 import 'package:crypto/crypto.dart';
+import 'package:cryptography/cryptography.dart' as crypto;
+import 'package:cryptography_flutter/cryptography.dart' as fcrypt;
 
 class Crypto {
-  static String encryptAccessKey(String accessCode, String email, String randomIv) {
+  static String encryptAccessKey(
+      String accessCode, String email, String randomIv) {
     final picKey = Key.fromUtf8('bQeThWmZq3t6w9z9CxF0JLNcRfUjXn2r');
     final String ivString = '$randomIv$randomIv${randomIv.substring(0, 4)}';
     final ivKey = IV.fromUtf8(ivString);
@@ -33,10 +36,12 @@ class Crypto {
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
     print('Decrypted spKey is: ${appStore.tempEncryptionKey}');
-    appStore.setEncryptionKey(stringToBase64.encode("$ppkey:${appStore.tempEncryptionKey}"));
+    appStore.setEncryptionKey(
+        stringToBase64.encode("$ppkey:${appStore.tempEncryptionKey}"));
 
     final picKey = Key.fromUtf8('1HxMbQeThWmZq3t6');
-    final String ivString = stringToBase64.encode('${userPin}${appStore.email}').substring(0, 16);
+    final String ivString =
+        stringToBase64.encode('${userPin}${appStore.email}').substring(0, 16);
     print('New generated IV for encryption: $ivString');
     final ivKey = IV.fromUtf8(ivString);
 
@@ -48,25 +53,31 @@ class Crypto {
     print('New key saved to storage!');
   }
 
-  static Future<bool> checkRecoveryKey(String encryptedRecoveryKey, String recoveryCode, String randomIv, AppStore appStore) async {
+  static Future<bool> checkRecoveryKey(String encryptedRecoveryKey,
+      String recoveryCode, String randomIv, AppStore appStore) async {
     final storage = FlutterSecureStorage();
     String hpkey = await storage.read(key: 'hpkey');
 
     String generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
-    String recoveryIv = '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
+    String recoveryIv =
+        '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
 
     final picAccessKey = Key.fromUtf8('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4');
     final ivRecovery = IV.fromUtf8(recoveryIv);
     final ivGenerated = IV.fromUtf8(generatedIv);
 
     var encryptedValue = Encrypted.fromBase16(encryptedRecoveryKey);
-    print('Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
+    print(
+        'Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
 
     try {
-      final encrypter = Encrypter(AES(picAccessKey, mode: AESMode.ctr, padding: null));
-      final String decryptedFirstStep = encrypter.decrypt(encryptedValue, iv: ivRecovery);
+      final encrypter =
+          Encrypter(AES(picAccessKey, mode: AESMode.ctr, padding: null));
+      final String decryptedFirstStep =
+          encrypter.decrypt(encryptedValue, iv: ivRecovery);
       print('First Step Decrypted: $decryptedFirstStep');
-      final String decryptedFinal = encrypter.decrypt(Encrypted.fromBase16(decryptedFirstStep), iv: ivGenerated);
+      final String decryptedFinal = encrypter
+          .decrypt(Encrypted.fromBase16(decryptedFirstStep), iv: ivGenerated);
       print('Final decrypted value: $decryptedFinal');
 
       // Check if final key is the real key
@@ -96,14 +107,16 @@ class Crypto {
     String spkey = await storage.read(key: 'spkey');
 
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
-    final String ivString = stringToBase64.encode('${userPin}${appStore.email}').substring(0, 16);
+    final String ivString =
+        stringToBase64.encode('${userPin}${appStore.email}').substring(0, 16);
     final picKey = Key.fromUtf8('1HxMbQeThWmZq3t6');
     final iv = IV.fromUtf8(ivString);
 
     final encrypter = Encrypter(AES(picKey, mode: AESMode.ctr));
 
     try {
-      final String decryptedKey = encrypter.decrypt(Encrypted.fromBase64(spkey), iv: iv);
+      final String decryptedKey =
+          encrypter.decrypt(Encrypted.fromBase64(spkey), iv: iv);
       print('Server key after decrypt: $decryptedKey');
 
       print('Hasing it to check if it is the correct key');
@@ -113,7 +126,8 @@ class Crypto {
 
       if (digest == hpkey) {
         print('The key is valid!');
-        appStore.setEncryptionKey(stringToBase64.encode("$ppkey:$decryptedKey"));
+        appStore
+            .setEncryptionKey(stringToBase64.encode("$ppkey:$decryptedKey"));
         return true;
       }
 
@@ -132,7 +146,8 @@ class Crypto {
     print('Secret salt: $secretSalt');
   }
 
-  static Future<void> saveSpKey(String accessKey, String spKey, String userPin, String userEmail, AppStore appStore) async {
+  static Future<void> saveSpKey(String accessKey, String spKey, String userPin,
+      String userEmail, AppStore appStore) async {
     final storage = FlutterSecureStorage();
     String ppkey = await storage.read(key: 'ppkey');
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
@@ -147,7 +162,8 @@ class Crypto {
     var encryptedValue = Encrypted.fromBase16(spKey);
     print('Encrypted: $encryptedValue');
 
-    final encrypter = Encrypter(AES(picAccessKey, mode: AESMode.ctr, padding: null));
+    final encrypter =
+        Encrypter(AES(picAccessKey, mode: AESMode.ctr, padding: null));
     final String decryptedKey = encrypter.decrypt(encryptedValue, iv: ivAccess);
 
     print('Decrypted spKey is: $decryptedKey');
@@ -159,7 +175,8 @@ class Crypto {
     await storage.write(key: 'hpkey', value: digest.toString());
 
     final picKey = Key.fromUtf8('1HxMbQeThWmZq3t6');
-    final String ivString = stringToBase64.encode('${userPin}${userEmail}').substring(0, 16);
+    final String ivString =
+        stringToBase64.encode('${userPin}${userEmail}').substring(0, 16);
     print('New generated IV for encryption: $ivString');
     final ivKey = IV.fromUtf8(ivString);
 
@@ -172,16 +189,22 @@ class Crypto {
     print('key saved to storage!');
   }
 
-  static Future<void> encryptImage(PicStore picStore, String encryptionKey) async {
+  static Future<void> encryptImage(
+      PicStore picStore, String encryptionKey) async {
     print('Going to encrypt image with encryption key: $encryptionKey');
-    var crypt = AesCrypt(encryptionKey);
-    crypt.setOverwriteMode(AesCryptOwMode.rename);
+
+    var secretKey = utf8.encode('abcdefghjiknslpwabcdefghjiknslpw');
+    var nounce = utf8.encode('abcdefghijklonrp');
+
+    // var crypt = AesCrypt(encryptionKey);
+    // crypt.setOverwriteMode(AesCryptOwMode.rename);
 
     File assetFile = await picStore.entity.originFile;
-    File assetOtherFile = await picStore.entity.file;
+    // File assetOtherFile = await picStore.entity.file;
 
     print('Asset Name: ${picStore.entity.id}');
-    print('Origin file: ${assetFile.path} - File: ${assetOtherFile.path}');
+    print('Origin file: ${assetFile.path} - File: ');
+    // ${assetOtherFile.path}
 
     if (assetFile == null) {
       return;
@@ -198,18 +221,43 @@ class Crypto {
     String fileName = p.basename(assetFile.path);
     String finalPath = p.join(appSupportPath, fileName);
 
-    print('Got asset file!!! Going to encrypt it!');
-    String savedFile = crypt.encryptFileSync(assetFile.path, finalPath);
-    print('Saved file: ${assetFile.path} to $savedFile');
+    print('Encrypting....');
 
-    await picStore.setPrivatePath(savedFile);
+    var encryptedData = await fcrypt.aesCtr.encrypt(assetFile.readAsBytesSync(),
+        secretKey: fcrypt.SecretKey(secretKey), nonce: fcrypt.Nonce(nounce));
+
+    print('Saving to file...');
+
+    final File savedFile = File(finalPath);
+    savedFile.writeAsBytesSync(encryptedData);
+
+    // print('Got asset file!!! Going to encrypt it!');
+    // String savedFile = crypt.encryptFileSync(assetFile.path, finalPath);
+    print('Saved file: ${assetFile.path} to ${savedFile.path}');
+
+    await picStore.setPrivatePath(savedFile.path);
   }
 
-  static Future<Uint8List> decryptImage(String filePath, String encryptionKey) async {
-    var crypt = AesCrypt(encryptionKey);
-    print('Decrypting image...');
-    Uint8List decryptedData = await crypt.decryptDataFromFileSync(filePath);
-    print('Decrypted data');
+  static Future<Uint8List> decryptImage(
+      String filePath, String encryptionKey) async {
+    // File
+    final File file = File(filePath);
+
+    var secretKey = utf8.encode('abcdefghjiknslpwabcdefghjiknslpw');
+    var nounce = utf8.encode('abcdefghijklonrp');
+
+    Uint8List decryptedData = await fcrypt.aesCtr.decrypt(
+      file.readAsBytesSync(),
+      secretKey: fcrypt.SecretKey(secretKey),
+      nonce: fcrypt.Nonce(nounce),
+    );
+
     return decryptedData;
+
+    // var crypt = AesCrypt(encryptionKey);
+    // print('Decrypting image...');
+    // Uint8List decryptedData = await crypt.decryptDataFromFileSync(filePath);
+    // print('Decrypted data');
+    // return decryptedData;
   }
 }
