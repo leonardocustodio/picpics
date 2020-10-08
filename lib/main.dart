@@ -125,6 +125,13 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     galleryStore = GalleryStore(
       appStore: appStore,
     );
+
+    if (appStore.encryptionKey == null) {
+      if (appStore.secretPhotos == true) {
+        appStore.switchSecretPhotos();
+        galleryStore.removeAllPrivatePics();
+      }
+    }
   }
 
   @override

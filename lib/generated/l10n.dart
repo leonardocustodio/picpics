@@ -1215,6 +1215,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Unlimited private photos`
+  String get unlimited_private_pics {
+    return Intl.message(
+      'Unlimited private photos',
+      name: 'unlimited_private_pics',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

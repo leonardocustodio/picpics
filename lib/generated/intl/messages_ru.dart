@@ -138,6 +138,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("Мы предоставляем вам ежедневный пакет, позволяющей постепенно упорядочить вашу библиотеку."),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Организуйте свои фотографии, добавив к ним теги «семья», «питомцы», или какие вы сами хотите."),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("После добавления тегов к фотографии просто проведите пальцем, чтобы перейти к следующему."),
+    "unlimited_private_pics" : MessageLookupByLibrary.simpleMessage("Неограниченное количество личных фотографий"),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("Отпуск"),
     "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("Чтобы просмотреть скрытые фотографии, снимите блокировку в настройках приложения. Вы можете разблокировать их с помощью PIN-кода."),
     "welcome" : MessageLookupByLibrary.simpleMessage("Добро пожаловать!"),

@@ -36,7 +36,6 @@ abstract class _AppStore with Store {
     this.initiatedWithProduct,
   }) {
     var userBox = Hive.box('user');
-    var secretBox = Hive.box('secrets');
     User user;
 
     if (userBox.length == 0) {
@@ -133,6 +132,17 @@ abstract class _AppStore with Store {
   String initialRoute;
   String tryBuyId;
   int dailyPicsForAds = 25;
+  // int freePrivatePics = 20;
+
+  Future<int> get freePrivatePics async {
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    return remoteConfig.getInt('free_private_pics');
+  }
+
+  int get totalPrivatePics {
+    var secretBox = Hive.box('secrets');
+    return secretBox.length;
+  }
 
   @action
   void setTryBuyId(String value) => tryBuyId = value;
