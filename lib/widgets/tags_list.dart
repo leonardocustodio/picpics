@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/database_manager.dart';
+import 'package:picPics/managers/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:picPics/stores/tags_store.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
@@ -16,7 +17,7 @@ enum TagStyle {
 }
 
 class TagsList extends StatefulWidget {
-  final List<String> tagsKeys;
+  final List<TagsStore> tags;
   final TextEditingController textEditingController;
   final FocusNode textFocusNode;
   final bool addTagField;
@@ -33,7 +34,7 @@ class TagsList extends StatefulWidget {
   final bool shouldChangeToSwipeMode;
 
   const TagsList({
-    @required this.tagsKeys,
+    @required this.tags,
     this.tagStyle = TagStyle.MultiColored,
     this.textEditingController,
     this.textFocusNode,
@@ -60,7 +61,7 @@ class _TagsListState extends State<TagsList> {
   bool swipedRightDirection = false;
 
   Widget _buildTagsWidget(BuildContext context) {
-    if (widget.tagsKeys == null) {
+    if (widget.tags == null) {
       return Container();
     }
 
@@ -90,9 +91,9 @@ class _TagsListState extends State<TagsList> {
     }
 
     List<Widget> tagsWidgets = [];
-    print('Tags in TagsList: ${widget.tagsKeys}');
+    print('Tags in TagsList: ${widget.tags}');
 
-    if (widget.tagsKeys.length == 0 && widget.tagStyle == TagStyle.GrayOutlined) {
+    if (widget.tags.length == 0 && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.only(top: 10.0, left: 18.0, bottom: 8.0),
@@ -111,29 +112,27 @@ class _TagsListState extends State<TagsList> {
       );
     }
 
-    for (int i = 0; i < widget.tagsKeys.length; i++) {
-      String tagKey = widget.tagsKeys[i];
+    for (int i = 0; i < widget.tags.length; i++) {
+      TagsStore tag = widget.tags[i];
       var mod = i % 4;
-
-      String tagName = DatabaseManager.instance.getTagName(tagKey);
 
       tagsWidgets.add(
         GestureDetector(
           onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
-            DatabaseManager.instance.selectedTagKey = tagKey;
+            DatabaseManager.instance.selectedTagKey = tag.id;
             widget.onDoubleTap();
           },
           onLongPress: () {
-            DatabaseManager.instance.selectedTagKey = tagKey;
+            DatabaseManager.instance.selectedTagKey = tag.id;
             widget.showEditTagModal();
           },
           onPanStart: (details) {
-            print('Started pan on tag: $tagKey');
-            tagBeingPanned = tagKey;
+            print('Started pan on tag: ${tag.id}');
+            tagBeingPanned = tag.id;
           },
           onPanUpdate: (details) {
-            if (tagBeingPanned != tagKey) {
+            if (tagBeingPanned != tag.id) {
               return;
             }
 
@@ -147,7 +146,7 @@ class _TagsListState extends State<TagsList> {
             if (swipedRightDirection) {
               showSwiperInIndex = null;
               Vibrate.feedback(FeedbackType.success);
-              DatabaseManager.instance.selectedTagKey = tagKey;
+              DatabaseManager.instance.selectedTagKey = tag.id;
               widget.onPanEnd();
               swipedRightDirection = false;
             }
@@ -159,7 +158,7 @@ class _TagsListState extends State<TagsList> {
               if (widget.shouldChangeToSwipeMode) {
                 setState(() {
                   if (showSwiperInIndex == null) {
-                    showSwiperInIndex = widget.tagsKeys.indexOf(tagKey);
+                    showSwiperInIndex = widget.tags.indexWhere((element) => element.id == tag.id);
                   } else {
                     showSwiperInIndex = null;
                   }
@@ -167,8 +166,8 @@ class _TagsListState extends State<TagsList> {
               }
 
               Vibrate.feedback(FeedbackType.success);
-              DatabaseManager.instance.selectedTagKey = tagKey;
-              widget.onTap(tagName);
+              DatabaseManager.instance.selectedTagKey = tag.id;
+              widget.onTap(tag.name);
             },
             child: Container(
               decoration: widget.tagStyle == TagStyle.MultiColored
@@ -181,7 +180,7 @@ class _TagsListState extends State<TagsList> {
                   ? Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       child: Text(
-                        tagName,
+                        tag.name,
                         textScaleFactor: 1.0,
                         style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                       ),
@@ -240,7 +239,7 @@ class _TagsListState extends State<TagsList> {
                               child: Padding(
                                 padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                                 child: Text(
-                                  tagName,
+                                  tag.name,
                                   textScaleFactor: 1.0,
                                   style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                                 ),

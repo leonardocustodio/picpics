@@ -4,14 +4,13 @@ import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/database_manager.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
-import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:share_extend/share_extend.dart';
 
 part 'pic_store.g.dart';
@@ -45,7 +44,6 @@ abstract class _PicStore with Store {
   @action
   void loadPicInfo() {
     var picsBox = Hive.box('pics');
-    var tagsBox = Hive.box('tags');
 
     if (picsBox.containsKey(photoId)) {
       print('pic $photoId exists, loading data....');
@@ -57,8 +55,7 @@ abstract class _PicStore with Store {
       generalLocation = pic.generalLocation;
 
       for (String tagKey in pic.tags) {
-        Tag tag = tagsBox.get(tagKey);
-        TagsStore tagsStore = TagsStore(id: tagKey, name: tag.name);
+        TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
         tags.add(tagsStore);
       }
     } else {
@@ -93,16 +90,12 @@ abstract class _PicStore with Store {
   }
 
   @computed
-  List<String> get tagsSuggestions {
-//    tagsSuggestions(String text, String photoId, {List<String> excludeTags, bool notify = true}) {
-    var userBox = Hive.box('user');
+  List<TagsStore> get tagsSuggestions {
     var tagsBox = Hive.box('tags');
-    User getUser = userBox.getAt(0);
-
     List<String> suggestionTags = [];
 
     if (searchText == '') {
-      for (var recent in getUser.recentTags) {
+      for (var recent in appStore.recentTags) {
         if (tagsKeys.contains(recent)) {
           continue;
         }
@@ -129,8 +122,8 @@ abstract class _PicStore with Store {
 //      }
     } else {
       for (var tagKey in tagsBox.keys) {
-        String tagName = DatabaseManager.instance.decryptTag(tagKey);
-        if (tagName.startsWith(DatabaseManager.instance.stripTag(searchText))) {
+        String tagName = Helpers.decryptTag(tagKey);
+        if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
         }
       }
@@ -138,7 +131,11 @@ abstract class _PicStore with Store {
     print('find suggestions: $searchText - exclude: $tagsKeys');
     print(suggestionTags);
 
-    return suggestionTags;
+    List<TagsStore> suggestions = [];
+    for (String tagId in suggestionTags) {
+      suggestions.add(appStore.tags.firstWhere((element) => element.id == tagId));
+    }
+    return suggestions;
   }
 
   @action
@@ -146,7 +143,7 @@ abstract class _PicStore with Store {
     var tagsBox = Hive.box('tags');
     print(tagsBox.keys);
 
-    String tagKey = DatabaseManager.instance.encryptTag(tagName);
+    String tagKey = Helpers.encryptTag(tagName);
     print('Adding tag: $tagName');
 
     if (tagsBox.containsKey(tagKey)) {
@@ -166,7 +163,8 @@ abstract class _PicStore with Store {
         photoId: photoId,
         tagName: tagName,
       );
-//      DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
+
+      appStore.addTagToRecent(tagKey: tagKey);
       print('updated pictures in tag');
       print('Tag photos ids: ${getTag.photoId}');
       return;
@@ -174,13 +172,16 @@ abstract class _PicStore with Store {
 
     Analytics.sendEvent(Event.created_tag);
     print('adding tag to database...');
+    TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
+    appStore.addTag(tagsStore);
+
     tagsBox.put(tagKey, Tag(tagName, [photoId]));
     await addTagToPic(
       tagKey: tagKey,
       tagName: tagName,
       photoId: photoId,
     );
-//    DatabaseManager.instance.addTagToRecent(tagKey: tagKey);
+    appStore.addTagToRecent(tagKey: tagKey);
   }
 
   @action
@@ -206,10 +207,8 @@ abstract class _PicStore with Store {
       picsBox.put(photoId, getPic);
       print('updated picture');
 
-      tags.add(TagsStore(
-        id: tagKey,
-        name: tagName,
-      ));
+      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      tags.add(tagsStore);
 
 //      checkPicHasTags(photoId);
       Analytics.sendEvent(Event.added_tag);
@@ -219,10 +218,8 @@ abstract class _PicStore with Store {
     print('this picture is not in db, adding it...');
     print('Photo Id: $photoId');
 
-    tags.add(TagsStore(
-      id: tagKey,
-      name: tagName,
-    ));
+    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+    tags.add(tagsStore);
 
     Pic pic = Pic(
       photoId: photoId,
@@ -236,48 +233,6 @@ abstract class _PicStore with Store {
       tags: [tagKey],
     );
 
-//    if (selectedPhoto != null) {
-//      print('Pic Info Localization: ${selectedPhoto.latitude} - ${selectedPhoto.longitude} - ${selectedPhoto.createDateTime}');
-//
-//      pic = Pic(
-//        photoId,
-//        selectedPhoto.createDateTime,
-//        selectedPhoto.latitude,
-//        selectedPhoto.longitude,
-//        null,
-//        null,
-//        null,
-//        null,
-//        [tagKey],
-//      );
-//    } else {
-//      AssetEntity entity = entities.firstWhere((element) => element.id == photoId, orElse: () => null);
-//      if (entity == null) {
-//        pic = Pic(
-//          photoId,
-//          null,
-//          null,
-//          null,
-//          null,
-//          null,
-//          null,
-//          null,
-//          [tagKey],
-//        );
-//      } else {
-//        pic = Pic(
-//          photoId,
-//          entity.createDateTime,
-//          entity.latitude,
-//          entity.longitude,
-//          null,
-//          null,
-//          null,
-//          null,
-//          [tagKey],
-//        );
-//      }
-//    }
     await picsBox.put(photoId, pic);
     print('@@@@@@@@ tagsKey: ${tagKey}');
 //    checkPicHasTags(photoId);
@@ -323,32 +278,30 @@ abstract class _PicStore with Store {
 
   @action
   Future<bool> deletePic() async {
-    print('Before photo manager delete');
-    List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
-    print('Photo Editor Result: ${result}');
+    print('Before photo manager delete: ${entity.id}');
 
-    if (result.isNotEmpty) {
-      var picsBox = Hive.box('pics');
-      var tagsBox = Hive.box('tags');
-
-      Pic pic = picsBox.get(photoId);
-      if (pic != null) {
-        print('pic is in db... removing it from db!');
-
-        for (var tag in pic.tags) {
-          String tagKey = DatabaseManager.instance.stripTag(tag);
-
-          Tag getTag = tagsBox.get(tagKey);
-          getTag.photoId.remove(entity.id);
-          print('removed ${entity.id} from $tag');
-          tagsBox.put(tagKey, getTag);
-        }
-        print('removed ${entity.id} from database');
-        picsBox.delete(photoId);
+    if (Platform.isAndroid) {
+      PhotoManager.editor.deleteWithIds([entity.id]);
+    } else {
+      final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+      if (result.isEmpty) {
+        return false;
       }
-      return true;
     }
-    return false;
+
+    var picsBox = Hive.box('pics');
+    Pic pic = picsBox.get(photoId);
+
+    if (pic != null) {
+      print('pic is in db... removing it from db!');
+      for (String tagKey in pic.tags) {
+        removeTagFromPic(tagKey: tagKey);
+      }
+      picsBox.delete(photoId);
+      print('removed ${entity.id} from database');
+    }
+
+    return true;
   }
 
   @action

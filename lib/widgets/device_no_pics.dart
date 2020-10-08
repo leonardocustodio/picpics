@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/constants.dart';
 
 class DeviceHasNoPics extends StatelessWidget {
+  final String message;
+
+  DeviceHasNoPics({this.message});
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -21,7 +23,7 @@ class DeviceHasNoPics extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(
-              S.of(context).device_has_no_pics,
+              message,
               textScaleFactor: 1.0,
               textAlign: TextAlign.center,
               style: TextStyle(

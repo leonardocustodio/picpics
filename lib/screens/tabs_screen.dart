@@ -8,23 +8,24 @@ import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/premium_screen.dart';
-import 'package:picPics/push_notifications_manager.dart';
-import 'package:picPics/settings_screen.dart';
+import 'package:picPics/screens/premium_screen.dart';
+import 'package:picPics/managers/push_notifications_manager.dart';
+import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
-import 'package:picPics/tabs/pic_tab.dart';
-import 'package:picPics/tabs/tagged_tab.dart';
-import 'package:picPics/tabs/untagged_tab.dart';
+import 'package:picPics/screens/tabs/pic_tab.dart';
+import 'package:picPics/screens/tabs/tagged_tab.dart';
+import 'package:picPics/screens/tabs/untagged_tab.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:picPics/database_manager.dart';
+import 'package:picPics/managers/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
-import 'package:picPics/admob_manager.dart';
+import 'package:picPics/managers/admob_manager.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:firebase_admob/firebase_admob.dart';
@@ -57,30 +58,6 @@ class _TabsScreenState extends State<TabsScreen> {
 
   Throttle _changeThrottle;
 
-  void trashPics() async {
-//    print('trashing selected pics....');
-//
-//    List<String> entitiesIds = [];
-//    List<AssetEntity> entities = [];
-//    AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//
-//    for (var photoId in DatabaseManager.instance.picsSelected) {
-//      AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-//      entitiesIds.add(photoId);
-//      entities.add(entity);
-//    }
-//
-//    final List<String> result = await PhotoManager.editor.deleteWithIds(entitiesIds);
-//    if (result.isNotEmpty) {
-//      for (AssetEntity entity in entities) {
-//        DatabaseManager.instance.deletedPic(entity);
-//      }
-//
-//      DatabaseManager.instance.setPicsSelected(Set());
-//      tabsStore.setMultiPicBar(false);
-//    }
-  }
-
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
@@ -96,6 +73,7 @@ class _TabsScreenState extends State<TabsScreen> {
           return EditTagModal(
             alertInputController: alertInputController,
             onPressedDelete: () {
+              print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
               galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
@@ -135,8 +113,6 @@ class _TabsScreenState extends State<TabsScreen> {
 
 //    _changeThrottle = Throttle(onCall: _onAssetChange);
 //    PhotoManager.addChangeCallback(_changeThrottle.call);
-    PhotoManager.addChangeCallback(_onAssetChange);
-    PhotoManager.startChangeNotify();
 
     RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.loaded) {
@@ -163,60 +139,12 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   void dispose() {
-    PhotoManager.removeChangeCallback(_changeThrottle.call);
-    PhotoManager.stopChangeNotify();
-    _changeThrottle.dispose();
+//    PhotoManager.removeChangeCallback(_changeThrottle.call);
+//    PhotoManager.stopChangeNotify();
+//    _changeThrottle.dispose();
     disposer();
     disposer2();
     super.dispose();
-  }
-
-  void _onAssetChange(MethodCall call) async {
-    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
-
-    List<dynamic> createdPics = call.arguments['create'];
-    List<dynamic> deletedPics = call.arguments['delete'];
-//    print(deletedPics);
-
-    if (deletedPics.length > 0) {
-      print('### deleted pics from library!');
-      for (var pic in deletedPics) {
-        print('Pic deleted Id: ${pic['id']}');
-//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
-//
-//        if (entity != null) {
-//          galleryStore.trashPic(picStore)
-//          DatabaseManager.instance.deletedPic(
-//            entity,
-//            removeFromDb: false,
-//          );
-//        }
-      }
-    }
-
-    if (createdPics.length > 0) {
-      // Comentei toda essa função agora dia 31/08
-//      print('#### created pics!!!');
-//      for (var pic in createdPics) {
-//        print('Pic created Id: ${pic['id']}');
-//        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
-//        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//        pathProvider.addAsset(picEntity);
-//      }
-//
-//      DatabaseManager.instance.sliderHasPics();
-//      setState(() {
-////        Conferir isso aqui que eu tive que comentar!!!!
-//
-//        // picSwiper = 0;
-//        // carouselController.jumpToPage(0);
-//        if (!galleryStore.deviceHasPics) {
-//          // ver isso aqui - mudei hoje 17/08
-////          deviceHasNoPics = false;
-//        }
-//      });
-    }
   }
 
   setTabIndex(int index) async {
@@ -230,24 +158,14 @@ class _TabsScreenState extends State<TabsScreen> {
         galleryStore.clearSelectedPics();
         tabsStore.setMultiPicBar(false);
       } else if (index == 1) {
-        trashPics();
+        galleryStore.trashMultiplePics(galleryStore.selectedPics);
       } else if (index == 2) {
         print('sharing selected pics....');
         tabsStore.setIsLoading(true);
-        await galleryStore.sharePics(photoIds: galleryStore.selectedPics.toList());
+        await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
         tabsStore.setIsLoading(false);
       } else {
-        //        showMultiTagSheet();
-
-        // Verificar se multipic não existe antes
-//        DatabaseManager.instance.tagsSuggestions(
-//          bottomTagsEditingController.text,
-//          'MULTIPIC',
-//          // excludeTags: picInfo.tags,
-//        );
-
         tabsStore.setMultiTagSheet(true);
-
         Future.delayed(Duration(milliseconds: 200), () {
           setState(() {
             expandableController.expanded = true;
@@ -257,29 +175,6 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
 
-    if (index == 0) {
-//      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//      List<String> photosIds = [];
-//      for (int x = 0; x < pathProvider.orderedList.length; x++) {
-//        bool hasTag = DatabaseManager.instance.picHasTag[x];
-//        AssetEntity entity = pathProvider.orderedList[x];
-//        if (!hasTag) {
-//          photosIds.add(entity.id);
-//        }
-//      }
-//      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
-    } else if (index == 1) {
-//      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//      List<String> photosIds = [];
-//      for (int x = 0; x < DatabaseManager.instance.sliderIndex.length; x++) {
-//        int orderedIndex = DatabaseManager.instance.sliderIndex[x];
-//        AssetEntity entity = pathProvider.orderedList[orderedIndex];
-//        photosIds.add(entity.id);
-//      }
-//      DatabaseManager.instance.slideThumbPhotoIds = photosIds;
-    }
-
-//    print('Trying to set swiper to index: ${DatabaseManager.instance.swiperIndex}');
     tabsStore.setCurrentTab(index);
   }
 
@@ -307,7 +202,9 @@ class _TabsScreenState extends State<TabsScreen> {
         if (tabsStore.modalCard) {
           tabsStore.setModalCard(false);
         }
-        galleryStore.setTrashedPic(false);
+        if (tabsStore.currentTab != 1) {
+          galleryStore.setTrashedPic(false);
+        }
       }
     });
 
@@ -519,10 +416,11 @@ class _TabsScreenState extends State<TabsScreen> {
 //                                        entities: entities,
 //                                      );
 
+                                        galleryStore.addTagsToSelectedPics();
                                         tabsStore.setMultiTagSheet(false);
                                         tabsStore.setMultiPicBar(false);
                                         galleryStore.clearSelectedPics();
-                                        galleryStore.clearMultiPicTagKeys();
+                                        galleryStore.clearMultiPicTags();
                                       },
                                       child: Container(
                                         width: 80.0,
@@ -555,7 +453,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tagsKeys: galleryStore.multiPicTagKeys.toList(),
+                                        tags: galleryStore.multiPicTags.toList(),
                                         addTagField: true,
                                         textEditingController: bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
@@ -571,7 +469,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
                                           }
-                                          galleryStore.removeFromMultiPicTagKeys(DatabaseManager.instance.selectedTagKey);
+                                          galleryStore.removeFromMultiPicTags(DatabaseManager.instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
                                           if (!appStore.isPremium) {
@@ -591,24 +489,22 @@ class _TabsScreenState extends State<TabsScreen> {
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
                                             galleryStore.setSearchText('');
-                                            String tagKey = DatabaseManager.instance.encryptTag(text);
+                                            String tagKey = Helpers.encryptTag(text);
 
-//                                            if (!DatabaseManager.instance.multiPicTagKeys.contains(tagKey)) {
-//                                              if (DatabaseManager.instance.getTagName(tagKey) == null) {
-//                                                print('tag does not exist! creating it!');
-//                                                galleryStore.createTag(text);
-//                                              }
-//                                              List<String> multiPic = DatabaseManager.instance.multiPicTagKeys;
-//                                              multiPic.add(tagKey);
-//                                              DatabaseManager.instance.setMultiPicTagKeys(multiPic);
-//                                            }
+                                            if (!galleryStore.multiPicTagKeys.contains(tagKey)) {
+                                              if (appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null) == null) {
+                                                print('tag does not exist! creating it!');
+                                                galleryStore.createTag(text);
+                                              }
+                                              galleryStore.addToMultiPicTags(tagKey);
+                                            }
                                           }
                                         }),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
                                         title: S.of(context).suggestions,
-                                        tagsKeys: galleryStore.tagsSuggestions,
+                                        tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagName) {
@@ -619,8 +515,8 @@ class _TabsScreenState extends State<TabsScreen> {
 
                                           bottomTagsEditingController.clear();
                                           galleryStore.setSearchText('');
-                                          String tagKey = DatabaseManager.instance.encryptTag(tagName);
-                                          galleryStore.addToMultiPicTagKeys(tagKey);
+                                          String tagKey = Helpers.encryptTag(tagName);
+                                          galleryStore.addToMultiPicTags(tagKey);
                                         },
                                         onDoubleTap: () {
                                           if (!appStore.isPremium) {
@@ -751,6 +647,7 @@ class _TabsScreenState extends State<TabsScreen> {
                           ),
                           child: PhotoCard(
                             picStore: galleryStore.currentPic,
+                            picsInThumbnails: PicSource.UNTAGGED,
                             showEditTagModal: showEditTagModal,
                           ),
                         ),

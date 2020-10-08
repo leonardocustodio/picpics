@@ -2,13 +2,14 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/image_item.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,7 @@ class AddLocationScreen extends StatefulWidget {
 }
 
 class _AddLocationScreenState extends State<AddLocationScreen> {
+  AppStore appStore;
   GalleryStore galleryStore;
   PicStore get picStore => galleryStore.currentPic;
 
@@ -96,10 +98,10 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     Navigator.pop(context);
   }
 
-  void getCurrentPosition() async {
+  void getUserPosition() async {
     print('getting current location');
 
-    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
     final geolocation = LatLng(position.latitude, position.longitude);
 
@@ -171,6 +173,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
     findInitialCamera();
   }
@@ -226,7 +229,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         CupertinoButton(
                           padding: const EdgeInsets.only(left: 14.0, right: 0, bottom: 0.0, top: 14.0),
                           onPressed: () {
-                            getCurrentPosition();
+                            getUserPosition();
                           },
                           child: Image.asset('lib/images/getcurrentlocationico.png'),
                         ),
@@ -265,34 +268,39 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 ),
               ),
             ),
-            SearchMapPlaceWidget(
-              apiKey: kGoogleApiKey,
-              placeholder: S.of(context).search,
-              language: 'pt', // arrumar isso
-              onSelected: (place) async {
-                final geolocation = await place.geolocation;
-                selectedGeolocation = geolocation;
+            Container(
+              color: kWhiteColor,
+              child: SafeArea(
+                child: SearchMapPlaceWidget(
+                  apiKey: kGoogleApiKey,
+                  placeholder: S.of(context).search,
+                  language: appStore.appLanguage.split('_')[0], // arrumar isso
+                  onSelected: (place) async {
+                    final geolocation = await place.geolocation;
+                    selectedGeolocation = geolocation;
 
-                final destination = Marker(
-                  markerId: MarkerId('user-destination'),
-                  icon: await BitmapDescriptor.fromAssetImage(
-                    ImageConfiguration(
-                      devicePixelRatio: 2.5,
-                    ),
-                    'lib/images/pin.png',
-                  ),
-                  position: geolocation.coordinates,
-                );
+                    final destination = Marker(
+                      markerId: MarkerId('user-destination'),
+                      icon: await BitmapDescriptor.fromAssetImage(
+                        ImageConfiguration(
+                          devicePixelRatio: 2.5,
+                        ),
+                        'lib/images/pin.png',
+                      ),
+                      position: geolocation.coordinates,
+                    );
 
-                final GoogleMapController controller = await _mapController.future;
-                _markers.clear();
-                setState(() {
-                  _markers.add(destination);
-                });
+                    final GoogleMapController controller = await _mapController.future;
+                    _markers.clear();
+                    setState(() {
+                      _markers.add(destination);
+                    });
 
-                controller.animateCamera(CameraUpdate.newLatLng(geolocation.coordinates));
-                controller.animateCamera(CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
-              },
+                    controller.animateCamera(CameraUpdate.newLatLng(geolocation.coordinates));
+                    controller.animateCamera(CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
+                  },
+                ),
+              ),
             ),
           ],
         ),

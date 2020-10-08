@@ -9,6 +9,41 @@ part of 'gallery_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$GalleryStore on _GalleryStore, Store {
+  Computed<int> _$totalTaggedPicsComputed;
+
+  @override
+  int get totalTaggedPics =>
+      (_$totalTaggedPicsComputed ??= Computed<int>(() => super.totalTaggedPics,
+              name: '_GalleryStore.totalTaggedPics'))
+          .value;
+  Computed<Set<String>> _$allPicsKeysComputed;
+
+  @override
+  Set<String> get allPicsKeys =>
+      (_$allPicsKeysComputed ??= Computed<Set<String>>(() => super.allPicsKeys,
+              name: '_GalleryStore.allPicsKeys'))
+          .value;
+  Computed<List<String>> _$filteredPicsKeysComputed;
+
+  @override
+  List<String> get filteredPicsKeys => (_$filteredPicsKeysComputed ??=
+          Computed<List<String>>(() => super.filteredPicsKeys,
+              name: '_GalleryStore.filteredPicsKeys'))
+      .value;
+  Computed<PicStore> _$currentThumbnailPicComputed;
+
+  @override
+  PicStore get currentThumbnailPic => (_$currentThumbnailPicComputed ??=
+          Computed<PicStore>(() => super.currentThumbnailPic,
+              name: '_GalleryStore.currentThumbnailPic'))
+      .value;
+  Computed<List<String>> _$searchingTagsKeysComputed;
+
+  @override
+  List<String> get searchingTagsKeys => (_$searchingTagsKeysComputed ??=
+          Computed<List<String>>(() => super.searchingTagsKeys,
+              name: '_GalleryStore.searchingTagsKeys'))
+      .value;
   Computed<bool> _$isFilteredComputed;
 
   @override
@@ -16,11 +51,18 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$isFilteredComputed ??= Computed<bool>(() => super.isFiltered,
               name: '_GalleryStore.isFiltered'))
           .value;
-  Computed<List<String>> _$tagsSuggestionsComputed;
+  Computed<List<String>> _$multiPicTagKeysComputed;
 
   @override
-  List<String> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
-          Computed<List<String>>(() => super.tagsSuggestions,
+  List<String> get multiPicTagKeys => (_$multiPicTagKeysComputed ??=
+          Computed<List<String>>(() => super.multiPicTagKeys,
+              name: '_GalleryStore.multiPicTagKeys'))
+      .value;
+  Computed<List<TagsStore>> _$tagsSuggestionsComputed;
+
+  @override
+  List<TagsStore> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
+          Computed<List<TagsStore>>(() => super.tagsSuggestions,
               name: '_GalleryStore.tagsSuggestions'))
       .value;
   Computed<List<String>> _$taggedKeysComputed;
@@ -37,6 +79,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$deviceHasPicsComputed ??= Computed<bool>(() => super.deviceHasPics,
               name: '_GalleryStore.deviceHasPics'))
           .value;
+
+  final _$currentPicAtom = Atom(name: '_GalleryStore.currentPic');
+
+  @override
+  PicStore get currentPic {
+    _$currentPicAtom.reportRead();
+    return super.currentPic;
+  }
+
+  @override
+  set currentPic(PicStore value) {
+    _$currentPicAtom.reportWrite(value, super.currentPic, () {
+      super.currentPic = value;
+    });
+  }
 
   final _$swipeIndexAtom = Atom(name: '_GalleryStore.swipeIndex');
 
@@ -65,6 +122,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
   set isLoaded(bool value) {
     _$isLoadedAtom.reportWrite(value, super.isLoaded, () {
       super.isLoaded = value;
+    });
+  }
+
+  final _$selectedThumbnailAtom = Atom(name: '_GalleryStore.selectedThumbnail');
+
+  @override
+  int get selectedThumbnail {
+    _$selectedThumbnailAtom.reportRead();
+    return super.selectedThumbnail;
+  }
+
+  @override
+  set selectedThumbnail(int value) {
+    _$selectedThumbnailAtom.reportWrite(value, super.selectedThumbnail, () {
+      super.selectedThumbnail = value;
     });
   }
 
@@ -115,21 +187,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
-  final _$currentPicAtom = Atom(name: '_GalleryStore.currentPic');
-
-  @override
-  PicStore get currentPic {
-    _$currentPicAtom.reportRead();
-    return super.currentPic;
-  }
-
-  @override
-  set currentPic(PicStore value) {
-    _$currentPicAtom.reportWrite(value, super.currentPic, () {
-      super.currentPic = value;
-    });
-  }
-
   final _$trashedPicAtom = Atom(name: '_GalleryStore.trashedPic');
 
   @override
@@ -160,6 +217,23 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$shouldRefreshTaggedGalleryAtom =
+      Atom(name: '_GalleryStore.shouldRefreshTaggedGallery');
+
+  @override
+  bool get shouldRefreshTaggedGallery {
+    _$shouldRefreshTaggedGalleryAtom.reportRead();
+    return super.shouldRefreshTaggedGallery;
+  }
+
+  @override
+  set shouldRefreshTaggedGallery(bool value) {
+    _$shouldRefreshTaggedGalleryAtom
+        .reportWrite(value, super.shouldRefreshTaggedGallery, () {
+      super.shouldRefreshTaggedGallery = value;
+    });
+  }
+
   final _$loadEntitiesAsyncAction = AsyncAction('_GalleryStore.loadEntities');
 
   @override
@@ -175,6 +249,15 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return _$loadAssetsPathAsyncAction.run(() => super.loadAssetsPath());
   }
 
+  final _$trashMultiplePicsAsyncAction =
+      AsyncAction('_GalleryStore.trashMultiplePics');
+
+  @override
+  Future<void> trashMultiplePics(Set<PicStore> selectedPics) {
+    return _$trashMultiplePicsAsyncAction
+        .run(() => super.trashMultiplePics(selectedPics));
+  }
+
   final _$trashPicAsyncAction = AsyncAction('_GalleryStore.trashPic');
 
   @override
@@ -185,13 +268,41 @@ mixin _$GalleryStore on _GalleryStore, Store {
   final _$sharePicsAsyncAction = AsyncAction('_GalleryStore.sharePics');
 
   @override
-  Future<void> sharePics({List<String> photoIds}) {
+  Future<void> sharePics({List<PicStore> picsStores}) {
     return _$sharePicsAsyncAction
-        .run(() => super.sharePics(photoIds: photoIds));
+        .run(() => super.sharePics(picsStores: picsStores));
+  }
+
+  final _$_onAssetChangeAsyncAction =
+      AsyncAction('_GalleryStore._onAssetChange');
+
+  @override
+  Future<void> _onAssetChange(MethodCall call) {
+    return _$_onAssetChangeAsyncAction.run(() => super._onAssetChange(call));
+  }
+
+  final _$checkIsLibraryUpdatedAsyncAction =
+      AsyncAction('_GalleryStore.checkIsLibraryUpdated');
+
+  @override
+  Future<void> checkIsLibraryUpdated() {
+    return _$checkIsLibraryUpdatedAsyncAction
+        .run(() => super.checkIsLibraryUpdated());
   }
 
   final _$_GalleryStoreActionController =
       ActionController(name: '_GalleryStore');
+
+  @override
+  void setCurrentPic(PicStore picStore) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setCurrentPic');
+    try {
+      return super.setCurrentPic(picStore);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setSwipeIndex(int value) {
@@ -199,6 +310,61 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.setSwipeIndex');
     try {
       return super.setSwipeIndex(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void clearPicThumbnails() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.clearPicThumbnails');
+    try {
+      return super.clearPicThumbnails();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addPicToThumbnails(PicStore picStore) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addPicToThumbnails');
+    try {
+      return super.addPicToThumbnails(picStore);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addPicsToThumbnails(List<PicStore> picStores) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addPicsToThumbnails');
+    try {
+      return super.addPicsToThumbnails(picStores);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedThumbnail(int value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setSelectedThumbnail');
+    try {
+      return super.setSelectedThumbnail(value);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setInitialSelectedThumbnail(PicStore picStore) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setInitialSelectedThumbnail');
+    try {
+      return super.setInitialSelectedThumbnail(picStore);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -216,6 +382,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void clearSearchTags() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.clearSearchTags');
+    try {
+      return super.clearSearchTags();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setShowSearchTagsResults(bool value) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setShowSearchTagsResults');
@@ -227,11 +404,12 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void setSelectedPics({String photoId, bool picIsTagged}) {
+  void setSelectedPics({PicStore picStore, bool picIsTagged}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setSelectedPics');
     try {
-      return super.setSelectedPics(photoId: photoId, picIsTagged: picIsTagged);
+      return super
+          .setSelectedPics(picStore: picStore, picIsTagged: picIsTagged);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -249,33 +427,33 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void addToMultiPicTagKeys(String tagKey) {
+  void addToMultiPicTags(String tagKey) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.addToMultiPicTagKeys');
+        name: '_GalleryStore.addToMultiPicTags');
     try {
-      return super.addToMultiPicTagKeys(tagKey);
+      return super.addToMultiPicTags(tagKey);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void removeFromMultiPicTagKeys(String tagKey) {
+  void removeFromMultiPicTags(String tagKey) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.removeFromMultiPicTagKeys');
+        name: '_GalleryStore.removeFromMultiPicTags');
     try {
-      return super.removeFromMultiPicTagKeys(tagKey);
+      return super.removeFromMultiPicTags(tagKey);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void clearMultiPicTagKeys() {
+  void clearMultiPicTags() {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.clearMultiPicTagKeys');
+        name: '_GalleryStore.clearMultiPicTags');
     try {
-      return super.clearMultiPicTagKeys();
+      return super.clearMultiPicTags();
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -293,11 +471,45 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void setCurrentPic(PicStore pic) {
+  void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.setCurrentPic');
+        name: '_GalleryStore.addPicToTaggedPics');
     try {
-      return super.setCurrentPic(pic);
+      return super.addPicToTaggedPics(
+          picStore: picStore, toInitialIndex: toInitialIndex);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removePicFromTaggedPics({PicStore picStore}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.removePicFromTaggedPics');
+    try {
+      return super.removePicFromTaggedPics(picStore: picStore);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void deleteEntity(String entityId) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.deleteEntity');
+    try {
+      return super.deleteEntity(entityId);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addEntity(AssetEntity entity) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addEntity');
+    try {
+      return super.addEntity(entity);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -381,26 +593,22 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void addTagsToPics(
-      {List<String> tagsKeys,
-      List<String> photosIds,
-      List<AssetEntity> entities}) {
+  void addTagsToSelectedPics() {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.addTagsToPics');
+        name: '_GalleryStore.addTagsToSelectedPics');
     try {
-      return super.addTagsToPics(
-          tagsKeys: tagsKeys, photosIds: photosIds, entities: entities);
+      return super.addTagsToSelectedPics();
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void addTagToRecent({String tagKey}) {
+  void setShouldRefreshTaggedGallery(bool value) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.addTagToRecent');
+        name: '_GalleryStore.setShouldRefreshTaggedGallery');
     try {
-      return super.addTagToRecent(tagKey: tagKey);
+      return super.setShouldRefreshTaggedGallery(value);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -409,15 +617,23 @@ mixin _$GalleryStore on _GalleryStore, Store {
   @override
   String toString() {
     return '''
+currentPic: ${currentPic},
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
+selectedThumbnail: ${selectedThumbnail},
 isSearching: ${isSearching},
 showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
-currentPic: ${currentPic},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
+shouldRefreshTaggedGallery: ${shouldRefreshTaggedGallery},
+totalTaggedPics: ${totalTaggedPics},
+allPicsKeys: ${allPicsKeys},
+filteredPicsKeys: ${filteredPicsKeys},
+currentThumbnailPic: ${currentThumbnailPic},
+searchingTagsKeys: ${searchingTagsKeys},
 isFiltered: ${isFiltered},
+multiPicTagKeys: ${multiPicTagKeys},
 tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
 deviceHasPics: ${deviceHasPics}

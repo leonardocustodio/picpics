@@ -114,5 +114,40 @@
 
   "language": "Language",
   "all_search_tags": "All Search Tags",
-  "search_all_tags_not_found": "No pictures were found with all tags on it."
+  "search_all_tags_not_found": "No pictures were found with all tags on it.",
+
+
+  "picpics_photo_manager": "picPics - Photo Manager",
+  "add_multiple_tags": "Adicione múltiplas tags",
+  "ny_tag": "NY",
+  "tsqr_tag": "Times Square",
+  "vacation_tag": "Vacation",
+  "all_at_once": "Organize multiple photos at once",
+  "find_easily": "Easily find your photos",
+  "email": "Email",
+  "secret_photos": "Secret Photos",
+  "your_secret_key": "Your secret key",
+  "new_secret_key": "New secret key",
+  "confirm_secret_key": "Confirm secret key",
+  "confirm_email": "Confirm your registration email to receive your access code",
+  "access_code": "Access code",
+  "access_code_sent": "An access key was sent to user@email.com",
+  "secret_key_created": "Secret key successfully created!",
+  "disable_secret": "Do you want to unhide this photo?",
+  "yes": "Yes",
+  "no": "No",
+  "keep_safe": "Your photo is now safe on picPics. Do you want to delete it from your camera roll?",
+  "keep_asking": "Keep asking",
+  "dont_ask_again": "Don't ask again",
+  "view_hidden_photos": "To view your hidden photos, release the lock in the application settings. You can unlock them with your PIN.",
+  "require_secret_key": "Require secret key",
+  "always": "Always",
+  "x_minutes": "20 min",
+  "forgot_secret_key": "Forgot secret key?",
+  "lock_your_photos": "Lock your photos",
+  "lock_with_pin": "Lock down your private photos with a PIN passcode.",
+  "protect_with_encryption": "Protect your personal photos with encryption only accessible with a PIN password.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize."
 }

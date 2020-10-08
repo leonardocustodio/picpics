@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+const List<int> kDefaultPhotoSize = <int>[600, 600];
+const List<int> kDefaultPreviewThumbSize = <int>[150, 150];
+
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;
 
@@ -7,12 +10,13 @@ const kPrimaryColor = Color(0xFF52CECE);
 const kSecondaryColor = Color(0xFFFF6666);
 const kYellowColor = Color(0xFFFEE067);
 const kPinkColor = Color(0xFFEC56A1);
-const kSucessColor = Color(0xFF70FF98);
+const kSuccessColor = Color(0xFF70FF98);
 const kAlertColor = Color(0xFFF68C0F);
 const kWarningColor = Color(0xFFE01717);
 const kWhiteColor = Color(0xFFF5FAFA);
 const kGrayColor = const Color(0xffbfc2c3);
 const kLightGrayColor = const Color(0xffe2e4e5);
+const kGreyPlaceholder = Color(0xFFE0E0E0);
 
 const kPrimaryGradient = LinearGradient(
   begin: Alignment.centerLeft,

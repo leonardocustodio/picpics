@@ -1,5 +1,5 @@
 import 'package:mobx/mobx.dart';
-import 'package:picPics/analytics_manager.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
@@ -9,18 +9,29 @@ class TabsStore = _TabsStore with _$TabsStore;
 
 abstract class _TabsStore with Store {
   final AppStore appStore;
+  final GalleryStore galleryStore;
 
-  _TabsStore({this.appStore}) {
+  _TabsStore({this.appStore, this.galleryStore}) {
     autorun((_) {
       print('autorun!');
     });
   }
 
   @observable
-  int currentTab = 0;
+  int currentTab = 1;
 
   @action
   void setCurrentTab(int value) {
+    if (currentTab == value) {
+      return;
+    }
+
+    if (currentTab == 1) {
+      galleryStore.setSwipeIndex(galleryStore.swipeIndex);
+    } else if (currentTab == 2) {
+      galleryStore.clearSearchTags();
+    }
+
     Analytics.sendCurrentTab(value);
     currentTab = value;
   }
@@ -66,4 +77,17 @@ abstract class _TabsStore with Store {
 
   @action
   void setTutorialIndex(int value) => tutorialIndex = value;
+
+  double offsetFirstTab = 0.0;
+
+  @observable
+  double topOffsetFirstTab = 64.0;
+
+  @action
+  void setTopOffsetFirstTab(double value) {
+    if (value == topOffsetFirstTab) {
+      return;
+    }
+    topOffsetFirstTab = value;
+  }
 }
