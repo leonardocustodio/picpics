@@ -114,6 +114,21 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
+  final _$hideTitleThirdTabAtom = Atom(name: '_TabsStore.hideTitleThirdTab');
+
+  @override
+  bool get hideTitleThirdTab {
+    _$hideTitleThirdTabAtom.reportRead();
+    return super.hideTitleThirdTab;
+  }
+
+  @override
+  set hideTitleThirdTab(bool value) {
+    _$hideTitleThirdTabAtom.reportWrite(value, super.hideTitleThirdTab, () {
+      super.hideTitleThirdTab = value;
+    });
+  }
+
   final _$showDeleteSecretModalAtom =
       Atom(name: '_TabsStore.showDeleteSecretModal');
 
@@ -211,6 +226,17 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
+  void setHideTitleThirdTab(bool value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setHideTitleThirdTab');
+    try {
+      return super.setHideTitleThirdTab(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setShowDeleteSecretModal(bool value) {
     final _$actionInfo = _$_TabsStoreActionController.startAction(
         name: '_TabsStore.setShowDeleteSecretModal');
@@ -231,6 +257,7 @@ isLoading: ${isLoading},
 modalCard: ${modalCard},
 tutorialIndex: ${tutorialIndex},
 topOffsetFirstTab: ${topOffsetFirstTab},
+hideTitleThirdTab: ${hideTitleThirdTab},
 showDeleteSecretModal: ${showDeleteSecretModal}
     ''';
   }

@@ -7,22 +7,30 @@ class Secret extends HiveObject {
   String photoId;
 
   @HiveField(1)
-  String privatePath;
+  String photoPath;
 
   @HiveField(2)
-  final DateTime createDateTime;
+  String thumbPath;
 
   @HiveField(3)
-  final double originalLatitude;
+  final DateTime createDateTime;
 
   @HiveField(4)
+  final double originalLatitude;
+
+  @HiveField(5)
   final double originalLongitude;
+
+  @HiveField(6)
+  final String nonce;
 
   Secret({
     this.photoId,
-    this.privatePath,
+    this.photoPath,
+    this.thumbPath,
     this.createDateTime,
     this.originalLatitude,
     this.originalLongitude,
+    this.nonce,
   });
 }

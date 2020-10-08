@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -45,43 +43,27 @@ class _TaggedTabState extends State<TaggedTab> {
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
-  double offsetThirdTab = 0.0;
-  bool hideTitleThirdTab = false;
-
   var taggedItems = [];
   List<bool> isTitleWidget = [];
 
   TextEditingController tagsEditingController = TextEditingController();
 
-  void movedGridPositionThirdTab() {
-    var offset = scrollControllerThirdTab.offset;
+  void refreshGridPositionThirdTab() {
+    var offset = scrollControllerThirdTab.hasClients ? scrollControllerThirdTab.offset : scrollControllerThirdTab.initialScrollOffset;
 
     if (offset >= 40) {
-      setState(() {
-        hideTitleThirdTab = true;
-      });
-    } else if (offset < 40) {
-      setState(() {
-        hideTitleThirdTab = false;
-      });
+      tabsStore.setHideTitleThirdTab(true);
+    } else if (offset <= 0) {
+      tabsStore.setHideTitleThirdTab(false);
     }
-    offsetThirdTab = scrollControllerThirdTab.offset;
+
+    if (scrollControllerThirdTab.hasClients) {
+      tabsStore.offsetThirdTab = scrollControllerThirdTab.offset;
+    }
   }
 
-  Widget _buildTaggedGridView({BuildContext context, bool filtered}) {
-    print('Rebuilding tagged gridview');
-    print('&&&&&&&&&&&&&&&&& Build grid items!!!');
-
-    double newPadding = 0.0;
-    if (galleryStore.isSearching) {
-      newPadding = 86 - offsetThirdTab;
-      if (newPadding > 86) {
-        newPadding = 86.0;
-      } else if (newPadding < 0) {
-        newPadding = 0.0;
-      }
-    }
-
+  void refreshItems(bool filtered) {
+    print('Calling refresh items!!!');
     if (isTitleWidget.isEmpty || galleryStore.shouldRefreshTaggedGallery == true) {
       taggedItems = [];
       isTitleWidget = [];
@@ -143,9 +125,25 @@ class _TaggedTabState extends State<TaggedTab> {
       print('@@@@@ Tagged Items Length: ${taggedItems.length}');
       galleryStore.setShouldRefreshTaggedGallery(false);
     }
+  }
+
+  Widget _buildTaggedGridView(BuildContext context) {
+    print('Rebuilding tagged gridview');
+    print('&&&&&&&&&&&&&&&&& Build grid items!!!');
+
+    double newPadding = 0.0;
+    if (galleryStore.isSearching) {
+      newPadding = 86 - tabsStore.offsetThirdTab;
+      if (newPadding > 86) {
+        newPadding = 86.0;
+      } else if (newPadding < 0) {
+        newPadding = 0.0;
+      }
+    }
 
     return StaggeredGridView.countBuilder(
       controller: scrollControllerThirdTab,
+      // padding: EdgeInsets.only(top: 86.0),
       padding: EdgeInsets.only(top: 86 - newPadding),
       physics: const CustomScrollPhysics(),
       crossAxisCount: 3,
@@ -375,10 +373,6 @@ class _TaggedTabState extends State<TaggedTab> {
   @override
   void initState() {
     super.initState();
-    scrollControllerThirdTab = ScrollController(initialScrollOffset: offsetThirdTab);
-    scrollControllerThirdTab.addListener(() {
-      movedGridPositionThirdTab();
-    });
   }
 
   @override
@@ -387,10 +381,18 @@ class _TaggedTabState extends State<TaggedTab> {
     appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
+    refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
+
+    scrollControllerThirdTab = ScrollController(initialScrollOffset: tabsStore.offsetThirdTab);
+    scrollControllerThirdTab.addListener(() {
+      refreshGridPositionThirdTab();
+    });
+    refreshGridPositionThirdTab();
 
     disposer = reaction((_) => galleryStore.shouldRefreshTaggedGallery, (refresh) {
       if (refresh) {
         setState(() {
+          refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
           print('##### Rebuild everything!');
         });
       }
@@ -502,7 +504,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                 child: TagsList(
                                   tags: galleryStore.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
-                                  onTap: (tagName) {
+                                  onTap: (tagId, tagName) {
                                     print('do nothing');
                                     galleryStore.removeTagFromSearchFilter();
                                     if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
@@ -547,7 +549,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                       tags: galleryStore.tagsSuggestions,
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: widget.showEditTagModal,
-                                      onTap: (tagName) {
+                                      onTap: (tagId, tagName) {
                                         galleryStore.addTagToSearchFilter();
                                         searchEditingController.clear();
                                         galleryStore.searchResultsTags(searchEditingController.text);
@@ -585,7 +587,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                     tags: galleryStore.searchTagsResults.toList(),
                                     tagStyle: TagStyle.GrayOutlined,
                                     showEditTagModal: widget.showEditTagModal,
-                                    onTap: (tagName) {
+                                    onTap: (tagId, tagName) {
                                       galleryStore.addTagToSearchFilter();
                                       searchEditingController.clear();
                                       galleryStore.searchResultsTags(searchEditingController.text);
@@ -612,9 +614,7 @@ class _TaggedTabState extends State<TaggedTab> {
                       return Container();
                     }),
                     Expanded(
-                      child: Observer(builder: (_) {
-                        return _buildTaggedGridView(context: context, filtered: galleryStore.searchingTagsKeys.isNotEmpty);
-                      }),
+                      child: _buildTaggedGridView(context),
                     ),
                   ],
                 );
@@ -622,7 +622,7 @@ class _TaggedTabState extends State<TaggedTab> {
               return Container();
             }),
             Observer(builder: (_) {
-              if (galleryStore.taggedPics.length > 0 && !hideTitleThirdTab && !galleryStore.isSearching && galleryStore.deviceHasPics) {
+              if (galleryStore.taggedPics.length > 0 && !tabsStore.hideTitleThirdTab && !galleryStore.isSearching && galleryStore.deviceHasPics) {
                 return Positioned(
                   left: 19.0,
                   top: 64.0,

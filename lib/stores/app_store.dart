@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
@@ -36,7 +36,6 @@ abstract class _AppStore with Store {
     this.initiatedWithProduct,
   }) {
     var userBox = Hive.box('user');
-    var secretBox = Hive.box('secrets');
     User user;
 
     if (userBox.length == 0) {
@@ -133,6 +132,17 @@ abstract class _AppStore with Store {
   String initialRoute;
   String tryBuyId;
   int dailyPicsForAds = 25;
+  // int freePrivatePics = 20;
+
+  Future<int> get freePrivatePics async {
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    return remoteConfig.getInt('free_private_pics');
+  }
+
+  int get totalPrivatePics {
+    var secretBox = Hive.box('secrets');
+    return secretBox.length;
+  }
 
   @action
   void setTryBuyId(String value) => tryBuyId = value;
@@ -329,23 +339,26 @@ abstract class _AppStore with Store {
     }
   }
 
-  ObserverList<TagsStore> tags = ObserverList<TagsStore>();
+  ObservableList<TagsStore> tags = ObservableList<TagsStore>();
 
   @action
   void loadTags() {
     var tagsBox = Hive.box('tags');
+    tags.clear();
 
     for (Tag tag in tagsBox.values) {
-      TagsStore tagStore = TagsStore(id: tag.key, name: tag.name);
-      tags.add(tagStore);
+      TagsStore tagsStore = TagsStore(id: tag.key, name: tag.name);
+      addTag(tagsStore);
     }
 
-    if (tagsBox.get(kSecretTagKey) == null) {
+    Tag secretTag = tagsBox.get(kSecretTagKey);
+    if (secretTag == null) {
+      print('Creating secret tag in db!');
       Tag createSecretTag = Tag('Secret Pics', []);
       tagsBox.put(kSecretTagKey, createSecretTag);
 
       TagsStore tagsStore = TagsStore(id: kSecretTagKey, name: 'Secret Pics');
-      tags.add(tagsStore);
+      addTag(tagsStore);
     }
 
     print('******************* loaded tags **********');
@@ -356,6 +369,7 @@ abstract class _AppStore with Store {
     if (tags.contains(tagsStore)) {
       return;
     }
+    print('Adding tag to AppStore: $tagsStore');
     tags.add(tagsStore);
   }
 
@@ -624,8 +638,8 @@ abstract class _AppStore with Store {
 
   PopPinScreenTo popPinScreen;
 
-  String encryptionKey;
-  void setEncryptionKey(String value) => encryptionKey = value;
+  SecretKey encryptionKey;
+  void setEncryptionKey(SecretKey value) => encryptionKey = value;
 
   String tempEncryptionKey;
   void setTempEncryptionKey(String value) => tempEncryptionKey = value;

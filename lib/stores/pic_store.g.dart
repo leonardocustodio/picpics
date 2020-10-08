@@ -24,18 +24,18 @@ mixin _$PicStore on _PicStore, Store {
               name: '_PicStore.tagsSuggestions'))
       .value;
 
-  final _$privatePathAtom = Atom(name: '_PicStore.privatePath');
+  final _$entityAtom = Atom(name: '_PicStore.entity');
 
   @override
-  String get privatePath {
-    _$privatePathAtom.reportRead();
-    return super.privatePath;
+  AssetEntity get entity {
+    _$entityAtom.reportRead();
+    return super.entity;
   }
 
   @override
-  set privatePath(String value) {
-    _$privatePathAtom.reportWrite(value, super.privatePath, () {
-      super.privatePath = value;
+  set entity(AssetEntity value) {
+    _$entityAtom.reportWrite(value, super.entity, () {
+      super.entity = value;
     });
   }
 
@@ -132,8 +132,18 @@ mixin _$PicStore on _PicStore, Store {
   final _$setPrivatePathAsyncAction = AsyncAction('_PicStore.setPrivatePath');
 
   @override
-  Future<void> setPrivatePath(String value) {
-    return _$setPrivatePathAsyncAction.run(() => super.setPrivatePath(value));
+  Future<void> setPrivatePath(
+      String picPath, String thumbnailPath, String picNonce) {
+    return _$setPrivatePathAsyncAction
+        .run(() => super.setPrivatePath(picPath, thumbnailPath, picNonce));
+  }
+
+  final _$removePrivatePathAsyncAction =
+      AsyncAction('_PicStore.removePrivatePath');
+
+  @override
+  Future<void> removePrivatePath() {
+    return _$removePrivatePathAsyncAction.run(() => super.removePrivatePath());
   }
 
   final _$setIsPrivateAsyncAction = AsyncAction('_PicStore.setIsPrivate');
@@ -180,6 +190,17 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   final _$_PicStoreActionController = ActionController(name: '_PicStore');
+
+  @override
+  void changeAssetEntity(AssetEntity picEntity) {
+    final _$actionInfo = _$_PicStoreActionController.startAction(
+        name: '_PicStore.changeAssetEntity');
+    try {
+      return super.changeAssetEntity(picEntity);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void loadPicInfo() {
@@ -230,7 +251,7 @@ mixin _$PicStore on _PicStore, Store {
   @override
   String toString() {
     return '''
-privatePath: ${privatePath},
+entity: ${entity},
 latitude: ${latitude},
 longitude: ${longitude},
 specificLocation: ${specificLocation},

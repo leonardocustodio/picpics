@@ -249,7 +249,8 @@ abstract class _GalleryStore with Store {
 
     if (searchText == '') {
       for (var recent in getUser.recentTags) {
-        if (multiPicTags.contains(recent)) {
+        print('Recent Tag: $recent');
+        if (multiPicTags.contains(recent) || recent == kSecretTagKey) {
           continue;
         }
         suggestionTags.add(recent);
@@ -269,6 +270,7 @@ abstract class _GalleryStore with Store {
           if (multiPicTagKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
             continue;
           }
+          print('Adding tag key: $tagKey');
           suggestionTags.add(tagKey);
         }
       }
@@ -285,12 +287,13 @@ abstract class _GalleryStore with Store {
     }
 
     print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
-    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey) && appStore.secretPhotos == true) {
+    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey) && appStore.secretPhotos == true && searchText == '') {
       suggestionTags.add(kSecretTagKey);
     }
 
     print('find suggestions: $searchText - exclude tags: $multiPicTags');
     print(suggestionTags);
+    print('AppStore Tags: ${appStore.tags}');
     List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();
     print('Suggestions Tag Store: $suggestions');
     return suggestions;
@@ -522,7 +525,7 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> trashMultiplePics(Set<PicStore> selectedPics) async {
-    List<String> selectedPicsIds = selectedPics.map((e) => e.entity.id).toList();
+    List<String> selectedPicsIds = selectedPics.map((e) => e.photoId).toList();
 
     bool deleted = false;
 
@@ -545,11 +548,17 @@ abstract class _GalleryStore with Store {
 
         if (pic != null) {
           print('pic is in db... removing it from db!');
-          for (String tagKey in pic.tags) {
+          List<String> picTags = List.of(pic.tags);
+          for (String tagKey in picTags) {
             Tag tag = tagsBox.get(tagKey);
             tag.photoId.remove(picStore.photoId);
             print('removed ${picStore.photoId} from tag ${tag.name}');
             tagsBox.put(tagKey, tag);
+
+            if (tagKey == kSecretTagKey) {
+              picStore.removePrivatePath();
+              picStore.deleteEncryptedPic();
+            }
           }
           picsBox.delete(picStore.photoId);
           print('removed ${picStore.photoId} from database');
@@ -842,6 +851,7 @@ abstract class _GalleryStore with Store {
         if (tagKey == kSecretTagKey) {
           print('Should add secret tag in the end!!!');
           if (!privatePics.contains(picStore)) {
+            await picStore.setIsPrivate(true);
             await Crypto.encryptImage(picStore, appStore.encryptionKey);
             print('this pic now is private');
             privatePics.add(picStore);
@@ -860,14 +870,15 @@ abstract class _GalleryStore with Store {
           photoId: picStore.photoId,
         );
 
-        if (selectedPicsAreTagged != true) {
-          await addPicToTaggedPics(picStore: picStore);
-          untaggedPics.remove(picStore);
-          swipePics.remove(picStore);
-        }
-
         print('update pictures in tag');
         Analytics.sendEvent(Event.added_tag);
+      }
+
+      if (selectedPicsAreTagged != true) {
+        print('Adding pic to tagged pics!');
+        await addPicToTaggedPics(picStore: picStore);
+        untaggedPics.remove(picStore);
+        swipePics.remove(picStore);
       }
     }
 

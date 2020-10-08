@@ -18,27 +18,33 @@ class SecretAdapter extends TypeAdapter<Secret> {
     };
     return Secret(
       photoId: fields[0] as String,
-      privatePath: fields[1] as String,
-      createDateTime: fields[2] as DateTime,
-      originalLatitude: fields[3] as double,
-      originalLongitude: fields[4] as double,
+      photoPath: fields[1] as String,
+      thumbPath: fields[2] as String,
+      createDateTime: fields[3] as DateTime,
+      originalLatitude: fields[4] as double,
+      originalLongitude: fields[5] as double,
+      nonce: fields[6] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Secret obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.photoId)
       ..writeByte(1)
-      ..write(obj.privatePath)
+      ..write(obj.photoPath)
       ..writeByte(2)
-      ..write(obj.createDateTime)
+      ..write(obj.thumbPath)
       ..writeByte(3)
-      ..write(obj.originalLatitude)
+      ..write(obj.createDateTime)
       ..writeByte(4)
-      ..write(obj.originalLongitude);
+      ..write(obj.originalLatitude)
+      ..writeByte(5)
+      ..write(obj.originalLongitude)
+      ..writeByte(6)
+      ..write(obj.nonce);
   }
 
   @override

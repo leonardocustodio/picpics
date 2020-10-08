@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:convert/convert.dart';
+import 'package:cryptography_flutter/cryptography.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -21,8 +23,6 @@ class PicStore = _PicStore with _$PicStore;
 
 abstract class _PicStore with Store {
   final AppStore appStore;
-  final AssetEntity entity;
-  final String photoId;
   final DateTime createdAt;
   final double originalLatitude;
   final double originalLongitude;
@@ -30,11 +30,13 @@ abstract class _PicStore with Store {
   _PicStore({
     this.appStore,
     this.entity,
-    this.privatePath,
+    this.photoPath,
+    this.thumbPath,
     this.photoId,
     this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
+    this.deletedFromCameraRoll,
   }) {
     print('loading pic info......');
     loadPicInfo();
@@ -44,29 +46,85 @@ abstract class _PicStore with Store {
     });
   }
 
+  String photoId;
+
+  @observable
+  AssetEntity entity;
+
+  @action
+  void changeAssetEntity(AssetEntity picEntity) {
+    print('Changing asset entity of $photoId to ${picEntity.id}');
+
+    var picsBox = Hive.box('pics');
+    Pic picOld = picsBox.get(photoId);
+
+    if (picOld != null) {
+      Pic createPic = Pic(
+        photoId: picEntity.id,
+        createdAt: picOld.createdAt,
+        originalLatitude: picOld.originalLatitude,
+        originalLongitude: picOld.originalLongitude,
+        latitude: picOld.latitude,
+        longitude: picOld.longitude,
+        specificLocation: picOld.specificLocation,
+        generalLocation: picOld.generalLocation,
+        tags: picOld.tags,
+      );
+      picsBox.put(picEntity.id, createPic);
+      picOld.delete();
+    }
+
+    entity = picEntity;
+    photoId = picEntity.id;
+    print('Changed asset entity');
+  }
+
   Future<Uint8List> get assetOriginBytes async {
     if (isPrivate == false && entity != null) {
       return await entity.originBytes;
     }
-    print('Returning decrypt image in privatePath: $privatePath');
-    return await Crypto.decryptImage(privatePath, appStore.encryptionKey);
+    print('Returning decrypt image in privatePath: $photoPath');
+    return await Crypto.decryptImage(photoPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
-  @observable
-  String privatePath;
+  Future<Uint8List> get assetThumbBytes async {
+    if (isPrivate == false && entity != null) {
+      return await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+    }
+    print('Returning decrypt image in privatePath: $thumbPath');
+    return await Crypto.decryptImage(thumbPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+  }
+
+  String photoPath;
+  String thumbPath;
+  bool deletedFromCameraRoll;
+
+  void setDeletedFromCameraRoll(bool value) {
+    print('Setting deleted from camera roll as $value');
+    deletedFromCameraRoll = value;
+
+    var picsBox = Hive.box('pics');
+    Pic pic = picsBox.get(photoId);
+    pic.deletedFromCameraRoll = value;
+    pic.save();
+  }
 
   @action
-  Future<void> setPrivatePath(String value) async {
+  Future<void> setPrivatePath(String picPath, String thumbnailPath, String picNonce) async {
     var secretBox = Hive.box('secrets');
     Secret secret = Secret(
       photoId: photoId,
-      privatePath: value,
+      photoPath: picPath,
+      thumbPath: thumbnailPath,
       originalLatitude: originalLatitude,
       originalLongitude: originalLongitude,
       createDateTime: createdAt,
+      nonce: picNonce,
     );
     secretBox.put(photoId, secret);
-    privatePath = value;
+    photoPath = picPath;
+    thumbPath = thumbnailPath;
+    nonce = picNonce;
 
     if (appStore.shouldDeleteOnPrivate == true) {
       print('**** Deleted original pic!!!');
@@ -78,7 +136,46 @@ abstract class _PicStore with Store {
           return false;
         }
       }
+      setDeletedFromCameraRoll(true);
+      entity = null;
+      return;
     }
+    setDeletedFromCameraRoll(false);
+    entity = null;
+  }
+
+  @action
+  Future<void> removePrivatePath() async {
+    print('Removing pic from secrets box...');
+
+    var secretBox = Hive.box('secrets');
+    Secret secretPic = secretBox.get(photoId);
+
+    if (secretPic != null) {
+      secretPic.delete();
+      print('Pic deleted from secrets box!!!');
+      return;
+    }
+
+    print('Did not find the pic in secretbox');
+  }
+
+  Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
+    print('Deleting $photoPath and $thumbPath');
+    File photoFile = File(photoPath);
+    File thumbFile = File(thumbPath);
+
+    if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
+      print('Pic has entity? ${entity == null ? false : true}');
+      Uint8List picData = await assetOriginBytes;
+      final AssetEntity imageEntity = await PhotoManager.editor.saveImage(picData);
+      changeAssetEntity(imageEntity);
+      print('copied image back to gallery with id: ${imageEntity.id}');
+    }
+
+    photoFile.delete();
+    thumbFile.delete();
+    print('Removed both files...');
   }
 
   @action
@@ -95,14 +192,17 @@ abstract class _PicStore with Store {
       specificLocation = pic.specificLocation;
       generalLocation = pic.generalLocation;
       isPrivate = pic.isPrivate;
+      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
 
       print('Is private: $isPrivate');
       if (isPrivate == true) {
         Secret secretPic = secretBox.get(photoId);
 
         if (secretPic != null) {
-          privatePath = secretPic.privatePath;
-          print('Setting private path to: $privatePath');
+          photoPath = secretPic.photoPath;
+          thumbPath = secretPic.thumbPath;
+          nonce = secretPic.nonce;
+          print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
         }
       }
 
@@ -131,6 +231,8 @@ abstract class _PicStore with Store {
   @observable
   String generalLocation;
 
+  String nonce;
+
   @observable
   bool isPrivate = false;
 
@@ -142,6 +244,7 @@ abstract class _PicStore with Store {
       await addSecretTagToPic();
     } else {
       await removeSecretTagFromPic();
+      await deleteEncryptedPic(copyToCameraRoll: true);
     }
 
     var picsBox = Hive.box('pics');
@@ -390,11 +493,16 @@ abstract class _PicStore with Store {
 
     if (pic != null) {
       print('pic is in db... removing it from db!');
-      for (String tagKey in pic.tags) {
+      List<String> picTags = List.of(pic.tags);
+      for (String tagKey in picTags) {
         removeTagFromPic(tagKey: tagKey);
+
+        if (tagKey == kSecretTagKey) {
+          deleteEncryptedPic();
+        }
       }
       picsBox.delete(photoId);
-      print('removed ${entity.id} from database');
+      print('removed ${photoId} from database');
     }
 
     return true;
@@ -426,6 +534,11 @@ abstract class _PicStore with Store {
       print('removed tag from pic');
       tags.removeWhere((element) => element.id == tagKey);
     }
+
+    if (tagKey == kSecretTagKey) {
+      removePrivatePath();
+    }
+
     Analytics.sendEvent(Event.removed_tag);
   }
 
