@@ -24,6 +24,21 @@ mixin _$PicStore on _PicStore, Store {
               name: '_PicStore.tagsSuggestions'))
       .value;
 
+  final _$entityAtom = Atom(name: '_PicStore.entity');
+
+  @override
+  AssetEntity get entity {
+    _$entityAtom.reportRead();
+    return super.entity;
+  }
+
+  @override
+  set entity(AssetEntity value) {
+    _$entityAtom.reportWrite(value, super.entity, () {
+      super.entity = value;
+    });
+  }
+
   final _$latitudeAtom = Atom(name: '_PicStore.latitude');
 
   @override
@@ -123,6 +138,14 @@ mixin _$PicStore on _PicStore, Store {
         .run(() => super.setPrivatePath(picPath, thumbnailPath, picNonce));
   }
 
+  final _$removePrivatePathAsyncAction =
+      AsyncAction('_PicStore.removePrivatePath');
+
+  @override
+  Future<void> removePrivatePath() {
+    return _$removePrivatePathAsyncAction.run(() => super.removePrivatePath());
+  }
+
   final _$setIsPrivateAsyncAction = AsyncAction('_PicStore.setIsPrivate');
 
   @override
@@ -167,6 +190,17 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   final _$_PicStoreActionController = ActionController(name: '_PicStore');
+
+  @override
+  void changeAssetEntity(AssetEntity picEntity) {
+    final _$actionInfo = _$_PicStoreActionController.startAction(
+        name: '_PicStore.changeAssetEntity');
+    try {
+      return super.changeAssetEntity(picEntity);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void loadPicInfo() {
@@ -217,6 +251,7 @@ mixin _$PicStore on _PicStore, Store {
   @override
   String toString() {
     return '''
+entity: ${entity},
 latitude: ${latitude},
 longitude: ${longitude},
 specificLocation: ${specificLocation},

@@ -23,8 +23,6 @@ class PicStore = _PicStore with _$PicStore;
 
 abstract class _PicStore with Store {
   final AppStore appStore;
-  final AssetEntity entity;
-  final String photoId;
   final DateTime createdAt;
   final double originalLatitude;
   final double originalLongitude;
@@ -38,6 +36,7 @@ abstract class _PicStore with Store {
     this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
+    this.deletedFromCameraRoll,
   }) {
     print('loading pic info......');
     loadPicInfo();
@@ -45,6 +44,39 @@ abstract class _PicStore with Store {
     autorun((_) {
       print('autorun');
     });
+  }
+
+  String photoId;
+
+  @observable
+  AssetEntity entity;
+
+  @action
+  void changeAssetEntity(AssetEntity picEntity) {
+    print('Changing asset entity of $photoId to ${picEntity.id}');
+
+    var picsBox = Hive.box('pics');
+    Pic picOld = picsBox.get(photoId);
+
+    if (picOld != null) {
+      Pic createPic = Pic(
+        photoId: picEntity.id,
+        createdAt: picOld.createdAt,
+        originalLatitude: picOld.originalLatitude,
+        originalLongitude: picOld.originalLongitude,
+        latitude: picOld.latitude,
+        longitude: picOld.longitude,
+        specificLocation: picOld.specificLocation,
+        generalLocation: picOld.generalLocation,
+        tags: picOld.tags,
+      );
+      picsBox.put(picEntity.id, createPic);
+      picOld.delete();
+    }
+
+    entity = picEntity;
+    photoId = picEntity.id;
+    print('Changed asset entity');
   }
 
   Future<Uint8List> get assetOriginBytes async {
@@ -65,6 +97,17 @@ abstract class _PicStore with Store {
 
   String photoPath;
   String thumbPath;
+  bool deletedFromCameraRoll;
+
+  void setDeletedFromCameraRoll(bool value) {
+    print('Setting deleted from camera roll as $value');
+    deletedFromCameraRoll = value;
+
+    var picsBox = Hive.box('pics');
+    Pic pic = picsBox.get(photoId);
+    pic.deletedFromCameraRoll = value;
+    pic.save();
+  }
 
   @action
   Future<void> setPrivatePath(String picPath, String thumbnailPath, String picNonce) async {
@@ -93,7 +136,46 @@ abstract class _PicStore with Store {
           return false;
         }
       }
+      setDeletedFromCameraRoll(true);
+      entity = null;
+      return;
     }
+    setDeletedFromCameraRoll(false);
+    entity = null;
+  }
+
+  @action
+  Future<void> removePrivatePath() async {
+    print('Removing pic from secrets box...');
+
+    var secretBox = Hive.box('secrets');
+    Secret secretPic = secretBox.get(photoId);
+
+    if (secretPic != null) {
+      secretPic.delete();
+      print('Pic deleted from secrets box!!!');
+      return;
+    }
+
+    print('Did not find the pic in secretbox');
+  }
+
+  Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
+    print('Deleting $photoPath and $thumbPath');
+    File photoFile = File(photoPath);
+    File thumbFile = File(thumbPath);
+
+    if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
+      print('Pic has entity? ${entity == null ? false : true}');
+      Uint8List picData = await assetOriginBytes;
+      final AssetEntity imageEntity = await PhotoManager.editor.saveImage(picData);
+      changeAssetEntity(imageEntity);
+      print('copied image back to gallery with id: ${imageEntity.id}');
+    }
+
+    photoFile.delete();
+    thumbFile.delete();
+    print('Removed both files...');
   }
 
   @action
@@ -110,6 +192,7 @@ abstract class _PicStore with Store {
       specificLocation = pic.specificLocation;
       generalLocation = pic.generalLocation;
       isPrivate = pic.isPrivate;
+      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
 
       print('Is private: $isPrivate');
       if (isPrivate == true) {
@@ -161,6 +244,7 @@ abstract class _PicStore with Store {
       await addSecretTagToPic();
     } else {
       await removeSecretTagFromPic();
+      await deleteEncryptedPic(copyToCameraRoll: true);
     }
 
     var picsBox = Hive.box('pics');
@@ -409,11 +493,16 @@ abstract class _PicStore with Store {
 
     if (pic != null) {
       print('pic is in db... removing it from db!');
-      for (String tagKey in pic.tags) {
+      List<String> picTags = List.of(pic.tags);
+      for (String tagKey in picTags) {
         removeTagFromPic(tagKey: tagKey);
+
+        if (tagKey == kSecretTagKey) {
+          deleteEncryptedPic();
+        }
       }
       picsBox.delete(photoId);
-      print('removed ${entity.id} from database');
+      print('removed ${photoId} from database');
     }
 
     return true;
@@ -445,6 +534,11 @@ abstract class _PicStore with Store {
       print('removed tag from pic');
       tags.removeWhere((element) => element.id == tagKey);
     }
+
+    if (tagKey == kSecretTagKey) {
+      removePrivatePath();
+    }
+
     Analytics.sendEvent(Event.removed_tag);
   }
 

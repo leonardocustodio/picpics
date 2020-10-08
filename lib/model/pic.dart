@@ -33,6 +33,9 @@ class Pic extends HiveObject {
   @HiveField(9)
   bool isPrivate;
 
+  @HiveField(10)
+  bool deletedFromCameraRoll;
+
   Pic({
     this.photoId,
     this.createdAt,
@@ -44,5 +47,6 @@ class Pic extends HiveObject {
     this.generalLocation,
     this.tags,
     this.isPrivate,
+    this.deletedFromCameraRoll,
   });
 }

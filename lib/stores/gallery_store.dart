@@ -525,7 +525,7 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> trashMultiplePics(Set<PicStore> selectedPics) async {
-    List<String> selectedPicsIds = selectedPics.map((e) => e.entity.id).toList();
+    List<String> selectedPicsIds = selectedPics.map((e) => e.photoId).toList();
 
     bool deleted = false;
 
@@ -548,11 +548,17 @@ abstract class _GalleryStore with Store {
 
         if (pic != null) {
           print('pic is in db... removing it from db!');
-          for (String tagKey in pic.tags) {
+          List<String> picTags = List.of(pic.tags);
+          for (String tagKey in picTags) {
             Tag tag = tagsBox.get(tagKey);
             tag.photoId.remove(picStore.photoId);
             print('removed ${picStore.photoId} from tag ${tag.name}');
             tagsBox.put(tagKey, tag);
+
+            if (tagKey == kSecretTagKey) {
+              picStore.removePrivatePath();
+              picStore.deleteEncryptedPic();
+            }
           }
           picsBox.delete(picStore.photoId);
           print('removed ${picStore.photoId} from database');
