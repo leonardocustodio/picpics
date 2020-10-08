@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>de</string>
@@ -22,14 +30,6 @@
 		<string>zh</string>
 		<string>id</string>
 	</array>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>CFBundleExecutable</key>
-	<string>$(EXECUTABLE_NAME)</string>
-	<key>CFBundleIdentifier</key>
-	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>picPics</string>
 	<key>CFBundlePackageType</key>
@@ -40,6 +40,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-4850390878205651~6175952653</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -55,9 +57,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>If you want our app to add your location to your photos, we need authorization to access your location.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>For our app to work properly we need full access to your photo gallery.</string>
+	<string>We need access to your photo library so you can start organizing your photos with picPics.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>For our app to work properly we need full access to your photo gallery.</string>
+	<string>We need access to your photo library so you can start organizing your photos with picPics.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -82,7 +84,5 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-4850390878205651~6175952653</string>
 </dict>
 </plist>

@@ -746,10 +746,10 @@ class S {
     );
   }
 
-  /// `Sreenshots`
+  /// `Screenshots`
   String get screenshots_tag {
     return Intl.message(
-      'Sreenshots',
+      'Screenshots',
       name: 'screenshots_tag',
       desc: '',
       args: [],
@@ -1026,13 +1026,13 @@ class S {
     );
   }
 
-  /// `An access key was sent to user@email.com`
-  String get access_code_sent {
+  /// `An access key was sent to {email}`
+  String access_code_sent(Object email) {
     return Intl.message(
-      'An access key was sent to user@email.com',
+      'An access key was sent to $email',
       name: 'access_code_sent',
       desc: '',
-      args: [],
+      args: [email],
     );
   }
 
@@ -1191,6 +1191,36 @@ class S {
     return Intl.message(
       'There are no more photos to organize.',
       name: 'all_photos_were_tagged',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Daily challenge`
+  String get daily_notification_title {
+    return Intl.message(
+      'Daily challenge',
+      name: 'daily_notification_title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `It's time to complete your picPics daily challenge!`
+  String get daily_notification_description {
+    return Intl.message(
+      'It\'s time to complete your picPics daily challenge!',
+      name: 'daily_notification_description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Unlimited private photos`
+  String get unlimited_private_pics {
+    return Intl.message(
+      'Unlimited private photos',
+      name: 'unlimited_private_pics',
       desc: '',
       args: [],
     );

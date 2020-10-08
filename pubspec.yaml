@@ -1,6 +1,6 @@
 name: picPics
 description: picPics application.
-version: 1.4.0+302
+version: 1.5.0+389
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
@@ -14,7 +14,7 @@ dependencies:
   collection: ^1.14.13
   provider: ^4.3.2+2
 #  photo_view: ^0.10.2
-  extended_image: ^1.1.1
+  extended_image: ^1.1.2
   photo_view:
     git:
       url: https://github.com/fireslime/photo_view.git
@@ -27,8 +27,8 @@ dependencies:
   flutter_swiper: ^1.1.6
   rate_my_app: ^0.7.2
   geolocator: ^6.0.0+4
-  geocoding: ^1.0.3+1
-  google_maps_flutter: ^0.5.32
+  geocoding: ^1.0.4+1
+  google_maps_flutter: ^1.0.2
   hive:
   hive_flutter:
     git:
@@ -37,44 +37,52 @@ dependencies:
   after_layout: ^1.0.7+2
   flutter_staggered_grid_view: ^0.3.2
   outline_gradient_button: ^1.0.0+2
-  flutter_local_notifications: ^1.4.4+4
-  firebase_core: ^0.5.0
-  firebase_messaging: ^7.0.0
-  firebase_analytics: ^6.0.0
-  firebase_crashlytics: ^0.2.0-dev.5
-  firebase_remote_config: ^0.4.0
-  firebase_admob: ^0.10.0-dev.1
+  flutter_local_notifications: ^1.4.4+5
+  firebase_core: ^0.5.0+1
+  firebase_messaging: ^7.0.3
+  firebase_analytics: ^6.0.2
+  firebase_crashlytics: ^0.2.1+1
+  firebase_remote_config: ^0.4.0+2
+  firebase_admob: ^0.10.0+2
+  firebase_auth: ^0.18.1+2
+  cloud_functions: ^0.6.0+1
   esys_flutter_share: ^1.0.2
   flutter_vibrate: ^1.0.0
   platform_alert_dialog: ^1.0.0+2
   notification_permissions: ^0.4.8
   flutter_keyboard_visibility: ^3.2.2
-  purchases_flutter: ^1.2.1
-  encrypt: ^4.0.3
+  purchases_flutter: 1.2.1
   diacritic: ^0.1.1
   intl: ^0.16.1
   date_utils: ^0.1.0+3
-  carousel_slider: ^2.2.1
+  carousel_slider: ^2.3.1
   expandable: ^4.1.4
   uuid: ^2.2.2
-  url_launcher: ^5.6.0
+  url_launcher: ^5.7.2
   flare_flutter: ^2.0.6
   simple_animations: ^2.2.2
   flutter_device_locale: ^0.4.0
   package_info: ^0.4.3
   flutter_spinkit: ^4.1.2+1
   share_extend: ^1.1.9
-  path_provider: ^1.6.14
+  path_provider: ^1.6.18
   bubble_bottom_bar: ^1.2.0
   flutter_inapp_purchase: ^2.2.0
   mobx: ^1.2.1+2
   flutter_mobx: ^1.1.0+2
+  flutter_animator: ^2.1.0
+  email_validator: ^1.0.6
+  flutter_secure_storage: ^3.3.4
+  path: ^1.7.0
+  cryptography_flutter: ^1.0.0
+  convert: ^2.1.1
+  encrypt: ^4.0.3
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.10.0
-  mobx_codegen: ^1.1.0+1
+  mobx_codegen: ^1.1.0+2
   hive_generator:
     git:
       url: git://github.com/hivedb/hive.git

@@ -61,10 +61,6 @@ class _TagsListState extends State<TagsList> {
   bool swipedRightDirection = false;
 
   Widget _buildTagsWidget(BuildContext context) {
-    if (widget.tags == null) {
-      return Container();
-    }
-
     LinearGradient getGradient(int num) {
       switch (num) {
         case 0:
@@ -93,7 +89,7 @@ class _TagsListState extends State<TagsList> {
     List<Widget> tagsWidgets = [];
     print('Tags in TagsList: ${widget.tags}');
 
-    if (widget.tags.length == 0 && widget.tagStyle == TagStyle.GrayOutlined) {
+    if (widget.tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.only(top: 10.0, left: 18.0, bottom: 8.0),
@@ -167,7 +163,7 @@ class _TagsListState extends State<TagsList> {
 
               Vibrate.feedback(FeedbackType.success);
               DatabaseManager.instance.selectedTagKey = tag.id;
-              widget.onTap(tag.name);
+              widget.onTap(tag.id, tag.name);
             },
             child: Container(
               decoration: widget.tagStyle == TagStyle.MultiColored
@@ -177,14 +173,20 @@ class _TagsListState extends State<TagsList> {
                     )
                   : kGrayBoxDecoration,
               child: showSwiperInIndex != i
-                  ? Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                      child: Text(
-                        tag.name,
-                        textScaleFactor: 1.0,
-                        style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
-                      ),
-                    )
+                  ? tag.id != kSecretTagKey
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          child: Text(
+                            tag.name,
+                            textScaleFactor: 1.0,
+                            style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                          ),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5.2, horizontal: 19.0),
+                          child:
+                              widget.tagStyle == TagStyle.MultiColored ? Image.asset('lib/images/locktagwhite.png') : Image.asset('lib/images/locktaggray.png'),
+                        )
                   : CustomAnimation<double>(
                       control: CustomAnimationControl.LOOP,
                       tween: 0.0.tweenTo(600.0),

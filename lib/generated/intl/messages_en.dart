@@ -19,16 +19,18 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static m0(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+  static m0(email) => "An access key was sent to ${email}";
 
-  static m1(number) => "You completed your ${number} free daily pics, do you want to continue?";
+  static m1(howMany) => "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
 
-  static m2(url) => "To organize all your photos go to ${url}";
+  static m2(number) => "You completed your ${number} free daily pics, do you want to continue?";
+
+  static m3(url) => "To organize all your photos go to ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static _notInlinedMessages(_) => <String, Function> {
     "access_code" : MessageLookupByLibrary.simpleMessage("Access code"),
-    "access_code_sent" : MessageLookupByLibrary.simpleMessage("An access key was sent to user@email.com"),
+    "access_code_sent" : m0,
     "add_multiple_tags" : MessageLookupByLibrary.simpleMessage("Adicione múltiplas tags"),
     "add_tag" : MessageLookupByLibrary.simpleMessage("Add tag"),
     "add_tags" : MessageLookupByLibrary.simpleMessage("Add tags"),
@@ -48,6 +50,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "daily_challenge" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "daily_challenge_permission_description" : MessageLookupByLibrary.simpleMessage("For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone"),
     "daily_goal" : MessageLookupByLibrary.simpleMessage("Daily goal"),
+    "daily_notification_description" : MessageLookupByLibrary.simpleMessage("It\'s time to complete your picPics daily challenge!"),
+    "daily_notification_title" : MessageLookupByLibrary.simpleMessage("Daily challenge"),
     "delete" : MessageLookupByLibrary.simpleMessage("Delete"),
     "device_has_no_pics" : MessageLookupByLibrary.simpleMessage("This device has no photo in the gallery, so there is no photo that can be tagged."),
     "disable_secret" : MessageLookupByLibrary.simpleMessage("Do you want to unhide this photo?"),
@@ -93,13 +97,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "organized_photos_title" : MessageLookupByLibrary.simpleMessage("Organized Photos"),
     "parties_tag" : MessageLookupByLibrary.simpleMessage("Parties"),
     "pets_tag" : MessageLookupByLibrary.simpleMessage("Pets"),
-    "photo_gallery_count" : m0,
+    "photo_gallery_count" : m1,
     "photo_gallery_description" : MessageLookupByLibrary.simpleMessage("Photos not yet organized"),
     "photo_gallery_title" : MessageLookupByLibrary.simpleMessage("Photo Gallery"),
     "photo_location" : MessageLookupByLibrary.simpleMessage("Photo location"),
     "photos_always_organized" : MessageLookupByLibrary.simpleMessage("Now your photos will be always organized"),
     "picpics_photo_manager" : MessageLookupByLibrary.simpleMessage("picPics - Photo Manager"),
-    "premium_modal_description" : m1,
+    "premium_modal_description" : m2,
     "premium_modal_get_premium_description" : MessageLookupByLibrary.simpleMessage("ALL FEATURES WITHOUT ADS"),
     "premium_modal_get_premium_title" : MessageLookupByLibrary.simpleMessage("Get Premium Account"),
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("Watch video ad to continue"),
@@ -110,7 +114,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Restore purchase"),
     "save" : MessageLookupByLibrary.simpleMessage("save"),
     "save_location" : MessageLookupByLibrary.simpleMessage("Save location"),
-    "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Sreenshots"),
+    "screenshots_tag" : MessageLookupByLibrary.simpleMessage("Screenshots"),
     "search" : MessageLookupByLibrary.simpleMessage("Search..."),
     "search_all_tags_not_found" : MessageLookupByLibrary.simpleMessage("No pictures were found with all tags on it."),
     "search_results" : MessageLookupByLibrary.simpleMessage("Search results"),
@@ -126,7 +130,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "suggestions" : MessageLookupByLibrary.simpleMessage("Suggestions"),
     "tag_multiple_photos_at_once" : MessageLookupByLibrary.simpleMessage("Tag multiple photos at once"),
     "take_a_look" : MessageLookupByLibrary.simpleMessage("Take a look at this app!"),
-    "take_a_look_description" : m2,
+    "take_a_look_description" : m3,
     "terms_of_use" : MessageLookupByLibrary.simpleMessage("Terms of Use"),
     "time" : MessageLookupByLibrary.simpleMessage("Time"),
     "travel_tag" : MessageLookupByLibrary.simpleMessage("Travel"),
@@ -134,6 +138,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("We bring a daily package for you to gradually organize your library."),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want."),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("After adding the tags to your photo, just swipe to go to the next one."),
+    "unlimited_private_pics" : MessageLookupByLibrary.simpleMessage("Unlimited private photos"),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("Vacation"),
     "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("To view your hidden photos, release the lock in the application settings. You can unlock them with your PIN."),
     "welcome" : MessageLookupByLibrary.simpleMessage("Welcome!"),

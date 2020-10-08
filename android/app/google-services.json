@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "782873848258-sqj0psl71h0v1ou6ubjovtae0bssdobg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "br.com.inovatso.picPics",
+            "certificate_hash": "168eb82b7f98496d9306b9e726fe8de6fb2da659"
+          }
+        },
+        {
           "client_id": "782873848258-a4id31vl8pvcebi63rfgtg36vd4mrphn.apps.googleusercontent.com",
           "client_type": 3
         }

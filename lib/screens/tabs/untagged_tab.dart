@@ -76,7 +76,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
     PicStore picStore = galleryStore.untaggedPics[index];
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore.entity, isOriginal: false);
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     return RepaintBoundary(
       child: ExtendedImage(

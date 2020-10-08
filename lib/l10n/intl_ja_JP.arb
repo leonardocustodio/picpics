@@ -113,6 +113,44 @@
   "cancel_anytime": "いつでもキャンセル",
 
   "language": "言語",
+
   "all_search_tags": "すべての検索タグ",
-  "search_all_tags_not_found": "すべてのタグが付いた画像は見つかりませんでした。"
+  "search_all_tags_not_found": "すべてのタグが付いた画像は見つかりませんでした",
+  "picpics_photo_manager": "picPics - フォトマネージャー",
+  "add_multiple_tags": "複数のタグを追加",
+  "ny_tag": "NY",
+  "tsqr_tag": "タイムズスクエア",
+  "vacation_tag": "休暇",
+  "all_at_once": "一度に複数の写真を整理",
+  "find_easily": "写真を簡単に見つける",
+  "email": "E メール",
+  "secret_photos": "秘密の写真",
+  "your_secret_key": "秘密の鍵",
+  "new_secret_key": "新しい秘密の鍵",
+  "confirm_secret_key": "秘密の鍵を確認",
+  "confirm_email": "登録メールを確認してアクセスコードを受け取る",
+  "access_code": "アクセスコード",
+  "access_code_sent": "アクセスキーが {email} に送信されました",
+  "secret_key_created": "秘密の鍵が正常に作成されました！",
+  "disable_secret": "この写真を非表示しますか？",
+  "yes": "はい",
+  "no": "いいえ",
+  "keep_safe": "これで写真は picPics で安全になりました。カメラロールから削除しますか？",
+  "keep_asking": "質問を続ける",
+  "dont_ask_again": "質問はもうしないでください。",
+  "view_hidden_photos": "非表示の写真を表示するには、アプリケーションの設定でロックを解除してください。ロックの解除はお持ちのPIN\nで行うことができます。",
+  "require_secret_key": "秘密の鍵が必要",
+  "always": "常時",
+  "x_minutes": "20 分",
+  "forgot_secret_key": "秘密の鍵を忘れましたか？",
+  "lock_your_photos": "写真をロックする",
+  "lock_with_pin": "PIN パスコードを使用してプライベートな写真をロックします。",
+  "protect_with_encryption": "PIN パスワードでのみアクセスできる暗号化でパーソナルな写真を保護します。",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize.",
+  "daily_notification_title": "Daily challenge",
+  "daily_notification_description": "It's time to complete your picPics daily challenge!",
+  "unlimited_private_pics": "無制限のプライベート写真"
+
 }

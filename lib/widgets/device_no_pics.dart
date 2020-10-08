@@ -9,13 +9,19 @@ class DeviceHasNoPics extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    print('Device Height: $height');
+
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.only(right: 30.0),
-            child: Image.asset('lib/images/nogalleryauth.png'),
+          SizedBox(
+            height: height / 2,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 30.0),
+              child: Image.asset('lib/images/nogalleryauth.png'),
+            ),
           ),
           SizedBox(
             height: 21.0,

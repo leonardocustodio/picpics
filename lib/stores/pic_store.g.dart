@@ -24,6 +24,21 @@ mixin _$PicStore on _PicStore, Store {
               name: '_PicStore.tagsSuggestions'))
       .value;
 
+  final _$entityAtom = Atom(name: '_PicStore.entity');
+
+  @override
+  AssetEntity get entity {
+    _$entityAtom.reportRead();
+    return super.entity;
+  }
+
+  @override
+  set entity(AssetEntity value) {
+    _$entityAtom.reportWrite(value, super.entity, () {
+      super.entity = value;
+    });
+  }
+
   final _$latitudeAtom = Atom(name: '_PicStore.latitude');
 
   @override
@@ -84,6 +99,21 @@ mixin _$PicStore on _PicStore, Store {
     });
   }
 
+  final _$isPrivateAtom = Atom(name: '_PicStore.isPrivate');
+
+  @override
+  bool get isPrivate {
+    _$isPrivateAtom.reportRead();
+    return super.isPrivate;
+  }
+
+  @override
+  set isPrivate(bool value) {
+    _$isPrivateAtom.reportWrite(value, super.isPrivate, () {
+      super.isPrivate = value;
+    });
+  }
+
   final _$searchTextAtom = Atom(name: '_PicStore.searchText');
 
   @override
@@ -99,6 +129,30 @@ mixin _$PicStore on _PicStore, Store {
     });
   }
 
+  final _$setPrivatePathAsyncAction = AsyncAction('_PicStore.setPrivatePath');
+
+  @override
+  Future<void> setPrivatePath(
+      String picPath, String thumbnailPath, String picNonce) {
+    return _$setPrivatePathAsyncAction
+        .run(() => super.setPrivatePath(picPath, thumbnailPath, picNonce));
+  }
+
+  final _$removePrivatePathAsyncAction =
+      AsyncAction('_PicStore.removePrivatePath');
+
+  @override
+  Future<void> removePrivatePath() {
+    return _$removePrivatePathAsyncAction.run(() => super.removePrivatePath());
+  }
+
+  final _$setIsPrivateAsyncAction = AsyncAction('_PicStore.setIsPrivate');
+
+  @override
+  Future<void> setIsPrivate(bool value) {
+    return _$setIsPrivateAsyncAction.run(() => super.setIsPrivate(value));
+  }
+
   final _$addTagAsyncAction = AsyncAction('_PicStore.addTag');
 
   @override
@@ -111,12 +165,12 @@ mixin _$PicStore on _PicStore, Store {
   @override
   Future<void> addTagToPic(
       {String tagKey,
-      String tagName,
+      String tagNameX,
       String photoId,
       List<AssetEntity> entities}) {
     return _$addTagToPicAsyncAction.run(() => super.addTagToPic(
         tagKey: tagKey,
-        tagName: tagName,
+        tagNameX: tagNameX,
         photoId: photoId,
         entities: entities));
   }
@@ -136,6 +190,17 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   final _$_PicStoreActionController = ActionController(name: '_PicStore');
+
+  @override
+  void changeAssetEntity(AssetEntity picEntity) {
+    final _$actionInfo = _$_PicStoreActionController.startAction(
+        name: '_PicStore.changeAssetEntity');
+    try {
+      return super.changeAssetEntity(picEntity);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void loadPicInfo() {
@@ -186,10 +251,12 @@ mixin _$PicStore on _PicStore, Store {
   @override
   String toString() {
     return '''
+entity: ${entity},
 latitude: ${latitude},
 longitude: ${longitude},
 specificLocation: ${specificLocation},
 generalLocation: ${generalLocation},
+isPrivate: ${isPrivate},
 searchText: ${searchText},
 tagsKeys: ${tagsKeys},
 tagsSuggestions: ${tagsSuggestions}

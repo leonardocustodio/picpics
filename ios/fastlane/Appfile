@@ -1,6 +1,5 @@
 app_identifier("br.com.inovatso.picPics") # The bundle identifier of your app
-apple_id("leonardo@inovatso.com.br") # Your Apple email address
-
+apple_id("contato@inovatso.com.br") # Your Apple email address
 itc_team_id("120733010") # App Store Connect Team ID
 team_id("C94RT566U4") # Developer Portal Team ID
 

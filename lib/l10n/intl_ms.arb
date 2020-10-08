@@ -113,6 +113,44 @@
   "cancel_anytime": "Batalkan bila-bila",
 
   "language": "Bahasa",
+
   "all_search_tags": "Semua Tag Carian",
-  "search_all_tags_not_found": "Tiada gambar dijumpai dengan semua tanda di atasnya."
+  "search_all_tags_not_found": "Tiada gambar dijumpai dengan semua tag padanya",
+  "picpics_photo_manager": "picPics - Pengurus Gambar",
+  "add_multiple_tags": "Tambah beberapa tag",
+  "ny_tag": "NY",
+  "tsqr_tag": "Times Square",
+  "vacation_tag": "Percutian",
+  "all_at_once": "Susun banyak gambar sekaligus",
+  "find_easily": "Cari gambar anda dengan mudah",
+  "email": "E-mel",
+  "secret_photos": "Gambar Rahsia",
+  "your_secret_key": "Kunci rahsia anda",
+  "new_secret_key": "Kunci rahsia baru",
+  "confirm_secret_key": "Sahkan kunci rahsia",
+  "confirm_email": "Sahkan e-mel pendaftaran anda untuk menerima kod akses anda",
+  "access_code": "Kod akses",
+  "access_code_sent": "Kunci akses telah dihantar ke {email}",
+  "secret_key_created": "Kunci rahsia berjaya dicipta!",
+  "disable_secret": "Adakah anda ingin menyembunyikan gambar ini?",
+  "yes": "Ya",
+  "no": "Tidak",
+  "keep_safe": "Gambar anda kini selamat di picPics. Adakah anda ingin memadamkannya dari gulungan kamera anda?",
+  "keep_asking": "Teruskan bertanya",
+  "dont_ask_again": "Jangan tanya lagi",
+  "view_hidden_photos": "Untuk melihat gambar tersembunyi anda, lepaskan kunci dalam tetapan aplikasi. Anda boleh membuka kunci dengan PIN anda.",
+  "require_secret_key": "Memerlukan kunci rahsia",
+  "always": "Selalu",
+  "x_minutes": "20 min",
+  "forgot_secret_key": "Terlupa kunci rahsia?",
+  "lock_your_photos": "Kunci gambar anda",
+  "lock_with_pin": "Kunci gambar peribadi anda dengan kod PIN.",
+  "protect_with_encryption": "Lindungi gambar peribadi anda dengan penyulitan yang hanya dapat diakses dengan kata laluan PIN.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize.",
+  "daily_notification_title": "Daily challenge",
+  "daily_notification_description": "It's time to complete your picPics daily challenge!",
+  "unlimited_private_pics": "Foto peribadi tanpa had"
+
 }

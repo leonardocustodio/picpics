@@ -90,4 +90,23 @@ abstract class _TabsStore with Store {
     }
     topOffsetFirstTab = value;
   }
+
+  double offsetThirdTab = 0.0;
+
+  @observable
+  bool hideTitleThirdTab = false;
+
+  @action
+  void setHideTitleThirdTab(bool value) {
+    if (value == hideTitleThirdTab) {
+      return;
+    }
+    hideTitleThirdTab = value;
+  }
+
+  @observable
+  bool showDeleteSecretModal = false;
+
+  @action
+  void setShowDeleteSecretModal(bool value) => showDeleteSecretModal = value;
 }

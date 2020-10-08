@@ -53,6 +53,83 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$isPinRegisteredAtom = Atom(name: '_AppStore.isPinRegistered');
+
+  @override
+  bool get isPinRegistered {
+    _$isPinRegisteredAtom.reportRead();
+    return super.isPinRegistered;
+  }
+
+  @override
+  set isPinRegistered(bool value) {
+    _$isPinRegisteredAtom.reportWrite(value, super.isPinRegistered, () {
+      super.isPinRegistered = value;
+    });
+  }
+
+  final _$keepAskingToDeleteAtom = Atom(name: '_AppStore.keepAskingToDelete');
+
+  @override
+  bool get keepAskingToDelete {
+    _$keepAskingToDeleteAtom.reportRead();
+    return super.keepAskingToDelete;
+  }
+
+  @override
+  set keepAskingToDelete(bool value) {
+    _$keepAskingToDeleteAtom.reportWrite(value, super.keepAskingToDelete, () {
+      super.keepAskingToDelete = value;
+    });
+  }
+
+  final _$shouldDeleteOnPrivateAtom =
+      Atom(name: '_AppStore.shouldDeleteOnPrivate');
+
+  @override
+  bool get shouldDeleteOnPrivate {
+    _$shouldDeleteOnPrivateAtom.reportRead();
+    return super.shouldDeleteOnPrivate;
+  }
+
+  @override
+  set shouldDeleteOnPrivate(bool value) {
+    _$shouldDeleteOnPrivateAtom.reportWrite(value, super.shouldDeleteOnPrivate,
+        () {
+      super.shouldDeleteOnPrivate = value;
+    });
+  }
+
+  final _$secretPhotosAtom = Atom(name: '_AppStore.secretPhotos');
+
+  @override
+  bool get secretPhotos {
+    _$secretPhotosAtom.reportRead();
+    return super.secretPhotos;
+  }
+
+  @override
+  set secretPhotos(bool value) {
+    _$secretPhotosAtom.reportWrite(value, super.secretPhotos, () {
+      super.secretPhotos = value;
+    });
+  }
+
+  final _$requireSecretAtom = Atom(name: '_AppStore.requireSecret');
+
+  @override
+  int get requireSecret {
+    _$requireSecretAtom.reportRead();
+    return super.requireSecret;
+  }
+
+  @override
+  set requireSecret(int value) {
+    _$requireSecretAtom.reportWrite(value, super.requireSecret, () {
+      super.requireSecret = value;
+    });
+  }
+
   final _$hourOfDayAtom = Atom(name: '_AppStore.hourOfDay');
 
   @override
@@ -175,6 +252,21 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$waitingAccessCodeAtom = Atom(name: '_AppStore.waitingAccessCode');
+
+  @override
+  bool get waitingAccessCode {
+    _$waitingAccessCodeAtom.reportRead();
+    return super.waitingAccessCode;
+  }
+
+  @override
+  set waitingAccessCode(bool value) {
+    _$waitingAccessCodeAtom.reportWrite(value, super.waitingAccessCode, () {
+      super.waitingAccessCode = value;
+    });
+  }
+
   final _$checkNotificationPermissionAsyncAction =
       AsyncAction('_AppStore.checkNotificationPermission');
 
@@ -193,6 +285,15 @@ mixin _$AppStore on _AppStore, Store {
   Future<void> checkPremiumStatus() {
     return _$checkPremiumStatusAsyncAction
         .run(() => super.checkPremiumStatus());
+  }
+
+  final _$setTutorialCompletedAsyncAction =
+      AsyncAction('_AppStore.setTutorialCompleted');
+
+  @override
+  Future<void> setTutorialCompleted(bool value) {
+    return _$setTutorialCompletedAsyncAction
+        .run(() => super.setTutorialCompleted(value));
   }
 
   final _$increaseTodayTaggedPicsAsyncAction =
@@ -238,11 +339,69 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void switchDailyChallenges() {
+  void switchDailyChallenges(
+      {String notificationTitle, String notificationDescription}) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.switchDailyChallenges');
     try {
-      return super.switchDailyChallenges();
+      return super.switchDailyChallenges(
+          notificationTitle: notificationTitle,
+          notificationDescription: notificationDescription);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setIsPinRegistered(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setIsPinRegistered');
+    try {
+      return super.setIsPinRegistered(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setKeepAskingToDelete(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setKeepAskingToDelete');
+    try {
+      return super.setKeepAskingToDelete(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setShouldDeleteOnPrivate(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setShouldDeleteOnPrivate');
+    try {
+      return super.setShouldDeleteOnPrivate(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void switchSecretPhotos() {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.switchSecretPhotos');
+    try {
+      return super.switchSecretPhotos();
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setRequireSecret(int value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setRequireSecret');
+    try {
+      return super.setRequireSecret(value);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
@@ -338,17 +497,6 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void setTutorialCompleted(bool value) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setTutorialCompleted');
-    try {
-      return super.setTutorialCompleted(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setLoggedIn(bool value) {
     final _$actionInfo =
         _$_AppStoreActionController.startAction(name: '_AppStore.setLoggedIn');
@@ -426,10 +574,26 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setWaitingAccessCode(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setWaitingAccessCode');
+    try {
+      return super.setWaitingAccessCode(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},
 dailyChallenges: ${dailyChallenges},
+isPinRegistered: ${isPinRegistered},
+keepAskingToDelete: ${keepAskingToDelete},
+shouldDeleteOnPrivate: ${shouldDeleteOnPrivate},
+secretPhotos: ${secretPhotos},
+requireSecret: ${requireSecret},
 hourOfDay: ${hourOfDay},
 minutesOfDay: ${minutesOfDay},
 isPremium: ${isPremium},
@@ -438,6 +602,7 @@ canTagToday: ${canTagToday},
 hasSwiped: ${hasSwiped},
 appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},
+waitingAccessCode: ${waitingAccessCode},
 appLocale: ${appLocale},
 currentLanguage: ${currentLanguage}
     ''';

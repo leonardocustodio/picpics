@@ -6,6 +6,9 @@ const List<int> kDefaultPreviewThumbSize = <int>[150, 150];
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;
 
+const kSecretTagKey = 'XXXXXXXXXYYYYYYYYYZZZZZZZZZZZZ';
+List<String> kRequireOptions = ['Immediately', '30 seconds', '1 minute', '2 minutes', '3 minutes', '4 minutes', '5 minutes'];
+
 const kPrimaryColor = Color(0xFF52CECE);
 const kSecondaryColor = Color(0xFFFF6666);
 const kYellowColor = Color(0xFFFEE067);
@@ -116,14 +119,14 @@ const kGraySettingsBoldTextStyle = TextStyle(
 
 const kBottomSheetTextStyle = TextStyle(
   color: Color(0xff707070),
-  fontSize: 16,
+  fontSize: 14,
   fontFamily: 'Lato',
   fontWeight: FontWeight.w700,
 );
 
 const kBottomSheetTitleTextStyle = TextStyle(
   color: Color(0xff707070),
-  fontSize: 24,
+  fontSize: 19,
   fontFamily: 'Lato',
   fontWeight: FontWeight.w300,
 );

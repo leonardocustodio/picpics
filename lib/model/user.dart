@@ -60,6 +60,18 @@ class User extends HiveObject {
   @HiveField(18)
   bool loggedIn;
 
+  @HiveField(19)
+  bool secretPhotos;
+
+  @HiveField(20)
+  bool isPinRegistered;
+
+  @HiveField(21)
+  bool keepAskingToDelete;
+
+  @HiveField(22)
+  bool shouldDeleteOnPrivate;
+
   User({
     this.id,
     this.email,
@@ -80,5 +92,9 @@ class User extends HiveObject {
     this.hasSwiped,
     this.hasGalleryPermission,
     this.loggedIn,
+    this.secretPhotos,
+    this.isPinRegistered,
+    this.keepAskingToDelete,
+    this.shouldDeleteOnPrivate,
   });
 }

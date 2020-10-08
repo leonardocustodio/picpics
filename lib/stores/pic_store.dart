@@ -1,12 +1,16 @@
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:convert/convert.dart';
+import 'package:cryptography_flutter/cryptography.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
@@ -19,8 +23,6 @@ class PicStore = _PicStore with _$PicStore;
 
 abstract class _PicStore with Store {
   final AppStore appStore;
-  final AssetEntity entity;
-  final String photoId;
   final DateTime createdAt;
   final double originalLatitude;
   final double originalLongitude;
@@ -28,10 +30,13 @@ abstract class _PicStore with Store {
   _PicStore({
     this.appStore,
     this.entity,
+    this.photoPath,
+    this.thumbPath,
     this.photoId,
     this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
+    this.deletedFromCameraRoll,
   }) {
     print('loading pic info......');
     loadPicInfo();
@@ -41,9 +46,142 @@ abstract class _PicStore with Store {
     });
   }
 
+  String photoId;
+
+  @observable
+  AssetEntity entity;
+
+  @action
+  void changeAssetEntity(AssetEntity picEntity) {
+    print('Changing asset entity of $photoId to ${picEntity.id}');
+
+    var picsBox = Hive.box('pics');
+    Pic picOld = picsBox.get(photoId);
+
+    if (picOld != null) {
+      Pic createPic = Pic(
+        photoId: picEntity.id,
+        createdAt: picOld.createdAt,
+        originalLatitude: picOld.originalLatitude,
+        originalLongitude: picOld.originalLongitude,
+        latitude: picOld.latitude,
+        longitude: picOld.longitude,
+        specificLocation: picOld.specificLocation,
+        generalLocation: picOld.generalLocation,
+        tags: picOld.tags,
+      );
+      picsBox.put(picEntity.id, createPic);
+      picOld.delete();
+    }
+
+    entity = picEntity;
+    photoId = picEntity.id;
+    print('Changed asset entity');
+  }
+
+  Future<Uint8List> get assetOriginBytes async {
+    if (isPrivate == false && entity != null) {
+      return await entity.originBytes;
+    }
+    print('Returning decrypt image in privatePath: $photoPath');
+    return await Crypto.decryptImage(photoPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+  }
+
+  Future<Uint8List> get assetThumbBytes async {
+    if (isPrivate == false && entity != null) {
+      return await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+    }
+    print('Returning decrypt image in privatePath: $thumbPath');
+    return await Crypto.decryptImage(thumbPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+  }
+
+  String photoPath;
+  String thumbPath;
+  bool deletedFromCameraRoll;
+
+  void setDeletedFromCameraRoll(bool value) {
+    print('Setting deleted from camera roll as $value');
+    deletedFromCameraRoll = value;
+
+    var picsBox = Hive.box('pics');
+    Pic pic = picsBox.get(photoId);
+    pic.deletedFromCameraRoll = value;
+    pic.save();
+  }
+
+  @action
+  Future<void> setPrivatePath(String picPath, String thumbnailPath, String picNonce) async {
+    var secretBox = Hive.box('secrets');
+    Secret secret = Secret(
+      photoId: photoId,
+      photoPath: picPath,
+      thumbPath: thumbnailPath,
+      originalLatitude: originalLatitude,
+      originalLongitude: originalLongitude,
+      createDateTime: createdAt,
+      nonce: picNonce,
+    );
+    secretBox.put(photoId, secret);
+    photoPath = picPath;
+    thumbPath = thumbnailPath;
+    nonce = picNonce;
+
+    if (appStore.shouldDeleteOnPrivate == true) {
+      print('**** Deleted original pic!!!');
+      if (Platform.isAndroid) {
+        PhotoManager.editor.deleteWithIds([entity.id]);
+      } else {
+        final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+        if (result.isEmpty) {
+          return false;
+        }
+      }
+      setDeletedFromCameraRoll(true);
+      entity = null;
+      return;
+    }
+    setDeletedFromCameraRoll(false);
+    entity = null;
+  }
+
+  @action
+  Future<void> removePrivatePath() async {
+    print('Removing pic from secrets box...');
+
+    var secretBox = Hive.box('secrets');
+    Secret secretPic = secretBox.get(photoId);
+
+    if (secretPic != null) {
+      secretPic.delete();
+      print('Pic deleted from secrets box!!!');
+      return;
+    }
+
+    print('Did not find the pic in secretbox');
+  }
+
+  Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
+    print('Deleting $photoPath and $thumbPath');
+    File photoFile = File(photoPath);
+    File thumbFile = File(thumbPath);
+
+    if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
+      print('Pic has entity? ${entity == null ? false : true}');
+      Uint8List picData = await assetOriginBytes;
+      final AssetEntity imageEntity = await PhotoManager.editor.saveImage(picData);
+      changeAssetEntity(imageEntity);
+      print('copied image back to gallery with id: ${imageEntity.id}');
+    }
+
+    photoFile.delete();
+    thumbFile.delete();
+    print('Removed both files...');
+  }
+
   @action
   void loadPicInfo() {
     var picsBox = Hive.box('pics');
+    var secretBox = Hive.box('secrets');
 
     if (picsBox.containsKey(photoId)) {
       print('pic $photoId exists, loading data....');
@@ -53,9 +191,27 @@ abstract class _PicStore with Store {
       longitude = pic.longitude;
       specificLocation = pic.specificLocation;
       generalLocation = pic.generalLocation;
+      isPrivate = pic.isPrivate;
+      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
+
+      print('Is private: $isPrivate');
+      if (isPrivate == true) {
+        Secret secretPic = secretBox.get(photoId);
+
+        if (secretPic != null) {
+          photoPath = secretPic.photoPath;
+          thumbPath = secretPic.thumbPath;
+          nonce = secretPic.nonce;
+          print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
+        }
+      }
 
       for (String tagKey in pic.tags) {
-        TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+        TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
+        if (tagsStore == null) {
+          print('&&&&##### DID NOT FIND TAG: ${tagKey}');
+          continue;
+        }
         tags.add(tagsStore);
       }
     } else {
@@ -74,6 +230,52 @@ abstract class _PicStore with Store {
 
   @observable
   String generalLocation;
+
+  String nonce;
+
+  @observable
+  bool isPrivate = false;
+
+  @action
+  Future<void> setIsPrivate(bool value) async {
+    isPrivate = value;
+
+    if (isPrivate) {
+      await addSecretTagToPic();
+    } else {
+      await removeSecretTagFromPic();
+      await deleteEncryptedPic(copyToCameraRoll: true);
+    }
+
+    var picsBox = Hive.box('pics');
+    Pic getPic = picsBox.get(photoId);
+    getPic.isPrivate = value;
+    picsBox.put(photoId, getPic);
+  }
+
+  Future<void> addSecretTagToPic() async {
+    var tagsBox = Hive.box('tags');
+    Tag getTag = tagsBox.get(kSecretTagKey);
+
+    if (getTag.photoId.contains(photoId)) {
+      print('this tag is already in this picture');
+      return;
+    }
+
+    getTag.photoId.add(photoId);
+    tagsBox.put(kSecretTagKey, getTag);
+
+    await addTagToPic(
+      tagKey: kSecretTagKey,
+      photoId: photoId,
+    );
+    print('Added secret tag to pic!');
+  }
+
+  Future<void> removeSecretTagFromPic() async {
+    await removeTagFromPic(tagKey: kSecretTagKey);
+    print('Added secret tag to pic!');
+  }
 
   @observable
   String searchText = '';
@@ -113,7 +315,7 @@ abstract class _PicStore with Store {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey)) {
+          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
             continue;
           }
           suggestionTags.add(tagKey);
@@ -122,6 +324,8 @@ abstract class _PicStore with Store {
 //      }
     } else {
       for (var tagKey in tagsBox.keys) {
+        if (tagKey == kSecretTagKey) continue;
+
         String tagName = Helpers.decryptTag(tagKey);
         if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
@@ -161,7 +365,6 @@ abstract class _PicStore with Store {
       await addTagToPic(
         tagKey: tagKey,
         photoId: photoId,
-        tagName: tagName,
       );
 
       appStore.addTagToRecent(tagKey: tagKey);
@@ -178,14 +381,13 @@ abstract class _PicStore with Store {
     tagsBox.put(tagKey, Tag(tagName, [photoId]));
     await addTagToPic(
       tagKey: tagKey,
-      tagName: tagName,
       photoId: photoId,
     );
     appStore.addTagToRecent(tagKey: tagKey);
   }
 
   @action
-  Future<void> addTagToPic({String tagKey, String tagName, String photoId, List<AssetEntity> entities}) async {
+  Future<void> addTagToPic({String tagKey, String tagNameX, String photoId, List<AssetEntity> entities}) async {
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
@@ -198,10 +400,6 @@ abstract class _PicStore with Store {
         return;
       }
 
-//      if (noTaggedPhoto == true) {
-//        noTaggedPhoto = false;
-//      }
-
       getPic.tags.add(tagKey);
       print('photoId: ${getPic.photoId} - tags: ${getPic.tags}');
       picsBox.put(photoId, getPic);
@@ -210,7 +408,6 @@ abstract class _PicStore with Store {
       TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
       tags.add(tagsStore);
 
-//      checkPicHasTags(photoId);
       Analytics.sendEvent(Event.added_tag);
       return;
     }
@@ -231,14 +428,11 @@ abstract class _PicStore with Store {
       specificLocation: null,
       generalLocation: null,
       tags: [tagKey],
+      isPrivate: isPrivate,
     );
 
     await picsBox.put(photoId, pic);
     print('@@@@@@@@ tagsKey: ${tagKey}');
-//    checkPicHasTags(photoId);
-//    if (noTaggedPhoto == true) {
-//      noTaggedPhoto = false;
-//    }
 
     // Increase today tagged pics everytime it adds a new pic to database.
     appStore.increaseTodayTaggedPics();
@@ -258,14 +452,19 @@ abstract class _PicStore with Store {
     String path = '';
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(await entity.originBytes);
+      path = await _writeByteToImageFile(entity == null ? await assetOriginBytes : await entity.originBytes);
     } else {
-      var bytes = await entity.thumbDataWithSize(
-        entity.size.width.toInt(),
-        entity.size.height.toInt(),
-        format: ThumbFormat.jpeg,
-      );
-      path = await _writeByteToImageFile(bytes);
+      if (entity == null) {
+        var bytes = await assetOriginBytes;
+        path = await _writeByteToImageFile(bytes);
+      } else {
+        var bytes = await entity.thumbDataWithSize(
+          entity.size.width.toInt(),
+          entity.size.height.toInt(),
+          format: ThumbFormat.jpeg,
+        );
+        path = await _writeByteToImageFile(bytes);
+      }
     }
 
     if (path == '' || path == null) {
@@ -294,11 +493,16 @@ abstract class _PicStore with Store {
 
     if (pic != null) {
       print('pic is in db... removing it from db!');
-      for (String tagKey in pic.tags) {
+      List<String> picTags = List.of(pic.tags);
+      for (String tagKey in picTags) {
         removeTagFromPic(tagKey: tagKey);
+
+        if (tagKey == kSecretTagKey) {
+          deleteEncryptedPic();
+        }
       }
       picsBox.delete(photoId);
-      print('removed ${entity.id} from database');
+      print('removed ${photoId} from database');
     }
 
     return true;
@@ -330,6 +534,11 @@ abstract class _PicStore with Store {
       print('removed tag from pic');
       tags.removeWhere((element) => element.id == tagKey);
     }
+
+    if (tagKey == kSecretTagKey) {
+      removePrivatePath();
+    }
+
     Analytics.sendEvent(Event.removed_tag);
   }
 

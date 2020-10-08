@@ -8,18 +8,22 @@ import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
+import 'package:picPics/widgets/unhide_secret_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/database_manager.dart';
@@ -40,13 +44,15 @@ class TabsScreen extends StatefulWidget {
   _TabsScreenState createState() => _TabsScreenState();
 }
 
-class _TabsScreenState extends State<TabsScreen> {
+class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
   AppStore appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
 
   ReactionDisposer disposer;
   ReactionDisposer disposer2;
+  ReactionDisposer disposer3;
+  ReactionDisposer disposer4;
 
   ExpandableController expandableController = ExpandableController(initialExpanded: false);
   ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
@@ -57,9 +63,99 @@ class _TabsScreenState extends State<TabsScreen> {
   TextEditingController bottomTagsEditingController = TextEditingController();
 
   Throttle _changeThrottle;
+  AppLifecycleState _appCycleState;
+
+  void showDeleteSecretModalForMultiPic() {
+    if (appStore.keepAskingToDelete == false) {
+      tabsStore.setMultiTagSheet(false);
+      tabsStore.setMultiPicBar(false);
+      galleryStore.addTagsToSelectedPics();
+      return;
+    }
+
+    print('showModal');
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return DeleteSecretModal(
+          onPressedClose: () {
+            Navigator.of(context).pop();
+          },
+          onPressedDelete: () {
+            appStore.setShouldDeleteOnPrivate(false);
+            tabsStore.setMultiTagSheet(false);
+            tabsStore.setMultiPicBar(false);
+            galleryStore.addTagsToSelectedPics();
+            Navigator.of(context).pop();
+          },
+          onPressedOk: () {
+            appStore.setShouldDeleteOnPrivate(true);
+            tabsStore.setMultiTagSheet(false);
+            tabsStore.setMultiPicBar(false);
+            galleryStore.addTagsToSelectedPics();
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> showDeleteSecretModal(PicStore picStore) async {
+    if (appStore.secretPhotos != true) {
+      appStore.popPinScreen = PopPinScreenTo.TabsScreen;
+      Navigator.pushNamed(context, PinScreen.id);
+      return;
+    }
+
+    int freePrivatePics = await appStore.freePrivatePics;
+    if (appStore.totalPrivatePics >= freePrivatePics && picStore.isPrivate == false) {
+      Navigator.pushNamed(context, PremiumScreen.id);
+      return;
+    }
+
+    if (appStore.keepAskingToDelete == false && picStore.isPrivate == false) {
+      galleryStore.setPrivatePic(picStore: picStore, private: true);
+      return;
+    }
+
+    print('showModal');
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        if (picStore.isPrivate == true) {
+          return UnhideSecretModal(
+            onPressedDelete: () {
+              Navigator.of(context).pop();
+            },
+            onPressedOk: () {
+              galleryStore.setPrivatePic(picStore: picStore, private: false);
+              Navigator.of(context).pop();
+            },
+          );
+        }
+        return DeleteSecretModal(
+          onPressedClose: () {
+            Navigator.of(context).pop();
+          },
+          onPressedDelete: () {
+            galleryStore.setPrivatePic(picStore: picStore, private: true);
+            appStore.setShouldDeleteOnPrivate(false);
+            Navigator.of(context).pop();
+          },
+          onPressedOk: () {
+            galleryStore.setPrivatePic(picStore: picStore, private: true);
+            appStore.setShouldDeleteOnPrivate(true);
+            Navigator.of(context).pop();
+          },
+        );
+      },
+    );
+  }
 
   showEditTagModal() {
-    if (DatabaseManager.instance.selectedTagKey != '') {
+    if (DatabaseManager.instance.selectedTagKey != '' && DatabaseManager.instance.selectedTagKey != kSecretTagKey) {
       TextEditingController alertInputController = TextEditingController();
 //      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
       String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
@@ -96,7 +192,6 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   void initState() {
     super.initState();
-
     KeyboardVisibility.onChange.listen((bool visible) {
       print('keyboard: $visible');
 
@@ -144,6 +239,12 @@ class _TabsScreenState extends State<TabsScreen> {
 //    _changeThrottle.dispose();
     disposer();
     disposer2();
+    disposer3();
+    disposer4();
+
+    if (appStore.hasObserver) {
+      WidgetsBinding.instance.removeObserver(this);
+    }
     super.dispose();
   }
 
@@ -217,6 +318,32 @@ class _TabsScreenState extends State<TabsScreen> {
       }
     });
 
+    disposer3 = reaction((_) => tabsStore.showDeleteSecretModal, (showModal) {
+      if (showModal) {
+        print('show delete secret modal!!!');
+//        setState(() {
+//          showEditTagModal();
+//        });
+//        showDeleteSecretModal(context);
+      }
+    });
+
+    disposer4 = reaction((_) => appStore.secretPhotos, (secretPhotos) {
+      if (secretPhotos) {
+        if (appStore.hasObserver == false) {
+          print('adding observer to change screen!');
+          WidgetsBinding.instance.addObserver(this);
+          appStore.hasObserver = true;
+        }
+      } else {
+        if (appStore.hasObserver == true) {
+          print('removing observer of changing screen');
+          WidgetsBinding.instance.removeObserver(this);
+          appStore.hasObserver = false;
+        }
+      }
+    });
+
     if (appStore.tutorialCompleted == true && appStore.notifications == true) {
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
@@ -231,7 +358,41 @@ class _TabsScreenState extends State<TabsScreen> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+        print("&&&& Paused");
+        setState(() {
+          _appCycleState = state;
+        });
+        break;
+      case AppLifecycleState.inactive:
+        setState(() {
+          _appCycleState = state;
+        });
+        print("&&& inactive");
+        break;
+      case AppLifecycleState.detached:
+        setState(() {
+          _appCycleState = state;
+        });
+        print("&&&& detached");
+        break;
+      case AppLifecycleState.resumed:
+        setState(() {
+          _appCycleState = state;
+        });
+        print("&&&& resumed");
+        break;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // if (_appCycleState == AppLifecycleState.inactive) {
+    //   return Scaffold();
+    // }
+
     Locale myLocale = Localizations.localeOf(context);
     print('Language Code: ${myLocale.languageCode}');
 
@@ -259,7 +420,7 @@ class _TabsScreenState extends State<TabsScreen> {
                 children: <Widget>[
                   Observer(builder: (_) {
                     Widget wgt;
-                    if (!appStore.hasGalleryPermission) {
+                    if (appStore.hasGalleryPermission == null || appStore.hasGalleryPermission == false) {
                       wgt = Container(
                         constraints: BoxConstraints.expand(),
                         color: kWhiteColor,
@@ -345,9 +506,12 @@ class _TabsScreenState extends State<TabsScreen> {
                     } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
                       wgt = UntaggedTab();
                     else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
-                      wgt = PicTab(showEditTagModal: showEditTagModal);
+                      wgt = PicTab(
+                        showEditTagModal: showEditTagModal,
+                        showDeleteSecretModal: showDeleteSecretModal,
+                      );
                     else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
-                    return wgt;
+                    return wgt ?? Container();
                   }),
                 ],
               ),
@@ -399,28 +563,14 @@ class _TabsScreenState extends State<TabsScreen> {
                                           return;
                                         }
 
-//                                      List<String> photosIds = [];
-//                                      List<AssetEntity> entities = [];
-//                                      AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
-//
-//
-//                                      for (var photoId in galleryStore.selectedPics) {
-//                                        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == photoId, orElse: () => null);
-//                                        photosIds.add(photoId);
-//                                        entities.add(entity);
-//                                      }
-//
-//                                      galleryStore.addTagsToPics(
-//                                        tagsKeys: DatabaseManager.instance.multiPicTagKeys,
-//                                        photosIds: photosIds,
-//                                        entities: entities,
-//                                      );
+                                        if (galleryStore.multiPicTagKeys.contains(kSecretTagKey)) {
+                                          showDeleteSecretModalForMultiPic();
+                                          return;
+                                        }
 
-                                        galleryStore.addTagsToSelectedPics();
                                         tabsStore.setMultiTagSheet(false);
                                         tabsStore.setMultiPicBar(false);
-                                        galleryStore.clearSelectedPics();
-                                        galleryStore.clearMultiPicTags();
+                                        galleryStore.addTagsToSelectedPics();
                                       },
                                       child: Container(
                                         width: 80.0,
@@ -457,7 +607,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                         addTagField: true,
                                         textEditingController: bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
-                                        onTap: (tagName) {
+                                        onTap: (tagId, tagName) {
                                           if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
@@ -507,7 +657,7 @@ class _TabsScreenState extends State<TabsScreen> {
                                         tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
-                                        onTap: (tagName) {
+                                        onTap: (tagId, tagName) {
                                           if (!appStore.isPremium) {
                                             Navigator.pushNamed(context, PremiumScreen.id);
                                             return;
@@ -515,8 +665,7 @@ class _TabsScreenState extends State<TabsScreen> {
 
                                           bottomTagsEditingController.clear();
                                           galleryStore.setSearchText('');
-                                          String tagKey = Helpers.encryptTag(tagName);
-                                          galleryStore.addToMultiPicTags(tagKey);
+                                          galleryStore.addToMultiPicTags(tagId);
                                         },
                                         onDoubleTap: () {
                                           if (!appStore.isPremium) {
@@ -649,6 +798,7 @@ class _TabsScreenState extends State<TabsScreen> {
                             picStore: galleryStore.currentPic,
                             picsInThumbnails: PicSource.UNTAGGED,
                             showEditTagModal: showEditTagModal,
+                            showDeleteSecretModal: showDeleteSecretModal,
                           ),
                         ),
                       ),
@@ -799,13 +949,14 @@ class _TabsScreenState extends State<TabsScreen> {
                             height: 17.0,
                           ),
                           CupertinoButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (tabsStore.tutorialIndex == 2) {
                                 print('Requesting notification....');
 
                                 appStore.requestNotificationPermission();
                                 appStore.checkNotificationPermission(firstPermissionCheck: true);
-                                appStore.setTutorialCompleted(true);
+                                await appStore.setTutorialCompleted(true);
+                                await galleryStore.loadAssetsPath();
                                 return;
                               }
                               tutorialSwiperController.next(animation: true);

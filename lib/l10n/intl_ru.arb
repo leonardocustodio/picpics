@@ -112,6 +112,44 @@
   "cancel_anytime": "Можно отменить в любое время",
 
   "language": "язык",
-  "all_search_tags": "Все теги поиска",
-  "search_all_tags_not_found": "Не найдено ни одной фотографии со всеми тегами."
+
+  "all_search_tags": "Все поисковые теги",
+  "search_all_tags_not_found": "Не найдено ни одного изображения со всеми тегами",
+  "picpics_photo_manager": "picPics - Менеджер фотографий",
+  "add_multiple_tags": "Добавить несколько тегов",
+  "ny_tag": "Нью-Йорк",
+  "tsqr_tag": "Таймс Сквер",
+  "vacation_tag": "Отпуск",
+  "all_at_once": "Организуйте сразу несколько фотографий",
+  "find_easily": "Легко находите свои фотографии",
+  "email": "Эл. адрес",
+  "secret_photos": "Секретные фото",
+  "your_secret_key": "Ваш секретный ключ",
+  "new_secret_key": "Новый секретный ключ",
+  "confirm_secret_key": "Подтвердите секретный ключ",
+  "confirm_email": "Подтвердите свой регистрационный адрес эл. почты, чтобы получить код доступа",
+  "access_code": "Код доступа",
+  "access_code_sent": "Ключ доступа был отправлен на адрес {email}",
+  "secret_key_created": "Секретный ключ успешно создан!",
+  "disable_secret": "Вы хотите показать это фото?",
+  "yes": "Да",
+  "no": "Нет",
+  "keep_safe": "Ваша фотография теперь в безопасности на picPics. Вы хотите удалить ее с фотопленки?",
+  "keep_asking": "Спросить еще",
+  "dont_ask_again": "Больше не спрашивать",
+  "view_hidden_photos": "Чтобы просмотреть скрытые фотографии, снимите блокировку в настройках приложения. Вы можете разблокировать их с помощью PIN-кода.",
+  "require_secret_key": "Запрашивать секретный ключ",
+  "always": "Всегда",
+  "x_minutes": "20 мин",
+  "forgot_secret_key": "Забыли секретный ключ?",
+  "lock_your_photos": "Заблокируйте свои фотографии",
+  "lock_with_pin": "Заблокируйте свои личные фотографии с помощью PIN-кода.",
+  "protect_with_encryption": "Защитите свои личные фотографии с помощью шифрования, доступного только с помощью пароля PIN.",
+
+
+  "all_photos_were_tagged": "There are no more photos to organize.",
+  "daily_notification_title": "Daily challenge",
+  "daily_notification_description": "It's time to complete your picPics daily challenge!",
+  "unlimited_private_pics": "Неограниченное количество личных фотографий"
+
 }

@@ -125,14 +125,25 @@ class DatabaseManager extends ChangeNotifier {
     print('loading remote config....');
     final RemoteConfig remoteConfig = await RemoteConfig.instance;
     // Enable developer mode to relax fetch throttling
-    remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: true));
+    remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: kDebugMode));
     remoteConfig.setDefaults(<String, dynamic>{
       'daily_pics_for_ads': 25,
+      'free_private_pics': 20,
     });
 
-    await remoteConfig.fetch(expiration: const Duration(hours: 5));
-    await remoteConfig.activateFetched();
-    print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
+    try {
+      // Using default duration to force fetching from remote server.
+      await remoteConfig.fetch(expiration: const Duration(hours: 5));
+      await remoteConfig.activateFetched();
+      print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
+      print('free_private_pics: ${remoteConfig.getInt('free_private_pics')}');
+    } on FetchThrottledException catch (exception) {
+      // Fetch throttled.
+      print(exception);
+    } catch (exception) {
+      print('Unable to fetch remote config. Cached or default values will be '
+          'used');
+    }
   }
 
   void changeUserLanguage(String appLanguage, {bool notify = true}) {

@@ -1,8 +1,8 @@
 import 'dart:io';
+import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
@@ -59,6 +59,9 @@ abstract class _AppStore with Store {
         hasSwiped: false,
         hasGalleryPermission: null,
         loggedIn: false,
+        secretPhotos: false,
+        isPinRegistered: false,
+        keepAskingToDelete: true,
       );
 
       user = createUser;
@@ -84,6 +87,16 @@ abstract class _AppStore with Store {
     canTagToday = user.canTagToday;
     loggedIn = user.loggedIn ?? false;
     tryBuyId = initiatedWithProduct;
+    secretPhotos = user.secretPhotos ?? false;
+    isPinRegistered = user.isPinRegistered ?? false;
+    keepAskingToDelete = user.keepAskingToDelete ?? true;
+    shouldDeleteOnPrivate = user.shouldDeleteOnPrivate ?? false;
+    email = user.email;
+
+    // if (secretBox.length > 0) {
+    //   Secret secret = secretBox.getAt(0);
+    //   isPinRegistered = secret.pin == null ? false : true;
+    // }
 
     loadTags();
 
@@ -119,6 +132,17 @@ abstract class _AppStore with Store {
   String initialRoute;
   String tryBuyId;
   int dailyPicsForAds = 25;
+  // int freePrivatePics = 20;
+
+  Future<int> get freePrivatePics async {
+    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    return remoteConfig.getInt('free_private_pics');
+  }
+
+  int get totalPrivatePics {
+    var secretBox = Hive.box('secrets');
+    return secretBox.length;
+  }
 
   @action
   void setTryBuyId(String value) => tryBuyId = value;
@@ -133,7 +157,7 @@ abstract class _AppStore with Store {
       User currentUser = userBox.getAt(0);
 
       currentUser.notifications = true;
-      currentUser.dailyChallenges = true;
+      currentUser.dailyChallenges = false;
       currentUser.save();
     } else {
       PushNotificationsManager push = PushNotificationsManager();
@@ -158,7 +182,7 @@ abstract class _AppStore with Store {
         print('user has notification permission');
         currentUser.notifications = true;
         if (firstPermissionCheck) {
-          currentUser.dailyChallenges = true;
+          currentUser.dailyChallenges = false;
         }
         currentUser.save();
       }
@@ -172,7 +196,7 @@ abstract class _AppStore with Store {
   bool dailyChallenges = false;
 
   @action
-  void switchDailyChallenges() {
+  void switchDailyChallenges({String notificationTitle, String notificationDescription}) {
     dailyChallenges = !dailyChallenges;
 
     var userBox = Hive.box('user');
@@ -180,16 +204,87 @@ abstract class _AppStore with Store {
     currentUser.dailyChallenges = dailyChallenges;
     currentUser.save();
 
-//    PushNotificationsManager push = PushNotificationsManager();
-//
-//    if (dailyChallenges) {
-//      push.deregister();
-//    } else {
-//      push.register();
-//    }
+    PushNotificationsManager push = PushNotificationsManager();
+    if (dailyChallenges) {
+      push.deregister();
+    } else {
+      push.register(
+        hourOfDay: hourOfDay,
+        minutesOfDay: minutesOfDay,
+        title: notificationTitle,
+        description: notificationDescription,
+      );
+    }
 
     Analytics.sendEvent(Event.notification_switch);
   }
+
+  @observable
+  bool isPinRegistered = false;
+
+  @action
+  void setIsPinRegistered(bool value) {
+    isPinRegistered = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.isPinRegistered = value;
+    currentUser.save();
+  }
+
+  @observable
+  bool keepAskingToDelete;
+
+  @action
+  void setKeepAskingToDelete(bool value) {
+    keepAskingToDelete = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.keepAskingToDelete = value;
+    currentUser.save();
+  }
+
+  @observable
+  bool shouldDeleteOnPrivate = false;
+
+  @action
+  void setShouldDeleteOnPrivate(bool value) {
+    shouldDeleteOnPrivate = value;
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.shouldDeleteOnPrivate = value;
+    currentUser.save();
+  }
+
+  @observable
+  bool secretPhotos = false;
+
+  @action
+  void switchSecretPhotos() {
+    secretPhotos = !secretPhotos;
+
+    if (secretPhotos == false) {
+      print('Cleared encryption key in memory!!!');
+      setEncryptionKey(null);
+    }
+
+    print('After Switch Secret: $secretPhotos');
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.secretPhotos = secretPhotos;
+    currentUser.save();
+
+//    Analytics.sendEvent(Event.notification_switch);
+  }
+
+  @observable
+  int requireSecret = 0;
+
+  @action
+  void setRequireSecret(int value) => requireSecret = value;
 
 //  int goal;
 
@@ -230,6 +325,10 @@ abstract class _AppStore with Store {
     User currentUser = userBox.getAt(0);
     currentUser.isPremium = value;
     currentUser.save();
+
+    if (isPremium == true) {
+      setCanTagToday(true);
+    }
   }
 
   @action
@@ -240,15 +339,26 @@ abstract class _AppStore with Store {
     }
   }
 
-  ObserverList<TagsStore> tags = ObserverList<TagsStore>();
+  ObservableList<TagsStore> tags = ObservableList<TagsStore>();
 
   @action
   void loadTags() {
     var tagsBox = Hive.box('tags');
+    tags.clear();
 
     for (Tag tag in tagsBox.values) {
-      TagsStore tagStore = TagsStore(id: tag.key, name: tag.name);
-      tags.add(tagStore);
+      TagsStore tagsStore = TagsStore(id: tag.key, name: tag.name);
+      addTag(tagsStore);
+    }
+
+    Tag secretTag = tagsBox.get(kSecretTagKey);
+    if (secretTag == null) {
+      print('Creating secret tag in db!');
+      Tag createSecretTag = Tag('Secret Pics', []);
+      tagsBox.put(kSecretTagKey, createSecretTag);
+
+      TagsStore tagsStore = TagsStore(id: kSecretTagKey, name: 'Secret Pics');
+      addTag(tagsStore);
     }
 
     print('******************* loaded tags **********');
@@ -259,6 +369,7 @@ abstract class _AppStore with Store {
     if (tags.contains(tagsStore)) {
       return;
     }
+    print('Adding tag to AppStore: $tagsStore');
     tags.add(tagsStore);
   }
 
@@ -300,13 +411,15 @@ abstract class _AppStore with Store {
   bool tutorialCompleted;
 
   @action
-  void setTutorialCompleted(bool value) {
+  Future<void> setTutorialCompleted(bool value) async {
     tutorialCompleted = value;
 
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.tutorialCompleted = value;
     currentUser.save();
+
+    await requestGalleryPermission();
   }
 
   int picsTaggedToday;
@@ -439,7 +552,8 @@ abstract class _AppStore with Store {
   void createDefaultTags(BuildContext context) {
     var tagsBox = Hive.box('tags');
 
-    if (tagsBox.length > 0) {
+    if (tagsBox.length > 1) {
+      // Criada a secret tag aqui por isso 1
       print('Default tags already created');
       return;
     }
@@ -513,4 +627,36 @@ abstract class _AppStore with Store {
       print('recent tags after removed: ${getUser.recentTags}');
     }
   }
+
+  @observable
+  bool waitingAccessCode = false;
+
+  @action
+  void setWaitingAccessCode(bool value) => waitingAccessCode = value;
+
+  bool hasObserver = false;
+
+  PopPinScreenTo popPinScreen;
+
+  SecretKey encryptionKey;
+  void setEncryptionKey(SecretKey value) => encryptionKey = value;
+
+  String tempEncryptionKey;
+  void setTempEncryptionKey(String value) => tempEncryptionKey = value;
+
+  String email;
+  void setEmail(String value) {
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.email = value;
+    currentUser.save();
+
+    email = value;
+  }
+}
+
+enum PopPinScreenTo {
+  TabsScreen,
+  SettingsScreen,
+  PhotoScreen,
 }
