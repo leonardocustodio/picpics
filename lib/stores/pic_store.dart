@@ -20,6 +20,7 @@ import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:googleapis/translate/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:strings/strings.dart';
+import 'package:path/path.dart' as p;
 
 part 'pic_store.g.dart';
 
@@ -645,7 +646,13 @@ abstract class _PicStore with Store {
       return;
     }
 
-    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
+    Directory tempDir = await getTemporaryDirectory();
+    String filePath = p.join(tempDir.path, 'tempphoto.jpg');
+    File createFile = File(filePath);
+    Uint8List photoData = await entity.thumbDataWithSize(800, 800, format: ThumbFormat.jpeg, quality: 100);
+    createFile.writeAsBytesSync(photoData);
+
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(createFile);
     final ImageLabeler cloudLabeler = FirebaseVision.instance.cloudImageLabeler();
     final List<ImageLabel> cloudLabels = await cloudLabeler.processImage(visionImage);
 
@@ -661,7 +668,7 @@ abstract class _PicStore with Store {
       tags.add(labelText);
     }
 
-    List<String> translatedTags = await translateTags(tags);
+    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags) : tags;
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);
       TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
