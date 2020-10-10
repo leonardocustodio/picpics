@@ -1,9 +1,10 @@
 name: picPics
 description: picPics application.
-version: 1.5.0+389
+publish_to: 'none'
+version: 1.6.0+392
 
 environment:
-  sdk: ">=2.3.0 <3.0.0"
+  sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -29,7 +30,7 @@ dependencies:
   geolocator: ^6.0.0+4
   geocoding: ^1.0.4+1
   google_maps_flutter: ^1.0.2
-  hive:
+  hive: ^1.4.4+1
   hive_flutter:
     git:
       url: git://github.com/hivedb/hive.git
@@ -77,22 +78,25 @@ dependencies:
   cryptography_flutter: ^1.0.0
   convert: ^2.1.1
   encrypt: ^4.0.3
+  firebase_ml_vision: ^0.9.7
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^1.10.0
-  mobx_codegen: ^1.1.0+2
-  hive_generator:
-    git:
-      url: git://github.com/hivedb/hive.git
-      path: hive_generator
+#  test: 1.16.0-nullsafety.5
+#  mockito: 4.1.2
+#  faker: 1.2.1
+  build_runner: ^1.10.3
+  mobx_codegen: ^1.1.1
+  hive_generator: ^0.8.1
+  image: ^2.1.4
 
 flutter:
   uses-material-design: true
   assets:
     - lib/images/
     - lib/anims/
+    - assets/
   fonts:
     - family: Lato
       fonts:
