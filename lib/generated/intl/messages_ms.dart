@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacy_policy" : MessageLookupByLibrary.simpleMessage("Dasar Privasi"),
     "protect_with_encryption" : MessageLookupByLibrary.simpleMessage("Lindungi gambar peribadi anda dengan penyulitan yang hanya dapat diakses dengan kata laluan PIN."),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("Nilaikan aplikasi ini"),
+    "recent_tags" : MessageLookupByLibrary.simpleMessage("Recent Tags"),
     "require_secret_key" : MessageLookupByLibrary.simpleMessage("Memerlukan kunci rahsia"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Pulihkan pembelian"),
     "save" : MessageLookupByLibrary.simpleMessage("simpan"),

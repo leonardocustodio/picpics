@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacy_policy" : MessageLookupByLibrary.simpleMessage("개인정보 보호정책"),
     "protect_with_encryption" : MessageLookupByLibrary.simpleMessage("PIN 암호로만 액세스할 수있는 암호화로 개인 사진을 보호하십시오."),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("이 앱을 평가해주십시오"),
+    "recent_tags" : MessageLookupByLibrary.simpleMessage("Recent Tags"),
     "require_secret_key" : MessageLookupByLibrary.simpleMessage("비밀 키가 필요합니다"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("구매 복원"),
     "save" : MessageLookupByLibrary.simpleMessage("저장"),
