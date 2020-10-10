@@ -27,37 +27,44 @@ PODS:
   - Firebase/Messaging (6.26.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 4.4.1)
+  - Firebase/MLVision (6.26.0):
+    - Firebase/CoreOnly
+    - FirebaseMLVision (~> 0.20.0)
   - Firebase/RemoteConfig (6.26.0):
     - Firebase/CoreOnly
     - FirebaseRemoteConfig (~> 4.5.0)
-  - firebase_admob (0.10.0-1):
+  - firebase_admob (0.10.0-2):
     - Firebase/CoreOnly (~> 6.26.0)
     - firebase_core
     - Flutter
     - Google-Mobile-Ads-SDK
-  - firebase_analytics (6.0.1):
+  - firebase_analytics (6.0.2):
     - Firebase/Analytics (~> 6.26.0)
     - Firebase/CoreOnly (~> 6.26.0)
     - firebase_core
     - Flutter
-  - firebase_auth (0.18.1-1):
+  - firebase_auth (0.18.1-2):
     - Firebase/Auth (~> 6.26.0)
     - Firebase/CoreOnly (~> 6.26.0)
     - firebase_core
     - Flutter
-  - firebase_core (0.5.0):
+  - firebase_core (0.5.0-1):
     - Firebase/CoreOnly (~> 6.26.0)
     - Flutter
-  - firebase_crashlytics (0.2.1):
+  - firebase_crashlytics (0.2.1-1):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Crashlytics (~> 6.26.0)
     - firebase_core
-  - firebase_messaging (7.0.2):
+  - firebase_messaging (7.0.3):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Messaging (~> 6.26.0)
     - firebase_core
     - Flutter
-  - firebase_remote_config (0.4.0-1):
+  - firebase_ml_vision (0.1.1):
+    - Firebase/Core
+    - Firebase/MLVision
+    - Flutter
+  - firebase_remote_config (0.4.0-2):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/RemoteConfig (~> 6.26.0)
     - firebase_core
@@ -125,6 +132,24 @@ PODS:
     - GoogleUtilities/Reachability (~> 6.5)
     - GoogleUtilities/UserDefaults (~> 6.5)
     - Protobuf (>= 3.9.2, ~> 3.9)
+  - FirebaseMLCommon (0.20.1):
+    - FirebaseCore (~> 6.7)
+    - FirebaseInstanceID (~> 4.3)
+    - GoogleToolboxForMac/Logger (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+    - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
+    - GoogleUtilities/UserDefaults (~> 6.0)
+    - GTMSessionFetcher/Core (~> 1.1)
+    - Protobuf (~> 3.12)
+  - FirebaseMLVision (0.20.1):
+    - FirebaseCore (~> 6.7)
+    - FirebaseMLCommon (~> 0.20)
+    - GoogleAPIClientForREST/Core (~> 1.3)
+    - GoogleAPIClientForREST/Vision (~> 1.3)
+    - GoogleToolboxForMac/Logger (~> 2.1)
+    - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
+    - GTMSessionFetcher/Core (~> 1.1)
+    - Protobuf (~> 3.12)
   - FirebaseRemoteConfig (4.5.0):
     - FirebaseABTesting (~> 3.1)
     - FirebaseAnalyticsInterop (~> 1.4)
@@ -155,6 +180,11 @@ PODS:
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps (< 3.10)
+  - GoogleAPIClientForREST/Core (1.4.3):
+    - GTMSessionFetcher (>= 1.1.7)
+  - GoogleAPIClientForREST/Vision (1.4.3):
+    - GoogleAPIClientForREST/Core
+    - GTMSessionFetcher (>= 1.1.7)
   - GoogleAppMeasurement (6.6.0):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
     - GoogleUtilities/MethodSwizzler (~> 6.0)
@@ -170,6 +200,18 @@ PODS:
   - GoogleMaps/Base (3.9.0)
   - GoogleMaps/Maps (3.9.0):
     - GoogleMaps/Base
+  - GoogleToolboxForMac/DebugUtils (2.2.2):
+    - GoogleToolboxForMac/Defines (= 2.2.2)
+  - GoogleToolboxForMac/Defines (2.2.2)
+  - GoogleToolboxForMac/Logger (2.2.2):
+    - GoogleToolboxForMac/Defines (= 2.2.2)
+  - "GoogleToolboxForMac/NSData+zlib (2.2.2)":
+    - GoogleToolboxForMac/Defines (= 2.2.2)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.2.2)":
+    - GoogleToolboxForMac/DebugUtils (= 2.2.2)
+    - GoogleToolboxForMac/Defines (= 2.2.2)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.2)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.2.2)"
   - GoogleUserMessagingPlatform (1.2.0)
   - GoogleUtilities/AppDelegateSwizzler (6.7.2):
     - GoogleUtilities/Environment
@@ -190,7 +232,11 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
+  - GTMSessionFetcher (1.4.0):
+    - GTMSessionFetcher/Full (= 1.4.0)
   - GTMSessionFetcher/Core (1.4.0)
+  - GTMSessionFetcher/Full (1.4.0):
+    - GTMSessionFetcher/Core (= 1.4.0)
   - nanopb (1.30905.0):
     - nanopb/decode (= 1.30905.0)
     - nanopb/encode (= 1.30905.0)
@@ -231,6 +277,7 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_crashlytics (from `.symlinks/plugins/firebase_crashlytics/ios`)
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
+  - firebase_ml_vision (from `.symlinks/plugins/firebase_ml_vision/ios`)
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
   - Flutter (from `Flutter`)
   - flutter_device_locale (from `.symlinks/plugins/flutter_device_locale/ios`)
@@ -268,12 +315,16 @@ SPEC REPOS:
     - FirebaseInstallations
     - FirebaseInstanceID
     - FirebaseMessaging
+    - FirebaseMLCommon
+    - FirebaseMLVision
     - FirebaseRemoteConfig
     - Google-Mobile-Ads-SDK
+    - GoogleAPIClientForREST
     - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
     - GoogleMaps
+    - GoogleToolboxForMac
     - GoogleUserMessagingPlatform
     - GoogleUtilities
     - GTMSessionFetcher
@@ -302,6 +353,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_crashlytics/ios"
   firebase_messaging:
     :path: ".symlinks/plugins/firebase_messaging/ios"
+  firebase_ml_vision:
+    :path: ".symlinks/plugins/firebase_ml_vision/ios"
   firebase_remote_config:
     :path: ".symlinks/plugins/firebase_remote_config/ios"
   Flutter:
@@ -348,13 +401,14 @@ SPEC CHECKSUMS:
   cryptography_flutter: a2c541ba25ff28549f989f856dde126c961defcd
   esys_flutter_share: 403498dab005b36ce1f8d7aff377e81f0621b0b4
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
-  firebase_admob: 233f4bcc3b2855eefdad08bf9182a54d5e4ff4f1
-  firebase_analytics: 1d9cb866405f31cf24f0e307cfcc05d8d6daef87
-  firebase_auth: 7263cdea1ab32345b00be89bed437e6f427363b7
-  firebase_core: 3134fe79d257d430f163b558caf52a10a87efe8a
-  firebase_crashlytics: 9842a5355c9530013c18638769d9eaddd6c2c044
-  firebase_messaging: 2844c37f9ce87c0904b38fe435223161b1a71528
-  firebase_remote_config: 595d06855301af13c745e0adf68dd37853db3a18
+  firebase_admob: 28d8fe59823a186ba8c548f6bf35e2cf326004da
+  firebase_analytics: 31b66f23a42fa62bdf6a134af1d3a3a50bf5ac3e
+  firebase_auth: 8ae6798925da84bf8745668a73c936b148c1b04d
+  firebase_core: 00e54a4744164a6b5a250b96dd1ad5afaba7a342
+  firebase_crashlytics: d98ee7212fc6a7102c0f775a7cc30cd3f7041f5a
+  firebase_messaging: 666d9994651b1ecf8c582b52dd913f3fa58c17ef
+  firebase_ml_vision: c2f1777946937975249fb510bc546ab3139a553f
+  firebase_remote_config: 7973ef8891d1bcd592c08d8c2fd72b81218c3a2c
   FirebaseABTesting: 821a3a3e4a145987e80fee3657c4de1cb9adf693
   FirebaseAnalytics: 96634d356482d4f3af8fe459a0ebf19a99c71b75
   FirebaseAnalyticsInterop: 3f86269c38ae41f47afeb43ebf32a001f58fcdae
@@ -368,6 +422,8 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 6f5f680e65dc374397a483c32d1799ba822a395b
   FirebaseInstanceID: cef67c4967c7cecb56ea65d8acbb4834825c587b
   FirebaseMessaging: 29543feb343b09546ab3aa04d008ee8595b43c44
+  FirebaseMLCommon: 5e1184cfdddbd097f55cad75b598881d348d900f
+  FirebaseMLVision: 485358b97d3332669ecc4fed55ee360aaef2813d
   FirebaseRemoteConfig: 1725314c4b89d8853c876099ded037f11bee26db
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_device_locale: 94fbcacb38980dc1a9e31eb4ee8ae6d1c3a73042
@@ -380,10 +436,12 @@ SPEC CHECKSUMS:
   geolocator: 1ae40084cc6c1586ce5ad12cfc3fd38c64d05f2f
   Google-Mobile-Ads-SDK: af735e001ee534d9dd2ce0a87cd8c355b19844b5
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
+  GoogleAPIClientForREST: e2d95a611ac06a90d143c93bfd8597719f8b0938
   GoogleAppMeasurement: 67458367830514fb20fd9e233496f1eef9d90185
   GoogleDataTransport: 9a8a16f79feffc7f42096743de2a7c4815e84020
   GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
+  GoogleToolboxForMac: 800648f8b3127618c1b59c7f97684427630c5ea3
   GoogleUserMessagingPlatform: c85530d930ba509583aa5a6d50a10aca22cf8502
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
