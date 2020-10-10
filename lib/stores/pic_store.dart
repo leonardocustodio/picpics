@@ -641,26 +641,26 @@ abstract class _PicStore with Store {
   }
 
   @action
-  Future<void> getAiSuggestions() async {
+  Future<void> getAiSuggestions({bool useCloud = false}) async {
     if (aiTagsLoaded == true) {
       return;
     }
 
-    Directory tempDir = await getTemporaryDirectory();
-    String filePath = p.join(tempDir.path, 'tempphoto.jpg');
-    File createFile = File(filePath);
-    Uint8List photoData = await entity.thumbDataWithSize(800, 800, format: ThumbFormat.jpeg, quality: 100);
-    createFile.writeAsBytesSync(photoData);
+    // Directory tempDir = await getTemporaryDirectory();
+    // String filePath = p.join(tempDir.path, 'tempphoto.jpg');
+    // File createFile = File(filePath);
+    // Uint8List photoData = await entity.thumbDataWithSize(800, 800, format: ThumbFormat.jpeg, quality: 100);
+    // createFile.writeAsBytesSync(photoData);
 
-    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(createFile);
-    final ImageLabeler cloudLabeler = FirebaseVision.instance.cloudImageLabeler();
-    final List<ImageLabel> cloudLabels = await cloudLabeler.processImage(visionImage);
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
+    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
+    final List<ImageLabel> labels = await labeler.processImage(visionImage);
 
     aiSuggestions.clear();
     aiTagsLoaded = false;
 
     List<String> tags = [];
-    for (ImageLabel label in cloudLabels) {
+    for (ImageLabel label in labels) {
       final String labelText = label.text;
       final String entityId = label.entityId;
       final double confidence = label.confidence;
@@ -681,6 +681,6 @@ abstract class _PicStore with Store {
       aiSuggestions.add(tagStore);
     }
     aiTagsLoaded = true;
-    cloudLabeler.close();
+    labeler.close();
   }
 }
