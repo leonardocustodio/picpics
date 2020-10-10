@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacy_policy" : MessageLookupByLibrary.simpleMessage("गोपनीयता नीति"),
     "protect_with_encryption" : MessageLookupByLibrary.simpleMessage("केवल पिन पासवर्ड के साथ पहुंच योग्य एन्क्रिप्शन वाली अपनी निजी फ़ोटो को सुरक्षित रखें."),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("इस ऐप्लिकेशन को रेट करें"),
+    "recent_tags" : MessageLookupByLibrary.simpleMessage("Recent Tags"),
     "require_secret_key" : MessageLookupByLibrary.simpleMessage("गुप्त कुंजी की आवश्यकता है"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("पुनःस्थापन क्रय"),
     "save" : MessageLookupByLibrary.simpleMessage("सहेजें"),

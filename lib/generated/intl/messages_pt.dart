@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacy_policy" : MessageLookupByLibrary.simpleMessage("Política de privacidade"),
     "protect_with_encryption" : MessageLookupByLibrary.simpleMessage("Protect your personal photos with encryption only accessible with a PIN password."),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("Avalie esse app"),
+    "recent_tags" : MessageLookupByLibrary.simpleMessage("Recent Tags"),
     "require_secret_key" : MessageLookupByLibrary.simpleMessage("Require secret key"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Restaurar compra"),
     "save" : MessageLookupByLibrary.simpleMessage("economize"),

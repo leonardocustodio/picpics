@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacy_policy" : MessageLookupByLibrary.simpleMessage("隐私政策"),
     "protect_with_encryption" : MessageLookupByLibrary.simpleMessage("通过只能使用PIN密码进行访问的加密保护您的个人照片。"),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("评价这个App"),
+    "recent_tags" : MessageLookupByLibrary.simpleMessage("Recent Tags"),
     "require_secret_key" : MessageLookupByLibrary.simpleMessage("需要密钥"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("恢复购买"),
     "save" : MessageLookupByLibrary.simpleMessage("保存"),

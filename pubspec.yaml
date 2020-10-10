@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.0+392
+version: 1.6.0+393
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -90,13 +90,15 @@ dev_dependencies:
   mobx_codegen: ^1.1.1
   hive_generator: ^0.8.1
   image: ^2.1.4
+  googleapis: ^0.56.1
+  googleapis_auth: any
+  strings: ^0.1.2
 
 flutter:
   uses-material-design: true
   assets:
     - lib/images/
     - lib/anims/
-    - assets/
   fonts:
     - family: Lato
       fonts:

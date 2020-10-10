@@ -1225,6 +1225,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Recent Tags`
+  String get recent_tags {
+    return Intl.message(
+      'Recent Tags',
+      name: 'recent_tags',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -17,6 +17,7 @@ import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
@@ -338,6 +339,11 @@ class _PhotoCardState extends State<PhotoCard> {
                     textFocusNode: tagsFocusNode,
                     showEditTagModal: widget.showEditTagModal,
                     shouldChangeToSwipeMode: true,
+                    aiButtonTitle: picStore.aiTags ? 'Recent' : 'AI tags',
+                    onAiButtonTap: () {
+                      print('ai button tapped');
+                      picStore.switchAiTags();
+                    },
                     onTap: (tagName) {
                       print('do nothing');
                     },
@@ -380,9 +386,47 @@ class _PhotoCardState extends State<PhotoCard> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Observer(builder: (_) {
+                    String suggestionsTitle;
+
+                    if (picStore.aiTags == true) {
+                      if (picStore.aiTagsLoaded == false) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'AI Tags',
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff979a9b),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w300,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
+                            ),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 32.0, bottom: 32.0),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      suggestionsTitle = 'AI Tags';
+                    } else if (picStore.searchText != '') {
+                      suggestionsTitle = S.of(context).search_results;
+                    } else {
+                      suggestionsTitle = S.of(context).recent_tags;
+                    }
+
                     return TagsList(
-                      title: S.of(context).suggestions,
-                      tags: picStore.tagsSuggestions,
+                      title: suggestionsTitle,
+                      tags: picStore.aiTags ? picStore.aiSuggestions : picStore.tagsSuggestions,
                       tagStyle: TagStyle.GrayOutlined,
                       showEditTagModal: widget.showEditTagModal,
                       onTap: (tagId, tagName) async {

@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacy_policy" : MessageLookupByLibrary.simpleMessage("Integritetspolicy"),
     "protect_with_encryption" : MessageLookupByLibrary.simpleMessage("Skydda dina personliga foton med kryptering, endast tillgängliga med en PIN-kod."),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("Betygsätt appen"),
+    "recent_tags" : MessageLookupByLibrary.simpleMessage("Recent Tags"),
     "require_secret_key" : MessageLookupByLibrary.simpleMessage("Kräv hemlig nyckel"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("Återställ köp"),
     "save" : MessageLookupByLibrary.simpleMessage("spara"),
