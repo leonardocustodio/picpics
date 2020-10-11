@@ -223,9 +223,8 @@ mixin _$PicStore on _PicStore, Store {
       AsyncAction('_PicStore.getAiSuggestions');
 
   @override
-  Future<void> getAiSuggestions({bool useCloud = false}) {
-    return _$getAiSuggestionsAsyncAction
-        .run(() => super.getAiSuggestions(useCloud: useCloud));
+  Future<void> getAiSuggestions() {
+    return _$getAiSuggestionsAsyncAction.run(() => super.getAiSuggestions());
   }
 
   final _$_PicStoreActionController = ActionController(name: '_PicStore');

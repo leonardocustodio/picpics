@@ -33,7 +33,6 @@ class TagsList extends StatefulWidget {
   final Function showEditTagModal;
   final String aiButtonTitle;
   final Function onAiButtonTap;
-  final Function onCloudButtonTap;
   final bool shouldChangeToSwipeMode;
 
   const TagsList({
@@ -52,7 +51,6 @@ class TagsList extends StatefulWidget {
     this.title,
     this.aiButtonTitle,
     this.onAiButtonTap,
-    this.onCloudButtonTap,
     @required this.showEditTagModal,
     this.shouldChangeToSwipeMode = false,
   });
@@ -160,8 +158,7 @@ class _TagsListState extends State<TagsList> {
               if (widget.shouldChangeToSwipeMode) {
                 setState(() {
                   if (showSwiperInIndex == null) {
-                    showSwiperInIndex = widget.tags
-                        .indexWhere((element) => element.id == tag.id);
+                    showSwiperInIndex = widget.tags.indexWhere((element) => element.id == tag.id);
                   } else {
                     showSwiperInIndex = null;
                   }
@@ -182,22 +179,17 @@ class _TagsListState extends State<TagsList> {
               child: showSwiperInIndex != i
                   ? tag.id != kSecretTagKey
                       ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                           child: Text(
                             tag.name,
                             textScaleFactor: 1.0,
-                            style: widget.tagStyle == TagStyle.MultiColored
-                                ? kWhiteTextStyle
-                                : kGrayTextStyle,
+                            style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                           ),
                         )
                       : Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5.2, horizontal: 19.0),
-                          child: widget.tagStyle == TagStyle.MultiColored
-                              ? Image.asset('lib/images/locktagwhite.png')
-                              : Image.asset('lib/images/locktaggray.png'),
+                          padding: const EdgeInsets.symmetric(vertical: 5.2, horizontal: 19.0),
+                          child:
+                              widget.tagStyle == TagStyle.MultiColored ? Image.asset('lib/images/locktagwhite.png') : Image.asset('lib/images/locktaggray.png'),
                         )
                   : CustomAnimation<double>(
                       control: CustomAnimationControl.LOOP,
@@ -251,15 +243,11 @@ class _TagsListState extends State<TagsList> {
                             Opacity(
                               opacity: firstOpct,
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 16.0),
+                                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                                 child: Text(
                                   tag.name,
                                   textScaleFactor: 1.0,
-                                  style:
-                                      widget.tagStyle == TagStyle.MultiColored
-                                          ? kWhiteTextStyle
-                                          : kGrayTextStyle,
+                                  style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                                 ),
                               ),
                             ),
@@ -285,9 +273,7 @@ class _TagsListState extends State<TagsList> {
                               child: Text(
                                 S.of(context).delete,
                                 textScaleFactor: 1.0,
-                                style: widget.tagStyle == TagStyle.MultiColored
-                                    ? kWhiteTextStyle
-                                    : kGrayTextStyle,
+                                style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
                               ),
                             ),
                           ],
@@ -376,12 +362,9 @@ class _TagsListState extends State<TagsList> {
                           ),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.only(left: 6.0),
-                            enabledBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            focusedBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            border:
-                                OutlineInputBorder(borderSide: BorderSide.none),
+                            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                            focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                            border: OutlineInputBorder(borderSide: BorderSide.none),
                             hintText: S.of(context).add_tags,
                             hintStyle: TextStyle(
                               fontFamily: 'Lato',
@@ -399,8 +382,7 @@ class _TagsListState extends State<TagsList> {
                           padding: const EdgeInsets.all(0),
                           minSize: 30,
                           onPressed: () {
-                            widget
-                                .onSubmitted(widget.textEditingController.text);
+                            widget.onSubmitted(widget.textEditingController.text);
                           },
                           child: Container(
                             child: Image.asset('lib/images/plusaddtagico.png'),
@@ -422,24 +404,6 @@ class _TagsListState extends State<TagsList> {
                   child: Center(
                     child: Text(
                       widget.aiButtonTitle,
-                      textScaleFactor: 1.0,
-                      style: kGrayTextStyle,
-                    ),
-                  ),
-                ),
-              ),
-              CupertinoButton(
-                padding: const EdgeInsets.all(0),
-                onPressed: widget.onCloudButtonTap,
-                child: Container(
-                  // width: 30.0,
-                  height: 30.0,
-                  decoration: kGrayBoxDecoration,
-                  margin: const EdgeInsets.only(left: 8.0),
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Center(
-                    child: Text(
-                      'Cloud',
                       textScaleFactor: 1.0,
                       style: kGrayTextStyle,
                     ),
