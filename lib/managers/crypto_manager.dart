@@ -214,19 +214,19 @@ class Crypto {
       return;
     }
 
-    Directory appSupportDir = await getApplicationSupportDirectory();
+    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
     String photosPath = p.join('photos', title);
     String thumbnailsPath = p.join('thumbnails', title);
 
     final dirExists =
-        await Directory(p.join(appSupportDir.path, 'photos')).exists();
+        await Directory(p.join(appDocumentsDir.path, 'photos')).exists();
     if (!dirExists) {
       Directory(photosPath).create();
       Directory(thumbnailsPath).create();
     }
 
-    String finalPhotoPath = p.join(appSupportDir.path, photosPath);
-    String finalThumbPath = p.join(appSupportDir.path, thumbnailsPath);
+    String finalPhotoPath = p.join(appDocumentsDir.path, photosPath);
+    String finalThumbPath = p.join(appDocumentsDir.path, thumbnailsPath);
 
     //print('Encrypting....');
     // Using 96 bytes nonce
@@ -262,7 +262,7 @@ class Crypto {
 
   static Future<Uint8List> decryptImage(
       String imagePath, SecretKey secretKey, Nonce nonce) async {
-    Directory appSupportDir = await getApplicationSupportDirectory();
+    Directory appSupportDir = await getApplicationDocumentsDirectory();
     String filePath = p.join(appSupportDir.path, imagePath);
 
     final File file = File(filePath);
@@ -270,7 +270,8 @@ class Crypto {
     print('Secret Key: ${secretKey.toString()}');
     print('Nonce: ${nonce.toString()}');
     print('File exists: ${await file.exists()}');
-    print('App Support Dir: ${(await getApplicationSupportDirectory()).path}');
+    print(
+        'App Support Dir: ${(await getApplicationDocumentsDirectory()).path}');
 
     Uint8List decryptedData;
     print('Decrypting image: $filePath');
