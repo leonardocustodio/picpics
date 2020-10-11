@@ -108,10 +108,12 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       return;
     }
 
-    int freePrivatePics = await appStore.freePrivatePics;
-    if (appStore.totalPrivatePics >= freePrivatePics && picStore.isPrivate == false) {
-      Navigator.pushNamed(context, PremiumScreen.id);
-      return;
+    if (appStore.isPremium == false) {
+      int freePrivatePics = await appStore.freePrivatePics;
+      if (appStore.totalPrivatePics >= freePrivatePics && picStore.isPrivate == false) {
+        Navigator.pushNamed(context, PremiumScreen.id);
+        return;
+      }
     }
 
     if (appStore.keepAskingToDelete == false && picStore.isPrivate == false) {

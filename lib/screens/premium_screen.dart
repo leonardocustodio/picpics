@@ -27,6 +27,40 @@ class _PremiumScreenState extends State<PremiumScreen> {
   bool isLoading = false;
   PurchasesErrorCode getOfferingError;
 
+  void showError({String title, String description}) {
+    setState(() {
+      isLoading = false;
+    });
+
+    showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return PlatformAlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 10.0),
+                  child: Text(description),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            PlatformDialogAction(
+              child: Text(S.of(context).ok),
+              actionType: ActionType.Preferred,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   void getOffers() async {
     try {
       Offerings offerings = await Purchases.getOfferings();
@@ -51,14 +85,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
         }
       }
     } on PlatformException catch (e) {
-      // optional error handling
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       print('#### Error Code: ${errorCode}');
-//      if (errorCode == PurchasesErrorCode.storeProblemError) {
-//        getOfferingError = errorCode;
-//      } else {
-//        errorCode;
-//      }
       setState(() {
         getOfferingError = errorCode;
       });
@@ -78,28 +106,22 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
     try {
       PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
-      if (purchaserInfo.entitlements.all["Premium"].isActive) {
-        // Unlock that great "pro" content
-        setState(() {
-          isLoading = false;
-        });
 
-        print('know you are fucking pro!');
+      if (purchaserInfo.entitlements.all["Premium"] != null) {
+        if (purchaserInfo.entitlements.all["Premium"].isActive) {
+          // Unlock that great "pro" content
+          setState(() {
+            isLoading = false;
+          });
 
-        appStore.setIsPremium(true);
-        Navigator.pop(context);
+          appStore.setIsPremium(true);
+          Navigator.pop(context);
+          return;
+        }
       }
+      showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
     } on PlatformException catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-
-      var errorCode = PurchasesErrorHelper.getErrorCode(e);
-//      print('Error Code: $errorCode');
-      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-        print(e);
-//        showError(e);
-      }
+      showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
     }
   }
 
@@ -111,50 +133,22 @@ class _PremiumScreenState extends State<PremiumScreen> {
     try {
       PurchaserInfo restoredInfo = await Purchases.restoreTransactions();
       // ... check restored purchaserInfo to see if entitlement is now active
-      if (restoredInfo.entitlements.all["Premium"].isActive) {
-        setState(() {
-          isLoading = false;
-        });
-        // Unlock that great "pro" content
-        print('know you are fucking pro!');
-        appStore.setIsPremium(true);
-        Navigator.pop(context);
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-
-        showDialog<void>(
-          context: context,
-          builder: (BuildContext context) {
-            return PlatformAlertDialog(
-              title: Text(S.of(context).no_previous_purchase),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: Text(S.of(context).no_valid_subscription),
-                    ),
-                  ],
-                ),
-              ),
-              actions: <Widget>[
-                PlatformDialogAction(
-                  child: Text(S.of(context).ok),
-                  actionType: ActionType.Preferred,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            );
-          },
-        );
+      if (restoredInfo.entitlements.all["Premium"] != null) {
+        if (restoredInfo.entitlements.all["Premium"].isActive) {
+          setState(() {
+            isLoading = false;
+          });
+          // Unlock that great "pro" content
+          print('know you are fucking pro!');
+          appStore.setIsPremium(true);
+          Navigator.pop(context);
+          return;
+        }
       }
+      showError(title: S.of(context).no_previous_purchase, description: S.of(context).no_valid_subscription);
     } on PlatformException catch (e) {
-      // Error restoring purchases
       print(e);
+      showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
     }
   }
 
