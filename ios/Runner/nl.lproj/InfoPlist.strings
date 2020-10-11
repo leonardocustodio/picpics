@@ -6,8 +6,8 @@
   
 */
 
-NSLocationAlwaysAndWhenInUseUsageDescription = "Als u wilt dat onze app uw locatie aan uw foto&apos;s toevoegt, hebben we toestemming nodig om toegang te krijgen tot uw locatie.";
-NSLocationAlwaysUsageDescription = "Als u wilt dat onze app uw locatie aan uw foto&apos;s toevoegt, hebben we toestemming nodig om toegang te krijgen tot uw locatie.";
-NSLocationWhenInUseUsageDescription = "Als u wilt dat onze app uw locatie aan uw foto&apos;s toevoegt, hebben we toestemming nodig om toegang te krijgen tot uw locatie.";
-NSPhotoLibraryAddUsageDescription = "Om onze app goed te laten werken, hebben we volledige toegang tot uw fotogalerij nodig.";
-NSPhotoLibraryUsageDescription = "Om onze app goed te laten werken, hebben we volledige toegang tot uw fotogalerij nodig.";
+NSLocationAlwaysAndWhenInUseUsageDescription = "Als u wilt dat onze app uw locatie aan uw foto's toevoegt, hebben we toestemming nodig om toegang te krijgen tot uw locatie.";
+NSLocationAlwaysUsageDescription = "Als u wilt dat onze app uw locatie aan uw foto's toevoegt, hebben we toestemming nodig om toegang te krijgen tot uw locatie.";
+NSLocationWhenInUseUsageDescription = "Als u wilt dat onze app uw locatie aan uw foto's toevoegt, hebben we toestemming nodig om toegang te krijgen tot uw locatie.";
+NSPhotoLibraryAddUsageDescription = "We hebben toegang nodig tot uw fotobibliotheek zodat u uw foto's kunt organiseren met picPics. Maak je geen zorgen, je foto's zullen je apparaat nooit verlaten!";
+NSPhotoLibraryUsageDescription = "We hebben toegang nodig tot uw fotobibliotheek zodat u uw foto's kunt organiseren met picPics. Maak je geen zorgen, je foto's zullen je apparaat nooit verlaten!";

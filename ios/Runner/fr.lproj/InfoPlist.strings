@@ -9,5 +9,5 @@
 NSLocationAlwaysAndWhenInUseUsageDescription = "Si vous souhaitez que notre application ajoute votre position à vos photos, nous avons besoin d'une autorisation pour accéder à votre position.";
 NSLocationAlwaysUsageDescription = "Si vous souhaitez que notre application ajoute votre position à vos photos, nous avons besoin d'une autorisation pour accéder à votre position.";
 NSLocationWhenInUseUsageDescription = "Si vous souhaitez que notre application ajoute votre position à vos photos, nous avons besoin d'une autorisation pour accéder à votre position.";
-NSPhotoLibraryAddUsageDescription = "Pour que notre application fonctionne correctement, nous avons besoin d'un accès complet à votre galerie de photos.";
-NSPhotoLibraryUsageDescription = "Pour que notre application fonctionne correctement, nous avons besoin d'un accès complet à votre galerie de photos.";
+NSPhotoLibraryAddUsageDescription = "Nous devons accéder à votre photothèque pour que vous puissiez commencer à organiser vos photos avec picPics. Ne vous inquiétez pas, vos photos ne quitteront jamais votre appareil!";
+NSPhotoLibraryUsageDescription = "Nous devons accéder à votre photothèque pour que vous puissiez commencer à organiser vos photos avec picPics. Ne vous inquiétez pas, vos photos ne quitteront jamais votre appareil!";
