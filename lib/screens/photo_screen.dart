@@ -66,7 +66,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
   showEditTagModal() {
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
-      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
+      String tagName = DatabaseManager.instance
+          .getTagName(DatabaseManager.instance.selectedTagKey);
       alertInputController.text = tagName;
 
       print('showModal');
@@ -77,11 +78,13 @@ class _PhotoScreenState extends State<PhotoScreen> {
           return EditTagModal(
             alertInputController: alertInputController,
             onPressedDelete: () {
-              galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
+              galleryStore.deleteTag(
+                  tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
             onPressedOk: () {
-              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+              print(
+                  'Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 galleryStore.editTag(
                   oldTagKey: DatabaseManager.instance.selectedTagKey,
@@ -103,7 +106,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     PicStore picStore = galleryStore.thumbnailsPics[index];
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: true);
 
     return PhotoViewGalleryPageOptions.customChild(
       child: Container(
@@ -160,7 +164,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   Widget _buildThumbnails(BuildContext context, int index) {
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(galleryStore.thumbnailsPics[index], isOriginal: false);
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
+        galleryStore.thumbnailsPics[index],
+        isOriginal: false);
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
@@ -213,7 +219,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
     super.didChangeDependencies();
     galleryStore = Provider.of<GalleryStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
-    galleryPageController = PageController(initialPage: galleryStore.selectedThumbnail);
+    galleryPageController =
+        PageController(initialPage: galleryStore.selectedThumbnail);
   }
 
   @override
@@ -235,7 +242,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
                     width: 20.0,
                     height: 20.0,
                     child: CircularProgressIndicator(
-                      value: event == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                      value: event == null
+                          ? 0
+                          : event.cumulativeBytesLoaded /
+                              event.expectedTotalBytes,
                     ),
                   ),
                 ),
@@ -265,8 +275,14 @@ class _PhotoScreenState extends State<PhotoScreen> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                              Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                              Colors.black
+                                  .withOpacity(0.7)
+                                  .withOpacity(0.37)
+                                  .withOpacity(0.3),
+                              Colors.black
+                                  .withOpacity(1.0)
+                                  .withOpacity(0.37)
+                                  .withOpacity(0.3)
                             ],
                             stops: [0, 0.40625],
                           ),
@@ -277,18 +293,22 @@ class _PhotoScreenState extends State<PhotoScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               CupertinoButton(
-                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Image.asset('lib/images/backarrowwithdropshadow.png'),
+                                child: Image.asset(
+                                    'lib/images/backarrowwithdropshadow.png'),
                               ),
                               CupertinoButton(
-                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
                                   galleryStore.currentThumbnailPic.sharePic();
                                 },
-                                child: Image.asset('lib/images/sharebuttonwithdropshadow.png'),
+                                child: Image.asset(
+                                    'lib/images/sharebuttonwithdropshadow.png'),
                               ),
                             ],
                           ),
@@ -313,8 +333,14 @@ class _PhotoScreenState extends State<PhotoScreen> {
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
-                                Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                                Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                                Colors.black
+                                    .withOpacity(0.7)
+                                    .withOpacity(0.37)
+                                    .withOpacity(0.3),
+                                Colors.black
+                                    .withOpacity(1.0)
+                                    .withOpacity(0.37)
+                                    .withOpacity(0.3)
                               ],
                               stops: [0, 0.40625],
                             ),
@@ -328,38 +354,48 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                 children: <Widget>[
                                   Observer(builder: (_) {
                                     return Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         RichText(
                                           textScaleFactor: 1.0,
                                           text: new TextSpan(
                                             children: [
                                               new TextSpan(
-                                                  text: galleryStore.currentThumbnailPic.specificLocation ?? S.of(context).photo_location,
+                                                  text: galleryStore
+                                                          .currentThumbnailPic
+                                                          .specificLocation ??
+                                                      S
+                                                          .of(context)
+                                                          .photo_location,
                                                   style: TextStyle(
                                                     fontFamily: 'NotoSans',
                                                     color: kWhiteColor,
                                                     fontSize: 17,
                                                     fontWeight: FontWeight.w400,
                                                     fontStyle: FontStyle.normal,
-                                                    letterSpacing: -0.4099999964237213,
+                                                    letterSpacing:
+                                                        -0.4099999964237213,
                                                   )),
                                               new TextSpan(
-                                                text: '  ${galleryStore.currentThumbnailPic.generalLocation ?? S.of(context).country}',
+                                                text:
+                                                    '  ${galleryStore.currentThumbnailPic.generalLocation ?? S.of(context).country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w300,
                                                   fontStyle: FontStyle.normal,
-                                                  letterSpacing: -0.4099999964237213,
+                                                  letterSpacing:
+                                                      -0.4099999964237213,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
                                         Text(
-                                          dateFormat(galleryStore.currentThumbnailPic.createdAt),
+                                          dateFormat(galleryStore
+                                              .currentThumbnailPic.createdAt),
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
@@ -377,15 +413,18 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                     return Padding(
                                       padding: const EdgeInsets.only(top: 16.0),
                                       child: TagsList(
-                                        tags: galleryStore.currentThumbnailPic.tags,
+                                        tags: galleryStore
+                                            .currentThumbnailPic.tags,
                                         tagStyle: TagStyle.MultiColored,
                                         addTagButton: () {
-                                          galleryStore.setCurrentPic(galleryStore.currentThumbnailPic);
+                                          galleryStore.setCurrentPic(
+                                              galleryStore.currentThumbnailPic);
 
                                           if (!tabsStore.modalCard) {
                                             tabsStore.setModalCard(true);
                                           }
-                                          Navigator.pop(context, 'show_keyboard');
+                                          Navigator.pop(
+                                              context, 'show_keyboard');
                                         },
                                         onTap: (tagName) {
                                           print('ignore click');
@@ -416,8 +455,14 @@ class _PhotoScreenState extends State<PhotoScreen> {
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                              Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                              Colors.black
+                                  .withOpacity(0.7)
+                                  .withOpacity(0.37)
+                                  .withOpacity(0.3),
+                              Colors.black
+                                  .withOpacity(1.0)
+                                  .withOpacity(0.37)
+                                  .withOpacity(0.3)
                             ],
                             stops: [0, 0.40625],
                           ),
@@ -434,7 +479,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: _buildThumbnails,
-                                    itemCount: galleryStore.thumbnailsPics.length,
+                                    itemCount:
+                                        galleryStore.thumbnailsPics.length,
                                     padding: const EdgeInsets.only(left: 8.0),
                                   ),
                                 ),
