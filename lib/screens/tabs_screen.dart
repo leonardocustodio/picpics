@@ -655,7 +655,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
-                                        title: S.of(context).suggestions,
+                                        title: galleryStore.searchText != '' ? S.of(context).search_results : S.of(context).recent_tags,
                                         tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,

@@ -392,24 +392,25 @@ class _TagsListState extends State<TagsList> {
                   ),
                 ),
               ),
-              CupertinoButton(
-                padding: const EdgeInsets.all(0),
-                onPressed: widget.onAiButtonTap,
-                child: Container(
-                  // width: 30.0,
-                  height: 30.0,
-                  decoration: kGrayBoxDecoration,
-                  margin: const EdgeInsets.only(left: 8.0),
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Center(
-                    child: Text(
-                      widget.aiButtonTitle,
-                      textScaleFactor: 1.0,
-                      style: kGrayTextStyle,
+              if (widget.onAiButtonTap != null)
+                CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: widget.onAiButtonTap,
+                  child: Container(
+                    // width: 30.0,
+                    height: 30.0,
+                    decoration: kGrayBoxDecoration,
+                    margin: const EdgeInsets.only(left: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Center(
+                      child: Text(
+                        widget.aiButtonTitle,
+                        textScaleFactor: 1.0,
+                        style: kGrayTextStyle,
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
           ),
         ),

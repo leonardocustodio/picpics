@@ -527,7 +527,7 @@ class _TaggedTabState extends State<TaggedTab> {
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
-                                galleryStore.showSearchTagsResults ? S.of(context).search_results : S.of(context).suggestions,
+                                galleryStore.showSearchTagsResults ? S.of(context).search_results : S.of(context).recent_tags,
                                 textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
