@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.0+396
+version: 1.6.0+398
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

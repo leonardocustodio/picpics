@@ -613,6 +613,9 @@ abstract class _PicStore with Store {
   bool aiTags = false;
 
   @action
+  void setAiTags(bool value) => aiTags = value;
+
+  @action
   void switchAiTags() {
     aiTags = !aiTags;
 
@@ -625,6 +628,9 @@ abstract class _PicStore with Store {
 
   @observable
   bool aiTagsLoaded = false;
+
+  @action
+  void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
 
   Future<List<String>> translateTags(List<String> tagsText) async {
     final _credentials = new ServiceAccountCredentials.fromJson(r'''
@@ -667,23 +673,25 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> getAiSuggestions({bool useCloud = false}) async {
-    if (aiTagsLoaded == true) {
-      return;
-    }
-
+    // if (aiTagsLoaded == true) {
+    //   return;
+    // }
+    //
     // Directory tempDir = await getTemporaryDirectory();
     // String filePath = p.join(tempDir.path, 'tempphoto.jpg');
     // File createFile = File(filePath);
     // Uint8List photoData = await entity.thumbDataWithSize(800, 800, format: ThumbFormat.jpeg, quality: 100);
     // createFile.writeAsBytesSync(photoData);
+    aiSuggestions.clear();
+    aiTagsLoaded = false;
 
     final FirebaseVisionImage visionImage =
         FirebaseVisionImage.fromFile(await entity.file);
-    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
-    final List<ImageLabel> labels = await labeler.processImage(visionImage);
 
-    aiSuggestions.clear();
-    aiTagsLoaded = false;
+    final ImageLabeler labeler = useCloud
+        ? FirebaseVision.instance.cloudImageLabeler()
+        : FirebaseVision.instance.imageLabeler();
+    final List<ImageLabel> labels = await labeler.processImage(visionImage);
 
     List<String> tags = [];
     for (ImageLabel label in labels) {

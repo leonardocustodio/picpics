@@ -288,11 +288,33 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   @override
+  void setAiTags(bool value) {
+    final _$actionInfo =
+        _$_PicStoreActionController.startAction(name: '_PicStore.setAiTags');
+    try {
+      return super.setAiTags(value);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void switchAiTags() {
     final _$actionInfo =
         _$_PicStoreActionController.startAction(name: '_PicStore.switchAiTags');
     try {
       return super.switchAiTags();
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setAiTagsLoaded(bool value) {
+    final _$actionInfo = _$_PicStoreActionController.startAction(
+        name: '_PicStore.setAiTagsLoaded');
+    try {
+      return super.setAiTagsLoaded(value);
     } finally {
       _$_PicStoreActionController.endAction(_$actionInfo);
     }
