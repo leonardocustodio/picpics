@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,6 +16,7 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/labels.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:googleapis/translate/v3.dart';
@@ -146,7 +148,6 @@ abstract class _PicStore with Store {
       return;
     }
     setDeletedFromCameraRoll(false);
-    entity = null;
   }
 
   @action
@@ -167,8 +168,10 @@ abstract class _PicStore with Store {
 
   Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
     print('Deleting $photoPath and $thumbPath');
-    File photoFile = File(photoPath);
-    File thumbFile = File(thumbPath);
+    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+
+    File photoFile = File(p.join(appDocumentsDir.path, photoPath));
+    File thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
       print('Pic has entity? ${entity == null ? false : true}');
@@ -243,14 +246,17 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> setIsPrivate(bool value) async {
-    isPrivate = value;
-
-    if (isPrivate) {
+    if (value) {
       await addSecretTagToPic();
     } else {
       await removeSecretTagFromPic();
       await deleteEncryptedPic(copyToCameraRoll: true);
     }
+
+    isPrivate = value;
+    print('Pic isPrivate: $value');
+    print('Pic Entity Exists: ${entity == null ? false : true}');
+    print('Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
 
     var picsBox = Hive.box('pics');
     Pic getPic = picsBox.get(photoId);
@@ -436,7 +442,7 @@ abstract class _PicStore with Store {
       specificLocation: null,
       generalLocation: null,
       tags: [tagKey],
-      isPrivate: isPrivate,
+      isPrivate: tagKey == kSecretTagKey ? true : false,
     );
 
     await picsBox.put(photoId, pic);
@@ -594,11 +600,11 @@ abstract class _PicStore with Store {
   void setAiTags(bool value) => aiTags = value;
 
   @action
-  void switchAiTags() {
+  void switchAiTags(BuildContext context) {
     aiTags = !aiTags;
 
     if (aiTags == true) {
-      getAiSuggestions();
+      getAiSuggestions(context);
     }
   }
 
@@ -610,7 +616,12 @@ abstract class _PicStore with Store {
   @action
   void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
 
-  Future<List<String>> translateTags(List<String> tagsText) async {
+  Future<List<String>> translateTags(List<String> tagsText, BuildContext context) async {
+    if (appStore.appLanguage.split('_')[0] == 'pt') {
+      print('Offline translating it...');
+      return tagsText.map((e) => Labels.labelTranslation(e, context)).toList();
+    }
+
     final _credentials = new ServiceAccountCredentials.fromJson(r'''
 {
   "type": "service_account",
@@ -647,7 +658,7 @@ abstract class _PicStore with Store {
   }
 
   @action
-  Future<void> getAiSuggestions() async {
+  Future<void> getAiSuggestions(BuildContext context) async {
     if (aiTagsLoaded == true) {
       return;
     }
@@ -667,7 +678,7 @@ abstract class _PicStore with Store {
       tags.add(labelText);
     }
 
-    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags) : tags;
+    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
 
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);

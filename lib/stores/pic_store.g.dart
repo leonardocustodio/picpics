@@ -223,8 +223,9 @@ mixin _$PicStore on _PicStore, Store {
       AsyncAction('_PicStore.getAiSuggestions');
 
   @override
-  Future<void> getAiSuggestions() {
-    return _$getAiSuggestionsAsyncAction.run(() => super.getAiSuggestions());
+  Future<void> getAiSuggestions(BuildContext context) {
+    return _$getAiSuggestionsAsyncAction
+        .run(() => super.getAiSuggestions(context));
   }
 
   final _$_PicStoreActionController = ActionController(name: '_PicStore');
@@ -298,11 +299,11 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   @override
-  void switchAiTags() {
+  void switchAiTags(BuildContext context) {
     final _$actionInfo =
         _$_PicStoreActionController.startAction(name: '_PicStore.switchAiTags');
     try {
-      return super.switchAiTags();
+      return super.switchAiTags(context);
     } finally {
       _$_PicStoreActionController.endAction(_$actionInfo);
     }
