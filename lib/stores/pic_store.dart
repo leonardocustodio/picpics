@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,6 +16,7 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/labels.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:googleapis/translate/v3.dart';
@@ -610,7 +612,11 @@ abstract class _PicStore with Store {
   @action
   void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
 
-  Future<List<String>> translateTags(List<String> tagsText) async {
+  Future<List<String>> translateTags(List<String> tagsText, BuildContext context) async {
+    if (appStore.appLanguage.split('_')[0] == 'pt') {
+      return tagsText.map((e) => Labels.labelTranslation(e, context)).toList();
+    }
+
     final _credentials = new ServiceAccountCredentials.fromJson(r'''
 {
   "type": "service_account",
@@ -647,7 +653,7 @@ abstract class _PicStore with Store {
   }
 
   @action
-  Future<void> getAiSuggestions() async {
+  Future<void> getAiSuggestions(BuildContext context) async {
     if (aiTagsLoaded == true) {
       return;
     }
