@@ -596,11 +596,11 @@ abstract class _PicStore with Store {
   void setAiTags(bool value) => aiTags = value;
 
   @action
-  void switchAiTags() {
+  void switchAiTags(BuildContext context) {
     aiTags = !aiTags;
 
     if (aiTags == true) {
-      getAiSuggestions();
+      getAiSuggestions(context);
     }
   }
 
@@ -614,6 +614,7 @@ abstract class _PicStore with Store {
 
   Future<List<String>> translateTags(List<String> tagsText, BuildContext context) async {
     if (appStore.appLanguage.split('_')[0] == 'pt') {
+      print('Offline translating it...');
       return tagsText.map((e) => Labels.labelTranslation(e, context)).toList();
     }
 
@@ -673,7 +674,7 @@ abstract class _PicStore with Store {
       tags.add(labelText);
     }
 
-    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags) : tags;
+    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
 
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);

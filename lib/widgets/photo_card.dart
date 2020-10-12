@@ -342,7 +342,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     aiButtonTitle: picStore.aiTags ? 'Recent' : S.of(context).suggestions,
                     onAiButtonTap: () {
                       print('ai button tapped');
-                      picStore.switchAiTags();
+                      picStore.switchAiTags(context);
                     },
                     onTap: (tagName) {
                       print('do nothing');
