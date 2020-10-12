@@ -1020,7 +1020,7 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> setPrivatePic({PicStore picStore, bool private}) async {
-    currentPic.setIsPrivate(private);
+    await currentPic.setIsPrivate(private);
 
     if (currentPic.isPrivate == true) {
       if (!privatePics.contains(currentPic)) {

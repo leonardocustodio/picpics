@@ -148,7 +148,6 @@ abstract class _PicStore with Store {
       return;
     }
     setDeletedFromCameraRoll(false);
-    entity = null;
   }
 
   @action
@@ -169,8 +168,10 @@ abstract class _PicStore with Store {
 
   Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
     print('Deleting $photoPath and $thumbPath');
-    File photoFile = File(photoPath);
-    File thumbFile = File(thumbPath);
+    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+
+    File photoFile = File(p.join(appDocumentsDir.path, photoPath));
+    File thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
       print('Pic has entity? ${entity == null ? false : true}');
@@ -245,14 +246,17 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> setIsPrivate(bool value) async {
-    isPrivate = value;
-
-    if (isPrivate) {
+    if (value) {
       await addSecretTagToPic();
     } else {
       await removeSecretTagFromPic();
       await deleteEncryptedPic(copyToCameraRoll: true);
     }
+
+    isPrivate = value;
+    print('Pic isPrivate: $value');
+    print('Pic Entity Exists: ${entity == null ? false : true}');
+    print('Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
 
     var picsBox = Hive.box('pics');
     Pic getPic = picsBox.get(photoId);
@@ -438,7 +442,7 @@ abstract class _PicStore with Store {
       specificLocation: null,
       generalLocation: null,
       tags: [tagKey],
-      isPrivate: isPrivate,
+      isPrivate: tagKey == kSecretTagKey ? true : false,
     );
 
     await picsBox.put(photoId, pic);
