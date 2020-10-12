@@ -9,5 +9,5 @@
 NSLocationAlwaysAndWhenInUseUsageDescription = "Om du vill att vår app ska lägga till din plats på dina foton behöver vi auktorisation för att komma åt din plats.";
 NSLocationAlwaysUsageDescription = "Om du vill att vår app ska lägga till din plats på dina foton behöver vi auktorisation för att komma åt din plats.";
 NSLocationWhenInUseUsageDescription = "Om du vill att vår app ska lägga till din plats på dina foton behöver vi auktorisation för att komma åt din plats.";
-NSPhotoLibraryAddUsageDescription = "För att vår app ska fungera ordentligt behöver vi full åtkomst till ditt fotogalleri.";
-NSPhotoLibraryUsageDescription = "För att vår app ska fungera ordentligt behöver vi full åtkomst till ditt fotogalleri.";
+NSPhotoLibraryAddUsageDescription = "Vi behöver åtkomst till ditt fotobibliotek så att du kan börja organisera dina foton med picPics. Oroa dig inte, dina foton lämnar aldrig din enhet!";
+NSPhotoLibraryUsageDescription = "Vi behöver åtkomst till ditt fotobibliotek så att du kan börja organisera dina foton med picPics. Oroa dig inte, dina foton lämnar aldrig din enhet!";

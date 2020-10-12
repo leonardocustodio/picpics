@@ -9,5 +9,5 @@
 NSLocationAlwaysAndWhenInUseUsageDescription = "如果您希望我们的应用将您的位置添加到您的照片中，则需要获得访问您位置的授权。";
 NSLocationAlwaysUsageDescription = "如果您希望我们的应用将您的位置添加到您的照片中，则需要获得访问您位置的授权。";
 NSLocationWhenInUseUsageDescription = "如果您希望我们的应用将您的位置添加到您的照片中，则需要获得访问您位置的授权。";
-NSPhotoLibraryAddUsageDescription = "为了使我们的应用正常运行，我们需要完全访问您的照相馆。";
-NSPhotoLibraryUsageDescription = "为了使我们的应用正常运行，我们需要完全访问您的照相馆。";
+NSPhotoLibraryAddUsageDescription = "我们需要访问您的照片库，以便您可以开始使用picPics整理照片。 不用担心您的照片永远不会离开设备！";
+NSPhotoLibraryUsageDescription = "我们需要访问您的照片库，以便您可以开始使用picPics整理照片。 不用担心您的照片永远不会离开设备！";

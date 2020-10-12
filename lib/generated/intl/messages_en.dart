@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "all_photos_were_tagged" : MessageLookupByLibrary.simpleMessage("There are no more photos to organize."),
     "all_search_tags" : MessageLookupByLibrary.simpleMessage("All Search Tags"),
     "always" : MessageLookupByLibrary.simpleMessage("Always"),
+    "ask_photo_library_permission" : MessageLookupByLibrary.simpleMessage("We need access to your photo library so you can start organizing your photos with picPics. Don\'t worry your data will never leave your device!"),
     "auto_renewable_first_part" : MessageLookupByLibrary.simpleMessage("The subscription is "),
     "auto_renewable_second_part" : MessageLookupByLibrary.simpleMessage("auto-renewable."),
     "cancel" : MessageLookupByLibrary.simpleMessage("Cancel"),

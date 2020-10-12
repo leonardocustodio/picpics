@@ -1235,6 +1235,16 @@ class S {
       args: [],
     );
   }
+
+  /// `We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!`
+  String get ask_photo_library_permission {
+    return Intl.message(
+      'We need access to your photo library so you can start organizing your photos with picPics. Don\'t worry your data will never leave your device!',
+      name: 'ask_photo_library_permission',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
