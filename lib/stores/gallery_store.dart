@@ -1055,6 +1055,7 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> setPrivatePic({PicStore picStore, bool private}) async {
+    String originalPhotoId = '${currentPic.photoId}';
     await currentPic.setIsPrivate(private);
 
     if (currentPic.isPrivate == true) {
@@ -1080,6 +1081,33 @@ abstract class _GalleryStore with Store {
         if (currentPic.tags.isEmpty) {
           untaggedPics.insert(0, currentPic);
           print('this pic now doesnt have tags!');
+        } else {
+          if (originalPhotoId != currentPic.photoId) {
+            print('##### PHOTO ID HAS CHANGED... REFRESHING IDS IN TAGS');
+            // setShouldRefreshTaggedGallery(true);
+
+            for (TagsStore tagStore in currentPic.tags) {
+              TaggedPicsStore taggedPicsStore = taggedPics.firstWhere(
+                  (element) => element.tag == tagStore,
+                  orElse: () => null);
+              if (taggedPicsStore != null) {
+                print('Replacing id in ${taggedPicsStore.tag.name}');
+                PicStore picStore = taggedPicsStore.pics.firstWhere(
+                    (e) => e.photoId == currentPic.photoId,
+                    orElse: () => null);
+                if (picStore != null) {
+                  print(
+                      'Found pic ${currentPic.photoId} in taggedPicsStore ${taggedPicsStore.tag.name}');
+                  var tagsBox = Hive.box('tags');
+                  Tag tag = tagsBox.get(taggedPicsStore.tag.id);
+                  print(
+                      'Tag contains new photo id: ${tag.photoId.contains(currentPic.photoId)}');
+                  print(
+                      'Tag contains original photo id: ${tag.photoId.contains(originalPhotoId)}');
+                }
+              }
+            }
+          }
         }
       }
     }
