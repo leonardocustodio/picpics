@@ -342,13 +342,16 @@ class _PinScreenState extends State<PinScreen> {
           print('Setting new pin!!!!!');
           carouselPage = 0;
           pinStore.pin = pinStore.pinTemp;
+          appStore.setEmail(pinStore.email); // Tem que deixar antes pois é utilizado quando salva o pin
 
           await pinStore.saveNewPin(appStore);
 
+          appStore.setIsPinRegistered(true);
           appStore.switchSecretPhotos();
           galleryStore.checkIsLibraryUpdated();
           pinStore.setPinTemp('');
           pinStore.setConfirmPinTemp('');
+          appStore.setWaitingAccessCode(false);
           carouselController.animateToPage(0);
 
           Navigator.pop(context);
