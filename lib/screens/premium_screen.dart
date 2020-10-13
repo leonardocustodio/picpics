@@ -267,32 +267,32 @@ class _PremiumScreenState extends State<PremiumScreen> {
           ],
         ),
       ),
-      Padding(
-        padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
-        child: Row(
-          children: <Widget>[
-            Image.asset('lib/images/pinkstar.png'),
-            SizedBox(
-              width: 16.0,
-            ),
-            Flexible(
-              child: Text(
-                S.of(context).infinite_tags,
-                maxLines: 2,
-                textAlign: TextAlign.left,
-                textScaleFactor: 1.0,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff707070),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      // Padding(
+      //   padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
+      //   child: Row(
+      //     children: <Widget>[
+      //       Image.asset('lib/images/pinkstar.png'),
+      //       SizedBox(
+      //         width: 16.0,
+      //       ),
+      //       Flexible(
+      //         child: Text(
+      //           S.of(context).infinite_tags,
+      //           maxLines: 2,
+      //           textAlign: TextAlign.left,
+      //           textScaleFactor: 1.0,
+      //           style: TextStyle(
+      //             fontFamily: 'Lato',
+      //             color: Color(0xff707070),
+      //             fontSize: 16,
+      //             fontWeight: FontWeight.w400,
+      //             fontStyle: FontStyle.normal,
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       Padding(
         padding: const EdgeInsets.only(left: 18.0, bottom: 21.0),
         child: Row(

@@ -267,6 +267,23 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$photoHeightInCardWidgetAtom =
+      Atom(name: '_AppStore.photoHeightInCardWidget');
+
+  @override
+  double get photoHeightInCardWidget {
+    _$photoHeightInCardWidgetAtom.reportRead();
+    return super.photoHeightInCardWidget;
+  }
+
+  @override
+  set photoHeightInCardWidget(double value) {
+    _$photoHeightInCardWidgetAtom
+        .reportWrite(value, super.photoHeightInCardWidget, () {
+      super.photoHeightInCardWidget = value;
+    });
+  }
+
   final _$checkNotificationPermissionAsyncAction =
       AsyncAction('_AppStore.checkNotificationPermission');
 
@@ -585,6 +602,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setPhotoHeightInCardWidget(double value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setPhotoHeightInCardWidget');
+    try {
+      return super.setPhotoHeightInCardWidget(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},
@@ -603,6 +631,7 @@ hasSwiped: ${hasSwiped},
 appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},
 waitingAccessCode: ${waitingAccessCode},
+photoHeightInCardWidget: ${photoHeightInCardWidget},
 appLocale: ${appLocale},
 currentLanguage: ${currentLanguage}
     ''';

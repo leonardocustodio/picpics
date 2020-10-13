@@ -653,6 +653,12 @@ abstract class _AppStore with Store {
 
     email = value;
   }
+
+  @observable
+  double photoHeightInCardWidget = 500;
+
+  @action
+  void setPhotoHeightInCardWidget(double value) => photoHeightInCardWidget = value;
 }
 
 enum PopPinScreenTo {

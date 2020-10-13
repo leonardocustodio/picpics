@@ -399,6 +399,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     print('Language Code: ${myLocale.languageCode}');
 
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    var height = MediaQuery.of(context).size.height;
+
     return Stack(
       children: <Widget>[
         Observer(builder: (_) {
@@ -793,8 +795,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                         },
                         child: Container(
                           margin: EdgeInsets.only(
-                            bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
-                            top: bottomInsets > 0 ? 5 : 46.0,
+                            bottom: bottomInsets > 0 ? bottomInsets + 5 : 32.0,
+                            top: bottomInsets > 0 ? 5 : 26.0,
+                            left: 2.0,
+                            right: 2.0,
                           ),
                           child: PhotoCard(
                             picStore: galleryStore.currentPic,
