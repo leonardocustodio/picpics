@@ -361,15 +361,18 @@ abstract class _GalleryStore with Store {
 
   @action
   void removePicFromTaggedPics({PicStore picStore, bool forceDelete = false}) {
+    print('removePicFromTaggedPics');
     List<TaggedPicsStore> toDelete = [];
 
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
       if (picStore.tags.contains(taggedPicsStore.tag) && forceDelete == false) {
+        // print();
         print('this tag should not be removed');
         continue;
       }
 
       if (taggedPicsStore.pics.contains(picStore)) {
+        print('Removed ${picStore.photoId} from ${taggedPicsStore.tag.name}');
         taggedPicsStore.pics.remove(picStore);
         if (taggedPicsStore.pics.isEmpty) {
           toDelete.add(taggedPicsStore);
@@ -451,7 +454,7 @@ abstract class _GalleryStore with Store {
         start: 0, end: assetPathEntity.assetCount);
 
     for (AssetEntity entity in list) {
-      print(entity.id);
+      // print(entity.id);
 
       PicStore pic = PicStore(
         appStore: appStore,
@@ -800,7 +803,7 @@ abstract class _GalleryStore with Store {
         tempPhotosIds.addAll(photosIds);
         firstInteraction = false;
       } else {
-        print('tempPhotoId: $tempPhotosIds');
+        // print('tempPhotoId: $tempPhotosIds');
         List<String> auxArray = [];
         auxArray.addAll(tempPhotosIds);
 
@@ -815,12 +818,12 @@ abstract class _GalleryStore with Store {
       }
     }
 
-    print('Temp photos ids: $tempPhotosIds');
-    print('All Pics: ${allPicsKeys}');
+    // print('Temp photos ids: $tempPhotosIds');
+    // print('All Pics: ${allPicsKeys}');
     filteredPics.addAll(allPics
         .where((element) => tempPhotosIds.contains(element.photoId))
         .toList()); // Verificar essa classe para otimizar
-    print('Search Photos: $filteredPics');
+    // print('Search Photos: $filteredPics');
     print('Searcing Tags Keys: $searchingTags');
 
     setShouldRefreshTaggedGallery(true);
@@ -1081,34 +1084,35 @@ abstract class _GalleryStore with Store {
         if (currentPic.tags.isEmpty) {
           untaggedPics.insert(0, currentPic);
           print('this pic now doesnt have tags!');
-        } else {
-          if (originalPhotoId != currentPic.photoId) {
-            print('##### PHOTO ID HAS CHANGED... REFRESHING IDS IN TAGS');
-            // setShouldRefreshTaggedGallery(true);
-
-            for (TagsStore tagStore in currentPic.tags) {
-              TaggedPicsStore taggedPicsStore = taggedPics.firstWhere(
-                  (element) => element.tag == tagStore,
-                  orElse: () => null);
-              if (taggedPicsStore != null) {
-                print('Replacing id in ${taggedPicsStore.tag.name}');
-                PicStore picStore = taggedPicsStore.pics.firstWhere(
-                    (e) => e.photoId == currentPic.photoId,
-                    orElse: () => null);
-                if (picStore != null) {
-                  print(
-                      'Found pic ${currentPic.photoId} in taggedPicsStore ${taggedPicsStore.tag.name}');
-                  var tagsBox = Hive.box('tags');
-                  Tag tag = tagsBox.get(taggedPicsStore.tag.id);
-                  print(
-                      'Tag contains new photo id: ${tag.photoId.contains(currentPic.photoId)}');
-                  print(
-                      'Tag contains original photo id: ${tag.photoId.contains(originalPhotoId)}');
-                }
-              }
-            }
-          }
         }
+        // else {
+        //   if (originalPhotoId != currentPic.photoId) {
+        //     print('##### PHOTO ID HAS CHANGED... REFRESHING IDS IN TAGS');
+        //     // setShouldRefreshTaggedGallery(true);
+        //
+        //     for (TagsStore tagStore in currentPic.tags) {
+        //       TaggedPicsStore taggedPicsStore = taggedPics.firstWhere(
+        //           (element) => element.tag == tagStore,
+        //           orElse: () => null);
+        //       if (taggedPicsStore != null) {
+        //         print('Replacing id in ${taggedPicsStore.tag.name}');
+        //         PicStore picStore = taggedPicsStore.pics.firstWhere(
+        //             (e) => e.photoId == currentPic.photoId,
+        //             orElse: () => null);
+        //         if (picStore != null) {
+        //           print(
+        //               'Found pic ${currentPic.photoId} in taggedPicsStore ${taggedPicsStore.tag.name}');
+        //           var tagsBox = Hive.box('tags');
+        //           Tag tag = tagsBox.get(taggedPicsStore.tag.id);
+        //           print(
+        //               'Tag contains new photo id: ${tag.photoId.contains(currentPic.photoId)}');
+        //           print(
+        //               'Tag contains original photo id: ${tag.photoId.contains(originalPhotoId)}');
+        //         }
+        //       }
+        //     }
+        //   }
+        // }
       }
     }
   }

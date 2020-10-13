@@ -80,7 +80,6 @@ class _TaggedTabState extends State<TaggedTab> {
           isTitleWidget.addAll([true, true]);
           taggedItems.addAll([null, null]);
         } else {
-          print('Filtered Pics: ${galleryStore.filteredPics}');
           isTitleWidget.add(true);
           taggedItems.add(null);
           isTitleWidget

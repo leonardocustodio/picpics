@@ -48,12 +48,27 @@ abstract class _PicStore with Store {
     print('loading pic info......');
     loadPicInfo();
 
-    autorun((_) {
-      print('autorun');
-    });
+    autorun((_) {});
   }
 
+  @observable
   String photoId;
+
+  @action
+  void setChangePhotoId(String value) {
+    var tagsBox = Hive.box('tags');
+
+    for (String tagsKeys in tagsKeys) {
+      Tag getTag = tagsBox.get(tagsKeys);
+
+      getTag.photoId.remove(photoId);
+      getTag.photoId.add(value);
+      print('Replaced tag in ${getTag.name} tagsbox');
+      getTag.save();
+    }
+
+    photoId = value;
+  }
 
   @observable
   AssetEntity entity;
@@ -82,7 +97,7 @@ abstract class _PicStore with Store {
     }
 
     entity = picEntity;
-    photoId = picEntity.id;
+    setChangePhotoId(picEntity.id);
     print('Changed asset entity');
   }
 
