@@ -35,7 +35,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:picPics/widgets/edit_tag_modal.dart';
+import 'package:picPics/widgets/cupertino_input_dialog.dart';
 
 class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
@@ -168,14 +168,18 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         context: context,
         barrierDismissible: true,
         builder: (BuildContext buildContext) {
-          return EditTagModal(
+          return CupertinoInputDialog(
+            prefixImage: Image.asset('lib/images/smalladdtag.png'),
             alertInputController: alertInputController,
-            onPressedDelete: () {
+            title: S.of(context).edit_tag,
+            destructiveButtonTitle: S.of(context).delete,
+            onPressedDestructive: () {
               print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
               galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
-            onPressedOk: () {
+            defaultButtonTitle: S.of(context).ok,
+            onPressedDefault: () {
               print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 galleryStore.editTag(

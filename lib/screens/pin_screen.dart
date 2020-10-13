@@ -16,6 +16,7 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
+import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:picPics/widgets/general_modal.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:provider/provider.dart';
@@ -63,12 +64,40 @@ class _PinScreenState extends State<PinScreen> {
     }
   }
 
+  void askEmail() async {
+    print('asking email');
+
+    TextEditingController alertInputController = TextEditingController();
+
+    print('showModal');
+    showDialog<void>(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext buildContext) {
+        return CupertinoInputDialog(
+          alertInputController: alertInputController,
+          title: 'Type your email',
+          destructiveButtonTitle: S.of(context).cancel,
+          onPressedDestructive: () {
+            Navigator.of(context).pop();
+          },
+          defaultButtonTitle: S.of(context).ok,
+          onPressedDefault: () {
+            pinStore.setEmail(alertInputController.text);
+            Navigator.of(context).pop();
+            recoverPin();
+          },
+        );
+      },
+    );
+  }
+
   Future<void> recoverPin() async {
     setState(() {
       isLoading = true;
     });
 
-    bool request = await pinStore.requestRecoveryKey(appStore.email);
+    bool request = await pinStore.requestRecoveryKey(appStore.email ?? pinStore.email);
 
     setState(() {
       isLoading = false;
@@ -196,7 +225,9 @@ class _PinScreenState extends State<PinScreen> {
               letterSpacing: -0.4099999964237213,
             ),
           ),
-          Spacer(),
+          Spacer(
+            flex: 2,
+          ),
           Shake(
             key: key,
             preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
@@ -230,6 +261,30 @@ class _PinScreenState extends State<PinScreen> {
             onPinTapped: pinTapped,
           ),
           Spacer(),
+          if (pinStore.isWaitingRecoveryKey != true) ...[
+            CupertinoButton(
+              onPressed: () {
+                if (appStore.email == null) {
+                  askEmail();
+                  return;
+                }
+                recoverPin();
+              },
+              child: Text(
+                'Already have an account?',
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: kWhiteColor,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  fontStyle: FontStyle.normal,
+                ),
+              ),
+            ),
+            Spacer(
+              flex: 2,
+            ),
+          ]
         ],
       ),
     );
@@ -408,6 +463,9 @@ class _PinScreenState extends State<PinScreen> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
                         onPressed: () {
+                          if (pinStore.isWaitingRecoveryKey == true) {
+                            pinStore.setIsWaitingRecoveryKey(false);
+                          }
                           Navigator.pop(context);
                         },
                         child: Image.asset('lib/images/backarrowwithdropshadow.png'),
