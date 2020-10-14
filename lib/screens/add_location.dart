@@ -10,7 +10,6 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:picPics/image_item.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
@@ -183,6 +182,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final double height = MediaQuery.of(context).size.height;
     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
     return Scaffold(
       key: homeScaffoldKey,
@@ -219,8 +219,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                             Navigator.pop(context);
                           },
                           child: Container(
-                            width: 140.0,
-                            height: 140.0,
+                            width: height * 0.17,
+                            height: height * 0.17,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
                               child: ExtendedImage(
