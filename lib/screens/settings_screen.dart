@@ -455,191 +455,222 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
         child: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
             children: <Widget>[
-              CupertinoButton(
-                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-                onPressed: () => Navigator.pop(context),
-                child: Image.asset('lib/images/backarrowgray.png'),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CupertinoButton(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                    onPressed: () => Navigator.pop(context),
+                    child: Image.asset('lib/images/backarrowgray.png'),
+                  ),
+                  Text(
+                    S.of(context).settings,
+                    textScaleFactor: 1.0,
+                    style: kGraySettingsBoldTextStyle,
+                  ),
+                  CupertinoButton(
+                    onPressed: () {
+                      print('do nothing');
+                    },
+                    child: Container(),
+                  ),
+                ],
               ),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Container(
-                      height: 60.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          pressedOpacity: 1.0,
-                          onPressed: () {
-                            if (appStore.secretPhotos == true) {
-                              appStore.switchSecretPhotos();
-                              galleryStore.removeAllPrivatePics();
-                              return;
-                            }
-                            appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
-                            Navigator.pushNamed(context, PinScreen.id);
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                'Secret photos',
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsFieldTextStyle,
-                              ),
-                              Observer(
-                                builder: (_) {
-                                  return SecretSwitch(
-                                    value: appStore.secretPhotos,
-                                    onChanged: (value) {
-                                      if (value == false) {
-                                        appStore.switchSecretPhotos();
-                                        galleryStore.removeAllPrivatePics();
-                                        return;
-                                      }
+                child: LayoutBuilder(
+                  builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                          minHeight: viewportConstraints.maxHeight,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Column(
+                              children: [
+                                Divider(
+                                  color: kLightGrayColor,
+                                  thickness: 1.0,
+                                ),
+                                Container(
+                                  height: 60.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: CupertinoButton(
+                                      padding: const EdgeInsets.all(0),
+                                      pressedOpacity: 1.0,
+                                      onPressed: () {
+                                        if (appStore.secretPhotos == true) {
+                                          appStore.switchSecretPhotos();
+                                          galleryStore.removeAllPrivatePics();
+                                          return;
+                                        }
+                                        appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                                        Navigator.pushNamed(context, PinScreen.id);
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            'Secret photos',
+                                            textScaleFactor: 1.0,
+                                            style: kGraySettingsFieldTextStyle,
+                                          ),
+                                          Observer(
+                                            builder: (_) {
+                                              return SecretSwitch(
+                                                value: appStore.secretPhotos,
+                                                onChanged: (value) {
+                                                  if (value == false) {
+                                                    appStore.switchSecretPhotos();
+                                                    galleryStore.removeAllPrivatePics();
+                                                    return;
+                                                  }
 
-                                      appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
-                                      Navigator.pushNamed(context, PinScreen.id);
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      color: kLightGrayColor,
-                      thickness: 1.0,
-                    ),
-                    // Observer(builder: (_) {
-                    //   if (appStore.secretPhotos == true) {
-                    //     return FadeIn(
-                    //       delay: 0,
-                    //       child: LayoutBuilder(
-                    //         builder: (context, constraint) {
-                    //           if (constraint.maxHeight < 30.0) {
-                    //             return Container();
-                    //           }
-                    //           return Column(
-                    //             mainAxisSize: MainAxisSize.max,
-                    //             children: [
-                    //               Expanded(
-                    //                 child: Container(
-                    //                   child: Padding(
-                    //                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    //                     child: CupertinoButton(
-                    //                       padding: const EdgeInsets.all(0),
-                    //                       onPressed: () => showRequirePinPicker(context),
-                    //                       child: Row(
-                    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //                         children: <Widget>[
-                    //                           Text(
-                    //                             'Require Secret Key',
-                    //                             textScaleFactor: 1.0,
-                    //                             style: kGraySettingsFieldTextStyle,
-                    //                           ),
-                    //                           Observer(builder: (_) {
-                    //                             return Text(
-                    //                               kRequireOptions[appStore.requireSecret],
-                    //                               textScaleFactor: 1.0,
-                    //                               style: kGraySettingsValueTextStyle,
-                    //                             );
-                    //                           }),
-                    //                         ],
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //               Divider(
-                    //                 color: kLightGrayColor,
-                    //                 thickness: 1.0,
-                    //               ),
-                    //             ],
-                    //           );
-                    //         },
-                    //       ),
-                    //     );
-                    //   }
-                    //   return Container();
-                    // }),
-                    Container(
-                      height: 60.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          pressedOpacity: 1.0,
-                          onPressed: () {
-                            appStore.switchDailyChallenges(
-                              notificationTitle: S.of(context).daily_notification_title,
-                              notificationDescription: S.of(context).daily_notification_description,
-                            );
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                S.of(context).daily_challenge,
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsFieldTextStyle,
-                              ),
-                              Observer(
-                                builder: (_) {
-                                  return CupertinoSwitch(
-                                    value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-                                    activeColor: kSecondaryColor,
-                                    onChanged: (value) {
-                                      appStore.switchDailyChallenges(
-                                        notificationTitle: S.of(context).daily_notification_title,
-                                        notificationDescription: S.of(context).daily_notification_description,
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      color: kLightGrayColor,
-                      thickness: 1.0,
-                    ),
-                    Container(
-                      height: 60.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () => showTimePicker(context),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                S.of(context).notification_time,
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsFieldTextStyle,
-                              ),
-                              Observer(
-                                builder: (_) {
-                                  return Text(
-                                    '${'${appStore.hourOfDay}'.padLeft(2, '0')}: ${'${appStore.minutesOfDay}'.padLeft(2, '0')}',
-                                    textScaleFactor: 1.0,
-                                    style: kGraySettingsValueTextStyle,
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
+                                                  appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                                                  Navigator.pushNamed(context, PinScreen.id);
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Divider(
+                                  color: kLightGrayColor,
+                                  thickness: 1.0,
+                                ),
+                                // Observer(builder: (_) {
+                                //   if (appStore.secretPhotos == true) {
+                                //     return FadeIn(
+                                //       delay: 0,
+                                //       child: LayoutBuilder(
+                                //         builder: (context, constraint) {
+                                //           if (constraint.maxHeight < 30.0) {
+                                //             return Container();
+                                //           }
+                                //           return Column(
+                                //             mainAxisSize: MainAxisSize.max,
+                                //             children: [
+                                //               Expanded(
+                                //                 child: Container(
+                                //                   child: Padding(
+                                //                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                //                     child: CupertinoButton(
+                                //                       padding: const EdgeInsets.all(0),
+                                //                       onPressed: () => showRequirePinPicker(context),
+                                //                       child: Row(
+                                //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                //                         children: <Widget>[
+                                //                           Text(
+                                //                             'Require Secret Key',
+                                //                             textScaleFactor: 1.0,
+                                //                             style: kGraySettingsFieldTextStyle,
+                                //                           ),
+                                //                           Observer(builder: (_) {
+                                //                             return Text(
+                                //                               kRequireOptions[appStore.requireSecret],
+                                //                               textScaleFactor: 1.0,
+                                //                               style: kGraySettingsValueTextStyle,
+                                //                             );
+                                //                           }),
+                                //                         ],
+                                //                       ),
+                                //                     ),
+                                //                   ),
+                                //                 ),
+                                //               ),
+                                //               Divider(
+                                //                 color: kLightGrayColor,
+                                //                 thickness: 1.0,
+                                //               ),
+                                //             ],
+                                //           );
+                                //         },
+                                //       ),
+                                //     );
+                                //   }
+                                //   return Container();
+                                // }),
+                                Container(
+                                  height: 60.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: CupertinoButton(
+                                      padding: const EdgeInsets.all(0),
+                                      pressedOpacity: 1.0,
+                                      onPressed: () {
+                                        appStore.switchDailyChallenges(
+                                          notificationTitle: S.of(context).daily_notification_title,
+                                          notificationDescription: S.of(context).daily_notification_description,
+                                        );
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            S.of(context).daily_challenge,
+                                            textScaleFactor: 1.0,
+                                            style: kGraySettingsFieldTextStyle,
+                                          ),
+                                          Observer(
+                                            builder: (_) {
+                                              return CupertinoSwitch(
+                                                value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                                activeColor: kSecondaryColor,
+                                                onChanged: (value) {
+                                                  appStore.switchDailyChallenges(
+                                                    notificationTitle: S.of(context).daily_notification_title,
+                                                    notificationDescription: S.of(context).daily_notification_description,
+                                                  );
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Divider(
+                                  color: kLightGrayColor,
+                                  thickness: 1.0,
+                                ),
+                                Container(
+                                  height: 60.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: CupertinoButton(
+                                      padding: const EdgeInsets.all(0),
+                                      onPressed: () => showTimePicker(context),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            S.of(context).notification_time,
+                                            textScaleFactor: 1.0,
+                                            style: kGraySettingsFieldTextStyle,
+                                          ),
+                                          Observer(
+                                            builder: (_) {
+                                              return Text(
+                                                '${'${appStore.hourOfDay}'.padLeft(2, '0')}: ${'${appStore.minutesOfDay}'.padLeft(2, '0')}',
+                                                textScaleFactor: 1.0,
+                                                style: kGraySettingsValueTextStyle,
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
 //                    Container(
 //                      height: 60.0,
 //                      child: Padding(
@@ -665,145 +696,150 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 //                        ),
 //                      ),
 //                    ),
-                    Divider(
-                      color: kLightGrayColor,
-                      thickness: 1.0,
-                    ),
-                    Container(
-                      height: 60.0,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () => showLanguagePicker(context),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                S.of(context).language,
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsFieldTextStyle,
-                              ),
-                              Observer(
-                                builder: (_) {
-                                  return Text(
-                                    appStore.currentLanguage,
-                                    textScaleFactor: 1.0,
-                                    style: kGraySettingsValueTextStyle,
-                                  );
+                                Divider(
+                                  color: kLightGrayColor,
+                                  thickness: 1.0,
+                                ),
+                                Container(
+                                  height: 60.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    child: CupertinoButton(
+                                      padding: const EdgeInsets.all(0),
+                                      onPressed: () => showLanguagePicker(context),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Text(
+                                            S.of(context).language,
+                                            textScaleFactor: 1.0,
+                                            style: kGraySettingsFieldTextStyle,
+                                          ),
+                                          Observer(
+                                            builder: (_) {
+                                              return Text(
+                                                appStore.currentLanguage,
+                                                textScaleFactor: 1.0,
+                                                style: kGraySettingsValueTextStyle,
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Divider(
+                                  color: kLightGrayColor,
+                                  thickness: 1.0,
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: <Widget>[
+                                CupertinoButton(
+                                  onPressed: () => shareApp(context),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image.asset('lib/images/sharegrayicon.png'),
+                                      SizedBox(
+                                        width: 15.0,
+                                      ),
+                                      Text(
+                                        S.of(context).share_with_friends,
+                                        textScaleFactor: 1.0,
+                                        style: kGraySettingsBoldTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                CupertinoButton(
+                                  onPressed: () => rateDialog(),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image.asset('lib/images/starrateapp.png'),
+                                      SizedBox(
+                                        width: 15.0,
+                                      ),
+                                      Text(
+                                        S.of(context).rate_this_app,
+                                        textScaleFactor: 1.0,
+                                        style: kGraySettingsBoldTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                            // Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 32.0, right: 32.0, top: 10.0, bottom: 10.0),
+                              child: CupertinoButton(
+                                onPressed: () {
+                                  if (appStore.isPremium) {
+                                    return;
+                                  }
+                                  Navigator.pushNamed(context, PremiumScreen.id);
                                 },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Divider(
-                      color: kLightGrayColor,
-                      thickness: 1.0,
-                    ),
-                    Spacer(),
-                    Column(
-                      children: <Widget>[
-                        CupertinoButton(
-                          onPressed: () => shareApp(context),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Image.asset('lib/images/sharegrayicon.png'),
-                              SizedBox(
-                                width: 15.0,
-                              ),
-                              Text(
-                                S.of(context).share_with_friends,
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsBoldTextStyle,
-                              ),
-                            ],
-                          ),
-                        ),
-                        CupertinoButton(
-                          onPressed: () => rateDialog(),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Image.asset('lib/images/starrateapp.png'),
-                              SizedBox(
-                                width: 15.0,
-                              ),
-                              Text(
-                                S.of(context).rate_this_app,
-                                textScaleFactor: 1.0,
-                                style: kGraySettingsBoldTextStyle,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 32.0, right: 32.0),
-                      child: CupertinoButton(
-                        onPressed: () {
-                          if (appStore.isPremium) {
-                            return;
-                          }
-                          Navigator.pushNamed(context, PremiumScreen.id);
-                        },
-                        padding: const EdgeInsets.all(0),
-                        child: OutlineGradientButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              SizedBox(
-                                width: 16.0,
-                              ),
-                              Image.asset('lib/images/logopremium.png'),
-                              SizedBox(
-                                width: 16.0,
-                              ),
-                              Flexible(
-                                child: Observer(
-                                  builder: (_) {
-                                    return Text(
-                                      appStore.isPremium ? S.of(context).you_are_premium : S.of(context).get_premium_now,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.left,
-                                      textScaleFactor: 1.0,
-                                      style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
-                                    );
-                                  },
+                                padding: const EdgeInsets.all(0),
+                                child: OutlineGradientButton(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      SizedBox(
+                                        width: 16.0,
+                                      ),
+                                      Image.asset('lib/images/logopremium.png'),
+                                      SizedBox(
+                                        width: 16.0,
+                                      ),
+                                      Flexible(
+                                        child: Observer(
+                                          builder: (_) {
+                                            return Text(
+                                              appStore.isPremium ? S.of(context).you_are_premium : S.of(context).get_premium_now,
+                                              maxLines: 2,
+                                              textAlign: TextAlign.left,
+                                              textScaleFactor: 1.0,
+                                              style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 16.0,
+                                      ),
+                                    ],
+                                  ),
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFFFFA4D1),
+                                      Color(0xFFFFCC00),
+                                    ],
+                                  ),
+                                  strokeWidth: 2.0,
+                                  radius: Radius.circular(8.0),
                                 ),
                               ),
-                              SizedBox(
-                                width: 16.0,
+                            ),
+                            // Spacer(),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
+                              child: Center(
+                                child: Text(
+                                  'VERSION: ${appStore.appVersion}',
+                                  textScaleFactor: 1.0,
+                                  style: kGraySettingsFieldTextStyle,
+                                ),
                               ),
-                            ],
-                          ),
-                          gradient: LinearGradient(
-                            colors: [
-                              Color(0xFFFFA4D1),
-                              Color(0xFFFFCC00),
-                            ],
-                          ),
-                          strokeWidth: 2.0,
-                          radius: Radius.circular(8.0),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0),
-                      child: Center(
-                        child: Text(
-                          'VERSION: ${appStore.appVersion}',
-                          textScaleFactor: 1.0,
-                          style: kGraySettingsFieldTextStyle,
-                        ),
-                      ),
-                    ),
-                  ],
+                    );
+                  },
                 ),
               ),
             ],

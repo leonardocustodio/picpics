@@ -154,6 +154,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "cuisine_tag" : MessageLookupByLibrary.simpleMessage("Cozinha"),
     "cup_tag" : MessageLookupByLibrary.simpleMessage("Copo"),
     "curling_tag" : MessageLookupByLibrary.simpleMessage("Curling"),
+    "curtain_tag" : MessageLookupByLibrary.simpleMessage("Cortina"),
     "cushion_tag" : MessageLookupByLibrary.simpleMessage("Almofada"),
     "cutlery_tag" : MessageLookupByLibrary.simpleMessage("Talheres"),
     "cycling_tag" : MessageLookupByLibrary.simpleMessage("Ciclismo"),

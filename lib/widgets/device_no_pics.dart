@@ -16,8 +16,10 @@ class DeviceHasNoPics extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          SizedBox(
-            height: height / 2,
+          Container(
+            constraints: BoxConstraints(
+              maxHeight: height / 2,
+            ),
             child: Padding(
               padding: const EdgeInsets.only(right: 30.0),
               child: Image.asset('lib/images/nogalleryauth.png'),

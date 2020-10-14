@@ -456,7 +456,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   children: <Widget>[
                                     Padding(
                                       padding: const EdgeInsets.only(right: 30.0),
-                                      child: Image.asset('lib/images/nogalleryauth.png'),
+                                      child: Container(
+                                        constraints: BoxConstraints(maxHeight: height / 2),
+                                        child: Image.asset('lib/images/nogalleryauth.png'),
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 21.0,
@@ -889,7 +892,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
                                 return Column(
                                   children: <Widget>[
-                                    image,
+                                    Container(
+                                      constraints: BoxConstraints(maxHeight: height / 2 - 20),
+                                      child: image,
+                                    ),
                                     SizedBox(
                                       height: 28.0,
                                     ),
