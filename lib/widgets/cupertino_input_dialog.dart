@@ -1,16 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
 
-class EditTagModal extends StatelessWidget {
-  final Function onPressedDelete;
-  final Function onPressedOk;
+class CupertinoInputDialog extends StatelessWidget {
+  final String title;
+  final String inputPlaceholder;
+
+  final String destructiveButtonTitle;
+  final String defaultButtonTitle;
+
+  final Function onPressedDestructive;
+  final Function onPressedDefault;
+
+  final Image prefixImage;
   final TextEditingController alertInputController;
 
-  EditTagModal({
-    @required this.onPressedDelete,
-    @required this.onPressedOk,
+  CupertinoInputDialog({
+    @required this.title,
+    this.inputPlaceholder,
+    @required this.destructiveButtonTitle,
+    @required this.defaultButtonTitle,
+    @required this.onPressedDestructive,
+    @required this.onPressedDefault,
+    this.prefixImage,
     @required this.alertInputController,
   });
 
@@ -34,7 +46,7 @@ class EditTagModal extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 19.0, bottom: 10.0),
               child: Text(
-                S.of(context).edit_tag,
+                title,
                 textScaleFactor: 1.0,
                 style: TextStyle(
                   color: Color(0xff606566),
@@ -53,7 +65,7 @@ class EditTagModal extends StatelessWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  Image.asset('lib/images/smalladdtag.png'),
+                  if (prefixImage != null) prefixImage,
                   Expanded(
                     child: TextField(
                       controller: alertInputController,
@@ -80,13 +92,13 @@ class EditTagModal extends StatelessWidget {
                 Expanded(
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
-                    onPressed: onPressedDelete,
+                    onPressed: onPressedDestructive,
                     child: Container(
                       color: Color(0xFFF5FAFA),
                       height: 48.0,
                       child: Center(
                         child: Text(
-                          S.of(context).delete,
+                          destructiveButtonTitle,
                           textScaleFactor: 1.0,
                           style: TextStyle(
                             color: Color(0xFFE01717),
@@ -102,13 +114,13 @@ class EditTagModal extends StatelessWidget {
                 Expanded(
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
-                    onPressed: onPressedOk,
+                    onPressed: onPressedDefault,
                     child: Container(
                       color: Color(0xFFF5FAFA),
                       height: 48.0,
                       child: Center(
                         child: Text(
-                          S.of(context).ok,
+                          defaultButtonTitle,
                           textScaleFactor: 1.0,
                           style: TextStyle(
                             color: Color(0xFF606566),

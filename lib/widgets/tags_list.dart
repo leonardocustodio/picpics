@@ -31,6 +31,8 @@ class TagsList extends StatefulWidget {
   final Function onSubmitted;
   final Function onChanged;
   final Function showEditTagModal;
+  final String aiButtonTitle;
+  final Function onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
   const TagsList({
@@ -47,6 +49,8 @@ class TagsList extends StatefulWidget {
     this.onSubmitted,
     this.onChanged,
     this.title,
+    this.aiButtonTitle,
+    this.onAiButtonTap,
     @required this.showEditTagModal,
     this.shouldChangeToSwipeMode = false,
   });
@@ -324,60 +328,87 @@ class _TagsListState extends State<TagsList> {
       tagsWidgets.add(
         Container(
           margin: const EdgeInsets.only(top: 10.0),
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          height: 30.0,
-          decoration: BoxDecoration(
-            color: Color(0xFFF1F3F5),
-            border: Border.all(color: kLightGrayColor, width: 1.0),
-            borderRadius: BorderRadius.circular(12.0),
-          ),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
-              Image.asset('lib/images/smalladdtag.png'),
+            children: [
               Expanded(
-                child: TextField(
-                  controller: widget.textEditingController,
-                  focusNode: widget.textFocusNode,
-                  onChanged: widget.onChanged,
-                  onSubmitted: widget.onSubmitted,
-                  keyboardType: TextInputType.text,
-                  textAlignVertical: TextAlignVertical.center,
-                  maxLines: 1,
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    color: Color(0xff606566),
-                    fontSize: 16,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: -0.4099999964237213,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                  height: 30.0,
+                  decoration: BoxDecoration(
+                    color: Color(0xFFF1F3F5),
+                    border: Border.all(color: kLightGrayColor, width: 1.0),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
-                  decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.only(left: 6.0),
-                    enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                    focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                    border: OutlineInputBorder(borderSide: BorderSide.none),
-                    hintText: S.of(context).add_tags,
-                    hintStyle: TextStyle(
-                      fontFamily: 'Lato',
-                      color: kGrayColor,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      letterSpacing: -0.4099999964237213,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      Image.asset('lib/images/smalladdtag.png'),
+                      Expanded(
+                        child: TextField(
+                          controller: widget.textEditingController,
+                          focusNode: widget.textFocusNode,
+                          onChanged: widget.onChanged,
+                          onSubmitted: widget.onSubmitted,
+                          keyboardType: TextInputType.text,
+                          textAlignVertical: TextAlignVertical.center,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff606566),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w400,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.only(left: 6.0),
+                            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                            focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                            border: OutlineInputBorder(borderSide: BorderSide.none),
+                            hintText: S.of(context).add_tags,
+                            hintStyle: TextStyle(
+                              fontFamily: 'Lato',
+                              color: kGrayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: -0.4099999964237213,
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (widget.addButtonVisible)
+                        CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          minSize: 30,
+                          onPressed: () {
+                            widget.onSubmitted(widget.textEditingController.text);
+                          },
+                          child: Container(
+                            child: Image.asset('lib/images/plusaddtagico.png'),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
               ),
-              if (widget.addButtonVisible)
+              if (widget.onAiButtonTap != null)
                 CupertinoButton(
                   padding: const EdgeInsets.all(0),
-                  minSize: 30,
-                  onPressed: () {
-                    widget.onSubmitted(widget.textEditingController.text);
-                  },
+                  onPressed: widget.onAiButtonTap,
                   child: Container(
-                    child: Image.asset('lib/images/plusaddtagico.png'),
+                    // width: 30.0,
+                    height: 30.0,
+                    decoration: kGrayBoxDecoration,
+                    margin: const EdgeInsets.only(left: 8.0),
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Center(
+                      child: Text(
+                        widget.aiButtonTitle,
+                        textScaleFactor: 1.0,
+                        style: kGrayTextStyle,
+                      ),
+                    ),
                   ),
                 ),
             ],

@@ -8,16 +8,13 @@ import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/full_image_item.dart';
-import 'package:picPics/image_item.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/widgets/edit_tag_modal.dart';
+import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
@@ -77,13 +74,17 @@ class _PhotoScreenState extends State<PhotoScreen> {
         context: context,
         barrierDismissible: true,
         builder: (BuildContext buildContext) {
-          return EditTagModal(
+          return CupertinoInputDialog(
+            prefixImage: Image.asset('lib/images/smalladdtag.png'),
             alertInputController: alertInputController,
-            onPressedDelete: () {
+            title: S.of(context).edit_tag,
+            destructiveButtonTitle: S.of(context).delete,
+            onPressedDestructive: () {
               galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
-            onPressedOk: () {
+            defaultButtonTitle: S.of(context).ok,
+            onPressedDefault: () {
               print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 galleryStore.editTag(

@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
@@ -15,7 +16,13 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/labels.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:googleapis/translate/v3.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:strings/strings.dart';
+import 'package:path/path.dart' as p;
 
 part 'pic_store.g.dart';
 
@@ -41,12 +48,27 @@ abstract class _PicStore with Store {
     print('loading pic info......');
     loadPicInfo();
 
-    autorun((_) {
-      print('autorun');
-    });
+    autorun((_) {});
   }
 
+  @observable
   String photoId;
+
+  @action
+  void setChangePhotoId(String value) {
+    var tagsBox = Hive.box('tags');
+
+    for (String tagsKeys in tagsKeys) {
+      Tag getTag = tagsBox.get(tagsKeys);
+
+      getTag.photoId.remove(photoId);
+      getTag.photoId.add(value);
+      print('Replaced tag in ${getTag.name} tagsbox');
+      getTag.save();
+    }
+
+    photoId = value;
+  }
 
   @observable
   AssetEntity entity;
@@ -75,7 +97,7 @@ abstract class _PicStore with Store {
     }
 
     entity = picEntity;
-    photoId = picEntity.id;
+    setChangePhotoId(picEntity.id);
     print('Changed asset entity');
   }
 
@@ -141,7 +163,6 @@ abstract class _PicStore with Store {
       return;
     }
     setDeletedFromCameraRoll(false);
-    entity = null;
   }
 
   @action
@@ -162,8 +183,10 @@ abstract class _PicStore with Store {
 
   Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
     print('Deleting $photoPath and $thumbPath');
-    File photoFile = File(photoPath);
-    File thumbFile = File(thumbPath);
+    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+
+    File photoFile = File(p.join(appDocumentsDir.path, photoPath));
+    File thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
       print('Pic has entity? ${entity == null ? false : true}');
@@ -238,14 +261,17 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> setIsPrivate(bool value) async {
-    isPrivate = value;
-
-    if (isPrivate) {
+    if (value) {
       await addSecretTagToPic();
     } else {
       await removeSecretTagFromPic();
       await deleteEncryptedPic(copyToCameraRoll: true);
     }
+
+    isPrivate = value;
+    print('Pic isPrivate: $value');
+    print('Pic Entity Exists: ${entity == null ? false : true}');
+    print('Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
 
     var picsBox = Hive.box('pics');
     Pic getPic = picsBox.get(photoId);
@@ -281,7 +307,10 @@ abstract class _PicStore with Store {
   String searchText = '';
 
   @action
-  void setSearchText(String value) => searchText = value;
+  void setSearchText(String value) {
+    searchText = value;
+    aiTags = false;
+  }
 
   ObservableList<TagsStore> tags = ObservableList<TagsStore>();
 
@@ -406,6 +435,7 @@ abstract class _PicStore with Store {
       print('updated picture');
 
       TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+
       tags.add(tagsStore);
 
       Analytics.sendEvent(Event.added_tag);
@@ -428,7 +458,7 @@ abstract class _PicStore with Store {
       specificLocation: null,
       generalLocation: null,
       tags: [tagKey],
-      isPrivate: isPrivate,
+      isPrivate: tagKey == kSecretTagKey ? true : false,
     );
 
     await picsBox.put(photoId, pic);
@@ -577,5 +607,107 @@ abstract class _PicStore with Store {
     longitude = long;
     specificLocation = specific;
     generalLocation = general;
+  }
+
+  @observable
+  bool aiTags = false;
+
+  @action
+  void setAiTags(bool value) => aiTags = value;
+
+  @action
+  void switchAiTags(BuildContext context) {
+    aiTags = !aiTags;
+
+    if (aiTags == true) {
+      getAiSuggestions(context);
+    }
+  }
+
+  List<TagsStore> aiSuggestions = [];
+
+  @observable
+  bool aiTagsLoaded = false;
+
+  @action
+  void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
+
+  Future<List<String>> translateTags(List<String> tagsText, BuildContext context) async {
+    if (appStore.appLanguage.split('_')[0] == 'pt' || appStore.appLanguage.split('_')[0] == 'es') {
+      print('Offline translating it...');
+      return tagsText.map((e) => Labels.labelTranslation(e, context)).toList();
+    }
+
+    final _credentials = new ServiceAccountCredentials.fromJson(r'''
+{
+  "type": "service_account",
+  "project_id": "picpics",
+  "private_key_id": "c3dd82e591d63cbb5b6ab4b7756ebc1e5a6aae10",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCvQhYWho56yC6F\nHqt9l5pcmuzhS/pR19P2L1JgETfVI8PL36lyJc2lIVbLyWJjCxeUk7gdR2G2lknf\n/ulh1il/Ig8PebrvlCC0oN1jsJ9YPh1DOsj5fd5p25XgRc32FM+EcEhQB/5V+pIa\n/K8X5BY9igN6LKNAIkQpJDjtc9udbp0//BX3jpVQp/hfOnV+kMhfdb0hoBS5BpNZ\nmYBxPYXo08yLkvk2AH71GfSjEUAb0X6SsHONlMX6lp9xhrQmhbH4Fog6oAkbk2T8\n+DILqscxRGP+QBpq+msfYVAuRWTIubMOSDaf03W0HxdZIoRI5IDsis7lcNDhTbeC\nsyNNouTlAgMBAAECggEAILDKjvQVYpixeLpCUcB0Fh793X5/GEIScwLbsjiz+elc\nbcxv/m9HvywLVSLg28mnYdr2BlwYwWaiLAqP/ORmRCUVuxTBRkwSl67D7QL2jg60\nBaTS9RrB4GwJtlY+905lcPZCvs7m5aHCHA+TF3k/nsX+JQ1rfByIK0Zq6fvo9KHr\n/r13R/rP6VgBxAJFy7mtuvVD1i+KPJinFqaA92TXD4YLS3K+q3QWyQlJQkxoLtsS\nm5GBvevyc/FRtIcUVRQzk9sl7/RGpqPVNjyKwE7XQzJXrgotn2YY/lEM/PtawKyL\n2hQYYmc3h3ho5nEQRG2NkmylgHNsx6yxXQqaM7vjoQKBgQD2QsQJrlZ/BEIVxp6U\nj4u+bpgA4fYsFaiW4108/DkHz5L1uBdmDqGjSZoDwGdNlYQiQeFEP28oYmtcmSDQ\nk8hUAtG4UUIBR0ssCL5zQyA23YBJFNh1EjP36Puc5ZANWDHG1CpJWO9Bok5lspgL\n3tp0A3SpBVVfPTIdZntqcqijkQKBgQC2MHa3E3MfpUPiXY2MWc0a2Su/NoPL92Bh\nT12vC+Ufgi3BNu7ty46u/7xUiLS44KOBI2/iPenMdsLyueQDK7Izr7TqptzpylMi\n2Udo7RfCvkMY52Bi4G4RiEx69gYhEHHhmLiyOMZSO2KuIq7k0X6JrkSA7WAN140i\nxRdPWETaFQKBgAKFdnpe5ZXRVlfgu7jrq1Oc0EOaDKow4pQA6fB46KCS2H9ZjivG\nVJNWapRFQQmDUWIEaKkJOTshntXI35QjHzb0/G61rkZTE4r03/ZQJqFJLUoSQ5EX\nSZ7tLL5Tf2ETmRbfDzvHBFQYtFLIPFRKyNPNQUGFw3UBLGUuqm7Rk7ZxAoGAXpLh\nzT9Hb5H2nzc5FzY2hk1drDC8UdDkMx9j3k4qbiTBY58EgGQ+eRE/zhH43k+eEJc4\nqRTCnOS5Zg6hEhRIuRPosjZUTvg8F8b6jrkksG7bnb3eBvXBrVA3g0za+abztsv0\ndG+MY3t4SjSu3RDywr23ycVvK0BNf1MYOpPzidECgYAOzBUT9BfUz7V916120dTd\nX6lfibdQ33QcghlDlw/ci+6pSruq0v/AQrhE0EIebWQ7T78MJs5dWhUnlvfIJ+BK\nP2UMYn4AVfNuSO+YDvO/JWW06ejnzBQfnnJoj9GhUfe8vHhiOs/rl41SGvtDfi9j\n13h9Ezm1pbTm9zyNUIXppw==\n-----END PRIVATE KEY-----\n",
+  "client_email": "picpics-translation@picpics.iam.gserviceaccount.com",
+  "client_id": "105726646433560994347",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/picpics-translation%40picpics.iam.gserviceaccount.com"
+}
+''');
+
+    const _SCOPES = const [TranslateApi.CloudTranslationScope];
+    List<String> translatedStrings;
+
+    await clientViaServiceAccount(_credentials, _SCOPES).then((http_client) async {
+      var translate = TranslateApi(http_client);
+      var request = TranslateTextRequest();
+      request.contents = tagsText;
+      request.mimeType = 'text/plain';
+      request.sourceLanguageCode = 'en-US';
+      request.targetLanguageCode = appStore.appLanguage.replaceAll('_', '-');
+      request.model = 'projects/picpics/locations/global/models/general/nmt';
+
+      var response = await translate.projects.translateText(request, 'projects/picpics');
+      var translations = response.translations;
+      translatedStrings = translations.map((e) => capitalize(e.translatedText)).toList();
+    });
+
+    return translatedStrings;
+  }
+
+  @action
+  Future<void> getAiSuggestions(BuildContext context) async {
+    if (aiTagsLoaded == true) {
+      return;
+    }
+
+    aiSuggestions.clear();
+
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
+    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
+    final List<ImageLabel> labels = await labeler.processImage(visionImage);
+
+    List<String> tags = [];
+    for (ImageLabel label in labels) {
+      final String labelText = label.text;
+      final String entityId = label.entityId;
+      final double confidence = label.confidence;
+      print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
+      tags.add(labelText);
+    }
+
+    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
+
+    for (String translated in translatedTags) {
+      String tagKey = Helpers.encryptTag(translated);
+      TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
+      if (tagStore == null) {
+        tagStore = TagsStore(
+          id: tagKey,
+          name: translated,
+        );
+      }
+      aiSuggestions.add(tagStore);
+    }
+    aiTagsLoaded = true;
+    labeler.close();
   }
 }

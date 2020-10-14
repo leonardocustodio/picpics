@@ -38,6 +38,8 @@ class CircularMenu extends StatefulWidget {
   final double toggleButtonMargin;
   final Color toggleButtonIconColor;
 
+  final bool useInHorizontal;
+
   /// creates a circular menu with specific [radius] and [alignment] .
   /// [toggleButtonElevation] ,[toggleButtonPadding] and [toggleButtonMargin] must be
   /// equal or greater than zero.
@@ -57,6 +59,7 @@ class CircularMenu extends StatefulWidget {
     this.toggleButtonPadding = 10,
     this.toggleButtonSize = 40,
     this.toggleButtonIconColor,
+    this.useInHorizontal = false,
     this.key,
   })  : assert(items != null, 'items can not be empty list'),
         assert(items.length > 1, 'if you have one item no need to use a Menu'),
@@ -102,7 +105,9 @@ class CircularMenuState extends State<CircularMenu> with SingleTickerProviderSta
           child: Align(
             alignment: widget.alignment,
             child: Transform.translate(
-              offset: Offset.fromDirection(-0.5 * math.pi, _animation.value * widget.radius + (index * widget.radius)),
+              offset: widget.useInHorizontal
+                  ? Offset.fromDirection(-1.0 * math.pi, _animation.value * widget.radius + (index * widget.radius))
+                  : Offset.fromDirection(-0.5 * math.pi, _animation.value * widget.radius + (index * widget.radius)),
               child: Transform.scale(
                 scale: _animation.value,
                 child: item,

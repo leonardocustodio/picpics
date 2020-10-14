@@ -57,9 +57,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>If you want our app to add your location to your photos, we need authorization to access your location.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need access to your photo library so you can start organizing your photos with picPics.</string>
+	<string>We need access to your photo library so you can start organizing your photos with picPics. Don&apos;t worry your photos will never leave your device!</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library so you can start organizing your photos with picPics.</string>
+	<string>We need access to your photo library so you can start organizing your photos with picPics. Don&apos;t worry your photos will never leave your device!</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

@@ -14,8 +14,11 @@ class UnhideSecretModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+
     return Dialog(
       backgroundColor: Colors.transparent,
+      insetPadding: width < 360 ? EdgeInsets.symmetric(horizontal: 20.0) : EdgeInsets.symmetric(horizontal: 40.0),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(

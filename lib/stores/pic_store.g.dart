@@ -24,6 +24,21 @@ mixin _$PicStore on _PicStore, Store {
               name: '_PicStore.tagsSuggestions'))
       .value;
 
+  final _$photoIdAtom = Atom(name: '_PicStore.photoId');
+
+  @override
+  String get photoId {
+    _$photoIdAtom.reportRead();
+    return super.photoId;
+  }
+
+  @override
+  set photoId(String value) {
+    _$photoIdAtom.reportWrite(value, super.photoId, () {
+      super.photoId = value;
+    });
+  }
+
   final _$entityAtom = Atom(name: '_PicStore.entity');
 
   @override
@@ -129,6 +144,36 @@ mixin _$PicStore on _PicStore, Store {
     });
   }
 
+  final _$aiTagsAtom = Atom(name: '_PicStore.aiTags');
+
+  @override
+  bool get aiTags {
+    _$aiTagsAtom.reportRead();
+    return super.aiTags;
+  }
+
+  @override
+  set aiTags(bool value) {
+    _$aiTagsAtom.reportWrite(value, super.aiTags, () {
+      super.aiTags = value;
+    });
+  }
+
+  final _$aiTagsLoadedAtom = Atom(name: '_PicStore.aiTagsLoaded');
+
+  @override
+  bool get aiTagsLoaded {
+    _$aiTagsLoadedAtom.reportRead();
+    return super.aiTagsLoaded;
+  }
+
+  @override
+  set aiTagsLoaded(bool value) {
+    _$aiTagsLoadedAtom.reportWrite(value, super.aiTagsLoaded, () {
+      super.aiTagsLoaded = value;
+    });
+  }
+
   final _$setPrivatePathAsyncAction = AsyncAction('_PicStore.setPrivatePath');
 
   @override
@@ -189,7 +234,27 @@ mixin _$PicStore on _PicStore, Store {
     return _$deletePicAsyncAction.run(() => super.deletePic());
   }
 
+  final _$getAiSuggestionsAsyncAction =
+      AsyncAction('_PicStore.getAiSuggestions');
+
+  @override
+  Future<void> getAiSuggestions(BuildContext context) {
+    return _$getAiSuggestionsAsyncAction
+        .run(() => super.getAiSuggestions(context));
+  }
+
   final _$_PicStoreActionController = ActionController(name: '_PicStore');
+
+  @override
+  void setChangePhotoId(String value) {
+    final _$actionInfo = _$_PicStoreActionController.startAction(
+        name: '_PicStore.setChangePhotoId');
+    try {
+      return super.setChangePhotoId(value);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void changeAssetEntity(AssetEntity picEntity) {
@@ -249,8 +314,42 @@ mixin _$PicStore on _PicStore, Store {
   }
 
   @override
+  void setAiTags(bool value) {
+    final _$actionInfo =
+        _$_PicStoreActionController.startAction(name: '_PicStore.setAiTags');
+    try {
+      return super.setAiTags(value);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void switchAiTags(BuildContext context) {
+    final _$actionInfo =
+        _$_PicStoreActionController.startAction(name: '_PicStore.switchAiTags');
+    try {
+      return super.switchAiTags(context);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setAiTagsLoaded(bool value) {
+    final _$actionInfo = _$_PicStoreActionController.startAction(
+        name: '_PicStore.setAiTagsLoaded');
+    try {
+      return super.setAiTagsLoaded(value);
+    } finally {
+      _$_PicStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+photoId: ${photoId},
 entity: ${entity},
 latitude: ${latitude},
 longitude: ${longitude},
@@ -258,6 +357,8 @@ specificLocation: ${specificLocation},
 generalLocation: ${generalLocation},
 isPrivate: ${isPrivate},
 searchText: ${searchText},
+aiTags: ${aiTags},
+aiTagsLoaded: ${aiTagsLoaded},
 tagsKeys: ${tagsKeys},
 tagsSuggestions: ${tagsSuggestions}
     ''';

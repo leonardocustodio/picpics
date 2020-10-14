@@ -49,7 +49,9 @@ class _TaggedTabState extends State<TaggedTab> {
   TextEditingController tagsEditingController = TextEditingController();
 
   void refreshGridPositionThirdTab() {
-    var offset = scrollControllerThirdTab.hasClients ? scrollControllerThirdTab.offset : scrollControllerThirdTab.initialScrollOffset;
+    var offset = scrollControllerThirdTab.hasClients
+        ? scrollControllerThirdTab.offset
+        : scrollControllerThirdTab.initialScrollOffset;
 
     if (offset >= 40) {
       tabsStore.setHideTitleThirdTab(true);
@@ -64,7 +66,8 @@ class _TaggedTabState extends State<TaggedTab> {
 
   void refreshItems(bool filtered) {
     print('Calling refresh items!!!');
-    if (isTitleWidget.isEmpty || galleryStore.shouldRefreshTaggedGallery == true) {
+    if (isTitleWidget.isEmpty ||
+        galleryStore.shouldRefreshTaggedGallery == true) {
       taggedItems = [];
       isTitleWidget = [];
 
@@ -73,12 +76,14 @@ class _TaggedTabState extends State<TaggedTab> {
 
       if (filtered) {
         if (galleryStore.filteredPics.isEmpty) {
+          print('Filtered Pics is empty');
           isTitleWidget.addAll([true, true]);
           taggedItems.addAll([null, null]);
         } else {
           isTitleWidget.add(true);
           taggedItems.add(null);
-          isTitleWidget.addAll(List.filled(galleryStore.filteredPics.length, false));
+          isTitleWidget
+              .addAll(List.filled(galleryStore.filteredPics.length, false));
           taggedItems.addAll(galleryStore.filteredPics);
           galleryStore.addPicsToThumbnails(galleryStore.filteredPics);
         }
@@ -86,11 +91,15 @@ class _TaggedTabState extends State<TaggedTab> {
         if (galleryStore.searchingTagsKeys.length > 1) {
           List<TaggedPicsStore> taggedPicsStores = [];
           for (String tagKey in galleryStore.searchingTagsKeys) {
-            TaggedPicsStore findTaggedPicStore = galleryStore.taggedPics.firstWhere((element) => element.tag.id == tagKey, orElse: () => null);
+            TaggedPicsStore findTaggedPicStore = galleryStore.taggedPics
+                .firstWhere((element) => element.tag.id == tagKey,
+                    orElse: () => null);
             if (findTaggedPicStore != null) {
               taggedPicsStores.add(findTaggedPicStore);
             } else {
-              TaggedPicsStore createTaggedPicStore = TaggedPicsStore(tag: appStore.tags.firstWhere((element) => element.id == tagKey));
+              TaggedPicsStore createTaggedPicStore = TaggedPicsStore(
+                  tag: appStore.tags
+                      .firstWhere((element) => element.id == tagKey));
               taggedPicsStores.add(createTaggedPicStore);
             }
           }
@@ -107,7 +116,8 @@ class _TaggedTabState extends State<TaggedTab> {
 
             isTitleWidget.add(true);
             taggedItems.add(taggedPicsStore);
-            isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
+            isTitleWidget
+                .addAll(List.filled(taggedPicsStore.pics.length, false));
             taggedItems.addAll(taggedPicsStore.pics);
             galleryStore.addPicsToThumbnails(taggedPicsStore.pics);
           }
@@ -162,9 +172,12 @@ class _TaggedTabState extends State<TaggedTab> {
             return _buildTagItem(null);
           } else {
             return Container(
-              padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+              padding: const EdgeInsets.only(
+                  left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
               child: Text(
-                index == 1 ? S.of(context).search_all_tags_not_found : 'No photos found with this tag',
+                index == 1
+                    ? S.of(context).search_all_tags_not_found
+                    : 'No photos found with this tag',
                 textScaleFactor: 1.0,
                 style: TextStyle(
                   fontFamily: 'Lato',
@@ -194,7 +207,9 @@ class _TaggedTabState extends State<TaggedTab> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            taggedPicsStore != null ? taggedPicsStore.tag.name : S.of(context).all_search_tags,
+            taggedPicsStore != null
+                ? taggedPicsStore.tag.name
+                : S.of(context).all_search_tags,
             textScaleFactor: 1.0,
             style: TextStyle(
               fontFamily: 'Lato',
@@ -212,7 +227,8 @@ class _TaggedTabState extends State<TaggedTab> {
               if (taggedPicsStore != null) {
                 await galleryStore.sharePics(picsStores: taggedPicsStore.pics);
               } else {
-                await galleryStore.sharePics(picsStores: galleryStore.filteredPics);
+                await galleryStore.sharePics(
+                    picsStores: galleryStore.filteredPics);
               }
 
               tabsStore.setIsLoading(false);
@@ -225,7 +241,8 @@ class _TaggedTabState extends State<TaggedTab> {
   }
 
   Widget _buildPicItem(PicStore picStore) {
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: false);
 
     return RepaintBoundary(
       child: ExtendedImage(
@@ -259,7 +276,8 @@ class _TaggedTabState extends State<TaggedTab> {
                             picStore: picStore,
                             picIsTagged: true,
                           );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print(
+                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -302,7 +320,8 @@ class _TaggedTabState extends State<TaggedTab> {
                                     gradient: kSecondaryGradient,
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
-                                  child: Image.asset('lib/images/checkwhiteico.png'),
+                                  child: Image.asset(
+                                      'lib/images/checkwhiteico.png'),
                                 ),
                               ),
                             );
@@ -339,7 +358,10 @@ class _TaggedTabState extends State<TaggedTab> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   gradient: LinearGradient(
-                                    colors: [Color(0xffffcc00), Color(0xffffe98f)],
+                                    colors: [
+                                      Color(0xffffcc00),
+                                      Color(0xffffe98f)
+                                    ],
                                     stops: [0.2291666716337204, 1],
                                     begin: Alignment(-1.00, 0.00),
                                     end: Alignment(1.00, -0.00),
@@ -347,7 +369,8 @@ class _TaggedTabState extends State<TaggedTab> {
                                     // scale: undefined,
                                   ),
                                 ),
-                                child: Image.asset('lib/images/smallwhitelock.png'),
+                                child: Image.asset(
+                                    'lib/images/smallwhitelock.png'),
                               ),
                             ),
                           );
@@ -383,13 +406,15 @@ class _TaggedTabState extends State<TaggedTab> {
     galleryStore = Provider.of<GalleryStore>(context);
     refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
 
-    scrollControllerThirdTab = ScrollController(initialScrollOffset: tabsStore.offsetThirdTab);
+    scrollControllerThirdTab =
+        ScrollController(initialScrollOffset: tabsStore.offsetThirdTab);
     scrollControllerThirdTab.addListener(() {
       refreshGridPositionThirdTab();
     });
     refreshGridPositionThirdTab();
 
-    disposer = reaction((_) => galleryStore.shouldRefreshTaggedGallery, (refresh) {
+    disposer =
+        reaction((_) => galleryStore.shouldRefreshTaggedGallery, (refresh) {
       if (refresh) {
         setState(() {
           refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
@@ -420,7 +445,8 @@ class _TaggedTabState extends State<TaggedTab> {
                 return DeviceHasNoPics(
                   message: S.of(context).device_has_no_pics,
                 );
-              } else if (galleryStore.taggedPics.length == 0 && galleryStore.deviceHasPics) {
+              } else if (galleryStore.taggedPics.length == 0 &&
+                  galleryStore.deviceHasPics) {
                 return TopBar(
                   appStore: appStore,
                   galleryStore: galleryStore,
@@ -433,7 +459,8 @@ class _TaggedTabState extends State<TaggedTab> {
                           children: <Widget>[
                             SizedBox(
                               height: height / 2,
-                              child: Image.asset('lib/images/notaggedphotos.png'),
+                              child:
+                                  Image.asset('lib/images/notaggedphotos.png'),
                             ),
                             SizedBox(
                               height: 21.0,
@@ -485,7 +512,8 @@ class _TaggedTabState extends State<TaggedTab> {
                     ),
                   ],
                 );
-              } else if (galleryStore.taggedPics.length > 0 && galleryStore.deviceHasPics) {
+              } else if (galleryStore.taggedPics.length > 0 &&
+                  galleryStore.deviceHasPics) {
                 return TopBar(
                   appStore: appStore,
                   galleryStore: galleryStore,
@@ -500,20 +528,25 @@ class _TaggedTabState extends State<TaggedTab> {
                           children: <Widget>[
                             if (galleryStore.searchingTagsKeys.length > 0)
                               Padding(
-                                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
+                                padding: const EdgeInsets.only(
+                                    left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
                                   tags: galleryStore.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (tagId, tagName) {
                                     print('do nothing');
                                     galleryStore.removeTagFromSearchFilter();
-                                    if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
+                                    if (galleryStore
+                                            .searchingTagsKeys.isEmpty &&
+                                        searchFocusNode.hasFocus == false) {
                                       galleryStore.setIsSearching(false);
                                     }
                                   },
                                   onPanEnd: () {
                                     galleryStore.removeTagFromSearchFilter();
-                                    if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
+                                    if (galleryStore
+                                            .searchingTagsKeys.isEmpty &&
+                                        searchFocusNode.hasFocus == false) {
                                       galleryStore.setIsSearching(false);
                                     }
                                   },
@@ -525,9 +558,12 @@ class _TaggedTabState extends State<TaggedTab> {
                               ),
 //                            if (galleryStore.showSearchTagsResults) ...[
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
-                                galleryStore.showSearchTagsResults ? S.of(context).search_results : S.of(context).suggestions,
+                                galleryStore.showSearchTagsResults
+                                    ? S.of(context).search_results
+                                    : S.of(context).recent_tags,
                                 textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -542,9 +578,14 @@ class _TaggedTabState extends State<TaggedTab> {
                             Observer(
                               builder: (_) {
                                 if (!galleryStore.showSearchTagsResults) {
-                                  print('############ ${galleryStore.tagsSuggestions}');
+                                  print(
+                                      '############ ${galleryStore.tagsSuggestions}');
                                   return Padding(
-                                    padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
+                                    padding: const EdgeInsets.only(
+                                        left: 16.0,
+                                        right: 16,
+                                        top: 8.0,
+                                        bottom: 16.0),
                                     child: TagsList(
                                       tags: galleryStore.tagsSuggestions,
                                       tagStyle: TagStyle.GrayOutlined,
@@ -552,7 +593,8 @@ class _TaggedTabState extends State<TaggedTab> {
                                       onTap: (tagId, tagName) {
                                         galleryStore.addTagToSearchFilter();
                                         searchEditingController.clear();
-                                        galleryStore.searchResultsTags(searchEditingController.text);
+                                        galleryStore.searchResultsTags(
+                                            searchEditingController.text);
                                       },
                                       onDoubleTap: () {
                                         print('do nothing');
@@ -565,7 +607,8 @@ class _TaggedTabState extends State<TaggedTab> {
                                 }
                                 if (galleryStore.searchTagsResults.isEmpty) {
                                   return Container(
-                                    padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0, left: 26.0, bottom: 10.0),
                                     child: Text(
                                       S.of(context).no_tags_found,
                                       textScaleFactor: 1.0,
@@ -582,15 +625,21 @@ class _TaggedTabState extends State<TaggedTab> {
                                   );
                                 }
                                 return Padding(
-                                  padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0,
+                                      right: 16,
+                                      top: 8.0,
+                                      bottom: 16.0),
                                   child: TagsList(
-                                    tags: galleryStore.searchTagsResults.toList(),
+                                    tags:
+                                        galleryStore.searchTagsResults.toList(),
                                     tagStyle: TagStyle.GrayOutlined,
                                     showEditTagModal: widget.showEditTagModal,
                                     onTap: (tagId, tagName) {
                                       galleryStore.addTagToSearchFilter();
                                       searchEditingController.clear();
-                                      galleryStore.searchResultsTags(searchEditingController.text);
+                                      galleryStore.searchResultsTags(
+                                          searchEditingController.text);
                                     },
                                     onDoubleTap: () {
                                       print('do nothing');
@@ -622,7 +671,10 @@ class _TaggedTabState extends State<TaggedTab> {
               return Container();
             }),
             Observer(builder: (_) {
-              if (galleryStore.taggedPics.length > 0 && !tabsStore.hideTitleThirdTab && !galleryStore.isSearching && galleryStore.deviceHasPics) {
+              if (galleryStore.taggedPics.length > 0 &&
+                  !tabsStore.hideTitleThirdTab &&
+                  !galleryStore.isSearching &&
+                  galleryStore.deviceHasPics) {
                 return Positioned(
                   left: 19.0,
                   top: 64.0,
@@ -630,7 +682,10 @@ class _TaggedTabState extends State<TaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).organized_photos_title,
+                        tabsStore.multiPicBar
+                            ? S.of(context).photo_gallery_count(
+                                galleryStore.selectedPics.length)
+                            : S.of(context).organized_photos_title,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',

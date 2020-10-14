@@ -9,5 +9,5 @@
 NSLocationAlwaysAndWhenInUseUsageDescription = "私たちのアプリがあなたの写真にあなたの場所を追加したい場合、私たちはあなたの場所にアクセスするための承認が必要です。";
 NSLocationAlwaysUsageDescription = "私たちのアプリがあなたの写真にあなたの場所を追加したい場合、私たちはあなたの場所にアクセスするための承認が必要です。";
 NSLocationWhenInUseUsageDescription = "私たちのアプリがあなたの写真にあなたの場所を追加したい場合、私たちはあなたの場所にアクセスするための承認が必要です。";
-NSPhotoLibraryAddUsageDescription = "アプリが正常に機能するためには、フォトギャラリーへのフルアクセスが必要です。";
-NSPhotoLibraryUsageDescription = "アプリが正常に機能するためには、フォトギャラリーへのフルアクセスが必要です。";
+NSPhotoLibraryAddUsageDescription = "picPicsで写真の整理を開始できるように、フォトライブラリにアクセスする必要があります。 写真がデバイスから離れることはありませんのでご安心ください。";
+NSPhotoLibraryUsageDescription = "picPicsで写真の整理を開始できるように、フォトライブラリにアクセスする必要があります。 写真がデバイスから離れることはありませんのでご安心ください。";

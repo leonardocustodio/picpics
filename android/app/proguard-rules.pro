@@ -40,3 +40,6 @@
 -keep class com.android.vending.billing.**
 -dontwarn com.amazon.**
 -keepattributes *Annotation*
+
+# Trying to fix lifecycle problem
+-keep class androidx.lifecycle.** { *; }

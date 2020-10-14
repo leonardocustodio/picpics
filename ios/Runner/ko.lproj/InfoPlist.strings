@@ -9,5 +9,5 @@
 NSLocationAlwaysAndWhenInUseUsageDescription = "앱에서 사진에 위치를 추가하려면 위치에 액세스 할 수있는 권한이 필요합니다.";
 NSLocationAlwaysUsageDescription = "앱에서 사진에 위치를 추가하려면 위치에 액세스 할 수있는 권한이 필요합니다.";
 NSLocationWhenInUseUsageDescription = "앱에서 사진에 위치를 추가하려면 위치에 액세스 할 수있는 권한이 필요합니다.";
-NSPhotoLibraryAddUsageDescription = "앱이 제대로 작동하려면 사진 갤러리에 대한 전체 액세스 권한이 필요합니다.";
-NSPhotoLibraryUsageDescription = "앱이 제대로 작동하려면 사진 갤러리에 대한 전체 액세스 권한이 필요합니다.";
+NSPhotoLibraryAddUsageDescription = "picPics로 사진 정리를 시작하려면 사진 라이브러리에 액세스해야합니다. 사진이 기기를 떠나지 않을 것이라고 걱정하지 마세요!";
+NSPhotoLibraryUsageDescription = "picPics로 사진 정리를 시작하려면 사진 라이브러리에 액세스해야합니다. 사진이 기기를 떠나지 않을 것이라고 걱정하지 마세요!";

@@ -9,5 +9,5 @@
 NSLocationAlwaysAndWhenInUseUsageDescription = "Sekiranya anda mahu aplikasi kami menambahkan lokasi anda ke foto anda, kami memerlukan kebenaran untuk mengakses lokasi anda.";
 NSLocationAlwaysUsageDescription = "Sekiranya anda mahu aplikasi kami menambahkan lokasi anda ke foto anda, kami memerlukan kebenaran untuk mengakses lokasi anda.";
 NSLocationWhenInUseUsageDescription = "Sekiranya anda mahu aplikasi kami menambahkan lokasi anda ke foto anda, kami memerlukan kebenaran untuk mengakses lokasi anda.";
-NSPhotoLibraryAddUsageDescription = "Agar aplikasi kami berfungsi dengan betul, kami memerlukan akses penuh ke galeri foto anda.";
-NSPhotoLibraryUsageDescription = "Agar aplikasi kami berfungsi dengan betul, kami memerlukan akses penuh ke galeri foto anda.";
+NSPhotoLibraryAddUsageDescription = "Kami memerlukan akses ke pustaka foto anda supaya anda dapat mula mengatur foto anda dengan picPics. Jangan bimbang foto anda tidak akan meninggalkan peranti anda!";
+NSPhotoLibraryUsageDescription = "Kami memerlukan akses ke pustaka foto anda supaya anda dapat mula mengatur foto anda dengan picPics. Jangan bimbang foto anda tidak akan meninggalkan peranti anda!";

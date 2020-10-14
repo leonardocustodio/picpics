@@ -87,10 +87,10 @@ abstract class _PinStore with Store {
         },
       );
 
-      print(result.data);
+      // print(result.data);
 
       if (result.data != false) {
-        print('Recovery Key Encrypted: ${result.data}');
+        // print('Recovery Key Encrypted: ${result.data}');
         encryptedRecoveryKey = result.data;
         setIsWaitingRecoveryKey(true);
         // print('Saving ${result.data} with access code $accessCode and pin $pin');
@@ -115,7 +115,7 @@ abstract class _PinStore with Store {
 
   @action
   Future<bool> isRecoveryCodeValid(AppStore appStore) async {
-    print('Typed Recovery Code: $recoveryCode');
+    // print('Typed Recovery Code: $recoveryCode');
 
     bool valid = await Crypto.checkRecoveryKey(encryptedRecoveryKey, recoveryCode, generatedIv, appStore);
     if (valid == true) {
@@ -135,7 +135,7 @@ abstract class _PinStore with Store {
 
   @action
   Future<Map<String, dynamic>> register() async {
-    print('Email: $email - Pin: $pin');
+    // print('Email: $email - Pin: $pin');
 
     Map<String, dynamic> result = {};
 
@@ -181,10 +181,10 @@ abstract class _PinStore with Store {
           'random_iv': randomNumber,
         },
       );
-      print(result.data);
+      // print(result.data);
 
       if (result.data != false) {
-        print('Saving ${result.data} with access code $accessCode and pin $pin');
+        // print('Saving ${result.data} with access code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
         await Crypto.saveSpKey(accessCode, result.data, pin, email, appStore);
         return true;

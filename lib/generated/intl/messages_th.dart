@@ -110,6 +110,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "privacy_policy" : MessageLookupByLibrary.simpleMessage("นโยบายความเป็นส่วนตัว"),
     "protect_with_encryption" : MessageLookupByLibrary.simpleMessage("ใช้การเข้ารหัสที่เข้าถึงได้ด้วย PIN เพื่อปกป้องรูปภาพส่วนตัว"),
     "rate_this_app" : MessageLookupByLibrary.simpleMessage("ให้คะแนนแอป"),
+    "recent_tags" : MessageLookupByLibrary.simpleMessage("Recent Tags"),
     "require_secret_key" : MessageLookupByLibrary.simpleMessage("ต้องมีรหัสลับ"),
     "restore_purchase" : MessageLookupByLibrary.simpleMessage("เรียกการซื้อคืน"),
     "save" : MessageLookupByLibrary.simpleMessage("บันทึก"),

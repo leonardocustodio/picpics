@@ -35,7 +35,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:picPics/widgets/edit_tag_modal.dart';
+import 'package:picPics/widgets/cupertino_input_dialog.dart';
 
 class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
@@ -108,10 +108,12 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       return;
     }
 
-    int freePrivatePics = await appStore.freePrivatePics;
-    if (appStore.totalPrivatePics >= freePrivatePics && picStore.isPrivate == false) {
-      Navigator.pushNamed(context, PremiumScreen.id);
-      return;
+    if (appStore.isPremium == false) {
+      int freePrivatePics = await appStore.freePrivatePics;
+      if (appStore.totalPrivatePics >= freePrivatePics && picStore.isPrivate == false) {
+        Navigator.pushNamed(context, PremiumScreen.id);
+        return;
+      }
     }
 
     if (appStore.keepAskingToDelete == false && picStore.isPrivate == false) {
@@ -166,14 +168,18 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         context: context,
         barrierDismissible: true,
         builder: (BuildContext buildContext) {
-          return EditTagModal(
+          return CupertinoInputDialog(
+            prefixImage: Image.asset('lib/images/smalladdtag.png'),
             alertInputController: alertInputController,
-            onPressedDelete: () {
+            title: S.of(context).edit_tag,
+            destructiveButtonTitle: S.of(context).delete,
+            onPressedDestructive: () {
               print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
               galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
-            onPressedOk: () {
+            defaultButtonTitle: S.of(context).ok,
+            onPressedDefault: () {
               print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 galleryStore.editTag(
@@ -397,6 +403,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     print('Language Code: ${myLocale.languageCode}');
 
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    var height = MediaQuery.of(context).size.height;
+
     return Stack(
       children: <Widget>[
         Observer(builder: (_) {
@@ -448,7 +456,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   children: <Widget>[
                                     Padding(
                                       padding: const EdgeInsets.only(right: 30.0),
-                                      child: Image.asset('lib/images/nogalleryauth.png'),
+                                      child: Container(
+                                        constraints: BoxConstraints(maxHeight: height / 2),
+                                        child: Image.asset('lib/images/nogalleryauth.png'),
+                                      ),
                                     ),
                                     SizedBox(
                                       height: 21.0,
@@ -653,7 +664,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
-                                        title: S.of(context).suggestions,
+                                        title: galleryStore.searchText != '' ? S.of(context).search_results : S.of(context).recent_tags,
                                         tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
@@ -791,8 +802,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                         },
                         child: Container(
                           margin: EdgeInsets.only(
-                            bottom: bottomInsets > 0 ? bottomInsets + 5 : 52,
-                            top: bottomInsets > 0 ? 5 : 46.0,
+                            bottom: bottomInsets > 0 ? bottomInsets + 5 : 32.0,
+                            top: bottomInsets > 0 ? 5 : 26.0,
+                            left: 2.0,
+                            right: 2.0,
                           ),
                           child: PhotoCard(
                             picStore: galleryStore.currentPic,
@@ -879,7 +892,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
                                 return Column(
                                   children: <Widget>[
-                                    image,
+                                    Container(
+                                      constraints: BoxConstraints(maxHeight: height / 2 - 20),
+                                      child: image,
+                                    ),
                                     SizedBox(
                                       height: 28.0,
                                     ),

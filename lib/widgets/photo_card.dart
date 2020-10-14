@@ -49,6 +49,8 @@ class PhotoCard extends StatefulWidget {
 }
 
 class _PhotoCardState extends State<PhotoCard> {
+  final GlobalKey _photoSpaceKey = GlobalKey();
+
   AppStore appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
@@ -117,6 +119,12 @@ class _PhotoCardState extends State<PhotoCard> {
 
   void focusTagsEditingController() {}
 
+  void getSizeAndPosition() {
+    RenderBox _cardBox = _photoSpaceKey.currentContext.findRenderObject();
+    print('Card Box Size: ${_cardBox.size.height}');
+    appStore.setPhotoHeightInCardWidget(_cardBox.size.height);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -144,11 +152,18 @@ class _PhotoCardState extends State<PhotoCard> {
 
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
     photoSize = <int>[height, height];
+
+    print('Did Change Dep!!!');
   }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
+    print('Pic Store Photo Id: ${picStore.photoId}');
+    print('Other info: ${picStore.photoPath}');
+    // var secretBox = Hive.box('secrets');
+    // Secret secret = secretBox.get(picStore.photoId);
+    // print('In secret db: ${secret.photoId} - ${secret.photoPath}');
 
     AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
     return Container(
@@ -169,106 +184,118 @@ class _PhotoCardState extends State<PhotoCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Expanded(
-            child: Observer(
-              builder: (_) {
-                return CircularMenu(
-                  alignment: Alignment.bottomRight,
-                  radius: 52,
-                  toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
-                  toggleButtonBoxShadow: [
-                    BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),
-                  ],
-                  toggleButtonIconColor: Colors.white,
-                  toggleButtonMargin: 12.0,
-                  toggleButtonPadding: 8.0,
-                  toggleButtonSize: 19.2,
-                  items: [
-                    CircularMenuItem(
-                      image: Image.asset('lib/images/trashmenu.png'),
-                      color: kWarningColor,
-                      iconSize: 19.2,
-                      onTap: () {
-                        galleryStore.trashPic(picStore);
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(12.0),
+                    topRight: Radius.circular(12.0),
+                  ),
+                  child: RepaintBoundary(
+                    child: ExtendedImage(
+                      key: _photoSpaceKey,
+                      afterPaintImage: (canvas, rect, image, paint) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) => getSizeAndPosition());
                       },
-                    ),
-                    CircularMenuItem(
-                      image: picStore.isPrivate == true ? Image.asset('lib/images/openlockmenu.png') : Image.asset('lib/images/lockmenu.png'),
-                      color: picStore.isPrivate == true ? Color(0xFFF5FAFA) : kYellowColor,
-                      iconSize: 19.2,
-                      onTap: () {
-                        widget.showDeleteSecretModal(picStore);
-                      },
-                    ),
-                    CircularMenuItem(
-                      image: Image.asset('lib/images/sharemenu.png'),
-                      color: kPrimaryColor,
-                      iconSize: 19.2,
-                      onTap: () {
-                        picStore.sharePic();
-                      },
-                    ),
-                    CircularMenuItem(
-                      image: Image.asset('lib/images/expandmenu.png'),
-                      color: kSecondaryColor,
-                      iconSize: 19.2,
-                      onTap: () {
-                        galleryStore.setInitialSelectedThumbnail(picStore);
-                        Navigator.pushNamed(context, PhotoScreen.id);
-                      },
-                    ),
-                  ],
-                  backgroundWidget: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(12.0),
-                      topRight: Radius.circular(12.0),
-                    ),
-                    child: RepaintBoundary(
-                      child: ExtendedImage(
-                        image: imageProvider,
-                        fit: boxFit,
-                        loadStateChanged: (ExtendedImageState state) {
-                          Widget loader;
-                          switch (state.extendedImageLoadState) {
-                            case LoadState.loading:
-                              loader = const ColoredBox(color: kGreyPlaceholder);
-                              break;
-                            case LoadState.completed:
-                              loader = FadeImageBuilder(
-                                child: () {
-                                  return GestureDetector(
-                                    onDoubleTap: () {
-                                      if (boxFit == BoxFit.cover) {
-                                        setState(() {
-                                          boxFit = BoxFit.contain;
-                                        });
-                                      } else {
-                                        setState(() {
-                                          boxFit = BoxFit.cover;
-                                        });
-                                      }
-                                    },
-                                    child: RepaintBoundary(
-                                      child: Container(
-                                        color: Colors.black,
-                                        constraints: BoxConstraints.expand(),
-                                        child: state.completedWidget,
-                                      ),
+                      image: imageProvider,
+                      fit: boxFit,
+                      loadStateChanged: (ExtendedImageState state) {
+                        Widget loader;
+                        switch (state.extendedImageLoadState) {
+                          case LoadState.loading:
+                            loader = const ColoredBox(color: kGreyPlaceholder);
+                            break;
+                          case LoadState.completed:
+                            loader = FadeImageBuilder(
+                              child: () {
+                                return GestureDetector(
+                                  onDoubleTap: () {
+                                    if (boxFit == BoxFit.cover) {
+                                      setState(() {
+                                        boxFit = BoxFit.contain;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        boxFit = BoxFit.cover;
+                                      });
+                                    }
+                                  },
+                                  child: RepaintBoundary(
+                                    child: Container(
+                                      color: Colors.black,
+                                      constraints: BoxConstraints.expand(),
+                                      child: state.completedWidget,
                                     ),
-                                  );
-                                }(),
-                              );
-                              break;
-                            case LoadState.failed:
-                              loader = Container();
-                              break;
-                          }
-                          return loader;
-                        },
-                      ),
+                                  ),
+                                );
+                              }(),
+                            );
+                            break;
+                          case LoadState.failed:
+                            loader = Container();
+                            break;
+                        }
+                        return loader;
+                      },
                     ),
                   ),
-                );
-              },
+                ),
+                Observer(
+                  builder: (_) {
+                    print('Photo Height: ${appStore.photoHeightInCardWidget}');
+                    return CircularMenu(
+                      // appStore: appStore,
+                      useInHorizontal: appStore.photoHeightInCardWidget < 280 ? true : false,
+                      alignment: Alignment.bottomRight,
+                      radius: 52,
+                      toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
+                      toggleButtonBoxShadow: [
+                        BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),
+                      ],
+                      toggleButtonIconColor: Colors.white,
+                      toggleButtonMargin: 12.0,
+                      toggleButtonPadding: 8.0,
+                      toggleButtonSize: 19.2,
+                      items: [
+                        CircularMenuItem(
+                          image: Image.asset('lib/images/trashmenu.png'),
+                          color: kWarningColor,
+                          iconSize: 19.2,
+                          onTap: () {
+                            galleryStore.trashPic(picStore);
+                          },
+                        ),
+                        CircularMenuItem(
+                          image: picStore.isPrivate == true ? Image.asset('lib/images/openlockmenu.png') : Image.asset('lib/images/lockmenu.png'),
+                          color: picStore.isPrivate == true ? Color(0xFFF5FAFA) : kYellowColor,
+                          iconSize: 19.2,
+                          onTap: () {
+                            widget.showDeleteSecretModal(picStore);
+                          },
+                        ),
+                        CircularMenuItem(
+                          image: Image.asset('lib/images/sharemenu.png'),
+                          color: kPrimaryColor,
+                          iconSize: 19.2,
+                          onTap: () {
+                            picStore.sharePic();
+                          },
+                        ),
+                        CircularMenuItem(
+                          image: Image.asset('lib/images/expandmenu.png'),
+                          color: kSecondaryColor,
+                          iconSize: 19.2,
+                          onTap: () {
+                            galleryStore.setInitialSelectedThumbnail(picStore);
+                            Navigator.pushNamed(context, PhotoScreen.id);
+                          },
+                        ),
+                      ],
+                      backgroundWidget: Container(),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
           Padding(
@@ -338,6 +365,11 @@ class _PhotoCardState extends State<PhotoCard> {
                     textFocusNode: tagsFocusNode,
                     showEditTagModal: widget.showEditTagModal,
                     shouldChangeToSwipeMode: true,
+                    aiButtonTitle: picStore.aiTags ? 'Recent' : S.of(context).suggestions,
+                    onAiButtonTap: () {
+                      print('ai button tapped');
+                      picStore.switchAiTags(context);
+                    },
                     onTap: (tagName) {
                       print('do nothing');
                     },
@@ -380,9 +412,47 @@ class _PhotoCardState extends State<PhotoCard> {
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: Observer(builder: (_) {
+                    String suggestionsTitle;
+
+                    if (picStore.aiTags == true) {
+                      if (picStore.aiTagsLoaded == false) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              S.of(context).suggestions,
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff979a9b),
+                                fontSize: 12,
+                                fontWeight: FontWeight.w300,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
+                            ),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 32.0, bottom: 32.0),
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      suggestionsTitle = S.of(context).suggestions;
+                    } else if (picStore.searchText != '') {
+                      suggestionsTitle = S.of(context).search_results;
+                    } else {
+                      suggestionsTitle = S.of(context).recent_tags;
+                    }
+
                     return TagsList(
-                      title: S.of(context).suggestions,
-                      tags: picStore.tagsSuggestions,
+                      title: suggestionsTitle,
+                      tags: picStore.aiTags ? picStore.aiSuggestions : picStore.tagsSuggestions,
                       tagStyle: TagStyle.GrayOutlined,
                       showEditTagModal: widget.showEditTagModal,
                       onTap: (tagId, tagName) async {
