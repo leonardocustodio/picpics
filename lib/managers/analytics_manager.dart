@@ -47,12 +47,12 @@ class Analytics {
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
-  static sendEvent(Event event) async {
+  static sendEvent(Event event, {Map<String, dynamic> params = null}) async {
     if (kDebugMode) {
       return;
     }
 
-    await analytics.logEvent(name: '${enumToString(event)}');
+    await analytics.logEvent(name: '${enumToString(event)}', parameters: params);
   }
 
   static setUserId(String userId) async {

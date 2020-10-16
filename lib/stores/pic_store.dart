@@ -405,7 +405,10 @@ abstract class _PicStore with Store {
       return;
     }
 
-    Analytics.sendEvent(Event.created_tag);
+    Analytics.sendEvent(
+      Event.created_tag,
+      params: {'tagName': tagName},
+    );
     print('adding tag to database...');
     TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
     appStore.addTag(tagsStore);
@@ -441,7 +444,10 @@ abstract class _PicStore with Store {
 
       tags.add(tagsStore);
 
-      Analytics.sendEvent(Event.added_tag);
+      Analytics.sendEvent(
+        Event.added_tag,
+        params: {'tagName': tagsStore.name},
+      );
       return;
     }
 
@@ -469,7 +475,10 @@ abstract class _PicStore with Store {
 
     // Increase today tagged pics everytime it adds a new pic to database.
     appStore.increaseTodayTaggedPics();
-    Analytics.sendEvent(Event.added_tag);
+    Analytics.sendEvent(
+      Event.added_tag,
+      params: {'tagName': tagsStore.name},
+    );
   }
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
@@ -572,7 +581,10 @@ abstract class _PicStore with Store {
       removePrivatePath();
     }
 
-    Analytics.sendEvent(Event.removed_tag);
+    Analytics.sendEvent(
+      Event.removed_tag,
+      params: {'tagName': getTag.name},
+    );
   }
 
   @action
@@ -636,7 +648,7 @@ abstract class _PicStore with Store {
   void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
 
   Future<List<String>> translateTags(List<String> tagsText, BuildContext context) async {
-    if (appStore.appLanguage.split('_')[0] == 'pt' || appStore.appLanguage.split('_')[0] == 'es') {
+    if (appStore.appLanguage.split('_')[0] == 'pt' || appStore.appLanguage.split('_')[0] == 'es' || appStore.appLanguage.split('_')[0] == 'de') {
       print('Offline translating it...');
       return tagsText.map((e) => Labels.labelTranslation(e, context)).toList();
     }
@@ -753,46 +765,46 @@ abstract class _PicStore with Store {
 
     aiSuggestions.clear();
 
-    final int inputSize = 224;
-
-    var imageBytes = (await entity.file).readAsBytesSync().buffer;
-    var resizedImage = resizeImage(imageBytes, inputSize);
-    print("&&&&&&&&&&&&&&&&&&&&&&&");
-    var input = imageToByteListFloat32(resizedImage, inputSize, 125.5, 255).reshape([1, 224, 224, 3]);
-
-    final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
-    var output = List(1 * 3).reshape([1, 3]);
-
-    interpreter.run(input, output);
-    print(output);
-
-    // final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
-    // final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
-    // final List<ImageLabel> labels = await labeler.processImage(visionImage);
+    // final int inputSize = 224;
     //
-    // List<String> tags = [];
-    // for (ImageLabel label in labels) {
-    //   final String labelText = label.text;
-    //   final String entityId = label.entityId;
-    //   final double confidence = label.confidence;
-    //   print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
-    //   tags.add(labelText);
-    // }
+    // var imageBytes = (await entity.file).readAsBytesSync().buffer;
+    // var resizedImage = resizeImage(imageBytes, inputSize);
+    // print("&&&&&&&&&&&&&&&&&&&&&&&");
+    // var input = imageToByteListFloat32(resizedImage, inputSize, 125.5, 255).reshape([1, 224, 224, 3]);
     //
-    // List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
+    // final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
+    // var output = List(1 * 3).reshape([1, 3]);
     //
-    // for (String translated in translatedTags) {
-    //   String tagKey = Helpers.encryptTag(translated);
-    //   TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
-    //   if (tagStore == null) {
-    //     tagStore = TagsStore(
-    //       id: tagKey,
-    //       name: translated,
-    //     );
-    //   }
-    //   aiSuggestions.add(tagStore);
-    // }
-    // aiTagsLoaded = true;
-    // labeler.close();
+    // interpreter.run(input, output);
+    // print(output);
+
+    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
+    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
+    final List<ImageLabel> labels = await labeler.processImage(visionImage);
+
+    List<String> tags = [];
+    for (ImageLabel label in labels) {
+      final String labelText = label.text;
+      final String entityId = label.entityId;
+      final double confidence = label.confidence;
+      print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
+      tags.add(labelText);
+    }
+
+    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
+
+    for (String translated in translatedTags) {
+      String tagKey = Helpers.encryptTag(translated);
+      TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
+      if (tagStore == null) {
+        tagStore = TagsStore(
+          id: tagKey,
+          name: translated,
+        );
+      }
+      aiSuggestions.add(tagStore);
+    }
+    aiTagsLoaded = true;
+    labeler.close();
   }
 }
