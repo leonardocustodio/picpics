@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.2+413
+version: 1.6.3+414
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -79,6 +79,8 @@ dependencies:
   convert: ^2.1.1
   encrypt: ^4.0.3
   firebase_ml_vision: ^0.9.7
+  tflite_flutter: ^0.5.0
+#  tflite: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -99,6 +101,7 @@ flutter:
   assets:
     - lib/images/
     - lib/anims/
+    - assets/
   fonts:
     - family: Lato
       fonts:

@@ -23,6 +23,9 @@ import 'package:googleapis/translate/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:strings/strings.dart';
 import 'package:path/path.dart' as p;
+import 'package:tflite_flutter/tflite_flutter.dart' as tfl;
+import 'package:image/image.dart' as img;
+// import 'package:tflite/tflite.dart';
 
 part 'pic_store.g.dart';
 
@@ -673,6 +676,75 @@ abstract class _PicStore with Store {
     return translatedStrings;
   }
 
+  // Uint8List imageToByteListFloat32(img.Image image, int inputSize, double mean, double std) {
+  //   var convertedBytes = Float32List(1 * inputSize * inputSize * 3);
+  //   var buffer = Float32List.view(convertedBytes.buffer);
+  //   int pixelIndex = 0;
+  //   for (var i = 0; i < inputSize; i++) {
+  //     for (var j = 0; j < inputSize; j++) {
+  //       var pixel = image.getPixel(j, i);
+  //       buffer[pixelIndex++] = (img.getRed(pixel) - mean) / std;
+  //       buffer[pixelIndex++] = (img.getGreen(pixel) - mean) / std;
+  //       buffer[pixelIndex++] = (img.getBlue(pixel) - mean) / std;
+  //     }
+  //   }
+  //   return convertedBytes.buffer.asUint8List();
+  // }
+  //
+  // Uint8List imageToByteListUint8(img.Image image, int inputSize) {
+  //   var convertedBytes = Uint8List(1 * inputSize * inputSize * 3);
+  //   var buffer = Uint8List.view(convertedBytes.buffer);
+  //   int pixelIndex = 0;
+  //   for (var i = 0; i < inputSize; i++) {
+  //     for (var j = 0; j < inputSize; j++) {
+  //       var pixel = image.getPixel(j, i);
+  //       buffer[pixelIndex++] = img.getRed(pixel);
+  //       buffer[pixelIndex++] = img.getGreen(pixel);
+  //       buffer[pixelIndex++] = img.getBlue(pixel);
+  //     }
+  //   }
+  //   return convertedBytes.buffer.asUint8List();
+  // }
+
+  Float32List imageToByteListFloat32(img.Image image, int inputSize, double mean, double std) {
+    var convertedBytes = Float32List(1 * inputSize * inputSize * 3);
+    var buffer = Float32List.view(convertedBytes.buffer);
+    int pixelIndex = 0;
+    for (var i = 0; i < inputSize; i++) {
+      for (var j = 0; j < inputSize; j++) {
+        var pixel = image.getPixel(j, i);
+        buffer[pixelIndex++] = (img.getRed(pixel) - mean) / std;
+        buffer[pixelIndex++] = (img.getGreen(pixel) - mean) / std;
+        buffer[pixelIndex++] = (img.getBlue(pixel) - mean) / std;
+      }
+    }
+    print("===============");
+    print(buffer);
+    return convertedBytes.buffer.asFloat32List();
+  }
+
+  Uint8List imageToByteListUint8(img.Image image, int inputSize) {
+    var convertedBytes = Uint8List(1 * inputSize * inputSize * 3);
+    var buffer = Uint8List.view(convertedBytes.buffer);
+    int pixelIndex = 0;
+    for (var i = 0; i < inputSize; i++) {
+      for (var j = 0; j < inputSize; j++) {
+        var pixel = image.getPixel(j, i);
+        buffer[pixelIndex++] = img.getRed(pixel);
+        buffer[pixelIndex++] = img.getGreen(pixel);
+        buffer[pixelIndex++] = img.getBlue(pixel);
+      }
+    }
+    return convertedBytes.buffer.asUint8List();
+  }
+
+  img.Image resizeImage(ByteBuffer imageBytes, int inputSize) {
+//var imageBytes = (await rootBundle.load(image.path)).buffer;
+    img.Image oriImage = img.decodeJpg(imageBytes.asUint8List());
+    img.Image resizedImage = img.copyResize(oriImage, height: inputSize, width: inputSize);
+    return resizedImage;
+  }
+
   @action
   Future<void> getAiSuggestions(BuildContext context) async {
     if (aiTagsLoaded == true) {
@@ -681,33 +753,46 @@ abstract class _PicStore with Store {
 
     aiSuggestions.clear();
 
-    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
-    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
-    final List<ImageLabel> labels = await labeler.processImage(visionImage);
+    final int inputSize = 224;
 
-    List<String> tags = [];
-    for (ImageLabel label in labels) {
-      final String labelText = label.text;
-      final String entityId = label.entityId;
-      final double confidence = label.confidence;
-      print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
-      tags.add(labelText);
-    }
+    var imageBytes = (await entity.file).readAsBytesSync().buffer;
+    var resizedImage = resizeImage(imageBytes, inputSize);
+    print("&&&&&&&&&&&&&&&&&&&&&&&");
+    var input = imageToByteListFloat32(resizedImage, inputSize, 125.5, 255).reshape([1, 224, 224, 3]);
 
-    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
+    final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
+    var output = List(1 * 3).reshape([1, 3]);
 
-    for (String translated in translatedTags) {
-      String tagKey = Helpers.encryptTag(translated);
-      TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
-      if (tagStore == null) {
-        tagStore = TagsStore(
-          id: tagKey,
-          name: translated,
-        );
-      }
-      aiSuggestions.add(tagStore);
-    }
-    aiTagsLoaded = true;
-    labeler.close();
+    interpreter.run(input, output);
+    print(output);
+
+    // final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
+    // final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
+    // final List<ImageLabel> labels = await labeler.processImage(visionImage);
+    //
+    // List<String> tags = [];
+    // for (ImageLabel label in labels) {
+    //   final String labelText = label.text;
+    //   final String entityId = label.entityId;
+    //   final double confidence = label.confidence;
+    //   print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
+    //   tags.add(labelText);
+    // }
+    //
+    // List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
+    //
+    // for (String translated in translatedTags) {
+    //   String tagKey = Helpers.encryptTag(translated);
+    //   TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
+    //   if (tagStore == null) {
+    //     tagStore = TagsStore(
+    //       id: tagKey,
+    //       name: translated,
+    //     );
+    //   }
+    //   aiSuggestions.add(tagStore);
+    // }
+    // aiTagsLoaded = true;
+    // labeler.close();
   }
 }
