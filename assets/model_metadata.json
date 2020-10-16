@@ -1,0 +1,23 @@
+{
+    "classes_indexes": {
+      "apple": 0,
+      "banana": 1,
+      "kitchen_&_dining_room_table": 2
+    },
+    "model_config": {
+      "architecture": "mobilenet_v2_100_224"
+    },
+    "data_config": {
+      "classes": [
+        "apple",
+        "banana",
+        "Kitchen & dining room table"
+      ],
+      "output_path": "./data",
+      "limit": 200,
+      "type_data": "all",
+      "pixels": 224,
+      "do_data_augmentation": true
+    },
+    "model_run_id": "a60f724c-3423-4658-815e-a45822073415"
+  }

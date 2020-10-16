@@ -70,8 +70,8 @@ class Crypto {
 
       final decryptedFinal = await aesCtr.decrypt(hex.decode(decryptedFirstStep), secretKey: picKey, nonce: ivGenerated);
       final decryptedData = utf8.decode(decryptedFinal);
-      print('Final decrypted value: $decryptedData');
-      print('Hp Key: $hpkey');
+      // print('Final decrypted value: $decryptedData');
+      // print('Hp Key: $hpkey');
 
       final digest = hex.encode((await sha256.hash(decryptedFinal)).bytes);
       //print('Final key hashed: $digest');
@@ -92,7 +92,7 @@ class Crypto {
       //print('Not the real key');
       return false;
     } catch (error) {
-      print('Not the real key');
+      // print('Not the real key');
       return false;
     }
   }
@@ -121,7 +121,7 @@ class Crypto {
       if (digest == hpkey) {
         //print('The key is valid!');
         //print('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
-        print('Decrypted Key: $decryptedData');
+        // print('Decrypted Key: $decryptedData');
         appStore.setEncryptionKey(SecretKey(decryptedData));
         return true;
       }
@@ -229,8 +229,8 @@ class Crypto {
     final File savedThumbFile = File(finalThumbPath);
     savedPicFile.writeAsBytes(encryptedPicData);
     savedThumbFile.writeAsBytes(encryptedThumbData);
-    print('Writing to ${savedPicFile.path}');
-    print('Writing to ${savedThumbFile.path}');
+    // print('Writing to ${savedPicFile.path}');
+    // print('Writing to ${savedThumbFile.path}');
 
     //print('Saved file: $title to ${savedPicFile.path}');
     // //print('File sizes: ${savedPicFile.lengthSync()} - Thumb Size: ${savedThumbFile.lengthSync()}');
@@ -244,13 +244,13 @@ class Crypto {
 
     final File file = File(filePath);
 
-    print('Secret Key: ${secretKey.toString()}');
-    print('Nonce: ${nonce.toString()}');
-    print('File exists: ${await file.exists()}');
-    print('App Support Dir: ${(await getApplicationDocumentsDirectory()).path}');
+    // print('Secret Key: ${secretKey.toString()}');
+    // print('Nonce: ${nonce.toString()}');
+    // print('File exists: ${await file.exists()}');
+    // print('App Support Dir: ${(await getApplicationDocumentsDirectory()).path}');
 
     Uint8List decryptedData;
-    print('Decrypting image: $filePath');
+    // print('Decrypting image: $filePath');
     if (Platform.isAndroid) {
       decryptedData = await aesCtr.decrypt(
         file.readAsBytesSync(),
@@ -264,7 +264,7 @@ class Crypto {
         nonce: nonce,
       );
     }
-    print('Decrypted');
+    // print('Decrypted');
 
     return decryptedData;
   }

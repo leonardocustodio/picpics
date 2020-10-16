@@ -23,6 +23,9 @@ import 'package:googleapis/translate/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:strings/strings.dart';
 import 'package:path/path.dart' as p;
+import 'package:tflite_flutter/tflite_flutter.dart' as tfl;
+import 'package:image/image.dart' as img;
+// import 'package:tflite/tflite.dart';
 
 part 'pic_store.g.dart';
 
@@ -402,7 +405,10 @@ abstract class _PicStore with Store {
       return;
     }
 
-    Analytics.sendEvent(Event.created_tag);
+    Analytics.sendEvent(
+      Event.created_tag,
+      params: {'tagName': tagName},
+    );
     print('adding tag to database...');
     TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
     appStore.addTag(tagsStore);
@@ -438,7 +444,10 @@ abstract class _PicStore with Store {
 
       tags.add(tagsStore);
 
-      Analytics.sendEvent(Event.added_tag);
+      Analytics.sendEvent(
+        Event.added_tag,
+        params: {'tagName': tagsStore.name},
+      );
       return;
     }
 
@@ -466,7 +475,10 @@ abstract class _PicStore with Store {
 
     // Increase today tagged pics everytime it adds a new pic to database.
     appStore.increaseTodayTaggedPics();
-    Analytics.sendEvent(Event.added_tag);
+    Analytics.sendEvent(
+      Event.added_tag,
+      params: {'tagName': tagsStore.name},
+    );
   }
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
@@ -569,7 +581,10 @@ abstract class _PicStore with Store {
       removePrivatePath();
     }
 
-    Analytics.sendEvent(Event.removed_tag);
+    Analytics.sendEvent(
+      Event.removed_tag,
+      params: {'tagName': getTag.name},
+    );
   }
 
   @action
@@ -633,7 +648,7 @@ abstract class _PicStore with Store {
   void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
 
   Future<List<String>> translateTags(List<String> tagsText, BuildContext context) async {
-    if (appStore.appLanguage.split('_')[0] == 'pt' || appStore.appLanguage.split('_')[0] == 'es') {
+    if (appStore.appLanguage.split('_')[0] == 'pt' || appStore.appLanguage.split('_')[0] == 'es' || appStore.appLanguage.split('_')[0] == 'de') {
       print('Offline translating it...');
       return tagsText.map((e) => Labels.labelTranslation(e, context)).toList();
     }
@@ -673,6 +688,75 @@ abstract class _PicStore with Store {
     return translatedStrings;
   }
 
+  // Uint8List imageToByteListFloat32(img.Image image, int inputSize, double mean, double std) {
+  //   var convertedBytes = Float32List(1 * inputSize * inputSize * 3);
+  //   var buffer = Float32List.view(convertedBytes.buffer);
+  //   int pixelIndex = 0;
+  //   for (var i = 0; i < inputSize; i++) {
+  //     for (var j = 0; j < inputSize; j++) {
+  //       var pixel = image.getPixel(j, i);
+  //       buffer[pixelIndex++] = (img.getRed(pixel) - mean) / std;
+  //       buffer[pixelIndex++] = (img.getGreen(pixel) - mean) / std;
+  //       buffer[pixelIndex++] = (img.getBlue(pixel) - mean) / std;
+  //     }
+  //   }
+  //   return convertedBytes.buffer.asUint8List();
+  // }
+  //
+  // Uint8List imageToByteListUint8(img.Image image, int inputSize) {
+  //   var convertedBytes = Uint8List(1 * inputSize * inputSize * 3);
+  //   var buffer = Uint8List.view(convertedBytes.buffer);
+  //   int pixelIndex = 0;
+  //   for (var i = 0; i < inputSize; i++) {
+  //     for (var j = 0; j < inputSize; j++) {
+  //       var pixel = image.getPixel(j, i);
+  //       buffer[pixelIndex++] = img.getRed(pixel);
+  //       buffer[pixelIndex++] = img.getGreen(pixel);
+  //       buffer[pixelIndex++] = img.getBlue(pixel);
+  //     }
+  //   }
+  //   return convertedBytes.buffer.asUint8List();
+  // }
+
+  Float32List imageToByteListFloat32(img.Image image, int inputSize, double mean, double std) {
+    var convertedBytes = Float32List(1 * inputSize * inputSize * 3);
+    var buffer = Float32List.view(convertedBytes.buffer);
+    int pixelIndex = 0;
+    for (var i = 0; i < inputSize; i++) {
+      for (var j = 0; j < inputSize; j++) {
+        var pixel = image.getPixel(j, i);
+        buffer[pixelIndex++] = (img.getRed(pixel) - mean) / std;
+        buffer[pixelIndex++] = (img.getGreen(pixel) - mean) / std;
+        buffer[pixelIndex++] = (img.getBlue(pixel) - mean) / std;
+      }
+    }
+    print("===============");
+    print(buffer);
+    return convertedBytes.buffer.asFloat32List();
+  }
+
+  Uint8List imageToByteListUint8(img.Image image, int inputSize) {
+    var convertedBytes = Uint8List(1 * inputSize * inputSize * 3);
+    var buffer = Uint8List.view(convertedBytes.buffer);
+    int pixelIndex = 0;
+    for (var i = 0; i < inputSize; i++) {
+      for (var j = 0; j < inputSize; j++) {
+        var pixel = image.getPixel(j, i);
+        buffer[pixelIndex++] = img.getRed(pixel);
+        buffer[pixelIndex++] = img.getGreen(pixel);
+        buffer[pixelIndex++] = img.getBlue(pixel);
+      }
+    }
+    return convertedBytes.buffer.asUint8List();
+  }
+
+  img.Image resizeImage(ByteBuffer imageBytes, int inputSize) {
+//var imageBytes = (await rootBundle.load(image.path)).buffer;
+    img.Image oriImage = img.decodeJpg(imageBytes.asUint8List());
+    img.Image resizedImage = img.copyResize(oriImage, height: inputSize, width: inputSize);
+    return resizedImage;
+  }
+
   @action
   Future<void> getAiSuggestions(BuildContext context) async {
     if (aiTagsLoaded == true) {
@@ -680,6 +764,19 @@ abstract class _PicStore with Store {
     }
 
     aiSuggestions.clear();
+
+    // final int inputSize = 224;
+    //
+    // var imageBytes = (await entity.file).readAsBytesSync().buffer;
+    // var resizedImage = resizeImage(imageBytes, inputSize);
+    // print("&&&&&&&&&&&&&&&&&&&&&&&");
+    // var input = imageToByteListFloat32(resizedImage, inputSize, 125.5, 255).reshape([1, 224, 224, 3]);
+    //
+    // final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
+    // var output = List(1 * 3).reshape([1, 3]);
+    //
+    // interpreter.run(input, output);
+    // print(output);
 
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
     final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();

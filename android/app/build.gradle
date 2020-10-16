@@ -43,6 +43,11 @@ android {
         disable 'InvalidPackage'
     }
 
+    aaptOptions {
+        noCompress 'tflite'
+        noCompress 'lite'
+    }
+
     defaultConfig {
         applicationId "br.com.inovatso.picPics"
         minSdkVersion 21
