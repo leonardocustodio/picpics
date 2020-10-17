@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
@@ -721,17 +722,22 @@ abstract class _PicStore with Store {
   Float32List imageToByteListFloat32(img.Image image, int inputSize, double mean, double std) {
     var convertedBytes = Float32List(1 * inputSize * inputSize * 3);
     var buffer = Float32List.view(convertedBytes.buffer);
+
     int pixelIndex = 0;
     for (var i = 0; i < inputSize; i++) {
       for (var j = 0; j < inputSize; j++) {
         var pixel = image.getPixel(j, i);
-        buffer[pixelIndex++] = (img.getRed(pixel) - mean) / std;
-        buffer[pixelIndex++] = (img.getGreen(pixel) - mean) / std;
-        buffer[pixelIndex++] = (img.getBlue(pixel) - mean) / std;
+        buffer[pixelIndex++] = (img.getRed(pixel) / mean) - 1;
+        buffer[pixelIndex++] = (img.getGreen(pixel) / mean) - 1;
+        buffer[pixelIndex++] = (img.getBlue(pixel) / mean) - 1;
       }
     }
-    print("===============");
-    print(buffer);
+
+    double minValue = buffer.reduce(min);
+    double maxValue = buffer.reduce(max);
+
+    print('Min: $minValue - Max: $maxValue - Mean: $mean');
+
     return convertedBytes.buffer.asFloat32List();
   }
 
@@ -757,6 +763,10 @@ abstract class _PicStore with Store {
     return resizedImage;
   }
 
+  img.Image getImage(ByteBuffer imageBytes) {
+    return img.decodeJpg(imageBytes.asUint8List());
+  }
+
   @action
   Future<void> getAiSuggestions(BuildContext context) async {
     if (aiTagsLoaded == true) {
@@ -765,46 +775,53 @@ abstract class _PicStore with Store {
 
     aiSuggestions.clear();
 
-    // final int inputSize = 224;
+    final stopwatch = Stopwatch()..start();
+    final int inputSize = 224;
+
+    // img.Image oriImage = getImage((await entity.originFile).readAsBytesSync().buffer);
+
+    var imageBytes = (await entity.file).readAsBytesSync().buffer;
+    var resizedImage = resizeImage(imageBytes, inputSize);
+    var input = imageToByteListFloat32(resizedImage, inputSize, 127.5, 255).reshape([1, 224, 224, 3]);
+    print('Input: $input');
+
+    // print(input.)
+
+    final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
+    var output = List(1 * 1000).reshape([1, 1000]);
+
+    interpreter.run(input, output);
+    print(output);
+    interpreter.close();
+    print('doSomething() executed in ${stopwatch.elapsed}');
+
+    // final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
+    // final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
+    // final List<ImageLabel> labels = await labeler.processImage(visionImage);
     //
-    // var imageBytes = (await entity.file).readAsBytesSync().buffer;
-    // var resizedImage = resizeImage(imageBytes, inputSize);
-    // print("&&&&&&&&&&&&&&&&&&&&&&&");
-    // var input = imageToByteListFloat32(resizedImage, inputSize, 125.5, 255).reshape([1, 224, 224, 3]);
+    // List<String> tags = [];
+    // for (ImageLabel label in labels) {
+    //   final String labelText = label.text;
+    //   final String entityId = label.entityId;
+    //   final double confidence = label.confidence;
+    //   print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
+    //   tags.add(labelText);
+    // }
     //
-    // final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
-    // var output = List(1 * 3).reshape([1, 3]);
+    // List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
     //
-    // interpreter.run(input, output);
-    // print(output);
-
-    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
-    final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
-    final List<ImageLabel> labels = await labeler.processImage(visionImage);
-
-    List<String> tags = [];
-    for (ImageLabel label in labels) {
-      final String labelText = label.text;
-      final String entityId = label.entityId;
-      final double confidence = label.confidence;
-      print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
-      tags.add(labelText);
-    }
-
-    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
-
-    for (String translated in translatedTags) {
-      String tagKey = Helpers.encryptTag(translated);
-      TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
-      if (tagStore == null) {
-        tagStore = TagsStore(
-          id: tagKey,
-          name: translated,
-        );
-      }
-      aiSuggestions.add(tagStore);
-    }
-    aiTagsLoaded = true;
-    labeler.close();
+    // for (String translated in translatedTags) {
+    //   String tagKey = Helpers.encryptTag(translated);
+    //   TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
+    //   if (tagStore == null) {
+    //     tagStore = TagsStore(
+    //       id: tagKey,
+    //       name: translated,
+    //     );
+    //   }
+    //   aiSuggestions.add(tagStore);
+    // }
+    // aiTagsLoaded = true;
+    // labeler.close();
   }
 }
