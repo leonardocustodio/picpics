@@ -101,7 +101,6 @@ flutter:
   assets:
     - lib/images/
     - lib/anims/
-    - assets/
   fonts:
     - family: Lato
       fonts:
