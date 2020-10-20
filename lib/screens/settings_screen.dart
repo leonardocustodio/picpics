@@ -542,10 +542,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                     ),
                                   ),
                                 ),
-                                Divider(
-                                  color: kLightGrayColor,
-                                  thickness: 1.0,
-                                ),
+                                // Divider(
+                                //   color: kLightGrayColor,
+                                //   thickness: 1.0,
+                                // ),
                                 // Observer(builder: (_) {
                                 //   if (appStore.secretPhotos == true) {
                                 //     return FadeIn(
@@ -598,79 +598,79 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 //   }
                                 //   return Container();
                                 // }),
-                                Container(
-                                  height: 60.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                    child: CupertinoButton(
-                                      padding: const EdgeInsets.all(0),
-                                      pressedOpacity: 1.0,
-                                      onPressed: () {
-                                        appStore.switchDailyChallenges(
-                                          notificationTitle: S.of(context).daily_notification_title,
-                                          notificationDescription: S.of(context).daily_notification_description,
-                                        );
-                                      },
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            S.of(context).daily_challenge,
-                                            textScaleFactor: 1.0,
-                                            style: kGraySettingsFieldTextStyle,
-                                          ),
-                                          Observer(
-                                            builder: (_) {
-                                              return CupertinoSwitch(
-                                                value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-                                                activeColor: kSecondaryColor,
-                                                onChanged: (value) {
-                                                  appStore.switchDailyChallenges(
-                                                    notificationTitle: S.of(context).daily_notification_title,
-                                                    notificationDescription: S.of(context).daily_notification_description,
-                                                  );
-                                                },
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Divider(
-                                  color: kLightGrayColor,
-                                  thickness: 1.0,
-                                ),
-                                Container(
-                                  height: 60.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                    child: CupertinoButton(
-                                      padding: const EdgeInsets.all(0),
-                                      onPressed: () => showTimePicker(context),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Text(
-                                            S.of(context).notification_time,
-                                            textScaleFactor: 1.0,
-                                            style: kGraySettingsFieldTextStyle,
-                                          ),
-                                          Observer(
-                                            builder: (_) {
-                                              return Text(
-                                                '${'${appStore.hourOfDay}'.padLeft(2, '0')}: ${'${appStore.minutesOfDay}'.padLeft(2, '0')}',
-                                                textScaleFactor: 1.0,
-                                                style: kGraySettingsValueTextStyle,
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                // Container(
+                                //   height: 60.0,
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                //     child: CupertinoButton(
+                                //       padding: const EdgeInsets.all(0),
+                                //       pressedOpacity: 1.0,
+                                //       onPressed: () {
+                                //         appStore.switchDailyChallenges(
+                                //           notificationTitle: S.of(context).daily_notification_title,
+                                //           notificationDescription: S.of(context).daily_notification_description,
+                                //         );
+                                //       },
+                                //       child: Row(
+                                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                //         children: <Widget>[
+                                //           Text(
+                                //             S.of(context).daily_challenge,
+                                //             textScaleFactor: 1.0,
+                                //             style: kGraySettingsFieldTextStyle,
+                                //           ),
+                                //           Observer(
+                                //             builder: (_) {
+                                //               return CupertinoSwitch(
+                                //                 value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                //                 activeColor: kSecondaryColor,
+                                //                 onChanged: (value) {
+                                //                   appStore.switchDailyChallenges(
+                                //                     notificationTitle: S.of(context).daily_notification_title,
+                                //                     notificationDescription: S.of(context).daily_notification_description,
+                                //                   );
+                                //                 },
+                                //               );
+                                //             },
+                                //           ),
+                                //         ],
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
+                                // Divider(
+                                //   color: kLightGrayColor,
+                                //   thickness: 1.0,
+                                // ),
+                                // Container(
+                                //   height: 60.0,
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                //     child: CupertinoButton(
+                                //       padding: const EdgeInsets.all(0),
+                                //       onPressed: () => showTimePicker(context),
+                                //       child: Row(
+                                //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                //         children: <Widget>[
+                                //           Text(
+                                //             S.of(context).notification_time,
+                                //             textScaleFactor: 1.0,
+                                //             style: kGraySettingsFieldTextStyle,
+                                //           ),
+                                //           Observer(
+                                //             builder: (_) {
+                                //               return Text(
+                                //                 '${'${appStore.hourOfDay}'.padLeft(2, '0')}: ${'${appStore.minutesOfDay}'.padLeft(2, '0')}',
+                                //                 textScaleFactor: 1.0,
+                                //                 style: kGraySettingsValueTextStyle,
+                                //               );
+                                //             },
+                                //           ),
+                                //         ],
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
 //                    Container(
 //                      height: 60.0,
 //                      child: Padding(

@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.4+416
+version: 1.6.5+418
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -38,7 +38,7 @@ dependencies:
   after_layout: ^1.0.7+2
   flutter_staggered_grid_view: ^0.3.2
   outline_gradient_button: ^1.0.0+2
-  flutter_local_notifications: ^1.4.4+5
+  flutter_local_notifications: ^2.0.2
   firebase_core: ^0.5.0+1
   firebase_messaging: ^7.0.3
   firebase_analytics: ^6.0.2
