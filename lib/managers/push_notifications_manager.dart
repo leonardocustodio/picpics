@@ -39,7 +39,7 @@ class PushNotificationsManager {
 //        userBox.putAt(0, DatabaseManager.instance.userSettings);
 //      });
 
-      var initializationSettingsAndroid = AndroidInitializationSettings('drawable/ic_launcher');
+      var initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
       var initializationSettingsIOS = IOSInitializationSettings(requestAlertPermission: false, requestBadgePermission: false, requestSoundPermission: false);
 
       var initializationSettings = InitializationSettings(

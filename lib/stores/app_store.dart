@@ -151,18 +151,18 @@ abstract class _AppStore with Store {
   bool notifications = false;
 
   @action
-  void requestNotificationPermission() {
-    if (Platform.isAndroid) {
-      var userBox = Hive.box('user');
-      User currentUser = userBox.getAt(0);
+  Future<void> requestNotificationPermission() async {
+    PushNotificationsManager push = PushNotificationsManager();
+    await push.init();
 
-      currentUser.notifications = true;
-      currentUser.dailyChallenges = false;
-      currentUser.save();
-    } else {
-      PushNotificationsManager push = PushNotificationsManager();
-      push.init();
-    }
+    // if (Platform.isAndroid) {
+    //   var userBox = Hive.box('user');
+    //   User currentUser = userBox.getAt(0);
+    //
+    //   currentUser.notifications = true;
+    //   currentUser.dailyChallenges = false;
+    //   currentUser.save();
+    // }
   }
 
   @action

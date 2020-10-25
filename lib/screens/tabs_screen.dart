@@ -969,8 +969,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               if (tabsStore.tutorialIndex == 2) {
                                 print('Requesting notification....');
 
-                                appStore.requestNotificationPermission();
-                                appStore.checkNotificationPermission(firstPermissionCheck: true);
+                                await appStore.requestNotificationPermission();
+                                await appStore.checkNotificationPermission(firstPermissionCheck: true);
                                 await appStore.setTutorialCompleted(true);
                                 await galleryStore.loadAssetsPath();
                                 return;
