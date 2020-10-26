@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:picpics.app.link</string>
+		<string>applinks:picpics.link</string>
 		<string>applinks:picpics-alternate.app.link</string>
 		<string>applinks:picpics.test-app.link</string>
 		<string>applinks:picpics-alternate.test-app.link</string>
