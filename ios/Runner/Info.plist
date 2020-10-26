@@ -86,7 +86,7 @@
 	<true/>
 	<key>branch_universal_link_domains</key>
 	<array>
-		<string>picpics.app.link</string>
+		<string>picpics.link</string>
 		<string>picpics-alternate.app.link</string>
 		<string>picpics.test-app.link</string>
 		<string>picpics-alternate.test-app.link</string>
