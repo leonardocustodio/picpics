@@ -469,10 +469,14 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> loadAssetsPath() async {
+    FilterOptionGroup filterOptionGroup = FilterOptionGroup();
+    filterOptionGroup.addOrderOption(OrderOption(type: OrderOptionType.createDate, asc: false));
+
     final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
       hasAll: true,
       type: RequestType.image,
       onlyAll: true,
+      filterOption: filterOptionGroup,
     );
     assetsPath.addAll(assets);
     print('#@#@#@# Total galleries: ${assetsPath.length}');
