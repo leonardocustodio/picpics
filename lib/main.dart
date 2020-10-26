@@ -39,8 +39,7 @@ import 'dart:io';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
-  List<IAPItem> appStoreProducts =
-      await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
+  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
   if (appStoreProducts.length > 0) {
     return appStoreProducts.last.productId;
   }
@@ -75,46 +74,12 @@ void main() async {
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
 
-  var secretKey = Uint8List.fromList([
-    76,
-    224,
-    117,
-    70,
-    57,
-    101,
-    39,
-    29,
-    48,
-    239,
-    215,
-    240,
-    41,
-    149,
-    198,
-    69,
-    64,
-    5,
-    207,
-    227,
-    190,
-    126,
-    8,
-    133,
-    136,
-    234,
-    130,
-    91,
-    254,
-    104,
-    196,
-    158
-  ]);
+  var secretKey = Uint8List.fromList(
+      [76, 224, 117, 70, 57, 101, 39, 29, 48, 239, 215, 240, 41, 149, 198, 69, 64, 5, 207, 227, 190, 126, 8, 133, 136, 234, 130, 91, 254, 104, 196, 158]);
   var secretBox = await Hive.openBox('secrets', encryptionKey: secretKey);
 
-  String deviceLocale = await DeviceLocale.getCurrentLocale()
-      .then((Locale locale) => locale.toString());
-  String appVersion = await PackageInfo.fromPlatform()
-      .then((PackageInfo packageInfo) => packageInfo.version);
+  String deviceLocale = await DeviceLocale.getCurrentLocale().then((Locale locale) => locale.toString());
+  String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);
   print('Device Locale: $deviceLocale');
 
   String initiatedWithProduct;
@@ -125,17 +90,16 @@ void main() async {
   Ads.initialize();
   Ads.loadRewarded();
 
-  StreamSubscription<Map> streamSubscription =
-      FlutterBranchSdk.initSession().listen((data) {
-    if (data.containsKey("+clicked_branch_link") &&
-        data["+clicked_branch_link"] == true) {
+  // FlutterBranchSdk.validateSDKIntegration();
+
+  StreamSubscription<Map> streamSubscription = FlutterBranchSdk.initSession().listen((data) {
+    if (data.containsKey("+clicked_branch_link") && data["+clicked_branch_link"] == true) {
       //Link clicked. Add logic to get link data
-      print('Custom string: ${data["custom_string"]}');
+      // print('Custom string: ${data["custom_string"]}');
     }
   }, onError: (error) {
     PlatformException platformException = error as PlatformException;
-    print(
-        'InitSession error: ${platformException.code} - ${platformException.message}');
+    // print('InitSession error: ${platformException.code} - ${platformException.message}');
   });
 
   runZonedGuarded<Future<void>>(() async {

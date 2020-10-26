@@ -43,3 +43,6 @@
 
     # Trying to fix lifecycle problem
     -keep class androidx.lifecycle.** { *; }
+
+    # Keep Classes for Google Ads
+    -keep class com.google.android.gms.** { *; }

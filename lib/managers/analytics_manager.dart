@@ -46,8 +46,7 @@ enum Event {
 
 class Analytics {
   static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
@@ -56,8 +55,7 @@ class Analytics {
       return;
     }
 
-    await analytics.logEvent(
-        name: '${enumToString(event)}', parameters: params);
+    await analytics.logEvent(name: '${enumToString(event)}', parameters: params);
   }
 
   static setUserId(String userId) async {
@@ -66,6 +64,7 @@ class Analytics {
     }
 
     await analytics.setUserId(userId);
+    FlutterBranchSdk.setIdentity(userId);
   }
 
   static sendCurrentScreen(Screen screen) {
