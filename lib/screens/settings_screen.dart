@@ -42,7 +42,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void shareApp(BuildContext context) {
     Share.text(
       S.of(context).take_a_look,
-      S.of(context).take_a_look_description('https://picpics.link/get'),
+      S.of(context).take_a_look_description('https://picpics.link/share'),
       'text/plain',
     );
     Analytics.sendEvent(Event.shared_app);
