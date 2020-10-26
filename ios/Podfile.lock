@@ -1,4 +1,5 @@
 PODS:
+  - Branch (0.35.1)
   - cloud_functions (0.6.0-1):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Functions (~> 6.26.0)
@@ -163,6 +164,9 @@ PODS:
     - GoogleUtilities/Environment (~> 6.2)
     - "GoogleUtilities/NSData+zlib (~> 6.2)"
   - Flutter (1.0.0)
+  - flutter_branch_sdk (1.2.0):
+    - Branch (~> 0.35.0)
+    - Flutter
   - flutter_device_locale (0.0.1):
     - Flutter
   - flutter_inapp_purchase (0.0.1):
@@ -175,19 +179,19 @@ PODS:
     - Flutter
   - flutter_vibrate (0.0.1):
     - Flutter
-  - "geocoding (1.0.3+1)":
+  - geocoding (1.0.5):
     - Flutter
   - "geolocator (6.0.0+4)":
     - Flutter
-  - Google-Mobile-Ads-SDK (7.66.0):
+  - Google-Mobile-Ads-SDK (7.67.0):
     - GoogleAppMeasurement (~> 6.0)
     - GoogleUserMessagingPlatform (~> 1.1)
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps (< 3.10)
-  - GoogleAPIClientForREST/Core (1.4.3):
+  - GoogleAPIClientForREST/Core (1.5.0):
     - GTMSessionFetcher (>= 1.1.7)
-  - GoogleAPIClientForREST/Vision (1.4.3):
+  - GoogleAPIClientForREST/Vision (1.5.0):
     - GoogleAPIClientForREST/Core
     - GTMSessionFetcher (>= 1.1.7)
   - GoogleAppMeasurement (6.6.0):
@@ -205,19 +209,19 @@ PODS:
   - GoogleMaps/Base (3.9.0)
   - GoogleMaps/Maps (3.9.0):
     - GoogleMaps/Base
-  - GoogleToolboxForMac/DebugUtils (2.2.2):
-    - GoogleToolboxForMac/Defines (= 2.2.2)
-  - GoogleToolboxForMac/Defines (2.2.2)
-  - GoogleToolboxForMac/Logger (2.2.2):
-    - GoogleToolboxForMac/Defines (= 2.2.2)
-  - "GoogleToolboxForMac/NSData+zlib (2.2.2)":
-    - GoogleToolboxForMac/Defines (= 2.2.2)
-  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.2.2)":
-    - GoogleToolboxForMac/DebugUtils (= 2.2.2)
-    - GoogleToolboxForMac/Defines (= 2.2.2)
-    - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.2)"
-  - "GoogleToolboxForMac/NSString+URLArguments (2.2.2)"
-  - GoogleUserMessagingPlatform (1.2.0)
+  - GoogleToolboxForMac/DebugUtils (2.3.0):
+    - GoogleToolboxForMac/Defines (= 2.3.0)
+  - GoogleToolboxForMac/Defines (2.3.0)
+  - GoogleToolboxForMac/Logger (2.3.0):
+    - GoogleToolboxForMac/Defines (= 2.3.0)
+  - "GoogleToolboxForMac/NSData+zlib (2.3.0)":
+    - GoogleToolboxForMac/Defines (= 2.3.0)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.3.0)":
+    - GoogleToolboxForMac/DebugUtils (= 2.3.0)
+    - GoogleToolboxForMac/Defines (= 2.3.0)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.3.0)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.3.0)"
+  - GoogleUserMessagingPlatform (1.3.0)
   - GoogleUtilities/AppDelegateSwizzler (6.7.2):
     - GoogleUtilities/Environment
     - GoogleUtilities/Logger
@@ -237,11 +241,11 @@ PODS:
     - GoogleUtilities/Logger
   - GoogleUtilities/UserDefaults (6.7.2):
     - GoogleUtilities/Logger
-  - GTMSessionFetcher (1.4.0):
-    - GTMSessionFetcher/Full (= 1.4.0)
-  - GTMSessionFetcher/Core (1.4.0)
-  - GTMSessionFetcher/Full (1.4.0):
-    - GTMSessionFetcher/Core (= 1.4.0)
+  - GTMSessionFetcher (1.5.0):
+    - GTMSessionFetcher/Full (= 1.5.0)
+  - GTMSessionFetcher/Core (1.5.0)
+  - GTMSessionFetcher/Full (1.5.0):
+    - GTMSessionFetcher/Core (= 1.5.0)
   - nanopb (1.30905.0):
     - nanopb/decode (= 1.30905.0)
     - nanopb/encode (= 1.30905.0)
@@ -257,12 +261,14 @@ PODS:
     - Flutter
   - PromisesObjC (1.2.11)
   - Protobuf (3.13.0)
-  - Purchases (3.4.0)
-  - purchases_flutter (1.2.1):
+  - Purchases (3.7.5):
+    - PurchasesCoreSwift (= 3.7.5)
+  - purchases_flutter (1.4.1):
     - Flutter
-    - PurchasesHybridCommon (= 1.2.0)
-  - PurchasesHybridCommon (1.2.0):
-    - Purchases (= 3.4.0)
+    - PurchasesHybridCommon (= 1.4.5)
+  - PurchasesCoreSwift (3.7.5)
+  - PurchasesHybridCommon (1.4.5):
+    - Purchases (= 3.7.5)
   - rate_my_app (0.7.1):
     - Flutter
   - share_extend (0.0.1):
@@ -286,6 +292,7 @@ DEPENDENCIES:
   - firebase_ml_vision (from `.symlinks/plugins/firebase_ml_vision/ios`)
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
   - Flutter (from `Flutter`)
+  - flutter_branch_sdk (from `.symlinks/plugins/flutter_branch_sdk/ios`)
   - flutter_device_locale (from `.symlinks/plugins/flutter_device_locale/ios`)
   - flutter_inapp_purchase (from `.symlinks/plugins/flutter_inapp_purchase/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
@@ -307,6 +314,7 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
+    - Branch
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -339,6 +347,7 @@ SPEC REPOS:
     - PromisesObjC
     - Protobuf
     - Purchases
+    - PurchasesCoreSwift
     - PurchasesHybridCommon
 
 EXTERNAL SOURCES:
@@ -366,6 +375,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_remote_config/ios"
   Flutter:
     :path: Flutter
+  flutter_branch_sdk:
+    :path: ".symlinks/plugins/flutter_branch_sdk/ios"
   flutter_device_locale:
     :path: ".symlinks/plugins/flutter_device_locale/ios"
   flutter_inapp_purchase:
@@ -404,6 +415,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
+  Branch: 43863eab4c2339a58fa552f2f277139c3839dfb4
   cloud_functions: cc36e7b5ec30848fbf6ff5f240188d51104ce9dd
   cryptography_flutter: a2c541ba25ff28549f989f856dde126c961defcd
   esys_flutter_share: 403498dab005b36ce1f8d7aff377e81f0621b0b4
@@ -434,25 +446,26 @@ SPEC CHECKSUMS:
   FirebaseMLVisionLabelModel: 831b1598300f934a64705cfc820bc87e80d236f2
   FirebaseRemoteConfig: 1725314c4b89d8853c876099ded037f11bee26db
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  flutter_branch_sdk: 4b6cda04245cdff4cc36e04c41fb0dc98ffb3c71
   flutter_device_locale: 94fbcacb38980dc1a9e31eb4ee8ae6d1c3a73042
   flutter_inapp_purchase: 5c6a1ac3f11b11d0c8c0321c0c41c1f05805e4c8
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
-  flutter_local_notifications: 9e4738ce2471c5af910d961a6b7eadcf57c50186
+  flutter_local_notifications: 0c0b1ae97e741e1521e4c1629a459d04b9aec743
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_vibrate: c0ca4ac994ff97c3f147f69865458bbc0cc3508b
-  geocoding: e1f71509cefcf3ac61ef6b92efc50024da0be32d
+  geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
   geolocator: 1ae40084cc6c1586ce5ad12cfc3fd38c64d05f2f
-  Google-Mobile-Ads-SDK: 7d7074359c040f5add4e0963bf860e14690060d0
+  Google-Mobile-Ads-SDK: 8b58584890539de4527c47ef01e4da941a10bc8a
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
-  GoogleAPIClientForREST: e2d95a611ac06a90d143c93bfd8597719f8b0938
+  GoogleAPIClientForREST: e152cbe478166145abeb22255d545a1faa86033c
   GoogleAppMeasurement: 67458367830514fb20fd9e233496f1eef9d90185
   GoogleDataTransport: 9a8a16f79feffc7f42096743de2a7c4815e84020
   GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
   GoogleMaps: 4b5346bddfe6911bb89155d43c903020170523ac
-  GoogleToolboxForMac: 800648f8b3127618c1b59c7f97684427630c5ea3
-  GoogleUserMessagingPlatform: c85530d930ba509583aa5a6d50a10aca22cf8502
+  GoogleToolboxForMac: 1350d40e86a76f7863928d63bcb0b89c84c521c5
+  GoogleUserMessagingPlatform: 1d4b6946710d18cec34742054092e2c2bddae61f
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
-  GTMSessionFetcher: 6f5c8abbab8a9bce4bb3f057e317728ec6182b10
+  GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   notification_permissions: b74860c2967c1579243a675e63cd55e0ae75cef7
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
@@ -460,14 +473,15 @@ SPEC CHECKSUMS:
   photo_manager: f7c619c2cc8c2adb8d85c63363babac477de9c67
   PromisesObjC: 8c196f5a328c2cba3e74624585467a557dcb482f
   Protobuf: 3dac39b34a08151c6d949560efe3f86134a3f748
-  Purchases: b8cac232e403ca51541a425a65992b902cecc044
-  purchases_flutter: b27e7df010dbf09f9b7bdd849cc83ac19c3444d9
-  PurchasesHybridCommon: deba31751165f0a0f84eba3df68a54641f8a69b1
+  Purchases: 7ebce9418bc16732c3c3bb4b6ff7e7e397de024e
+  purchases_flutter: b4f227917a871105df8a47b9a8aed93ec469d9e2
+  PurchasesCoreSwift: 50636e307c1ab76c7a7894a87d042665f2fe0be9
+  PurchasesHybridCommon: b1dd1c5125ccf99b9e62b5974d0e5145895e8b87
   rate_my_app: 3b64dd0876bd286001595ee2e69193e757c4d77c
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: 04437c9fcfba80b967ea741e7ee89d6677c85854
+PODFILE CHECKSUM: 25415a8875d7cfdfff0957a6fa0834f3e2865800
 
 COCOAPODS: 1.9.3

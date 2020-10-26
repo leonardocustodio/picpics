@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/foundation.dart';
 
@@ -43,7 +46,8 @@ enum Event {
 
 class Analytics {
   static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
@@ -52,7 +56,8 @@ class Analytics {
       return;
     }
 
-    await analytics.logEvent(name: '${enumToString(event)}', parameters: params);
+    await analytics.logEvent(
+        name: '${enumToString(event)}', parameters: params);
   }
 
   static setUserId(String userId) async {

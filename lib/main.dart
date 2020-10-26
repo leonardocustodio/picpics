@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -123,6 +124,19 @@ void main() async {
 
   Ads.initialize();
   Ads.loadRewarded();
+
+  StreamSubscription<Map> streamSubscription =
+      FlutterBranchSdk.initSession().listen((data) {
+    if (data.containsKey("+clicked_branch_link") &&
+        data["+clicked_branch_link"] == true) {
+      //Link clicked. Add logic to get link data
+      print('Custom string: ${data["custom_string"]}');
+    }
+  }, onError: (error) {
+    PlatformException platformException = error as PlatformException;
+    print(
+        'InitSession error: ${platformException.code} - ${platformException.message}');
+  });
 
   runZonedGuarded<Future<void>>(() async {
     runApp(

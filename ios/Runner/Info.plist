@@ -84,5 +84,25 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
 	<true/>
+	<key>branch_universal_link_domains</key>
+	<array>
+		<string>picpics.app.link</string>
+		<string>picpics-alternate.app.link</string>
+		<string>picpics.test-app.link</string>
+		<string>picpics-alternate.test-app.link</string>
+	</array>
+	<key>branch_key</key>
+	<string>key_live_knQ56dVonIKMG12kp8oqImolxDdnijb4</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>br.com.inovatso.picPics</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>picpics</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>
