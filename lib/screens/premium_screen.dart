@@ -611,7 +611,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                               children: <Widget>[
                                 CupertinoButton(
                                   onPressed: () {
-                                    _launchURL('https://www.inovatso.com.br/picpics/privacy');
+                                    _launchURL('https://picpics.link/e/privacy');
                                   },
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   minSize: 32.0,
@@ -639,7 +639,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                 ),
                                 CupertinoButton(
                                   onPressed: () {
-                                    _launchURL('https://www.inovatso.com.br/picpics/terms');
+                                    _launchURL('https://picpics.link/e/terms');
                                   },
                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                                   minSize: 32.0,

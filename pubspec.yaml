@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.7+424
+version: 1.6.8+425
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -82,17 +82,24 @@ dependencies:
   firebase_ml_vision: ^0.9.7
 #  tflite_flutter: ^0.5.0
 #  tflite: ^1.1.1
+#  metadata: ^1.0.0
+#  exif: ^1.0.3
+#  psd_sdk: ^0.1.6
+#  edit_exif:
+#    git:
+#      url: https://github.com/maks/edit_exif.git
+#      ref: fix-getexif-on-android
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
+#  flutter_test:
+#    sdk: flutter
 #  test: 1.16.0-nullsafety.5
 #  mockito: 4.1.2
 #  faker: 1.2.1
   build_runner: ^1.10.3
   mobx_codegen: ^1.1.1
   hive_generator: ^0.8.1
-  image: ^2.1.4
+#  image: ^2.1.4
   googleapis: ^0.56.1
   googleapis_auth: any
   strings: ^0.1.2
