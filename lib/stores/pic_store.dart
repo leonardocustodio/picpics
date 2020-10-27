@@ -3,7 +3,6 @@ import 'dart:math';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
-import 'package:edit_exif/edit_exif.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
@@ -29,6 +28,7 @@ import 'package:path/path.dart' as p;
 // import 'package:image/image.dart' as img;
 // import 'package:metadata/metadata.dart' as md;
 // import 'package:exif/exif.dart';
+// import 'package:edit_exif/edit_exif.dart';
 // import 'package:psd_sdk/psd_sdk.dart' as psd;
 // import 'package:tflite/tflite.dart';
 
