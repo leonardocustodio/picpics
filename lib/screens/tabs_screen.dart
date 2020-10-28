@@ -8,6 +8,7 @@ import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
@@ -839,6 +840,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         }),
         Observer(builder: (_) {
           if (appStore.tutorialCompleted == false) {
+            Analytics.sendTutorialBegin();
+
             return Container(
               color: Colors.black.withOpacity(0.6),
               child: Material(

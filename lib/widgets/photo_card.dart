@@ -73,6 +73,7 @@ class _PhotoCardState extends State<PhotoCard> {
           onPressedWatchAdd: () {
             Navigator.pop(context);
             Ads.showRewarded();
+            Analytics.sendAdImpression();
           },
           onPressedGetPremium: () {
             Navigator.popAndPushNamed(context, PremiumScreen.id);

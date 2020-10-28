@@ -420,6 +420,7 @@ abstract class _AppStore with Store {
     currentUser.save();
 
     await requestGalleryPermission();
+    Analytics.sendTutorialComplete();
   }
 
   int picsTaggedToday;

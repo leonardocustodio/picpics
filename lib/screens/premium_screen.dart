@@ -64,8 +64,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   void getOffers() async {
     try {
       Offerings offerings = await Purchases.getOfferings();
-      if (offerings.current != null &&
-          offerings.current.availablePackages.isNotEmpty) {
+      if (offerings.current != null && offerings.current.availablePackages.isNotEmpty) {
         getOfferingError = null;
 
         print(offerings.current.availablePackages);
@@ -73,10 +72,19 @@ class _PremiumScreenState extends State<PremiumScreen> {
           _items = offerings.current.availablePackages;
         });
 
+        for (var item in _items) {
+          Analytics.sendPresentOffer(
+            itemId: item.product.identifier,
+            itemName: item.product.title,
+            itemCategory: item.packageType == PackageType.annual ? 'Annual Subscription' : 'Monthly Subscription',
+            quantity: 1,
+            price: item.product.price,
+            currency: item.product.currencyCode,
+          );
+        }
+
         if (appStore.tryBuyId != null) {
-          var getPackage = _items.firstWhere(
-              (element) => element.product.identifier == appStore.tryBuyId,
-              orElse: () => null);
+          var getPackage = _items.firstWhere((element) => element.product.identifier == appStore.tryBuyId, orElse: () => null);
 
           if (getPackage != null) {
             print(getPackage);
@@ -107,6 +115,11 @@ class _PremiumScreenState extends State<PremiumScreen> {
       return;
     }
 
+    Analytics.sendBeginCheckout(
+      currency: package.product.currencyCode,
+      price: package.product.price,
+    );
+
     try {
       PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
 
@@ -126,15 +139,11 @@ class _PremiumScreenState extends State<PremiumScreen> {
           return;
         }
       }
-      showError(
-          title: 'Error has occurred',
-          description: 'An error has occurred, please try again!');
+      showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
     } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-        showError(
-            title: 'Error has occurred',
-            description: 'An error has occurred, please try again!');
+        showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
       }
     }
   }
@@ -159,14 +168,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
           return;
         }
       }
-      showError(
-          title: S.of(context).no_previous_purchase,
-          description: S.of(context).no_valid_subscription);
+      showError(title: S.of(context).no_previous_purchase, description: S.of(context).no_valid_subscription);
     } on PlatformException catch (e) {
       print(e);
-      showError(
-          title: 'Error has occurred',
-          description: 'An error has occurred, please try again!');
+      showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
     }
   }
 
@@ -399,13 +404,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
       );
     }
 
-    var yearSubs = _items.firstWhere((e) => e.packageType == PackageType.annual,
-        orElse: null);
-    var monthSubs = _items
-        .firstWhere((e) => e.packageType == PackageType.monthly, orElse: null);
+    var yearSubs = _items.firstWhere((e) => e.packageType == PackageType.annual, orElse: null);
+    var monthSubs = _items.firstWhere((e) => e.packageType == PackageType.monthly, orElse: null);
 
-    double save =
-        100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
+    double save = 100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
     print('Save: $save');
 
     return Column(
@@ -430,8 +432,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       "${S.of(context).sign} ${monthSubs.product.priceString}\n${S.of(context).month}",
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
-                      style:
-                          kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
+                      style: kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
                     ),
                   ),
                 ),
@@ -481,8 +482,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             paintingStyle: PaintingStyle.fill,
                           ),
                           child: Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 14.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 14.0),
                             height: 24.0,
                             child: Center(
                               child: Text(
@@ -634,11 +634,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
                               children: <Widget>[
                                 CupertinoButton(
                                   onPressed: () {
-                                    _launchURL(
-                                        'https://picpics.link/e/privacy');
+                                    _launchURL('https://picpics.link/e/privacy');
                                   },
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   minSize: 32.0,
                                   child: Text(
                                     S.of(context).privacy_policy,
@@ -666,8 +664,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                   onPressed: () {
                                     _launchURL('https://picpics.link/e/terms');
                                   },
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10.0),
+                                  padding: const EdgeInsets.symmetric(vertical: 10.0),
                                   minSize: 32.0,
                                   child: Text(
                                     S.of(context).terms_of_use,

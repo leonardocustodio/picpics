@@ -43,13 +43,19 @@ enum Event {
   rated_app,
   notification_switch,
   notification_time,
+  begin_checkout,
+  present_offer,
+  tutorial_complete,
+  tutorial_begin,
+  ad_impression,
+  current_screen,
+  current_tab,
 }
 
 class Analytics {
   static FacebookAppEvents facebookAppEvents = FacebookAppEvents();
   static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer =
-      FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
@@ -59,27 +65,113 @@ class Analytics {
     }
 
     await analytics.logEvent(
-        name: '${enumToString(event)}', parameters: params);
+      name: '${enumToString(event)}',
+      parameters: params,
+    );
+
     await facebookAppEvents.logEvent(
       name: '${enumToString(event)}',
       parameters: params,
     );
   }
 
-  static sendPurchase(
-      {String currency, double price, String transactionId}) async {
+  static sendAdClick() async {}
+
+  static sendAdImpression() async {
+    if (kDebugMode) {
+      return;
+    }
+
+    await analytics.logEvent(name: '${enumToString(Event.ad_impression)}');
+    await facebookAppEvents.logEvent(name: 'AdImpression');
+  }
+
+  static sendAppOpen() async {
+    if (kDebugMode) {
+      return;
+    }
+
+    await analytics.logAppOpen();
+    await facebookAppEvents.logActivatedApp();
+  }
+
+  static sendTutorialBegin() async {
+    if (kDebugMode) {
+      return;
+    }
+
+    await analytics.logTutorialBegin();
+    await facebookAppEvents.logEvent(name: '${enumToString(Event.tutorial_begin)}');
+  }
+
+  static sendTutorialComplete() async {
+    if (kDebugMode) {
+      return;
+    }
+
+    await analytics.logTutorialComplete();
+    await facebookAppEvents.logEvent(name: 'fb_mobile_tutorial_completion');
+  }
+
+  static sendPresentOffer({String itemId, String itemName, String itemCategory, int quantity, double price, String currency}) async {
+    if (kDebugMode) {
+      return;
+    }
+
+    await analytics.logPresentOffer(
+      itemId: itemId,
+      itemName: itemName,
+      itemCategory: itemCategory,
+      quantity: quantity,
+      price: price,
+      currency: currency,
+    );
+
+    await facebookAppEvents.logEvent(
+      name: '${enumToString(Event.present_offer)}',
+      parameters: {
+        'itemId': itemId,
+        'itemName': itemName,
+        'itemCategory': itemCategory,
+        'quantity': quantity,
+        'price': price,
+        'currency': currency,
+      },
+    );
+  }
+
+  static sendBeginCheckout({String currency, double price}) async {
+    if (kDebugMode) {
+      return;
+    }
+
+    await analytics.logBeginCheckout(
+      value: price,
+      currency: currency,
+    );
+
+    await facebookAppEvents.logEvent(
+      name: 'fb_mobile_initiated_checkout',
+      parameters: {
+        FacebookAppEvents.paramNameContent: price,
+        'fb_currency': currency,
+      },
+    );
+  }
+
+  static sendPurchase({String currency, double price}) async {
     if (kDebugMode) {
       return;
     }
 
     await analytics.logEcommercePurchase(
-      currency: 'USD',
+      currency: currency,
       value: price,
     );
 
     await facebookAppEvents.logPurchase(
       amount: price,
-      currency: 'USD',
+      currency: currency,
     );
   }
 
@@ -89,6 +181,7 @@ class Analytics {
     }
 
     await analytics.setUserId(userId);
+    await facebookAppEvents.setUserID(userId);
     FlutterBranchSdk.setIdentity(userId);
   }
 
@@ -99,6 +192,12 @@ class Analytics {
 
     await observer.analytics.setCurrentScreen(
       screenName: '${enumToString(screen)}',
+    );
+    await facebookAppEvents.logEvent(
+      name: '${enumToString(Event.current_screen)}',
+      parameters: {
+        'screenName': '${enumToString(screen)}',
+      },
     );
   }
 
@@ -118,6 +217,12 @@ class Analytics {
 
     await observer.analytics.setCurrentScreen(
       screenName: '${enumToString(Screen.tabs_screen)}/$tabName',
+    );
+    await facebookAppEvents.logEvent(
+      name: '${enumToString(Event.current_tab)}',
+      parameters: {
+        'screenName': '${enumToString(Screen.tabs_screen)}/$tabName',
+      },
     );
   }
 }
