@@ -92,6 +92,8 @@ void main() async {
 
   // FlutterBranchSdk.validateSDKIntegration();
 
+  // FlutterBranchSdk.setRequestMetadata(r'$google_analytics_user_id', userId);
+
   StreamSubscription<Map> streamSubscription = FlutterBranchSdk.initSession().listen((data) {
     if (data.containsKey("+clicked_branch_link") && data["+clicked_branch_link"] == true) {
       //Link clicked. Add logic to get link data

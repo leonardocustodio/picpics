@@ -101,8 +101,20 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>picpics</string>
+				<string>fb578057813076951</string>
 			</array>
 		</dict>
 	</array>
+    <key>FacebookAppID</key>
+    <string>578057813076951</string>
+    <key>FacebookDisplayName</key>
+    <string>picPics</string>
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+      <string>fbapi</string>
+      <string>fb-messenger-api</string>
+      <string>fbauth2</string>
+      <string>fbshareextension</string>
+    </array>
 </dict>
 </plist>
