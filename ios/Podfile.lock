@@ -9,6 +9,15 @@ PODS:
     - Flutter
   - esys_flutter_share (0.0.1):
     - Flutter
+  - facebook_app_events (0.0.1):
+    - FBSDKCoreKit (~> 7.1.0)
+    - Flutter
+  - FBSDKCoreKit (7.1.1):
+    - FBSDKCoreKit/Basics (= 7.1.1)
+    - FBSDKCoreKit/Core (= 7.1.1)
+  - FBSDKCoreKit/Basics (7.1.1)
+  - FBSDKCoreKit/Core (7.1.1):
+    - FBSDKCoreKit/Basics
   - Firebase/Analytics (6.26.0):
     - Firebase/Core
   - Firebase/Auth (6.26.0):
@@ -282,6 +291,7 @@ DEPENDENCIES:
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - cryptography_flutter (from `.symlinks/plugins/cryptography_flutter/ios`)
   - esys_flutter_share (from `.symlinks/plugins/esys_flutter_share/ios`)
+  - facebook_app_events (from `.symlinks/plugins/facebook_app_events/ios`)
   - Firebase/MLVisionLabelModel
   - firebase_admob (from `.symlinks/plugins/firebase_admob/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -315,6 +325,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - Branch
+    - FBSDKCoreKit
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -357,6 +368,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/cryptography_flutter/ios"
   esys_flutter_share:
     :path: ".symlinks/plugins/esys_flutter_share/ios"
+  facebook_app_events:
+    :path: ".symlinks/plugins/facebook_app_events/ios"
   firebase_admob:
     :path: ".symlinks/plugins/firebase_admob/ios"
   firebase_analytics:
@@ -419,6 +432,8 @@ SPEC CHECKSUMS:
   cloud_functions: cc36e7b5ec30848fbf6ff5f240188d51104ce9dd
   cryptography_flutter: a2c541ba25ff28549f989f856dde126c961defcd
   esys_flutter_share: 403498dab005b36ce1f8d7aff377e81f0621b0b4
+  facebook_app_events: a5db8e38b984fd4a24b7e7179f3feb50b7068980
+  FBSDKCoreKit: b46507dc8b8cefed31d644e74d7cc30e2a715ef8
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
   firebase_admob: 28d8fe59823a186ba8c548f6bf35e2cf326004da
   firebase_analytics: 31b66f23a42fa62bdf6a134af1d3a3a50bf5ac3e

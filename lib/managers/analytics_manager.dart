@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/foundation.dart';
@@ -45,8 +46,10 @@ enum Event {
 }
 
 class Analytics {
+  static FacebookAppEvents facebookAppEvents = FacebookAppEvents();
   static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
@@ -55,7 +58,29 @@ class Analytics {
       return;
     }
 
-    await analytics.logEvent(name: '${enumToString(event)}', parameters: params);
+    await analytics.logEvent(
+        name: '${enumToString(event)}', parameters: params);
+    await facebookAppEvents.logEvent(
+      name: '${enumToString(event)}',
+      parameters: params,
+    );
+  }
+
+  static sendPurchase(
+      {String currency, double price, String transactionId}) async {
+    if (kDebugMode) {
+      return;
+    }
+
+    await analytics.logEcommercePurchase(
+      currency: 'USD',
+      value: price,
+    );
+
+    await facebookAppEvents.logPurchase(
+      amount: price,
+      currency: 'USD',
+    );
   }
 
   static setUserId(String userId) async {
@@ -67,17 +92,17 @@ class Analytics {
     FlutterBranchSdk.setIdentity(userId);
   }
 
-  static sendCurrentScreen(Screen screen) {
+  static sendCurrentScreen(Screen screen) async {
     if (kDebugMode) {
       return;
     }
 
-    observer.analytics.setCurrentScreen(
+    await observer.analytics.setCurrentScreen(
       screenName: '${enumToString(screen)}',
     );
   }
 
-  static sendCurrentTab(int index) {
+  static sendCurrentTab(int index) async {
     if (kDebugMode) {
       return;
     }
@@ -91,7 +116,7 @@ class Analytics {
       tabName = '${enumToString(Tab.tagged)}';
     }
 
-    observer.analytics.setCurrentScreen(
+    await observer.analytics.setCurrentScreen(
       screenName: '${enumToString(Screen.tabs_screen)}/$tabName',
     );
   }

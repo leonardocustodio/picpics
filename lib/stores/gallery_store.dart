@@ -51,7 +51,10 @@ abstract class _GalleryStore with Store {
 
   @computed
   int get totalTaggedPics {
-    return taggedPics.map((element) => element.pics.length).toList().reduce((value, element) => value + element);
+    return taggedPics
+        .map((element) => element.pics.length)
+        .toList()
+        .reduce((value, element) => value + element);
   }
 
   PicStore currentPic;
@@ -90,11 +93,13 @@ abstract class _GalleryStore with Store {
   @observable
   bool isLoaded = false;
 
-  ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
+  ObservableList<AssetPathEntity> assetsPath =
+      ObservableList<AssetPathEntity>();
   ObservableList<PicStore> allPics = ObservableList<PicStore>();
   ObservableList<PicStore> untaggedPics = ObservableList<PicStore>();
   ObservableList<PicStore> swipePics = ObservableList<PicStore>();
-  ObservableList<TaggedPicsStore> taggedPics = ObservableList<TaggedPicsStore>();
+  ObservableList<TaggedPicsStore> taggedPics =
+      ObservableList<TaggedPicsStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
   ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
   ObservableSet<PicStore> selectedPics = ObservableSet<PicStore>();
@@ -214,7 +219,8 @@ abstract class _GalleryStore with Store {
   @action
   void addToMultiPicTags(String tagKey) {
     if (!multiPicTagKeys.contains(tagKey)) {
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore =
+          appStore.tags.firstWhere((element) => element.id == tagKey);
       multiPicTags.add(tagsStore);
     }
   }
@@ -222,7 +228,8 @@ abstract class _GalleryStore with Store {
   @action
   void removeFromMultiPicTags(String tagKey) {
     if (multiPicTagKeys.contains(tagKey)) {
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore =
+          appStore.tags.firstWhere((element) => element.id == tagKey);
       multiPicTags.remove(tagsStore);
     }
   }
@@ -256,7 +263,8 @@ abstract class _GalleryStore with Store {
         suggestionTags.add(recent);
       }
 
-      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+      print(
+          'Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
@@ -267,7 +275,9 @@ abstract class _GalleryStore with Store {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (multiPicTagKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
+          if (multiPicTagKeys.contains(tagKey) ||
+              suggestionTags.contains(tagKey) ||
+              tagKey == kSecretTagKey) {
             continue;
           }
           print('Adding tag key: $tagKey');
@@ -287,14 +297,19 @@ abstract class _GalleryStore with Store {
     }
 
     print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
-    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey) && appStore.secretPhotos == true && searchText == '') {
+    if (!multiPicTagKeys.contains(kSecretTagKey) &&
+        !searchingTagsKeys.contains(kSecretTagKey) &&
+        appStore.secretPhotos == true &&
+        searchText == '') {
       suggestionTags.add(kSecretTagKey);
     }
 
     print('find suggestions: $searchText - exclude tags: $multiPicTags');
     print(suggestionTags);
     print('AppStore Tags: ${appStore.tags}');
-    List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();
+    List<TagsStore> suggestions = appStore.tags
+        .where((element) => suggestionTags.contains(element.id))
+        .toList();
     print('Suggestions Tag Store: $suggestions');
     return suggestions;
   }
@@ -322,7 +337,8 @@ abstract class _GalleryStore with Store {
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
     print('%@%@%@%@%@%@%@%@%@%@ Adding pic to tagged pics!!! %@%@%@%@%@%@%@');
     for (TagsStore tag in picStore.tags) {
-      TaggedPicsStore taggedPicsStore = taggedPics.firstWhere((element) => element.tag == tag, orElse: () => null);
+      TaggedPicsStore taggedPicsStore = taggedPics
+          .firstWhere((element) => element.tag == tag, orElse: () => null);
 
       if (taggedPicsStore == null) {
         taggedPicsStore = TaggedPicsStore(tag: tag);
@@ -380,7 +396,8 @@ abstract class _GalleryStore with Store {
       return;
     }
 
-    PicStore picStore = allPics.firstWhere((element) => element.photoId == entityId);
+    PicStore picStore =
+        allPics.firstWhere((element) => element.photoId == entityId);
     removePicFromTaggedPics(picStore: picStore, forceDelete: true);
     untaggedPics.remove(picStore);
     filteredPics.remove(picStore);
@@ -415,10 +432,10 @@ abstract class _GalleryStore with Store {
 
     allPics.insert(0, pic);
     if (pic.tags.length > 0) {
-      print('has pic info! and this pic has tags in it!!!!');
+      // print('has pic info! and this pic has tags in it!!!!');
       addPicToTaggedPics(picStore: pic, toInitialIndex: true);
     } else {
-      print('has pic info! and this pic doesnt have tag!!!!');
+      // print('has pic info! and this pic doesnt have tag!!!!');
       swipePics.insert(0, pic);
       untaggedPics.insert(0, pic);
     }
@@ -433,7 +450,8 @@ abstract class _GalleryStore with Store {
     }
 
     AssetPathEntity assetPathEntity = assetsPath[0];
-    final List<AssetEntity> list = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
+    final List<AssetEntity> list = await assetPathEntity.getAssetListRange(
+        start: 0, end: assetPathEntity.assetCount);
 
     for (AssetEntity entity in list) {
       // print(entity.id);
@@ -455,10 +473,10 @@ abstract class _GalleryStore with Store {
       allPics.add(pic);
 
       if (pic.tags.length > 0) {
-        print('has pic info! and this pic has tags in it!!!!');
+        // print('has pic info! and this pic has tags in it!!!!');
         addPicToTaggedPics(picStore: pic);
       } else {
-        print('has pic info! and this pic doesnt have tag!!!!');
+        // print('has pic info! and this pic doesnt have tag!!!!');
         swipePics.add(pic);
         untaggedPics.add(pic);
       }
@@ -470,7 +488,8 @@ abstract class _GalleryStore with Store {
   @action
   Future<void> loadAssetsPath() async {
     FilterOptionGroup filterOptionGroup = FilterOptionGroup();
-    filterOptionGroup.addOrderOption(OrderOption(type: OrderOptionType.createDate, asc: false));
+    filterOptionGroup.addOrderOption(
+        OrderOption(type: OrderOptionType.createDate, asc: false));
 
     final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
       hasAll: true,
@@ -542,7 +561,8 @@ abstract class _GalleryStore with Store {
       PhotoManager.editor.deleteWithIds(selectedPicsIds);
       deleted = true;
     } else {
-      final List<String> result = await PhotoManager.editor.deleteWithIds(selectedPicsIds);
+      final List<String> result =
+          await PhotoManager.editor.deleteWithIds(selectedPicsIds);
       if (result.isNotEmpty) {
         deleted = true;
       }
@@ -607,7 +627,8 @@ abstract class _GalleryStore with Store {
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
     Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    File imageFile = new File(
+        '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
     return imageFile.path;
@@ -627,7 +648,9 @@ abstract class _GalleryStore with Store {
       AssetEntity data = pic.entity;
 
       if (Platform.isAndroid) {
-        String path = await _writeByteToImageFile(pic.isPrivate == true ? await pic.assetOriginBytes : await data.originBytes);
+        String path = await _writeByteToImageFile(pic.isPrivate == true
+            ? await pic.assetOriginBytes
+            : await data.originBytes);
         imageList.add(path);
       } else {
         if (data == null) {
@@ -702,7 +725,8 @@ abstract class _GalleryStore with Store {
     }
 
     // Altera a tag
-    appStore.editTag(oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
+    appStore.editTag(
+        oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
     appStore.editRecentTags(oldTagKey, newTagKey);
     tagsBox.delete(oldTagKey);
 
@@ -718,9 +742,11 @@ abstract class _GalleryStore with Store {
       print('found tag going to delete it');
 
       // Remove a tag das fotos já taggeadas
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore =
+          appStore.tags.firstWhere((element) => element.id == tagKey);
       print('TagsStore Tag: ${tagsStore.name}');
-      TaggedPicsStore taggedPicsStore = taggedPics.firstWhere((element) => element.tag == tagsStore);
+      TaggedPicsStore taggedPicsStore =
+          taggedPics.firstWhere((element) => element.tag == tagsStore);
       for (PicStore picTagged in taggedPicsStore.pics) {
         print('Tagged Pic Store Pics: ${picTagged.photoId}');
         picTagged.removeTagFromPic(tagKey: tagsStore.id);
@@ -744,7 +770,8 @@ abstract class _GalleryStore with Store {
       return;
     }
 
-    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == DatabaseManager.instance.selectedTagKey);
+    TagsStore tagsStore = appStore.tags.firstWhere(
+        (element) => element.id == DatabaseManager.instance.selectedTagKey);
     searchingTags.add(tagsStore);
     print('searching tags: $searchingTags');
     searchPicsWithTags();
@@ -752,7 +779,8 @@ abstract class _GalleryStore with Store {
 
   void removeTagFromSearchFilter() {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == DatabaseManager.instance.selectedTagKey);
+      TagsStore tagsStore = appStore.tags.firstWhere(
+          (element) => element.id == DatabaseManager.instance.selectedTagKey);
       searchingTags.remove(tagsStore);
       print('searching tags: $searchingTags');
       searchPicsWithTags();
@@ -797,7 +825,9 @@ abstract class _GalleryStore with Store {
 
     // print('Temp photos ids: $tempPhotosIds');
     // print('All Pics: ${allPicsKeys}');
-    filteredPics.addAll(allPics.where((element) => tempPhotosIds.contains(element.photoId)).toList()); // Verificar essa classe para otimizar
+    filteredPics.addAll(allPics
+        .where((element) => tempPhotosIds.contains(element.photoId))
+        .toList()); // Verificar essa classe para otimizar
     // print('Search Photos: $filteredPics');
     print('Searcing Tags Keys: $searchingTags');
 
@@ -971,7 +1001,8 @@ abstract class _GalleryStore with Store {
     );
 
     final AssetPathEntity assetPathEntity = assets[0];
-    final List<AssetEntity> assetList = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
+    final List<AssetEntity> assetList = await assetPathEntity.getAssetListRange(
+        start: 0, end: assetPathEntity.assetCount);
     final Set<String> entitiesIds = assetList.map((e) => e.id).toSet();
     final bool isEqual = SetEquality().equals(entitiesIds, allPicsKeys);
 
@@ -1004,7 +1035,8 @@ abstract class _GalleryStore with Store {
   bool shouldRefreshTaggedGallery = false;
 
   @action
-  void setShouldRefreshTaggedGallery(bool value) => shouldRefreshTaggedGallery = value;
+  void setShouldRefreshTaggedGallery(bool value) =>
+      shouldRefreshTaggedGallery = value;
 
   @action
   void removeTagFromPic({PicStore picStore, String tagKey}) {

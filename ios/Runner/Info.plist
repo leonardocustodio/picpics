@@ -38,15 +38,41 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb578057813076951</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>br.com.inovatso.picPics</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>picpics</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>FacebookAppID</key>
+	<string>578057813076951</string>
+	<key>FacebookDisplayName</key>
+	<string>picPics</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-4850390878205651~6175952653</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>itms</string>
+		<string>fbapi</string>
+		<string>fb-messenger-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
@@ -57,9 +83,9 @@
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>If you want our app to add your location to your photos, we need authorization to access your location.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>We need access to your photo library so you can start organizing your photos with picPics. Don&apos;t worry your photos will never leave your device!</string>
+	<string>We need access to your photo library so you can start organizing your photos with picPics. Don't worry your photos will never leave your device!</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to your photo library so you can start organizing your photos with picPics. Don&apos;t worry your photos will never leave your device!</string>
+	<string>We need access to your photo library so you can start organizing your photos with picPics. Don't worry your photos will never leave your device!</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
@@ -82,8 +108,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>io.flutter.embedded_views_preview</key>
-	<true/>
+	<key>branch_key</key>
+	<string>key_live_knQ56dVonIKMG12kp8oqImolxDdnijb4</string>
 	<key>branch_universal_link_domains</key>
 	<array>
 		<string>picpics.link</string>
@@ -91,30 +117,7 @@
 		<string>picpics.test-app.link</string>
 		<string>picpics-alternate.test-app.link</string>
 	</array>
-	<key>branch_key</key>
-	<string>key_live_knQ56dVonIKMG12kp8oqImolxDdnijb4</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleURLName</key>
-			<string>br.com.inovatso.picPics</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>picpics</string>
-				<string>fb578057813076951</string>
-			</array>
-		</dict>
-	</array>
-    <key>FacebookAppID</key>
-    <string>578057813076951</string>
-    <key>FacebookDisplayName</key>
-    <string>picPics</string>
-    <key>LSApplicationQueriesSchemes</key>
-    <array>
-      <string>fbapi</string>
-      <string>fb-messenger-api</string>
-      <string>fbauth2</string>
-      <string>fbshareextension</string>
-    </array>
+	<key>io.flutter.embedded_views_preview</key>
+	<true/>
 </dict>
 </plist>
