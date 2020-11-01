@@ -595,7 +595,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                   )
                 : Observer(builder: (_) {
                     if (!tabsStore.multiPicBar) {
-                      return !Platform.isIOS
+                      return Platform.isIOS
                           ? CupertinoTabBar(
                               currentIndex: tabsStore.currentTab,
                               onTap: (index) {
@@ -649,7 +649,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               ],
                             );
                     }
-                    return !Platform.isIOS
+                    return Platform.isIOS
                         ? CupertinoTabBar(
                             onTap: (index) {
                               setTabIndex(index);
