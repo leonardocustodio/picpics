@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ToggleBar extends StatefulWidget {
+  final Function onToggle;
+
+  ToggleBar({this.onToggle});
+
   @override
   _ToggleBarState createState() => _ToggleBarState();
 }
@@ -74,6 +78,7 @@ class _ToggleBarState extends State<ToggleBar> {
                         ),
                         onPressed: () {
                           print('Teste');
+                          widget.onToggle(0);
                           setState(() {
                             animationAlignment = Alignment.centerLeft;
                           });
@@ -92,6 +97,7 @@ class _ToggleBarState extends State<ToggleBar> {
                         ),
                         onPressed: () {
                           print('Teste');
+                          widget.onToggle(1);
                           setState(() {
                             animationAlignment = Alignment.centerRight;
                           });

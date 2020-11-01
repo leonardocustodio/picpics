@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
@@ -71,6 +72,15 @@ class _UntaggedTabState extends State<UntaggedTab> {
           return _buildItem(context, index);
         },
         staggeredTileBuilder: (int index) {
+          if (galleryStore.untaggedPics[index].picStore == null) {
+            if (tabsStore.toggleIndexSelected == 0) {
+              if (galleryStore.untaggedPics[index].didChangeMonth) {
+                return StaggeredTile.fit(3);
+              }
+              return StaggeredTile.count(0, 0);
+            }
+            return StaggeredTile.fit(3);
+          }
           return StaggeredTile.count(1, 1);
         },
       ),
@@ -85,8 +95,37 @@ class _UntaggedTabState extends State<UntaggedTab> {
         ),
       );
 
+  String dateFormat(DateTime dateTime) {
+    DateFormat formatter;
+
+    if (dateTime.year == DateTime.now().year) {
+      formatter = DateFormat.MMMEd();
+    } else {
+      formatter = DateFormat.yMMMEd();
+    }
+    return formatter.format(dateTime);
+  }
+
   Widget _buildItem(BuildContext context, int index) {
-    PicStore picStore = galleryStore.untaggedPics[index];
+    PicStore picStore = galleryStore.untaggedPics[index].picStore;
+    if (picStore == null) {
+      return Container(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: Text(
+          '${dateFormat(galleryStore.untaggedPics[index].date)}',
+          textScaleFactor: 1.0,
+          style: TextStyle(
+            fontFamily: 'Lato',
+            color: Color(0xff606566),
+            fontSize: 24,
+            fontWeight: FontWeight.w400,
+            fontStyle: FontStyle.normal,
+            letterSpacing: -0.4099999964237213,
+          ),
+        ),
+      );
+    }
+
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
@@ -224,7 +263,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
     print('change dependencies!');
     galleryStore.clearPicThumbnails();
-    galleryStore.addPicsToThumbnails(galleryStore.untaggedPics);
+    galleryStore.addPicsToThumbnails(galleryStore.untaggedPics.map((element) => element.picStore).toList());
   }
 
   @override
@@ -341,7 +380,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
-                        child: ToggleBar(),
+                        child: ToggleBar(
+                          onToggle: (index) {
+                            tabsStore.setToggleIndexSelected(index);
+                          },
+                        ),
                       ),
                     ),
                   ),

@@ -121,4 +121,10 @@ abstract class _TabsStore with Store {
 
   @action
   void setIsToggleBarVisible(bool value) => isToggleBarVisible = value;
+
+  @observable
+  int toggleIndexSelected = 0;
+
+  @action
+  void setToggleIndexSelected(int value) => toggleIndexSelected = value;
 }

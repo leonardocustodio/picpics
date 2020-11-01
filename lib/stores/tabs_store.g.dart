@@ -176,6 +176,22 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
+  final _$toggleIndexSelectedAtom =
+      Atom(name: '_TabsStore.toggleIndexSelected');
+
+  @override
+  int get toggleIndexSelected {
+    _$toggleIndexSelectedAtom.reportRead();
+    return super.toggleIndexSelected;
+  }
+
+  @override
+  set toggleIndexSelected(int value) {
+    _$toggleIndexSelectedAtom.reportWrite(value, super.toggleIndexSelected, () {
+      super.toggleIndexSelected = value;
+    });
+  }
+
   final _$_TabsStoreActionController = ActionController(name: '_TabsStore');
 
   @override
@@ -300,6 +316,17 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
+  void setToggleIndexSelected(int value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setToggleIndexSelected');
+    try {
+      return super.setToggleIndexSelected(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 currentTab: ${currentTab},
@@ -312,7 +339,8 @@ topOffsetFirstTab: ${topOffsetFirstTab},
 hideTitleThirdTab: ${hideTitleThirdTab},
 showDeleteSecretModal: ${showDeleteSecretModal},
 isScrolling: ${isScrolling},
-isToggleBarVisible: ${isToggleBarVisible}
+isToggleBarVisible: ${isToggleBarVisible},
+toggleIndexSelected: ${toggleIndexSelected}
     ''';
   }
 }
