@@ -18,7 +18,7 @@ abstract class _TabsStore with Store {
   }
 
   @observable
-  int currentTab = 1;
+  int currentTab = 0;
 
   @action
   void setCurrentTab(int value) {
@@ -109,4 +109,16 @@ abstract class _TabsStore with Store {
 
   @action
   void setShowDeleteSecretModal(bool value) => showDeleteSecretModal = value;
+
+  @observable
+  bool isScrolling = false;
+
+  @action
+  void setIsScrolling(bool value) => isScrolling = value;
+
+  @observable
+  bool isToggleBarVisible = true;
+
+  @action
+  void setIsToggleBarVisible(bool value) => isToggleBarVisible = value;
 }

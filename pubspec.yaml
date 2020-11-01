@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.10+432
+version: 1.6.10+433
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -83,7 +83,7 @@ dependencies:
   facebook_app_events: ^0.7.1
 #  tflite_flutter: ^0.5.0
 #  tflite: ^1.1.1
-#  metadata: ^1.0.0
+  metadata: ^1.0.1
 #  exif: ^1.0.3
 #  psd_sdk: ^0.1.6
 #  edit_exif:

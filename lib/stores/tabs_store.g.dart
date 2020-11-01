@@ -146,6 +146,36 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
+  final _$isScrollingAtom = Atom(name: '_TabsStore.isScrolling');
+
+  @override
+  bool get isScrolling {
+    _$isScrollingAtom.reportRead();
+    return super.isScrolling;
+  }
+
+  @override
+  set isScrolling(bool value) {
+    _$isScrollingAtom.reportWrite(value, super.isScrolling, () {
+      super.isScrolling = value;
+    });
+  }
+
+  final _$isToggleBarVisibleAtom = Atom(name: '_TabsStore.isToggleBarVisible');
+
+  @override
+  bool get isToggleBarVisible {
+    _$isToggleBarVisibleAtom.reportRead();
+    return super.isToggleBarVisible;
+  }
+
+  @override
+  set isToggleBarVisible(bool value) {
+    _$isToggleBarVisibleAtom.reportWrite(value, super.isToggleBarVisible, () {
+      super.isToggleBarVisible = value;
+    });
+  }
+
   final _$_TabsStoreActionController = ActionController(name: '_TabsStore');
 
   @override
@@ -248,6 +278,28 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
+  void setIsScrolling(bool value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setIsScrolling');
+    try {
+      return super.setIsScrolling(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setIsToggleBarVisible(bool value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setIsToggleBarVisible');
+    try {
+      return super.setIsToggleBarVisible(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 currentTab: ${currentTab},
@@ -258,7 +310,9 @@ modalCard: ${modalCard},
 tutorialIndex: ${tutorialIndex},
 topOffsetFirstTab: ${topOffsetFirstTab},
 hideTitleThirdTab: ${hideTitleThirdTab},
-showDeleteSecretModal: ${showDeleteSecretModal}
+showDeleteSecretModal: ${showDeleteSecretModal},
+isScrolling: ${isScrolling},
+isToggleBarVisible: ${isToggleBarVisible}
     ''';
   }
 }

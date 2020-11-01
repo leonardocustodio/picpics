@@ -13,6 +13,7 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
+import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:provider/provider.dart';
 
 class UntaggedTab extends StatefulWidget {
@@ -47,20 +48,32 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   Widget _buildGridView(BuildContext context) {
     print('&&&&& Building grid view');
-    return StaggeredGridView.countBuilder(
-      controller: scrollControllerFirstTab,
-      physics: const CustomScrollPhysics(),
-      padding: EdgeInsets.only(top: 82.0),
-      crossAxisCount: 3,
-      mainAxisSpacing: 2.0,
-      crossAxisSpacing: 2.0,
-      itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
-      itemBuilder: (BuildContext context, int index) {
-        return _buildItem(context, index);
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollNotification) {
+        if (scrollNotification is ScrollStartNotification) {
+          print('Start scrolling');
+          tabsStore.setIsScrolling(true);
+        } else if (scrollNotification is ScrollEndNotification) {
+          print('End scrolling');
+          tabsStore.setIsScrolling(false);
+        }
+        return;
       },
-      staggeredTileBuilder: (int index) {
-        return StaggeredTile.count(1, 1);
-      },
+      child: StaggeredGridView.countBuilder(
+        controller: scrollControllerFirstTab,
+        physics: const CustomScrollPhysics(),
+        padding: EdgeInsets.only(top: 82.0),
+        crossAxisCount: 3,
+        mainAxisSpacing: 2.0,
+        crossAxisSpacing: 2.0,
+        itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildItem(context, index);
+        },
+        staggeredTileBuilder: (int index) {
+          return StaggeredTile.count(1, 1);
+        },
+      ),
     );
   }
 
@@ -313,6 +326,24 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
                     child: _buildGridView(context),
+                  ),
+                ),
+                AnimatedOpacity(
+                  opacity: tabsStore.isScrolling ? 0.0 : 1.0,
+                  curve: Curves.linear,
+                  duration: Duration(milliseconds: 300),
+                  onEnd: () {
+                    tabsStore.setIsToggleBarVisible(tabsStore.isScrolling ? false : true);
+                  },
+                  child: Visibility(
+                    visible: tabsStore.isScrolling ? tabsStore.isToggleBarVisible : true,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: ToggleBar(),
+                      ),
+                    ),
                   ),
                 ),
               ],
