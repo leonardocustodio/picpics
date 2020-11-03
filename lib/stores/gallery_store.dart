@@ -469,13 +469,19 @@ abstract class _GalleryStore with Store {
         // print('has pic info! and this pic doesnt have tag!!!!');
         swipePics.add(pic);
 
-        if (!Utils.isSameDay(entity.modifiedDateTime, currentDate)) {
+        bool isSameMonth = entity.modifiedDateTime.year == currentDate.year && entity.modifiedDateTime.month == currentDate.month;
+        if (!isSameMonth) {
+          print('Is Same Month: $isSameMonth');
           UntaggedPicsStore untaggedPicsStore = UntaggedPicsStore(
-              date: entity.modifiedDateTime,
-              didChangeMonth: !(entity.modifiedDateTime.year == currentDate.year && entity.modifiedDateTime.month == currentDate.month));
+            date: entity.modifiedDateTime,
+            didChangeMonth: !isSameMonth,
+          );
           untaggedPics.add(untaggedPicsStore);
           currentDate = entity.modifiedDateTime;
         }
+
+        // if (!Utils.isSameDay(entity.modifiedDateTime, currentDate)) {
+        // }
 
         UntaggedPicsStore untaggedPicsStore = UntaggedPicsStore(picStore: pic);
         untaggedPics.add(untaggedPicsStore);

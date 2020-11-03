@@ -16,12 +16,54 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class UntaggedTab extends StatefulWidget {
   static const id = 'untagged_tab';
 
   @override
   _UntaggedTabState createState() => _UntaggedTabState();
+}
+
+class MyDynamicHeader extends SliverPersistentHeaderDelegate {
+  final String headerTitle;
+
+  MyDynamicHeader({
+    this.headerTitle,
+  });
+
+  int index = 0;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return LayoutBuilder(builder: (context, constraints) {
+      return Container(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        height: constraints.maxHeight,
+        child: Text(
+          headerTitle,
+          textScaleFactor: 1.0,
+          style: TextStyle(
+            fontFamily: 'Lato',
+            color: Color(0xff606566),
+            fontSize: 24,
+            fontWeight: FontWeight.w400,
+            fontStyle: FontStyle.normal,
+            letterSpacing: -0.4099999964237213,
+          ),
+        ),
+      );
+    });
+  }
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate _) => true;
+
+  @override
+  double get maxExtent => 40.0;
+
+  @override
+  double get minExtent => 0.0;
 }
 
 class _UntaggedTabState extends State<UntaggedTab> {
@@ -31,20 +73,199 @@ class _UntaggedTabState extends State<UntaggedTab> {
   ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
 
-  void refreshGridPositionFirstTab() {
-    var offset = scrollControllerFirstTab.hasClients ? scrollControllerFirstTab.offset : scrollControllerFirstTab.initialScrollOffset;
+  // List<Widget> _buildSlivers(BuildContext context) {
+  //   List<Widget> slivers = [];
+  //
+  //   for (var untaggedPic in galleryStore.untaggedPics) {
+  //     slivers.add();
+  //   }
+  //
+  //   return slivers;
+  // }
 
-    if (offset >= 86) {
-      tabsStore.setTopOffsetFirstTab(10.0);
-    } else if (offset >= 32) {
-      tabsStore.setTopOffsetFirstTab(64.0 - (offset - 32.0));
-    } else if (offset <= 0) {
-      tabsStore.setTopOffsetFirstTab(64.0);
+  Widget _buildNewItem(BuildContext context, int index, double size) {
+    print('Curret Index: $index');
+
+    List<Widget> childs = [];
+    int endIndex = (index + 1) * 3;
+
+    for (int currentIndex = index * 3; currentIndex < endIndex; currentIndex++) {
+      PicStore picStore = galleryStore.untaggedPics[currentIndex].picStore;
+      if (picStore == null) {
+        childs.add(
+          Container(
+            color: kGrayColor,
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+            width: double.infinity,
+            child: Text(
+              '${dateFormat(galleryStore.untaggedPics[currentIndex].date)}',
+              textScaleFactor: 1.0,
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff606566),
+                fontSize: 24,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
+            ),
+          ),
+        );
+        continue;
+
+        // if (tabsStore.toggleIndexSelected == null || tabsStore.toggleIndexSelected == 0) {
+        //   if (!galleryStore.untaggedPics[index].didChangeMonth) {
+        //     return Container();
+        //   }
+        // }
+        // return Container(
+        //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        //   child: Text(
+        //     '${dateFormat(galleryStore.untaggedPics[index].date)}',
+        //     textScaleFactor: 1.0,
+        //     style: TextStyle(
+        //       fontFamily: 'Lato',
+        //       color: Color(0xff606566),
+        //       fontSize: 24,
+        //       fontWeight: FontWeight.w400,
+        //       fontStyle: FontStyle.normal,
+        //       letterSpacing: -0.4099999964237213,
+        //     ),
+        //   ),
+        // );
+      }
+
+//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
+
+      final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+
+      childs.add(Container(
+        height: size,
+        width: size - 1,
+        child: RepaintBoundary(
+          child: ExtendedImage(
+            image: imageProvider,
+            fit: BoxFit.cover,
+            loadStateChanged: (ExtendedImageState state) {
+              Widget loader;
+              switch (state.extendedImageLoadState) {
+                case LoadState.loading:
+                  loader = const ColoredBox(color: kGreyPlaceholder);
+                  break;
+                case LoadState.completed:
+                  loader = FadeImageBuilder(
+                    child: () {
+                      return GestureDetector(
+                        onLongPress: () {
+                          print('LongPress');
+                          if (tabsStore.multiPicBar == false) {
+                            galleryStore.setSelectedPics(
+                              picStore: picStore,
+                              picIsTagged: false,
+                            );
+                            tabsStore.setMultiPicBar(true);
+                          }
+                        },
+                        child: CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () {
+                            if (tabsStore.multiPicBar) {
+                              galleryStore.setSelectedPics(
+                                picStore: picStore,
+                                picIsTagged: false,
+                              );
+                              print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                              return;
+                            }
+
+                            tagsEditingController.text = '';
+                            galleryStore.setCurrentPic(picStore);
+                            tabsStore.setModalCard(true);
+                          },
+                          child: Observer(builder: (_) {
+                            Widget image = Positioned.fill(
+                              child: RepaintBoundary(
+                                child: state.completedWidget,
+                              ),
+                            );
+                            if (tabsStore.multiPicBar) {
+                              if (galleryStore.selectedPics.contains(picStore)) {
+                                return Stack(
+                                  children: [
+                                    image,
+                                    Container(
+                                      constraints: BoxConstraints.expand(),
+                                      decoration: BoxDecoration(
+                                        color: kSecondaryColor.withOpacity(0.3),
+                                        border: Border.all(
+                                          color: kSecondaryColor,
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      left: 8.0,
+                                      top: 6.0,
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        decoration: BoxDecoration(
+                                          gradient: kSecondaryGradient,
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        child: Image.asset('lib/images/checkwhiteico.png'),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+                              return Stack(
+                                children: [
+                                  image,
+                                  Positioned(
+                                    left: 8.0,
+                                    top: 6.0,
+                                    child: Container(
+                                      height: 20,
+                                      width: 20,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        border: Border.all(
+                                          color: kGrayColor,
+                                          width: 2.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }
+                            return Stack(
+                              children: [
+                                image,
+                              ],
+                            );
+                          }),
+                        ),
+                      );
+                    }(),
+                  );
+                  break;
+                case LoadState.failed:
+                  loader = _failedItem;
+                  break;
+              }
+              return loader;
+            },
+          ),
+        ),
+      ));
     }
 
-    if (scrollControllerFirstTab.hasClients) {
-      tabsStore.offsetFirstTab = scrollControllerFirstTab.offset;
-    }
+    return Wrap(
+      alignment: WrapAlignment.spaceBetween,
+      children: childs,
+    );
   }
 
   Widget _buildGridView(BuildContext context) {
@@ -60,30 +281,113 @@ class _UntaggedTabState extends State<UntaggedTab> {
         }
         return;
       },
-      child: StaggeredGridView.countBuilder(
-        controller: scrollControllerFirstTab,
-        physics: const CustomScrollPhysics(),
-        padding: EdgeInsets.only(top: 82.0),
-        crossAxisCount: 3,
-        mainAxisSpacing: 2.0,
-        crossAxisSpacing: 2.0,
-        itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
-        itemBuilder: (BuildContext context, int index) {
-          return _buildItem(context, index);
-        },
-        staggeredTileBuilder: (int index) {
-          if (galleryStore.untaggedPics[index].picStore == null) {
-            if (tabsStore.toggleIndexSelected == 0) {
-              if (galleryStore.untaggedPics[index].didChangeMonth) {
-                return StaggeredTile.fit(3);
-              }
-              return StaggeredTile.count(0, 0);
-            }
-            return StaggeredTile.fit(3);
-          }
-          return StaggeredTile.count(1, 1);
-        },
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverAppBar(
+            pinned: true,
+            // centerTitle: false,
+            expandedHeight: 250.0,
+            backgroundColor: kWhiteColor,
+            leadingWidth: 0.0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: Text(
+                tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+                textScaleFactor: 1.0,
+                style: TextStyle(
+                  fontFamily: 'Lato',
+                  color: Color(0xff979a9b),
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  fontStyle: FontStyle.normal,
+                ),
+              ),
+            ),
+          ),
+          SliverAnimatedList(
+            initialItemCount: (galleryStore.untaggedPics.length / 3).floor() + 1,
+            itemBuilder: (context, index, animation) {
+              double size = MediaQuery.of(context).size.width / 3;
+              return _buildNewItem(context, index, size);
+            },
+          )
+          // SliverPinnedHeader(
+          //   child: Container(
+          //     child: Text('Teste'),
+          //   ),
+          // ),
+          // SliverGrid(
+          //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          //     maxCrossAxisExtent: 200.0,
+          //     mainAxisSpacing: 10.0,
+          //     crossAxisSpacing: 10.0,
+          //     childAspectRatio: 4.0,
+          //   ),
+          //   delegate: SliverChildBuilderDelegate(
+          //     (BuildContext context, int index) {
+          //       return Container(
+          //         alignment: Alignment.center,
+          //         color: Colors.teal[100 * (index % 9)],
+          //         child: Text('Grid Item $index'),
+          //       );
+          //     },
+          //     childCount: 5,
+          //   ),
+          // ),
+          // SliverPinnedHeader(
+          //   child: Container(
+          //     child: Text('Teste'),
+          //   ),
+          // ),
+          // SliverGrid(
+          //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          //     maxCrossAxisExtent: 200.0,
+          //     mainAxisSpacing: 10.0,
+          //     crossAxisSpacing: 10.0,
+          //     childAspectRatio: 4.0,
+          //   ),
+          //   delegate: SliverChildBuilderDelegate(
+          //     (BuildContext context, int index) {
+          //       if (index == 2) {
+          //         return Container();
+          //       }
+          //       return Container(
+          //         alignment: Alignment.center,
+          //         color: Colors.teal[100 * (index % 9)],
+          //         child: Text('Grid Item $index'),
+          //       );
+          //     },
+          //     childCount: 100,
+          //   ),
+          // ),
+        ],
       ),
+      // StaggeredGridView.custom(
+      //   controller: scrollControllerFirstTab,
+      //   physics: const CustomScrollPhysics(),
+      //   padding: EdgeInsets.only(top: 82.0),
+      //   // childrenDelegate: SliverChildBuilderDelegate()
+      //     ),
+      // crossAxisCount: 3,
+      // mainAxisSpacing: 2.0,
+      // crossAxisSpacing: 2.0,
+      // itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
+      // itemBuilder: (BuildContext context, int index) {
+      //   return _buildItem(context, index);
+      // },
+      // staggeredTileBuilder: (int index) {
+      // if (galleryStore.untaggedPics[index].picStore == null) {
+      //   if (tabsStore.toggleIndexSelected == 0) {
+      //     if (galleryStore.untaggedPics[index].didChangeMonth) {
+      //       print('Mudou o mes');
+      //       return StaggeredTile.fit(3);
+      //     }
+      //     return StaggeredTile.count(0, 0);
+      //   }
+      //   return StaggeredTile.fit(3);
+      // }
+      // return StaggeredTile.count(1, 1);
+      // },
+      // ),
     );
   }
 
@@ -106,148 +410,155 @@ class _UntaggedTabState extends State<UntaggedTab> {
     return formatter.format(dateTime);
   }
 
-  Widget _buildItem(BuildContext context, int index) {
-    PicStore picStore = galleryStore.untaggedPics[index].picStore;
-    if (picStore == null) {
-      return Container(
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Text(
-          '${dateFormat(galleryStore.untaggedPics[index].date)}',
-          textScaleFactor: 1.0,
-          style: TextStyle(
-            fontFamily: 'Lato',
-            color: Color(0xff606566),
-            fontSize: 24,
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            letterSpacing: -0.4099999964237213,
-          ),
-        ),
-      );
-    }
-
-//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
-
-    return RepaintBoundary(
-      child: ExtendedImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = const ColoredBox(color: kGreyPlaceholder);
-              break;
-            case LoadState.completed:
-              loader = FadeImageBuilder(
-                child: () {
-                  return GestureDetector(
-                    onLongPress: () {
-                      print('LongPress');
-                      if (tabsStore.multiPicBar == false) {
-                        galleryStore.setSelectedPics(
-                          picStore: picStore,
-                          picIsTagged: false,
-                        );
-                        tabsStore.setMultiPicBar(true);
-                      }
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        if (tabsStore.multiPicBar) {
-                          galleryStore.setSelectedPics(
-                            picStore: picStore,
-                            picIsTagged: false,
-                          );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-                          return;
-                        }
-
-                        tagsEditingController.text = '';
-                        galleryStore.setCurrentPic(picStore);
-                        tabsStore.setModalCard(true);
-                      },
-                      child: Observer(builder: (_) {
-                        Widget image = Positioned.fill(
-                          child: RepaintBoundary(
-                            child: state.completedWidget,
-                          ),
-                        );
-                        if (tabsStore.multiPicBar) {
-                          if (galleryStore.selectedPics.contains(picStore)) {
-                            return Stack(
-                              children: [
-                                image,
-                                Container(
-                                  constraints: BoxConstraints.expand(),
-                                  decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
-                                    border: Border.all(
-                                      color: kSecondaryColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 8.0,
-                                  top: 6.0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      gradient: kSecondaryGradient,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Image.asset('lib/images/checkwhiteico.png'),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                          return Stack(
-                            children: [
-                              image,
-                              Positioned(
-                                left: 8.0,
-                                top: 6.0,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: kGrayColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                        return Stack(
-                          children: [
-                            image,
-                          ],
-                        );
-                      }),
-                    ),
-                  );
-                }(),
-              );
-              break;
-            case LoadState.failed:
-              loader = _failedItem;
-              break;
-          }
-          return loader;
-        },
-      ),
-    );
-  }
+//   Widget _buildItem(BuildContext context, int index) {
+//     PicStore picStore = galleryStore.untaggedPics[index].picStore;
+//     if (picStore == null) {
+//       return Container();
+//
+//       if (tabsStore.toggleIndexSelected == null || tabsStore.toggleIndexSelected == 0) {
+//         if (!galleryStore.untaggedPics[index].didChangeMonth) {
+//           return Container();
+//         }
+//       }
+//       return Container(
+//         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+//         child: Text(
+//           '${dateFormat(galleryStore.untaggedPics[index].date)}',
+//           textScaleFactor: 1.0,
+//           style: TextStyle(
+//             fontFamily: 'Lato',
+//             color: Color(0xff606566),
+//             fontSize: 24,
+//             fontWeight: FontWeight.w400,
+//             fontStyle: FontStyle.normal,
+//             letterSpacing: -0.4099999964237213,
+//           ),
+//         ),
+//       );
+//     }
+//
+// //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
+//
+//     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+//
+//     return RepaintBoundary(
+//       child: ExtendedImage(
+//         image: imageProvider,
+//         fit: BoxFit.cover,
+//         loadStateChanged: (ExtendedImageState state) {
+//           Widget loader;
+//           switch (state.extendedImageLoadState) {
+//             case LoadState.loading:
+//               loader = const ColoredBox(color: kGreyPlaceholder);
+//               break;
+//             case LoadState.completed:
+//               loader = FadeImageBuilder(
+//                 child: () {
+//                   return GestureDetector(
+//                     onLongPress: () {
+//                       print('LongPress');
+//                       if (tabsStore.multiPicBar == false) {
+//                         galleryStore.setSelectedPics(
+//                           picStore: picStore,
+//                           picIsTagged: false,
+//                         );
+//                         tabsStore.setMultiPicBar(true);
+//                       }
+//                     },
+//                     child: CupertinoButton(
+//                       padding: const EdgeInsets.all(0),
+//                       onPressed: () {
+//                         if (tabsStore.multiPicBar) {
+//                           galleryStore.setSelectedPics(
+//                             picStore: picStore,
+//                             picIsTagged: false,
+//                           );
+//                           print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+//                           return;
+//                         }
+//
+//                         tagsEditingController.text = '';
+//                         galleryStore.setCurrentPic(picStore);
+//                         tabsStore.setModalCard(true);
+//                       },
+//                       child: Observer(builder: (_) {
+//                         Widget image = Positioned.fill(
+//                           child: RepaintBoundary(
+//                             child: state.completedWidget,
+//                           ),
+//                         );
+//                         if (tabsStore.multiPicBar) {
+//                           if (galleryStore.selectedPics.contains(picStore)) {
+//                             return Stack(
+//                               children: [
+//                                 image,
+//                                 Container(
+//                                   constraints: BoxConstraints.expand(),
+//                                   decoration: BoxDecoration(
+//                                     color: kSecondaryColor.withOpacity(0.3),
+//                                     border: Border.all(
+//                                       color: kSecondaryColor,
+//                                       width: 2.0,
+//                                     ),
+//                                   ),
+//                                 ),
+//                                 Positioned(
+//                                   left: 8.0,
+//                                   top: 6.0,
+//                                   child: Container(
+//                                     height: 20,
+//                                     width: 20,
+//                                     decoration: BoxDecoration(
+//                                       gradient: kSecondaryGradient,
+//                                       borderRadius: BorderRadius.circular(10.0),
+//                                     ),
+//                                     child: Image.asset('lib/images/checkwhiteico.png'),
+//                                   ),
+//                                 ),
+//                               ],
+//                             );
+//                           }
+//                           return Stack(
+//                             children: [
+//                               image,
+//                               Positioned(
+//                                 left: 8.0,
+//                                 top: 6.0,
+//                                 child: Container(
+//                                   height: 20,
+//                                   width: 20,
+//                                   decoration: BoxDecoration(
+//                                     borderRadius: BorderRadius.circular(10.0),
+//                                     border: Border.all(
+//                                       color: kGrayColor,
+//                                       width: 2.0,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           );
+//                         }
+//                         return Stack(
+//                           children: [
+//                             image,
+//                           ],
+//                         );
+//                       }),
+//                     ),
+//                   );
+//                 }(),
+//               );
+//               break;
+//             case LoadState.failed:
+//               loader = _failedItem;
+//               break;
+//           }
+//           return loader;
+//         },
+//       ),
+//     );
+//   }
 
   @override
   void didChangeDependencies() {
@@ -256,11 +567,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
     galleryStore = Provider.of<GalleryStore>(context);
 
     scrollControllerFirstTab = ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
-    scrollControllerFirstTab.addListener(() {
-      refreshGridPositionFirstTab();
-    });
-    refreshGridPositionFirstTab();
-
     print('change dependencies!');
     galleryStore.clearPicThumbnails();
     galleryStore.addPicsToThumbnails(galleryStore.untaggedPics.map((element) => element.picStore).toList());
@@ -322,6 +628,13 @@ class _UntaggedTabState extends State<UntaggedTab> {
           } else if (galleryStore.isLoaded && galleryStore.deviceHasPics) {
             return Stack(
               children: <Widget>[
+                GestureDetector(
+//                              onScaleUpdate: (update) {
+//                                print(update.scale);
+//                                DatabaseManager.instance.gridScale(update.scale);
+//                              },
+                  child: _buildGridView(context),
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
@@ -335,36 +648,6 @@ class _UntaggedTabState extends State<UntaggedTab> {
                         child: Image.asset('lib/images/settings.png'),
                       ),
                     ],
-                  ),
-                ),
-                Positioned(
-                  left: 16.0,
-                  top: tabsStore.topOffsetFirstTab,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff979a9b),
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 48.0, bottom: 0.0),
-                  child: GestureDetector(
-//                              onScaleUpdate: (update) {
-//                                print(update.scale);
-//                                DatabaseManager.instance.gridScale(update.scale);
-//                              },
-                    child: _buildGridView(context),
                   ),
                 ),
                 AnimatedOpacity(

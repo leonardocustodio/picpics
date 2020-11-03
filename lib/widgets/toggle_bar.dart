@@ -13,7 +13,7 @@ class ToggleBar extends StatefulWidget {
 }
 
 class _ToggleBarState extends State<ToggleBar> {
-  Alignment animationAlignment = Alignment.centerRight;
+  Alignment animationAlignment = Alignment.centerLeft;
 
   @override
   Widget build(BuildContext context) {
