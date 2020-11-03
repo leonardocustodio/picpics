@@ -266,14 +266,14 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       if (index == 0) {
         galleryStore.clearSelectedPics();
         tabsStore.setMultiPicBar(false);
-      } else if (index == 4) {
-        galleryStore.trashMultiplePics(galleryStore.selectedPics);
       } else if (index == 3) {
+        galleryStore.trashMultiplePics(galleryStore.selectedPics);
+      } else if (index == 2) {
         print('sharing selected pics....');
         tabsStore.setIsLoading(true);
         await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
         tabsStore.setIsLoading(false);
-      } else if (index == 2) {
+      } else if (index == 1) {
         tabsStore.setMultiTagSheet(true);
         Future.delayed(Duration(milliseconds: 200), () {
           setState(() {
@@ -621,32 +621,35 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 ),
                               ],
                             )
-                          : BottomNavigationBar(
-                              currentIndex: tabsStore.currentTab,
-                              onTap: (index) {
-                                setTabIndex(index);
-                              },
-                              type: BottomNavigationBarType.fixed,
-                              showSelectedLabels: false,
-                              showUnselectedLabels: false,
-                              iconSize: 32.0,
-                              items: <BottomNavigationBarItem>[
-                                BottomNavigationBarItem(
-                                  label: 'Untagged photos',
-                                  icon: Image.asset('lib/images/untaggedtabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/untaggedtabactive.png'),
-                                ),
-                                BottomNavigationBarItem(
-                                  label: 'Swipe photos',
-                                  icon: Image.asset('lib/images/pictabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/pictabactive.png'),
-                                ),
-                                BottomNavigationBarItem(
-                                  label: 'Tagged photos',
-                                  icon: Image.asset('lib/images/taggedtabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/taggedtabactive.png'),
-                                ),
-                              ],
+                          : SizedBox(
+                              height: 64.0,
+                              child: BottomNavigationBar(
+                                currentIndex: tabsStore.currentTab,
+                                onTap: (index) {
+                                  setTabIndex(index);
+                                },
+                                type: BottomNavigationBarType.fixed,
+                                showSelectedLabels: false,
+                                showUnselectedLabels: false,
+                                iconSize: 32.0,
+                                items: <BottomNavigationBarItem>[
+                                  BottomNavigationBarItem(
+                                    label: 'Untagged photos',
+                                    icon: Image.asset('lib/images/untaggedtabinactive.png'),
+                                    activeIcon: Image.asset('lib/images/untaggedtabactive.png'),
+                                  ),
+                                  BottomNavigationBarItem(
+                                    label: 'Swipe photos',
+                                    icon: Image.asset('lib/images/pictabinactive.png'),
+                                    activeIcon: Image.asset('lib/images/pictabactive.png'),
+                                  ),
+                                  BottomNavigationBarItem(
+                                    label: 'Tagged photos',
+                                    icon: Image.asset('lib/images/taggedtabinactive.png'),
+                                    activeIcon: Image.asset('lib/images/taggedtabactive.png'),
+                                  ),
+                                ],
+                              ),
                             );
                     }
                     return Platform.isIOS
@@ -654,17 +657,17 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                             onTap: (index) {
                               setTabIndex(index);
                             },
-                            iconSize: 32.0,
+                            iconSize: 24.0,
                             border: Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
                             items: <BottomNavigationBarItem>[
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: Image.asset('lib/images/returntabbutton.png'),
                               ),
-                              BottomNavigationBarItem(
-                                title: Container(),
-                                icon: Image.asset('lib/images/locktabbutton.png'),
-                              ),
+                              // BottomNavigationBarItem(
+                              //   title: Container(),
+                              //   icon: Image.asset('lib/images/locktabbutton.png'),
+                              // ),
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: Image.asset('lib/images/tagtabbutton.png'),
@@ -679,35 +682,38 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               ),
                             ],
                           )
-                        : BottomNavigationBar(
-                            onTap: (index) {
-                              setTabIndex(index);
-                            },
-                            type: BottomNavigationBarType.fixed,
-                            showSelectedLabels: false,
-                            showUnselectedLabels: false,
-                            items: <BottomNavigationBarItem>[
-                              BottomNavigationBarItem(
-                                label: 'Return',
-                                icon: Image.asset('lib/images/returntabbutton.png'),
-                              ),
-                              BottomNavigationBarItem(
-                                label: 'Lock',
-                                icon: Image.asset('lib/images/locktabbutton.png'),
-                              ),
-                              BottomNavigationBarItem(
-                                label: 'Tag',
-                                icon: Image.asset('lib/images/tagtabbutton.png'),
-                              ),
-                              BottomNavigationBarItem(
-                                label: 'Share',
-                                icon: Image.asset('lib/images/sharetabbutton.png'),
-                              ),
-                              BottomNavigationBarItem(
-                                label: 'Trash',
-                                icon: Image.asset('lib/images/trashtabbutton.png'),
-                              ),
-                            ],
+                        : SizedBox(
+                            height: 64.0,
+                            child: BottomNavigationBar(
+                              onTap: (index) {
+                                setTabIndex(index);
+                              },
+                              type: BottomNavigationBarType.fixed,
+                              showSelectedLabels: false,
+                              showUnselectedLabels: false,
+                              items: <BottomNavigationBarItem>[
+                                BottomNavigationBarItem(
+                                  label: 'Return',
+                                  icon: Image.asset('lib/images/returntabbutton.png'),
+                                ),
+                                // BottomNavigationBarItem(
+                                //   label: 'Lock',
+                                //   icon: Image.asset('lib/images/locktabbutton.png'),
+                                // ),
+                                BottomNavigationBarItem(
+                                  label: 'Tag',
+                                  icon: Image.asset('lib/images/tagtabbutton.png'),
+                                ),
+                                BottomNavigationBarItem(
+                                  label: 'Share',
+                                  icon: Image.asset('lib/images/sharetabbutton.png'),
+                                ),
+                                BottomNavigationBarItem(
+                                  label: 'Trash',
+                                  icon: Image.asset('lib/images/trashtabbutton.png'),
+                                ),
+                              ],
+                            ),
                           );
                   });
           }),
