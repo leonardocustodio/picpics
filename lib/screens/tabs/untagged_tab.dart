@@ -13,6 +13,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/stores/untagged_pics_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:provider/provider.dart';
@@ -83,193 +84,340 @@ class _UntaggedTabState extends State<UntaggedTab> {
   //   return slivers;
   // }
 
-  Widget _buildNewItem(BuildContext context, int index, double size) {
-    print('Curret Index: $index');
+  Widget _buildSliverGridItem(BuildContext context, PicStore picStore) {
+    if (picStore == null) {
+      return Container();
+    }
 
-    List<Widget> childs = [];
-    int endIndex = (index + 1) * 3;
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+    return RepaintBoundary(
+      child: ExtendedImage(
+        image: imageProvider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = const ColoredBox(color: kGreyPlaceholder);
+              break;
+            case LoadState.completed:
+              loader = FadeImageBuilder(
+                child: () {
+                  return GestureDetector(
+                    onLongPress: () {
+                      print('LongPress');
+                      if (tabsStore.multiPicBar == false) {
+                        galleryStore.setSelectedPics(
+                          picStore: picStore,
+                          picIsTagged: false,
+                        );
+                        tabsStore.setMultiPicBar(true);
+                      }
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        if (tabsStore.multiPicBar) {
+                          galleryStore.setSelectedPics(
+                            picStore: picStore,
+                            picIsTagged: false,
+                          );
+                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          return;
+                        }
 
-    for (int currentIndex = index * 3; currentIndex < endIndex; currentIndex++) {
-      PicStore picStore = galleryStore.untaggedPics[currentIndex].picStore;
-      if (picStore == null) {
-        childs.add(
-          Container(
-            color: kGrayColor,
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-            width: double.infinity,
-            child: Text(
-              '${dateFormat(galleryStore.untaggedPics[currentIndex].date)}',
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 24,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
-            ),
-          ),
-        );
-        continue;
-
-        // if (tabsStore.toggleIndexSelected == null || tabsStore.toggleIndexSelected == 0) {
-        //   if (!galleryStore.untaggedPics[index].didChangeMonth) {
-        //     return Container();
-        //   }
-        // }
-        // return Container(
-        //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        //   child: Text(
-        //     '${dateFormat(galleryStore.untaggedPics[index].date)}',
-        //     textScaleFactor: 1.0,
-        //     style: TextStyle(
-        //       fontFamily: 'Lato',
-        //       color: Color(0xff606566),
-        //       fontSize: 24,
-        //       fontWeight: FontWeight.w400,
-        //       fontStyle: FontStyle.normal,
-        //       letterSpacing: -0.4099999964237213,
-        //     ),
-        //   ),
-        // );
-      }
-
-//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-
-      final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
-
-      childs.add(Container(
-        height: size,
-        width: size - 1,
-        child: RepaintBoundary(
-          child: ExtendedImage(
-            image: imageProvider,
-            fit: BoxFit.cover,
-            loadStateChanged: (ExtendedImageState state) {
-              Widget loader;
-              switch (state.extendedImageLoadState) {
-                case LoadState.loading:
-                  loader = const ColoredBox(color: kGreyPlaceholder);
-                  break;
-                case LoadState.completed:
-                  loader = FadeImageBuilder(
-                    child: () {
-                      return GestureDetector(
-                        onLongPress: () {
-                          print('LongPress');
-                          if (tabsStore.multiPicBar == false) {
-                            galleryStore.setSelectedPics(
-                              picStore: picStore,
-                              picIsTagged: false,
-                            );
-                            tabsStore.setMultiPicBar(true);
-                          }
-                        },
-                        child: CupertinoButton(
-                          padding: const EdgeInsets.all(0),
-                          onPressed: () {
-                            if (tabsStore.multiPicBar) {
-                              galleryStore.setSelectedPics(
-                                picStore: picStore,
-                                picIsTagged: false,
-                              );
-                              print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-                              return;
-                            }
-
-                            tagsEditingController.text = '';
-                            galleryStore.setCurrentPic(picStore);
-                            tabsStore.setModalCard(true);
-                          },
-                          child: Observer(builder: (_) {
-                            Widget image = Positioned.fill(
-                              child: RepaintBoundary(
-                                child: state.completedWidget,
-                              ),
-                            );
-                            if (tabsStore.multiPicBar) {
-                              if (galleryStore.selectedPics.contains(picStore)) {
-                                return Stack(
-                                  children: [
-                                    image,
-                                    Container(
-                                      constraints: BoxConstraints.expand(),
-                                      decoration: BoxDecoration(
-                                        color: kSecondaryColor.withOpacity(0.3),
-                                        border: Border.all(
-                                          color: kSecondaryColor,
-                                          width: 2.0,
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      left: 8.0,
-                                      top: 6.0,
-                                      child: Container(
-                                        height: 20,
-                                        width: 20,
-                                        decoration: BoxDecoration(
-                                          gradient: kSecondaryGradient,
-                                          borderRadius: BorderRadius.circular(10.0),
-                                        ),
-                                        child: Image.asset('lib/images/checkwhiteico.png'),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              }
-                              return Stack(
-                                children: [
-                                  image,
-                                  Positioned(
-                                    left: 8.0,
-                                    top: 6.0,
-                                    child: Container(
-                                      height: 20,
-                                      width: 20,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        border: Border.all(
-                                          color: kGrayColor,
-                                          width: 2.0,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
+                        tagsEditingController.text = '';
+                        galleryStore.setCurrentPic(picStore);
+                        tabsStore.setModalCard(true);
+                      },
+                      child: Observer(builder: (_) {
+                        Widget image = Positioned.fill(
+                          child: RepaintBoundary(
+                            child: state.completedWidget,
+                          ),
+                        );
+                        if (tabsStore.multiPicBar) {
+                          if (galleryStore.selectedPics.contains(picStore)) {
                             return Stack(
                               children: [
                                 image,
+                                Container(
+                                  constraints: BoxConstraints.expand(),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryColor.withOpacity(0.3),
+                                    border: Border.all(
+                                      color: kSecondaryColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 8.0,
+                                  top: 6.0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      gradient: kSecondaryGradient,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Image.asset('lib/images/checkwhiteico.png'),
+                                  ),
+                                ),
                               ],
                             );
-                          }),
-                        ),
-                      );
-                    }(),
+                          }
+                          return Stack(
+                            children: [
+                              image,
+                              Positioned(
+                                left: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: kGrayColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Stack(
+                          children: [
+                            image,
+                          ],
+                        );
+                      }),
+                    ),
                   );
-                  break;
-                case LoadState.failed:
-                  loader = _failedItem;
-                  break;
-              }
-              return loader;
-            },
-          ),
+                }(),
+              );
+              break;
+            case LoadState.failed:
+              loader = _failedItem;
+              break;
+          }
+          return loader;
+        },
+      ),
+    );
+  }
+
+//   Widget _buildNewItem(BuildContext context, int index, double size) {
+//     print('Curret Index: $index');
+//
+//     List<Widget> childs = [];
+//     int endIndex = (index + 1) * 3;
+//
+//     for (int currentIndex = index * 3; currentIndex < endIndex; currentIndex++) {
+//       PicStore picStore = galleryStore.untaggedPics[currentIndex].picStore;
+//       if (picStore == null) {
+//         childs.add(
+//           Container(
+//             color: kGrayColor,
+//             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+//             width: double.infinity,
+//             child: Text(
+//               '${dateFormat(galleryStore.untaggedPics[currentIndex].date)}',
+//               textScaleFactor: 1.0,
+//               style: TextStyle(
+//                 fontFamily: 'Lato',
+//                 color: Color(0xff606566),
+//                 fontSize: 24,
+//                 fontWeight: FontWeight.w400,
+//                 fontStyle: FontStyle.normal,
+//                 letterSpacing: -0.4099999964237213,
+//               ),
+//             ),
+//           ),
+//         );
+//         continue;
+//
+//         // if (tabsStore.toggleIndexSelected == null || tabsStore.toggleIndexSelected == 0) {
+//         //   if (!galleryStore.untaggedPics[index].didChangeMonth) {
+//         //     return Container();
+//         //   }
+//         // }
+//         // return Container(
+//         //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+//         //   child: Text(
+//         //     '${dateFormat(galleryStore.untaggedPics[index].date)}',
+//         //     textScaleFactor: 1.0,
+//         //     style: TextStyle(
+//         //       fontFamily: 'Lato',
+//         //       color: Color(0xff606566),
+//         //       fontSize: 24,
+//         //       fontWeight: FontWeight.w400,
+//         //       fontStyle: FontStyle.normal,
+//         //       letterSpacing: -0.4099999964237213,
+//         //     ),
+//         //   ),
+//         // );
+//       }
+//
+// //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
+//
+//       final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+//
+//       childs.add(Container(
+//         height: size,
+//         width: size - 1,
+//         child: RepaintBoundary(
+//           child: ExtendedImage(
+//             image: imageProvider,
+//             fit: BoxFit.cover,
+//             loadStateChanged: (ExtendedImageState state) {
+//               Widget loader;
+//               switch (state.extendedImageLoadState) {
+//                 case LoadState.loading:
+//                   loader = const ColoredBox(color: kGreyPlaceholder);
+//                   break;
+//                 case LoadState.completed:
+//                   loader = FadeImageBuilder(
+//                     child: () {
+//                       return GestureDetector(
+//                         onLongPress: () {
+//                           print('LongPress');
+//                           if (tabsStore.multiPicBar == false) {
+//                             galleryStore.setSelectedPics(
+//                               picStore: picStore,
+//                               picIsTagged: false,
+//                             );
+//                             tabsStore.setMultiPicBar(true);
+//                           }
+//                         },
+//                         child: CupertinoButton(
+//                           padding: const EdgeInsets.all(0),
+//                           onPressed: () {
+//                             if (tabsStore.multiPicBar) {
+//                               galleryStore.setSelectedPics(
+//                                 picStore: picStore,
+//                                 picIsTagged: false,
+//                               );
+//                               print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+//                               return;
+//                             }
+//
+//                             tagsEditingController.text = '';
+//                             galleryStore.setCurrentPic(picStore);
+//                             tabsStore.setModalCard(true);
+//                           },
+//                           child: Observer(builder: (_) {
+//                             Widget image = Positioned.fill(
+//                               child: RepaintBoundary(
+//                                 child: state.completedWidget,
+//                               ),
+//                             );
+//                             if (tabsStore.multiPicBar) {
+//                               if (galleryStore.selectedPics.contains(picStore)) {
+//                                 return Stack(
+//                                   children: [
+//                                     image,
+//                                     Container(
+//                                       constraints: BoxConstraints.expand(),
+//                                       decoration: BoxDecoration(
+//                                         color: kSecondaryColor.withOpacity(0.3),
+//                                         border: Border.all(
+//                                           color: kSecondaryColor,
+//                                           width: 2.0,
+//                                         ),
+//                                       ),
+//                                     ),
+//                                     Positioned(
+//                                       left: 8.0,
+//                                       top: 6.0,
+//                                       child: Container(
+//                                         height: 20,
+//                                         width: 20,
+//                                         decoration: BoxDecoration(
+//                                           gradient: kSecondaryGradient,
+//                                           borderRadius: BorderRadius.circular(10.0),
+//                                         ),
+//                                         child: Image.asset('lib/images/checkwhiteico.png'),
+//                                       ),
+//                                     ),
+//                                   ],
+//                                 );
+//                               }
+//                               return Stack(
+//                                 children: [
+//                                   image,
+//                                   Positioned(
+//                                     left: 8.0,
+//                                     top: 6.0,
+//                                     child: Container(
+//                                       height: 20,
+//                                       width: 20,
+//                                       decoration: BoxDecoration(
+//                                         borderRadius: BorderRadius.circular(10.0),
+//                                         border: Border.all(
+//                                           color: kGrayColor,
+//                                           width: 2.0,
+//                                         ),
+//                                       ),
+//                                     ),
+//                                   ),
+//                                 ],
+//                               );
+//                             }
+//                             return Stack(
+//                               children: [
+//                                 image,
+//                               ],
+//                             );
+//                           }),
+//                         ),
+//                       );
+//                     }(),
+//                   );
+//                   break;
+//                 case LoadState.failed:
+//                   loader = _failedItem;
+//                   break;
+//               }
+//               return loader;
+//             },
+//           ),
+//         ),
+//       ));
+//     }
+//
+//     return Wrap(
+//       alignment: WrapAlignment.spaceBetween,
+//       children: childs,
+//     );
+//   }
+
+  Widget _buildGridView(BuildContext context) {
+    print('&&&&& Building grid view');
+    List<Widget> sliverGrids = [];
+
+    for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
+      sliverGrids.add(SliverPersistentHeader(
+        delegate: MyDynamicHeader(headerTitle: dateFormat(untaggedPicsStore.date)),
+      ));
+      sliverGrids.add(SliverGrid(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 3,
+          mainAxisSpacing: 2.0,
+          crossAxisSpacing: 2.0,
+          childAspectRatio: 1.0,
+        ),
+        delegate: SliverChildBuilderDelegate(
+          (BuildContext context, int index) {
+            return _buildSliverGridItem(context, untaggedPicsStore.picStores[index]);
+          },
+          childCount: untaggedPicsStore.picStoresIds.length,
         ),
       ));
     }
 
-    return Wrap(
-      alignment: WrapAlignment.spaceBetween,
-      children: childs,
-    );
-  }
-
-  Widget _buildGridView(BuildContext context) {
-    print('&&&&& Building grid view');
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollStartNotification) {
@@ -303,13 +451,15 @@ class _UntaggedTabState extends State<UntaggedTab> {
               ),
             ),
           ),
-          SliverAnimatedList(
-            initialItemCount: (galleryStore.untaggedPics.length / 3).floor() + 1,
-            itemBuilder: (context, index, animation) {
-              double size = MediaQuery.of(context).size.width / 3;
-              return _buildNewItem(context, index, size);
-            },
-          )
+          ...sliverGrids,
+
+          // SliverAnimatedList(
+          //   initialItemCount: (galleryStore.untaggedPics.length / 3).floor() + 1,
+          //   itemBuilder: (context, index, animation) {
+          //     double size = MediaQuery.of(context).size.width / 3;
+          //     return _buildNewItem(context, index, size);
+          //   },
+          // )
           // SliverPinnedHeader(
           //   child: Container(
           //     child: Text('Teste'),
@@ -569,7 +719,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
     scrollControllerFirstTab = ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
     print('change dependencies!');
     galleryStore.clearPicThumbnails();
-    galleryStore.addPicsToThumbnails(galleryStore.untaggedPics.map((element) => element.picStore).toList());
+
+    // Arrumar isso aqui!!!!!! - 03/11/20
+    // galleryStore.addPicsToThumbnails(galleryStore.untaggedPics.map((element) => element.picStore).toList());
   }
 
   @override

@@ -209,62 +209,17 @@ abstract class _PicStore with Store {
     print('Removed both files...');
   }
 
-  void loadExifData() async {
+  Future<void> loadExifData() async {
     File originFile = await entity.originFile;
     var originBytes = originFile.readAsBytesSync();
 
-    var mapResult = md.MetaData.extractXMP(originBytes);
-    print(mapResult.toString());
+    var mapResult = md.MetaData.extractXMP(originBytes, raw: true);
+    print(mapResult['dc:subject']);
   }
-  //   File originFile = await entity.originFile;
-  //
-  //   String path = originFile.path;
-  //   var originBytes = originFile.readAsBytesSync();
-  //
-  //   var result = md.MetaData.exifData(originBytes);
-  //   if (result.error == null) {
-  //     var content = result.exifData; // exif data is available in contents
-  //     print('Metadata content: $content');
-  //     // saveFile(image, content);
-  //   } else {
-  //     // print('File: $image.jpg, Error: ${result.error}');
-  //   }
-  //
-  //   // Map<String, IfdTag> data = await readExifFromBytes(originBytes);
-  //   //
-  //   // if (data == null || data.isEmpty) {
-  //   //   print("No EXIF information found\n");
-  //   //   // return;
-  //   // }
-  //   //
-  //   // if (data.containsKey('JPEGThumbnail')) {
-  //   //   print('File has JPEG thumbnail');
-  //   //   data.remove('JPEGThumbnail');
-  //   // }
-  //   // if (data.containsKey('TIFFThumbnail')) {
-  //   //   print('File has TIFF thumbnail');
-  //   //   data.remove('TIFFThumbnail');
-  //   // }
-  //   //
-  //   // for (String key in data.keys) {
-  //   //   print("$key (${data[key].tagType}): ${data[key]}");
-  //   // }
-  //
-  //   var exif = FlutterExif(path);
-  //   try {
-  //     var exifData = await exif.getExif('TAG_IMAGE_DESCRIPTION');
-  //     if (exifData == null) {
-  //       return;
-  //     }
-  //     print('Exif data: $exifData');
-  //   } catch (error) {
-  //     print('Did not find field UserComment in this pic!');
-  //   }
-  // }
 
   @action
   void loadPicInfo() {
-    // loadExifData();
+    loadExifData();
 
     var picsBox = Hive.box('pics');
     var secretBox = Hive.box('secrets');

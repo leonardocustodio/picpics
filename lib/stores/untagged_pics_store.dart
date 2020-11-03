@@ -6,13 +6,26 @@ part 'untagged_pics_store.g.dart';
 class UntaggedPicsStore = _UntaggedPicsStore with _$UntaggedPicsStore;
 
 abstract class _UntaggedPicsStore with Store {
-  PicStore picStore;
   DateTime date;
-  bool didChangeMonth;
 
   _UntaggedPicsStore({
-    this.picStore,
     this.date,
-    this.didChangeMonth,
   });
+
+  ObservableList<PicStore> picStores = ObservableList<PicStore>();
+
+  @computed
+  List<String> get picStoresIds {
+    return picStores.map((element) => element.photoId).toList();
+  }
+
+  @action
+  void addPicStore(PicStore picStore) {
+    picStores.add(picStore);
+  }
+
+  @action
+  void removePicStore(PicStore picStore) {
+    picStores.remove(picStore);
+  }
 }

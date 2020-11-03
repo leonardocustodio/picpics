@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.10+440
+version: 1.6.11+442
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -84,13 +84,7 @@ dependencies:
   sliver_tools: ^0.1.8
 #  tflite_flutter: ^0.5.0
 #  tflite: ^1.1.1
-  metadata: ^1.0.1
-#  exif: ^1.0.3
-#  psd_sdk: ^0.1.6
-#  edit_exif:
-#    git:
-#      url: https://github.com/maks/edit_exif.git
-#      ref: fix-getexif-on-android
+  metadata: ^1.0.2
 
 dev_dependencies:
 #  flutter_test:
