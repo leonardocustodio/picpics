@@ -219,7 +219,7 @@ abstract class _PicStore with Store {
 
   @action
   void loadPicInfo() {
-    loadExifData();
+    // loadExifData();
 
     var picsBox = Hive.box('pics');
     var secretBox = Hive.box('secrets');
