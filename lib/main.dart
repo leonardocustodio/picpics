@@ -199,28 +199,30 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           create: (_) => DatabaseManager.instance,
         ),
       ],
-      child: MaterialApp(
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        locale: appStore.appLocale,
-        supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: kDebugMode,
-        initialRoute: appStore.initialRoute,
-        navigatorObservers: [Analytics.observer],
-        routes: {
-          LoginScreen.id: (context) => LoginScreen(),
-          TabsScreen.id: (context) => TabsScreen(),
-          PhotoScreen.id: (context) => PhotoScreen(),
-          SettingsScreen.id: (context) => SettingsScreen(),
-          AddLocationScreen.id: (context) => AddLocationScreen(),
-          PremiumScreen.id: (context) => PremiumScreen(),
-          PinScreen.id: (context) => PinScreen(),
-          EmailScreen.id: (context) => EmailScreen(),
-        },
+      child: Center(
+        child: MaterialApp(
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          locale: appStore.appLocale,
+          supportedLocales: S.delegate.supportedLocales,
+          debugShowCheckedModeBanner: kDebugMode,
+          initialRoute: appStore.initialRoute,
+          navigatorObservers: [Analytics.observer],
+          routes: {
+            LoginScreen.id: (context) => LoginScreen(),
+            TabsScreen.id: (context) => TabsScreen(),
+            PhotoScreen.id: (context) => PhotoScreen(),
+            SettingsScreen.id: (context) => SettingsScreen(),
+            AddLocationScreen.id: (context) => AddLocationScreen(),
+            PremiumScreen.id: (context) => PremiumScreen(),
+            PinScreen.id: (context) => PinScreen(),
+            EmailScreen.id: (context) => EmailScreen(),
+          },
+        ),
       ),
     );
   }

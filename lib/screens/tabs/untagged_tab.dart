@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -39,19 +41,23 @@ class MyDynamicHeader extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return LayoutBuilder(builder: (context, constraints) {
       return Container(
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        padding: const EdgeInsets.only(left: 14.0, right: 8.0),
         height: constraints.maxHeight,
-        child: Text(
-          headerTitle,
-          textScaleFactor: 1.0,
-          style: TextStyle(
-            fontFamily: 'Lato',
-            color: Color(0xff606566),
-            fontSize: 24,
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            letterSpacing: -0.4099999964237213,
-          ),
+        child: Row(
+          children: [
+            Text(
+              headerTitle,
+              textScaleFactor: 1.0,
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff606566),
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
+            ),
+          ],
         ),
       );
     });
@@ -61,10 +67,67 @@ class MyDynamicHeader extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(SliverPersistentHeaderDelegate _) => true;
 
   @override
-  double get maxExtent => 40.0;
+  double get maxExtent => 46.0;
 
   @override
   double get minExtent => 0.0;
+}
+
+class MySliverAppBar extends SliverPersistentHeaderDelegate {
+  final double expandedHeight;
+  final String title;
+
+  MySliverAppBar({@required this.expandedHeight, this.title});
+
+  double _minMax(num _min, num _max, num actual) {
+    if (_min == null && _max == null) {
+      return actual.toDouble();
+    }
+
+    if (_min == null) {
+      return min(_max.toDouble(), actual.toDouble());
+    }
+
+    if (_max == null) {
+      return max(_min.toDouble(), actual.toDouble());
+    }
+
+    return min(_max.toDouble(), max(_min.toDouble(), actual.toDouble()));
+  }
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Stack(
+      fit: StackFit.expand,
+      overflow: Overflow.visible,
+      children: [
+        // shrinkOffset / expandedHeight
+        Positioned(
+          bottom: 20.0,
+          child: Text(
+            title,
+            textScaleFactor: _minMax(1.0, 1.5, 1 * (expandedHeight / minExtent)),
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff979a9b),
+              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.normal,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  double get maxExtent => expandedHeight;
+
+  @override
+  double get minExtent => kToolbarHeight;
+
+  @override
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class _UntaggedTabState extends State<UntaggedTab> {
@@ -400,7 +463,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
     for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
       sliverGrids.add(SliverPersistentHeader(
-        delegate: MyDynamicHeader(headerTitle: dateFormat(untaggedPicsStore.date)),
+        delegate: MyDynamicHeader(
+          headerTitle: dateFormat(untaggedPicsStore.date),
+        ),
       ));
       sliverGrids.add(SliverGrid(
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -433,22 +498,27 @@ class _UntaggedTabState extends State<UntaggedTab> {
         slivers: <Widget>[
           SliverAppBar(
             pinned: true,
-            // centerTitle: false,
-            expandedHeight: 250.0,
+            expandedHeight: 140.0,
             backgroundColor: kWhiteColor,
-            leadingWidth: 0.0,
             flexibleSpace: FlexibleSpaceBar(
+              centerTitle: false,
+              titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
               title: Text(
                 tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
                 textScaleFactor: 1.0,
                 style: TextStyle(
                   fontFamily: 'Lato',
                   color: Color(0xff979a9b),
-                  fontSize: 24,
+                  fontSize: 20.0,
                   fontWeight: FontWeight.w700,
                   fontStyle: FontStyle.normal,
                 ),
               ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 30.0,
             ),
           ),
           ...sliverGrids,
@@ -734,13 +804,13 @@ class _UntaggedTabState extends State<UntaggedTab> {
           if (!galleryStore.deviceHasPics) {
             return Stack(
               children: <Widget>[
-                Padding(
+                Container(
+                  height: 56.0,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
                       CupertinoButton(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
                           Navigator.pushNamed(context, SettingsScreen.id);
                         },
@@ -757,7 +827,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
           } else if (galleryStore.isLoaded && galleryStore.untaggedPics.isEmpty) {
             return Stack(
               children: <Widget>[
-                Padding(
+                Container(
+                  height: 56.0,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -787,7 +858,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //                              },
                   child: _buildGridView(context),
                 ),
-                Padding(
+                Container(
+                  height: 56.0,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
