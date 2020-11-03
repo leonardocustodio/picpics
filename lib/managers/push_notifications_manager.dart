@@ -2,6 +2,8 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/managers/database_manager.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class PushNotificationsManager {
   PushNotificationsManager._();
@@ -38,8 +40,12 @@ class PushNotificationsManager {
 //      });
 
       var initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
-      var initializationSettingsIOS = IOSInitializationSettings();
-      var initializationSettings = InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+      var initializationSettingsIOS = IOSInitializationSettings(requestAlertPermission: false, requestBadgePermission: false, requestSoundPermission: false);
+
+      var initializationSettings = InitializationSettings(
+        android: initializationSettingsAndroid,
+        iOS: initializationSettingsIOS,
+      );
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
       print('scheduling notification');
 //      scheduleNotification();
@@ -88,6 +94,15 @@ class PushNotificationsManager {
     }
   }
 
+  tz.TZDateTime _nextInstanceOfTime(Time time) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, time.hour, time.minute);
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
+  }
+
   void scheduleNotification({int hourOfDay, int minutesOfDay, String title, String description}) async {
     await _flutterLocalNotificationsPlugin.cancelAll();
 
@@ -97,25 +112,16 @@ class PushNotificationsManager {
       0,
     );
 
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'repeatDailyAtTime channel id',
-      'repeatDailyAtTime channel name',
-      'repeatDailyAtTime description',
-    );
-
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-
-    var platformChannelSpecifics = NotificationDetails(
-      androidPlatformChannelSpecifics,
-      iOSPlatformChannelSpecifics,
-    );
-
-    await _flutterLocalNotificationsPlugin.showDailyAtTime(
-      0,
-      title,
-      description,
-      time,
-      platformChannelSpecifics,
-    );
+    await _flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        title,
+        description,
+        _nextInstanceOfTime(time),
+        const NotificationDetails(
+          android: AndroidNotificationDetails('0', 'Daily Goal', 'Notification for remembering your picPics daily goal'),
+        ),
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+        scheduledNotificationRepeatFrequency: ScheduledNotificationRepeatFrequency.daily);
   }
 }

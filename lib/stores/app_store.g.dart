@@ -284,6 +284,15 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$requestNotificationPermissionAsyncAction =
+      AsyncAction('_AppStore.requestNotificationPermission');
+
+  @override
+  Future<void> requestNotificationPermission() {
+    return _$requestNotificationPermissionAsyncAction
+        .run(() => super.requestNotificationPermission());
+  }
+
   final _$checkNotificationPermissionAsyncAction =
       AsyncAction('_AppStore.checkNotificationPermission');
 
@@ -339,17 +348,6 @@ mixin _$AppStore on _AppStore, Store {
         _$_AppStoreActionController.startAction(name: '_AppStore.setTryBuyId');
     try {
       return super.setTryBuyId(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void requestNotificationPermission() {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.requestNotificationPermission');
-    try {
-      return super.requestNotificationPermission();
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }

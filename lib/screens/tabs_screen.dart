@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
@@ -8,6 +9,7 @@ import 'package:picPics/components/custom_bubble_bottom_bar.dart';
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium_screen.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
@@ -264,14 +266,14 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       if (index == 0) {
         galleryStore.clearSelectedPics();
         tabsStore.setMultiPicBar(false);
-      } else if (index == 1) {
+      } else if (index == 3) {
         galleryStore.trashMultiplePics(galleryStore.selectedPics);
       } else if (index == 2) {
         print('sharing selected pics....');
         tabsStore.setIsLoading(true);
         await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
         tabsStore.setIsLoading(false);
-      } else {
+      } else if (index == 1) {
         tabsStore.setMultiTagSheet(true);
         Future.delayed(Duration(milliseconds: 200), () {
           setState(() {
@@ -407,127 +409,9 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
     return Stack(
       children: <Widget>[
-        Observer(builder: (_) {
-          return Scaffold(
-            floatingActionButton: !tabsStore.multiPicBar || tabsStore.multiTagSheet
-                ? Container(
-                    width: 0,
-                    height: 0,
-                  )
-                : FloatingActionButton(
-                    onPressed: () {
-                      setTabIndex(3);
-                    },
-                    child: Image.asset('lib/images/picbarbuttonwhite.png'),
-                    backgroundColor: kSecondaryColor,
-                  ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-            body: AnnotatedRegion<SystemUiOverlayStyle>(
-              value: SystemUiOverlayStyle.dark,
-              child: Stack(
-                children: <Widget>[
-                  Observer(builder: (_) {
-                    Widget wgt;
-                    if (appStore.hasGalleryPermission == null || appStore.hasGalleryPermission == false) {
-                      wgt = Container(
-                        constraints: BoxConstraints.expand(),
-                        color: kWhiteColor,
-                        child: SafeArea(
-                          child: Stack(
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: <Widget>[
-                                    CupertinoButton(
-                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                      onPressed: () {
-                                        Navigator.pushNamed(context, SettingsScreen.id);
-                                      },
-                                      child: Image.asset('lib/images/settings.png'),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Padding(
-                                      padding: const EdgeInsets.only(right: 30.0),
-                                      child: Container(
-                                        constraints: BoxConstraints(maxHeight: height / 2),
-                                        child: Image.asset('lib/images/nogalleryauth.png'),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 21.0,
-                                    ),
-                                    Text(
-                                      S.of(context).gallery_access_permission_description,
-                                      textScaleFactor: 1.0,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff979a9b),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 17.0,
-                                    ),
-                                    CupertinoButton(
-                                      padding: const EdgeInsets.all(0),
-                                      onPressed: () {
-                                        PhotoManager.openSetting();
-                                      },
-                                      child: Container(
-                                        width: 201.0,
-                                        height: 44.0,
-                                        decoration: BoxDecoration(
-                                          gradient: kPrimaryGradient,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Center(
-                                          child: Text(
-                                            S.of(context).gallery_access_permission,
-                                            textScaleFactor: 1.0,
-                                            style: TextStyle(
-                                              fontFamily: 'Lato',
-                                              color: kWhiteColor,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              fontStyle: FontStyle.normal,
-                                              letterSpacing: -0.4099999964237213,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
-                      wgt = UntaggedTab();
-                    else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
-                      wgt = PicTab(
-                        showEditTagModal: showEditTagModal,
-                        showDeleteSecretModal: showDeleteSecretModal,
-                      );
-                    else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
-                    return wgt ?? Container();
-                  }),
-                ],
-              ),
-            ),
-            bottomNavigationBar: tabsStore.multiTagSheet
+        Scaffold(
+          bottomNavigationBar: Observer(builder: (_) {
+            return tabsStore.multiTagSheet
                 ? ExpandableNotifier(
                     child: Container(
                       color: Color(0xF1F3F5),
@@ -709,81 +593,236 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                       ),
                     ),
                   )
-                : Container(
-                    constraints: BoxConstraints(
-                      maxHeight: 100.0,
-                    ),
-                    child: Observer(builder: (_) {
-                      if (!tabsStore.multiPicBar) {
-                        return CustomBubbleBottomBar(
-                          backgroundColor: kWhiteColor,
-                          hasNotch: true,
-                          opacity: 1.0,
-                          currentIndex: tabsStore.currentTab,
-                          onTap: setTabIndex,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
-                          ),
-                          elevation: 8,
-                          items: <CustomBubbleBottomBarItem>[
-                            CustomBubbleBottomBarItem(
-                              backgroundColor: kPinkColor,
-                              icon: Image.asset('lib/images/tabgridred.png'),
-                              activeIcon: Image.asset('lib/images/tabgridwhite.png'),
+                : Observer(builder: (_) {
+                    if (!tabsStore.multiPicBar) {
+                      return Platform.isIOS
+                          ? CupertinoTabBar(
+                              currentIndex: tabsStore.currentTab,
+                              onTap: (index) {
+                                setTabIndex(index);
+                              },
+                              iconSize: 32.0,
+                              border: Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+                              items: <BottomNavigationBarItem>[
+                                BottomNavigationBarItem(
+                                  title: Container(),
+                                  icon: Image.asset('lib/images/untaggedtabinactive.png'),
+                                  activeIcon: Image.asset('lib/images/untaggedtabactive.png'),
+                                ),
+                                BottomNavigationBarItem(
+                                  title: Container(),
+                                  icon: Image.asset('lib/images/pictabinactive.png'),
+                                  activeIcon: Image.asset('lib/images/pictabactive.png'),
+                                ),
+                                BottomNavigationBarItem(
+                                  title: Container(),
+                                  icon: Image.asset('lib/images/taggedtabinactive.png'),
+                                  activeIcon: Image.asset('lib/images/taggedtabactive.png'),
+                                ),
+                              ],
+                            )
+                          : SizedBox(
+                              height: 64.0,
+                              child: BottomNavigationBar(
+                                currentIndex: tabsStore.currentTab,
+                                onTap: (index) {
+                                  setTabIndex(index);
+                                },
+                                type: BottomNavigationBarType.fixed,
+                                showSelectedLabels: false,
+                                showUnselectedLabels: false,
+                                iconSize: 32.0,
+                                items: <BottomNavigationBarItem>[
+                                  BottomNavigationBarItem(
+                                    label: 'Untagged photos',
+                                    icon: Image.asset('lib/images/untaggedtabinactive.png'),
+                                    activeIcon: Image.asset('lib/images/untaggedtabactive.png'),
+                                  ),
+                                  BottomNavigationBarItem(
+                                    label: 'Swipe photos',
+                                    icon: Image.asset('lib/images/pictabinactive.png'),
+                                    activeIcon: Image.asset('lib/images/pictabactive.png'),
+                                  ),
+                                  BottomNavigationBarItem(
+                                    label: 'Tagged photos',
+                                    icon: Image.asset('lib/images/taggedtabinactive.png'),
+                                    activeIcon: Image.asset('lib/images/taggedtabactive.png'),
+                                  ),
+                                ],
+                              ),
+                            );
+                    }
+                    return Platform.isIOS
+                        ? CupertinoTabBar(
+                            onTap: (index) {
+                              setTabIndex(index);
+                            },
+                            iconSize: 24.0,
+                            border: Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+                            items: <BottomNavigationBarItem>[
+                              BottomNavigationBarItem(
+                                title: Container(),
+                                icon: Image.asset('lib/images/returntabbutton.png'),
+                              ),
+                              // BottomNavigationBarItem(
+                              //   title: Container(),
+                              //   icon: Image.asset('lib/images/locktabbutton.png'),
+                              // ),
+                              BottomNavigationBarItem(
+                                title: Container(),
+                                icon: Image.asset('lib/images/tagtabbutton.png'),
+                              ),
+                              BottomNavigationBarItem(
+                                title: Container(),
+                                icon: Image.asset('lib/images/sharetabbutton.png'),
+                              ),
+                              BottomNavigationBarItem(
+                                title: Container(),
+                                icon: Image.asset('lib/images/trashtabbutton.png'),
+                              ),
+                            ],
+                          )
+                        : SizedBox(
+                            height: 64.0,
+                            child: BottomNavigationBar(
+                              onTap: (index) {
+                                setTabIndex(index);
+                              },
+                              type: BottomNavigationBarType.fixed,
+                              showSelectedLabels: false,
+                              showUnselectedLabels: false,
+                              items: <BottomNavigationBarItem>[
+                                BottomNavigationBarItem(
+                                  label: 'Return',
+                                  icon: Image.asset('lib/images/returntabbutton.png'),
+                                ),
+                                // BottomNavigationBarItem(
+                                //   label: 'Lock',
+                                //   icon: Image.asset('lib/images/locktabbutton.png'),
+                                // ),
+                                BottomNavigationBarItem(
+                                  label: 'Tag',
+                                  icon: Image.asset('lib/images/tagtabbutton.png'),
+                                ),
+                                BottomNavigationBarItem(
+                                  label: 'Share',
+                                  icon: Image.asset('lib/images/sharetabbutton.png'),
+                                ),
+                                BottomNavigationBarItem(
+                                  label: 'Trash',
+                                  icon: Image.asset('lib/images/trashtabbutton.png'),
+                                ),
+                              ],
                             ),
-                            CustomBubbleBottomBarItem(
-                              backgroundColor: kSecondaryColor,
-                              icon: Image.asset('lib/images/tabpicpicsred.png'),
-                              activeIcon: Image.asset('lib/images/tabpicpicswhite.png'),
+                          );
+                  });
+          }),
+          body: AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle.dark,
+            child: Stack(
+              children: <Widget>[
+                Observer(builder: (_) {
+                  Widget wgt;
+                  if (appStore.hasGalleryPermission == null || appStore.hasGalleryPermission == false) {
+                    wgt = Container(
+                      constraints: BoxConstraints.expand(),
+                      color: kWhiteColor,
+                      child: SafeArea(
+                        child: Stack(
+                          children: <Widget>[
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: <Widget>[
+                                  CupertinoButton(
+                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    onPressed: () {
+                                      Navigator.pushNamed(context, SettingsScreen.id);
+                                    },
+                                    child: Image.asset('lib/images/settings.png'),
+                                  ),
+                                ],
+                              ),
                             ),
-                            CustomBubbleBottomBarItem(
-                              backgroundColor: kPrimaryColor,
-                              icon: Image.asset('lib/images/tabtaggedblue.png'),
-                              activeIcon: Image.asset('lib/images/tabtaggedwhite.png'),
+                            Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 30.0),
+                                    child: Container(
+                                      constraints: BoxConstraints(maxHeight: height / 2),
+                                      child: Image.asset('lib/images/nogalleryauth.png'),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 21.0,
+                                  ),
+                                  Text(
+                                    S.of(context).gallery_access_permission_description,
+                                    textScaleFactor: 1.0,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff979a9b),
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 17.0,
+                                  ),
+                                  CupertinoButton(
+                                    padding: const EdgeInsets.all(0),
+                                    onPressed: () {
+                                      PhotoManager.openSetting();
+                                    },
+                                    child: Container(
+                                      width: 201.0,
+                                      height: 44.0,
+                                      decoration: BoxDecoration(
+                                        gradient: kPrimaryGradient,
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          S.of(context).gallery_access_permission,
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: kWhiteColor,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
+                                            fontStyle: FontStyle.normal,
+                                            letterSpacing: -0.4099999964237213,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
-                        );
-                      } else {
-                        return BubbleBottomBar(
-                          backgroundColor: kWhiteColor,
-                          hasNotch: true,
-                          opacity: 1.0,
-                          currentIndex: 2,
-                          onTap: setTabIndex,
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16),
-                          ),
-                          elevation: 8,
-                          fabLocation: BubbleBottomBarFabLocation.end,
-                          items: <BubbleBottomBarItem>[
-                            BubbleBottomBarItem(
-                              backgroundColor: kWhiteColor,
-                              icon: Image.asset('lib/images/cancelbarbutton.png'),
-                              title: Text(''),
-                            ),
-                            BubbleBottomBarItem(
-                              backgroundColor: kWhiteColor,
-                              icon: Opacity(
-                                opacity: galleryStore.selectedPics.length > 0 ? 1.0 : 0.35,
-                                child: Image.asset('lib/images/trashbarbutton.png'),
-                              ),
-                              title: Text(''),
-                            ),
-                            BubbleBottomBarItem(
-                              backgroundColor: kWhiteColor,
-                              icon: Opacity(
-                                opacity: galleryStore.selectedPics.length > 0 ? 1.0 : 0.35,
-                                child: Image.asset('lib/images/sharebutton.png'),
-                              ),
-                              title: Text(''),
-                            ),
-                          ],
-                        );
-                      }
-                    }),
-                  ),
-          );
-        }),
+                        ),
+                      ),
+                    );
+                  } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
+                    wgt = UntaggedTab();
+                  else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
+                    wgt = PicTab(
+                      showEditTagModal: showEditTagModal,
+                      showDeleteSecretModal: showDeleteSecretModal,
+                    );
+                  else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
+                  return wgt ?? Container();
+                }),
+              ],
+            ),
+          ),
+        ),
         Observer(builder: (_) {
           if (tabsStore.modalCard) {
             return Material(
@@ -839,6 +878,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         }),
         Observer(builder: (_) {
           if (appStore.tutorialCompleted == false) {
+            Analytics.sendTutorialBegin();
+
             return Container(
               color: Colors.black.withOpacity(0.6),
               child: Material(
@@ -969,8 +1010,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               if (tabsStore.tutorialIndex == 2) {
                                 print('Requesting notification....');
 
-                                appStore.requestNotificationPermission();
-                                appStore.checkNotificationPermission(firstPermissionCheck: true);
+                                await appStore.requestNotificationPermission();
+                                await appStore.checkNotificationPermission(firstPermissionCheck: true);
                                 await appStore.setTutorialCompleted(true);
                                 await galleryStore.loadAssetsPath();
                                 return;

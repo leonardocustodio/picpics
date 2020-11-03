@@ -72,6 +72,17 @@ class _PremiumScreenState extends State<PremiumScreen> {
           _items = offerings.current.availablePackages;
         });
 
+        for (var item in _items) {
+          Analytics.sendPresentOffer(
+            itemId: item.product.identifier,
+            itemName: item.product.title,
+            itemCategory: item.packageType == PackageType.annual ? 'Annual Subscription' : 'Monthly Subscription',
+            quantity: 1,
+            price: item.product.price,
+            currency: item.product.currencyCode,
+          );
+        }
+
         if (appStore.tryBuyId != null) {
           var getPackage = _items.firstWhere((element) => element.product.identifier == appStore.tryBuyId, orElse: () => null);
 
@@ -104,6 +115,11 @@ class _PremiumScreenState extends State<PremiumScreen> {
       return;
     }
 
+    Analytics.sendBeginCheckout(
+      currency: package.product.currencyCode,
+      price: package.product.price,
+    );
+
     try {
       PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
 
@@ -114,6 +130,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
             isLoading = false;
           });
 
+          Analytics.sendPurchase(
+            currency: package.product.currencyCode,
+            price: package.product.price,
+          );
           appStore.setIsPremium(true);
           Navigator.pop(context);
           return;
@@ -121,7 +141,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
       }
       showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
     } on PlatformException catch (e) {
-      showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
+      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
+      }
     }
   }
 
@@ -611,7 +634,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                               children: <Widget>[
                                 CupertinoButton(
                                   onPressed: () {
-                                    _launchURL('https://www.inovatso.com.br/picpics/privacy');
+                                    _launchURL('https://picpics.link/e/privacy');
                                   },
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                                   minSize: 32.0,
@@ -639,7 +662,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                 ),
                                 CupertinoButton(
                                   onPressed: () {
-                                    _launchURL('https://www.inovatso.com.br/picpics/terms');
+                                    _launchURL('https://picpics.link/e/terms');
                                   },
                                   padding: const EdgeInsets.symmetric(vertical: 10.0),
                                   minSize: 32.0,
