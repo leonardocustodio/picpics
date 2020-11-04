@@ -608,12 +608,16 @@ class _UntaggedTabState extends State<UntaggedTab> {
         crossAxisCount: 3,
         mainAxisSpacing: 2.0,
         crossAxisSpacing: 2.0,
-        itemCount: galleryStore.isLoaded ? galleryStore.untaggedGridPics.length : 0,
+        itemCount: galleryStore.isLoaded
+            ? (tabsStore.toggleIndexSelected == 0 ? galleryStore.untaggedGridPicsByMonth.length : galleryStore.untaggedGridPics.length)
+            : 0,
         itemBuilder: (BuildContext context, int index) {
           return _buildItem(context, index);
         },
         staggeredTileBuilder: (int index) {
-          if (galleryStore.untaggedGridPics[index].picStore == null) {
+          PicStore picStore =
+              tabsStore.toggleIndexSelected == 0 ? galleryStore.untaggedGridPicsByMonth[index].picStore : galleryStore.untaggedGridPics[index].picStore;
+          if (picStore == null) {
             return StaggeredTile.fit(3);
           }
           return StaggeredTile.count(1, 1);
@@ -632,25 +636,28 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
+    print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
-      formatter = DateFormat.MMMEd();
+      formatter = tabsStore.toggleIndexSelected == 0 ? DateFormat.MMMM() : DateFormat.MMMEd();
     } else {
-      formatter = DateFormat.yMMMEd();
+      formatter = tabsStore.toggleIndexSelected == 0 ? DateFormat.yMMMM() : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    PicStore picStore = galleryStore.untaggedGridPics[index].picStore;
+    var untaggedPicsStore = tabsStore.toggleIndexSelected == 0 ? galleryStore.untaggedGridPicsByMonth : galleryStore.untaggedGridPics;
+    PicStore picStore = untaggedPicsStore[index].picStore;
+
     if (picStore == null) {
       return Container(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        height: 46.0,
+        height: 40.0,
         child: Row(
           children: [
             Text(
-              '${dateFormat(galleryStore.untaggedGridPics[index].date)}',
+              '${dateFormat(untaggedPicsStore[index].date)}',
               textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',

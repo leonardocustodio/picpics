@@ -99,6 +99,7 @@ abstract class _GalleryStore with Store {
 
   ObservableList<UntaggedPicsStore> untaggedPics = ObservableList<UntaggedPicsStore>();
   ObservableList<UntaggedGridPicStore> untaggedGridPics = ObservableList<UntaggedGridPicStore>();
+  ObservableList<UntaggedGridPicStore> untaggedGridPicsByMonth = ObservableList<UntaggedGridPicStore>();
 
   ObservableList<PicStore> swipePics = ObservableList<PicStore>();
   ObservableList<TaggedPicsStore> taggedPics = ObservableList<TaggedPicsStore>();
@@ -534,10 +535,22 @@ abstract class _GalleryStore with Store {
   void sortUntaggedPhotos() {
     untaggedGridPics.clear();
 
+    DateTime currentMonth;
+
     for (var untaggedPic in untaggedPics) {
       untaggedGridPics.add(UntaggedGridPicStore(date: untaggedPic.date));
+
+      var monthDate = DateTime.utc(untaggedPic.date.year, untaggedPic.date.month);
+      if (currentMonth != monthDate) {
+        untaggedGridPicsByMonth.add(UntaggedGridPicStore(date: monthDate));
+        currentMonth = monthDate;
+        print('Adding month date: $monthDate');
+      }
+
       for (var picStore in untaggedPic.picStores) {
-        untaggedGridPics.add(UntaggedGridPicStore(picStore: picStore));
+        var gridPicStore = UntaggedGridPicStore(picStore: picStore);
+        untaggedGridPics.add(gridPicStore);
+        untaggedGridPicsByMonth.add(gridPicStore);
       }
     }
   }
