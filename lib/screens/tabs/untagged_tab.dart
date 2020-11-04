@@ -630,17 +630,22 @@ class _UntaggedTabState extends State<UntaggedTab> {
     if (picStore == null) {
       return Container(
         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        child: Text(
-          '${dateFormat(galleryStore.untaggedGridPics[index].date)}',
-          textScaleFactor: 1.0,
-          style: TextStyle(
-            fontFamily: 'Lato',
-            color: Color(0xff606566),
-            fontSize: 24,
-            fontWeight: FontWeight.w400,
-            fontStyle: FontStyle.normal,
-            letterSpacing: -0.4099999964237213,
-          ),
+        height: 46.0,
+        child: Row(
+          children: [
+            Text(
+              '${dateFormat(galleryStore.untaggedGridPics[index].date)}',
+              textScaleFactor: 1.0,
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff606566),
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
+            ),
+          ],
         ),
       );
     }
