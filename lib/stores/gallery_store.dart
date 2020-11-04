@@ -19,6 +19,7 @@ import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/stores/untagged_grid_pic_store.dart';
 import 'package:picPics/stores/untagged_pics_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:share_extend/share_extend.dart';
@@ -95,7 +96,10 @@ abstract class _GalleryStore with Store {
 
   ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
   ObservableList<PicStore> allPics = ObservableList<PicStore>();
+
   ObservableList<UntaggedPicsStore> untaggedPics = ObservableList<UntaggedPicsStore>();
+  ObservableList<UntaggedGridPicStore> untaggedGridPics = ObservableList<UntaggedGridPicStore>();
+
   ObservableList<PicStore> swipePics = ObservableList<PicStore>();
   ObservableList<TaggedPicsStore> taggedPics = ObservableList<TaggedPicsStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
@@ -522,7 +526,20 @@ abstract class _GalleryStore with Store {
       }
     }
 
+    sortUntaggedPhotos();
     print('#@#@#@# Total photos: ${allPics.length}');
+  }
+
+  @action
+  void sortUntaggedPhotos() {
+    untaggedGridPics.clear();
+
+    for (var untaggedPic in untaggedPics) {
+      untaggedGridPics.add(UntaggedGridPicStore(date: untaggedPic.date));
+      for (var picStore in untaggedPic.picStores) {
+        untaggedGridPics.add(UntaggedGridPicStore(picStore: picStore));
+      }
+    }
   }
 
   @action

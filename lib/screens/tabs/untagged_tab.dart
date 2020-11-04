@@ -494,120 +494,115 @@ class _UntaggedTabState extends State<UntaggedTab> {
         }
         return;
       },
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverAppBar(
-            pinned: true,
-            expandedHeight: 140.0,
-            backgroundColor: kWhiteColor,
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: false,
-              titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
-              title: Text(
-                tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
-                textScaleFactor: 1.0,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff979a9b),
-                  fontSize: 20.0,
-                  fontWeight: FontWeight.w700,
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 30.0,
-            ),
-          ),
-          ...sliverGrids,
+      child:
 
-          // SliverAnimatedList(
-          //   initialItemCount: (galleryStore.untaggedPics.length / 3).floor() + 1,
-          //   itemBuilder: (context, index, animation) {
-          //     double size = MediaQuery.of(context).size.width / 3;
-          //     return _buildNewItem(context, index, size);
-          //   },
-          // )
-          // SliverPinnedHeader(
-          //   child: Container(
-          //     child: Text('Teste'),
-          //   ),
+          // CustomScrollView(
+          //   slivers: <Widget>[
+          //     SliverAppBar(
+          //       pinned: true,
+          //       expandedHeight: 140.0,
+          //       backgroundColor: kWhiteColor,
+          //       flexibleSpace: FlexibleSpaceBar(
+          //         centerTitle: false,
+          //         titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
+          //         title: Text(
+          //           tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+          //           textScaleFactor: 1.0,
+          //           style: TextStyle(
+          //             fontFamily: 'Lato',
+          //             color: Color(0xff979a9b),
+          //             fontSize: 20.0,
+          //             fontWeight: FontWeight.w700,
+          //             fontStyle: FontStyle.normal,
+          //           ),
+          //         ),
+          //       ),
+          //     ),
+          //     SliverToBoxAdapter(
+          //       child: SizedBox(
+          //         height: 30.0,
+          //       ),
+          //     ),
+          //     ...sliverGrids,
+          //
+          //     // SliverAnimatedList(
+          //     //   initialItemCount: (galleryStore.untaggedPics.length / 3).floor() + 1,
+          //     //   itemBuilder: (context, index, animation) {
+          //     //     double size = MediaQuery.of(context).size.width / 3;
+          //     //     return _buildNewItem(context, index, size);
+          //     //   },
+          //     // )
+          //     // SliverPinnedHeader(
+          //     //   child: Container(
+          //     //     child: Text('Teste'),
+          //     //   ),
+          //     // ),
+          //     // SliverGrid(
+          //     //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          //     //     maxCrossAxisExtent: 200.0,
+          //     //     mainAxisSpacing: 10.0,
+          //     //     crossAxisSpacing: 10.0,
+          //     //     childAspectRatio: 4.0,
+          //     //   ),
+          //     //   delegate: SliverChildBuilderDelegate(
+          //     //     (BuildContext context, int index) {
+          //     //       return Container(
+          //     //         alignment: Alignment.center,
+          //     //         color: Colors.teal[100 * (index % 9)],
+          //     //         child: Text('Grid Item $index'),
+          //     //       );
+          //     //     },
+          //     //     childCount: 5,
+          //     //   ),
+          //     // ),
+          //     // SliverPinnedHeader(
+          //     //   child: Container(
+          //     //     child: Text('Teste'),
+          //     //   ),
+          //     // ),
+          //     // SliverGrid(
+          //     //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+          //     //     maxCrossAxisExtent: 200.0,
+          //     //     mainAxisSpacing: 10.0,
+          //     //     crossAxisSpacing: 10.0,
+          //     //     childAspectRatio: 4.0,
+          //     //   ),
+          //     //   delegate: SliverChildBuilderDelegate(
+          //     //     (BuildContext context, int index) {
+          //     //       if (index == 2) {
+          //     //         return Container();
+          //     //       }
+          //     //       return Container(
+          //     //         alignment: Alignment.center,
+          //     //         color: Colors.teal[100 * (index % 9)],
+          //     //         child: Text('Grid Item $index'),
+          //     //       );
+          //     //     },
+          //     //     childCount: 100,
+          //     //   ),
+          //     // ),
+          //   ],
           // ),
-          // SliverGrid(
-          //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          //     maxCrossAxisExtent: 200.0,
-          //     mainAxisSpacing: 10.0,
-          //     crossAxisSpacing: 10.0,
-          //     childAspectRatio: 4.0,
-          //   ),
-          //   delegate: SliverChildBuilderDelegate(
-          //     (BuildContext context, int index) {
-          //       return Container(
-          //         alignment: Alignment.center,
-          //         color: Colors.teal[100 * (index % 9)],
-          //         child: Text('Grid Item $index'),
-          //       );
-          //     },
-          //     childCount: 5,
-          //   ),
-          // ),
-          // SliverPinnedHeader(
-          //   child: Container(
-          //     child: Text('Teste'),
-          //   ),
-          // ),
-          // SliverGrid(
-          //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          //     maxCrossAxisExtent: 200.0,
-          //     mainAxisSpacing: 10.0,
-          //     crossAxisSpacing: 10.0,
-          //     childAspectRatio: 4.0,
-          //   ),
-          //   delegate: SliverChildBuilderDelegate(
-          //     (BuildContext context, int index) {
-          //       if (index == 2) {
-          //         return Container();
-          //       }
-          //       return Container(
-          //         alignment: Alignment.center,
-          //         color: Colors.teal[100 * (index % 9)],
-          //         child: Text('Grid Item $index'),
-          //       );
-          //     },
-          //     childCount: 100,
-          //   ),
-          // ),
-        ],
+          //
+
+          StaggeredGridView.countBuilder(
+        controller: scrollControllerFirstTab,
+        physics: const CustomScrollPhysics(),
+        padding: EdgeInsets.only(top: 82.0),
+        crossAxisCount: 3,
+        mainAxisSpacing: 2.0,
+        crossAxisSpacing: 2.0,
+        itemCount: galleryStore.isLoaded ? galleryStore.untaggedGridPics.length : 0,
+        itemBuilder: (BuildContext context, int index) {
+          return _buildItem(context, index);
+        },
+        staggeredTileBuilder: (int index) {
+          if (galleryStore.untaggedGridPics[index].picStore == null) {
+            return StaggeredTile.fit(3);
+          }
+          return StaggeredTile.count(1, 1);
+        },
       ),
-      // StaggeredGridView.custom(
-      //   controller: scrollControllerFirstTab,
-      //   physics: const CustomScrollPhysics(),
-      //   padding: EdgeInsets.only(top: 82.0),
-      //   // childrenDelegate: SliverChildBuilderDelegate()
-      //     ),
-      // crossAxisCount: 3,
-      // mainAxisSpacing: 2.0,
-      // crossAxisSpacing: 2.0,
-      // itemCount: galleryStore.isLoaded ? galleryStore.untaggedPics.length : 0,
-      // itemBuilder: (BuildContext context, int index) {
-      //   return _buildItem(context, index);
-      // },
-      // staggeredTileBuilder: (int index) {
-      // if (galleryStore.untaggedPics[index].picStore == null) {
-      //   if (tabsStore.toggleIndexSelected == 0) {
-      //     if (galleryStore.untaggedPics[index].didChangeMonth) {
-      //       print('Mudou o mes');
-      //       return StaggeredTile.fit(3);
-      //     }
-      //     return StaggeredTile.count(0, 0);
-      //   }
-      //   return StaggeredTile.fit(3);
-      // }
-      // return StaggeredTile.count(1, 1);
-      // },
-      // ),
     );
   }
 
@@ -630,155 +625,148 @@ class _UntaggedTabState extends State<UntaggedTab> {
     return formatter.format(dateTime);
   }
 
-//   Widget _buildItem(BuildContext context, int index) {
-//     PicStore picStore = galleryStore.untaggedPics[index].picStore;
-//     if (picStore == null) {
-//       return Container();
-//
-//       if (tabsStore.toggleIndexSelected == null || tabsStore.toggleIndexSelected == 0) {
-//         if (!galleryStore.untaggedPics[index].didChangeMonth) {
-//           return Container();
-//         }
-//       }
-//       return Container(
-//         padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-//         child: Text(
-//           '${dateFormat(galleryStore.untaggedPics[index].date)}',
-//           textScaleFactor: 1.0,
-//           style: TextStyle(
-//             fontFamily: 'Lato',
-//             color: Color(0xff606566),
-//             fontSize: 24,
-//             fontWeight: FontWeight.w400,
-//             fontStyle: FontStyle.normal,
-//             letterSpacing: -0.4099999964237213,
-//           ),
-//         ),
-//       );
-//     }
-//
-// //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-//
-//     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
-//
-//     return RepaintBoundary(
-//       child: ExtendedImage(
-//         image: imageProvider,
-//         fit: BoxFit.cover,
-//         loadStateChanged: (ExtendedImageState state) {
-//           Widget loader;
-//           switch (state.extendedImageLoadState) {
-//             case LoadState.loading:
-//               loader = const ColoredBox(color: kGreyPlaceholder);
-//               break;
-//             case LoadState.completed:
-//               loader = FadeImageBuilder(
-//                 child: () {
-//                   return GestureDetector(
-//                     onLongPress: () {
-//                       print('LongPress');
-//                       if (tabsStore.multiPicBar == false) {
-//                         galleryStore.setSelectedPics(
-//                           picStore: picStore,
-//                           picIsTagged: false,
-//                         );
-//                         tabsStore.setMultiPicBar(true);
-//                       }
-//                     },
-//                     child: CupertinoButton(
-//                       padding: const EdgeInsets.all(0),
-//                       onPressed: () {
-//                         if (tabsStore.multiPicBar) {
-//                           galleryStore.setSelectedPics(
-//                             picStore: picStore,
-//                             picIsTagged: false,
-//                           );
-//                           print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-//                           return;
-//                         }
-//
-//                         tagsEditingController.text = '';
-//                         galleryStore.setCurrentPic(picStore);
-//                         tabsStore.setModalCard(true);
-//                       },
-//                       child: Observer(builder: (_) {
-//                         Widget image = Positioned.fill(
-//                           child: RepaintBoundary(
-//                             child: state.completedWidget,
-//                           ),
-//                         );
-//                         if (tabsStore.multiPicBar) {
-//                           if (galleryStore.selectedPics.contains(picStore)) {
-//                             return Stack(
-//                               children: [
-//                                 image,
-//                                 Container(
-//                                   constraints: BoxConstraints.expand(),
-//                                   decoration: BoxDecoration(
-//                                     color: kSecondaryColor.withOpacity(0.3),
-//                                     border: Border.all(
-//                                       color: kSecondaryColor,
-//                                       width: 2.0,
-//                                     ),
-//                                   ),
-//                                 ),
-//                                 Positioned(
-//                                   left: 8.0,
-//                                   top: 6.0,
-//                                   child: Container(
-//                                     height: 20,
-//                                     width: 20,
-//                                     decoration: BoxDecoration(
-//                                       gradient: kSecondaryGradient,
-//                                       borderRadius: BorderRadius.circular(10.0),
-//                                     ),
-//                                     child: Image.asset('lib/images/checkwhiteico.png'),
-//                                   ),
-//                                 ),
-//                               ],
-//                             );
-//                           }
-//                           return Stack(
-//                             children: [
-//                               image,
-//                               Positioned(
-//                                 left: 8.0,
-//                                 top: 6.0,
-//                                 child: Container(
-//                                   height: 20,
-//                                   width: 20,
-//                                   decoration: BoxDecoration(
-//                                     borderRadius: BorderRadius.circular(10.0),
-//                                     border: Border.all(
-//                                       color: kGrayColor,
-//                                       width: 2.0,
-//                                     ),
-//                                   ),
-//                                 ),
-//                               ),
-//                             ],
-//                           );
-//                         }
-//                         return Stack(
-//                           children: [
-//                             image,
-//                           ],
-//                         );
-//                       }),
-//                     ),
-//                   );
-//                 }(),
-//               );
-//               break;
-//             case LoadState.failed:
-//               loader = _failedItem;
-//               break;
-//           }
-//           return loader;
-//         },
-//       ),
-//     );
-//   }
+  Widget _buildItem(BuildContext context, int index) {
+    PicStore picStore = galleryStore.untaggedGridPics[index].picStore;
+    if (picStore == null) {
+      return Container(
+        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+        child: Text(
+          '${dateFormat(galleryStore.untaggedGridPics[index].date)}',
+          textScaleFactor: 1.0,
+          style: TextStyle(
+            fontFamily: 'Lato',
+            color: Color(0xff606566),
+            fontSize: 24,
+            fontWeight: FontWeight.w400,
+            fontStyle: FontStyle.normal,
+            letterSpacing: -0.4099999964237213,
+          ),
+        ),
+      );
+    }
+
+//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
+
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+
+    return RepaintBoundary(
+      child: ExtendedImage(
+        image: imageProvider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = const ColoredBox(color: kGreyPlaceholder);
+              break;
+            case LoadState.completed:
+              loader = FadeImageBuilder(
+                child: () {
+                  return GestureDetector(
+                    onLongPress: () {
+                      print('LongPress');
+                      if (tabsStore.multiPicBar == false) {
+                        galleryStore.setSelectedPics(
+                          picStore: picStore,
+                          picIsTagged: false,
+                        );
+                        tabsStore.setMultiPicBar(true);
+                      }
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        if (tabsStore.multiPicBar) {
+                          galleryStore.setSelectedPics(
+                            picStore: picStore,
+                            picIsTagged: false,
+                          );
+                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          return;
+                        }
+
+                        tagsEditingController.text = '';
+                        galleryStore.setCurrentPic(picStore);
+                        tabsStore.setModalCard(true);
+                      },
+                      child: Observer(builder: (_) {
+                        Widget image = Positioned.fill(
+                          child: RepaintBoundary(
+                            child: state.completedWidget,
+                          ),
+                        );
+                        if (tabsStore.multiPicBar) {
+                          if (galleryStore.selectedPics.contains(picStore)) {
+                            return Stack(
+                              children: [
+                                image,
+                                Container(
+                                  constraints: BoxConstraints.expand(),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryColor.withOpacity(0.3),
+                                    border: Border.all(
+                                      color: kSecondaryColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 8.0,
+                                  top: 6.0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      gradient: kSecondaryGradient,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Image.asset('lib/images/checkwhiteico.png'),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Stack(
+                            children: [
+                              image,
+                              Positioned(
+                                left: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: kGrayColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Stack(
+                          children: [
+                            image,
+                          ],
+                        );
+                      }),
+                    ),
+                  );
+                }(),
+              );
+              break;
+            case LoadState.failed:
+              loader = _failedItem;
+              break;
+          }
+          return loader;
+        },
+      ),
+    );
+  }
 
   @override
   void didChangeDependencies() {
