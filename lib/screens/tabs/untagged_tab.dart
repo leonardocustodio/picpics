@@ -147,6 +147,22 @@ class _UntaggedTabState extends State<UntaggedTab> {
   //   return slivers;
   // }
 
+  void refreshGridPositionFirstTab() {
+    var offset = scrollControllerFirstTab.hasClients ? scrollControllerFirstTab.offset : scrollControllerFirstTab.initialScrollOffset;
+
+    if (offset >= 86) {
+      tabsStore.setTopOffsetFirstTab(10.0);
+    } else if (offset >= 32) {
+      tabsStore.setTopOffsetFirstTab(64.0 - (offset - 32.0));
+    } else if (offset <= 0) {
+      tabsStore.setTopOffsetFirstTab(64.0);
+    }
+
+    if (scrollControllerFirstTab.hasClients) {
+      tabsStore.offsetFirstTab = scrollControllerFirstTab.offset;
+    }
+  }
+
   Widget _buildSliverGridItem(BuildContext context, PicStore picStore) {
     if (picStore == null) {
       return Container();
