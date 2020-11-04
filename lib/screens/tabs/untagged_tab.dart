@@ -883,6 +883,26 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     ],
                   ),
                 ),
+                Positioned(
+                  left: 16.0,
+                  top: tabsStore.topOffsetFirstTab,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff979a9b),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 AnimatedOpacity(
                   opacity: tabsStore.isScrolling ? 0.0 : 1.0,
                   curve: Curves.linear,
