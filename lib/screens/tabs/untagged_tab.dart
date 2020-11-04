@@ -475,29 +475,29 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   Widget _buildGridView(BuildContext context) {
     print('&&&&& Building grid view');
-    List<Widget> sliverGrids = [];
-
-    for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
-      sliverGrids.add(SliverPersistentHeader(
-        delegate: MyDynamicHeader(
-          headerTitle: dateFormat(untaggedPicsStore.date),
-        ),
-      ));
-      sliverGrids.add(SliverGrid(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          mainAxisSpacing: 2.0,
-          crossAxisSpacing: 2.0,
-          childAspectRatio: 1.0,
-        ),
-        delegate: SliverChildBuilderDelegate(
-          (BuildContext context, int index) {
-            return _buildSliverGridItem(context, untaggedPicsStore.picStores[index]);
-          },
-          childCount: untaggedPicsStore.picStoresIds.length,
-        ),
-      ));
-    }
+    // List<Widget> sliverGrids = [];
+    //
+    // for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
+    //   sliverGrids.add(SliverPersistentHeader(
+    //     delegate: MyDynamicHeader(
+    //       headerTitle: dateFormat(untaggedPicsStore.date),
+    //     ),
+    //   ));
+    //   sliverGrids.add(SliverGrid(
+    //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //       crossAxisCount: 3,
+    //       mainAxisSpacing: 2.0,
+    //       crossAxisSpacing: 2.0,
+    //       childAspectRatio: 1.0,
+    //     ),
+    //     delegate: SliverChildBuilderDelegate(
+    //       (BuildContext context, int index) {
+    //         return _buildSliverGridItem(context, untaggedPicsStore.picStores[index]);
+    //       },
+    //       childCount: untaggedPicsStore.picStoresIds.length,
+    //     ),
+    //   ));
+    // }
 
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
@@ -796,6 +796,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
     galleryStore = Provider.of<GalleryStore>(context);
 
     scrollControllerFirstTab = ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
+    scrollControllerFirstTab.addListener(() {
+      refreshGridPositionFirstTab();
+    });
+    refreshGridPositionFirstTab();
+
     print('change dependencies!');
     galleryStore.clearPicThumbnails();
 
