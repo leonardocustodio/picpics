@@ -865,12 +865,15 @@ class _UntaggedTabState extends State<UntaggedTab> {
           } else if (galleryStore.isLoaded && galleryStore.deviceHasPics) {
             return Stack(
               children: <Widget>[
-                GestureDetector(
+                Padding(
+                  padding: const EdgeInsets.only(top: 48.0),
+                  child: GestureDetector(
 //                              onScaleUpdate: (update) {
 //                                print(update.scale);
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
-                  child: _buildGridView(context),
+                    child: _buildGridView(context),
+                  ),
                 ),
                 Container(
                   height: 56.0,
