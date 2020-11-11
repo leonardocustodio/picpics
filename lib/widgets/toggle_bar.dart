@@ -4,17 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class ToggleBar extends StatefulWidget {
+  final int activeToggle;
   final Function onToggle;
 
-  ToggleBar({this.onToggle});
+  ToggleBar({
+    this.activeToggle,
+    this.onToggle,
+  });
 
   @override
   _ToggleBarState createState() => _ToggleBarState();
 }
 
 class _ToggleBarState extends State<ToggleBar> {
-  Alignment animationAlignment = Alignment.centerRight;
-
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
@@ -37,11 +39,14 @@ class _ToggleBarState extends State<ToggleBar> {
                 children: [
                   Positioned.fill(
                     child: AnimatedAlign(
-                      alignment: animationAlignment,
+                      alignment: widget.activeToggle == 0
+                          ? Alignment.centerLeft
+                          : Alignment.centerRight,
                       duration: Duration(milliseconds: 300),
                       curve: Curves.ease,
                       child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 4.0, vertical: 4.0),
                         decoration: BoxDecoration(
                           color: Color(0xFFB7B7B7),
                           borderRadius: BorderRadius.circular(19.0),
@@ -49,9 +54,10 @@ class _ToggleBarState extends State<ToggleBar> {
                         child: Opacity(
                           opacity: 0.0,
                           child: CupertinoButton(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
-                              animationAlignment == Alignment.centerLeft ? 'Months' : 'Days',
+                              widget.activeToggle == 0 ? 'Months' : 'Days',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Color(0xFF7E7E80),
@@ -71,7 +77,9 @@ class _ToggleBarState extends State<ToggleBar> {
                           'Months',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: animationAlignment == Alignment.centerLeft ? Colors.white : Color(0xFF7E7E80),
+                            color: widget.activeToggle == 0
+                                ? Colors.white
+                                : Color(0xFF7E7E80),
                             fontFamily: 'Lato',
                             fontWeight: FontWeight.w600,
                           ),
@@ -79,9 +87,6 @@ class _ToggleBarState extends State<ToggleBar> {
                         onPressed: () {
                           print('Teste');
                           widget.onToggle(0);
-                          setState(() {
-                            animationAlignment = Alignment.centerLeft;
-                          });
                         },
                       ),
                       CupertinoButton(
@@ -90,7 +95,9 @@ class _ToggleBarState extends State<ToggleBar> {
                           'Days',
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: animationAlignment == Alignment.centerLeft ? Color(0xFF7E7E80) : Colors.white,
+                            color: widget.activeToggle == 0
+                                ? Color(0xFF7E7E80)
+                                : Colors.white,
                             fontFamily: 'Lato',
                             fontWeight: FontWeight.w600,
                           ),
@@ -98,9 +105,6 @@ class _ToggleBarState extends State<ToggleBar> {
                         onPressed: () {
                           print('Teste');
                           widget.onToggle(1);
-                          setState(() {
-                            animationAlignment = Alignment.centerRight;
-                          });
                         },
                       ),
                     ],
