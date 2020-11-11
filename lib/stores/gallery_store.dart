@@ -688,14 +688,10 @@ abstract class _GalleryStore with Store {
 
     bool deleted = false;
 
-    if (Platform.isAndroid) {
-      PhotoManager.editor.deleteWithIds(selectedPicsIds);
+
+    final List<String> result = await PhotoManager.editor.deleteWithIds(selectedPicsIds);
+    if (result.isNotEmpty) {
       deleted = true;
-    } else {
-      final List<String> result = await PhotoManager.editor.deleteWithIds(selectedPicsIds);
-      if (result.isNotEmpty) {
-        deleted = true;
-      }
     }
 
     if (deleted) {
@@ -732,6 +728,7 @@ abstract class _GalleryStore with Store {
 
       Analytics.sendEvent(Event.deleted_photo);
       print('Reaction!');
+      selectedPics.clear();
       setTrashedPic(true);
     }
   }

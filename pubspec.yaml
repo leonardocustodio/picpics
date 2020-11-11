@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.11+447
+version: 1.6.11+448
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -42,7 +42,7 @@ dependencies:
   firebase_remote_config: 0.4.0+2
   firebase_admob: 0.10.0+2
   firebase_auth: 0.18.1+2
-  cloud_functions: ^0.6.0+1
+  cloud_functions: 0.6.0+1
   firebase_ml_vision: 0.9.7
   esys_flutter_share: ^1.0.2
   flutter_vibrate: ^1.0.0
