@@ -665,6 +665,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void refreshPicThumbnails() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.refreshPicThumbnails');
+    try {
+      return super.refreshPicThumbnails();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 swipeIndex: ${swipeIndex},

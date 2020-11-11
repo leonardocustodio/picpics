@@ -10,4 +10,5 @@ abstract class _UntaggedGridPicStore with Store {
   final PicStore picStore;
 
   _UntaggedGridPicStore({this.date, this.picStore});
+
 }

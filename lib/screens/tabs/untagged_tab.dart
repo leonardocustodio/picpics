@@ -15,11 +15,9 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
-import 'package:picPics/stores/untagged_pics_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 class UntaggedTab extends StatefulWidget {
   static const id = 'untagged_tab';
@@ -809,10 +807,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
     refreshGridPositionFirstTab();
 
     print('change dependencies!');
-    galleryStore.clearPicThumbnails();
-
-    // Arrumar isso aqui!!!!!! - 03/11/20
-    // galleryStore.addPicsToThumbnails(galleryStore.untaggedPics.map((element) => element.picStore).toList());
+    galleryStore.refreshPicThumbnails();
   }
 
   @override

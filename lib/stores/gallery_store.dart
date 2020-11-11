@@ -461,6 +461,48 @@ abstract class _GalleryStore with Store {
         }
       }
     }
+
+    var date = untaggedPicsStore.date;
+    var newPicStore = UntaggedGridPicStore(picStore: picStore);
+
+    var gridPicIndex = untaggedGridPics.indexWhere((element) => element.date == date);
+
+    if (gridPicIndex != -1) {
+      print('Different than null');
+      untaggedGridPics.insert(gridPicIndex + 1, newPicStore);
+    } else {
+      print('Is null');
+      for (int x = 0; x < untaggedGridPics.length; x++) {
+        if (untaggedGridPics[x].date == null) {
+          continue;
+        }
+        if (untaggedGridPics[x].date.isBefore(date)) {
+          print('Date is Before');
+          var newDateStore = UntaggedGridPicStore(date: date);
+          untaggedGridPics.insert(x, newPicStore);
+          untaggedGridPics.insert(x, newDateStore);
+          break;
+        }
+      }
+    }
+
+    var gridPicMonthIndex = untaggedGridPicsByMonth.indexWhere((element) => element.date == DateTime.utc(date.year, date.month));
+    if (gridPicMonthIndex != -1) {
+      untaggedGridPicsByMonth.insert(gridPicMonthIndex + 1, newPicStore);
+    } else {
+      for (int x = 0; x < untaggedGridPicsByMonth.length; x++) {
+        if (untaggedGridPicsByMonth[x].date == null) {
+          continue;
+        }
+        if (untaggedGridPicsByMonth[x].date.isBefore(date)) {
+          var newDateStore = UntaggedGridPicStore(date: DateTime.utc(date.year, date.month));
+          untaggedGridPicsByMonth.insert(x, newPicStore);
+          untaggedGridPicsByMonth.insert(x, newDateStore);
+          break;
+        }
+      }
+    }
+
     untaggedPicsStore.addPicStore(picStore);
   }
 
@@ -472,6 +514,9 @@ abstract class _GalleryStore with Store {
       if (untaggedPicStore.picStoresIds.contains(picStore.photoId)) {
         print('Removing ${picStore.photoId} from untagged pic store');
         untaggedPicStore.removePicStore(picStore);
+        untaggedGridPics.removeWhere((element) => element.picStore == picStore);
+        untaggedGridPicsByMonth.removeWhere((element) => element.picStore == picStore);
+
 
         if (untaggedPicStore.picStoresIds.length == 0) {
           print('Removing untaggedPicStore since there are no more pics in it');
@@ -483,6 +528,18 @@ abstract class _GalleryStore with Store {
 
     for (var untaggedPicStore in toDelete) {
       untaggedPics.remove(untaggedPicStore);
+      untaggedGridPics.removeWhere((element) => element.date == untaggedPicStore.date);
+
+      int indexOfMonth = untaggedGridPicsByMonth.indexWhere((element) => element.date == DateTime.utc(untaggedPicStore.date.year, untaggedPicStore.date.month));
+      print('Index of Month: $indexOfMonth');
+
+      if (indexOfMonth >= untaggedGridPicsByMonth.length - 1) {
+        continue;
+      }
+
+      if (untaggedGridPicsByMonth[indexOfMonth + 1].date != null) {
+        untaggedGridPicsByMonth.removeAt(indexOfMonth);
+      }
     }
   }
 
@@ -1191,6 +1248,15 @@ abstract class _GalleryStore with Store {
       tagsList.removeWhere((element) => element.id == kSecretTagKey);
     }
     return tagsList;
+  }
+
+  @action
+  void refreshPicThumbnails() {
+    clearPicThumbnails();
+
+    for (var store in untaggedPics) {
+      addPicsToThumbnails(store.picStores);
+    }
   }
 }
 

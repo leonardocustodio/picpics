@@ -1,7 +1,7 @@
 name: picPics
 description: picPics application.
 publish_to: 'none'
-version: 1.6.11+446
+version: 1.6.11+447
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -20,16 +20,12 @@ dependencies:
     git:
       url: https://github.com/fireslime/photo_view.git
       ref: master
-#  photo_manager: ^0.5.8
-  photo_manager:
-    git:
-      url: https://github.com/CaiJingLong/flutter_photo_manager.git
-      ref: master
+  photo_manager: ^0.6.0-dev.6
   flutter_swiper: ^1.1.6
   rate_my_app: ^0.7.2
-  geolocator: ^6.1.2
+  geolocator: ^6.1.6
   geocoding: ^1.0.5
-  google_maps_flutter: ^1.0.2
+  google_maps_flutter: ^1.0.6
   hive: ^1.4.4+1
   hive_flutter:
     git:
@@ -47,28 +43,29 @@ dependencies:
   firebase_admob: 0.10.0+2
   firebase_auth: 0.18.1+2
   cloud_functions: ^0.6.0+1
+  firebase_ml_vision: 0.9.7
   esys_flutter_share: ^1.0.2
   flutter_vibrate: ^1.0.0
   platform_alert_dialog: ^1.0.0+2
   notification_permissions: ^0.4.8
-  flutter_keyboard_visibility: ^3.2.2
-  purchases_flutter: ^1.4.1
+  flutter_keyboard_visibility: ^3.3.0
+  purchases_flutter: ^1.4.3
   diacritic: ^0.1.1
   intl: ^0.16.1
   date_utils: ^0.1.0+3
   carousel_slider: ^2.3.1
   expandable: ^4.1.4
   uuid: ^2.2.2
-  url_launcher: ^5.7.8
+  url_launcher: ^5.7.10
   flare_flutter: ^2.0.6
   simple_animations: ^2.2.3
   flutter_device_locale: ^0.4.0
-  package_info: ^0.4.3
+  package_info: ^0.4.3+2
   flutter_spinkit: ^4.1.2+1
   share_extend: ^1.1.9
-  path_provider: ^1.6.22
+  path_provider: ^1.6.24
   bubble_bottom_bar: ^1.2.0
-  flutter_inapp_purchase: ^2.3.2
+  flutter_inapp_purchase: ^3.0.0
   mobx: ^1.2.1+4
   flutter_mobx: ^1.1.0+2
   flutter_animator: ^2.1.0
@@ -79,7 +76,6 @@ dependencies:
   convert: ^2.1.1
   encrypt: ^4.1.0
   flutter_branch_sdk: ^1.2.0
-  firebase_ml_vision: 0.9.8
   facebook_app_events: ^0.7.1
   sliver_tools: ^0.1.8
 #  tflite_flutter: ^0.5.0
@@ -93,7 +89,7 @@ dev_dependencies:
 #  mockito: 4.1.2
 #  faker: 1.2.1
   build_runner: ^1.10.3
-  mobx_codegen: ^1.1.1
+  mobx_codegen: ^1.1.2
   hive_generator: ^0.8.1
 #  image: ^2.1.4
   googleapis: ^0.56.1
