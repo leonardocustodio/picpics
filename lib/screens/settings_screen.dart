@@ -17,6 +17,7 @@ import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -32,6 +33,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void contactUs(BuildContext context) {
+    final Uri _emailLaunchUri = Uri(scheme: 'mailto', path: 'picpics@inovatso.com.br', queryParameters: {'subject': 'picPics - feedback & bug report'});
+    launch(_emailLaunchUri.toString());
   }
 
   RateMyApp rateMyApp = RateMyApp(
@@ -765,6 +771,23 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                       ),
                                       Text(
                                         S.of(context).rate_this_app,
+                                        textScaleFactor: 1.0,
+                                        style: kGraySettingsBoldTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                CupertinoButton(
+                                  onPressed: () => contactUs(context),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image.asset('lib/images/feedbackico.png'),
+                                      SizedBox(
+                                        width: 15.0,
+                                      ),
+                                      Text(
+                                        'Feedback & bug report',
                                         textScaleFactor: 1.0,
                                         style: kGraySettingsBoldTextStyle,
                                       ),
