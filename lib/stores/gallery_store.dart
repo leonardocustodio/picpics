@@ -24,6 +24,7 @@ import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/stores/untagged_grid_pic_store.dart';
 import 'package:picPics/stores/untagged_pics_store.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:share/share.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:collection/collection.dart';
 
@@ -878,10 +879,13 @@ abstract class _GalleryStore with Store {
     print('Image List: $imageList');
 
     Analytics.sendEvent(Event.shared_photos);
-    ShareExtend.shareMultiple(
-      imageList,
-      "image",
-    );
+
+    Share.shareFiles(imageList);
+    //
+    // ShareExtend.shareMultiple(
+    //   imageList,
+    //   "image",
+    // );
 
 //    setSharedPic(true);
 
