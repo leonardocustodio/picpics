@@ -176,19 +176,34 @@ mixin _$TabsStore on _TabsStore, Store {
     });
   }
 
-  final _$toggleIndexSelectedAtom =
-      Atom(name: '_TabsStore.toggleIndexSelected');
+  final _$toggleIndexUntaggedAtom =
+      Atom(name: '_TabsStore.toggleIndexUntagged');
 
   @override
-  int get toggleIndexSelected {
-    _$toggleIndexSelectedAtom.reportRead();
-    return super.toggleIndexSelected;
+  int get toggleIndexUntagged {
+    _$toggleIndexUntaggedAtom.reportRead();
+    return super.toggleIndexUntagged;
   }
 
   @override
-  set toggleIndexSelected(int value) {
-    _$toggleIndexSelectedAtom.reportWrite(value, super.toggleIndexSelected, () {
-      super.toggleIndexSelected = value;
+  set toggleIndexUntagged(int value) {
+    _$toggleIndexUntaggedAtom.reportWrite(value, super.toggleIndexUntagged, () {
+      super.toggleIndexUntagged = value;
+    });
+  }
+
+  final _$toggleIndexTaggedAtom = Atom(name: '_TabsStore.toggleIndexTagged');
+
+  @override
+  int get toggleIndexTagged {
+    _$toggleIndexTaggedAtom.reportRead();
+    return super.toggleIndexTagged;
+  }
+
+  @override
+  set toggleIndexTagged(int value) {
+    _$toggleIndexTaggedAtom.reportWrite(value, super.toggleIndexTagged, () {
+      super.toggleIndexTagged = value;
     });
   }
 
@@ -316,11 +331,22 @@ mixin _$TabsStore on _TabsStore, Store {
   }
 
   @override
-  void setToggleIndexSelected(int value) {
+  void setToggleIndexUntagged(int value) {
     final _$actionInfo = _$_TabsStoreActionController.startAction(
-        name: '_TabsStore.setToggleIndexSelected');
+        name: '_TabsStore.setToggleIndexUntagged');
     try {
-      return super.setToggleIndexSelected(value);
+      return super.setToggleIndexUntagged(value);
+    } finally {
+      _$_TabsStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setToggleIndexTagged(int value) {
+    final _$actionInfo = _$_TabsStoreActionController.startAction(
+        name: '_TabsStore.setToggleIndexTagged');
+    try {
+      return super.setToggleIndexTagged(value);
     } finally {
       _$_TabsStoreActionController.endAction(_$actionInfo);
     }
@@ -340,7 +366,8 @@ hideTitleThirdTab: ${hideTitleThirdTab},
 showDeleteSecretModal: ${showDeleteSecretModal},
 isScrolling: ${isScrolling},
 isToggleBarVisible: ${isToggleBarVisible},
-toggleIndexSelected: ${toggleIndexSelected}
+toggleIndexUntagged: ${toggleIndexUntagged},
+toggleIndexTagged: ${toggleIndexTagged}
     ''';
   }
 }

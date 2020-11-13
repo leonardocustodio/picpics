@@ -17,6 +17,8 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/tagged_date_pics_store.dart';
+import 'package:picPics/stores/tagged_grid_pic_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/stores/untagged_grid_pic_store.dart';
@@ -101,9 +103,12 @@ abstract class _GalleryStore with Store {
   ObservableList<UntaggedGridPicStore> untaggedGridPics = ObservableList<UntaggedGridPicStore>();
   ObservableList<UntaggedGridPicStore> untaggedGridPicsByMonth = ObservableList<UntaggedGridPicStore>();
 
-  ObservableList<PicStore> swipePics = ObservableList<PicStore>();
+  ObservableList<TaggedDatePicsStore> taggedDatePics = ObservableList<TaggedDatePicsStore>();
+  ObservableList<TaggedGridPicStore> taggedGridPics = ObservableList<TaggedGridPicStore>();
   ObservableList<TaggedPicsStore> taggedPics = ObservableList<TaggedPicsStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
+
+  ObservableList<PicStore> swipePics = ObservableList<PicStore>();
   ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
   ObservableSet<PicStore> selectedPics = ObservableSet<PicStore>();
   ObservableList<PicStore> privatePics = ObservableList<PicStore>();
@@ -328,7 +333,6 @@ abstract class _GalleryStore with Store {
 
   @action
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
-    print('%@%@%@%@%@%@%@%@%@%@ Adding pic to tagged pics!!! %@%@%@%@%@%@%@');
     for (TagsStore tag in picStore.tags) {
       TaggedPicsStore taggedPicsStore = taggedPics.firstWhere((element) => element.tag == tag, orElse: () => null);
 
@@ -348,6 +352,57 @@ abstract class _GalleryStore with Store {
       }
     }
 
+    print('Find right place to add tagged ${picStore.photoId}');
+    DateTime picDate = picStore.createdAt;
+    TaggedDatePicsStore taggedDatePicsStore = taggedDatePics.firstWhere((element) => Utils.isSameDay(element.date, picDate), orElse: () => null);
+    if (taggedDatePicsStore == null) {
+      taggedDatePicsStore = TaggedDatePicsStore(date: picDate);
+
+      if (taggedDatePics.length == 0) {
+        print('Adding picStore from $picDate to index 0');
+        taggedDatePics.add(taggedDatePicsStore);
+      } else {
+        bool hasAdded = false;
+        for (int x = 0; x < taggedDatePics.length; x++) {
+          if (taggedDatePics[x].date.isBefore(picDate)) {
+            print('Adding picStore from $picDate to index $x');
+            taggedDatePics.insert(x, taggedDatePicsStore);
+            hasAdded = true;
+            break;
+          }
+        }
+        if (hasAdded == false) {
+          print('Adding picStore from $picDate to last index');
+          taggedDatePics.add(taggedDatePicsStore);
+        }
+      }
+    }
+
+    var date = taggedDatePicsStore.date;
+    var newPicStore = TaggedGridPicStore(picStore: picStore);
+
+    var gridPicIndex = taggedGridPics.indexWhere((element) => element.date == date);
+
+    if (gridPicIndex != -1) {
+      print('Different than null');
+      taggedGridPics.insert(gridPicIndex + 1, newPicStore);
+    } else {
+      print('Is null');
+      for (int x = 0; x < taggedGridPics.length; x++) {
+        if (taggedGridPics[x].date == null) {
+          continue;
+        }
+        if (taggedGridPics[x].date.isBefore(date)) {
+          print('Date is before');
+          var newDateStore = TaggedGridPicStore(date: date);
+          taggedGridPics.insert(x, newPicStore);
+          taggedGridPics.insert(x, newDateStore);
+          break;
+        }
+      }
+    }
+
+    taggedDatePicsStore.addPicStore(picStore);
     setShouldRefreshTaggedGallery(true);
   }
 
@@ -517,7 +572,6 @@ abstract class _GalleryStore with Store {
         untaggedGridPics.removeWhere((element) => element.picStore == picStore);
         untaggedGridPicsByMonth.removeWhere((element) => element.picStore == picStore);
 
-
         if (untaggedPicStore.picStoresIds.length == 0) {
           print('Removing untaggedPicStore since there are no more pics in it');
           toDelete.add(untaggedPicStore);
@@ -585,7 +639,22 @@ abstract class _GalleryStore with Store {
     }
 
     sortUntaggedPhotos();
+    sortTaggedPhotos();
     print('#@#@#@# Total photos: ${allPics.length}');
+  }
+
+  @action
+  void sortTaggedPhotos() {
+    taggedGridPics.clear();
+
+    for (var taggedPic in taggedDatePics) {
+      taggedGridPics.add(TaggedGridPicStore(date: taggedPic.date));
+
+      for (var picStore in taggedPic.picStores) {
+        var gridPicStore = TaggedGridPicStore(picStore: picStore);
+        taggedGridPics.add(gridPicStore);
+      }
+    }
   }
 
   @action
@@ -687,7 +756,6 @@ abstract class _GalleryStore with Store {
     List<String> selectedPicsIds = selectedPics.map((e) => e.photoId).toList();
 
     bool deleted = false;
-
 
     final List<String> result = await PhotoManager.editor.deleteWithIds(selectedPicsIds);
     if (result.isNotEmpty) {

@@ -555,6 +555,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void sortTaggedPhotos() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.sortTaggedPhotos');
+    try {
+      return super.sortTaggedPhotos();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void sortUntaggedPhotos() {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.sortUntaggedPhotos');

@@ -608,7 +608,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
           //
 
           Observer(builder: (_) {
-        if (tabsStore.toggleIndexSelected == 0) {
+        if (tabsStore.toggleIndexUntagged == 0) {
           return StaggeredGridView.countBuilder(
             key: Key('month'),
             controller: scrollControllerFirstTab,
@@ -672,11 +672,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
     print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
-      formatter = tabsStore.toggleIndexSelected == 0
+      formatter = tabsStore.toggleIndexUntagged == 0
           ? DateFormat.MMMM()
           : DateFormat.MMMEd();
     } else {
-      formatter = tabsStore.toggleIndexSelected == 0
+      formatter = tabsStore.toggleIndexUntagged == 0
           ? DateFormat.yMMMM()
           : DateFormat.yMMMEd();
     }
@@ -684,7 +684,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    var untaggedPicsStore = tabsStore.toggleIndexSelected == 0
+    var untaggedPicsStore = tabsStore.toggleIndexUntagged == 0
         ? galleryStore.untaggedGridPicsByMonth
         : galleryStore.untaggedGridPics;
     PicStore picStore = untaggedPicsStore[index].picStore;
@@ -979,9 +979,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: ToggleBar(
-                          activeToggle: tabsStore.toggleIndexSelected,
+                          titleLeft: 'Months',
+                          titleRight: 'Days',
+                          activeToggle: tabsStore.toggleIndexUntagged,
                           onToggle: (index) {
-                            tabsStore.setToggleIndexSelected(index);
+                            tabsStore.setToggleIndexUntagged(index);
                           },
                         ),
                       ),

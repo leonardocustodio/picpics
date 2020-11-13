@@ -7,7 +7,12 @@ class ToggleBar extends StatefulWidget {
   final int activeToggle;
   final Function onToggle;
 
+  final String titleLeft;
+  final String titleRight;
+
   ToggleBar({
+    this.titleLeft,
+    this.titleRight,
     this.activeToggle,
     this.onToggle,
   });
@@ -57,7 +62,9 @@ class _ToggleBarState extends State<ToggleBar> {
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
                             child: Text(
-                              widget.activeToggle == 0 ? 'Months' : 'Days',
+                              widget.activeToggle == 0
+                                  ? widget.titleLeft
+                                  : widget.titleRight,
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Color(0xFF7E7E80),
@@ -74,7 +81,7 @@ class _ToggleBarState extends State<ToggleBar> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
-                          'Months',
+                          widget.titleLeft,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: widget.activeToggle == 0
@@ -92,7 +99,7 @@ class _ToggleBarState extends State<ToggleBar> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         child: Text(
-                          'Days',
+                          widget.titleRight,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: widget.activeToggle == 0
