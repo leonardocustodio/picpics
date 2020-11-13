@@ -664,6 +664,10 @@ class _TaggedTabState extends State<TaggedTab> {
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: widget.showEditTagModal,
                                       onTap: (tagId, tagName) {
+                                        if (tabsStore.toggleIndexTagged == 0) {
+                                          tabsStore.setToggleIndexTagged(1);
+                                        }
+
                                         galleryStore.addTagToSearchFilter();
                                         searchEditingController.clear();
                                         galleryStore.searchResultsTags(searchEditingController.text);
@@ -702,6 +706,10 @@ class _TaggedTabState extends State<TaggedTab> {
                                     tagStyle: TagStyle.GrayOutlined,
                                     showEditTagModal: widget.showEditTagModal,
                                     onTap: (tagId, tagName) {
+                                      if (tabsStore.toggleIndexTagged == 0) {
+                                        tabsStore.setToggleIndexTagged(1);
+                                      }
+
                                       galleryStore.addTagToSearchFilter();
                                       searchEditingController.clear();
                                       galleryStore.searchResultsTags(searchEditingController.text);
@@ -762,9 +770,13 @@ class _TaggedTabState extends State<TaggedTab> {
             }),
             Observer(builder: (_) {
               return AnimatedOpacity(
-                opacity: tabsStore.isScrolling ? 0.0 : 1.0,
+                opacity: tabsStore.isScrolling
+                    ? 0.0
+                    : searchFocusNode.hasFocus
+                        ? 0.0
+                        : 1.0,
                 curve: Curves.linear,
-                duration: Duration(milliseconds: 300),
+                duration: Duration(milliseconds: searchFocusNode.hasFocus ? 0 : 300),
                 onEnd: () {
                   tabsStore.setIsToggleBarVisible(tabsStore.isScrolling ? false : true);
                 },
@@ -779,6 +791,14 @@ class _TaggedTabState extends State<TaggedTab> {
                         titleRight: 'Tags',
                         activeToggle: tabsStore.toggleIndexTagged,
                         onToggle: (index) {
+                          if (galleryStore.isSearching && index == 0) {
+                            galleryStore.clearSearchTags();
+                            galleryStore.setShouldRefreshTaggedGallery(true);
+                            setState(() {
+                              refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
+                              print('##### Rebuild everything!');
+                            });
+                          }
                           tabsStore.setToggleIndexTagged(index);
                         },
                       ),

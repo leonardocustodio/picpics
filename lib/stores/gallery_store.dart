@@ -174,6 +174,7 @@ abstract class _GalleryStore with Store {
     setIsSearching(false);
     searchingTags.clear();
     searchTagsResults.clear();
+    filteredPics.clear();
   }
 
   ObservableList<TagsStore> searchingTags = ObservableList<TagsStore>();
