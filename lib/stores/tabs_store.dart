@@ -18,7 +18,7 @@ abstract class _TabsStore with Store {
   }
 
   @observable
-  int currentTab = 0;
+  int currentTab = 1;
 
   @action
   void setCurrentTab(int value) {
