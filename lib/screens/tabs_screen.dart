@@ -470,11 +470,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                     Spacer(),
                                     CupertinoButton(
                                       onPressed: () {
-                                        if (!appStore.isPremium) {
-                                          Navigator.pushNamed(
-                                              context, PremiumScreen.id);
-                                          return;
-                                        }
+                                        // if (!appStore.isPremium) {
+                                        //   Navigator.pushNamed(
+                                        //       context, PremiumScreen.id);
+                                        //   return;
+                                        // }
 
                                         if (galleryStore.multiPicTagKeys
                                             .contains(kSecretTagKey)) {
@@ -524,40 +524,40 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                             bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagId, tagName) {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(
-                                                context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(
-                                                context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           galleryStore.removeFromMultiPicTags(
                                               DatabaseManager
                                                   .instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(
-                                                context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           print('do nothing');
                                         },
                                         onChanged: (text) {
                                           galleryStore.setSearchText(text);
                                         },
                                         onSubmitted: (text) {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(
-                                                context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
                                             galleryStore.setSearchText('');
@@ -590,30 +590,30 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagId, tagName) {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(
-                                                context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
 
                                           bottomTagsEditingController.clear();
                                           galleryStore.setSearchText('');
                                           galleryStore.addToMultiPicTags(tagId);
                                         },
                                         onDoubleTap: () {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(
-                                                context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(
-                                                context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           print('do nothing');
                                         },
                                       ),
