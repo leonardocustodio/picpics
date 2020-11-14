@@ -36,7 +36,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void contactUs(BuildContext context) {
-    final Uri _emailLaunchUri = Uri(scheme: 'mailto', path: 'picpics@inovatso.com.br', queryParameters: {'subject': 'picPics - feedback & bug report'});
+    final Uri _emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'picpics@inovatso.com.br',
+      queryParameters: {
+        'subject': 'picPics%20-%20feedback%20&%20bug%20report',
+      },
+    );
     launch(_emailLaunchUri.toString());
   }
 
