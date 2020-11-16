@@ -583,5 +583,11 @@
   "archery_tag": "Arco e flecha",
   "aerospace_engineering_tag": "Engenharia aeroespacial",
   "storm_tag": "Tempestade",
-  "helmet_tag": "Capacete"
+  "helmet_tag": "Capacete",
+
+  "toggle_months": "Meses",
+  "toggle_days": "Dias",
+  "toggle_date": "Data",
+  "toggle_tags": "Tags",
+  "feedback_bug_report": "Feedback & Bugs"
 }

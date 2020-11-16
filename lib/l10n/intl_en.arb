@@ -584,5 +584,11 @@
   "archery_tag": "Archery",
   "aerospace_engineering_tag": "Aerospace engineering",
   "storm_tag": "Storm",
-  "helmet_tag": "Helmet"
+  "helmet_tag": "Helmet",
+
+  "toggle_months": "Months",
+  "toggle_days": "Days",
+  "toggle_date": "Date",
+  "toggle_tags": "Tags",
+  "feedback_bug_report": "Feedback & bug report"
 }

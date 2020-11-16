@@ -152,5 +152,11 @@
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Foto private illimitates",
-  "recent_tags": "Recent Tags"
+  "recent_tags": "Recent Tags",
+
+  "toggle_months": "Mesi",
+  "toggle_days": "Giorni",
+  "toggle_date": "Data",
+  "toggle_tags": "Tag",
+  "feedback_bug_report": "Feedback e bug"
 }

@@ -581,5 +581,11 @@
   "archery_tag": "Bogenschießen",
   "aerospace_engineering_tag": "Raumfahrttechnik",
   "storm_tag": "Sturm",
-  "helmet_tag": "Helm"
+  "helmet_tag": "Helm",
+
+  "toggle_months": "Monate",
+  "toggle_days": "Tage",
+  "toggle_date": "Datum",
+  "toggle_tags": "Tags",
+  "feedback_bug_report": "Feedback & Fehlerbericht"
 }

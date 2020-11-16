@@ -581,6 +581,12 @@
   "archery_tag": "アーチェリー",
   "aerospace_engineering_tag": "航空宇宙工学",
   "storm_tag": "嵐",
-  "helmet_tag": "ヘルメット"
+  "helmet_tag": "ヘルメット",
+
+  "toggle_months": "月別",
+  "toggle_days": "日別",
+  "toggle_date": "日付別",
+  "toggle_tags": "タグ",
+  "feedback_bug_report": "フィードバックとバグレポート"
 
 }

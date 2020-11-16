@@ -9,6 +9,8 @@ import 'intl/messages_all.dart';
 // **************************************************************************
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+// ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
+// ignore_for_file: avoid_redundant_argument_values
 
 class S {
   S();
@@ -5521,6 +5523,56 @@ class S {
     return Intl.message(
       'Helmet',
       name: 'helmet_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Months`
+  String get toggle_months {
+    return Intl.message(
+      'Months',
+      name: 'toggle_months',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Days`
+  String get toggle_days {
+    return Intl.message(
+      'Days',
+      name: 'toggle_days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get toggle_date {
+    return Intl.message(
+      'Date',
+      name: 'toggle_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags`
+  String get toggle_tags {
+    return Intl.message(
+      'Tags',
+      name: 'toggle_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Feedback & bug report`
+  String get feedback_bug_report {
+    return Intl.message(
+      'Feedback & bug report',
+      name: 'feedback_bug_report',
       desc: '',
       args: [],
     );

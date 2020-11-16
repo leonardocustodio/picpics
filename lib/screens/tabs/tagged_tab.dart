@@ -787,8 +787,8 @@ class _TaggedTabState extends State<TaggedTab> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: ToggleBar(
-                        titleLeft: 'Date',
-                        titleRight: 'Tags',
+                        titleLeft: S.of(context).toggle_date,
+                        titleRight: S.of(context).toggle_tags,
                         activeToggle: tabsStore.toggleIndexTagged,
                         onToggle: (index) {
                           if (galleryStore.isSearching && index == 0) {

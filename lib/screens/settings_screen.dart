@@ -790,7 +790,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                         width: 15.0,
                                       ),
                                       Text(
-                                        'Feedback & bug report',
+                                        S.of(context).feedback_bug_report,
                                         textScaleFactor: 1.0,
                                         style: kGraySettingsBoldTextStyle,
                                       ),

@@ -583,6 +583,11 @@
   "archery_tag": "Tiro al arco",
   "aerospace_engineering_tag": "Ingeniería Aeroespacial",
   "storm_tag": "Tormenta",
-  "helmet_tag": "Casco"
+  "helmet_tag": "Casco",
 
+  "toggle_months": "Meses",
+  "toggle_days": "Días",
+  "toggle_date": "Fecha",
+  "toggle_tags": "Etiquetas",
+  "feedback_bug_report": "Informe de errores y comentarios"
 }
