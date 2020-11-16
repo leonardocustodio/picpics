@@ -33,13 +33,13 @@ class UserAdapter extends TypeAdapter<User> {
       canTagToday: fields[13] as bool,
       appLanguage: fields[14] as String,
       appVersion: fields[15] as String,
-      hasSwiped: fields[16] as bool,
       hasGalleryPermission: fields[17] as bool,
       loggedIn: fields[18] as bool,
       secretPhotos: fields[19] as bool,
       isPinRegistered: fields[20] as bool,
       keepAskingToDelete: fields[21] as bool,
       shouldDeleteOnPrivate: fields[22] as bool,
+      tourCompleted: fields[23] as bool,
     );
   }
 
@@ -79,8 +79,6 @@ class UserAdapter extends TypeAdapter<User> {
       ..write(obj.appLanguage)
       ..writeByte(15)
       ..write(obj.appVersion)
-      ..writeByte(16)
-      ..write(obj.hasSwiped)
       ..writeByte(17)
       ..write(obj.hasGalleryPermission)
       ..writeByte(18)
@@ -92,7 +90,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(21)
       ..write(obj.keepAskingToDelete)
       ..writeByte(22)
-      ..write(obj.shouldDeleteOnPrivate);
+      ..write(obj.shouldDeleteOnPrivate)
+      ..writeByte(23)
+      ..write(obj.tourCompleted);
   }
 
   @override

@@ -13,22 +13,22 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:flare_flutter/flare_actor.dart';
 
-class PicTab extends StatefulWidget {
-  static const id = 'pic_tab';
+class TutsPicTab extends StatefulWidget {
+  static const id = 'tuts_pic_tab';
 
   final Function showDeleteSecretModal;
   final Function showEditTagModal;
 
-  PicTab({
+  TutsPicTab({
     @required this.showEditTagModal,
     @required this.showDeleteSecretModal,
   });
 
   @override
-  _PicTabState createState() => _PicTabState();
+  _TutsPicTabState createState() => _TutsPicTabState();
 }
 
-class _PicTabState extends State<PicTab> {
+class _TutsPicTabState extends State<TutsPicTab> {
   AppStore appStore;
   GalleryStore galleryStore;
   CarouselController carouselController = CarouselController();

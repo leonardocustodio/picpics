@@ -205,21 +205,6 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$hasSwipedAtom = Atom(name: '_AppStore.hasSwiped');
-
-  @override
-  bool get hasSwiped {
-    _$hasSwipedAtom.reportRead();
-    return super.hasSwiped;
-  }
-
-  @override
-  set hasSwiped(bool value) {
-    _$hasSwipedAtom.reportWrite(value, super.hasSwiped, () {
-      super.hasSwiped = value;
-    });
-  }
-
   final _$appLanguageAtom = Atom(name: '_AppStore.appLanguage');
 
   @override
@@ -534,17 +519,6 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void setHasSwiped(bool value) {
-    final _$actionInfo =
-        _$_AppStoreActionController.startAction(name: '_AppStore.setHasSwiped');
-    try {
-      return super.setHasSwiped(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void changeUserLanguage(String language) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.changeUserLanguage');
@@ -625,7 +599,6 @@ minutesOfDay: ${minutesOfDay},
 isPremium: ${isPremium},
 tutorialCompleted: ${tutorialCompleted},
 canTagToday: ${canTagToday},
-hasSwiped: ${hasSwiped},
 appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},
 waitingAccessCode: ${waitingAccessCode},

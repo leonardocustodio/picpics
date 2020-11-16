@@ -83,6 +83,7 @@ dependencies:
 #  tflite_flutter: ^0.5.0
 #  tflite: ^1.1.1
   metadata: ^1.0.2
+  showcaseview: ^0.1.6
 
 dev_dependencies:
 #  flutter_test:

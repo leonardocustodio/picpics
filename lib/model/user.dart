@@ -51,9 +51,6 @@ class User extends HiveObject {
   @HiveField(15)
   String appVersion;
 
-  @HiveField(16)
-  bool hasSwiped;
-
   @HiveField(17)
   bool hasGalleryPermission;
 
@@ -72,6 +69,9 @@ class User extends HiveObject {
   @HiveField(22)
   bool shouldDeleteOnPrivate;
 
+  @HiveField(23)
+  bool tourCompleted;
+
   User({
     this.id,
     this.email,
@@ -89,12 +89,12 @@ class User extends HiveObject {
     this.canTagToday,
     this.appLanguage,
     this.appVersion,
-    this.hasSwiped,
     this.hasGalleryPermission,
     this.loggedIn,
     this.secretPhotos,
     this.isPinRegistered,
     this.keepAskingToDelete,
     this.shouldDeleteOnPrivate,
+    this.tourCompleted,
   });
 }

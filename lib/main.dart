@@ -36,6 +36,9 @@ import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'dart:io';
+import 'package:picPics/tutorial/tabs_screen.dart';
+import 'package:picPics/tutorial/add_location.dart';
+import 'package:picPics/tutorial/photo_screen.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
@@ -222,6 +225,9 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
             PremiumScreen.id: (context) => PremiumScreen(),
             PinScreen.id: (context) => PinScreen(),
             EmailScreen.id: (context) => EmailScreen(),
+            TutsTabsScreen.id: (context) => TutsTabsScreen(),
+            TutsPhotoScreen.id: (context) => TutsPhotoScreen(),
+            TutsAddLocationScreen.id: (context) => TutsAddLocationScreen(),
           },
         ),
       ),
