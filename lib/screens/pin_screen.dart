@@ -20,6 +20,7 @@ import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:picPics/widgets/general_modal.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:provider/provider.dart';
+import 'package:local_auth/local_auth.dart';
 
 class PinScreen extends StatefulWidget {
   static const String id = 'pin_screen';
@@ -37,6 +38,67 @@ class _PinScreenState extends State<PinScreen> {
 
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
+
+  final LocalAuthentication auth = LocalAuthentication();
+  bool _canCheckBiometrics;
+  List<BiometricType> _availableBiometrics;
+  String _authorized = 'Not Authorized';
+  bool _isAuthenticating = false;
+
+  Future<void> _checkBiometrics() async {
+    bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await auth.canCheckBiometrics;
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _canCheckBiometrics = canCheckBiometrics;
+    });
+  }
+
+  Future<void> _getAvailableBiometrics() async {
+    List<BiometricType> availableBiometrics;
+    try {
+      availableBiometrics = await auth.getAvailableBiometrics();
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    setState(() {
+      _availableBiometrics = availableBiometrics;
+    });
+  }
+
+  Future<void> _authenticate() async {
+    bool authenticated = false;
+    try {
+      setState(() {
+        _isAuthenticating = true;
+        _authorized = 'Authenticating';
+      });
+      authenticated = await auth.authenticateWithBiometrics(localizedReason: 'Scan your fingerprint to authenticate', useErrorDialogs: true, stickyAuth: true);
+      setState(() {
+        _isAuthenticating = false;
+        _authorized = 'Authenticating';
+      });
+    } on PlatformException catch (e) {
+      print(e);
+    }
+    if (!mounted) return;
+
+    final String message = authenticated ? 'Authorized' : 'Not Authorized';
+    setState(() {
+      _authorized = message;
+    });
+  }
+
+  void _cancelAuthentication() {
+    auth.stopAuthentication();
+  }
 
   GlobalKey<AnimatorWidgetState> _shakeKey = GlobalKey<AnimatorWidgetState>();
   GlobalKey<AnimatorWidgetState> _shakeKeyConfirm = GlobalKey<AnimatorWidgetState>();
@@ -546,6 +608,7 @@ class _PinScreenState extends State<PinScreen> {
                       }
 
                       if (appStore.isPinRegistered == true) {
+                        print('Can check biometrics: $_canCheckBiometrics');
                         return Column(
                           children: [
                             Spacer(),
@@ -578,6 +641,12 @@ class _PinScreenState extends State<PinScreen> {
                               onPinTapped: pinTapped,
                             ),
                             Spacer(),
+                            CupertinoButton(
+                              onPressed: () {
+                                recoverPin();
+                              },
+                              child: Image.asset('lib/images/faceidwhiteico.png'),
+                            ),
                             CupertinoButton(
                               onPressed: () {
                                 recoverPin();
