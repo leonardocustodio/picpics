@@ -154,14 +154,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     var language = LanguageLocal();
     var supportedLocales = S.delegate.supportedLocales;
     List<String> supportedLanguages = supportedLocales.map((e) => e.languageCode).toList();
-
-    print('Supported Locales: $supportedLocales');
-    print('Supported languages: $supportedLanguages');
-    print('AppLanguage: ${appStore.appLanguage}');
-
     List<String> appSplit = appStore.appLanguage.split('_');
     int languageIndex = supportedLanguages.indexOf(appSplit[0]);
-    print('Index: $languageIndex');
 
     FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: languageIndex);
 
@@ -525,7 +519,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
-                                            'Secret photos',
+                                            S.of(context).private_photos,
                                             textScaleFactor: 1.0,
                                             style: kGraySettingsFieldTextStyle,
                                           ),

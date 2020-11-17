@@ -151,12 +151,14 @@
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Неограниченное количество личных фотографий",
-  "recent_tags": "Recent Tags",
 
   "toggle_months": "Месяцы",
   "toggle_days": "Дней",
   "toggle_date": "Дата",
   "toggle_tags": "Теги",
-  "feedback_bug_report": "Отзывы и ошибки"
+  "feedback_bug_report": "Отзывы и ошибки",
+  "private_photos": "Частные фотографии",
+  "recent_tags": "Недавние теги",
+  "ask_photo_library_permission": "Нам нужен доступ к вашей фото-библиотеке, чтобы вы могли начать систематизировать свои фотографии с помощью picPics. Не волнуйтесь, ваши данные никогда не покинут ваше устройство!"
 
 }

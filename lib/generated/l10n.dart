@@ -1228,26 +1228,6 @@ class S {
     );
   }
 
-  /// `Recent Tags`
-  String get recent_tags {
-    return Intl.message(
-      'Recent Tags',
-      name: 'recent_tags',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!`
-  String get ask_photo_library_permission {
-    return Intl.message(
-      'We need access to your photo library so you can start organizing your photos with picPics. Don\'t worry your data will never leave your device!',
-      name: 'ask_photo_library_permission',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Team`
   String get team_tag {
     return Intl.message(
@@ -5573,6 +5553,36 @@ class S {
     return Intl.message(
       'Feedback & bug report',
       name: 'feedback_bug_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Private Photos`
+  String get private_photos {
+    return Intl.message(
+      'Private Photos',
+      name: 'private_photos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent Tags`
+  String get recent_tags {
+    return Intl.message(
+      'Recent Tags',
+      name: 'recent_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!`
+  String get ask_photo_library_permission {
+    return Intl.message(
+      'We need access to your photo library so you can start organizing your photos with picPics. Don\'t worry your data will never leave your device!',
+      name: 'ask_photo_library_permission',
       desc: '',
       args: [],
     );

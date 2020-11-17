@@ -152,7 +152,6 @@
   "daily_notification_title": "Desafio diário",
   "daily_notification_description": "Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!",
   "unlimited_private_pics": "Fotos privadas ilimitadas",
-  "recent_tags": "Recent Tags",
 
 
   "vacation_tag": "Férias",
@@ -589,5 +588,8 @@
   "toggle_days": "Dias",
   "toggle_date": "Data",
   "toggle_tags": "Tags",
-  "feedback_bug_report": "Feedback & Bugs"
+  "feedback_bug_report": "Feedback & Bugs",
+  "private_photos": "Fotos privadas",
+  "recent_tags": "Tags recentes",
+  "ask_photo_library_permission": "Precisamos de acesso à sua biblioteca de fotos para que você possa começar a organizar suas fotos com picPics. Não se preocupe, seus dados nunca sairão do seu dispositivo!"
 }

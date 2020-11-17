@@ -395,6 +395,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "premium_modal_watch_ad" : MessageLookupByLibrary.simpleMessage("Watch video ad to continue"),
     "presentation_tag" : MessageLookupByLibrary.simpleMessage("Presentation"),
     "privacy_policy" : MessageLookupByLibrary.simpleMessage("Privacy Policy"),
+    "private_photos" : MessageLookupByLibrary.simpleMessage("Private Photos"),
     "product_tag" : MessageLookupByLibrary.simpleMessage("Product"),
     "prom_tag" : MessageLookupByLibrary.simpleMessage("Prom"),
     "protect_with_encryption" : MessageLookupByLibrary.simpleMessage("Protect your personal photos with encryption only accessible with a PIN password."),
