@@ -35,6 +35,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     super.dispose();
   }
 
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
+  }
+
   void contactUs(BuildContext context) {
     final Uri _emailLaunchUri = Uri(
       scheme: 'mailto',
@@ -845,15 +853,70 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               ),
                             ),
                             // Spacer(),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Center(
-                                child: Text(
-                                  'VERSION: ${appStore.appVersion}',
-                                  textScaleFactor: 1.0,
-                                  style: kGraySettingsFieldTextStyle,
+                            Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    CupertinoButton(
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/privacy');
+                                      },
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      minSize: 32.0,
+                                      child: Text(
+                                        S.of(context).privacy_policy,
+                                        style: const TextStyle(
+                                          color: const Color(0xff606566),
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "Lato",
+                                          fontStyle: FontStyle.normal,
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 10.0,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      "  &   ",
+                                      style: const TextStyle(
+                                        color: const Color(0xff606566),
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: "Lato",
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 10.0,
+                                      ),
+                                    ),
+                                    CupertinoButton(
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/terms');
+                                      },
+                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                      minSize: 32.0,
+                                      child: Text(
+                                        S.of(context).terms_of_use,
+                                        style: const TextStyle(
+                                          color: const Color(0xff606566),
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "Lato",
+                                          fontStyle: FontStyle.normal,
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 10.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Center(
+                                    child: Text(
+                                      'VERSION: ${appStore.appVersion}',
+                                      textScaleFactor: 1.0,
+                                      style: kGraySettingsFieldTextStyle,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
