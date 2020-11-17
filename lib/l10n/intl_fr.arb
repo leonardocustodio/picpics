@@ -152,5 +152,14 @@
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Photos privées illimitées",
-  "recent_tags": "Recent Tags"
+
+
+  "toggle_months": "Mois",
+  "toggle_days": "Jours",
+  "toggle_date": "Date",
+  "toggle_tags": "Étiquettes",
+  "feedback_bug_report": "Commentaires et bogues",
+  "private_photos": "Photos privées",
+  "recent_tags": "Étiquettes récentes",
+  "ask_photo_library_permission": "Nous devons accéder à votre photothèque pour que vous puissiez commencer à organiser vos photos avec picPics. Ne vous inquiétez pas, vos données ne quitteront jamais votre appareil!"
 }

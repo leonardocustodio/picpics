@@ -36,6 +36,9 @@ import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:package_info/package_info.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'dart:io';
+import 'package:picPics/tutorial/tabs_screen.dart';
+import 'package:picPics/tutorial/add_location.dart';
+import 'package:picPics/tutorial/photo_screen.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
@@ -53,8 +56,9 @@ void main() async {
   // CloudFunctions.instance.useFunctionsEmulator(origin: Platform.isAndroid ? 'http://10.0.2.2:5001' : 'http://localhost:5001');
 
   await Firebase.initializeApp();
-  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  // await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
+  // await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
+
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   Isolate.current.addErrorListener(RawReceivePort((pair) async {
     final List<dynamic> errorAndStacktrace = pair;
@@ -199,28 +203,33 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           create: (_) => DatabaseManager.instance,
         ),
       ],
-      child: MaterialApp(
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        locale: appStore.appLocale,
-        supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: kDebugMode,
-        initialRoute: appStore.initialRoute,
-        navigatorObservers: [Analytics.observer],
-        routes: {
-          LoginScreen.id: (context) => LoginScreen(),
-          TabsScreen.id: (context) => TabsScreen(),
-          PhotoScreen.id: (context) => PhotoScreen(),
-          SettingsScreen.id: (context) => SettingsScreen(),
-          AddLocationScreen.id: (context) => AddLocationScreen(),
-          PremiumScreen.id: (context) => PremiumScreen(),
-          PinScreen.id: (context) => PinScreen(),
-          EmailScreen.id: (context) => EmailScreen(),
-        },
+      child: Center(
+        child: MaterialApp(
+          localizationsDelegates: [
+            S.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          locale: appStore.appLocale,
+          supportedLocales: S.delegate.supportedLocales,
+          debugShowCheckedModeBanner: kDebugMode,
+          initialRoute: appStore.initialRoute,
+          navigatorObservers: [Analytics.observer],
+          routes: {
+            LoginScreen.id: (context) => LoginScreen(),
+            TabsScreen.id: (context) => TabsScreen(),
+            PhotoScreen.id: (context) => PhotoScreen(),
+            SettingsScreen.id: (context) => SettingsScreen(),
+            AddLocationScreen.id: (context) => AddLocationScreen(),
+            PremiumScreen.id: (context) => PremiumScreen(),
+            PinScreen.id: (context) => PinScreen(),
+            EmailScreen.id: (context) => EmailScreen(),
+            TutsTabsScreen.id: (context) => TutsTabsScreen(),
+            TutsPhotoScreen.id: (context) => TutsPhotoScreen(),
+            TutsAddLocationScreen.id: (context) => TutsAddLocationScreen(),
+          },
+        ),
       ),
     );
   }

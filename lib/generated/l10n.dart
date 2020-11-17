@@ -1228,26 +1228,6 @@ class S {
     );
   }
 
-  /// `Recent Tags`
-  String get recent_tags {
-    return Intl.message(
-      'Recent Tags',
-      name: 'recent_tags',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!`
-  String get ask_photo_library_permission {
-    return Intl.message(
-      'We need access to your photo library so you can start organizing your photos with picPics. Don\'t worry your data will never leave your device!',
-      name: 'ask_photo_library_permission',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Team`
   String get team_tag {
     return Intl.message(
@@ -5523,6 +5503,86 @@ class S {
     return Intl.message(
       'Helmet',
       name: 'helmet_tag',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Months`
+  String get toggle_months {
+    return Intl.message(
+      'Months',
+      name: 'toggle_months',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Days`
+  String get toggle_days {
+    return Intl.message(
+      'Days',
+      name: 'toggle_days',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Date`
+  String get toggle_date {
+    return Intl.message(
+      'Date',
+      name: 'toggle_date',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Tags`
+  String get toggle_tags {
+    return Intl.message(
+      'Tags',
+      name: 'toggle_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Feedback & bug report`
+  String get feedback_bug_report {
+    return Intl.message(
+      'Feedback & bug report',
+      name: 'feedback_bug_report',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Private Photos`
+  String get private_photos {
+    return Intl.message(
+      'Private Photos',
+      name: 'private_photos',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Recent Tags`
+  String get recent_tags {
+    return Intl.message(
+      'Recent Tags',
+      name: 'recent_tags',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!`
+  String get ask_photo_library_permission {
+    return Intl.message(
+      'We need access to your photo library so you can start organizing your photos with picPics. Don\'t worry your data will never leave your device!',
+      name: 'ask_photo_library_permission',
       desc: '',
       args: [],
     );

@@ -109,4 +109,28 @@ abstract class _TabsStore with Store {
 
   @action
   void setShowDeleteSecretModal(bool value) => showDeleteSecretModal = value;
+
+  @observable
+  bool isScrolling = false;
+
+  @action
+  void setIsScrolling(bool value) => isScrolling = value;
+
+  @observable
+  bool isToggleBarVisible = true;
+
+  @action
+  void setIsToggleBarVisible(bool value) => isToggleBarVisible = value;
+
+  @observable
+  int toggleIndexUntagged = 1;
+
+  @action
+  void setToggleIndexUntagged(int value) => toggleIndexUntagged = value;
+
+  @observable
+  int toggleIndexTagged = 1;
+
+  @action
+  void setToggleIndexTagged(int value) => toggleIndexTagged = value;
 }

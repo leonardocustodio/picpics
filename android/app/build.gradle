@@ -23,7 +23,6 @@ if (flutterVersionName == null) {
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'com.google.gms.google-services'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 def keystoreProperties = new Properties()
@@ -87,6 +86,7 @@ dependencies {
     // required if your app is in the Google Play Store (tip: avoid using bundled play services libs)
     implementation 'com.google.firebase:firebase-appindexing:19.0.0'
     implementation 'com.google.android.gms:play-services-ads-identifier:16+'
+
     // optional
     // Chrome Tab matching (enables 100% guaranteed matching based on cookies)
     implementation 'androidx.browser:browser:1.0.0'
@@ -98,3 +98,4 @@ dependencies {
 }
 
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.gms.google-services'

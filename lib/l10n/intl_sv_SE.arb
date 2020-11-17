@@ -152,6 +152,14 @@
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Obegränsat med privata foton",
-  "recent_tags": "Recent Tags"
+
+  "toggle_months": "Månader",
+  "toggle_days": "Dagar",
+  "toggle_date": "Datum",
+  "toggle_tags": "Taggar",
+  "feedback_bug_report": "Feedback och fel",
+  "private_photos": "Privata foton",
+  "recent_tags": "Senaste taggar",
+  "ask_photo_library_permission": "Vi behöver åtkomst till ditt fotobibliotek så att du kan börja organisera dina foton med picPics. Oroa dig inte, dina data kommer aldrig att lämna din enhet!"
 
 }

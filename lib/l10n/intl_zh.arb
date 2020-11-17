@@ -152,6 +152,13 @@
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "无限的私人照片",
-  "recent_tags": "Recent Tags"
 
+  "toggle_months": "月",
+  "toggle_days": "日",
+  "toggle_date": "日期",
+  "toggle_tags": "标签",
+  "feedback_bug_report": "反馈和错误",
+  "private_photos": "私人照片",
+  "recent_tags": "最近的标签",
+  "ask_photo_library_permission": "我们需要访问您的照片库，以便您可以开始使用picPics整理照片。 不用担心您的数据将永远不会离开您的设备！"
 }

@@ -17,6 +17,7 @@ import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -32,6 +33,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void contactUs(BuildContext context) {
+    final Uri _emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: 'picpics@inovatso.com.br',
+    );
+    launch(_emailLaunchUri.toString());
   }
 
   RateMyApp rateMyApp = RateMyApp(
@@ -145,14 +154,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     var language = LanguageLocal();
     var supportedLocales = S.delegate.supportedLocales;
     List<String> supportedLanguages = supportedLocales.map((e) => e.languageCode).toList();
-
-    print('Supported Locales: $supportedLocales');
-    print('Supported languages: $supportedLanguages');
-    print('AppLanguage: ${appStore.appLanguage}');
-
     List<String> appSplit = appStore.appLanguage.split('_');
     int languageIndex = supportedLanguages.indexOf(appSplit[0]);
-    print('Index: $languageIndex');
 
     FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: languageIndex);
 
@@ -516,7 +519,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
-                                            'Secret photos',
+                                            S.of(context).private_photos,
                                             textScaleFactor: 1.0,
                                             style: kGraySettingsFieldTextStyle,
                                           ),
@@ -765,6 +768,23 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                       ),
                                       Text(
                                         S.of(context).rate_this_app,
+                                        textScaleFactor: 1.0,
+                                        style: kGraySettingsBoldTextStyle,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                CupertinoButton(
+                                  onPressed: () => contactUs(context),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image.asset('lib/images/feedbackico.png'),
+                                      SizedBox(
+                                        width: 15.0,
+                                      ),
+                                      Text(
+                                        S.of(context).feedback_bug_report,
                                         textScaleFactor: 1.0,
                                         style: kGraySettingsBoldTextStyle,
                                       ),

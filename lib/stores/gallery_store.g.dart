@@ -533,6 +533,50 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
+  void addPicToUntaggedPics({PicStore picStore}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addPicToUntaggedPics');
+    try {
+      return super.addPicToUntaggedPics(picStore: picStore);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void removePicFromUntaggedPics({PicStore picStore}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.removePicFromUntaggedPics');
+    try {
+      return super.removePicFromUntaggedPics(picStore: picStore);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void sortTaggedPhotos() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.sortTaggedPhotos');
+    try {
+      return super.sortTaggedPhotos();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void sortUntaggedPhotos() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.sortUntaggedPhotos');
+    try {
+      return super.sortUntaggedPhotos();
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void setTrashedPic(bool value) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.setTrashedPic');
@@ -626,6 +670,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.removeTagFromPic');
     try {
       return super.removeTagFromPic(picStore: picStore, tagKey: tagKey);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void refreshPicThumbnails() {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.refreshPicThumbnails');
+    try {
+      return super.refreshPicThumbnails();
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

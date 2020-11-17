@@ -153,8 +153,6 @@
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Unlimited private photos",
-  "recent_tags": "Recent Tags",
-  "ask_photo_library_permission": "We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!",
 
 
   "team_tag": "Team",
@@ -584,5 +582,14 @@
   "archery_tag": "Archery",
   "aerospace_engineering_tag": "Aerospace engineering",
   "storm_tag": "Storm",
-  "helmet_tag": "Helmet"
+  "helmet_tag": "Helmet",
+
+  "toggle_months": "Months",
+  "toggle_days": "Days",
+  "toggle_date": "Date",
+  "toggle_tags": "Tags",
+  "feedback_bug_report": "Feedback & bug report",
+  "private_photos": "Private Photos",
+  "recent_tags": "Recent Tags",
+  "ask_photo_library_permission": "We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!"
 }

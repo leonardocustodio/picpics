@@ -152,6 +152,13 @@
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Foto peribadi tanpa had",
-  "recent_tags": "Recent Tags"
 
+  "toggle_months": "Bulan",
+  "toggle_days": "Hari",
+  "toggle_date": "Tarikh",
+  "toggle_tags": "Tag",
+  "feedback_bug_report": "Maklum balas & laporan pepijat",
+  "private_photos": "Foto Peribadi",
+  "recent_tags": "Tag Terkini",
+  "ask_photo_library_permission": "Kami memerlukan akses ke pustaka foto anda supaya anda dapat mula mengatur foto anda dengan picPics. Jangan bimbang data anda tidak akan meninggalkan peranti anda!"
 }

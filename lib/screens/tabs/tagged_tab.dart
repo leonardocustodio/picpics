@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
@@ -15,6 +16,7 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
+import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -49,9 +51,7 @@ class _TaggedTabState extends State<TaggedTab> {
   TextEditingController tagsEditingController = TextEditingController();
 
   void refreshGridPositionThirdTab() {
-    var offset = scrollControllerThirdTab.hasClients
-        ? scrollControllerThirdTab.offset
-        : scrollControllerThirdTab.initialScrollOffset;
+    var offset = scrollControllerThirdTab.hasClients ? scrollControllerThirdTab.offset : scrollControllerThirdTab.initialScrollOffset;
 
     if (offset >= 40) {
       tabsStore.setHideTitleThirdTab(true);
@@ -66,8 +66,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
   void refreshItems(bool filtered) {
     print('Calling refresh items!!!');
-    if (isTitleWidget.isEmpty ||
-        galleryStore.shouldRefreshTaggedGallery == true) {
+    if (isTitleWidget.isEmpty || galleryStore.shouldRefreshTaggedGallery == true) {
       taggedItems = [];
       isTitleWidget = [];
 
@@ -82,8 +81,7 @@ class _TaggedTabState extends State<TaggedTab> {
         } else {
           isTitleWidget.add(true);
           taggedItems.add(null);
-          isTitleWidget
-              .addAll(List.filled(galleryStore.filteredPics.length, false));
+          isTitleWidget.addAll(List.filled(galleryStore.filteredPics.length, false));
           taggedItems.addAll(galleryStore.filteredPics);
           galleryStore.addPicsToThumbnails(galleryStore.filteredPics);
         }
@@ -91,15 +89,11 @@ class _TaggedTabState extends State<TaggedTab> {
         if (galleryStore.searchingTagsKeys.length > 1) {
           List<TaggedPicsStore> taggedPicsStores = [];
           for (String tagKey in galleryStore.searchingTagsKeys) {
-            TaggedPicsStore findTaggedPicStore = galleryStore.taggedPics
-                .firstWhere((element) => element.tag.id == tagKey,
-                    orElse: () => null);
+            TaggedPicsStore findTaggedPicStore = galleryStore.taggedPics.firstWhere((element) => element.tag.id == tagKey, orElse: () => null);
             if (findTaggedPicStore != null) {
               taggedPicsStores.add(findTaggedPicStore);
             } else {
-              TaggedPicsStore createTaggedPicStore = TaggedPicsStore(
-                  tag: appStore.tags
-                      .firstWhere((element) => element.id == tagKey));
+              TaggedPicsStore createTaggedPicStore = TaggedPicsStore(tag: appStore.tags.firstWhere((element) => element.id == tagKey));
               taggedPicsStores.add(createTaggedPicStore);
             }
           }
@@ -116,8 +110,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
             isTitleWidget.add(true);
             taggedItems.add(taggedPicsStore);
-            isTitleWidget
-                .addAll(List.filled(taggedPicsStore.pics.length, false));
+            isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
             taggedItems.addAll(taggedPicsStore.pics);
             galleryStore.addPicsToThumbnails(taggedPicsStore.pics);
           }
@@ -151,53 +144,161 @@ class _TaggedTabState extends State<TaggedTab> {
       }
     }
 
-    return StaggeredGridView.countBuilder(
-      controller: scrollControllerThirdTab,
-      // padding: EdgeInsets.only(top: 86.0),
-      padding: EdgeInsets.only(top: 86 - newPadding),
-      physics: const CustomScrollPhysics(),
-      crossAxisCount: 3,
-      mainAxisSpacing: 2.0,
-      crossAxisSpacing: 2.0,
-      itemCount: isTitleWidget.length,
-      itemBuilder: (BuildContext context, int index) {
-        var item = taggedItems[index];
-
-        if (item is TaggedPicsStore) {
-          return _buildTagItem(item);
-        } else if (item is PicStore) {
-          return _buildPicItem(item);
-        } else {
-          if (index == 0) {
-            return _buildTagItem(null);
-          } else {
-            return Container(
-              padding: const EdgeInsets.only(
-                  left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
-              child: Text(
-                index == 1
-                    ? S.of(context).search_all_tags_not_found
-                    : 'No photos found with this tag',
-                textScaleFactor: 1.0,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff979a9b),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                ),
-              ),
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollNotification) {
+        if (scrollNotification is ScrollStartNotification) {
+          print('Start scrolling');
+          tabsStore.setIsScrolling(true);
+        } else if (scrollNotification is ScrollEndNotification) {
+          print('End scrolling');
+          tabsStore.setIsScrolling(false);
+        }
+        return;
+      },
+      child: Observer(
+        builder: (_) {
+          if (tabsStore.toggleIndexTagged == 0) {
+            return StaggeredGridView.countBuilder(
+              key: Key('date'),
+              controller: scrollControllerThirdTab,
+              physics: const CustomScrollPhysics(),
+              padding: EdgeInsets.only(top: 86 - newPadding),
+              crossAxisCount: 3,
+              mainAxisSpacing: 2.0,
+              crossAxisSpacing: 2.0,
+              itemCount: galleryStore.taggedGridPics.length,
+              itemBuilder: (BuildContext context, int index) {
+                var picStore = galleryStore.taggedGridPics[index].picStore;
+                if (picStore == null) {
+                  return _buildDateItem(galleryStore.taggedGridPics[index].date);
+                }
+                return _buildPicItem(picStore);
+              },
+              staggeredTileBuilder: (int index) {
+                return galleryStore.taggedGridPics[index].picStore == null ? StaggeredTile.fit(3) : StaggeredTile.count(1, 1);
+              },
             );
           }
-        }
-      },
-      staggeredTileBuilder: (int index) {
-        if (isTitleWidget[index]) {
-          return StaggeredTile.fit(3);
-        }
-        return StaggeredTile.count(1, 1);
-      },
+
+          return StaggeredGridView.countBuilder(
+            key: Key('tag'),
+            controller: scrollControllerThirdTab,
+            // padding: EdgeInsets.only(top: 86.0),
+            padding: EdgeInsets.only(top: 86 - newPadding),
+            physics: const CustomScrollPhysics(),
+            crossAxisCount: 3,
+            mainAxisSpacing: 2.0,
+            crossAxisSpacing: 2.0,
+            itemCount: isTitleWidget.length,
+            itemBuilder: (BuildContext context, int index) {
+              var item = taggedItems[index];
+
+              if (item is TaggedPicsStore) {
+                return _buildTagItem(item);
+              } else if (item is PicStore) {
+                return _buildPicItem(item);
+              } else {
+                if (index == 0) {
+                  return _buildTagItem(null);
+                } else {
+                  return Container(
+                    padding: const EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
+                    child: Text(
+                      index == 1 ? S.of(context).search_all_tags_not_found : 'No photos found with this tag',
+                      textScaleFactor: 1.0,
+                      style: TextStyle(
+                        fontFamily: 'Lato',
+                        color: Color(0xff979a9b),
+                        fontSize: 18,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                      ),
+                    ),
+                  );
+                }
+              }
+            },
+            staggeredTileBuilder: (int index) {
+              if (isTitleWidget[index]) {
+                return StaggeredTile.fit(3);
+              }
+              return StaggeredTile.count(1, 1);
+            },
+          );
+        },
+      ),
     );
+  }
+
+  String dateFormat(DateTime dateTime) {
+    DateFormat formatter;
+    print('Date Time Formatting: $dateTime');
+
+    if (dateTime.year == DateTime.now().year) {
+      formatter = DateFormat.MMMEd();
+    } else {
+      formatter = DateFormat.yMMMEd();
+    }
+    return formatter.format(dateTime);
+  }
+
+  Widget _buildDateItem(DateTime date) {
+    return Container(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      height: 40.0,
+      child: Row(
+        children: [
+          Text(
+            '${dateFormat(date)}',
+            textScaleFactor: 1.0,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff606566),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    //   Container(
+    //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+    //   child: Row(
+    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //     children: <Widget>[
+    //       Text(
+    //         '${dateFormat(date)}',
+    //         textScaleFactor: 1.0,
+    //         style: TextStyle(
+    //           fontFamily: 'Lato',
+    //           color: Color(0xff606566),
+    //           fontSize: 24,
+    //           fontWeight: FontWeight.w400,
+    //           fontStyle: FontStyle.normal,
+    //           letterSpacing: -0.4099999964237213,
+    //         ),
+    //       ),
+    //       // CupertinoButton(
+    //       //   onPressed: () async {
+    //       //     tabsStore.setIsLoading(true);
+    //       //
+    //       //     // if (taggedPicsStore != null) {
+    //       //     //   await galleryStore.sharePics(picsStores: taggedPicsStore.pics);
+    //       //     // } else {
+    //       //     //   await galleryStore.sharePics(
+    //       //     //       picsStores: galleryStore.filteredPics);
+    //       //     // }
+    //       //
+    //       //     tabsStore.setIsLoading(false);
+    //       //   },
+    //       //   child: Image.asset('lib/images/sharepicsico.png'),
+    //       // ),
+    //     ],
+    //   ),
+    // );
   }
 
   Widget _buildTagItem(TaggedPicsStore taggedPicsStore) {
@@ -207,9 +308,7 @@ class _TaggedTabState extends State<TaggedTab> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           Text(
-            taggedPicsStore != null
-                ? taggedPicsStore.tag.name
-                : S.of(context).all_search_tags,
+            taggedPicsStore != null ? taggedPicsStore.tag.name : S.of(context).all_search_tags,
             textScaleFactor: 1.0,
             style: TextStyle(
               fontFamily: 'Lato',
@@ -227,8 +326,7 @@ class _TaggedTabState extends State<TaggedTab> {
               if (taggedPicsStore != null) {
                 await galleryStore.sharePics(picsStores: taggedPicsStore.pics);
               } else {
-                await galleryStore.sharePics(
-                    picsStores: galleryStore.filteredPics);
+                await galleryStore.sharePics(picsStores: galleryStore.filteredPics);
               }
 
               tabsStore.setIsLoading(false);
@@ -241,8 +339,7 @@ class _TaggedTabState extends State<TaggedTab> {
   }
 
   Widget _buildPicItem(PicStore picStore) {
-    final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: false);
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     return RepaintBoundary(
       child: ExtendedImage(
@@ -276,8 +373,7 @@ class _TaggedTabState extends State<TaggedTab> {
                             picStore: picStore,
                             picIsTagged: true,
                           );
-                          print(
-                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -320,8 +416,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                     gradient: kSecondaryGradient,
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
-                                  child: Image.asset(
-                                      'lib/images/checkwhiteico.png'),
+                                  child: Image.asset('lib/images/checkwhiteico.png'),
                                 ),
                               ),
                             );
@@ -358,10 +453,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xffffcc00),
-                                      Color(0xffffe98f)
-                                    ],
+                                    colors: [Color(0xffffcc00), Color(0xffffe98f)],
                                     stops: [0.2291666716337204, 1],
                                     begin: Alignment(-1.00, 0.00),
                                     end: Alignment(1.00, -0.00),
@@ -369,8 +461,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                     // scale: undefined,
                                   ),
                                 ),
-                                child: Image.asset(
-                                    'lib/images/smallwhitelock.png'),
+                                child: Image.asset('lib/images/smallwhitelock.png'),
                               ),
                             ),
                           );
@@ -406,15 +497,13 @@ class _TaggedTabState extends State<TaggedTab> {
     galleryStore = Provider.of<GalleryStore>(context);
     refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
 
-    scrollControllerThirdTab =
-        ScrollController(initialScrollOffset: tabsStore.offsetThirdTab);
+    scrollControllerThirdTab = ScrollController(initialScrollOffset: tabsStore.offsetThirdTab);
     scrollControllerThirdTab.addListener(() {
       refreshGridPositionThirdTab();
     });
     refreshGridPositionThirdTab();
 
-    disposer =
-        reaction((_) => galleryStore.shouldRefreshTaggedGallery, (refresh) {
+    disposer = reaction((_) => galleryStore.shouldRefreshTaggedGallery, (refresh) {
       if (refresh) {
         setState(() {
           refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
@@ -445,8 +534,7 @@ class _TaggedTabState extends State<TaggedTab> {
                 return DeviceHasNoPics(
                   message: S.of(context).device_has_no_pics,
                 );
-              } else if (galleryStore.taggedPics.length == 0 &&
-                  galleryStore.deviceHasPics) {
+              } else if (galleryStore.taggedPics.length == 0 && galleryStore.deviceHasPics) {
                 return TopBar(
                   appStore: appStore,
                   galleryStore: galleryStore,
@@ -459,8 +547,7 @@ class _TaggedTabState extends State<TaggedTab> {
                           children: <Widget>[
                             SizedBox(
                               height: height / 2,
-                              child:
-                                  Image.asset('lib/images/notaggedphotos.png'),
+                              child: Image.asset('lib/images/notaggedphotos.png'),
                             ),
                             SizedBox(
                               height: 21.0,
@@ -512,8 +599,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     ),
                   ],
                 );
-              } else if (galleryStore.taggedPics.length > 0 &&
-                  galleryStore.deviceHasPics) {
+              } else if (galleryStore.taggedPics.length > 0 && galleryStore.deviceHasPics) {
                 return TopBar(
                   appStore: appStore,
                   galleryStore: galleryStore,
@@ -528,25 +614,20 @@ class _TaggedTabState extends State<TaggedTab> {
                           children: <Widget>[
                             if (galleryStore.searchingTagsKeys.length > 0)
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16.0, right: 16.0, bottom: 8.0),
+                                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
                                   tags: galleryStore.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (tagId, tagName) {
                                     print('do nothing');
                                     galleryStore.removeTagFromSearchFilter();
-                                    if (galleryStore
-                                            .searchingTagsKeys.isEmpty &&
-                                        searchFocusNode.hasFocus == false) {
+                                    if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
                                       galleryStore.setIsSearching(false);
                                     }
                                   },
                                   onPanEnd: () {
                                     galleryStore.removeTagFromSearchFilter();
-                                    if (galleryStore
-                                            .searchingTagsKeys.isEmpty &&
-                                        searchFocusNode.hasFocus == false) {
+                                    if (galleryStore.searchingTagsKeys.isEmpty && searchFocusNode.hasFocus == false) {
                                       galleryStore.setIsSearching(false);
                                     }
                                   },
@@ -558,12 +639,9 @@ class _TaggedTabState extends State<TaggedTab> {
                               ),
 //                            if (galleryStore.showSearchTagsResults) ...[
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
-                                galleryStore.showSearchTagsResults
-                                    ? S.of(context).search_results
-                                    : S.of(context).recent_tags,
+                                galleryStore.showSearchTagsResults ? S.of(context).search_results : S.of(context).recent_tags,
                                 textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -578,23 +656,21 @@ class _TaggedTabState extends State<TaggedTab> {
                             Observer(
                               builder: (_) {
                                 if (!galleryStore.showSearchTagsResults) {
-                                  print(
-                                      '############ ${galleryStore.tagsSuggestions}');
+                                  print('############ ${galleryStore.tagsSuggestions}');
                                   return Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 16.0,
-                                        right: 16,
-                                        top: 8.0,
-                                        bottom: 16.0),
+                                    padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                     child: TagsList(
                                       tags: galleryStore.tagsSuggestions,
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: widget.showEditTagModal,
                                       onTap: (tagId, tagName) {
+                                        if (tabsStore.toggleIndexTagged == 0) {
+                                          tabsStore.setToggleIndexTagged(1);
+                                        }
+
                                         galleryStore.addTagToSearchFilter();
                                         searchEditingController.clear();
-                                        galleryStore.searchResultsTags(
-                                            searchEditingController.text);
+                                        galleryStore.searchResultsTags(searchEditingController.text);
                                       },
                                       onDoubleTap: () {
                                         print('do nothing');
@@ -607,8 +683,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                 }
                                 if (galleryStore.searchTagsResults.isEmpty) {
                                   return Container(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0, left: 26.0, bottom: 10.0),
+                                    padding: const EdgeInsets.only(top: 10.0, left: 26.0, bottom: 10.0),
                                     child: Text(
                                       S.of(context).no_tags_found,
                                       textScaleFactor: 1.0,
@@ -625,21 +700,19 @@ class _TaggedTabState extends State<TaggedTab> {
                                   );
                                 }
                                 return Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 16.0,
-                                      right: 16,
-                                      top: 8.0,
-                                      bottom: 16.0),
+                                  padding: const EdgeInsets.only(left: 16.0, right: 16, top: 8.0, bottom: 16.0),
                                   child: TagsList(
-                                    tags:
-                                        galleryStore.searchTagsResults.toList(),
+                                    tags: galleryStore.searchTagsResults.toList(),
                                     tagStyle: TagStyle.GrayOutlined,
                                     showEditTagModal: widget.showEditTagModal,
                                     onTap: (tagId, tagName) {
+                                      if (tabsStore.toggleIndexTagged == 0) {
+                                        tabsStore.setToggleIndexTagged(1);
+                                      }
+
                                       galleryStore.addTagToSearchFilter();
                                       searchEditingController.clear();
-                                      galleryStore.searchResultsTags(
-                                          searchEditingController.text);
+                                      galleryStore.searchResultsTags(searchEditingController.text);
                                     },
                                     onDoubleTap: () {
                                       print('do nothing');
@@ -671,10 +744,7 @@ class _TaggedTabState extends State<TaggedTab> {
               return Container();
             }),
             Observer(builder: (_) {
-              if (galleryStore.taggedPics.length > 0 &&
-                  !tabsStore.hideTitleThirdTab &&
-                  !galleryStore.isSearching &&
-                  galleryStore.deviceHasPics) {
+              if (galleryStore.taggedPics.length > 0 && !tabsStore.hideTitleThirdTab && !galleryStore.isSearching && galleryStore.deviceHasPics) {
                 return Positioned(
                   left: 19.0,
                   top: 64.0,
@@ -682,10 +752,7 @@ class _TaggedTabState extends State<TaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar
-                            ? S.of(context).photo_gallery_count(
-                                galleryStore.selectedPics.length)
-                            : S.of(context).organized_photos_title,
+                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).organized_photos_title,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -700,6 +767,45 @@ class _TaggedTabState extends State<TaggedTab> {
                 );
               }
               return Container();
+            }),
+            Observer(builder: (_) {
+              return AnimatedOpacity(
+                opacity: tabsStore.isScrolling
+                    ? 0.0
+                    : (searchFocusNode.hasFocus || galleryStore.taggedPics.length == 0)
+                        ? 0.0
+                        : 1.0,
+                curve: Curves.linear,
+                duration: Duration(milliseconds: searchFocusNode.hasFocus ? 0 : 300),
+                onEnd: () {
+                  tabsStore.setIsToggleBarVisible(tabsStore.isScrolling ? false : true);
+                },
+                child: Visibility(
+                  visible: tabsStore.isScrolling ? tabsStore.isToggleBarVisible : true,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10.0),
+                      child: ToggleBar(
+                        titleLeft: S.of(context).toggle_date,
+                        titleRight: S.of(context).toggle_tags,
+                        activeToggle: tabsStore.toggleIndexTagged,
+                        onToggle: (index) {
+                          if (galleryStore.isSearching && index == 0) {
+                            galleryStore.clearSearchTags();
+                            galleryStore.setShouldRefreshTaggedGallery(true);
+                            setState(() {
+                              refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
+                              print('##### Rebuild everything!');
+                            });
+                          }
+                          tabsStore.setToggleIndexTagged(index);
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+              );
             }),
           ],
         ),

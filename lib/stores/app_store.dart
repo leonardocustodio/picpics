@@ -20,6 +20,7 @@ import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:uuid/uuid.dart';
+import 'package:picPics/tutorial/tabs_screen.dart';
 
 part 'app_store.g.dart';
 
@@ -56,12 +57,12 @@ abstract class _AppStore with Store {
         lastTaggedPicDate: DateTime.now(),
         canTagToday: true,
         appLanguage: deviceLocale,
-        hasSwiped: false,
         hasGalleryPermission: null,
         loggedIn: false,
         secretPhotos: false,
         isPinRegistered: false,
         keepAskingToDelete: true,
+        tourCompleted: false,
       );
 
       user = createUser;
@@ -81,7 +82,6 @@ abstract class _AppStore with Store {
     minutesOfDay = user.minutesOfDay;
     isPremium = user.isPremium;
     tutorialCompleted = user.tutorialCompleted;
-    hasSwiped = user.hasSwiped;
     appLanguage = user.appLanguage;
     hasGalleryPermission = user.hasGalleryPermission;
     canTagToday = user.canTagToday;
@@ -92,6 +92,7 @@ abstract class _AppStore with Store {
     keepAskingToDelete = user.keepAskingToDelete ?? true;
     shouldDeleteOnPrivate = user.shouldDeleteOnPrivate ?? false;
     email = user.email;
+    tourCompleted = user.tourCompleted ?? false;
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -106,6 +107,11 @@ abstract class _AppStore with Store {
 
     if (loggedIn) {
       initialRoute = TabsScreen.id;
+      // if (tourCompleted != null) {
+      //   initialRoute = TutsTabsScreen.id;
+      // } else {
+      //
+      // }
     } else {
       initialRoute = LoginScreen.id;
     }
@@ -133,6 +139,7 @@ abstract class _AppStore with Store {
   String tryBuyId;
   int dailyPicsForAds = 25;
   // int freePrivatePics = 20;
+  bool tourCompleted;
 
   Future<int> get freePrivatePics async {
     final RemoteConfig remoteConfig = await RemoteConfig.instance;
@@ -490,19 +497,6 @@ abstract class _AppStore with Store {
     }
     currentUser.save();
     setCanTagToday(true);
-  }
-
-  @observable
-  bool hasSwiped = false;
-
-  @action
-  void setHasSwiped(bool value) {
-    hasSwiped = true;
-
-    var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.hasSwiped = value;
-    currentUser.save();
   }
 
   @observable

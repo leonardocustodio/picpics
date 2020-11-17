@@ -151,6 +151,14 @@
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "무제한 개인 사진",
-  "recent_tags": "Recent Tags"
+
+  "toggle_months": "월",
+  "toggle_days": "일",
+  "toggle_date": "날짜 별",
+  "toggle_tags": "태그",
+  "feedback_bug_report": "피드백 및 버그 신고",
+  "private_photos": "개인 사진",
+  "recent_tags": "최근 태그",
+  "ask_photo_library_permission": "picPics로 사진 정리를 시작하려면 사진 라이브러리에 액세스해야합니다. 데이터가 장치를 떠나지 않을 것이라고 걱정하지 마십시오!"
 
 }

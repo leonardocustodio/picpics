@@ -5,8 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:mobx/mobx.dart';
-import 'package:picPics/components/custom_bubble_bottom_bar.dart';
-import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -266,13 +264,6 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       if (index == 0) {
         galleryStore.clearSelectedPics();
         tabsStore.setMultiPicBar(false);
-      } else if (index == 3) {
-        galleryStore.trashMultiplePics(galleryStore.selectedPics);
-      } else if (index == 2) {
-        print('sharing selected pics....');
-        tabsStore.setIsLoading(true);
-        await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
-        tabsStore.setIsLoading(false);
       } else if (index == 1) {
         tabsStore.setMultiTagSheet(true);
         Future.delayed(Duration(milliseconds: 200), () {
@@ -280,6 +271,19 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
             expandableController.expanded = true;
           });
         });
+      } else if (index == 2) {
+        if (galleryStore.selectedPics.isEmpty) {
+          return;
+        }
+        print('sharing selected pics....');
+        tabsStore.setIsLoading(true);
+        await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
+        tabsStore.setIsLoading(false);
+      } else if (index == 3) {
+        if (galleryStore.selectedPics.isEmpty) {
+          return;
+        }
+        galleryStore.trashMultiplePics(galleryStore.selectedPics);
       }
       return;
     }
@@ -453,10 +457,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                     Spacer(),
                                     CupertinoButton(
                                       onPressed: () {
-                                        if (!appStore.isPremium) {
-                                          Navigator.pushNamed(context, PremiumScreen.id);
-                                          return;
-                                        }
+                                        // if (!appStore.isPremium) {
+                                        //   Navigator.pushNamed(
+                                        //       context, PremiumScreen.id);
+                                        //   return;
+                                        // }
 
                                         if (galleryStore.multiPicTagKeys.contains(kSecretTagKey)) {
                                           showDeleteSecretModalForMultiPic();
@@ -503,34 +508,38 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         textEditingController: bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagId, tagName) {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           galleryStore.removeFromMultiPicTags(DatabaseManager.instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           print('do nothing');
                                         },
                                         onChanged: (text) {
                                           galleryStore.setSearchText(text);
                                         },
                                         onSubmitted: (text) {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
                                             galleryStore.setSearchText('');
@@ -553,27 +562,30 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagId, tagName) {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
 
                                           bottomTagsEditingController.clear();
                                           galleryStore.setSearchText('');
                                           galleryStore.addToMultiPicTags(tagId);
                                         },
                                         onDoubleTap: () {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          if (!appStore.isPremium) {
-                                            Navigator.pushNamed(context, PremiumScreen.id);
-                                            return;
-                                          }
+                                          // if (!appStore.isPremium) {
+                                          //   Navigator.pushNamed(
+                                          //       context, PremiumScreen.id);
+                                          //   return;
+                                          // }
                                           print('do nothing');
                                         },
                                       ),
@@ -674,11 +686,21 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               ),
                               BottomNavigationBarItem(
                                 title: Container(),
-                                icon: Image.asset('lib/images/sharetabbutton.png'),
+                                icon: galleryStore.selectedPics.isEmpty
+                                    ? Opacity(
+                                        opacity: 0.2,
+                                        child: Image.asset('lib/images/sharetabbutton.png'),
+                                      )
+                                    : Image.asset('lib/images/sharetabbutton.png'),
                               ),
                               BottomNavigationBarItem(
                                 title: Container(),
-                                icon: Image.asset('lib/images/trashtabbutton.png'),
+                                icon: galleryStore.selectedPics.isEmpty
+                                    ? Opacity(
+                                        opacity: 0.3,
+                                        child: Image.asset('lib/images/trashtabbutton.png'),
+                                      )
+                                    : Image.asset('lib/images/trashtabbutton.png'),
                               ),
                             ],
                           )
@@ -706,11 +728,21 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Share',
-                                  icon: Image.asset('lib/images/sharetabbutton.png'),
+                                  icon: galleryStore.selectedPics.isEmpty
+                                      ? Opacity(
+                                          opacity: 0.3,
+                                          child: Image.asset('lib/images/sharetabbutton.png'),
+                                        )
+                                      : Image.asset('lib/images/sharetabbutton.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Trash',
-                                  icon: Image.asset('lib/images/trashtabbutton.png'),
+                                  icon: galleryStore.selectedPics.isEmpty
+                                      ? Opacity(
+                                          opacity: 0.3,
+                                          child: Image.asset('lib/images/trashtabbutton.png'),
+                                        )
+                                      : Image.asset('lib/images/trashtabbutton.png'),
                                 ),
                               ],
                             ),
