@@ -106,11 +106,12 @@ abstract class _AppStore with Store {
     }
 
     if (loggedIn) {
-      if (tourCompleted != null) {
-        initialRoute = TutsTabsScreen.id;
-      } else {
-        initialRoute = TabsScreen.id;
-      }
+      initialRoute = TabsScreen.id;
+      // if (tourCompleted != null) {
+      //   initialRoute = TutsTabsScreen.id;
+      // } else {
+      //
+      // }
     } else {
       initialRoute = LoginScreen.id;
     }
