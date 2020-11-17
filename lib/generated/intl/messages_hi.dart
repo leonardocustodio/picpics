@@ -146,6 +146,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("हम धीरे-धीरे आपके पुस्तकालय को व्यवस्थित करने के लिए एक दैनिक पैकेज लाते हैं."),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("टैग जोड़कर अपनी तस्वीरों को व्यवस्थित करें, जैसे \'परिवार\', \'पालतू जानवर\', या जो भी आप चाहते हैं."),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("अपनी फ़ोटो में टैग जोड़ने के बाद, बस अगले एक पर जाने के लिए स्वाइप करें."),
+    "tutorial_multiselect" : MessageLookupByLibrary.simpleMessage("आप एक साथ कई फ़ोटो टैग करने के लिए अपनी तस्वीरों पर \"टैप और होल्ड\" कर सकते हैं।"),
+    "tutorial_secret" : MessageLookupByLibrary.simpleMessage("अपनी निजी तस्वीरों को पिन कोड सुरक्षा के साथ छिपाएं, उन्हें सुरक्षित रखें।"),
     "unlimited_private_pics" : MessageLookupByLibrary.simpleMessage("असीमित निजी तस्वीरें"),
     "vacation_tag" : MessageLookupByLibrary.simpleMessage("छुट्टी"),
     "view_hidden_photos" : MessageLookupByLibrary.simpleMessage("अपनी छिपी तस्वीरों को देखने के लिए, एप्लिकेशन सेटिंग में लॉक जारी करें। आप उन्हें अपने पिन से अनलॉक कर सकते हैं"),

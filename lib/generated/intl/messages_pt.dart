@@ -541,6 +541,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("Trazemos diariamente um pacote para você organizar aos poucos sua biblioteca."),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("Organize suas fotos adicionando tags, como \"família\", \"pets\", ou o que você quiser."),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("Depois de adicionar as tags na sua foto, basta fazer um swipe para ir para a próxima."),
+    "tutorial_multiselect" : MessageLookupByLibrary.simpleMessage("Você pode \"tocar e segurar\" em suas fotos para marcar várias fotos de uma vez."),
+    "tutorial_secret" : MessageLookupByLibrary.simpleMessage("Oculte suas fotos privadas com proteção por senha, mantendo-as seguras."),
     "tuxedo_tag" : MessageLookupByLibrary.simpleMessage("Smoking"),
     "twig_tag" : MessageLookupByLibrary.simpleMessage("Galho"),
     "umbrella_tag" : MessageLookupByLibrary.simpleMessage("Guarda-chuva"),

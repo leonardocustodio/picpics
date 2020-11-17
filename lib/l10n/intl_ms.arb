@@ -160,5 +160,7 @@
   "feedback_bug_report": "Maklum balas & laporan pepijat",
   "private_photos": "Foto Peribadi",
   "recent_tags": "Tag Terkini",
-  "ask_photo_library_permission": "Kami memerlukan akses ke pustaka foto anda supaya anda dapat mula mengatur foto anda dengan picPics. Jangan bimbang data anda tidak akan meninggalkan peranti anda!"
+  "ask_photo_library_permission": "Kami memerlukan akses ke pustaka foto anda supaya anda dapat mula mengatur foto anda dengan picPics. Jangan bimbang data anda tidak akan meninggalkan peranti anda!",
+  "tutorial_multiselect": "Anda boleh \"ketuk & tahan\" pada foto anda untuk menandai banyak foto sekaligus.",
+  "tutorial_secret": "Sembunyikan foto peribadi anda dengan perlindungan kod pin, jaga keselamatannya."
 }

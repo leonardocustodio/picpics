@@ -160,6 +160,8 @@
   "feedback_bug_report": "Feedback och fel",
   "private_photos": "Privata foton",
   "recent_tags": "Senaste taggar",
-  "ask_photo_library_permission": "Vi behöver åtkomst till ditt fotobibliotek så att du kan börja organisera dina foton med picPics. Oroa dig inte, dina data kommer aldrig att lämna din enhet!"
+  "ask_photo_library_permission": "Vi behöver åtkomst till ditt fotobibliotek så att du kan börja organisera dina foton med picPics. Oroa dig inte, dina data kommer aldrig att lämna din enhet!",
+  "tutorial_multiselect": "Du kan trycka och hålla ned på dina foton för att tagga flera foton samtidigt.",
+  "tutorial_secret": "Dölj dina privata foton med ett PIN-kodskydd, för att hålla dem säkra."
 
 }

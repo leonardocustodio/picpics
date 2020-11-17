@@ -589,5 +589,7 @@
   "feedback_bug_report": "Feedback & Fehlerbericht",
   "private_photos": "Private Fotos",
   "recent_tags": "Aktuelle Tags",
-  "ask_photo_library_permission": "Wir benötigen Zugriff auf Ihre Fotobibliothek, damit Sie Ihre Fotos mit picPics organisieren können. Machen Sie sich keine Sorgen, Ihre Daten werden Ihr Gerät niemals verlassen!"
+  "ask_photo_library_permission": "Wir benötigen Zugriff auf Ihre Fotobibliothek, damit Sie Ihre Fotos mit picPics organisieren können. Machen Sie sich keine Sorgen, Ihre Daten werden Ihr Gerät niemals verlassen!",
+  "tutorial_multiselect": "Sie können auf Ihre Fotos \"tippen und halten\", um mehrere Fotos gleichzeitig zu markieren.",
+  "tutorial_secret": "Verstecken Sie Ihre privaten Fotos mit einem PIN-Code-Schutz und bewahren Sie sie sicher auf."
 }

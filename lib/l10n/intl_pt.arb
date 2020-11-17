@@ -591,5 +591,7 @@
   "feedback_bug_report": "Feedback & Bugs",
   "private_photos": "Fotos privadas",
   "recent_tags": "Tags recentes",
-  "ask_photo_library_permission": "Precisamos de acesso à sua biblioteca de fotos para que você possa começar a organizar suas fotos com picPics. Não se preocupe, seus dados nunca sairão do seu dispositivo!"
+  "ask_photo_library_permission": "Precisamos de acesso à sua biblioteca de fotos para que você possa começar a organizar suas fotos com picPics. Não se preocupe, seus dados nunca sairão do seu dispositivo!",
+  "tutorial_multiselect": "Você pode \"tocar e segurar\" em suas fotos para marcar várias fotos de uma vez.",
+  "tutorial_secret": "Oculte suas fotos privadas com proteção por senha, mantendo-as seguras."
 }

@@ -5587,6 +5587,26 @@ class S {
       args: [],
     );
   }
+
+  /// `You can "tap & hold" on your photos to tag multiple photos at once.`
+  String get tutorial_multiselect {
+    return Intl.message(
+      'You can "tap & hold" on your photos to tag multiple photos at once.',
+      name: 'tutorial_multiselect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hide your private photos with a pin code protection, keeping them safe.`
+  String get tutorial_secret {
+    return Intl.message(
+      'Hide your private photos with a pin code protection, keeping them safe.',
+      name: 'tutorial_secret',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

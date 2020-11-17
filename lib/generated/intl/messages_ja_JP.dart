@@ -540,6 +540,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "tutorial_daily_package" : MessageLookupByLibrary.simpleMessage("ライブラリは徐々に整理できるよう、デイリーパッケージをお届けします。"),
     "tutorial_however_you_want" : MessageLookupByLibrary.simpleMessage("「家族」、「ペット」など、好きなタグを付けて写真を整理できます。"),
     "tutorial_just_swipe" : MessageLookupByLibrary.simpleMessage("写真にタグを付けた後はスワイプするだけで次の写真に移動できます。"),
+    "tutorial_multiselect" : MessageLookupByLibrary.simpleMessage("写真を「タップアンドホールド」して、一度に複数の写真にタグを付けることができます。"),
+    "tutorial_secret" : MessageLookupByLibrary.simpleMessage("ピンコード保護でプライベート写真を非表示にし、安全に保ちます。"),
     "tuxedo_tag" : MessageLookupByLibrary.simpleMessage("タキシード"),
     "twig_tag" : MessageLookupByLibrary.simpleMessage("小枝"),
     "umbrella_tag" : MessageLookupByLibrary.simpleMessage("傘"),

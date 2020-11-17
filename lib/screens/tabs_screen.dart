@@ -909,7 +909,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
           return Container();
         }),
         Observer(builder: (_) {
-          if (appStore.tutorialCompleted == false) {
+          if (appStore.tutorialCompleted != true) {
             Analytics.sendTutorialBegin();
 
             return Container(
@@ -953,14 +953,17 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 Image image;
 
                                 if (index == 0) {
-                                  text = S.of(context).tutorial_just_swipe;
-                                  image = Image.asset('lib/images/tutorialthirdimage.png');
-                                } else if (index == 1) {
                                   text = S.of(context).tutorial_however_you_want;
                                   image = Image.asset('lib/images/tutorialsecondimage.png');
+                                } else if (index == 1) {
+                                  text = S.of(context).tutorial_just_swipe;
+                                  image = Image.asset('lib/images/tutorialthirdimage.png');
+                                } else if (index == 2) {
+                                  text = S.of(context).tutorial_secret;
+                                  image = Image.asset('lib/images/tutorialsecret.png');
                                 } else {
-                                  text = S.of(context).tutorial_daily_package;
-                                  image = Image.asset('lib/images/tutorialfirstimage.png');
+                                  text = S.of(context).tutorial_multiselect;
+                                  image = Image.asset('lib/images/tutorialmultiselect.png');
                                 }
 
                                 return Column(
@@ -990,7 +993,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   ],
                                 );
                               },
-                              itemCount: 3,
+                              itemCount: 4,
                               controller: tutorialSwiperController,
                               onIndexChanged: (index) {
                                 tabsStore.setTutorialIndex(index);
@@ -1013,7 +1016,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
-                                          margin: const EdgeInsets.only(left: 24.0, right: 24.0),
+                                          margin: const EdgeInsets.only(left: 24.0, right: 12.0),
                                           decoration: BoxDecoration(
                                             color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
                                             borderRadius: BorderRadius.circular(4.0),
@@ -1022,8 +1025,17 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
+                                          margin: const EdgeInsets.only(left: 12.0, right: 24.0),
                                           decoration: BoxDecoration(
                                             color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
+                                            borderRadius: BorderRadius.circular(4.0),
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 8.0,
+                                          width: 8.0,
+                                          decoration: BoxDecoration(
+                                            color: config.activeIndex == 3 ? kSecondaryColor : kGrayColor,
                                             borderRadius: BorderRadius.circular(4.0),
                                           ),
                                         ),
@@ -1039,7 +1051,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                           ),
                           CupertinoButton(
                             onPressed: () async {
-                              if (tabsStore.tutorialIndex == 2) {
+                              if (tabsStore.tutorialIndex == 3) {
                                 print('Requesting notification....');
 
                                 await appStore.requestNotificationPermission();
@@ -1060,7 +1072,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               ),
                               child: Center(
                                 child: Text(
-                                  tabsStore.tutorialIndex == 2 ? S.of(context).start : S.of(context).next,
+                                  tabsStore.tutorialIndex == 3 ? S.of(context).start : S.of(context).next,
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(

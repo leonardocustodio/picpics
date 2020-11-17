@@ -160,5 +160,7 @@
   "feedback_bug_report": "Feedback e bug",
   "private_photos": "Foto private",
   "recent_tags": "Tag recenti",
-  "ask_photo_library_permission": "Abbiamo bisogno di accedere alla tua libreria di foto in modo da poter iniziare a organizzare le tue foto con picPics. Non preoccuparti, i tuoi dati non lasceranno mai il tuo dispositivo!"
+  "ask_photo_library_permission": "Abbiamo bisogno di accedere alla tua libreria di foto in modo da poter iniziare a organizzare le tue foto con picPics. Non preoccuparti, i tuoi dati non lasceranno mai il tuo dispositivo!",
+  "tutorial_multiselect": "Puoi \"toccare e tenere premuto\" sulle foto per taggare più foto contemporaneamente.",
+  "tutorial_secret": "Nascondi le tue foto private con una protezione tramite codice pin, mantenendole al sicuro."
 }
