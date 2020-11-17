@@ -857,6 +857,44 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               children: [
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        child: Image.asset('lib/images/facebookico.png'),
+                                      ),
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/facebook');
+                                      },
+                                    ),
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        child: Image.asset('lib/images/webico.png'),
+                                      ),
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/website');
+                                      },
+                                    ),
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        child: Image.asset('lib/images/instagramico.png'),
+                                      ),
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/instagram');
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     CupertinoButton(
                                       onPressed: () {
