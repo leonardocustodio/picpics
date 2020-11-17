@@ -772,7 +772,7 @@ class _TaggedTabState extends State<TaggedTab> {
               return AnimatedOpacity(
                 opacity: tabsStore.isScrolling
                     ? 0.0
-                    : searchFocusNode.hasFocus
+                    : (searchFocusNode.hasFocus || galleryStore.taggedPics.length == 0)
                         ? 0.0
                         : 1.0,
                 curve: Curves.linear,

@@ -900,8 +900,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     child: _buildGridView(context),
                   ),
                 ),
-                Container(
-                  height: 56.0,
+                Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
