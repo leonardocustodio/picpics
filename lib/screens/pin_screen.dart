@@ -39,39 +39,8 @@ class _PinScreenState extends State<PinScreen> {
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
 
-  final LocalAuthentication auth = LocalAuthentication();
-  bool _canCheckBiometrics;
-  List<BiometricType> _availableBiometrics;
   String _authorized = 'Not Authorized';
   bool _isAuthenticating = false;
-
-  Future<void> _checkBiometrics() async {
-    bool canCheckBiometrics;
-    try {
-      canCheckBiometrics = await auth.canCheckBiometrics;
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return;
-
-    setState(() {
-      _canCheckBiometrics = canCheckBiometrics;
-    });
-  }
-
-  Future<void> _getAvailableBiometrics() async {
-    List<BiometricType> availableBiometrics;
-    try {
-      availableBiometrics = await auth.getAvailableBiometrics();
-    } on PlatformException catch (e) {
-      print(e);
-    }
-    if (!mounted) return;
-
-    setState(() {
-      _availableBiometrics = availableBiometrics;
-    });
-  }
 
   Future<void> _authenticate() async {
     bool authenticated = false;
@@ -80,7 +49,8 @@ class _PinScreenState extends State<PinScreen> {
         _isAuthenticating = true;
         _authorized = 'Authenticating';
       });
-      authenticated = await auth.authenticateWithBiometrics(localizedReason: 'Scan your fingerprint to authenticate', useErrorDialogs: true, stickyAuth: true);
+      authenticated = await appStore.biometricAuth
+          .authenticateWithBiometrics(localizedReason: 'Scan your fingerprint to authenticate', useErrorDialogs: true, stickyAuth: true);
       setState(() {
         _isAuthenticating = false;
         _authorized = 'Authenticating';
@@ -97,7 +67,7 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   void _cancelAuthentication() {
-    auth.stopAuthentication();
+    appStore.biometricAuth.stopAuthentication();
   }
 
   GlobalKey<AnimatorWidgetState> _shakeKey = GlobalKey<AnimatorWidgetState>();
@@ -227,7 +197,6 @@ class _PinScreenState extends State<PinScreen> {
   @override
   void initState() {
     super.initState();
-
 //    Analytics.sendCurrentScreen(Screen.login_screen);
   }
 
@@ -608,7 +577,23 @@ class _PinScreenState extends State<PinScreen> {
                       }
 
                       if (appStore.isPinRegistered == true) {
-                        print('Can check biometrics: $_canCheckBiometrics');
+                        Widget biometricWidget;
+                        if (appStore.availableBiometrics.contains(BiometricType.face)) {
+                          biometricWidget = CupertinoButton(
+                            onPressed: () {
+                              _authenticate();
+                            },
+                            child: Image.asset('lib/images/faceidwhiteico.png'),
+                          );
+                        } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
+                          biometricWidget = CupertinoButton(
+                            onPressed: () {
+                              _authenticate();
+                            },
+                            child: Image.asset('lib/images/fingerprintwhiteico.png'),
+                          );
+                        }
+
                         return Column(
                           children: [
                             Spacer(),
@@ -641,12 +626,7 @@ class _PinScreenState extends State<PinScreen> {
                               onPinTapped: pinTapped,
                             ),
                             Spacer(),
-                            CupertinoButton(
-                              onPressed: () {
-                                recoverPin();
-                              },
-                              child: Image.asset('lib/images/faceidwhiteico.png'),
-                            ),
+                            if (biometricWidget != null) biometricWidget,
                             CupertinoButton(
                               onPressed: () {
                                 recoverPin();

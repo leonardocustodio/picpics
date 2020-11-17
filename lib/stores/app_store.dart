@@ -21,6 +21,7 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:uuid/uuid.dart';
 import 'package:picPics/tutorial/tabs_screen.dart';
+import 'package:local_auth/local_auth.dart';
 
 part 'app_store.g.dart';
 
@@ -30,6 +31,7 @@ abstract class _AppStore with Store {
   final String appVersion;
   final String deviceLocale;
   final String initiatedWithProduct;
+  final LocalAuthentication biometricAuth = LocalAuthentication();
 
   _AppStore({
     this.appVersion,
@@ -129,6 +131,8 @@ abstract class _AppStore with Store {
     if (user.isPremium) {
       checkPremiumStatus();
     }
+
+    checkAvailableBiometrics();
 
     autorun((_) {
       print('autorun');
@@ -654,6 +658,26 @@ abstract class _AppStore with Store {
 
   @action
   void setPhotoHeightInCardWidget(double value) => photoHeightInCardWidget = value;
+
+  @observable
+  List<BiometricType> availableBiometrics;
+
+  @action
+  Future<void> checkAvailableBiometrics() async {
+    bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await biometricAuth.canCheckBiometrics;
+      if (canCheckBiometrics) {
+        try {
+          availableBiometrics = await biometricAuth.getAvailableBiometrics();
+        } catch (e) {
+          print(e);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 }
 
 enum PopPinScreenTo {
