@@ -269,6 +269,38 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$isBiometricActivatedAtom =
+      Atom(name: '_AppStore.isBiometricActivated');
+
+  @override
+  bool get isBiometricActivated {
+    _$isBiometricActivatedAtom.reportRead();
+    return super.isBiometricActivated;
+  }
+
+  @override
+  set isBiometricActivated(bool value) {
+    _$isBiometricActivatedAtom.reportWrite(value, super.isBiometricActivated,
+        () {
+      super.isBiometricActivated = value;
+    });
+  }
+
+  final _$availableBiometricsAtom = Atom(name: '_AppStore.availableBiometrics');
+
+  @override
+  List<BiometricType> get availableBiometrics {
+    _$availableBiometricsAtom.reportRead();
+    return super.availableBiometrics;
+  }
+
+  @override
+  set availableBiometrics(List<BiometricType> value) {
+    _$availableBiometricsAtom.reportWrite(value, super.availableBiometrics, () {
+      super.availableBiometrics = value;
+    });
+  }
+
   final _$requestNotificationPermissionAsyncAction =
       AsyncAction('_AppStore.requestNotificationPermission');
 
@@ -323,6 +355,15 @@ mixin _$AppStore on _AppStore, Store {
   Future<void> requestGalleryPermission() {
     return _$requestGalleryPermissionAsyncAction
         .run(() => super.requestGalleryPermission());
+  }
+
+  final _$checkAvailableBiometricsAsyncAction =
+      AsyncAction('_AppStore.checkAvailableBiometrics');
+
+  @override
+  Future<void> checkAvailableBiometrics() {
+    return _$checkAvailableBiometricsAsyncAction
+        .run(() => super.checkAvailableBiometrics());
   }
 
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
@@ -585,6 +626,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void setIsBiometricActivated(bool value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setIsBiometricActivated');
+    try {
+      return super.setIsBiometricActivated(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},
@@ -603,6 +655,8 @@ appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},
 waitingAccessCode: ${waitingAccessCode},
 photoHeightInCardWidget: ${photoHeightInCardWidget},
+isBiometricActivated: ${isBiometricActivated},
+availableBiometrics: ${availableBiometrics},
 appLocale: ${appLocale},
 currentLanguage: ${currentLanguage}
     ''';

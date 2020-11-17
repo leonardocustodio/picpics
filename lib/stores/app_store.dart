@@ -65,6 +65,7 @@ abstract class _AppStore with Store {
         isPinRegistered: false,
         keepAskingToDelete: true,
         tourCompleted: false,
+        isBiometricActivated: false,
       );
 
       user = createUser;
@@ -95,6 +96,7 @@ abstract class _AppStore with Store {
     shouldDeleteOnPrivate = user.shouldDeleteOnPrivate ?? false;
     email = user.email;
     tourCompleted = user.tourCompleted ?? false;
+    isBiometricActivated = user.isBiometricActivated ?? false;
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -658,6 +660,19 @@ abstract class _AppStore with Store {
 
   @action
   void setPhotoHeightInCardWidget(double value) => photoHeightInCardWidget = value;
+
+  @observable
+  bool isBiometricActivated;
+
+  @action
+  void setIsBiometricActivated(bool value) {
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.isBiometricActivated = value;
+    currentUser.save();
+
+    isBiometricActivated = value;
+  }
 
   @observable
   List<BiometricType> availableBiometrics;

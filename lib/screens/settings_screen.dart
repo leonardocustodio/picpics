@@ -553,6 +553,64 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                     ),
                                   ),
                                 ),
+                                Divider(
+                                  color: kLightGrayColor,
+                                  thickness: 1.0,
+                                ),
+                                Observer(builder: (_) {
+                                  if (appStore.secretPhotos == true) {
+                                    return FadeIn(
+                                      delay: 0,
+                                      child: LayoutBuilder(
+                                        builder: (context, constraint) {
+                                          if (constraint.maxHeight < 30.0) {
+                                            return Container();
+                                          }
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                    child: CupertinoButton(
+                                                      padding: const EdgeInsets.all(0),
+                                                      onPressed: () => showRequirePinPicker(context),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            'Enable Face ID',
+                                                            textScaleFactor: 1.0,
+                                                            style: kGraySettingsFieldTextStyle,
+                                                          ),
+                                                          Observer(builder: (_) {
+                                                            return CupertinoSwitch(
+                                                              value: appStore.isBiometricActivated,
+                                                              activeColor: kSecondaryColor,
+                                                              onChanged: (value) {
+                                                                appStore.setIsBiometricActivated(value);
+                                                              },
+                                                            );
+                                                          }),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Divider(
+                                                color: kLightGrayColor,
+                                                thickness: 1.0,
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }
+                                  return Container();
+                                }),
                                 // Divider(
                                 //   color: kLightGrayColor,
                                 //   thickness: 1.0,
@@ -707,10 +765,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 //                        ),
 //                      ),
 //                    ),
-                                Divider(
-                                  color: kLightGrayColor,
-                                  thickness: 1.0,
-                                ),
+//                                 Divider(
+//                                   color: kLightGrayColor,
+//                                   thickness: 1.0,
+//                                 ),
                                 Container(
                                   height: 60.0,
                                   child: Padding(

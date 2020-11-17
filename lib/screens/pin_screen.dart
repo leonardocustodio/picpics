@@ -577,21 +577,16 @@ class _PinScreenState extends State<PinScreen> {
                       }
 
                       if (appStore.isPinRegistered == true) {
-                        Widget biometricWidget;
-                        if (appStore.availableBiometrics.contains(BiometricType.face)) {
-                          biometricWidget = CupertinoButton(
-                            onPressed: () {
-                              _authenticate();
-                            },
-                            child: Image.asset('lib/images/faceidwhiteico.png'),
-                          );
-                        } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
-                          biometricWidget = CupertinoButton(
-                            onPressed: () {
-                              _authenticate();
-                            },
-                            child: Image.asset('lib/images/fingerprintwhiteico.png'),
-                          );
+                        String assetImage;
+
+                        if (appStore.isBiometricActivated == true) {
+                          if (appStore.availableBiometrics.contains(BiometricType.face)) {
+                            assetImage = 'lib/images/faceidwhiteico.png';
+                          } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
+                            assetImage = 'lib/images/fingerprintwhiteico.png';
+                          } else if (appStore.availableBiometrics.contains(BiometricType.iris)) {
+                            assetImage = 'lib/images/irisscannerwhiteico.png';
+                          }
                         }
 
                         return Column(
@@ -626,7 +621,13 @@ class _PinScreenState extends State<PinScreen> {
                               onPinTapped: pinTapped,
                             ),
                             Spacer(),
-                            if (biometricWidget != null) biometricWidget,
+                            if (assetImage != null)
+                              CupertinoButton(
+                                onPressed: () {
+                                  _authenticate();
+                                },
+                                child: Image.asset(assetImage),
+                              ),
                             CupertinoButton(
                               onPressed: () {
                                 recoverPin();
