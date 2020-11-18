@@ -255,6 +255,8 @@ PODS:
   - GTMSessionFetcher/Core (1.5.0)
   - GTMSessionFetcher/Full (1.5.0):
     - GTMSessionFetcher/Core (= 1.5.0)
+  - local_auth (0.0.1):
+    - Flutter
   - nanopb (1.30905.0):
     - nanopb/decode (= 1.30905.0)
     - nanopb/encode (= 1.30905.0)
@@ -314,6 +316,7 @@ DEPENDENCIES:
   - geocoding (from `.symlinks/plugins/geocoding/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - notification_permissions (from `.symlinks/plugins/notification_permissions/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -411,6 +414,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/geolocator/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
+  local_auth:
+    :path: ".symlinks/plugins/local_auth/ios"
   notification_permissions:
     :path: ".symlinks/plugins/notification_permissions/ios"
   package_info:
@@ -486,6 +491,7 @@ SPEC CHECKSUMS:
   GoogleUserMessagingPlatform: 1d4b6946710d18cec34742054092e2c2bddae61f
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
+  local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   notification_permissions: b74860c2967c1579243a675e63cd55e0ae75cef7
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62

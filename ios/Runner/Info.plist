@@ -76,6 +76,8 @@
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>We can use your Face ID to unlock your private photos.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>If you want our app to add your location to your photos, we need authorization to access your location.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
