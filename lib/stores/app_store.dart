@@ -22,6 +22,8 @@ import 'package:picPics/utils/languages.dart';
 import 'package:uuid/uuid.dart';
 import 'package:picPics/tutorial/tabs_screen.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:picPics/model/user_key.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 
 part 'app_store.g.dart';
 
@@ -661,11 +663,17 @@ abstract class _AppStore with Store {
   @action
   void setPhotoHeightInCardWidget(double value) => photoHeightInCardWidget = value;
 
+  bool wantsToActivateBiometric = false;
+
   @observable
   bool isBiometricActivated;
 
   @action
-  void setIsBiometricActivated(bool value) {
+  Future<void> setIsBiometricActivated(bool value) async {
+    if (value == false) {
+      await deactivateBiometric();
+    }
+
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.isBiometricActivated = value;
@@ -692,6 +700,28 @@ abstract class _AppStore with Store {
     } catch (e) {
       print(e);
     }
+  }
+
+  void saveSecretKey(String value) {
+    var userBox = Hive.box('userkey');
+    UserKey userKey = UserKey(secretKey: value);
+    userBox.put(0, userKey);
+  }
+
+  String getSecretKey() {
+    var userBox = Hive.box('userkey');
+    UserKey userKey = userBox.get(0);
+    return userKey.secretKey;
+  }
+
+  @action
+  Future<void> deactivateBiometric() async {
+    await Crypto.deleteEncryptedPin();
+
+    var userBox = Hive.box('userkey');
+    userBox.delete(0);
+
+    print('Deleted encrypted info!');
   }
 }
 

@@ -542,6 +542,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                                     return;
                                                   }
 
+                                                  appStore.wantsToActivateBiometric = false;
                                                   appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
                                                   Navigator.pushNamed(context, PinScreen.id);
                                                 },
@@ -588,8 +589,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                                             return CupertinoSwitch(
                                                               value: appStore.isBiometricActivated,
                                                               activeColor: kSecondaryColor,
-                                                              onChanged: (value) {
-                                                                appStore.setIsBiometricActivated(value);
+                                                              onChanged: (value) async {
+                                                                if (value == true) {
+                                                                  appStore.wantsToActivateBiometric = true;
+                                                                  appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                                                                  Navigator.pushNamed(context, PinScreen.id);
+                                                                  return;
+                                                                }
+                                                                // appStore
+                                                                await appStore.setIsBiometricActivated(value);
                                                               },
                                                             );
                                                           }),

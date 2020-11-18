@@ -357,6 +357,15 @@ mixin _$AppStore on _AppStore, Store {
         .run(() => super.requestGalleryPermission());
   }
 
+  final _$setIsBiometricActivatedAsyncAction =
+      AsyncAction('_AppStore.setIsBiometricActivated');
+
+  @override
+  Future<void> setIsBiometricActivated(bool value) {
+    return _$setIsBiometricActivatedAsyncAction
+        .run(() => super.setIsBiometricActivated(value));
+  }
+
   final _$checkAvailableBiometricsAsyncAction =
       AsyncAction('_AppStore.checkAvailableBiometrics');
 
@@ -364,6 +373,15 @@ mixin _$AppStore on _AppStore, Store {
   Future<void> checkAvailableBiometrics() {
     return _$checkAvailableBiometricsAsyncAction
         .run(() => super.checkAvailableBiometrics());
+  }
+
+  final _$deactivateBiometricAsyncAction =
+      AsyncAction('_AppStore.deactivateBiometric');
+
+  @override
+  Future<void> deactivateBiometric() {
+    return _$deactivateBiometricAsyncAction
+        .run(() => super.deactivateBiometric());
   }
 
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
@@ -620,17 +638,6 @@ mixin _$AppStore on _AppStore, Store {
         name: '_AppStore.setPhotoHeightInCardWidget');
     try {
       return super.setPhotoHeightInCardWidget(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setIsBiometricActivated(bool value) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setIsBiometricActivated');
-    try {
-      return super.setIsBiometricActivated(value);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
