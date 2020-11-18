@@ -162,6 +162,10 @@
   "recent_tags": "Tag Terbaru",
   "ask_photo_library_permission": "Kami membutuhkan akses ke perpustakaan foto Anda sehingga Anda dapat mulai mengatur foto-foto Anda dengan picPics. Jangan khawatir data Anda tidak akan pernah meninggalkan perangkat Anda!",
   "tutorial_multiselect": "Anda dapat \"mengetuk & menahan\" foto Anda untuk menandai beberapa foto sekaligus.",
-  "tutorial_secret": "Sembunyikan foto pribadi Anda dengan perlindungan kode pin, jaga agar tetap aman."
+  "tutorial_secret": "Sembunyikan foto pribadi Anda dengan perlindungan kode pin, jaga agar tetap aman.",
+  "enable_faceid": "Aktifkan Face ID",
+  "enable_touchid": "Aktifkan Touch ID",
+  "enable_fingerprint": "Aktifkan Sidik Jari",
+  "enable_irisscanner": "Aktifkan Iris Scanner"
 
 }

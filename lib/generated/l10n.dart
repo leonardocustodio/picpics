@@ -9,6 +9,8 @@ import 'intl/messages_all.dart';
 // **************************************************************************
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
+// ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
+// ignore_for_file: avoid_redundant_argument_values
 
 class S {
   S();
@@ -5601,6 +5603,46 @@ class S {
     return Intl.message(
       'Hide your private photos with a pin code protection, keeping them safe.',
       name: 'tutorial_secret',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Face ID`
+  String get enable_faceid {
+    return Intl.message(
+      'Enable Face ID',
+      name: 'enable_faceid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Touch ID`
+  String get enable_touchid {
+    return Intl.message(
+      'Enable Touch ID',
+      name: 'enable_touchid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Fingerprint`
+  String get enable_fingerprint {
+    return Intl.message(
+      'Enable Fingerprint',
+      name: 'enable_fingerprint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Iris Scanner`
+  String get enable_irisscanner {
+    return Intl.message(
+      'Enable Iris Scanner',
+      name: 'enable_irisscanner',
       desc: '',
       args: [],
     );

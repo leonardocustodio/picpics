@@ -18,6 +18,7 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:local_auth/local_auth.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -559,7 +560,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   thickness: 1.0,
                                 ),
                                 Observer(builder: (_) {
-                                  if (appStore.secretPhotos == true) {
+                                  if (appStore.secretPhotos == true && appStore.availableBiometrics.isNotEmpty) {
+                                    String enableBiometric;
+
+                                    if (appStore.availableBiometrics.contains(BiometricType.face)) {
+                                      enableBiometric = S.of(context).enable_faceid;
+                                    } else if (appStore.availableBiometrics.contains(BiometricType.iris)) {
+                                      enableBiometric = S.of(context).enable_irisscanner;
+                                    } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
+                                      enableBiometric = Platform.isIOS ? S.of(context).enable_touchid : S.of(context).enable_fingerprint;
+                                    }
+
                                     return FadeIn(
                                       delay: 0,
                                       child: LayoutBuilder(
@@ -576,12 +587,21 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
                                                     child: CupertinoButton(
                                                       padding: const EdgeInsets.all(0),
-                                                      onPressed: () => showRequirePinPicker(context),
+                                                      onPressed: () async {
+                                                        if (appStore.isBiometricActivated != true) {
+                                                          appStore.wantsToActivateBiometric = true;
+                                                          appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                                                          Navigator.pushNamed(context, PinScreen.id);
+                                                          return;
+                                                        }
+
+                                                        await appStore.setIsBiometricActivated(false);
+                                                      },
                                                       child: Row(
                                                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                         children: <Widget>[
                                                           Text(
-                                                            'Enable Face ID',
+                                                            enableBiometric,
                                                             textScaleFactor: 1.0,
                                                             style: kGraySettingsFieldTextStyle,
                                                           ),
@@ -596,7 +616,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                                                   Navigator.pushNamed(context, PinScreen.id);
                                                                   return;
                                                                 }
-                                                                // appStore
+
                                                                 await appStore.setIsBiometricActivated(value);
                                                               },
                                                             );

@@ -211,6 +211,10 @@ class _PinScreenState extends State<PinScreen> {
     appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
     pinStore = Provider.of<PinStore>(context);
+
+    if (appStore.isPinRegistered == true && appStore.isBiometricActivated == true) {
+      _authenticate();
+    }
   }
 
   Widget _buildPinPad(BuildContext context, int index) {
@@ -598,10 +602,10 @@ class _PinScreenState extends State<PinScreen> {
                         if (appStore.isBiometricActivated == true) {
                           if (appStore.availableBiometrics.contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
-                            assetImage = 'lib/images/fingerprintwhiteico.png';
                           } else if (appStore.availableBiometrics.contains(BiometricType.iris)) {
                             assetImage = 'lib/images/irisscannerwhiteico.png';
+                          } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
+                            assetImage = 'lib/images/fingerprintwhiteico.png';
                           }
                         }
 

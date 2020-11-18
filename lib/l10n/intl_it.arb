@@ -162,5 +162,9 @@
   "recent_tags": "Tag recenti",
   "ask_photo_library_permission": "Abbiamo bisogno di accedere alla tua libreria di foto in modo da poter iniziare a organizzare le tue foto con picPics. Non preoccuparti, i tuoi dati non lasceranno mai il tuo dispositivo!",
   "tutorial_multiselect": "Puoi \"toccare e tenere premuto\" sulle foto per taggare più foto contemporaneamente.",
-  "tutorial_secret": "Nascondi le tue foto private con una protezione tramite codice pin, mantenendole al sicuro."
+  "tutorial_secret": "Nascondi le tue foto private con una protezione tramite codice pin, mantenendole al sicuro.",
+  "enable_faceid": "Abilita Face ID",
+  "enable_touchid": "Abilita Touch ID",
+  "enable_fingerprint": "Abilita Impronta Digitale",
+  "enable_irisscanner": "Abilita Scanner Dell'Iride"
 }

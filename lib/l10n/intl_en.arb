@@ -593,5 +593,9 @@
   "recent_tags": "Recent Tags",
   "ask_photo_library_permission": "We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!",
   "tutorial_multiselect": "You can \"tap & hold\" on your photos to tag multiple photos at once.",
-  "tutorial_secret": "Hide your private photos with a pin code protection, keeping them safe."
+  "tutorial_secret": "Hide your private photos with a pin code protection, keeping them safe.",
+  "enable_faceid": "Enable Face ID",
+  "enable_touchid": "Enable Touch ID",
+  "enable_fingerprint": "Enable Fingerprint",
+  "enable_irisscanner": "Enable Iris Scanner"
 }

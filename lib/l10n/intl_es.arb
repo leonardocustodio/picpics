@@ -593,5 +593,9 @@
   "recent_tags": "Etiquetas recientes",
   "ask_photo_library_permission": "Necesitamos acceso a su biblioteca de fotos para que pueda comenzar a organizar sus fotos con picPics. ¡No se preocupe, sus datos nunca saldrán de su dispositivo!",
   "tutorial_multiselect": "Puede \"tocar y mantener\" en sus fotos para etiquetar varias fotos a la vez.",
-  "tutorial_secret": "Oculte sus fotos privadas con una protección de código PIN, manteniéndolas seguras."
+  "tutorial_secret": "Oculte sus fotos privadas con una protección de código PIN, manteniéndolas seguras.",
+  "enable_faceid": "Habilitar Face ID",
+  "enable_touchid": "Habilitar Touch ID",
+  "enable_fingerprint": "Habilitar Huella Digital",
+  "enable_irisscanner": "habilitar Escáner de Iris"
 }

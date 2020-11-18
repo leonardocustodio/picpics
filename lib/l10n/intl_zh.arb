@@ -162,5 +162,9 @@
   "recent_tags": "最近的标签",
   "ask_photo_library_permission": "我们需要访问您的照片库，以便您可以开始使用picPics整理照片。 不用担心您的数据将永远不会离开您的设备！",
   "tutorial_multiselect": "您可以“点击并按住”照片以一次标记多张照片。",
-  "tutorial_secret": "用密码保护隐藏您的私人照片，以确保安全。"
+  "tutorial_secret": "用密码保护隐藏您的私人照片，以确保安全。",
+  "enable_faceid": "启用Face ID",
+  "enable_touchid": "启用Touch ID",
+  "enable_fingerprint": "启用指纹",
+  "enable_irisscanner": "启用虹膜扫描仪"
 }
