@@ -81,6 +81,7 @@ dependencies:
   metadata: ^1.0.2
   showcaseview: ^0.1.6
   local_auth: ^0.6.3+4
+  home_widget: ^0.0.1+2
 
 dev_dependencies:
 #  flutter_test:
