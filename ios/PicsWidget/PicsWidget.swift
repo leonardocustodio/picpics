@@ -20,9 +20,10 @@ struct Provider: TimelineProvider {
         let data = UserDefaults.init(suiteName:widgetGroupId)
         
         let imagesKeys = data?.stringArray(forKey: "imagesKeys") ?? []
+        print("imagesKeys: \(imagesKeys)")
         
         for key in imagesKeys {
-            let entry = ExampleEntry(date: Date(), imageEncoded: data?.string(forKey: "\(key)") ?? defaultImage)
+            let entry = ExampleEntry(date: Date(), imageEncoded: data?.string(forKey: key) ?? defaultImage)
             completion(entry)
         }
         
