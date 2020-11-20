@@ -387,8 +387,9 @@ mixin _$AppStore on _AppStore, Store {
   final _$sendAndUpdateAsyncAction = AsyncAction('_AppStore.sendAndUpdate');
 
   @override
-  Future<void> sendAndUpdate() {
-    return _$sendAndUpdateAsyncAction.run(() => super.sendAndUpdate());
+  Future<void> sendAndUpdate({Set<PicStore> picStores}) {
+    return _$sendAndUpdateAsyncAction
+        .run(() => super.sendAndUpdate(picStores: picStores));
   }
 
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
