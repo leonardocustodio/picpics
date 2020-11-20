@@ -384,6 +384,13 @@ mixin _$AppStore on _AppStore, Store {
         .run(() => super.deactivateBiometric());
   }
 
+  final _$sendAndUpdateAsyncAction = AsyncAction('_AppStore.sendAndUpdate');
+
+  @override
+  Future<void> sendAndUpdate() {
+    return _$sendAndUpdateAsyncAction.run(() => super.sendAndUpdate());
+  }
+
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
 
   @override
