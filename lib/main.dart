@@ -44,8 +44,7 @@ import 'package:picPics/tutorial/photo_screen.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
-  List<IAPItem> appStoreProducts =
-      await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
+  List<IAPItem> appStoreProducts = await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
   if (appStoreProducts.length > 0) {
     return appStoreProducts.last.productId;
   }
@@ -60,8 +59,7 @@ void main() async {
 
   await Firebase.initializeApp();
   // await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  await FirebaseCrashlytics.instance
-      .setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
+  await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   Isolate.current.addErrorListener(RawReceivePort((pair) async {
@@ -83,82 +81,16 @@ void main() async {
   var picsBox = await Hive.openBox('pics');
   var tagsBox = await Hive.openBox('tags');
 
-  var secretKey = Uint8List.fromList([
-    76,
-    224,
-    117,
-    70,
-    57,
-    101,
-    39,
-    29,
-    48,
-    239,
-    215,
-    240,
-    41,
-    149,
-    198,
-    69,
-    64,
-    5,
-    207,
-    227,
-    190,
-    126,
-    8,
-    133,
-    136,
-    234,
-    130,
-    91,
-    254,
-    104,
-    196,
-    158
-  ]);
+  var secretKey = Uint8List.fromList(
+      [76, 224, 117, 70, 57, 101, 39, 29, 48, 239, 215, 240, 41, 149, 198, 69, 64, 5, 207, 227, 190, 126, 8, 133, 136, 234, 130, 91, 254, 104, 196, 158]);
   var secretBox = await Hive.openBox('secrets', encryptionKey: secretKey);
 
-  var skey = Uint8List.fromList([
-    71,
-    204,
-    179,
-    71,
-    12,
-    51,
-    19,
-    9,
-    98,
-    19,
-    225,
-    200,
-    1,
-    5,
-    6,
-    79,
-    55,
-    18,
-    13,
-    18,
-    19,
-    25,
-    6,
-    5,
-    18,
-    22,
-    135,
-    97,
-    22,
-    17,
-    188,
-    155
-  ]);
+  var skey =
+      Uint8List.fromList([71, 204, 179, 71, 12, 51, 19, 9, 98, 19, 225, 200, 1, 5, 6, 79, 55, 18, 13, 18, 19, 25, 6, 5, 18, 22, 135, 97, 22, 17, 188, 155]);
   var keyBox = await Hive.openBox('userkey', encryptionKey: skey);
 
-  String deviceLocale = await DeviceLocale.getCurrentLocale()
-      .then((Locale locale) => locale.toString());
-  String appVersion = await PackageInfo.fromPlatform()
-      .then((PackageInfo packageInfo) => packageInfo.version);
+  String deviceLocale = await DeviceLocale.getCurrentLocale().then((Locale locale) => locale.toString());
+  String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);
   print('Device Locale: $deviceLocale');
 
   String initiatedWithProduct;
@@ -171,10 +103,8 @@ void main() async {
   Ads.loadRewarded();
 
   // FlutterBranchSdk.setRequestMetadata(r'$google_analytics_user_id', userId);
-  StreamSubscription<Map> streamSubscription =
-      FlutterBranchSdk.initSession().listen((data) {
-    if (data.containsKey("+clicked_branch_link") &&
-        data["+clicked_branch_link"] == true) {
+  StreamSubscription<Map> streamSubscription = FlutterBranchSdk.initSession().listen((data) {
+    if (data.containsKey("+clicked_branch_link") && data["+clicked_branch_link"] == true) {
       //Link clicked. Add logic to get link data
       // print('Custom string: ${data["custom_string"]}');
     }
@@ -182,6 +112,9 @@ void main() async {
     PlatformException platformException = error as PlatformException;
     // print('InitSession error: ${platformException.code} - ${platformException.message}');
   });
+
+  bool setAppGroup = await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
+  print('Has setted app group: $setAppGroup');
 
   runZonedGuarded<Future<void>>(() async {
     runApp(
