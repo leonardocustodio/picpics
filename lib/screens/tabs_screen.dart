@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:mobx/mobx.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
@@ -54,8 +55,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
   ReactionDisposer disposer3;
   ReactionDisposer disposer4;
 
-  ExpandableController expandableController = ExpandableController(initialExpanded: false);
-  ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
+  ExpandableController expandableController =
+      ExpandableController(initialExpanded: false);
+  ExpandableController expandablePaddingController =
+      ExpandableController(initialExpanded: false);
 
   // Swiper do Tutorial
   SwiperController tutorialSwiperController = SwiperController();
@@ -110,7 +113,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
     if (appStore.isPremium == false) {
       int freePrivatePics = await appStore.freePrivatePics;
-      if (appStore.totalPrivatePics >= freePrivatePics && picStore.isPrivate == false) {
+      if (appStore.totalPrivatePics >= freePrivatePics &&
+          picStore.isPrivate == false) {
         Navigator.pushNamed(context, PremiumScreen.id);
         return;
       }
@@ -157,10 +161,12 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
   }
 
   showEditTagModal() {
-    if (DatabaseManager.instance.selectedTagKey != '' && DatabaseManager.instance.selectedTagKey != kSecretTagKey) {
+    if (DatabaseManager.instance.selectedTagKey != '' &&
+        DatabaseManager.instance.selectedTagKey != kSecretTagKey) {
       TextEditingController alertInputController = TextEditingController();
 //      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
+      String tagName = DatabaseManager.instance
+          .getTagName(DatabaseManager.instance.selectedTagKey);
       alertInputController.text = tagName;
 
       print('showModal');
@@ -175,12 +181,14 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
             destructiveButtonTitle: S.of(context).delete,
             onPressedDestructive: () {
               print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
-              galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
+              galleryStore.deleteTag(
+                  tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
             },
             defaultButtonTitle: S.of(context).ok,
             onPressedDefault: () {
-              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+              print(
+                  'Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 galleryStore.editTag(
                   oldTagKey: DatabaseManager.instance.selectedTagKey,
@@ -215,7 +223,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 //    _changeThrottle = Throttle(onCall: _onAssetChange);
 //    PhotoManager.addChangeCallback(_changeThrottle.call);
 
-    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+    RewardedVideoAd.instance.listener =
+        (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
       if (event == RewardedVideoAdEvent.loaded) {
         print('@@@ loaded');
       }
@@ -279,7 +288,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         }
         print('sharing selected pics....');
         tabsStore.setIsLoading(true);
-        await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
+        await galleryStore.sharePics(
+            picsStores: galleryStore.selectedPics.toList());
         tabsStore.setIsLoading(false);
       } else if (index == 4) {
         if (galleryStore.selectedPics.isEmpty) {
@@ -364,7 +374,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     }
 
     // Added for the case of buying premium from appstore
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      bool setAppGroup = await HomeWidget.setAppGroupId(
+          'group.br.com.inovatso.picPics.Widgets');
+      print('Has setted app group: $setAppGroup');
+      appStore.sendAndUpdate();
       if (appStore.tryBuyId != null) {
         Navigator.pushNamed(context, PremiumScreen.id);
       }
@@ -428,7 +442,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                             padding: const EdgeInsets.all(0),
                             onPressed: () {
                               setState(() {
-                                expandableController.expanded = !expandableController.expanded;
+                                expandableController.expanded =
+                                    !expandableController.expanded;
                               });
                             },
                             child: SafeArea(
@@ -436,7 +451,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               child: Container(
                                 color: Color(0xFFF1F3F5),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     CupertinoButton(
                                       onPressed: () {
@@ -465,7 +481,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         //   return;
                                         // }
 
-                                        if (galleryStore.multiPicTagKeys.contains(kSecretTagKey)) {
+                                        if (galleryStore.multiPicTagKeys
+                                            .contains(kSecretTagKey)) {
                                           showDeleteSecretModalForMultiPic();
                                           return;
                                         }
@@ -505,9 +522,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tags: galleryStore.multiPicTags.toList(),
+                                        tags:
+                                            galleryStore.multiPicTags.toList(),
                                         addTagField: true,
-                                        textEditingController: bottomTagsEditingController,
+                                        textEditingController:
+                                            bottomTagsEditingController,
                                         showEditTagModal: showEditTagModal,
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
@@ -523,7 +542,9 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                           //       context, PremiumScreen.id);
                                           //   return;
                                           // }
-                                          galleryStore.removeFromMultiPicTags(DatabaseManager.instance.selectedTagKey);
+                                          galleryStore.removeFromMultiPicTags(
+                                              DatabaseManager
+                                                  .instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
@@ -545,21 +566,31 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
                                             galleryStore.setSearchText('');
-                                            String tagKey = Helpers.encryptTag(text);
+                                            String tagKey =
+                                                Helpers.encryptTag(text);
 
-                                            if (!galleryStore.multiPicTagKeys.contains(tagKey)) {
-                                              if (appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null) == null) {
-                                                print('tag does not exist! creating it!');
+                                            if (!galleryStore.multiPicTagKeys
+                                                .contains(tagKey)) {
+                                              if (appStore.tags.firstWhere(
+                                                      (element) =>
+                                                          element.id == tagKey,
+                                                      orElse: () => null) ==
+                                                  null) {
+                                                print(
+                                                    'tag does not exist! creating it!');
                                                 galleryStore.createTag(text);
                                               }
-                                              galleryStore.addToMultiPicTags(tagKey);
+                                              galleryStore
+                                                  .addToMultiPicTags(tagKey);
                                             }
                                           }
                                         }),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
-                                        title: galleryStore.searchText != '' ? S.of(context).search_results : S.of(context).recent_tags,
+                                        title: galleryStore.searchText != ''
+                                            ? S.of(context).search_results
+                                            : S.of(context).recent_tags,
                                         tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: showEditTagModal,
@@ -616,22 +647,30 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 setTabIndex(index);
                               },
                               iconSize: 32.0,
-                              border: Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+                              border: Border(
+                                  top: BorderSide(
+                                      color: Color(0xFFE2E4E5), width: 1.0)),
                               items: <BottomNavigationBarItem>[
                                 BottomNavigationBarItem(
                                   title: Container(),
-                                  icon: Image.asset('lib/images/untaggedtabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/untaggedtabactive.png'),
+                                  icon: Image.asset(
+                                      'lib/images/untaggedtabinactive.png'),
+                                  activeIcon: Image.asset(
+                                      'lib/images/untaggedtabactive.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   title: Container(),
-                                  icon: Image.asset('lib/images/pictabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/pictabactive.png'),
+                                  icon: Image.asset(
+                                      'lib/images/pictabinactive.png'),
+                                  activeIcon: Image.asset(
+                                      'lib/images/pictabactive.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   title: Container(),
-                                  icon: Image.asset('lib/images/taggedtabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/taggedtabactive.png'),
+                                  icon: Image.asset(
+                                      'lib/images/taggedtabinactive.png'),
+                                  activeIcon: Image.asset(
+                                      'lib/images/taggedtabactive.png'),
                                 ),
                               ],
                             )
@@ -649,18 +688,24 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 items: <BottomNavigationBarItem>[
                                   BottomNavigationBarItem(
                                     label: 'Untagged photos',
-                                    icon: Image.asset('lib/images/untaggedtabinactive.png'),
-                                    activeIcon: Image.asset('lib/images/untaggedtabactive.png'),
+                                    icon: Image.asset(
+                                        'lib/images/untaggedtabinactive.png'),
+                                    activeIcon: Image.asset(
+                                        'lib/images/untaggedtabactive.png'),
                                   ),
                                   BottomNavigationBarItem(
                                     label: 'Swipe photos',
-                                    icon: Image.asset('lib/images/pictabinactive.png'),
-                                    activeIcon: Image.asset('lib/images/pictabactive.png'),
+                                    icon: Image.asset(
+                                        'lib/images/pictabinactive.png'),
+                                    activeIcon: Image.asset(
+                                        'lib/images/pictabactive.png'),
                                   ),
                                   BottomNavigationBarItem(
                                     label: 'Tagged photos',
-                                    icon: Image.asset('lib/images/taggedtabinactive.png'),
-                                    activeIcon: Image.asset('lib/images/taggedtabactive.png'),
+                                    icon: Image.asset(
+                                        'lib/images/taggedtabinactive.png'),
+                                    activeIcon: Image.asset(
+                                        'lib/images/taggedtabactive.png'),
                                   ),
                                 ],
                               ),
@@ -672,11 +717,14 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               setTabIndex(index);
                             },
                             iconSize: 24.0,
-                            border: Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+                            border: Border(
+                                top: BorderSide(
+                                    color: Color(0xFFE2E4E5), width: 1.0)),
                             items: <BottomNavigationBarItem>[
                               BottomNavigationBarItem(
                                 title: Container(),
-                                icon: Image.asset('lib/images/returntabbutton.png'),
+                                icon: Image.asset(
+                                    'lib/images/returntabbutton.png'),
                               ),
                               BottomNavigationBarItem(
                                 title: Container(),
@@ -684,25 +732,30 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               ),
                               BottomNavigationBarItem(
                                 title: Container(),
-                                icon: Image.asset('lib/images/tagtabbutton.png'),
+                                icon:
+                                    Image.asset('lib/images/tagtabbutton.png'),
                               ),
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: galleryStore.selectedPics.isEmpty
                                     ? Opacity(
                                         opacity: 0.2,
-                                        child: Image.asset('lib/images/sharetabbutton.png'),
+                                        child: Image.asset(
+                                            'lib/images/sharetabbutton.png'),
                                       )
-                                    : Image.asset('lib/images/sharetabbutton.png'),
+                                    : Image.asset(
+                                        'lib/images/sharetabbutton.png'),
                               ),
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: galleryStore.selectedPics.isEmpty
                                     ? Opacity(
                                         opacity: 0.3,
-                                        child: Image.asset('lib/images/trashtabbutton.png'),
+                                        child: Image.asset(
+                                            'lib/images/trashtabbutton.png'),
                                       )
-                                    : Image.asset('lib/images/trashtabbutton.png'),
+                                    : Image.asset(
+                                        'lib/images/trashtabbutton.png'),
                               ),
                             ],
                           )
@@ -718,7 +771,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               items: <BottomNavigationBarItem>[
                                 BottomNavigationBarItem(
                                   label: 'Return',
-                                  icon: Image.asset('lib/images/returntabbutton.png'),
+                                  icon: Image.asset(
+                                      'lib/images/returntabbutton.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Feature',
@@ -726,25 +780,30 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Tag',
-                                  icon: Image.asset('lib/images/tagtabbutton.png'),
+                                  icon: Image.asset(
+                                      'lib/images/tagtabbutton.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Share',
                                   icon: galleryStore.selectedPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
-                                          child: Image.asset('lib/images/sharetabbutton.png'),
+                                          child: Image.asset(
+                                              'lib/images/sharetabbutton.png'),
                                         )
-                                      : Image.asset('lib/images/sharetabbutton.png'),
+                                      : Image.asset(
+                                          'lib/images/sharetabbutton.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Trash',
                                   icon: galleryStore.selectedPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
-                                          child: Image.asset('lib/images/trashtabbutton.png'),
+                                          child: Image.asset(
+                                              'lib/images/trashtabbutton.png'),
                                         )
-                                      : Image.asset('lib/images/trashtabbutton.png'),
+                                      : Image.asset(
+                                          'lib/images/trashtabbutton.png'),
                                 ),
                               ],
                             ),
@@ -757,7 +816,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
               children: <Widget>[
                 Observer(builder: (_) {
                   Widget wgt;
-                  if (appStore.hasGalleryPermission == null || appStore.hasGalleryPermission == false) {
+                  if (appStore.hasGalleryPermission == null ||
+                      appStore.hasGalleryPermission == false) {
                     wgt = Container(
                       constraints: BoxConstraints.expand(),
                       color: kWhiteColor,
@@ -765,16 +825,20 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                         child: Stack(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   CupertinoButton(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
                                     onPressed: () {
-                                      Navigator.pushNamed(context, SettingsScreen.id);
+                                      Navigator.pushNamed(
+                                          context, SettingsScreen.id);
                                     },
-                                    child: Image.asset('lib/images/settings.png'),
+                                    child:
+                                        Image.asset('lib/images/settings.png'),
                                   ),
                                 ],
                               ),
@@ -786,15 +850,19 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   Padding(
                                     padding: const EdgeInsets.only(right: 30.0),
                                     child: Container(
-                                      constraints: BoxConstraints(maxHeight: height / 2),
-                                      child: Image.asset('lib/images/nogalleryauth.png'),
+                                      constraints:
+                                          BoxConstraints(maxHeight: height / 2),
+                                      child: Image.asset(
+                                          'lib/images/nogalleryauth.png'),
                                     ),
                                   ),
                                   SizedBox(
                                     height: 21.0,
                                   ),
                                   Text(
-                                    S.of(context).gallery_access_permission_description,
+                                    S
+                                        .of(context)
+                                        .gallery_access_permission_description,
                                     textScaleFactor: 1.0,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -822,7 +890,9 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                       ),
                                       child: Center(
                                         child: Text(
-                                          S.of(context).gallery_access_permission,
+                                          S
+                                              .of(context)
+                                              .gallery_access_permission,
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
@@ -843,14 +913,18 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                         ),
                       ),
                     );
-                  } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
+                  } else if (tabsStore.currentTab == 0 &&
+                      appStore.hasGalleryPermission)
                     wgt = UntaggedTab();
-                  else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
+                  else if (tabsStore.currentTab == 1 &&
+                      appStore.hasGalleryPermission)
                     wgt = PicTab(
                       showEditTagModal: showEditTagModal,
                       showDeleteSecretModal: showDeleteSecretModal,
                     );
-                  else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
+                  else if (tabsStore.currentTab == 2 &&
+                      appStore.hasGalleryPermission)
+                    wgt = TaggedTab(showEditTagModal: showEditTagModal);
                   return wgt ?? Container();
                 }),
               ],
@@ -955,30 +1029,37 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 Image image;
 
                                 if (index == 0) {
-                                  text = S.of(context).tutorial_however_you_want;
-                                  image = Image.asset('lib/images/tutorialsecondimage.png');
+                                  text =
+                                      S.of(context).tutorial_however_you_want;
+                                  image = Image.asset(
+                                      'lib/images/tutorialsecondimage.png');
                                 } else if (index == 1) {
                                   text = S.of(context).tutorial_just_swipe;
-                                  image = Image.asset('lib/images/tutorialthirdimage.png');
+                                  image = Image.asset(
+                                      'lib/images/tutorialthirdimage.png');
                                 } else if (index == 2) {
                                   text = S.of(context).tutorial_secret;
-                                  image = Image.asset('lib/images/tutorialsecret.png');
+                                  image = Image.asset(
+                                      'lib/images/tutorialsecret.png');
                                 } else {
                                   text = S.of(context).tutorial_multiselect;
-                                  image = Image.asset('lib/images/tutorialmultiselect.png');
+                                  image = Image.asset(
+                                      'lib/images/tutorialmultiselect.png');
                                 }
 
                                 return Column(
                                   children: <Widget>[
                                     Container(
-                                      constraints: BoxConstraints(maxHeight: height / 2 - 20),
+                                      constraints: BoxConstraints(
+                                          maxHeight: height / 2 - 20),
                                       child: image,
                                     ),
                                     SizedBox(
                                       height: 28.0,
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
                                       child: Text(
                                         text,
                                         textScaleFactor: 1.0,
@@ -1001,44 +1082,60 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 tabsStore.setTutorialIndex(index);
                               },
                               pagination: new SwiperCustomPagination(
-                                builder: (BuildContext context, SwiperPluginConfig config) {
+                                builder: (BuildContext context,
+                                    SwiperPluginConfig config) {
                                   return Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: <Widget>[
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
                                           decoration: BoxDecoration(
-                                            color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
-                                            borderRadius: BorderRadius.circular(4.0),
+                                            color: config.activeIndex == 0
+                                                ? kSecondaryColor
+                                                : kGrayColor,
+                                            borderRadius:
+                                                BorderRadius.circular(4.0),
                                           ),
                                         ),
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
-                                          margin: const EdgeInsets.only(left: 24.0, right: 12.0),
+                                          margin: const EdgeInsets.only(
+                                              left: 24.0, right: 12.0),
                                           decoration: BoxDecoration(
-                                            color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
-                                            borderRadius: BorderRadius.circular(4.0),
+                                            color: config.activeIndex == 1
+                                                ? kSecondaryColor
+                                                : kGrayColor,
+                                            borderRadius:
+                                                BorderRadius.circular(4.0),
                                           ),
                                         ),
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
-                                          margin: const EdgeInsets.only(left: 12.0, right: 24.0),
+                                          margin: const EdgeInsets.only(
+                                              left: 12.0, right: 24.0),
                                           decoration: BoxDecoration(
-                                            color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
-                                            borderRadius: BorderRadius.circular(4.0),
+                                            color: config.activeIndex == 2
+                                                ? kSecondaryColor
+                                                : kGrayColor,
+                                            borderRadius:
+                                                BorderRadius.circular(4.0),
                                           ),
                                         ),
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
                                           decoration: BoxDecoration(
-                                            color: config.activeIndex == 3 ? kSecondaryColor : kGrayColor,
-                                            borderRadius: BorderRadius.circular(4.0),
+                                            color: config.activeIndex == 3
+                                                ? kSecondaryColor
+                                                : kGrayColor,
+                                            borderRadius:
+                                                BorderRadius.circular(4.0),
                                           ),
                                         ),
                                       ],
@@ -1057,7 +1154,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 print('Requesting notification....');
 
                                 await appStore.requestNotificationPermission();
-                                await appStore.checkNotificationPermission(firstPermissionCheck: true);
+                                await appStore.checkNotificationPermission(
+                                    firstPermissionCheck: true);
                                 await appStore.setTutorialCompleted(true);
                                 await galleryStore.loadAssetsPath();
                                 return;
@@ -1067,14 +1165,17 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                             padding: const EdgeInsets.all(0),
                             child: Container(
                               height: 44.0,
-                              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               decoration: BoxDecoration(
                                 gradient: kPrimaryGradient,
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               child: Center(
                                 child: Text(
-                                  tabsStore.tutorialIndex == 3 ? S.of(context).start : S.of(context).next,
+                                  tabsStore.tutorialIndex == 3
+                                      ? S.of(context).start
+                                      : S.of(context).next,
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
