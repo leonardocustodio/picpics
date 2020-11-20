@@ -265,13 +265,15 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         galleryStore.clearSelectedPics();
         tabsStore.setMultiPicBar(false);
       } else if (index == 1) {
+        print('star photos');
+      } else if (index == 2) {
         tabsStore.setMultiTagSheet(true);
         Future.delayed(Duration(milliseconds: 200), () {
           setState(() {
             expandableController.expanded = true;
           });
         });
-      } else if (index == 2) {
+      } else if (index == 3) {
         if (galleryStore.selectedPics.isEmpty) {
           return;
         }
@@ -279,7 +281,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         tabsStore.setIsLoading(true);
         await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
         tabsStore.setIsLoading(false);
-      } else if (index == 3) {
+      } else if (index == 4) {
         if (galleryStore.selectedPics.isEmpty) {
           return;
         }
@@ -676,10 +678,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 title: Container(),
                                 icon: Image.asset('lib/images/returntabbutton.png'),
                               ),
-                              // BottomNavigationBarItem(
-                              //   title: Container(),
-                              //   icon: Image.asset('lib/images/locktabbutton.png'),
-                              // ),
+                              BottomNavigationBarItem(
+                                title: Container(),
+                                icon: Image.asset('lib/images/starico.png'),
+                              ),
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: Image.asset('lib/images/tagtabbutton.png'),
@@ -718,10 +720,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   label: 'Return',
                                   icon: Image.asset('lib/images/returntabbutton.png'),
                                 ),
-                                // BottomNavigationBarItem(
-                                //   label: 'Lock',
-                                //   icon: Image.asset('lib/images/locktabbutton.png'),
-                                // ),
+                                BottomNavigationBarItem(
+                                  label: 'Feature',
+                                  icon: Image.asset('lib/images/starico.png'),
+                                ),
                                 BottomNavigationBarItem(
                                   label: 'Tag',
                                   icon: Image.asset('lib/images/tagtabbutton.png'),
