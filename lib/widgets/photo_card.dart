@@ -246,9 +246,13 @@ class _PhotoCardState extends State<PhotoCard> {
                     print('Photo Height: ${appStore.photoHeightInCardWidget}');
                     return CircularMenu(
                       // appStore: appStore,
+                      isExpanded: appStore.isMenuExpanded,
                       useInHorizontal: appStore.photoHeightInCardWidget < 280 ? true : false,
                       alignment: Alignment.bottomRight,
                       radius: 52,
+                      toggleButtonOnPressed: () {
+                        appStore.switchIsMenuExpanded();
+                      },
                       toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
                       toggleButtonBoxShadow: [
                         BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),

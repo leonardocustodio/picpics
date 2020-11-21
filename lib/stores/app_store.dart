@@ -784,6 +784,12 @@ abstract class _AppStore with Store {
     await _updateWidget();
     print('Finished sending data');
   }
+
+  @observable
+  bool isMenuExpanded = true;
+
+  @action
+  void switchIsMenuExpanded() => isMenuExpanded = !isMenuExpanded;
 }
 
 enum PopPinScreenTo {
