@@ -18,8 +18,18 @@ struct Provider: TimelineProvider {
     
     func getSnapshot(in context: Context, completion: @escaping (ExampleEntry) -> ()) {
         let data = UserDefaults.init(suiteName:widgetGroupId)
-        let entry = ExampleEntry(date: Date(), imageEncoded: data?.string(forKey: "imageEncoded") ?? defaultImage)
-        completion(entry)
+        
+        let imagesKeys = data?.stringArray(forKey: "imagesKeys") ?? []
+        print("imagesKeys: \(imagesKeys)")
+        
+        for key in imagesKeys {
+            let entry = ExampleEntry(date: Date(), imageEncoded: data?.string(forKey: key) ?? defaultImage)
+            completion(entry)
+        }
+        
+        
+//        let entry = ExampleEntry(date: Date(), imageEncoded: data?.string(forKey: "imageEncoded") ?? defaultImage)
+//        completion(entry)
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
