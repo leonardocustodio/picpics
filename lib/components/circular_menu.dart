@@ -92,7 +92,7 @@ class CircularMenuState extends State<CircularMenu> with SingleTickerProviderSta
     )..addListener(() {
         setState(() {});
       });
-    _animation = Tween(begin: 0.0, end: 1.0).animate(
+    _animation = Tween(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(parent: _animationController, curve: widget.curve, reverseCurve: widget.reverseCurve),
     );
   }
