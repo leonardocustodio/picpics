@@ -37,6 +37,7 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
@@ -871,23 +872,41 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                   child: Container(
                     color: Colors.black.withOpacity(0.4),
                     child: SafeArea(
-                      child: GestureDetector(
-                        onTap: () {
-                          print('ignore');
+                      child: CarouselSlider.builder(
+                        itemCount: tabsStore.currentTab == 0 ? galleryStore.swipePics.length : galleryStore.thumbnailsPics.length,
+                        // carouselController: carouselController,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              print('ignore');
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                bottom: bottomInsets > 0 ? bottomInsets + 5 : 32.0,
+                                top: bottomInsets > 0 ? 5 : 26.0,
+                                left: 2.0,
+                                right: 2.0,
+                              ),
+                              child: PhotoCard(
+                                picStore: tabsStore.currentTab == 0 ? galleryStore.swipePics[index] : galleryStore.thumbnailsPics[index],
+                                picsInThumbnails: PicSource.UNTAGGED,
+                                showEditTagModal: showEditTagModal,
+                                showDeleteSecretModal: showDeleteSecretModal,
+                              ),
+                            ),
+                          );
                         },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            bottom: bottomInsets > 0 ? bottomInsets + 5 : 32.0,
-                            top: bottomInsets > 0 ? 5 : 26.0,
-                            left: 2.0,
-                            right: 2.0,
-                          ),
-                          child: PhotoCard(
-                            picStore: galleryStore.currentPic,
-                            picsInThumbnails: PicSource.UNTAGGED,
-                            showEditTagModal: showEditTagModal,
-                            showDeleteSecretModal: showDeleteSecretModal,
-                          ),
+                        options: CarouselOptions(
+                          initialPage: tabsStore.currentTab == 0 ? galleryStore.selectedSwipe : galleryStore.selectedThumbnail,
+                          enableInfiniteScroll: false,
+                          height: double.maxFinite,
+                          viewportFraction: 1.0,
+                          enlargeCenterPage: true,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          // scrollPhysics: scrollPhysics,
+                          // onPageChanged: (index, reason) {
+                          //   galleryStore.setSwipeIndex(index);
+                          // },
                         ),
                       ),
                     ),

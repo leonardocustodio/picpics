@@ -736,6 +736,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
                         tagsEditingController.text = '';
                         galleryStore.setCurrentPic(picStore);
+                        int indexOfSwipePic = galleryStore.swipePics.indexOf(picStore);
+                        galleryStore.setSelectedSwipe(indexOfSwipePic);
                         tabsStore.setModalCard(true);
                       },
                       child: Observer(builder: (_) {
