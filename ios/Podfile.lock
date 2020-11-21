@@ -40,9 +40,6 @@ PODS:
   - Firebase/MLVision (6.26.0):
     - Firebase/CoreOnly
     - FirebaseMLVision (~> 0.20.0)
-  - Firebase/MLVisionLabelModel (6.26.0):
-    - Firebase/CoreOnly
-    - FirebaseMLVisionLabelModel (~> 0.20.0)
   - Firebase/RemoteConfig (6.26.0):
     - Firebase/CoreOnly
     - FirebaseRemoteConfig (~> 4.5.0)
@@ -163,8 +160,6 @@ PODS:
     - "GoogleToolboxForMac/NSData+zlib (~> 2.1)"
     - GTMSessionFetcher/Core (~> 1.1)
     - Protobuf (~> 3.12)
-  - FirebaseMLVisionLabelModel (0.20.0):
-    - FirebaseMLVision (~> 0.20)
   - FirebaseRemoteConfig (4.5.0):
     - FirebaseABTesting (~> 3.1)
     - FirebaseAnalyticsInterop (~> 1.4)
@@ -298,7 +293,6 @@ DEPENDENCIES:
   - cryptography_flutter (from `.symlinks/plugins/cryptography_flutter/ios`)
   - esys_flutter_share (from `.symlinks/plugins/esys_flutter_share/ios`)
   - facebook_app_events (from `.symlinks/plugins/facebook_app_events/ios`)
-  - Firebase/MLVisionLabelModel
   - firebase_admob (from `.symlinks/plugins/firebase_admob/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
@@ -351,7 +345,6 @@ SPEC REPOS:
     - FirebaseMessaging
     - FirebaseMLCommon
     - FirebaseMLVision
-    - FirebaseMLVisionLabelModel
     - FirebaseRemoteConfig
     - Google-Mobile-Ads-SDK
     - GoogleAPIClientForREST
@@ -473,7 +466,6 @@ SPEC CHECKSUMS:
   FirebaseMessaging: 29543feb343b09546ab3aa04d008ee8595b43c44
   FirebaseMLCommon: 5e1184cfdddbd097f55cad75b598881d348d900f
   FirebaseMLVision: 485358b97d3332669ecc4fed55ee360aaef2813d
-  FirebaseMLVisionLabelModel: 831b1598300f934a64705cfc820bc87e80d236f2
   FirebaseRemoteConfig: 1725314c4b89d8853c876099ded037f11bee26db
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_branch_sdk: e112bc8cc622f6682099823ce4bc1520fb8d55db
@@ -515,6 +507,6 @@ SPEC CHECKSUMS:
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
 
-PODFILE CHECKSUM: 25415a8875d7cfdfff0957a6fa0834f3e2865800
+PODFILE CHECKSUM: 33f74cf6f4e5775ad35ae5df4008ad34eb3f5e59
 
 COCOAPODS: 1.10.0
