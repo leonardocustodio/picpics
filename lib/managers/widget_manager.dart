@@ -10,7 +10,7 @@ import 'package:picPics/model/pic.dart';
 class WidgetManager {
   static Future<void> saveData({List<PicStore> picsStores}) async {
     for (PicStore store in picsStores) {
-      store.setIsStarred(true);
+      store.switchIsStarred();
     }
     print('Setted is starred to true');
   }
@@ -39,9 +39,7 @@ class WidgetManager {
 
       Pic pic = picsBox.get(starredPhotos[randInt]);
       print('Base64: ${pic.base64encoded}');
-      return Future.wait([
-        HomeWidget.saveWidgetData<String>('imageEncoded', pic.base64encoded)
-      ]);
+      return Future.wait([HomeWidget.saveWidgetData<String>('imageEncoded', pic.base64encoded)]);
     } catch (exception) {
       print('Error Sending Data. $exception');
     }

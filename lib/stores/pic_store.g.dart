@@ -189,11 +189,11 @@ mixin _$PicStore on _PicStore, Store {
     });
   }
 
-  final _$setIsStarredAsyncAction = AsyncAction('_PicStore.setIsStarred');
+  final _$switchIsStarredAsyncAction = AsyncAction('_PicStore.switchIsStarred');
 
   @override
-  Future<void> setIsStarred(bool value) {
-    return _$setIsStarredAsyncAction.run(() => super.setIsStarred(value));
+  Future<void> switchIsStarred() {
+    return _$switchIsStarredAsyncAction.run(() => super.switchIsStarred());
   }
 
   final _$setPrivatePathAsyncAction = AsyncAction('_PicStore.setPrivatePath');

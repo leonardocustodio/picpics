@@ -467,6 +467,16 @@ class _TaggedTabState extends State<TaggedTab> {
                           );
                         }
 
+                        if (picStore.isStarred == true && !tabsStore.multiPicBar) {
+                          items.add(
+                            Positioned(
+                              left: 6.0,
+                              top: 6.0,
+                              child: Image.asset('lib/images/staryellowico.png'),
+                            ),
+                          );
+                        }
+
                         return Stack(children: items);
                       }),
                     ),

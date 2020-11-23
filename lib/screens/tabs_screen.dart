@@ -299,6 +299,43 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  void returnAction() {
+    galleryStore.clearSelectedPics();
+    tabsStore.setMultiPicBar(false);
+  }
+
+  Future<void> starredAction() async {
+    await WidgetManager.saveData(picsStores: galleryStore.selectedPics.toList());
+    galleryStore.clearSelectedPics();
+    tabsStore.setMultiPicBar(false);
+  }
+
+  void tagAction() {
+    tabsStore.setMultiTagSheet(true);
+    Future.delayed(Duration(milliseconds: 200), () {
+      setState(() {
+        expandableController.expanded = true;
+      });
+    });
+  }
+
+  Future<void> shareAction() async {
+    if (galleryStore.selectedPics.isEmpty) {
+      return;
+    }
+    print('sharing selected pics....');
+    tabsStore.setIsLoading(true);
+    await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
+    tabsStore.setIsLoading(false);
+  }
+
+  void trashAction() {
+    if (galleryStore.selectedPics.isEmpty) {
+      return;
+    }
+    galleryStore.trashMultiplePics(galleryStore.selectedPics);
+  }
+
   setTabIndex(int index) async {
     if (!galleryStore.deviceHasPics) {
       tabsStore.setCurrentTab(index);
@@ -307,31 +344,27 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
     if (tabsStore.multiPicBar) {
       if (index == 0) {
-        galleryStore.clearSelectedPics();
-        tabsStore.setMultiPicBar(false);
+        returnAction();
       } else if (index == 1) {
-        print('star photos');
-        await WidgetManager.saveData(picsStores: galleryStore.selectedPics.toList());
+        if (tabsStore.currentTab == 0) {
+          tagAction();
+        } else {
+          await starredAction();
+        }
       } else if (index == 2) {
-        tabsStore.setMultiTagSheet(true);
-        Future.delayed(Duration(milliseconds: 200), () {
-          setState(() {
-            expandableController.expanded = true;
-          });
-        });
+        if (tabsStore.currentTab == 0) {
+          await shareAction();
+        } else {
+          tagAction();
+        }
       } else if (index == 3) {
-        if (galleryStore.selectedPics.isEmpty) {
-          return;
+        if (tabsStore.currentTab == 0) {
+          trashAction();
+        } else {
+          await shareAction();
         }
-        print('sharing selected pics....');
-        tabsStore.setIsLoading(true);
-        await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
-        tabsStore.setIsLoading(false);
       } else if (index == 4) {
-        if (galleryStore.selectedPics.isEmpty) {
-          return;
-        }
-        galleryStore.trashMultiplePics(galleryStore.selectedPics);
+        trashAction();
       }
       return;
     }
@@ -724,10 +757,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 title: Container(),
                                 icon: Image.asset('lib/images/returntabbutton.png'),
                               ),
-                              BottomNavigationBarItem(
-                                title: Container(),
-                                icon: Image.asset('lib/images/starico.png'),
-                              ),
+                              if (tabsStore.currentTab == 2)
+                                BottomNavigationBarItem(
+                                  title: Container(),
+                                  icon: Image.asset('lib/images/starico.png'),
+                                ),
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: Image.asset('lib/images/tagtabbutton.png'),
@@ -766,10 +800,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   label: 'Return',
                                   icon: Image.asset('lib/images/returntabbutton.png'),
                                 ),
-                                BottomNavigationBarItem(
-                                  label: 'Feature',
-                                  icon: Image.asset('lib/images/starico.png'),
-                                ),
+                                if (tabsStore.currentTab == 2)
+                                  BottomNavigationBarItem(
+                                    label: 'Feature',
+                                    icon: Image.asset('lib/images/starico.png'),
+                                  ),
                                 BottomNavigationBarItem(
                                   label: 'Tag',
                                   icon: Image.asset('lib/images/tagtabbutton.png'),
