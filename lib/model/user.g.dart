@@ -40,13 +40,15 @@ class UserAdapter extends TypeAdapter<User> {
       keepAskingToDelete: fields[21] as bool,
       shouldDeleteOnPrivate: fields[22] as bool,
       tourCompleted: fields[23] as bool,
+      isBiometricActivated: fields[24] as bool,
+      starredPhotos: (fields[25] as List)?.cast<String>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(23)
+      ..writeByte(25)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -92,7 +94,11 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(22)
       ..write(obj.shouldDeleteOnPrivate)
       ..writeByte(23)
-      ..write(obj.tourCompleted);
+      ..write(obj.tourCompleted)
+      ..writeByte(24)
+      ..write(obj.isBiometricActivated)
+      ..writeByte(25)
+      ..write(obj.starredPhotos);
   }
 
   @override

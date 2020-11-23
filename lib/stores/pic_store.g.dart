@@ -24,6 +24,21 @@ mixin _$PicStore on _PicStore, Store {
               name: '_PicStore.tagsSuggestions'))
       .value;
 
+  final _$isStarredAtom = Atom(name: '_PicStore.isStarred');
+
+  @override
+  bool get isStarred {
+    _$isStarredAtom.reportRead();
+    return super.isStarred;
+  }
+
+  @override
+  set isStarred(bool value) {
+    _$isStarredAtom.reportWrite(value, super.isStarred, () {
+      super.isStarred = value;
+    });
+  }
+
   final _$photoIdAtom = Atom(name: '_PicStore.photoId');
 
   @override
@@ -172,6 +187,13 @@ mixin _$PicStore on _PicStore, Store {
     _$aiTagsLoadedAtom.reportWrite(value, super.aiTagsLoaded, () {
       super.aiTagsLoaded = value;
     });
+  }
+
+  final _$switchIsStarredAsyncAction = AsyncAction('_PicStore.switchIsStarred');
+
+  @override
+  Future<void> switchIsStarred() {
+    return _$switchIsStarredAsyncAction.run(() => super.switchIsStarred());
   }
 
   final _$setPrivatePathAsyncAction = AsyncAction('_PicStore.setPrivatePath');
@@ -349,6 +371,7 @@ mixin _$PicStore on _PicStore, Store {
   @override
   String toString() {
     return '''
+isStarred: ${isStarred},
 photoId: ${photoId},
 entity: ${entity},
 latitude: ${latitude},

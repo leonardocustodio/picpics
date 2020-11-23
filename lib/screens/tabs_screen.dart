@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:mobx/mobx.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
@@ -27,6 +28,7 @@ import 'package:picPics/widgets/unhide_secret_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/database_manager.dart';
+import 'package:picPics/managers/widget_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/managers/admob_manager.dart';
@@ -36,6 +38,8 @@ import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:background_fetch/background_fetch.dart';
 
 class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
@@ -236,6 +240,47 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         DatabaseManager.instance.adsIsLoaded = false;
       }
     };
+
+    initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    // Configure BackgroundFetch.
+    BackgroundFetch.configure(
+        BackgroundFetchConfig(
+            minimumFetchInterval: 15,
+            stopOnTerminate: false,
+            enableHeadless: false,
+            requiresBatteryNotLow: false,
+            requiresCharging: false,
+            requiresStorageNotLow: false,
+            requiresDeviceIdle: false,
+            requiredNetworkType: NetworkType.NONE), (String taskId) async {
+      // This is the fetch-event callback.
+      print("[BackgroundFetch] Event received $taskId");
+
+      await WidgetManager.sendAndUpdate();
+
+      // IMPORTANT:  You must signal completion of your task or the OS can punish your app
+      // for taking too long in the background.
+      BackgroundFetch.finish(taskId);
+    }).then((int status) {
+      print('[BackgroundFetch] configure success: $status');
+    }).catchError((e) {
+      print('[BackgroundFetch] configure ERROR: $e');
+    });
+
+    // Optionally query the current BackgroundFetch status.
+    // int status = await BackgroundFetch.status;
+    // setState(() {
+    //   _status = status;
+    // });
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
   }
 
   @override
@@ -254,6 +299,43 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     super.dispose();
   }
 
+  void returnAction() {
+    galleryStore.clearSelectedPics();
+    tabsStore.setMultiPicBar(false);
+  }
+
+  Future<void> starredAction() async {
+    await WidgetManager.saveData(picsStores: galleryStore.selectedPics.toList());
+    galleryStore.clearSelectedPics();
+    tabsStore.setMultiPicBar(false);
+  }
+
+  void tagAction() {
+    tabsStore.setMultiTagSheet(true);
+    Future.delayed(Duration(milliseconds: 200), () {
+      setState(() {
+        expandableController.expanded = true;
+      });
+    });
+  }
+
+  Future<void> shareAction() async {
+    if (galleryStore.selectedPics.isEmpty) {
+      return;
+    }
+    print('sharing selected pics....');
+    tabsStore.setIsLoading(true);
+    await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
+    tabsStore.setIsLoading(false);
+  }
+
+  void trashAction() {
+    if (galleryStore.selectedPics.isEmpty) {
+      return;
+    }
+    galleryStore.trashMultiplePics(galleryStore.selectedPics);
+  }
+
   setTabIndex(int index) async {
     if (!galleryStore.deviceHasPics) {
       tabsStore.setCurrentTab(index);
@@ -262,28 +344,27 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
     if (tabsStore.multiPicBar) {
       if (index == 0) {
-        galleryStore.clearSelectedPics();
-        tabsStore.setMultiPicBar(false);
+        returnAction();
       } else if (index == 1) {
-        tabsStore.setMultiTagSheet(true);
-        Future.delayed(Duration(milliseconds: 200), () {
-          setState(() {
-            expandableController.expanded = true;
-          });
-        });
+        if (tabsStore.currentTab == 0) {
+          tagAction();
+        } else {
+          await starredAction();
+        }
       } else if (index == 2) {
-        if (galleryStore.selectedPics.isEmpty) {
-          return;
+        if (tabsStore.currentTab == 0) {
+          await shareAction();
+        } else {
+          tagAction();
         }
-        print('sharing selected pics....');
-        tabsStore.setIsLoading(true);
-        await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
-        tabsStore.setIsLoading(false);
       } else if (index == 3) {
-        if (galleryStore.selectedPics.isEmpty) {
-          return;
+        if (tabsStore.currentTab == 0) {
+          trashAction();
+        } else {
+          await shareAction();
         }
-        galleryStore.trashMultiplePics(galleryStore.selectedPics);
+      } else if (index == 4) {
+        trashAction();
       }
       return;
     }
@@ -362,7 +443,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     }
 
     // Added for the case of buying premium from appstore
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (appStore.tryBuyId != null) {
         Navigator.pushNamed(context, PremiumScreen.id);
       }
@@ -676,10 +757,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 title: Container(),
                                 icon: Image.asset('lib/images/returntabbutton.png'),
                               ),
-                              // BottomNavigationBarItem(
-                              //   title: Container(),
-                              //   icon: Image.asset('lib/images/locktabbutton.png'),
-                              // ),
+                              if (tabsStore.currentTab == 2)
+                                BottomNavigationBarItem(
+                                  title: Container(),
+                                  icon: Image.asset('lib/images/starico.png'),
+                                ),
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: Image.asset('lib/images/tagtabbutton.png'),
@@ -718,10 +800,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   label: 'Return',
                                   icon: Image.asset('lib/images/returntabbutton.png'),
                                 ),
-                                // BottomNavigationBarItem(
-                                //   label: 'Lock',
-                                //   icon: Image.asset('lib/images/locktabbutton.png'),
-                                // ),
+                                if (tabsStore.currentTab == 2)
+                                  BottomNavigationBarItem(
+                                    label: 'Feature',
+                                    icon: Image.asset('lib/images/starico.png'),
+                                  ),
                                 BottomNavigationBarItem(
                                   label: 'Tag',
                                   icon: Image.asset('lib/images/tagtabbutton.png'),
@@ -867,23 +950,41 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                   child: Container(
                     color: Colors.black.withOpacity(0.4),
                     child: SafeArea(
-                      child: GestureDetector(
-                        onTap: () {
-                          print('ignore');
+                      child: CarouselSlider.builder(
+                        itemCount: tabsStore.currentTab == 0 ? galleryStore.swipePics.length : galleryStore.thumbnailsPics.length,
+                        // carouselController: carouselController,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              print('ignore');
+                            },
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                bottom: bottomInsets > 0 ? bottomInsets + 5 : 32.0,
+                                top: bottomInsets > 0 ? 5 : 26.0,
+                                left: 2.0,
+                                right: 2.0,
+                              ),
+                              child: PhotoCard(
+                                picStore: tabsStore.currentTab == 0 ? galleryStore.swipePics[index] : galleryStore.thumbnailsPics[index],
+                                picsInThumbnails: PicSource.UNTAGGED,
+                                showEditTagModal: showEditTagModal,
+                                showDeleteSecretModal: showDeleteSecretModal,
+                              ),
+                            ),
+                          );
                         },
-                        child: Container(
-                          margin: EdgeInsets.only(
-                            bottom: bottomInsets > 0 ? bottomInsets + 5 : 32.0,
-                            top: bottomInsets > 0 ? 5 : 26.0,
-                            left: 2.0,
-                            right: 2.0,
-                          ),
-                          child: PhotoCard(
-                            picStore: galleryStore.currentPic,
-                            picsInThumbnails: PicSource.UNTAGGED,
-                            showEditTagModal: showEditTagModal,
-                            showDeleteSecretModal: showDeleteSecretModal,
-                          ),
+                        options: CarouselOptions(
+                          initialPage: tabsStore.currentTab == 0 ? galleryStore.selectedSwipe : galleryStore.selectedThumbnail,
+                          enableInfiniteScroll: false,
+                          height: double.maxFinite,
+                          viewportFraction: 1.0,
+                          enlargeCenterPage: true,
+                          autoPlayCurve: Curves.fastOutSlowIn,
+                          // scrollPhysics: scrollPhysics,
+                          // onPageChanged: (index, reason) {
+                          //   galleryStore.setSwipeIndex(index);
+                          // },
                         ),
                       ),
                     ),
@@ -909,7 +1010,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
           return Container();
         }),
         Observer(builder: (_) {
-          if (appStore.tutorialCompleted == false) {
+          if (appStore.tutorialCompleted != true) {
             Analytics.sendTutorialBegin();
 
             return Container(
@@ -953,14 +1054,17 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 Image image;
 
                                 if (index == 0) {
-                                  text = S.of(context).tutorial_just_swipe;
-                                  image = Image.asset('lib/images/tutorialthirdimage.png');
-                                } else if (index == 1) {
                                   text = S.of(context).tutorial_however_you_want;
                                   image = Image.asset('lib/images/tutorialsecondimage.png');
+                                } else if (index == 1) {
+                                  text = S.of(context).tutorial_just_swipe;
+                                  image = Image.asset('lib/images/tutorialthirdimage.png');
+                                } else if (index == 2) {
+                                  text = S.of(context).tutorial_secret;
+                                  image = Image.asset('lib/images/tutorialsecret.png');
                                 } else {
-                                  text = S.of(context).tutorial_daily_package;
-                                  image = Image.asset('lib/images/tutorialfirstimage.png');
+                                  text = S.of(context).tutorial_multiselect;
+                                  image = Image.asset('lib/images/tutorialmultiselect.png');
                                 }
 
                                 return Column(
@@ -990,7 +1094,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   ],
                                 );
                               },
-                              itemCount: 3,
+                              itemCount: 4,
                               controller: tutorialSwiperController,
                               onIndexChanged: (index) {
                                 tabsStore.setTutorialIndex(index);
@@ -1013,7 +1117,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
-                                          margin: const EdgeInsets.only(left: 24.0, right: 24.0),
+                                          margin: const EdgeInsets.only(left: 24.0, right: 12.0),
                                           decoration: BoxDecoration(
                                             color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
                                             borderRadius: BorderRadius.circular(4.0),
@@ -1022,8 +1126,17 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
+                                          margin: const EdgeInsets.only(left: 12.0, right: 24.0),
                                           decoration: BoxDecoration(
                                             color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
+                                            borderRadius: BorderRadius.circular(4.0),
+                                          ),
+                                        ),
+                                        Container(
+                                          height: 8.0,
+                                          width: 8.0,
+                                          decoration: BoxDecoration(
+                                            color: config.activeIndex == 3 ? kSecondaryColor : kGrayColor,
                                             borderRadius: BorderRadius.circular(4.0),
                                           ),
                                         ),
@@ -1039,7 +1152,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                           ),
                           CupertinoButton(
                             onPressed: () async {
-                              if (tabsStore.tutorialIndex == 2) {
+                              if (tabsStore.tutorialIndex == 3) {
                                 print('Requesting notification....');
 
                                 await appStore.requestNotificationPermission();
@@ -1060,7 +1173,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                               ),
                               child: Center(
                                 child: Text(
-                                  tabsStore.tutorialIndex == 2 ? S.of(context).start : S.of(context).next,
+                                  tabsStore.tutorialIndex == 3 ? S.of(context).start : S.of(context).next,
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(

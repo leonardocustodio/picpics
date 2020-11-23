@@ -18,6 +18,7 @@ import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:provider/provider.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:local_auth/local_auth.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -33,6 +34,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void dispose() {
     super.dispose();
+  }
+
+  _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      print('Could not launch $url');
+    }
   }
 
   void contactUs(BuildContext context) {
@@ -534,6 +543,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                                     return;
                                                   }
 
+                                                  appStore.wantsToActivateBiometric = false;
                                                   appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
                                                   Navigator.pushNamed(context, PinScreen.id);
                                                 },
@@ -545,6 +555,90 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                     ),
                                   ),
                                 ),
+                                Divider(
+                                  color: kLightGrayColor,
+                                  thickness: 1.0,
+                                ),
+                                Observer(builder: (_) {
+                                  if (appStore.secretPhotos == true && appStore.availableBiometrics.isNotEmpty) {
+                                    String enableBiometric;
+
+                                    if (appStore.availableBiometrics.contains(BiometricType.face)) {
+                                      enableBiometric = S.of(context).enable_faceid;
+                                    } else if (appStore.availableBiometrics.contains(BiometricType.iris)) {
+                                      enableBiometric = S.of(context).enable_irisscanner;
+                                    } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
+                                      enableBiometric = Platform.isIOS ? S.of(context).enable_touchid : S.of(context).enable_fingerprint;
+                                    }
+
+                                    return FadeIn(
+                                      delay: 0,
+                                      child: LayoutBuilder(
+                                        builder: (context, constraint) {
+                                          if (constraint.maxHeight < 30.0) {
+                                            return Container();
+                                          }
+                                          return Column(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                    child: CupertinoButton(
+                                                      padding: const EdgeInsets.all(0),
+                                                      onPressed: () async {
+                                                        if (appStore.isBiometricActivated != true) {
+                                                          appStore.wantsToActivateBiometric = true;
+                                                          appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                                                          Navigator.pushNamed(context, PinScreen.id);
+                                                          return;
+                                                        }
+
+                                                        await appStore.setIsBiometricActivated(false);
+                                                      },
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: <Widget>[
+                                                          Text(
+                                                            enableBiometric,
+                                                            textScaleFactor: 1.0,
+                                                            style: kGraySettingsFieldTextStyle,
+                                                          ),
+                                                          Observer(builder: (_) {
+                                                            return CupertinoSwitch(
+                                                              value: appStore.isBiometricActivated,
+                                                              activeColor: kSecondaryColor,
+                                                              onChanged: (value) async {
+                                                                if (value == true) {
+                                                                  appStore.wantsToActivateBiometric = true;
+                                                                  appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
+                                                                  Navigator.pushNamed(context, PinScreen.id);
+                                                                  return;
+                                                                }
+
+                                                                await appStore.setIsBiometricActivated(value);
+                                                              },
+                                                            );
+                                                          }),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Divider(
+                                                color: kLightGrayColor,
+                                                thickness: 1.0,
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                  }
+                                  return Container();
+                                }),
                                 // Divider(
                                 //   color: kLightGrayColor,
                                 //   thickness: 1.0,
@@ -699,10 +793,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 //                        ),
 //                      ),
 //                    ),
-                                Divider(
-                                  color: kLightGrayColor,
-                                  thickness: 1.0,
-                                ),
+//                                 Divider(
+//                                   color: kLightGrayColor,
+//                                   thickness: 1.0,
+//                                 ),
                                 Container(
                                   height: 60.0,
                                   child: Padding(
@@ -845,15 +939,108 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               ),
                             ),
                             // Spacer(),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
-                              child: Center(
-                                child: Text(
-                                  'VERSION: ${appStore.appVersion}',
-                                  textScaleFactor: 1.0,
-                                  style: kGraySettingsFieldTextStyle,
+                            Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        child: Image.asset('lib/images/facebookico.png'),
+                                      ),
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/facebook');
+                                      },
+                                    ),
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        child: Image.asset('lib/images/webico.png'),
+                                      ),
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/website');
+                                      },
+                                    ),
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Container(
+                                        height: 20,
+                                        width: 20,
+                                        child: Image.asset('lib/images/instagramico.png'),
+                                      ),
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/instagram');
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    CupertinoButton(
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/privacy');
+                                      },
+                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      minSize: 32.0,
+                                      child: Text(
+                                        S.of(context).privacy_policy,
+                                        style: const TextStyle(
+                                          color: const Color(0xff606566),
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "Lato",
+                                          fontStyle: FontStyle.normal,
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 10.0,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      "  &   ",
+                                      style: const TextStyle(
+                                        color: const Color(0xff606566),
+                                        fontWeight: FontWeight.w400,
+                                        fontFamily: "Lato",
+                                        fontStyle: FontStyle.normal,
+                                        fontSize: 10.0,
+                                      ),
+                                    ),
+                                    CupertinoButton(
+                                      onPressed: () {
+                                        _launchURL('https://picpics.link/e/terms');
+                                      },
+                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                      minSize: 32.0,
+                                      child: Text(
+                                        S.of(context).terms_of_use,
+                                        style: const TextStyle(
+                                          color: const Color(0xff606566),
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: "Lato",
+                                          fontStyle: FontStyle.normal,
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 10.0,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 8.0),
+                                  child: Center(
+                                    child: Text(
+                                      'VERSION: ${appStore.appVersion}',
+                                      textScaleFactor: 1.0,
+                                      style: kGraySettingsFieldTextStyle,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),

@@ -1,5 +1,7 @@
 PODS:
-  - Branch (0.35.1)
+  - background_fetch (0.6.0):
+    - Flutter
+  - Branch (0.36.0)
   - cloud_functions (0.6.0-1):
     - Firebase/CoreOnly (~> 6.26.0)
     - Firebase/Functions (~> 6.26.0)
@@ -174,7 +176,7 @@ PODS:
     - "GoogleUtilities/NSData+zlib (~> 6.2)"
   - Flutter (1.0.0)
   - flutter_branch_sdk (1.2.0):
-    - Branch (~> 0.35.0)
+    - Branch (~> 0.36.0)
     - Flutter
   - flutter_device_locale (0.0.1):
     - Flutter
@@ -198,9 +200,9 @@ PODS:
   - google_maps_flutter (0.0.1):
     - Flutter
     - GoogleMaps (< 3.10)
-  - GoogleAPIClientForREST/Core (1.5.0):
+  - GoogleAPIClientForREST/Core (1.5.1):
     - GTMSessionFetcher (>= 1.1.7)
-  - GoogleAPIClientForREST/Vision (1.5.0):
+  - GoogleAPIClientForREST/Vision (1.5.1):
     - GoogleAPIClientForREST/Core
     - GTMSessionFetcher (>= 1.1.7)
   - GoogleAppMeasurement (6.6.0):
@@ -255,6 +257,10 @@ PODS:
   - GTMSessionFetcher/Core (1.5.0)
   - GTMSessionFetcher/Full (1.5.0):
     - GTMSessionFetcher/Core (= 1.5.0)
+  - home_widget (0.0.1):
+    - Flutter
+  - local_auth (0.0.1):
+    - Flutter
   - nanopb (1.30905.0):
     - nanopb/decode (= 1.30905.0)
     - nanopb/encode (= 1.30905.0)
@@ -290,6 +296,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - cryptography_flutter (from `.symlinks/plugins/cryptography_flutter/ios`)
   - esys_flutter_share (from `.symlinks/plugins/esys_flutter_share/ios`)
@@ -314,6 +321,8 @@ DEPENDENCIES:
   - geocoding (from `.symlinks/plugins/geocoding/ios`)
   - geolocator (from `.symlinks/plugins/geolocator/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - home_widget (from `.symlinks/plugins/home_widget/ios`)
+  - local_auth (from `.symlinks/plugins/local_auth/ios`)
   - notification_permissions (from `.symlinks/plugins/notification_permissions/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
@@ -365,6 +374,8 @@ SPEC REPOS:
     - PurchasesHybridCommon
 
 EXTERNAL SOURCES:
+  background_fetch:
+    :path: ".symlinks/plugins/background_fetch/ios"
   cloud_functions:
     :path: ".symlinks/plugins/cloud_functions/ios"
   cryptography_flutter:
@@ -411,6 +422,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/geolocator/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
+  home_widget:
+    :path: ".symlinks/plugins/home_widget/ios"
+  local_auth:
+    :path: ".symlinks/plugins/local_auth/ios"
   notification_permissions:
     :path: ".symlinks/plugins/notification_permissions/ios"
   package_info:
@@ -433,7 +448,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher/ios"
 
 SPEC CHECKSUMS:
-  Branch: 43863eab4c2339a58fa552f2f277139c3839dfb4
+  background_fetch: 9221ccc02b41aff8a52b2090d9f791c5ed82eaee
+  Branch: 8aebcb7a6465f19f9f4d315acced369ae078d3f2
   cloud_functions: cc36e7b5ec30848fbf6ff5f240188d51104ce9dd
   cryptography_flutter: a2c541ba25ff28549f989f856dde126c961defcd
   esys_flutter_share: 403498dab005b36ce1f8d7aff377e81f0621b0b4
@@ -466,7 +482,7 @@ SPEC CHECKSUMS:
   FirebaseMLVisionLabelModel: 831b1598300f934a64705cfc820bc87e80d236f2
   FirebaseRemoteConfig: 1725314c4b89d8853c876099ded037f11bee26db
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  flutter_branch_sdk: 4b6cda04245cdff4cc36e04c41fb0dc98ffb3c71
+  flutter_branch_sdk: e112bc8cc622f6682099823ce4bc1520fb8d55db
   flutter_device_locale: 94fbcacb38980dc1a9e31eb4ee8ae6d1c3a73042
   flutter_inapp_purchase: 5c6a1ac3f11b11d0c8c0321c0c41c1f05805e4c8
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
@@ -477,7 +493,7 @@ SPEC CHECKSUMS:
   geolocator: 1ae40084cc6c1586ce5ad12cfc3fd38c64d05f2f
   Google-Mobile-Ads-SDK: 8b58584890539de4527c47ef01e4da941a10bc8a
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
-  GoogleAPIClientForREST: e152cbe478166145abeb22255d545a1faa86033c
+  GoogleAPIClientForREST: 4bb409633efcc2e1b3f945afe7e35039b5a61db2
   GoogleAppMeasurement: 67458367830514fb20fd9e233496f1eef9d90185
   GoogleDataTransport: 9a8a16f79feffc7f42096743de2a7c4815e84020
   GoogleDataTransportCCTSupport: 489c1265d2c85b68187a83a911913d190012158d
@@ -486,6 +502,8 @@ SPEC CHECKSUMS:
   GoogleUserMessagingPlatform: 1d4b6946710d18cec34742054092e2c2bddae61f
   GoogleUtilities: 7f2f5a07f888cdb145101d6042bc4422f57e70b3
   GTMSessionFetcher: b3503b20a988c4e20cc189aa798fd18220133f52
+  home_widget: 2829415127ee92e876f816cbbe44c0b6601b8a37
+  local_auth: 25938960984c3a7f6e3253e3f8d962fdd16852bd
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   notification_permissions: b74860c2967c1579243a675e63cd55e0ae75cef7
   package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62

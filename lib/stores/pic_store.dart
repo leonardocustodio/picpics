@@ -31,6 +31,7 @@ import 'package:metadata/metadata.dart' as md;
 // import 'package:edit_exif/edit_exif.dart';
 // import 'package:psd_sdk/psd_sdk.dart' as psd;
 // import 'package:tflite/tflite.dart';
+import 'dart:convert';
 
 part 'pic_store.g.dart';
 
@@ -52,11 +53,37 @@ abstract class _PicStore with Store {
     this.originalLatitude,
     this.originalLongitude,
     this.deletedFromCameraRoll,
+    this.isStarred,
   }) {
     // print('loading pic info......');
     loadPicInfo();
 
     autorun((_) {});
+  }
+
+  @observable
+  bool isStarred;
+
+  @action
+  Future<void> switchIsStarred() async {
+    bool value = !isStarred ?? true;
+
+    var picsBox = Hive.box('pics');
+    Pic pic = picsBox.get(photoId);
+    pic.isStarred = value;
+
+    if (value == true) {
+      var bytes = await entity.thumbDataWithSize(300, 300);
+      String encoded = base64.encode(bytes);
+      pic.base64encoded = encoded;
+      appStore.addToStarredPhotos(photoId);
+    } else {
+      pic.base64encoded = null;
+      appStore.removeFromStarredPhotos(photoId);
+    }
+
+    pic.save();
+    isStarred = value;
   }
 
   @observable

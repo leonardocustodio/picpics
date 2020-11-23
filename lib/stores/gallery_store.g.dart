@@ -110,6 +110,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
     });
   }
 
+  final _$selectedSwipeAtom = Atom(name: '_GalleryStore.selectedSwipe');
+
+  @override
+  int get selectedSwipe {
+    _$selectedSwipeAtom.reportRead();
+    return super.selectedSwipe;
+  }
+
+  @override
+  set selectedSwipe(int value) {
+    _$selectedSwipeAtom.reportWrite(value, super.selectedSwipe, () {
+      super.selectedSwipe = value;
+    });
+  }
+
   final _$selectedThumbnailAtom = Atom(name: '_GalleryStore.selectedThumbnail');
 
   @override
@@ -359,6 +374,17 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.addPicsToThumbnails');
     try {
       return super.addPicsToThumbnails(picStores);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setSelectedSwipe(int value) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.setSelectedSwipe');
+    try {
+      return super.setSelectedSwipe(value);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }
@@ -691,6 +717,7 @@ mixin _$GalleryStore on _GalleryStore, Store {
     return '''
 swipeIndex: ${swipeIndex},
 isLoaded: ${isLoaded},
+selectedSwipe: ${selectedSwipe},
 selectedThumbnail: ${selectedThumbnail},
 isSearching: ${isSearching},
 showSearchTagsResults: ${showSearchTagsResults},

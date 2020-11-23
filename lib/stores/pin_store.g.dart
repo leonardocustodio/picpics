@@ -179,6 +179,24 @@ mixin _$PinStore on _PinStore, Store {
     return _$isPinValidAsyncAction.run(() => super.isPinValid(appStore));
   }
 
+  final _$activateBiometricAsyncAction =
+      AsyncAction('_PinStore.activateBiometric');
+
+  @override
+  Future<void> activateBiometric(AppStore appStore) {
+    return _$activateBiometricAsyncAction
+        .run(() => super.activateBiometric(appStore));
+  }
+
+  final _$isBiometricValidatedAsyncAction =
+      AsyncAction('_PinStore.isBiometricValidated');
+
+  @override
+  Future<bool> isBiometricValidated(AppStore appStore) {
+    return _$isBiometricValidatedAsyncAction
+        .run(() => super.isBiometricValidated(appStore));
+  }
+
   final _$_PinStoreActionController = ActionController(name: '_PinStore');
 
   @override

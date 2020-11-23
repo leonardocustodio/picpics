@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -21,6 +20,9 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:uuid/uuid.dart';
 import 'package:picPics/tutorial/tabs_screen.dart';
+import 'package:local_auth/local_auth.dart';
+import 'package:picPics/model/user_key.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 
 part 'app_store.g.dart';
 
@@ -30,6 +32,7 @@ abstract class _AppStore with Store {
   final String appVersion;
   final String deviceLocale;
   final String initiatedWithProduct;
+  final LocalAuthentication biometricAuth = LocalAuthentication();
 
   _AppStore({
     this.appVersion,
@@ -63,6 +66,8 @@ abstract class _AppStore with Store {
         isPinRegistered: false,
         keepAskingToDelete: true,
         tourCompleted: false,
+        isBiometricActivated: false,
+        starredPhotos: [],
       );
 
       user = createUser;
@@ -93,6 +98,8 @@ abstract class _AppStore with Store {
     shouldDeleteOnPrivate = user.shouldDeleteOnPrivate ?? false;
     email = user.email;
     tourCompleted = user.tourCompleted ?? false;
+    isBiometricActivated = user.isBiometricActivated ?? false;
+    starredPhotos = user.starredPhotos ?? [];
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -130,9 +137,39 @@ abstract class _AppStore with Store {
       checkPremiumStatus();
     }
 
+    checkAvailableBiometrics();
+
     autorun((_) {
       print('autorun');
     });
+  }
+
+  List<String> starredPhotos;
+
+  void addToStarredPhotos(String photoId) {
+    if (starredPhotos.contains(photoId)) {
+      return;
+    }
+
+    starredPhotos.add(photoId);
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.starredPhotos = starredPhotos;
+    currentUser.save();
+  }
+
+  void removeFromStarredPhotos(String photoId) {
+    if (!starredPhotos.contains(photoId)) {
+      return;
+    }
+
+    starredPhotos.remove(photoId);
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.starredPhotos = starredPhotos;
+    currentUser.save();
   }
 
   String initialRoute;
@@ -173,8 +210,10 @@ abstract class _AppStore with Store {
   }
 
   @action
-  Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
-    return NotificationPermissions.getNotificationPermissionStatus().then((status) {
+  Future<void> checkNotificationPermission(
+      {bool firstPermissionCheck = false}) async {
+    return NotificationPermissions.getNotificationPermissionStatus()
+        .then((status) {
       var userBox = Hive.box('user');
       User currentUser = userBox.getAt(0);
 
@@ -203,7 +242,8 @@ abstract class _AppStore with Store {
   bool dailyChallenges = false;
 
   @action
-  void switchDailyChallenges({String notificationTitle, String notificationDescription}) {
+  void switchDailyChallenges(
+      {String notificationTitle, String notificationDescription}) {
     dailyChallenges = !dailyChallenges;
 
     var userBox = Hive.box('user');
@@ -478,7 +518,8 @@ abstract class _AppStore with Store {
     } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
       currentUser.picsTaggedToday += 1;
       currentUser.lastTaggedPicDate = dateNow;
-      print('same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
+      print(
+          'same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
 
       final RemoteConfig remoteConfig = await RemoteConfig.instance;
       dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
@@ -653,7 +694,75 @@ abstract class _AppStore with Store {
   double photoHeightInCardWidget = 500;
 
   @action
-  void setPhotoHeightInCardWidget(double value) => photoHeightInCardWidget = value;
+  void setPhotoHeightInCardWidget(double value) =>
+      photoHeightInCardWidget = value;
+
+  bool wantsToActivateBiometric = false;
+
+  @observable
+  bool isBiometricActivated;
+
+  @action
+  Future<void> setIsBiometricActivated(bool value) async {
+    if (value == false) {
+      await deactivateBiometric();
+    }
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.isBiometricActivated = value;
+    currentUser.save();
+
+    isBiometricActivated = value;
+  }
+
+  @observable
+  List<BiometricType> availableBiometrics;
+
+  @action
+  Future<void> checkAvailableBiometrics() async {
+    bool canCheckBiometrics;
+    try {
+      canCheckBiometrics = await biometricAuth.canCheckBiometrics;
+      if (canCheckBiometrics) {
+        try {
+          availableBiometrics = await biometricAuth.getAvailableBiometrics();
+        } catch (e) {
+          print(e);
+        }
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void saveSecretKey(String value) {
+    var userBox = Hive.box('userkey');
+    UserKey userKey = UserKey(secretKey: value);
+    userBox.put(0, userKey);
+  }
+
+  String getSecretKey() {
+    var userBox = Hive.box('userkey');
+    UserKey userKey = userBox.get(0);
+    return userKey.secretKey;
+  }
+
+  @action
+  Future<void> deactivateBiometric() async {
+    await Crypto.deleteEncryptedPin();
+
+    var userBox = Hive.box('userkey');
+    userBox.delete(0);
+
+    print('Deleted encrypted info!');
+  }
+
+  @observable
+  bool isMenuExpanded = true;
+
+  @action
+  void switchIsMenuExpanded() => isMenuExpanded = !isMenuExpanded;
 }
 
 enum PopPinScreenTo {

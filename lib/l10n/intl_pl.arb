@@ -160,6 +160,12 @@
   "feedback_bug_report": "Opinie i błędy",
   "private_photos": "Zdjęcia prywatne",
   "recent_tags": "Ostatnie tagi",
-  "ask_photo_library_permission": "Potrzebujemy dostępu do Twojej biblioteki zdjęć, abyś mógł zacząć porządkować swoje zdjęcia za pomocą picPics. Nie martw się, że Twoje dane nigdy nie opuszczą Twojego urządzenia!"
+  "ask_photo_library_permission": "Potrzebujemy dostępu do Twojej biblioteki zdjęć, abyś mógł zacząć porządkować swoje zdjęcia za pomocą picPics. Nie martw się, że Twoje dane nigdy nie opuszczą Twojego urządzenia!",
+  "tutorial_multiselect": "Możesz „dotknąć i przytrzymać” swoje zdjęcia, aby oznaczyć tagami wiele zdjęć naraz.",
+  "tutorial_secret": "Ukryj swoje prywatne zdjęcia za pomocą kodu PIN, aby były bezpieczne.",
+  "enable_faceid": "Włącz Face ID",
+  "enable_touchid": "Włącz Touch ID",
+  "enable_fingerprint": "Włącz odcisk palca",
+  "enable_irisscanner": "Włącz skaner tęczówki"
 
 }

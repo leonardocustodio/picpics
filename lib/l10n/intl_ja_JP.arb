@@ -589,6 +589,12 @@
   "feedback_bug_report": "フィードバックとバグレポート",
   "private_photos": "プライベート写真",
   "recent_tags": "最近のタグ",
-  "ask_photo_library_permission": "picPicsで写真の整理を開始できるように、フォトライブラリにアクセスする必要があります。 データがデバイスから離れることがないことを心配しないでください！"
+  "ask_photo_library_permission": "picPicsで写真の整理を開始できるように、フォトライブラリにアクセスする必要があります。 データがデバイスから離れることがないことを心配しないでください！",
+  "tutorial_multiselect": "写真を「タップアンドホールド」して、一度に複数の写真にタグを付けることができます。",
+  "tutorial_secret": "ピンコード保護でプライベート写真を非表示にし、安全に保ちます。",
+  "enable_faceid": "Face IDを有効にする",
+  "enable_touchid": "Touch IDを有効にする",
+  "enable_fingerprint": "指紋を有効にする",
+  "enable_irisscanner": "アイリススキャナーを有効にする"
 
 }

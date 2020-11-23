@@ -269,6 +269,53 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$isBiometricActivatedAtom =
+      Atom(name: '_AppStore.isBiometricActivated');
+
+  @override
+  bool get isBiometricActivated {
+    _$isBiometricActivatedAtom.reportRead();
+    return super.isBiometricActivated;
+  }
+
+  @override
+  set isBiometricActivated(bool value) {
+    _$isBiometricActivatedAtom.reportWrite(value, super.isBiometricActivated,
+        () {
+      super.isBiometricActivated = value;
+    });
+  }
+
+  final _$availableBiometricsAtom = Atom(name: '_AppStore.availableBiometrics');
+
+  @override
+  List<BiometricType> get availableBiometrics {
+    _$availableBiometricsAtom.reportRead();
+    return super.availableBiometrics;
+  }
+
+  @override
+  set availableBiometrics(List<BiometricType> value) {
+    _$availableBiometricsAtom.reportWrite(value, super.availableBiometrics, () {
+      super.availableBiometrics = value;
+    });
+  }
+
+  final _$isMenuExpandedAtom = Atom(name: '_AppStore.isMenuExpanded');
+
+  @override
+  bool get isMenuExpanded {
+    _$isMenuExpandedAtom.reportRead();
+    return super.isMenuExpanded;
+  }
+
+  @override
+  set isMenuExpanded(bool value) {
+    _$isMenuExpandedAtom.reportWrite(value, super.isMenuExpanded, () {
+      super.isMenuExpanded = value;
+    });
+  }
+
   final _$requestNotificationPermissionAsyncAction =
       AsyncAction('_AppStore.requestNotificationPermission');
 
@@ -323,6 +370,33 @@ mixin _$AppStore on _AppStore, Store {
   Future<void> requestGalleryPermission() {
     return _$requestGalleryPermissionAsyncAction
         .run(() => super.requestGalleryPermission());
+  }
+
+  final _$setIsBiometricActivatedAsyncAction =
+      AsyncAction('_AppStore.setIsBiometricActivated');
+
+  @override
+  Future<void> setIsBiometricActivated(bool value) {
+    return _$setIsBiometricActivatedAsyncAction
+        .run(() => super.setIsBiometricActivated(value));
+  }
+
+  final _$checkAvailableBiometricsAsyncAction =
+      AsyncAction('_AppStore.checkAvailableBiometrics');
+
+  @override
+  Future<void> checkAvailableBiometrics() {
+    return _$checkAvailableBiometricsAsyncAction
+        .run(() => super.checkAvailableBiometrics());
+  }
+
+  final _$deactivateBiometricAsyncAction =
+      AsyncAction('_AppStore.deactivateBiometric');
+
+  @override
+  Future<void> deactivateBiometric() {
+    return _$deactivateBiometricAsyncAction
+        .run(() => super.deactivateBiometric());
   }
 
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
@@ -585,6 +659,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void switchIsMenuExpanded() {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.switchIsMenuExpanded');
+    try {
+      return super.switchIsMenuExpanded();
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},
@@ -603,6 +688,9 @@ appLanguage: ${appLanguage},
 hasGalleryPermission: ${hasGalleryPermission},
 waitingAccessCode: ${waitingAccessCode},
 photoHeightInCardWidget: ${photoHeightInCardWidget},
+isBiometricActivated: ${isBiometricActivated},
+availableBiometrics: ${availableBiometrics},
+isMenuExpanded: ${isMenuExpanded},
 appLocale: ${appLocale},
 currentLanguage: ${currentLanguage}
     ''';

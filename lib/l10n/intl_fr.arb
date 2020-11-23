@@ -161,5 +161,11 @@
   "feedback_bug_report": "Commentaires et bogues",
   "private_photos": "Photos privées",
   "recent_tags": "Étiquettes récentes",
-  "ask_photo_library_permission": "Nous devons accéder à votre photothèque pour que vous puissiez commencer à organiser vos photos avec picPics. Ne vous inquiétez pas, vos données ne quitteront jamais votre appareil!"
+  "ask_photo_library_permission": "Nous devons accéder à votre photothèque pour que vous puissiez commencer à organiser vos photos avec picPics. Ne vous inquiétez pas, vos données ne quitteront jamais votre appareil!",
+  "tutorial_multiselect": "Vous pouvez «appuyer de manière prolongée» sur vos photos pour marquer plusieurs photos à la fois.",
+  "tutorial_secret": "Cachez vos photos privées avec une protection par code PIN pour les protéger.",
+  "enable_faceid": "Activer Face ID",
+  "enable_touchid": "Activer Touch ID",
+  "enable_fingerprint": "Activer l'empreinte digitale",
+  "enable_irisscanner": "Activer le scanner d'iris"
 }

@@ -5587,6 +5587,66 @@ class S {
       args: [],
     );
   }
+
+  /// `You can "tap & hold" on your photos to tag multiple photos at once.`
+  String get tutorial_multiselect {
+    return Intl.message(
+      'You can "tap & hold" on your photos to tag multiple photos at once.',
+      name: 'tutorial_multiselect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Hide your private photos with a pin code protection, keeping them safe.`
+  String get tutorial_secret {
+    return Intl.message(
+      'Hide your private photos with a pin code protection, keeping them safe.',
+      name: 'tutorial_secret',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Face ID`
+  String get enable_faceid {
+    return Intl.message(
+      'Enable Face ID',
+      name: 'enable_faceid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Touch ID`
+  String get enable_touchid {
+    return Intl.message(
+      'Enable Touch ID',
+      name: 'enable_touchid',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Fingerprint`
+  String get enable_fingerprint {
+    return Intl.message(
+      'Enable Fingerprint',
+      name: 'enable_fingerprint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable Iris Scanner`
+  String get enable_irisscanner {
+    return Intl.message(
+      'Enable Iris Scanner',
+      name: 'enable_irisscanner',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

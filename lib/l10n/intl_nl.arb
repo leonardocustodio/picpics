@@ -159,6 +159,12 @@
   "feedback_bug_report": "Feedback en bugrapport",
   "private_photos": "Prive-foto's",
   "recent_tags": "Recente tags",
-  "ask_photo_library_permission": "We hebben toegang nodig tot uw fotobibliotheek zodat u uw foto's kunt gaan organiseren met picPics. Maakt u zich geen zorgen, uw gegevens zullen uw apparaat nooit verlaten!"
+  "ask_photo_library_permission": "We hebben toegang nodig tot uw fotobibliotheek zodat u uw foto's kunt gaan organiseren met picPics. Maakt u zich geen zorgen, uw gegevens zullen uw apparaat nooit verlaten!",
+  "tutorial_multiselect": "U kunt op uw foto's \"tikken en vasthouden\" om meerdere foto's tegelijk te taggen.",
+  "tutorial_secret": "Verberg uw privéfoto's met een pincodebescherming, zodat ze veilig zijn.",
+  "enable_faceid": "Schakel Face ID in",
+  "enable_touchid": "Schakel Touch ID in",
+  "enable_fingerprint": "Vingerafdruk inschakelen",
+  "enable_irisscanner": "Schakel Iris Scanner in"
 
 }

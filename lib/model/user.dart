@@ -72,6 +72,12 @@ class User extends HiveObject {
   @HiveField(23)
   bool tourCompleted;
 
+  @HiveField(24)
+  bool isBiometricActivated;
+
+  @HiveField(25)
+  List<String> starredPhotos;
+
   User({
     this.id,
     this.email,
@@ -96,5 +102,7 @@ class User extends HiveObject {
     this.keepAskingToDelete,
     this.shouldDeleteOnPrivate,
     this.tourCompleted,
+    this.isBiometricActivated,
+    this.starredPhotos,
   });
 }

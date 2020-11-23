@@ -209,4 +209,25 @@ abstract class _PinStore with Store {
     bool valid = await Crypto.checkIsPinValid(pinTemp, appStore);
     return valid;
   }
+
+  @action
+  Future<void> activateBiometric(AppStore appStore) async {
+    await Crypto.saveEncryptedPin(pinTemp, appStore);
+  }
+
+  @action
+  Future<bool> isBiometricValidated(AppStore appStore) async {
+    String pin = await Crypto.getEncryptedPin(appStore);
+    if (pin == null) {
+      return false;
+    }
+
+    pinTemp = pin;
+    bool valid = await isPinValid(appStore);
+    if (valid == false) {
+      return false;
+    }
+
+    return true;
+  }
 }

@@ -134,6 +134,48 @@ class Crypto {
     }
   }
 
+  static Future<String> getEncryptedPin(AppStore appStore) async {
+    final storage = FlutterSecureStorage();
+
+    String secretString = appStore.getSecretKey();
+    String nounceString = await storage.read(key: 'npkey');
+    String encryptedPin = await storage.read(key: 'epkey');
+
+    final SecretKey picKey = SecretKey(hex.decode(secretString));
+    final Nonce ivKey = Nonce(hex.decode(nounceString));
+
+    try {
+      final decryptedData = await aesCtr.decrypt(hex.decode(encryptedPin), secretKey: picKey, nonce: ivKey);
+      print('Pin: ${utf8.decode(decryptedData)}');
+      return utf8.decode(decryptedData);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  static Future<void> deleteEncryptedPin() async {
+    final storage = FlutterSecureStorage();
+
+    await storage.delete(key: 'epkey');
+    await storage.delete(key: 'npkey');
+  }
+
+  static Future<bool> saveEncryptedPin(String userPin, AppStore appStore) async {
+    final storage = FlutterSecureStorage();
+
+    final SecretKey picKey = aesCtr.newSecretKeySync();
+    final Nonce ivKey = aesCtr.newNonce();
+
+    final encryptedData = await aesCtr.encrypt(utf8.encode(userPin), secretKey: picKey, nonce: ivKey);
+    final hexData = hex.encode(encryptedData);
+
+    appStore.saveSecretKey(hex.encode(picKey.extractSync()));
+    await storage.write(key: 'epkey', value: hexData);
+    await storage.write(key: 'npkey', value: hex.encode(ivKey.bytes));
+
+    return true;
+  }
+
   static Future<void> saveSaltKey() async {
     final storage = FlutterSecureStorage();
     Codec<String, String> stringToBase64 = utf8.fuse(base64);

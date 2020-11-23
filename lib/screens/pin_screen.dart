@@ -20,6 +20,7 @@ import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:picPics/widgets/general_modal.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:provider/provider.dart';
+import 'package:local_auth/local_auth.dart';
 
 class PinScreen extends StatefulWidget {
   static const String id = 'pin_screen';
@@ -37,6 +38,42 @@ class _PinScreenState extends State<PinScreen> {
 
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
+
+  Future<void> _authenticate() async {
+    try {
+      bool authenticated = await appStore.biometricAuth.authenticateWithBiometrics(
+        localizedReason: 'Scan your fingerprint to authenticate',
+        useErrorDialogs: true,
+        stickyAuth: true,
+      );
+
+      if (authenticated == true) {
+        bool valid = await pinStore.isBiometricValidated(appStore);
+
+        if (valid == true) {
+          appStore.switchSecretPhotos();
+          galleryStore.checkIsLibraryUpdated();
+          pinStore.setPinTemp('');
+          pinStore.setConfirmPinTemp('');
+          Navigator.pop(context);
+          return;
+        }
+
+        _shakeKey.currentState.forward();
+        pinStore.setPinTemp('');
+        pinStore.setConfirmPinTemp('');
+      }
+    } on PlatformException catch (e) {
+      print(e);
+      _shakeKey.currentState.forward();
+      pinStore.setPinTemp('');
+      pinStore.setConfirmPinTemp('');
+    }
+  }
+
+  void _cancelAuthentication() {
+    appStore.biometricAuth.stopAuthentication();
+  }
 
   GlobalKey<AnimatorWidgetState> _shakeKey = GlobalKey<AnimatorWidgetState>();
   GlobalKey<AnimatorWidgetState> _shakeKeyConfirm = GlobalKey<AnimatorWidgetState>();
@@ -165,7 +202,6 @@ class _PinScreenState extends State<PinScreen> {
   @override
   void initState() {
     super.initState();
-
 //    Analytics.sendCurrentScreen(Screen.login_screen);
   }
 
@@ -175,6 +211,10 @@ class _PinScreenState extends State<PinScreen> {
     appStore = Provider.of<AppStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
     pinStore = Provider.of<PinStore>(context);
+
+    if (appStore.isPinRegistered == true && appStore.isBiometricActivated == true) {
+      _authenticate();
+    }
   }
 
   Widget _buildPinPad(BuildContext context, int index) {
@@ -381,8 +421,19 @@ class _PinScreenState extends State<PinScreen> {
         bool valid = await pinStore.isPinValid(appStore);
 
         if (valid) {
+          if (appStore.wantsToActivateBiometric) {
+            await pinStore.activateBiometric(appStore);
+            await appStore.setIsBiometricActivated(true);
+
+            pinStore.setPinTemp('');
+            pinStore.setConfirmPinTemp('');
+            Navigator.pop(context);
+            return;
+          }
+
           appStore.switchSecretPhotos();
           galleryStore.checkIsLibraryUpdated();
+
           pinStore.setPinTemp('');
           pinStore.setConfirmPinTemp('');
           Navigator.pop(context);
@@ -546,6 +597,18 @@ class _PinScreenState extends State<PinScreen> {
                       }
 
                       if (appStore.isPinRegistered == true) {
+                        String assetImage;
+
+                        if (appStore.isBiometricActivated == true) {
+                          if (appStore.availableBiometrics.contains(BiometricType.face)) {
+                            assetImage = 'lib/images/faceidwhiteico.png';
+                          } else if (appStore.availableBiometrics.contains(BiometricType.iris)) {
+                            assetImage = 'lib/images/irisscannerwhiteico.png';
+                          } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
+                            assetImage = 'lib/images/fingerprintwhiteico.png';
+                          }
+                        }
+
                         return Column(
                           children: [
                             Spacer(),
@@ -578,21 +641,29 @@ class _PinScreenState extends State<PinScreen> {
                               onPinTapped: pinTapped,
                             ),
                             Spacer(),
-                            CupertinoButton(
-                              onPressed: () {
-                                recoverPin();
-                              },
-                              child: Text(
-                                S.of(context).forgot_secret_key,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kWhiteColor,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
+                            if (assetImage != null)
+                              CupertinoButton(
+                                onPressed: () {
+                                  _authenticate();
+                                },
+                                child: Image.asset(assetImage),
+                              ),
+                            if (appStore.wantsToActivateBiometric != true)
+                              CupertinoButton(
+                                onPressed: () {
+                                  recoverPin();
+                                },
+                                child: Text(
+                                  S.of(context).forgot_secret_key,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: kWhiteColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                  ),
                                 ),
                               ),
-                            ),
                             Spacer(
                               flex: 2,
                             ),

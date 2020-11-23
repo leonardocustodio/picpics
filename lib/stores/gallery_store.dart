@@ -143,6 +143,12 @@ abstract class _GalleryStore with Store {
   }
 
   @observable
+  int selectedSwipe = 0;
+
+  @action
+  void setSelectedSwipe(int value) => selectedSwipe = value;
+
+  @observable
   int selectedThumbnail = 0;
 
   @action

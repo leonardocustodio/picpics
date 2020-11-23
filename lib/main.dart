@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -14,6 +15,7 @@ import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
+import 'package:picPics/model/user_key.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/stores/app_store.dart';
@@ -39,6 +41,8 @@ import 'dart:io';
 import 'package:picPics/tutorial/tabs_screen.dart';
 import 'package:picPics/tutorial/add_location.dart';
 import 'package:picPics/tutorial/photo_screen.dart';
+import 'package:background_fetch/background_fetch.dart';
+import 'package:picPics/managers/widget_manager.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
@@ -47,6 +51,12 @@ Future<String> checkForAppStoreInitiatedProducts() async {
     return appStoreProducts.last.productId;
   }
   return null;
+}
+
+void backgroundFetchHeadlessTask(String taskId) async {
+  print('[BackgroundFetch] Headless event received.');
+  await WidgetManager.sendAndUpdate();
+  BackgroundFetch.finish(taskId);
 }
 
 void main() async {
@@ -73,6 +83,7 @@ void main() async {
   Hive.registerAdapter(PicAdapter());
   Hive.registerAdapter(TagAdapter());
   Hive.registerAdapter(SecretAdapter());
+  Hive.registerAdapter(UserKeyAdapter());
 
   var userBox = await Hive.openBox('user');
   var picsBox = await Hive.openBox('pics');
@@ -81,6 +92,10 @@ void main() async {
   var secretKey = Uint8List.fromList(
       [76, 224, 117, 70, 57, 101, 39, 29, 48, 239, 215, 240, 41, 149, 198, 69, 64, 5, 207, 227, 190, 126, 8, 133, 136, 234, 130, 91, 254, 104, 196, 158]);
   var secretBox = await Hive.openBox('secrets', encryptionKey: secretKey);
+
+  var skey =
+      Uint8List.fromList([71, 204, 179, 71, 12, 51, 19, 9, 98, 19, 225, 200, 1, 5, 6, 79, 55, 18, 13, 18, 19, 25, 6, 5, 18, 22, 135, 97, 22, 17, 188, 155]);
+  var keyBox = await Hive.openBox('userkey', encryptionKey: skey);
 
   String deviceLocale = await DeviceLocale.getCurrentLocale().then((Locale locale) => locale.toString());
   String appVersion = await PackageInfo.fromPlatform().then((PackageInfo packageInfo) => packageInfo.version);
@@ -105,6 +120,11 @@ void main() async {
     PlatformException platformException = error as PlatformException;
     // print('InitSession error: ${platformException.code} - ${platformException.message}');
   });
+
+  bool setAppGroup = await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
+  print('Has setted app group: $setAppGroup');
+
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 
   runZonedGuarded<Future<void>>(() async {
     runApp(
@@ -165,6 +185,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
       print('&&&& Here lifecycle!');
+      WidgetManager.sendAndUpdate();
     }
 
     if (state == AppLifecycleState.resumed) {
