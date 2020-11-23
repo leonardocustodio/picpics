@@ -78,6 +78,9 @@ class User extends HiveObject {
   @HiveField(25)
   List<String> starredPhotos;
 
+  @HiveField(26)
+  String defaultWidgetImage;
+
   User({
     this.id,
     this.email,
@@ -104,5 +107,6 @@ class User extends HiveObject {
     this.tourCompleted,
     this.isBiometricActivated,
     this.starredPhotos,
+    this.defaultWidgetImage,
   });
 }

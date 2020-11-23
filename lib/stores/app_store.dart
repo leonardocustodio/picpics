@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -68,6 +69,7 @@ abstract class _AppStore with Store {
         tourCompleted: false,
         isBiometricActivated: false,
         starredPhotos: [],
+        defaultWidgetImage: null,
       );
 
       user = createUser;
@@ -144,8 +146,17 @@ abstract class _AppStore with Store {
     });
   }
 
-  List<String> starredPhotos;
+  Future<void> setDefaultWidgetImage(AssetEntity entity) async {
+    var bytes = await entity.thumbDataWithSize(300, 300);
+    String encoded = base64.encode(bytes);
 
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.defaultWidgetImage = encoded;
+    currentUser.save();
+  }
+
+  List<String> starredPhotos;
   void addToStarredPhotos(String photoId) {
     if (starredPhotos.contains(photoId)) {
       return;
@@ -210,10 +221,8 @@ abstract class _AppStore with Store {
   }
 
   @action
-  Future<void> checkNotificationPermission(
-      {bool firstPermissionCheck = false}) async {
-    return NotificationPermissions.getNotificationPermissionStatus()
-        .then((status) {
+  Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
+    return NotificationPermissions.getNotificationPermissionStatus().then((status) {
       var userBox = Hive.box('user');
       User currentUser = userBox.getAt(0);
 
@@ -242,8 +251,7 @@ abstract class _AppStore with Store {
   bool dailyChallenges = false;
 
   @action
-  void switchDailyChallenges(
-      {String notificationTitle, String notificationDescription}) {
+  void switchDailyChallenges({String notificationTitle, String notificationDescription}) {
     dailyChallenges = !dailyChallenges;
 
     var userBox = Hive.box('user');
@@ -518,8 +526,7 @@ abstract class _AppStore with Store {
     } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
       currentUser.picsTaggedToday += 1;
       currentUser.lastTaggedPicDate = dateNow;
-      print(
-          'same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
+      print('same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
 
       final RemoteConfig remoteConfig = await RemoteConfig.instance;
       dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
@@ -694,8 +701,7 @@ abstract class _AppStore with Store {
   double photoHeightInCardWidget = 500;
 
   @action
-  void setPhotoHeightInCardWidget(double value) =>
-      photoHeightInCardWidget = value;
+  void setPhotoHeightInCardWidget(double value) => photoHeightInCardWidget = value;
 
   bool wantsToActivateBiometric = false;
 

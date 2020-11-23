@@ -648,6 +648,7 @@ abstract class _GalleryStore with Store {
 
     sortUntaggedPhotos();
     sortTaggedPhotos();
+    appStore.setDefaultWidgetImage(allPics[0].entity);
     print('#@#@#@# Total photos: ${allPics.length}');
   }
 
@@ -800,6 +801,7 @@ abstract class _GalleryStore with Store {
         swipePics.remove(picStore);
         removePicFromUntaggedPics(picStore: picStore);
         allPics.remove(picStore);
+        appStore.setDefaultWidgetImage(allPics[0].entity);
       }
 
       Analytics.sendEvent(Event.deleted_photo);
@@ -821,6 +823,7 @@ abstract class _GalleryStore with Store {
       swipePics.remove(picStore);
       removePicFromUntaggedPics(picStore: picStore);
       allPics.remove(picStore);
+      appStore.setDefaultWidgetImage(allPics[0].entity);
     }
 
     Analytics.sendEvent(Event.deleted_photo);
