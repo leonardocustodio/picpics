@@ -21,11 +21,9 @@ class PicsWidgetProvider : HomeWidgetProvider() {
                 setOnClickPendingIntent(R.id.widget_container,
                         PendingIntent.getActivity(context, 0, Intent(context, MainActivity::class.java), 0))
 
-                val keys = widgetData.getStringSet("imagesKeys", null) ?: emptySet()
-                      var imageBytes = Base64.decode(widgetData.getString("imageEncoded", null) ?: "", Base64.DEFAULT)
+                var imageBytes = Base64.decode(widgetData.getString("imageEncoded", null) ?: "", Base64.DEFAULT)
                 val decodedImage: Bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
                 setImageViewBitmap(R.id.widget_image, decodedImage)
-
             }
 
             appWidgetManager.updateAppWidget(widgetId, views)

@@ -96,6 +96,7 @@ dev_dependencies:
   googleapis: ^0.56.1
   googleapis_auth: any
   strings: ^0.1.2
+  background_fetch: ^0.6.0
 
 flutter:
   uses-material-design: true

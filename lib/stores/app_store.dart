@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'dart:convert';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -15,7 +13,6 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
-import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/screens/tabs_screen.dart';
@@ -26,7 +23,6 @@ import 'package:picPics/tutorial/tabs_screen.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:picPics/model/user_key.dart';
 import 'package:picPics/managers/crypto_manager.dart';
-import 'package:home_widget/home_widget.dart';
 
 part 'app_store.g.dart';
 
@@ -71,6 +67,7 @@ abstract class _AppStore with Store {
         keepAskingToDelete: true,
         tourCompleted: false,
         isBiometricActivated: false,
+        starredPhotos: [],
       );
 
       user = createUser;
@@ -102,6 +99,7 @@ abstract class _AppStore with Store {
     email = user.email;
     tourCompleted = user.tourCompleted ?? false;
     isBiometricActivated = user.isBiometricActivated ?? false;
+    starredPhotos = user.starredPhotos ?? [];
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -144,6 +142,26 @@ abstract class _AppStore with Store {
     autorun((_) {
       print('autorun');
     });
+  }
+
+  List<String> starredPhotos;
+
+  void addToStarredPhotos(String photoId) {
+    starredPhotos.add(photoId);
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.starredPhotos = starredPhotos;
+    currentUser.save();
+  }
+
+  void removeFromStarredPhotos(String photoId) {
+    starredPhotos.remove(photoId);
+
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.starredPhotos = starredPhotos;
+    currentUser.save();
   }
 
   String initialRoute;
@@ -725,64 +743,6 @@ abstract class _AppStore with Store {
     userBox.delete(0);
 
     print('Deleted encrypted info!');
-  }
-
-  Future<void> _sendData({List<PicStore> picStores}) async {
-    try {
-      print('Future send data');
-
-      List<String> imagesKeys = [];
-      List<Future> imagesData = [];
-
-      for (int x = 0; x < picStores.length; x++) {
-        PicStore picStore = picStores[x];
-        var bytes = await picStore.assetOriginBytes;
-        String base64encoded = base64.encode(bytes);
-        imagesKeys.add('imageEncoded$x');
-        imagesData.add(HomeWidget.saveWidgetData<String>('imageEncoded$x', base64encoded));
-      }
-
-      return Future.wait([
-        HomeWidget.saveWidgetData('imagesKeys', imagesKeys),
-        ...imagesData,
-      ]);
-    } catch (exception) {
-      debugPrint('Error Sending Data. $exception');
-    }
-  }
-
-  Future<void> _updateWidget() async {
-    try {
-      print('Future updat widget');
-      return HomeWidget.updateWidget(
-        name: 'HomeWidgetProvider',
-        iOSName: 'HomeWidget',
-      );
-    } catch (exception) {
-      debugPrint('Error Updating Widget. $exception');
-    }
-  }
-
-  // Future<void> _loadData() async {
-  //   try {
-  //     return Future.wait([
-  //       HomeWidget.getWidgetData<String>('title', defaultValue: 'Default Title')
-  //           .then((value) => _titleController.text = value),
-  //       HomeWidget.getWidgetData<String>('message',
-  //           defaultValue: 'Default Message')
-  //           .then((value) => _messageController.text = value),
-  //     ]);
-  //   } catch (exception) {
-  //     debugPrint('Error Getting Data. $exception');
-  //   }
-  // }
-
-  @action
-  Future<void> sendAndUpdate({Set<PicStore> picStores}) async {
-    print('Sending data to widget');
-    await _sendData(picStores: picStores.toList());
-    await _updateWidget();
-    print('Finished sending data');
   }
 
   @observable

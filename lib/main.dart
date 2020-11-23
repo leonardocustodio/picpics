@@ -41,6 +41,8 @@ import 'dart:io';
 import 'package:picPics/tutorial/tabs_screen.dart';
 import 'package:picPics/tutorial/add_location.dart';
 import 'package:picPics/tutorial/photo_screen.dart';
+import 'package:background_fetch/background_fetch.dart';
+import 'package:picPics/managers/widget_manager.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
   print('Checking if appstore initiated products');
@@ -49,6 +51,12 @@ Future<String> checkForAppStoreInitiatedProducts() async {
     return appStoreProducts.last.productId;
   }
   return null;
+}
+
+void backgroundFetchHeadlessTask(String taskId) async {
+  print('[BackgroundFetch] Headless event received.');
+  await WidgetManager.sendAndUpdate();
+  BackgroundFetch.finish(taskId);
 }
 
 void main() async {
@@ -116,6 +124,8 @@ void main() async {
   bool setAppGroup = await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
   print('Has setted app group: $setAppGroup');
 
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+
   runZonedGuarded<Future<void>>(() async {
     runApp(
       PicPicsApp(
@@ -175,6 +185,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.inactive) {
       print('&&&& Here lifecycle!');
+      WidgetManager.sendAndUpdate();
     }
 
     if (state == AppLifecycleState.resumed) {

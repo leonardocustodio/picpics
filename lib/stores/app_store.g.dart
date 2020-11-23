@@ -301,6 +301,21 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$isMenuExpandedAtom = Atom(name: '_AppStore.isMenuExpanded');
+
+  @override
+  bool get isMenuExpanded {
+    _$isMenuExpandedAtom.reportRead();
+    return super.isMenuExpanded;
+  }
+
+  @override
+  set isMenuExpanded(bool value) {
+    _$isMenuExpandedAtom.reportWrite(value, super.isMenuExpanded, () {
+      super.isMenuExpanded = value;
+    });
+  }
+
   final _$requestNotificationPermissionAsyncAction =
       AsyncAction('_AppStore.requestNotificationPermission');
 
@@ -382,14 +397,6 @@ mixin _$AppStore on _AppStore, Store {
   Future<void> deactivateBiometric() {
     return _$deactivateBiometricAsyncAction
         .run(() => super.deactivateBiometric());
-  }
-
-  final _$sendAndUpdateAsyncAction = AsyncAction('_AppStore.sendAndUpdate');
-
-  @override
-  Future<void> sendAndUpdate({Set<PicStore> picStores}) {
-    return _$sendAndUpdateAsyncAction
-        .run(() => super.sendAndUpdate(picStores: picStores));
   }
 
   final _$_AppStoreActionController = ActionController(name: '_AppStore');
@@ -652,6 +659,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void switchIsMenuExpanded() {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.switchIsMenuExpanded');
+    try {
+      return super.switchIsMenuExpanded();
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 notifications: ${notifications},
@@ -672,6 +690,7 @@ waitingAccessCode: ${waitingAccessCode},
 photoHeightInCardWidget: ${photoHeightInCardWidget},
 isBiometricActivated: ${isBiometricActivated},
 availableBiometrics: ${availableBiometrics},
+isMenuExpanded: ${isMenuExpanded},
 appLocale: ${appLocale},
 currentLanguage: ${currentLanguage}
     ''';

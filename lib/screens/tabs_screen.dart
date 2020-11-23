@@ -28,6 +28,7 @@ import 'package:picPics/widgets/unhide_secret_modal.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/database_manager.dart';
+import 'package:picPics/managers/widget_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
 import 'package:picPics/managers/admob_manager.dart';
@@ -38,6 +39,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:background_fetch/background_fetch.dart';
 
 class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
@@ -238,6 +240,47 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         DatabaseManager.instance.adsIsLoaded = false;
       }
     };
+
+    initPlatformState();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    // Configure BackgroundFetch.
+    BackgroundFetch.configure(
+        BackgroundFetchConfig(
+            minimumFetchInterval: 15,
+            stopOnTerminate: false,
+            enableHeadless: false,
+            requiresBatteryNotLow: false,
+            requiresCharging: false,
+            requiresStorageNotLow: false,
+            requiresDeviceIdle: false,
+            requiredNetworkType: NetworkType.NONE), (String taskId) async {
+      // This is the fetch-event callback.
+      print("[BackgroundFetch] Event received $taskId");
+
+      await WidgetManager.sendAndUpdate();
+
+      // IMPORTANT:  You must signal completion of your task or the OS can punish your app
+      // for taking too long in the background.
+      BackgroundFetch.finish(taskId);
+    }).then((int status) {
+      print('[BackgroundFetch] configure success: $status');
+    }).catchError((e) {
+      print('[BackgroundFetch] configure ERROR: $e');
+    });
+
+    // Optionally query the current BackgroundFetch status.
+    // int status = await BackgroundFetch.status;
+    // setState(() {
+    //   _status = status;
+    // });
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
   }
 
   @override
@@ -268,7 +311,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         tabsStore.setMultiPicBar(false);
       } else if (index == 1) {
         print('star photos');
-        appStore.sendAndUpdate(picStores: galleryStore.selectedPics);
+        await WidgetManager.saveData(picsStores: galleryStore.selectedPics.toList());
       } else if (index == 2) {
         tabsStore.setMultiTagSheet(true);
         Future.delayed(Duration(milliseconds: 200), () {

@@ -28,13 +28,15 @@ class PicAdapter extends TypeAdapter<Pic> {
       tags: (fields[8] as List)?.cast<String>(),
       isPrivate: fields[9] as bool,
       deletedFromCameraRoll: fields[10] as bool,
+      isStarred: fields[11] as bool,
+      base64encoded: fields[12] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Pic obj) {
     writer
-      ..writeByte(11)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.photoId)
       ..writeByte(1)
@@ -56,7 +58,11 @@ class PicAdapter extends TypeAdapter<Pic> {
       ..writeByte(9)
       ..write(obj.isPrivate)
       ..writeByte(10)
-      ..write(obj.deletedFromCameraRoll);
+      ..write(obj.deletedFromCameraRoll)
+      ..writeByte(11)
+      ..write(obj.isStarred)
+      ..writeByte(12)
+      ..write(obj.base64encoded);
   }
 
   @override

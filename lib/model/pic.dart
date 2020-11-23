@@ -36,6 +36,12 @@ class Pic extends HiveObject {
   @HiveField(10)
   bool deletedFromCameraRoll;
 
+  @HiveField(11)
+  bool isStarred;
+
+  @HiveField(12)
+  String base64encoded;
+
   Pic({
     this.photoId,
     this.createdAt,
@@ -48,5 +54,7 @@ class Pic extends HiveObject {
     this.tags,
     this.isPrivate,
     this.deletedFromCameraRoll,
+    this.isStarred,
+    this.base64encoded,
   });
 }
