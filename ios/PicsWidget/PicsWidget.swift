@@ -19,25 +19,18 @@ struct Provider: TimelineProvider {
     func getSnapshot(in context: Context, completion: @escaping (ExampleEntry) -> ()) {
         let data = UserDefaults.init(suiteName:widgetGroupId)
         
-        let imagesKeys = data?.stringArray(forKey: "imagesKeys") ?? []
-        print("imagesKeys: \(imagesKeys)")
+        let entry = ExampleEntry(date: Date(), imageEncoded: data?.string(forKey: "imageEncoded") ?? defaultImage)
+        print("Image encoded: \(entry)")
         
-        for key in imagesKeys {
-            let entry = ExampleEntry(date: Date(), imageEncoded: data?.string(forKey: key) ?? defaultImage)
-            completion(entry)
-        }
-        
-        
-//        let entry = ExampleEntry(date: Date(), imageEncoded: data?.string(forKey: "imageEncoded") ?? defaultImage)
-//        completion(entry)
+        completion(entry)
     }
     
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        getSnapshot(in: context) { (entry) in
-            let timeline = Timeline(entries: [entry], policy: .atEnd)
-            completion(timeline)
-        }
-    }
+           getSnapshot(in: context) { (entry) in
+               let timeline = Timeline(entries: [entry], policy: .atEnd)
+               completion(timeline)
+           }
+       }
 }
 
 struct ExampleEntry: TimelineEntry {
@@ -62,7 +55,7 @@ struct PicsWidget: Widget {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             PicsWidgetEntryView(entry: entry)
         }
-        .configurationDisplayName("My Widget")
+        .configurationDisplayName("Starred Photos")
         .description("This is an example widget.")
     }
 }

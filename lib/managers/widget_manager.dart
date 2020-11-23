@@ -38,7 +38,10 @@ class WidgetManager {
       print('Sorted number for widget: $randInt');
 
       Pic pic = picsBox.get(starredPhotos[randInt]);
-      return Future.wait([HomeWidget.saveWidgetData<String>('imageEncoded', pic.base64encoded)]);
+      print('Base64: ${pic.base64encoded}');
+      return Future.wait([
+        HomeWidget.saveWidgetData<String>('imageEncoded', pic.base64encoded)
+      ]);
     } catch (exception) {
       print('Error Sending Data. $exception');
     }
@@ -46,15 +49,16 @@ class WidgetManager {
 
   static Future<void> _updateWidget() async {
     try {
-      print('Future updat widget');
+      print('Future update widget');
       return HomeWidget.updateWidget(
-        name: 'HomeWidgetProvider',
+        name: 'PicsWidgetProvider',
         androidName: 'PicsWidgetProvider',
-        iOSName: 'HomeWidget',
+        iOSName: 'PicsWidget',
       );
     } catch (exception) {
       print('Error Updating Widget. $exception');
     }
+    print('After return in update widget');
   }
 
   // Future<void> _loadData() async {
