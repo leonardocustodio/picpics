@@ -42,13 +42,14 @@ class UserAdapter extends TypeAdapter<User> {
       tourCompleted: fields[23] as bool,
       isBiometricActivated: fields[24] as bool,
       starredPhotos: (fields[25] as List)?.cast<String>(),
+      defaultWidgetImage: fields[26] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, User obj) {
     writer
-      ..writeByte(25)
+      ..writeByte(26)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -98,7 +99,9 @@ class UserAdapter extends TypeAdapter<User> {
       ..writeByte(24)
       ..write(obj.isBiometricActivated)
       ..writeByte(25)
-      ..write(obj.starredPhotos);
+      ..write(obj.starredPhotos)
+      ..writeByte(26)
+      ..write(obj.defaultWidgetImage);
   }
 
   @override

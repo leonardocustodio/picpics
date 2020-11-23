@@ -44,9 +44,13 @@ class WidgetManager {
         print('Base64: ${pic.base64encoded}');
         baseString = pic.base64encoded;
       }
+      if (baseString == null) {
+        return;
+      }
 
       print('Send base string!');
-      return Future.wait([HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]);
+      return Future.wait(
+          [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]);
     } catch (exception) {
       print('Error Sending Data. $exception');
     }

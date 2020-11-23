@@ -66,12 +66,14 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> switchIsStarred() async {
-    bool value = !isStarred ?? true;
+    bool value = isStarred == null ? true : !isStarred;
+    print('Setting starred photo $photoId to $value');
 
     var picsBox = Hive.box('pics');
     Pic pic = picsBox.get(photoId);
     pic.isStarred = value;
 
+    print('teste');
     if (value == true) {
       var bytes = await entity.thumbDataWithSize(300, 300);
       String encoded = base64.encode(bytes);
@@ -84,6 +86,7 @@ abstract class _PicStore with Store {
 
     pic.save();
     isStarred = value;
+    print('isStarred value: $isStarred');
   }
 
   @observable
@@ -141,15 +144,18 @@ abstract class _PicStore with Store {
       return await entity.originBytes;
     }
     print('Returning decrypt image in privatePath: $photoPath');
-    return await Crypto.decryptImage(photoPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+    return await Crypto.decryptImage(
+        photoPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
   Future<Uint8List> get assetThumbBytes async {
     if (isPrivate == false && entity != null) {
-      return await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+      return await entity.thumbDataWithSize(
+          kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
     }
     print('Returning decrypt image in privatePath: $thumbPath');
-    return await Crypto.decryptImage(thumbPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+    return await Crypto.decryptImage(
+        thumbPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
   String photoPath;
@@ -167,7 +173,8 @@ abstract class _PicStore with Store {
   }
 
   @action
-  Future<void> setPrivatePath(String picPath, String thumbnailPath, String picNonce) async {
+  Future<void> setPrivatePath(
+      String picPath, String thumbnailPath, String picNonce) async {
     var secretBox = Hive.box('secrets');
     Secret secret = Secret(
       photoId: photoId,
@@ -188,7 +195,8 @@ abstract class _PicStore with Store {
       if (Platform.isAndroid) {
         PhotoManager.editor.deleteWithIds([entity.id]);
       } else {
-        final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+        final List<String> result =
+            await PhotoManager.editor.deleteWithIds([entity.id]);
         if (result.isEmpty) {
           return false;
         }
@@ -226,7 +234,8 @@ abstract class _PicStore with Store {
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
       print('Pic has entity? ${entity == null ? false : true}');
       Uint8List picData = await assetOriginBytes;
-      final AssetEntity imageEntity = await PhotoManager.editor.saveImage(picData);
+      final AssetEntity imageEntity =
+          await PhotoManager.editor.saveImage(picData);
       changeAssetEntity(imageEntity);
       print('copied image back to gallery with id: ${imageEntity.id}');
     }
@@ -270,12 +279,14 @@ abstract class _PicStore with Store {
           photoPath = secretPic.photoPath;
           thumbPath = secretPic.thumbPath;
           nonce = secretPic.nonce;
-          print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
+          print(
+              'Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
         }
       }
 
       for (String tagKey in pic.tags) {
-        TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
+        TagsStore tagsStore = appStore.tags
+            .firstWhere((element) => element.id == tagKey, orElse: () => null);
         if (tagsStore == null) {
           print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
@@ -316,7 +327,8 @@ abstract class _PicStore with Store {
     isPrivate = value;
     print('Pic isPrivate: $value');
     print('Pic Entity Exists: ${entity == null ? false : true}');
-    print('Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
+    print(
+        'Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
 
     var picsBox = Hive.box('pics');
     Pic getPic = picsBox.get(photoId);
@@ -378,7 +390,8 @@ abstract class _PicStore with Store {
         suggestionTags.add(recent);
       }
 
-      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+      print(
+          'Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
@@ -389,7 +402,9 @@ abstract class _PicStore with Store {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (tagsKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
+          if (tagsKeys.contains(tagKey) ||
+              suggestionTags.contains(tagKey) ||
+              tagKey == kSecretTagKey) {
             continue;
           }
           suggestionTags.add(tagKey);
@@ -411,7 +426,8 @@ abstract class _PicStore with Store {
 
     List<TagsStore> suggestions = [];
     for (String tagId in suggestionTags) {
-      suggestions.add(appStore.tags.firstWhere((element) => element.id == tagId));
+      suggestions
+          .add(appStore.tags.firstWhere((element) => element.id == tagId));
     }
     return suggestions;
   }
@@ -464,7 +480,11 @@ abstract class _PicStore with Store {
   }
 
   @action
-  Future<void> addTagToPic({String tagKey, String tagNameX, String photoId, List<AssetEntity> entities}) async {
+  Future<void> addTagToPic(
+      {String tagKey,
+      String tagNameX,
+      String photoId,
+      List<AssetEntity> entities}) async {
     var picsBox = Hive.box('pics');
 
     if (picsBox.containsKey(photoId)) {
@@ -482,7 +502,8 @@ abstract class _PicStore with Store {
       picsBox.put(photoId, getPic);
       print('updated picture');
 
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore =
+          appStore.tags.firstWhere((element) => element.id == tagKey);
 
       tags.add(tagsStore);
 
@@ -496,7 +517,8 @@ abstract class _PicStore with Store {
     print('this picture is not in db, adding it...');
     print('Photo Id: $photoId');
 
-    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+    TagsStore tagsStore =
+        appStore.tags.firstWhere((element) => element.id == tagKey);
     tags.add(tagsStore);
 
     Pic pic = Pic(
@@ -525,7 +547,8 @@ abstract class _PicStore with Store {
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
     Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    File imageFile = new File(
+        '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
     return imageFile.path;
@@ -536,7 +559,8 @@ abstract class _PicStore with Store {
     String path = '';
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(entity == null ? await assetOriginBytes : await entity.originBytes);
+      path = await _writeByteToImageFile(
+          entity == null ? await assetOriginBytes : await entity.originBytes);
     } else {
       if (entity == null) {
         var bytes = await assetOriginBytes;
@@ -566,7 +590,8 @@ abstract class _PicStore with Store {
     if (Platform.isAndroid) {
       PhotoManager.editor.deleteWithIds([entity.id]);
     } else {
-      final List<String> result = await PhotoManager.editor.deleteWithIds([entity.id]);
+      final List<String> result =
+          await PhotoManager.editor.deleteWithIds([entity.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -630,7 +655,8 @@ abstract class _PicStore with Store {
   }
 
   @action
-  void saveLocation({double lat, double long, String specific, String general}) {
+  void saveLocation(
+      {double lat, double long, String specific, String general}) {
     var picsBox = Hive.box('pics');
 
     Pic getPic = picsBox.get(photoId);
@@ -689,7 +715,8 @@ abstract class _PicStore with Store {
   @action
   void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
 
-  Future<List<String>> translateTags(List<String> tagsText, BuildContext context) async {
+  Future<List<String>> translateTags(
+      List<String> tagsText, BuildContext context) async {
     if (appStore.appLanguage.split('_')[0] == 'pt' ||
         appStore.appLanguage.split('_')[0] == 'es' ||
         appStore.appLanguage.split('_')[0] == 'de' ||
@@ -716,7 +743,8 @@ abstract class _PicStore with Store {
     const _SCOPES = const [TranslateApi.CloudTranslationScope];
     List<String> translatedStrings;
 
-    await clientViaServiceAccount(_credentials, _SCOPES).then((http_client) async {
+    await clientViaServiceAccount(_credentials, _SCOPES)
+        .then((http_client) async {
       var translate = TranslateApi(http_client);
       var request = TranslateTextRequest();
       request.contents = tagsText;
@@ -725,9 +753,11 @@ abstract class _PicStore with Store {
       request.targetLanguageCode = appStore.appLanguage.replaceAll('_', '-');
       request.model = 'projects/picpics/locations/global/models/general/nmt';
 
-      var response = await translate.projects.translateText(request, 'projects/picpics');
+      var response =
+          await translate.projects.translateText(request, 'projects/picpics');
       var translations = response.translations;
-      translatedStrings = translations.map((e) => capitalize(e.translatedText)).toList();
+      translatedStrings =
+          translations.map((e) => capitalize(e.translatedText)).toList();
     });
 
     return translatedStrings;
@@ -839,7 +869,8 @@ abstract class _PicStore with Store {
     // interpreter.close();
     // print('doSomething() executed in ${stopwatch.elapsed}');
 
-    final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(await entity.file);
+    final FirebaseVisionImage visionImage =
+        FirebaseVisionImage.fromFile(await entity.file);
     final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
     final List<ImageLabel> labels = await labeler.processImage(visionImage);
 
@@ -852,11 +883,14 @@ abstract class _PicStore with Store {
       tags.add(labelText);
     }
 
-    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en' ? await translateTags(tags, context) : tags;
+    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en'
+        ? await translateTags(tags, context)
+        : tags;
 
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);
-      TagsStore tagStore = appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null);
+      TagsStore tagStore = appStore.tags
+          .firstWhere((element) => element.id == tagKey, orElse: () => null);
       if (tagStore == null) {
         tagStore = TagsStore(
           id: tagKey,
