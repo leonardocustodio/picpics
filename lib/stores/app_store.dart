@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -68,6 +69,7 @@ abstract class _AppStore with Store {
         tourCompleted: false,
         isBiometricActivated: false,
         starredPhotos: [],
+        defaultWidgetImage: null,
       );
 
       user = createUser;
@@ -144,8 +146,17 @@ abstract class _AppStore with Store {
     });
   }
 
-  List<String> starredPhotos;
+  Future<void> setDefaultWidgetImage(AssetEntity entity) async {
+    var bytes = await entity.thumbDataWithSize(300, 300);
+    String encoded = base64.encode(bytes);
 
+    var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0);
+    currentUser.defaultWidgetImage = encoded;
+    currentUser.save();
+  }
+
+  List<String> starredPhotos;
   void addToStarredPhotos(String photoId) {
     if (starredPhotos.contains(photoId)) {
       return;
@@ -157,6 +168,8 @@ abstract class _AppStore with Store {
     User currentUser = userBox.getAt(0);
     currentUser.starredPhotos = starredPhotos;
     currentUser.save();
+
+    print('Added to starred photos!!');
   }
 
   void removeFromStarredPhotos(String photoId) {

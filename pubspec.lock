@@ -672,9 +672,11 @@ packages:
   home_widget:
     dependency: "direct main"
     description:
-      name: home_widget
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: fix-build-ios
+      resolved-ref: a1f039c7eb44e78d5bf6a05df575ac2d1485cb33
+      url: "git://github.com/leonardocustodio/home_widget.git"
+    source: git
     version: "0.0.1+2"
   http:
     dependency: transitive

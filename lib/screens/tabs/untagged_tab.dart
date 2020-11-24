@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
+import 'package:mobx/mobx.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
@@ -134,6 +135,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
+  ReactionDisposer disposer;
 
   // List<Widget> _buildSlivers(BuildContext context) {
   //   List<Widget> slivers = [];
@@ -831,7 +833,15 @@ class _UntaggedTabState extends State<UntaggedTab> {
     });
     refreshGridPositionFirstTab();
 
-    print('change dependencies!');
+    disposer = reaction((_) => galleryStore.isLoaded, (isLoaded) {
+      if (isLoaded == true) {
+        galleryStore.refreshPicThumbnails();
+      }
+    });
+
+    if (galleryStore.isLoaded == false) {
+      return;
+    }
     galleryStore.refreshPicThumbnails();
   }
 
@@ -842,7 +852,13 @@ class _UntaggedTabState extends State<UntaggedTab> {
       color: kWhiteColor,
       child: SafeArea(
         child: Observer(builder: (_) {
-          if (!galleryStore.deviceHasPics) {
+          if (!galleryStore.isLoaded) {
+            return Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+              ),
+            );
+          } else if (!galleryStore.deviceHasPics) {
             return Stack(
               children: <Widget>[
                 Container(

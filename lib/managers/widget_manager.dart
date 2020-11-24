@@ -1,5 +1,3 @@
-import 'dart:io';
-import 'dart:convert';
 import 'dart:math';
 import 'package:home_widget/home_widget.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -33,13 +31,26 @@ class WidgetManager {
       List<String> starredPhotos = currentUser.starredPhotos;
       print('Number of starred photos: ${starredPhotos.length}');
 
-      Random rand = new Random();
-      int randInt = rand.nextInt(starredPhotos.length);
-      print('Sorted number for widget: $randInt');
+      String baseString;
 
-      Pic pic = picsBox.get(starredPhotos[randInt]);
-      print('Base64: ${pic.base64encoded}');
-      return Future.wait([HomeWidget.saveWidgetData<String>('imageEncoded', pic.base64encoded)]);
+      if (starredPhotos.length == 0) {
+        baseString = currentUser.defaultWidgetImage;
+      } else {
+        Random rand = new Random();
+        int randInt = rand.nextInt(starredPhotos.length);
+        print('Sorted number for widget: $randInt');
+
+        Pic pic = picsBox.get(starredPhotos[randInt]);
+        print('Base64: ${pic.base64encoded}');
+        baseString = pic.base64encoded;
+      }
+      if (baseString == null) {
+        return;
+      }
+
+      print('Send base string!');
+      return Future.wait(
+          [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]);
     } catch (exception) {
       print('Error Sending Data. $exception');
     }
