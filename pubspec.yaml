@@ -81,7 +81,10 @@ dependencies:
   metadata: ^1.0.2
   showcaseview: ^0.1.6
   local_auth: ^0.6.3+4
-  home_widget: ^0.0.1+2
+  home_widget:
+    git:
+      url: git://github.com/leonardocustodio/home_widget.git
+      ref: fix-build-ios
   background_fetch: ^0.6.0
 
 dev_dependencies:
