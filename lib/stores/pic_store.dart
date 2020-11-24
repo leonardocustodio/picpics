@@ -84,8 +84,8 @@ abstract class _PicStore with Store {
       appStore.removeFromStarredPhotos(photoId);
     }
 
-    pic.save();
     isStarred = value;
+    pic.save();
     print('isStarred value: $isStarred');
   }
 
@@ -270,6 +270,7 @@ abstract class _PicStore with Store {
       generalLocation = pic.generalLocation;
       isPrivate = pic.isPrivate;
       deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
+      isStarred = pic.isStarred ?? false;
 
       print('Is private: $isPrivate');
       if (isPrivate == true) {
