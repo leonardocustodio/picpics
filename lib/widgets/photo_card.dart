@@ -26,6 +26,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:picPics/screens/tags_screen.dart';
 import 'package:provider/provider.dart';
 
 class PhotoCard extends StatefulWidget {
@@ -370,10 +371,11 @@ class _PhotoCardState extends State<PhotoCard> {
                     textFocusNode: tagsFocusNode,
                     showEditTagModal: widget.showEditTagModal,
                     shouldChangeToSwipeMode: true,
-                    aiButtonTitle: picStore.aiTags ? 'Recent' : S.of(context).suggestions,
+                    aiButtonTitle: 'All Tags',
                     onAiButtonTap: () {
-                      print('ai button tapped');
-                      picStore.switchAiTags(context);
+                      Navigator.pushNamed(context, TagsScreen.id);
+                      // print('ai button tapped');
+                      // picStore.switchAiTags(context);
                     },
                     onTap: (tagName) {
                       print('do nothing');
