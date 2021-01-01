@@ -192,7 +192,7 @@ PODS:
     - Flutter
   - geocoding (1.0.5):
     - Flutter
-  - "geolocator (6.0.0+4)":
+  - geolocator (6.1.9):
     - Flutter
   - Google-Mobile-Ads-SDK (7.67.0):
     - GoogleAppMeasurement (~> 6.0)
@@ -490,7 +490,7 @@ SPEC CHECKSUMS:
   flutter_secure_storage: 7953c38a04c3fdbb00571bcd87d8e3b5ceb9daec
   flutter_vibrate: c0ca4ac994ff97c3f147f69865458bbc0cc3508b
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
-  geolocator: 1ae40084cc6c1586ce5ad12cfc3fd38c64d05f2f
+  geolocator: 057a0c63a43e9c5296d8ad845a3ac8e6df23d899
   Google-Mobile-Ads-SDK: 8b58584890539de4527c47ef01e4da941a10bc8a
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
   GoogleAPIClientForREST: 4bb409633efcc2e1b3f945afe7e35039b5a61db2
