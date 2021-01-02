@@ -24,6 +24,19 @@ mixin _$LoginStore on _LoginStore, Store {
     });
   }
 
+  final _$_LoginStoreActionController = ActionController(name: '_LoginStore');
+
+  @override
+  void setSlideIndex(int value) {
+    final _$actionInfo = _$_LoginStoreActionController.startAction(
+        name: '_LoginStore.setSlideIndex');
+    try {
+      return super.setSlideIndex(value);
+    } finally {
+      _$_LoginStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''
