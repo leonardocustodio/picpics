@@ -86,6 +86,7 @@ dependencies:
       url: git://github.com/leonardocustodio/home_widget.git
       ref: fix-build-ios
   background_fetch: ^0.6.0
+  lottie: ^0.7.0+1
 
 dev_dependencies:
 #  flutter_test:

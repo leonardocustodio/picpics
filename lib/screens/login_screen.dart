@@ -6,7 +6,7 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/screens/premium_screen.dart';
+import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/login_store.dart';
