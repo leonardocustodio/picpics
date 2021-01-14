@@ -17,6 +17,7 @@ import 'package:picPics/model/user.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:uuid/uuid.dart';
@@ -114,7 +115,12 @@ abstract class _AppStore with Store {
       addRecentTags(tagKey);
     }
 
-    if (tutorialCompleted) {
+    var picsBox = Hive.box('pics');
+    int picsInBox = picsBox.length;
+
+    if (picsInBox > 0) {
+      initialRoute = MigrationScreen.id;
+    } else if (tutorialCompleted) {
       initialRoute = TabsScreen.id;
     } else {
       initialRoute = LoginScreen.id;

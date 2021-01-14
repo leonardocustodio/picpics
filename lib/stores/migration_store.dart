@@ -1,0 +1,50 @@
+import 'package:flutter/cupertino.dart';
+import 'package:hive/hive.dart';
+import 'package:mobx/mobx.dart';
+import 'package:picPics/database/app_database.dart';
+import 'package:picPics/model/pic.dart';
+import 'package:picPics/model/tag.dart';
+
+part 'migration_store.g.dart';
+
+class MigrationStore = _MigrationStore with _$MigrationStore;
+
+abstract class _MigrationStore with Store {
+  _MigrationStore() {
+    // autorun((_) {
+    //   // print('autorun');
+    // });
+  }
+
+  @observable
+  bool isMigrating = true;
+
+  @action
+  void setIsMigrating(bool value) => isMigrating = value;
+
+  @action
+  Future<void> startMigration() async {
+    var userBox = Hive.box('user');
+    var picsBox = Hive.box('pics');
+    var tagsBox = Hive.box('tags');
+    var secretBox = Hive.box('secrets');
+    var keyBox = Hive.box('userkey');
+
+    List<Tag> tags = [];
+    List<Pic> pics = [];
+
+    AppDatabase database = AppDatabase();
+
+    for (Tag tag in tagsBox.values) {
+      tags.add(tag);
+    }
+    await database.insertAllLabelsList(tags);
+
+    for (Pic pic in picsBox.values) {
+      pics.add(pic);
+    }
+
+    await database.insertAllPhotos(pics);
+    setIsMigrating(false);
+  }
+}
