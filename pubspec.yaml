@@ -86,6 +86,8 @@ dependencies:
       ref: fix-build-ios
   background_fetch: ^0.6.0
   lottie: ^0.7.0+1
+  moor: ^3.4.0
+  sqlite3_flutter_libs: ^0.3.0
 
 dev_dependencies:
 #  flutter_test:
@@ -100,6 +102,7 @@ dev_dependencies:
   googleapis: ^0.56.1
   googleapis_auth: any
   strings: ^0.1.2
+  moor_generator: ^3.4.0
 
 flutter:
   uses-material-design: true
