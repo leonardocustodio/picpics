@@ -4,13 +4,16 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/migration_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:provider/provider.dart';
+import 'package:moor_db_viewer/moor_db_viewer.dart';
 
 class MigrationScreen extends StatefulWidget {
   static const id = 'migration_screen';
@@ -21,7 +24,12 @@ class MigrationScreen extends StatefulWidget {
 
 class _MigrationScreenState extends State<MigrationScreen> {
   AppStore appStore;
-  SwiperController swiperController = SwiperController();
+  MigrationStore migrationStore = MigrationStore();
+
+  void seeDb() {
+    final db = AppDatabase(); //This should be a singleton
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => MoorDbViewer(db)));
+  }
 
   @override
   void initState() {
@@ -33,14 +41,11 @@ class _MigrationScreenState extends State<MigrationScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
-    // appStore.createDefaultTags(context);
+    migrationStore.startMigration();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final LoginStore loginStore = LoginStore();
-    var height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -110,7 +115,7 @@ class _MigrationScreenState extends State<MigrationScreen> {
                         ),
                         CupertinoButton(
                           onPressed: () async {
-                            print('teste');
+                            seeDb();
                           },
                           padding: const EdgeInsets.all(0),
                           child: Container(
