@@ -114,13 +114,8 @@ abstract class _AppStore with Store {
       addRecentTags(tagKey);
     }
 
-    if (loggedIn) {
+    if (tutorialCompleted) {
       initialRoute = TabsScreen.id;
-      // if (tourCompleted != null) {
-      //   initialRoute = TutsTabsScreen.id;
-      // } else {
-      //
-      // }
     } else {
       initialRoute = LoginScreen.id;
     }
@@ -223,10 +218,8 @@ abstract class _AppStore with Store {
   }
 
   @action
-  Future<void> checkNotificationPermission(
-      {bool firstPermissionCheck = false}) async {
-    return NotificationPermissions.getNotificationPermissionStatus()
-        .then((status) {
+  Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
+    return NotificationPermissions.getNotificationPermissionStatus().then((status) {
       var userBox = Hive.box('user');
       User currentUser = userBox.getAt(0);
 
@@ -255,8 +248,7 @@ abstract class _AppStore with Store {
   bool dailyChallenges = false;
 
   @action
-  void switchDailyChallenges(
-      {String notificationTitle, String notificationDescription}) {
+  void switchDailyChallenges({String notificationTitle, String notificationDescription}) {
     dailyChallenges = !dailyChallenges;
 
     var userBox = Hive.box('user');
@@ -531,8 +523,7 @@ abstract class _AppStore with Store {
     } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
       currentUser.picsTaggedToday += 1;
       currentUser.lastTaggedPicDate = dateNow;
-      print(
-          'same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
+      print('same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
 
       final RemoteConfig remoteConfig = await RemoteConfig.instance;
       dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
@@ -565,7 +556,7 @@ abstract class _AppStore with Store {
   bool hasGalleryPermission = false;
 
   @action
-  Future<void> requestGalleryPermission() async {
+  Future<bool> requestGalleryPermission() async {
     var result = await PhotoManager.requestPermission();
     if (result) {
       hasGalleryPermission = true;
@@ -575,6 +566,8 @@ abstract class _AppStore with Store {
     User currentUser = userBox.getAt(0);
     currentUser.hasGalleryPermission = hasGalleryPermission;
     currentUser.save();
+
+    return result;
   }
 
   @action
@@ -707,8 +700,7 @@ abstract class _AppStore with Store {
   double photoHeightInCardWidget = 500;
 
   @action
-  void setPhotoHeightInCardWidget(double value) =>
-      photoHeightInCardWidget = value;
+  void setPhotoHeightInCardWidget(double value) => photoHeightInCardWidget = value;
 
   bool wantsToActivateBiometric = false;
 

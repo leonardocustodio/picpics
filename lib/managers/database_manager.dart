@@ -50,9 +50,10 @@ class DatabaseManager extends ChangeNotifier {
     if (Platform.isIOS) {
       final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
       _firebaseMessaging.requestNotificationPermissions(const IosNotificationSettings(sound: true, badge: true, alert: true));
-      _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-        print("Settings registered: $settings");
-      });
+
+      // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+      //   print("Settings registered: $settings");
+      // });
 //      _firebaseMessaging.getToken().then((String token) {
 //        assert(token != null);
 //        print('got token this mean it did accept notification');
@@ -125,7 +126,7 @@ class DatabaseManager extends ChangeNotifier {
     print('loading remote config....');
     final RemoteConfig remoteConfig = await RemoteConfig.instance;
     // Enable developer mode to relax fetch throttling
-    remoteConfig.setConfigSettings(RemoteConfigSettings(debugMode: kDebugMode));
+    remoteConfig.setConfigSettings(RemoteConfigSettings()); //debugMode: kDebugMode));
     remoteConfig.setDefaults(<String, dynamic>{
       'daily_pics_for_ads': 25,
       'free_private_pics': 20,

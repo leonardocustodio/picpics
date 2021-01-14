@@ -73,7 +73,8 @@ abstract class _PinStore with Store {
 
   @action
   Future<bool> requestRecoveryKey(String userEmail) async {
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'requestRecoveryKey')..timeout = const Duration(seconds: 30);
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
+    //..timeout = const Duration(seconds: 30);
 
     Random rand = new Random();
     int randomNumber = rand.nextInt(900000) + 100000;
@@ -100,7 +101,7 @@ abstract class _PinStore with Store {
       }
 
       return result.data;
-    } on CloudFunctionsException catch (e) {
+    } on FirebaseFunctionsException catch (e) {
       print('caught firebase functions exception');
       print(e.code);
       print(e.message);
@@ -168,7 +169,8 @@ abstract class _PinStore with Store {
 
   @action
   Future<bool> validateAccessCode(AppStore appStore) async {
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'validateAccessCode')..timeout = const Duration(seconds: 30);
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('validateAccessCode');
+    //. = const Duration(seconds: 30);
 
     Random rand = new Random();
     int randomNumber = rand.nextInt(900000) + 100000;
@@ -191,7 +193,7 @@ abstract class _PinStore with Store {
       }
 
       return result.data;
-    } on CloudFunctionsException catch (e) {
+    } on FirebaseFunctionsException catch (e) {
       print('caught firebase functions exception');
       print(e.code);
       print(e.message);

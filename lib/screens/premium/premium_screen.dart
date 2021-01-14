@@ -13,6 +13,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:picPics/screens/tabs_screen.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -65,22 +66,21 @@ class _PremiumScreenState extends State<PremiumScreen> {
   void getOffers() async {
     try {
       Offerings offerings = await Purchases.getOfferings();
-      if (offerings.current != null &&
-          offerings.current.availablePackages.isNotEmpty) {
+      if (offerings.current != null && offerings.current.availablePackages.isNotEmpty) {
         getOfferingError = null;
 
         print(offerings.current.availablePackages);
+        print(offerings.getOffering("full_subscription").availablePackages);
+
         setState(() {
-          _items = offerings.current.availablePackages;
+          _items = offerings.getOffering("full_subscription").availablePackages;
         });
 
         for (var item in _items) {
           Analytics.sendPresentOffer(
             itemId: item.product.identifier,
             itemName: item.product.title,
-            itemCategory: item.packageType == PackageType.annual
-                ? 'Annual Subscription'
-                : 'Monthly Subscription',
+            itemCategory: item.packageType == PackageType.annual ? 'Annual Subscription' : 'Monthly Subscription',
             quantity: 1,
             price: item.product.price,
             currency: item.product.currencyCode,
@@ -88,9 +88,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         }
 
         if (appStore.tryBuyId != null) {
-          var getPackage = _items.firstWhere(
-              (element) => element.product.identifier == appStore.tryBuyId,
-              orElse: () => null);
+          var getPackage = _items.firstWhere((element) => element.product.identifier == appStore.tryBuyId, orElse: () => null);
 
           if (getPackage != null) {
             print(getPackage);
@@ -117,7 +115,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
     if (kDebugMode) {
       appStore.setIsPremium(true);
-      Navigator.pop(context);
+      Navigator.pushNamedAndRemoveUntil(context, TabsScreen.id, (route) => false);
+      // Navigator.pop(context);
       return;
     }
 
@@ -141,19 +140,16 @@ class _PremiumScreenState extends State<PremiumScreen> {
             price: package.product.price,
           );
           appStore.setIsPremium(true);
-          Navigator.pop(context);
+          // Navigator.pop(context);
+          Navigator.pushNamedAndRemoveUntil(context, TabsScreen.id, (route) => false);
           return;
         }
       }
-      showError(
-          title: 'Error has occurred',
-          description: 'An error has occurred, please try again!');
+      showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
     } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-        showError(
-            title: 'Error has occurred',
-            description: 'An error has occurred, please try again!');
+        showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
       }
     }
   }
@@ -174,18 +170,15 @@ class _PremiumScreenState extends State<PremiumScreen> {
           // Unlock that great "pro" content
           print('know you are fucking pro!');
           appStore.setIsPremium(true);
-          Navigator.pop(context);
+          // Navigator.pop(context);
+          Navigator.pushNamedAndRemoveUntil(context, TabsScreen.id, (route) => false);
           return;
         }
       }
-      showError(
-          title: S.of(context).no_previous_purchase,
-          description: S.of(context).no_valid_subscription);
+      showError(title: S.of(context).no_previous_purchase, description: S.of(context).no_valid_subscription);
     } on PlatformException catch (e) {
       print(e);
-      showError(
-          title: 'Error has occurred',
-          description: 'An error has occurred, please try again!');
+      showError(title: 'Error has occurred', description: 'An error has occurred, please try again!');
     }
   }
 
@@ -263,7 +256,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             Flexible(
               child: Text(
-                'Encontre todas suas recordações',
+                'Fast find all your memories',
                 textScaleFactor: 1.0,
                 maxLines: 2,
                 textAlign: TextAlign.left,
@@ -409,12 +402,172 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //     ],
       //   ),
       // ),
-      Spacer(
-        flex: 4,
-      ),
+      // Spacer(
+      //   flex: 4,
+      // ),
     ];
 
     return widgets;
+  }
+
+  List<Widget> _renderInAppPurchase(BuildContext context) {
+    if (getOfferingError != null) {
+      return [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 16.0),
+          child: Center(
+            child: Text(
+              'Um erro ocorreu ao tentar se conectar a loja, por favor, tente novamente mais tarde.',
+              textScaleFactor: 1.0,
+              textAlign: TextAlign.center,
+              style: kPremiumButtonTextStyle,
+            ),
+          ),
+        )
+      ];
+    }
+
+    if (_items.length == 0) {
+      return [
+        Padding(
+          padding: const EdgeInsets.only(bottom: 32.0, top: 32.0),
+          child: Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+            ),
+          ),
+        )
+      ];
+    }
+
+    var yearSub = _items.firstWhere((e) => e.packageType == PackageType.annual, orElse: null);
+
+    return [
+      Container(
+        width: double.maxFinite,
+        child: RichText(
+          textAlign: TextAlign.center,
+          text: TextSpan(
+            children: [
+              TextSpan(
+                text: 'Try ${yearSub.product.introductoryPrice.introPricePeriodNumberOfUnits} days for free\n',
+                style: const TextStyle(
+                  color: const Color(0xff606566),
+                  fontWeight: FontWeight.bold,
+                  fontFamily: "Lato",
+                  fontStyle: FontStyle.normal,
+                  fontSize: 18.0,
+                ),
+              ),
+              TextSpan(
+                text: 'Then ${yearSub.product.priceString}/${S.of(context).year}',
+                style: const TextStyle(
+                  color: const Color(0xff606566),
+                  fontWeight: FontWeight.w300,
+                  fontFamily: "Lato",
+                  fontStyle: FontStyle.normal,
+                  fontSize: 18.0,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      // Spacer(
+      //   flex: 1,
+      // ),
+      CupertinoButton(
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        onPressed: () {
+          makePurchase(context, yearSub);
+        },
+        child: Container(
+          height: 95.0,
+          child: Stack(
+            children: <Widget>[
+              Positioned(
+                top: 19,
+                left: 0,
+                right: 0,
+                child: Container(
+                  height: 65.0,
+                  decoration: BoxDecoration(
+                    gradient: kPrimaryGradient,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Subscribe Now',
+                      textScaleFactor: 1.0,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: 'Lato',
+                        color: kWhiteColor,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w700,
+                        fontStyle: FontStyle.normal,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 0,
+                right: 6,
+                child: CustomPaint(
+                  painter: ArrowPainter(
+                    strokeColor: kYellowColor,
+                    strokeWidth: 10,
+                    paintingStyle: PaintingStyle.fill,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                    height: 24.0,
+                    child: Center(
+                      child: Text(
+                        'Special Offer',
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff606566),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      // Spacer(
+      //   flex: 2,
+      // ),
+      CupertinoButton(
+        // padding: const EdgeInsets.all(0),
+        onPressed: () {
+          restorePurchase();
+          // makePurchase(context, yearSubs);
+        },
+        child: Center(
+          child: Text(
+            S.of(context).restore_purchase,
+            textScaleFactor: 1.0,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: kPinkColor,
+              fontSize: 13.0,
+              fontWeight: FontWeight.w700,
+              fontStyle: FontStyle.normal,
+            ),
+          ),
+        ),
+      ),
+    ];
   }
 
   Widget _renderInApps(BuildContext context) {
@@ -445,13 +598,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
       );
     }
 
-    var yearSubs = _items.firstWhere((e) => e.packageType == PackageType.annual,
-        orElse: null);
-    var monthSubs = _items
-        .firstWhere((e) => e.packageType == PackageType.monthly, orElse: null);
+    var yearSubs = _items.firstWhere((e) => e.packageType == PackageType.annual, orElse: null);
+    var monthSubs = _items.firstWhere((e) => e.packageType == PackageType.monthly, orElse: null);
 
-    double save =
-        100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
+    double save = 100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
     print('Save: $save');
 
     return Column(
@@ -476,8 +626,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       "${S.of(context).sign} ${monthSubs.product.priceString}\n${S.of(context).month}",
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
-                      style:
-                          kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
+                      style: kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
                     ),
                   ),
                 ),
@@ -527,8 +676,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             paintingStyle: PaintingStyle.fill,
                           ),
                           child: Container(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 14.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 14.0),
                             height: 24.0,
                             child: Center(
                               child: Text(
@@ -682,142 +830,18 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           //     Image.asset('lib/images/bigpremiumlogo.png'),
                           //   ],
                           // ),
-                          SizedBox(
-                            height: MediaQuery.of(context).size.height / 3,
-                          ),
+                          // SizedBox(
+                          //   height: MediaQuery.of(context).size.height / 3,
+                          // ),
 
                           // Spacer(
                           //   flex: 2,
                           // ),
-                          ...this._premiumBenefits(context),
-                          Container(
-                            width: double.maxFinite,
-                            child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: 'Try 3 days for free\n',
-                                    style: const TextStyle(
-                                      color: const Color(0xff606566),
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: "Lato",
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                  TextSpan(
-                                    text: 'Then R\$46,90/year',
-                                    style: const TextStyle(
-                                      color: const Color(0xff606566),
-                                      fontWeight: FontWeight.w300,
-                                      fontFamily: "Lato",
-                                      fontStyle: FontStyle.normal,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
                           Spacer(
                             flex: 1,
                           ),
-                          CupertinoButton(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 24.0),
-                            onPressed: () {
-                              // makePurchase(context, monthSubs);
-                              // makePurchase(context, yearSubs);
-                            },
-                            child: Container(
-                              height: 102.0,
-                              child: Stack(
-                                children: <Widget>[
-                                  Positioned(
-                                    top: 19,
-                                    left: 0,
-                                    right: 0,
-                                    child: Container(
-                                      height: 65.0,
-                                      decoration: BoxDecoration(
-                                        gradient: kPrimaryGradient,
-                                        borderRadius:
-                                            BorderRadius.circular(8.0),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          'Subscribe Now',
-                                          textScaleFactor: 1.0,
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: kWhiteColor,
-                                            fontSize: 20.0,
-                                            fontWeight: FontWeight.w700,
-                                            fontStyle: FontStyle.normal,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Positioned(
-                                    top: 0,
-                                    right: 6,
-                                    child: CustomPaint(
-                                      painter: ArrowPainter(
-                                        strokeColor: kYellowColor,
-                                        strokeWidth: 10,
-                                        paintingStyle: PaintingStyle.fill,
-                                      ),
-                                      child: Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 14.0),
-                                        height: 24.0,
-                                        child: Center(
-                                          child: Text(
-                                            'Special Offer',
-                                            textScaleFactor: 1.0,
-                                            style: TextStyle(
-                                              fontFamily: 'Lato',
-                                              color: Color(0xff606566),
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w400,
-                                              fontStyle: FontStyle.normal,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Spacer(
-                            flex: 2,
-                          ),
-                          CupertinoButton(
-                            // padding: const EdgeInsets.all(0),
-                            onPressed: () {
-                              restorePurchase();
-                              // makePurchase(context, yearSubs);
-                            },
-                            child: Center(
-                              child: Text(
-                                S.of(context).restore_purchase,
-                                textScaleFactor: 1.0,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kPinkColor,
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                ),
-                              ),
-                            ),
-                          ),
+                          ...this._premiumBenefits(context),
+                          ...this._renderInAppPurchase(context),
                           // this._renderInApps(context),
                           // Spacer(
                           //   flex: 2,
@@ -847,8 +871,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                               onPressed: () {
                                 _launchURL('https://picpics.link/e/privacy');
                               },
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 8.0),
+                              padding: const EdgeInsets.symmetric(vertical: 8.0),
                               minSize: 32.0,
                               child: Text(
                                 S.of(context).privacy_policy,
@@ -876,8 +899,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                               onPressed: () {
                                 _launchURL('https://picpics.link/e/terms');
                               },
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              padding: const EdgeInsets.symmetric(vertical: 10.0),
                               minSize: 32.0,
                               child: Text(
                                 S.of(context).terms_of_use,

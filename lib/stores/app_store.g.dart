@@ -367,7 +367,7 @@ mixin _$AppStore on _AppStore, Store {
       AsyncAction('_AppStore.requestGalleryPermission');
 
   @override
-  Future<void> requestGalleryPermission() {
+  Future<bool> requestGalleryPermission() {
     return _$requestGalleryPermissionAsyncAction
         .run(() => super.requestGalleryPermission());
   }
