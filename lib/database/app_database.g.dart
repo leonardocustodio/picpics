@@ -14,11 +14,11 @@ class Photo extends DataClass implements Insertable<Photo> {
   final double originalLongitude;
   final double latitude;
   final double longitude;
-  final String specificLocation;
-  final String generalLocation;
   final bool isPrivate;
   final bool deletedFromCameraRoll;
   final bool isStarred;
+  final String specificLocation;
+  final String generalLocation;
   final String base64encoded;
   Photo(
       {@required this.id,
@@ -27,12 +27,12 @@ class Photo extends DataClass implements Insertable<Photo> {
       @required this.originalLongitude,
       @required this.latitude,
       @required this.longitude,
-      @required this.specificLocation,
-      @required this.generalLocation,
       @required this.isPrivate,
       @required this.deletedFromCameraRoll,
       @required this.isStarred,
-      @required this.base64encoded});
+      this.specificLocation,
+      this.generalLocation,
+      this.base64encoded});
   factory Photo.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -52,16 +52,16 @@ class Photo extends DataClass implements Insertable<Photo> {
           .mapFromDatabaseResponse(data['${effectivePrefix}latitude']),
       longitude: doubleType
           .mapFromDatabaseResponse(data['${effectivePrefix}longitude']),
-      specificLocation: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}specific_location']),
-      generalLocation: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}general_location']),
       isPrivate: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_private']),
       deletedFromCameraRoll: boolType.mapFromDatabaseResponse(
           data['${effectivePrefix}deleted_from_camera_roll']),
       isStarred: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_starred']),
+      specificLocation: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}specific_location']),
+      generalLocation: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}general_location']),
       base64encoded: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}base64encoded']),
     );
@@ -87,12 +87,6 @@ class Photo extends DataClass implements Insertable<Photo> {
     if (!nullToAbsent || longitude != null) {
       map['longitude'] = Variable<double>(longitude);
     }
-    if (!nullToAbsent || specificLocation != null) {
-      map['specific_location'] = Variable<String>(specificLocation);
-    }
-    if (!nullToAbsent || generalLocation != null) {
-      map['general_location'] = Variable<String>(generalLocation);
-    }
     if (!nullToAbsent || isPrivate != null) {
       map['is_private'] = Variable<bool>(isPrivate);
     }
@@ -101,6 +95,12 @@ class Photo extends DataClass implements Insertable<Photo> {
     }
     if (!nullToAbsent || isStarred != null) {
       map['is_starred'] = Variable<bool>(isStarred);
+    }
+    if (!nullToAbsent || specificLocation != null) {
+      map['specific_location'] = Variable<String>(specificLocation);
+    }
+    if (!nullToAbsent || generalLocation != null) {
+      map['general_location'] = Variable<String>(generalLocation);
     }
     if (!nullToAbsent || base64encoded != null) {
       map['base64encoded'] = Variable<String>(base64encoded);
@@ -126,12 +126,6 @@ class Photo extends DataClass implements Insertable<Photo> {
       longitude: longitude == null && nullToAbsent
           ? const Value.absent()
           : Value(longitude),
-      specificLocation: specificLocation == null && nullToAbsent
-          ? const Value.absent()
-          : Value(specificLocation),
-      generalLocation: generalLocation == null && nullToAbsent
-          ? const Value.absent()
-          : Value(generalLocation),
       isPrivate: isPrivate == null && nullToAbsent
           ? const Value.absent()
           : Value(isPrivate),
@@ -141,6 +135,12 @@ class Photo extends DataClass implements Insertable<Photo> {
       isStarred: isStarred == null && nullToAbsent
           ? const Value.absent()
           : Value(isStarred),
+      specificLocation: specificLocation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(specificLocation),
+      generalLocation: generalLocation == null && nullToAbsent
+          ? const Value.absent()
+          : Value(generalLocation),
       base64encoded: base64encoded == null && nullToAbsent
           ? const Value.absent()
           : Value(base64encoded),
@@ -157,12 +157,12 @@ class Photo extends DataClass implements Insertable<Photo> {
       originalLongitude: serializer.fromJson<double>(json['originalLongitude']),
       latitude: serializer.fromJson<double>(json['latitude']),
       longitude: serializer.fromJson<double>(json['longitude']),
-      specificLocation: serializer.fromJson<String>(json['specificLocation']),
-      generalLocation: serializer.fromJson<String>(json['generalLocation']),
       isPrivate: serializer.fromJson<bool>(json['isPrivate']),
       deletedFromCameraRoll:
           serializer.fromJson<bool>(json['deletedFromCameraRoll']),
       isStarred: serializer.fromJson<bool>(json['isStarred']),
+      specificLocation: serializer.fromJson<String>(json['specificLocation']),
+      generalLocation: serializer.fromJson<String>(json['generalLocation']),
       base64encoded: serializer.fromJson<String>(json['base64encoded']),
     );
   }
@@ -176,11 +176,11 @@ class Photo extends DataClass implements Insertable<Photo> {
       'originalLongitude': serializer.toJson<double>(originalLongitude),
       'latitude': serializer.toJson<double>(latitude),
       'longitude': serializer.toJson<double>(longitude),
-      'specificLocation': serializer.toJson<String>(specificLocation),
-      'generalLocation': serializer.toJson<String>(generalLocation),
       'isPrivate': serializer.toJson<bool>(isPrivate),
       'deletedFromCameraRoll': serializer.toJson<bool>(deletedFromCameraRoll),
       'isStarred': serializer.toJson<bool>(isStarred),
+      'specificLocation': serializer.toJson<String>(specificLocation),
+      'generalLocation': serializer.toJson<String>(generalLocation),
       'base64encoded': serializer.toJson<String>(base64encoded),
     };
   }
@@ -192,11 +192,11 @@ class Photo extends DataClass implements Insertable<Photo> {
           double originalLongitude,
           double latitude,
           double longitude,
-          String specificLocation,
-          String generalLocation,
           bool isPrivate,
           bool deletedFromCameraRoll,
           bool isStarred,
+          String specificLocation,
+          String generalLocation,
           String base64encoded}) =>
       Photo(
         id: id ?? this.id,
@@ -205,12 +205,12 @@ class Photo extends DataClass implements Insertable<Photo> {
         originalLongitude: originalLongitude ?? this.originalLongitude,
         latitude: latitude ?? this.latitude,
         longitude: longitude ?? this.longitude,
-        specificLocation: specificLocation ?? this.specificLocation,
-        generalLocation: generalLocation ?? this.generalLocation,
         isPrivate: isPrivate ?? this.isPrivate,
         deletedFromCameraRoll:
             deletedFromCameraRoll ?? this.deletedFromCameraRoll,
         isStarred: isStarred ?? this.isStarred,
+        specificLocation: specificLocation ?? this.specificLocation,
+        generalLocation: generalLocation ?? this.generalLocation,
         base64encoded: base64encoded ?? this.base64encoded,
       );
   @override
@@ -222,11 +222,11 @@ class Photo extends DataClass implements Insertable<Photo> {
           ..write('originalLongitude: $originalLongitude, ')
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
-          ..write('specificLocation: $specificLocation, ')
-          ..write('generalLocation: $generalLocation, ')
           ..write('isPrivate: $isPrivate, ')
           ..write('deletedFromCameraRoll: $deletedFromCameraRoll, ')
           ..write('isStarred: $isStarred, ')
+          ..write('specificLocation: $specificLocation, ')
+          ..write('generalLocation: $generalLocation, ')
           ..write('base64encoded: $base64encoded')
           ..write(')'))
         .toString();
@@ -246,15 +246,15 @@ class Photo extends DataClass implements Insertable<Photo> {
                       $mrjc(
                           longitude.hashCode,
                           $mrjc(
-                              specificLocation.hashCode,
+                              isPrivate.hashCode,
                               $mrjc(
-                                  generalLocation.hashCode,
+                                  deletedFromCameraRoll.hashCode,
                                   $mrjc(
-                                      isPrivate.hashCode,
+                                      isStarred.hashCode,
                                       $mrjc(
-                                          deletedFromCameraRoll.hashCode,
+                                          specificLocation.hashCode,
                                           $mrjc(
-                                              isStarred.hashCode,
+                                              generalLocation.hashCode,
                                               base64encoded
                                                   .hashCode))))))))))));
   @override
@@ -267,11 +267,11 @@ class Photo extends DataClass implements Insertable<Photo> {
           other.originalLongitude == this.originalLongitude &&
           other.latitude == this.latitude &&
           other.longitude == this.longitude &&
-          other.specificLocation == this.specificLocation &&
-          other.generalLocation == this.generalLocation &&
           other.isPrivate == this.isPrivate &&
           other.deletedFromCameraRoll == this.deletedFromCameraRoll &&
           other.isStarred == this.isStarred &&
+          other.specificLocation == this.specificLocation &&
+          other.generalLocation == this.generalLocation &&
           other.base64encoded == this.base64encoded);
 }
 
@@ -282,11 +282,11 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
   final Value<double> originalLongitude;
   final Value<double> latitude;
   final Value<double> longitude;
-  final Value<String> specificLocation;
-  final Value<String> generalLocation;
   final Value<bool> isPrivate;
   final Value<bool> deletedFromCameraRoll;
   final Value<bool> isStarred;
+  final Value<String> specificLocation;
+  final Value<String> generalLocation;
   final Value<String> base64encoded;
   const PhotosCompanion({
     this.id = const Value.absent(),
@@ -295,11 +295,11 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     this.originalLongitude = const Value.absent(),
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
-    this.specificLocation = const Value.absent(),
-    this.generalLocation = const Value.absent(),
     this.isPrivate = const Value.absent(),
     this.deletedFromCameraRoll = const Value.absent(),
     this.isStarred = const Value.absent(),
+    this.specificLocation = const Value.absent(),
+    this.generalLocation = const Value.absent(),
     this.base64encoded = const Value.absent(),
   });
   PhotosCompanion.insert({
@@ -309,24 +309,21 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     @required double originalLongitude,
     @required double latitude,
     @required double longitude,
-    @required String specificLocation,
-    @required String generalLocation,
     @required bool isPrivate,
     @required bool deletedFromCameraRoll,
     @required bool isStarred,
-    @required String base64encoded,
+    this.specificLocation = const Value.absent(),
+    this.generalLocation = const Value.absent(),
+    this.base64encoded = const Value.absent(),
   })  : id = Value(id),
         createdAt = Value(createdAt),
         originalLatitude = Value(originalLatitude),
         originalLongitude = Value(originalLongitude),
         latitude = Value(latitude),
         longitude = Value(longitude),
-        specificLocation = Value(specificLocation),
-        generalLocation = Value(generalLocation),
         isPrivate = Value(isPrivate),
         deletedFromCameraRoll = Value(deletedFromCameraRoll),
-        isStarred = Value(isStarred),
-        base64encoded = Value(base64encoded);
+        isStarred = Value(isStarred);
   static Insertable<Photo> custom({
     Expression<String> id,
     Expression<DateTime> createdAt,
@@ -334,11 +331,11 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     Expression<double> originalLongitude,
     Expression<double> latitude,
     Expression<double> longitude,
-    Expression<String> specificLocation,
-    Expression<String> generalLocation,
     Expression<bool> isPrivate,
     Expression<bool> deletedFromCameraRoll,
     Expression<bool> isStarred,
+    Expression<String> specificLocation,
+    Expression<String> generalLocation,
     Expression<String> base64encoded,
   }) {
     return RawValuesInsertable({
@@ -348,12 +345,12 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       if (originalLongitude != null) 'original_longitude': originalLongitude,
       if (latitude != null) 'latitude': latitude,
       if (longitude != null) 'longitude': longitude,
-      if (specificLocation != null) 'specific_location': specificLocation,
-      if (generalLocation != null) 'general_location': generalLocation,
       if (isPrivate != null) 'is_private': isPrivate,
       if (deletedFromCameraRoll != null)
         'deleted_from_camera_roll': deletedFromCameraRoll,
       if (isStarred != null) 'is_starred': isStarred,
+      if (specificLocation != null) 'specific_location': specificLocation,
+      if (generalLocation != null) 'general_location': generalLocation,
       if (base64encoded != null) 'base64encoded': base64encoded,
     });
   }
@@ -365,11 +362,11 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       Value<double> originalLongitude,
       Value<double> latitude,
       Value<double> longitude,
-      Value<String> specificLocation,
-      Value<String> generalLocation,
       Value<bool> isPrivate,
       Value<bool> deletedFromCameraRoll,
       Value<bool> isStarred,
+      Value<String> specificLocation,
+      Value<String> generalLocation,
       Value<String> base64encoded}) {
     return PhotosCompanion(
       id: id ?? this.id,
@@ -378,12 +375,12 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       originalLongitude: originalLongitude ?? this.originalLongitude,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
-      specificLocation: specificLocation ?? this.specificLocation,
-      generalLocation: generalLocation ?? this.generalLocation,
       isPrivate: isPrivate ?? this.isPrivate,
       deletedFromCameraRoll:
           deletedFromCameraRoll ?? this.deletedFromCameraRoll,
       isStarred: isStarred ?? this.isStarred,
+      specificLocation: specificLocation ?? this.specificLocation,
+      generalLocation: generalLocation ?? this.generalLocation,
       base64encoded: base64encoded ?? this.base64encoded,
     );
   }
@@ -409,12 +406,6 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     if (longitude.present) {
       map['longitude'] = Variable<double>(longitude.value);
     }
-    if (specificLocation.present) {
-      map['specific_location'] = Variable<String>(specificLocation.value);
-    }
-    if (generalLocation.present) {
-      map['general_location'] = Variable<String>(generalLocation.value);
-    }
     if (isPrivate.present) {
       map['is_private'] = Variable<bool>(isPrivate.value);
     }
@@ -424,6 +415,12 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     }
     if (isStarred.present) {
       map['is_starred'] = Variable<bool>(isStarred.value);
+    }
+    if (specificLocation.present) {
+      map['specific_location'] = Variable<String>(specificLocation.value);
+    }
+    if (generalLocation.present) {
+      map['general_location'] = Variable<String>(generalLocation.value);
     }
     if (base64encoded.present) {
       map['base64encoded'] = Variable<String>(base64encoded.value);
@@ -440,11 +437,11 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
           ..write('originalLongitude: $originalLongitude, ')
           ..write('latitude: $latitude, ')
           ..write('longitude: $longitude, ')
-          ..write('specificLocation: $specificLocation, ')
-          ..write('generalLocation: $generalLocation, ')
           ..write('isPrivate: $isPrivate, ')
           ..write('deletedFromCameraRoll: $deletedFromCameraRoll, ')
           ..write('isStarred: $isStarred, ')
+          ..write('specificLocation: $specificLocation, ')
+          ..write('generalLocation: $generalLocation, ')
           ..write('base64encoded: $base64encoded')
           ..write(')'))
         .toString();
@@ -531,34 +528,6 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     );
   }
 
-  final VerificationMeta _specificLocationMeta =
-      const VerificationMeta('specificLocation');
-  GeneratedTextColumn _specificLocation;
-  @override
-  GeneratedTextColumn get specificLocation =>
-      _specificLocation ??= _constructSpecificLocation();
-  GeneratedTextColumn _constructSpecificLocation() {
-    return GeneratedTextColumn(
-      'specific_location',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _generalLocationMeta =
-      const VerificationMeta('generalLocation');
-  GeneratedTextColumn _generalLocation;
-  @override
-  GeneratedTextColumn get generalLocation =>
-      _generalLocation ??= _constructGeneralLocation();
-  GeneratedTextColumn _constructGeneralLocation() {
-    return GeneratedTextColumn(
-      'general_location',
-      $tableName,
-      false,
-    );
-  }
-
   final VerificationMeta _isPrivateMeta = const VerificationMeta('isPrivate');
   GeneratedBoolColumn _isPrivate;
   @override
@@ -597,6 +566,34 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     );
   }
 
+  final VerificationMeta _specificLocationMeta =
+      const VerificationMeta('specificLocation');
+  GeneratedTextColumn _specificLocation;
+  @override
+  GeneratedTextColumn get specificLocation =>
+      _specificLocation ??= _constructSpecificLocation();
+  GeneratedTextColumn _constructSpecificLocation() {
+    return GeneratedTextColumn(
+      'specific_location',
+      $tableName,
+      true,
+    );
+  }
+
+  final VerificationMeta _generalLocationMeta =
+      const VerificationMeta('generalLocation');
+  GeneratedTextColumn _generalLocation;
+  @override
+  GeneratedTextColumn get generalLocation =>
+      _generalLocation ??= _constructGeneralLocation();
+  GeneratedTextColumn _constructGeneralLocation() {
+    return GeneratedTextColumn(
+      'general_location',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _base64encodedMeta =
       const VerificationMeta('base64encoded');
   GeneratedTextColumn _base64encoded;
@@ -607,7 +604,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     return GeneratedTextColumn(
       'base64encoded',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -619,11 +616,11 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
         originalLongitude,
         latitude,
         longitude,
-        specificLocation,
-        generalLocation,
         isPrivate,
         deletedFromCameraRoll,
         isStarred,
+        specificLocation,
+        generalLocation,
         base64encoded
       ];
   @override
@@ -676,22 +673,6 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     } else if (isInserting) {
       context.missing(_longitudeMeta);
     }
-    if (data.containsKey('specific_location')) {
-      context.handle(
-          _specificLocationMeta,
-          specificLocation.isAcceptableOrUnknown(
-              data['specific_location'], _specificLocationMeta));
-    } else if (isInserting) {
-      context.missing(_specificLocationMeta);
-    }
-    if (data.containsKey('general_location')) {
-      context.handle(
-          _generalLocationMeta,
-          generalLocation.isAcceptableOrUnknown(
-              data['general_location'], _generalLocationMeta));
-    } else if (isInserting) {
-      context.missing(_generalLocationMeta);
-    }
     if (data.containsKey('is_private')) {
       context.handle(_isPrivateMeta,
           isPrivate.isAcceptableOrUnknown(data['is_private'], _isPrivateMeta));
@@ -712,13 +693,23 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     } else if (isInserting) {
       context.missing(_isStarredMeta);
     }
+    if (data.containsKey('specific_location')) {
+      context.handle(
+          _specificLocationMeta,
+          specificLocation.isAcceptableOrUnknown(
+              data['specific_location'], _specificLocationMeta));
+    }
+    if (data.containsKey('general_location')) {
+      context.handle(
+          _generalLocationMeta,
+          generalLocation.isAcceptableOrUnknown(
+              data['general_location'], _generalLocationMeta));
+    }
     if (data.containsKey('base64encoded')) {
       context.handle(
           _base64encodedMeta,
           base64encoded.isAcceptableOrUnknown(
               data['base64encoded'], _base64encodedMeta));
-    } else if (isInserting) {
-      context.missing(_base64encodedMeta);
     }
     return context;
   }
@@ -748,7 +739,7 @@ class Private extends DataClass implements Insertable<Private> {
   Private(
       {@required this.id,
       @required this.path,
-      @required this.thumbPath,
+      this.thumbPath,
       @required this.createDateTime,
       @required this.originalLatitude,
       @required this.originalLongitude,
@@ -924,14 +915,13 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
   PrivatesCompanion.insert({
     @required String id,
     @required String path,
-    @required String thumbPath,
+    this.thumbPath = const Value.absent(),
     @required DateTime createDateTime,
     @required double originalLatitude,
     @required double originalLongitude,
     @required String nonce,
   })  : id = Value(id),
         path = Value(path),
-        thumbPath = Value(thumbPath),
         createDateTime = Value(createDateTime),
         originalLatitude = Value(originalLatitude),
         originalLongitude = Value(originalLongitude),
@@ -1053,7 +1043,7 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
     return GeneratedTextColumn(
       'thumb_path',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -1146,8 +1136,6 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
     if (data.containsKey('thumb_path')) {
       context.handle(_thumbPathMeta,
           thumbPath.isAcceptableOrUnknown(data['thumb_path'], _thumbPathMeta));
-    } else if (isInserting) {
-      context.missing(_thumbPathMeta);
     }
     if (data.containsKey('create_date_time')) {
       context.handle(
@@ -1646,20 +1634,21 @@ class Config extends DataClass implements Insertable<Config> {
   final bool shouldDeleteOnPrivate;
   final bool tourCompleted;
   final bool isBiometricActivated;
+  final String secretKey;
   final String defaultWidgetImage;
   Config(
       {@required this.id,
-      @required this.email,
-      @required this.password,
+      this.email,
+      this.password,
       @required this.notification,
       @required this.dailyChallenge,
-      @required this.goal,
-      @required this.hourOfDay,
-      @required this.minuteOfDay,
+      this.goal,
+      this.hourOfDay,
+      this.minuteOfDay,
       @required this.isPremium,
       @required this.tutorialCompleted,
       @required this.picsTaggedToday,
-      @required this.lastTaggedPicDate,
+      this.lastTaggedPicDate,
       @required this.canTagToday,
       @required this.appLanguage,
       @required this.appVersion,
@@ -1671,7 +1660,8 @@ class Config extends DataClass implements Insertable<Config> {
       @required this.shouldDeleteOnPrivate,
       @required this.tourCompleted,
       @required this.isBiometricActivated,
-      @required this.defaultWidgetImage});
+      this.secretKey,
+      this.defaultWidgetImage});
   factory Config.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1724,6 +1714,8 @@ class Config extends DataClass implements Insertable<Config> {
           .mapFromDatabaseResponse(data['${effectivePrefix}tour_completed']),
       isBiometricActivated: boolType.mapFromDatabaseResponse(
           data['${effectivePrefix}is_biometric_activated']),
+      secretKey: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}secret_key']),
       defaultWidgetImage: stringType.mapFromDatabaseResponse(
           data['${effectivePrefix}default_widget_image']),
     );
@@ -1800,6 +1792,9 @@ class Config extends DataClass implements Insertable<Config> {
     if (!nullToAbsent || isBiometricActivated != null) {
       map['is_biometric_activated'] = Variable<bool>(isBiometricActivated);
     }
+    if (!nullToAbsent || secretKey != null) {
+      map['secret_key'] = Variable<String>(secretKey);
+    }
     if (!nullToAbsent || defaultWidgetImage != null) {
       map['default_widget_image'] = Variable<String>(defaultWidgetImage);
     }
@@ -1872,6 +1867,9 @@ class Config extends DataClass implements Insertable<Config> {
       isBiometricActivated: isBiometricActivated == null && nullToAbsent
           ? const Value.absent()
           : Value(isBiometricActivated),
+      secretKey: secretKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(secretKey),
       defaultWidgetImage: defaultWidgetImage == null && nullToAbsent
           ? const Value.absent()
           : Value(defaultWidgetImage),
@@ -1909,6 +1907,7 @@ class Config extends DataClass implements Insertable<Config> {
       tourCompleted: serializer.fromJson<bool>(json['tourCompleted']),
       isBiometricActivated:
           serializer.fromJson<bool>(json['isBiometricActivated']),
+      secretKey: serializer.fromJson<String>(json['secretKey']),
       defaultWidgetImage:
           serializer.fromJson<String>(json['defaultWidgetImage']),
     );
@@ -1940,6 +1939,7 @@ class Config extends DataClass implements Insertable<Config> {
       'shouldDeleteOnPrivate': serializer.toJson<bool>(shouldDeleteOnPrivate),
       'tourCompleted': serializer.toJson<bool>(tourCompleted),
       'isBiometricActivated': serializer.toJson<bool>(isBiometricActivated),
+      'secretKey': serializer.toJson<String>(secretKey),
       'defaultWidgetImage': serializer.toJson<String>(defaultWidgetImage),
     };
   }
@@ -1968,6 +1968,7 @@ class Config extends DataClass implements Insertable<Config> {
           bool shouldDeleteOnPrivate,
           bool tourCompleted,
           bool isBiometricActivated,
+          String secretKey,
           String defaultWidgetImage}) =>
       Config(
         id: id ?? this.id,
@@ -1994,6 +1995,7 @@ class Config extends DataClass implements Insertable<Config> {
             shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
         tourCompleted: tourCompleted ?? this.tourCompleted,
         isBiometricActivated: isBiometricActivated ?? this.isBiometricActivated,
+        secretKey: secretKey ?? this.secretKey,
         defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
       );
   @override
@@ -2022,6 +2024,7 @@ class Config extends DataClass implements Insertable<Config> {
           ..write('shouldDeleteOnPrivate: $shouldDeleteOnPrivate, ')
           ..write('tourCompleted: $tourCompleted, ')
           ..write('isBiometricActivated: $isBiometricActivated, ')
+          ..write('secretKey: $secretKey, ')
           ..write('defaultWidgetImage: $defaultWidgetImage')
           ..write(')'))
         .toString();
@@ -2070,7 +2073,7 @@ class Config extends DataClass implements Insertable<Config> {
                                                                               .hashCode,
                                                                           $mrjc(
                                                                               isPinRegistered.hashCode,
-                                                                              $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, defaultWidgetImage.hashCode))))))))))))))))))))))));
+                                                                              $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, $mrjc(secretKey.hashCode, defaultWidgetImage.hashCode)))))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -2098,6 +2101,7 @@ class Config extends DataClass implements Insertable<Config> {
           other.shouldDeleteOnPrivate == this.shouldDeleteOnPrivate &&
           other.tourCompleted == this.tourCompleted &&
           other.isBiometricActivated == this.isBiometricActivated &&
+          other.secretKey == this.secretKey &&
           other.defaultWidgetImage == this.defaultWidgetImage);
 }
 
@@ -2125,6 +2129,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   final Value<bool> shouldDeleteOnPrivate;
   final Value<bool> tourCompleted;
   final Value<bool> isBiometricActivated;
+  final Value<String> secretKey;
   final Value<String> defaultWidgetImage;
   const ConfigsCompanion({
     this.id = const Value.absent(),
@@ -2150,21 +2155,22 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     this.shouldDeleteOnPrivate = const Value.absent(),
     this.tourCompleted = const Value.absent(),
     this.isBiometricActivated = const Value.absent(),
+    this.secretKey = const Value.absent(),
     this.defaultWidgetImage = const Value.absent(),
   });
   ConfigsCompanion.insert({
     @required String id,
-    @required String email,
-    @required String password,
+    this.email = const Value.absent(),
+    this.password = const Value.absent(),
     @required bool notification,
     @required bool dailyChallenge,
-    @required int goal,
-    @required int hourOfDay,
-    @required int minuteOfDay,
+    this.goal = const Value.absent(),
+    this.hourOfDay = const Value.absent(),
+    this.minuteOfDay = const Value.absent(),
     @required bool isPremium,
     @required bool tutorialCompleted,
     @required int picsTaggedToday,
-    @required DateTime lastTaggedPicDate,
+    this.lastTaggedPicDate = const Value.absent(),
     @required bool canTagToday,
     @required String appLanguage,
     @required String appVersion,
@@ -2176,19 +2182,14 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     @required bool shouldDeleteOnPrivate,
     @required bool tourCompleted,
     @required bool isBiometricActivated,
-    @required String defaultWidgetImage,
+    this.secretKey = const Value.absent(),
+    this.defaultWidgetImage = const Value.absent(),
   })  : id = Value(id),
-        email = Value(email),
-        password = Value(password),
         notification = Value(notification),
         dailyChallenge = Value(dailyChallenge),
-        goal = Value(goal),
-        hourOfDay = Value(hourOfDay),
-        minuteOfDay = Value(minuteOfDay),
         isPremium = Value(isPremium),
         tutorialCompleted = Value(tutorialCompleted),
         picsTaggedToday = Value(picsTaggedToday),
-        lastTaggedPicDate = Value(lastTaggedPicDate),
         canTagToday = Value(canTagToday),
         appLanguage = Value(appLanguage),
         appVersion = Value(appVersion),
@@ -2199,8 +2200,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
         keepAskingToDelete = Value(keepAskingToDelete),
         shouldDeleteOnPrivate = Value(shouldDeleteOnPrivate),
         tourCompleted = Value(tourCompleted),
-        isBiometricActivated = Value(isBiometricActivated),
-        defaultWidgetImage = Value(defaultWidgetImage);
+        isBiometricActivated = Value(isBiometricActivated);
   static Insertable<Config> custom({
     Expression<String> id,
     Expression<String> email,
@@ -2225,6 +2225,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     Expression<bool> shouldDeleteOnPrivate,
     Expression<bool> tourCompleted,
     Expression<bool> isBiometricActivated,
+    Expression<String> secretKey,
     Expression<String> defaultWidgetImage,
   }) {
     return RawValuesInsertable({
@@ -2255,6 +2256,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       if (tourCompleted != null) 'tour_completed': tourCompleted,
       if (isBiometricActivated != null)
         'is_biometric_activated': isBiometricActivated,
+      if (secretKey != null) 'secret_key': secretKey,
       if (defaultWidgetImage != null)
         'default_widget_image': defaultWidgetImage,
     });
@@ -2284,6 +2286,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       Value<bool> shouldDeleteOnPrivate,
       Value<bool> tourCompleted,
       Value<bool> isBiometricActivated,
+      Value<String> secretKey,
       Value<String> defaultWidgetImage}) {
     return ConfigsCompanion(
       id: id ?? this.id,
@@ -2310,6 +2313,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
           shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
       tourCompleted: tourCompleted ?? this.tourCompleted,
       isBiometricActivated: isBiometricActivated ?? this.isBiometricActivated,
+      secretKey: secretKey ?? this.secretKey,
       defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
     );
   }
@@ -2389,6 +2393,9 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       map['is_biometric_activated'] =
           Variable<bool>(isBiometricActivated.value);
     }
+    if (secretKey.present) {
+      map['secret_key'] = Variable<String>(secretKey.value);
+    }
     if (defaultWidgetImage.present) {
       map['default_widget_image'] = Variable<String>(defaultWidgetImage.value);
     }
@@ -2421,6 +2428,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
           ..write('shouldDeleteOnPrivate: $shouldDeleteOnPrivate, ')
           ..write('tourCompleted: $tourCompleted, ')
           ..write('isBiometricActivated: $isBiometricActivated, ')
+          ..write('secretKey: $secretKey, ')
           ..write('defaultWidgetImage: $defaultWidgetImage')
           ..write(')'))
         .toString();
@@ -2451,7 +2459,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedTextColumn(
       'email',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2463,7 +2471,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedTextColumn(
       'password',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2503,7 +2511,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedIntColumn(
       'goal',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2515,7 +2523,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedIntColumn(
       'hour_of_day',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2529,7 +2537,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedIntColumn(
       'minute_of_day',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2583,7 +2591,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedDateTimeColumn(
       'last_tagged_pic_date',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2737,6 +2745,18 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     );
   }
 
+  final VerificationMeta _secretKeyMeta = const VerificationMeta('secretKey');
+  GeneratedTextColumn _secretKey;
+  @override
+  GeneratedTextColumn get secretKey => _secretKey ??= _constructSecretKey();
+  GeneratedTextColumn _constructSecretKey() {
+    return GeneratedTextColumn(
+      'secret_key',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _defaultWidgetImageMeta =
       const VerificationMeta('defaultWidgetImage');
   GeneratedTextColumn _defaultWidgetImage;
@@ -2747,7 +2767,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedTextColumn(
       'default_widget_image',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2776,6 +2796,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
         shouldDeleteOnPrivate,
         tourCompleted,
         isBiometricActivated,
+        secretKey,
         defaultWidgetImage
       ];
   @override
@@ -2797,14 +2818,10 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     if (data.containsKey('email')) {
       context.handle(
           _emailMeta, email.isAcceptableOrUnknown(data['email'], _emailMeta));
-    } else if (isInserting) {
-      context.missing(_emailMeta);
     }
     if (data.containsKey('password')) {
       context.handle(_passwordMeta,
           password.isAcceptableOrUnknown(data['password'], _passwordMeta));
-    } else if (isInserting) {
-      context.missing(_passwordMeta);
     }
     if (data.containsKey('notification')) {
       context.handle(
@@ -2825,22 +2842,16 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     if (data.containsKey('goal')) {
       context.handle(
           _goalMeta, goal.isAcceptableOrUnknown(data['goal'], _goalMeta));
-    } else if (isInserting) {
-      context.missing(_goalMeta);
     }
     if (data.containsKey('hour_of_day')) {
       context.handle(_hourOfDayMeta,
           hourOfDay.isAcceptableOrUnknown(data['hour_of_day'], _hourOfDayMeta));
-    } else if (isInserting) {
-      context.missing(_hourOfDayMeta);
     }
     if (data.containsKey('minute_of_day')) {
       context.handle(
           _minuteOfDayMeta,
           minuteOfDay.isAcceptableOrUnknown(
               data['minute_of_day'], _minuteOfDayMeta));
-    } else if (isInserting) {
-      context.missing(_minuteOfDayMeta);
     }
     if (data.containsKey('is_premium')) {
       context.handle(_isPremiumMeta,
@@ -2869,8 +2880,6 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
           _lastTaggedPicDateMeta,
           lastTaggedPicDate.isAcceptableOrUnknown(
               data['last_tagged_pic_date'], _lastTaggedPicDateMeta));
-    } else if (isInserting) {
-      context.missing(_lastTaggedPicDateMeta);
     }
     if (data.containsKey('can_tag_today')) {
       context.handle(
@@ -2958,13 +2967,15 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     } else if (isInserting) {
       context.missing(_isBiometricActivatedMeta);
     }
+    if (data.containsKey('secret_key')) {
+      context.handle(_secretKeyMeta,
+          secretKey.isAcceptableOrUnknown(data['secret_key'], _secretKeyMeta));
+    }
     if (data.containsKey('default_widget_image')) {
       context.handle(
           _defaultWidgetImageMeta,
           defaultWidgetImage.isAcceptableOrUnknown(
               data['default_widget_image'], _defaultWidgetImageMeta));
-    } else if (isInserting) {
-      context.missing(_defaultWidgetImageMeta);
     }
     return context;
   }

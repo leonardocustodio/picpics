@@ -5,7 +5,10 @@ import 'package:path/path.dart' as p;
 import 'dart:io';
 
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
+import 'package:picPics/model/user.dart';
+import 'package:picPics/model/user_key.dart';
 
 part 'app_database.g.dart';
 
@@ -21,18 +24,17 @@ class Photos extends Table {
 
   DateTimeColumn get createdAt => dateTime()();
 
-  RealColumn get originalLatitude => real().nullable()();
-  RealColumn get originalLongitude => real().nullable()();
-  RealColumn get latitude => real().nullable()();
-  RealColumn get longitude => real().nullable()();
+  RealColumn get originalLatitude => real()();
+  RealColumn get originalLongitude => real()();
+  RealColumn get latitude => real()();
+  RealColumn get longitude => real()();
+
+  BoolColumn get isPrivate => boolean()();
+  BoolColumn get deletedFromCameraRoll => boolean()();
+  BoolColumn get isStarred => boolean()();
 
   TextColumn get specificLocation => text().nullable()();
   TextColumn get generalLocation => text().nullable()();
-
-  BoolColumn get isPrivate => boolean().nullable()();
-  BoolColumn get deletedFromCameraRoll => boolean().nullable()();
-  BoolColumn get isStarred => boolean().nullable()();
-
   TextColumn get base64encoded => text().nullable()();
 }
 
@@ -50,13 +52,13 @@ class LabelEntries extends Table {
 
 class Privates extends Table {
   TextColumn get id => text()();
-  TextColumn get path => text().nullable()();
+  TextColumn get path => text()();
   TextColumn get thumbPath => text().nullable()();
 
   DateTimeColumn get createDateTime => dateTime()();
 
-  RealColumn get originalLatitude => real().nullable()();
-  RealColumn get originalLongitude => real().nullable()();
+  RealColumn get originalLatitude => real()();
+  RealColumn get originalLongitude => real()();
 
   TextColumn get nonce => text()();
 }
@@ -66,8 +68,8 @@ class Configs extends Table {
   TextColumn get email => text().nullable()();
   TextColumn get password => text().nullable()();
 
-  BoolColumn get notification => boolean().nullable()();
-  BoolColumn get dailyChallenge => boolean().nullable()();
+  BoolColumn get notification => boolean()();
+  BoolColumn get dailyChallenge => boolean()();
 
   IntColumn get goal => integer().nullable()();
   IntColumn get hourOfDay => integer().nullable()();
@@ -87,15 +89,16 @@ class Configs extends Table {
   TextColumn get appLanguage => text()();
   TextColumn get appVersion => text()();
 
-  BoolColumn get hasGalleryPermission => boolean().nullable()();
-  BoolColumn get loggedIn => boolean().nullable()();
+  BoolColumn get hasGalleryPermission => boolean()();
+  BoolColumn get loggedIn => boolean()();
   BoolColumn get secretPhotos => boolean()();
   BoolColumn get isPinRegistered => boolean()();
   BoolColumn get keepAskingToDelete => boolean()();
   BoolColumn get shouldDeleteOnPrivate => boolean()();
-  BoolColumn get tourCompleted => boolean().nullable()();
+  BoolColumn get tourCompleted => boolean()();
   BoolColumn get isBiometricActivated => boolean()();
 
+  TextColumn get secretKey => text().nullable()();
 // @HiveField(25)
 // List<String> starredPhotos;
 
@@ -119,6 +122,60 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  Future<void> insertAllPrivates(List<Secret> secretPhotos) async {
+    List<PrivatesCompanion> privatesCompanions = [];
+
+    for (Secret secret in secretPhotos) {
+      privatesCompanions.add(
+        PrivatesCompanion.insert(
+          id: secret.photoId,
+          path: secret.photoPath,
+          thumbPath: secret.thumbPath ?? Value.absent(),
+          createDateTime: secret.createDateTime,
+          originalLatitude: secret.originalLatitude ?? 0.0,
+          originalLongitude: secret.originalLongitude ?? 0.0,
+          nonce: secret.nonce,
+        ),
+      );
+    }
+
+    await batch((batch) {
+      batch.insertAll(privates, privatesCompanions);
+    });
+  }
+
+  Future<void> insertAllConfigs(User user, UserKey userKey) async {
+    return into(configs).insert(
+      ConfigsCompanion.insert(
+        id: user.id,
+        email: user.email ?? Value.absent(),
+        password: user.password ?? Value.absent(),
+        notification: user.notifications ?? false,
+        dailyChallenge: user.dailyChallenges ?? false,
+        goal: user.goal ?? Value.absent(),
+        hourOfDay: user.hourOfDay ?? Value.absent(),
+        minuteOfDay: user.minutesOfDay ?? Value.absent(),
+        isPremium: user.isPremium ?? false,
+        tutorialCompleted: user.tutorialCompleted ?? false,
+        picsTaggedToday: user.picsTaggedToday ?? Value.absent(),
+        lastTaggedPicDate: user.lastTaggedPicDate ?? Value.absent(),
+        canTagToday: user.canTagToday ?? true,
+        appLanguage: user.appLanguage,
+        appVersion: user.appVersion,
+        hasGalleryPermission: user.hasGalleryPermission,
+        loggedIn: user.loggedIn ?? false,
+        secretPhotos: user.secretPhotos ?? false,
+        isPinRegistered: user.isPinRegistered ?? false,
+        keepAskingToDelete: user.keepAskingToDelete ?? true,
+        shouldDeleteOnPrivate: user.shouldDeleteOnPrivate ?? false,
+        tourCompleted: user.tourCompleted ?? false,
+        isBiometricActivated: user.isBiometricActivated ?? false,
+        secretKey: userKey.secretKey ?? Value.absent(),
+        defaultWidgetImage: user.defaultWidgetImage ?? Value.absent(),
+      ),
+    );
+  }
 
   Future<void> insertAllLabelsEntries(Map<String, List<String>> photosTags) async {
     List<LabelEntriesCompanion> labelsEntriesCompanions = [];
@@ -166,16 +223,16 @@ class AppDatabase extends _$AppDatabase {
         PhotosCompanion.insert(
           id: pic.photoId,
           createdAt: pic.createdAt,
-          originalLatitude: pic.originalLatitude,
-          originalLongitude: pic.originalLongitude,
-          latitude: pic.latitude,
-          longitude: pic.longitude,
-          specificLocation: pic.specificLocation,
-          generalLocation: pic.generalLocation,
-          isPrivate: pic.isPrivate,
-          deletedFromCameraRoll: pic.deletedFromCameraRoll,
-          isStarred: pic.isStarred,
-          base64encoded: pic.base64encoded,
+          originalLatitude: pic.originalLatitude ?? 0.0,
+          originalLongitude: pic.originalLongitude ?? 0.0,
+          latitude: pic.latitude ?? 0.0,
+          longitude: pic.longitude ?? 0.0,
+          specificLocation: pic.specificLocation ?? Value.absent(),
+          generalLocation: pic.generalLocation ?? Value.absent(),
+          isPrivate: pic.isPrivate ?? false,
+          deletedFromCameraRoll: pic.deletedFromCameraRoll ?? false,
+          isStarred: pic.isStarred ?? false,
+          base64encoded: pic.base64encoded ?? Value.absent(),
         ),
       );
     }

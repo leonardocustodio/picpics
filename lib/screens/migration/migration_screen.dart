@@ -69,32 +69,9 @@ class _MigrationScreenState extends State<MigrationScreen> {
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Text(
-                                'Please wait',
-                                textScaleFactor: 1.0,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kWhiteColor,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 32.0, top: 32.0),
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 6.0,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Text(
-                                  'Nós estamos otimizando o aplicativo para melhorar a performance e possibilitar novas funcionalidades!',
+                              if (migrationStore.isMigrating) ...[
+                                Text(
+                                  'Please wait',
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -106,7 +83,33 @@ class _MigrationScreenState extends State<MigrationScreen> {
                                     letterSpacing: -0.4099999964237213,
                                   ),
                                 ),
-                              ),
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 32.0, top: 32.0),
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 6.0,
+                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Text(
+                                    'Nós estamos otimizando o aplicativo para melhorar a performance e possibilitar novas funcionalidades!',
+                                    textScaleFactor: 1.0,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: kWhiteColor,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700,
+                                      fontStyle: FontStyle.normal,
+                                      letterSpacing: -0.4099999964237213,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                              Container(),
                             ],
                           ),
                         ),

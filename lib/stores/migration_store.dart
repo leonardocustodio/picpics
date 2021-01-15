@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/model/pic.dart';
+import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
 
 part 'migration_store.g.dart';
@@ -32,6 +33,7 @@ abstract class _MigrationStore with Store {
 
     List<Tag> tags = [];
     List<Pic> pics = [];
+    List<Secret> secrets = [];
 
     AppDatabase database = AppDatabase();
 
@@ -45,6 +47,13 @@ abstract class _MigrationStore with Store {
     }
 
     await database.insertAllPhotos(pics);
+    await database.insertAllConfigs(userBox.getAt(0), keyBox.getAt(0));
+
+    for (Secret secret in secretBox.values) {
+      secrets.add(secret);
+    }
+    await database.insertAllPrivates(secrets);
+
     setIsMigrating(false);
   }
 }
