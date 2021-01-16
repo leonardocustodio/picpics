@@ -109,7 +109,37 @@ class _MigrationScreenState extends State<MigrationScreen> {
                                   ),
                                 ),
                               ],
-                              Container(),
+                              if (migrationStore.isMigrating == false) ...[
+                                Text(
+                                  'Processo concluído!',
+                                  textScaleFactor: 1.0,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: kWhiteColor,
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w700,
+                                    fontStyle: FontStyle.normal,
+                                    letterSpacing: -0.4099999964237213,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  child: Text(
+                                    'Pronto o processo foi concluído, você pode continuar usando agora o melhor gerenciador de fotos!',
+                                    textScaleFactor: 1.0,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: kWhiteColor,
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w700,
+                                      fontStyle: FontStyle.normal,
+                                      letterSpacing: -0.4099999964237213,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ],
                           ),
                         ),

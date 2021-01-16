@@ -1647,11 +1647,11 @@ class Config extends DataClass implements Insertable<Config> {
       this.minuteOfDay,
       @required this.isPremium,
       @required this.tutorialCompleted,
-      @required this.picsTaggedToday,
+      this.picsTaggedToday,
       this.lastTaggedPicDate,
       @required this.canTagToday,
-      @required this.appLanguage,
-      @required this.appVersion,
+      this.appLanguage,
+      this.appVersion,
       @required this.hasGalleryPermission,
       @required this.loggedIn,
       @required this.secretPhotos,
@@ -2169,11 +2169,11 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     this.minuteOfDay = const Value.absent(),
     @required bool isPremium,
     @required bool tutorialCompleted,
-    @required int picsTaggedToday,
+    this.picsTaggedToday = const Value.absent(),
     this.lastTaggedPicDate = const Value.absent(),
     @required bool canTagToday,
-    @required String appLanguage,
-    @required String appVersion,
+    this.appLanguage = const Value.absent(),
+    this.appVersion = const Value.absent(),
     @required bool hasGalleryPermission,
     @required bool loggedIn,
     @required bool secretPhotos,
@@ -2189,10 +2189,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
         dailyChallenge = Value(dailyChallenge),
         isPremium = Value(isPremium),
         tutorialCompleted = Value(tutorialCompleted),
-        picsTaggedToday = Value(picsTaggedToday),
         canTagToday = Value(canTagToday),
-        appLanguage = Value(appLanguage),
-        appVersion = Value(appVersion),
         hasGalleryPermission = Value(hasGalleryPermission),
         loggedIn = Value(loggedIn),
         secretPhotos = Value(secretPhotos),
@@ -2577,7 +2574,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedIntColumn(
       'pics_tagged_today',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2619,7 +2616,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedTextColumn(
       'app_language',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2631,7 +2628,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedTextColumn(
       'app_version',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2872,8 +2869,6 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
           _picsTaggedTodayMeta,
           picsTaggedToday.isAcceptableOrUnknown(
               data['pics_tagged_today'], _picsTaggedTodayMeta));
-    } else if (isInserting) {
-      context.missing(_picsTaggedTodayMeta);
     }
     if (data.containsKey('last_tagged_pic_date')) {
       context.handle(
@@ -2894,16 +2889,12 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
           _appLanguageMeta,
           appLanguage.isAcceptableOrUnknown(
               data['app_language'], _appLanguageMeta));
-    } else if (isInserting) {
-      context.missing(_appLanguageMeta);
     }
     if (data.containsKey('app_version')) {
       context.handle(
           _appVersionMeta,
           appVersion.isAcceptableOrUnknown(
               data['app_version'], _appVersionMeta));
-    } else if (isInserting) {
-      context.missing(_appVersionMeta);
     }
     if (data.containsKey('has_gallery_permission')) {
       context.handle(

@@ -81,13 +81,13 @@ class Configs extends Table {
 // final List<String> recentTags;
 
   BoolColumn get tutorialCompleted => boolean()();
-  IntColumn get picsTaggedToday => integer()();
+  IntColumn get picsTaggedToday => integer().nullable()();
 
   DateTimeColumn get lastTaggedPicDate => dateTime().nullable()();
   BoolColumn get canTagToday => boolean()();
 
-  TextColumn get appLanguage => text()();
-  TextColumn get appVersion => text()();
+  TextColumn get appLanguage => text().nullable()();
+  TextColumn get appVersion => text().nullable()();
 
   BoolColumn get hasGalleryPermission => boolean()();
   BoolColumn get loggedIn => boolean()();
@@ -145,7 +145,9 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Future<void> insertAllConfigs(User user, UserKey userKey) async {
+  Future<void> insertAllConfigs(User user, {UserKey userKey}) async {
+    print('User goal: ${user.goal}');
+
     return into(configs).insert(
       ConfigsCompanion.insert(
         id: user.id,
@@ -153,16 +155,16 @@ class AppDatabase extends _$AppDatabase {
         password: user.password ?? Value.absent(),
         notification: user.notifications ?? false,
         dailyChallenge: user.dailyChallenges ?? false,
-        goal: user.goal ?? Value.absent(),
-        hourOfDay: user.hourOfDay ?? Value.absent(),
-        minuteOfDay: user.minutesOfDay ?? Value.absent(),
+        goal: Value(user.goal),
+        hourOfDay: Value(user.hourOfDay),
+        minuteOfDay: Value(user.minutesOfDay),
         isPremium: user.isPremium ?? false,
         tutorialCompleted: user.tutorialCompleted ?? false,
-        picsTaggedToday: user.picsTaggedToday ?? Value.absent(),
-        lastTaggedPicDate: user.lastTaggedPicDate ?? Value.absent(),
+        picsTaggedToday: Value(user.picsTaggedToday),
+        lastTaggedPicDate: Value(user.lastTaggedPicDate),
         canTagToday: user.canTagToday ?? true,
-        appLanguage: user.appLanguage,
-        appVersion: user.appVersion,
+        appLanguage: Value(user.appLanguage),
+        appVersion: Value(user.appVersion),
         hasGalleryPermission: user.hasGalleryPermission,
         loggedIn: user.loggedIn ?? false,
         secretPhotos: user.secretPhotos ?? false,
@@ -171,8 +173,8 @@ class AppDatabase extends _$AppDatabase {
         shouldDeleteOnPrivate: user.shouldDeleteOnPrivate ?? false,
         tourCompleted: user.tourCompleted ?? false,
         isBiometricActivated: user.isBiometricActivated ?? false,
-        secretKey: userKey.secretKey ?? Value.absent(),
-        defaultWidgetImage: user.defaultWidgetImage ?? Value.absent(),
+        secretKey: userKey != null ? Value(userKey.secretKey) : Value.absent(),
+        defaultWidgetImage: Value.absent(), // Value(user.defaultWidgetImage),
       ),
     );
   }

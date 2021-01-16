@@ -47,7 +47,10 @@ abstract class _MigrationStore with Store {
     }
 
     await database.insertAllPhotos(pics);
-    await database.insertAllConfigs(userBox.getAt(0), keyBox.getAt(0));
+    await database.insertAllConfigs(
+      userBox.getAt(0),
+      userKey: keyBox.length > 0 ? keyBox.getAt(0) : null,
+    );
 
     for (Secret secret in secretBox.values) {
       secrets.add(secret);
