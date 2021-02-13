@@ -1611,6 +1611,7 @@ class $LabelEntriesTable extends LabelEntries
 }
 
 class Config extends DataClass implements Insertable<Config> {
+  final int customPrimaryKey;
   final String id;
   final String email;
   final String password;
@@ -1620,6 +1621,7 @@ class Config extends DataClass implements Insertable<Config> {
   final int hourOfDay;
   final int minuteOfDay;
   final bool isPremium;
+  final List<String> recentTags;
   final bool tutorialCompleted;
   final int picsTaggedToday;
   final DateTime lastTaggedPicDate;
@@ -1635,9 +1637,11 @@ class Config extends DataClass implements Insertable<Config> {
   final bool tourCompleted;
   final bool isBiometricActivated;
   final String secretKey;
+  final List<String> starredPhotos;
   final String defaultWidgetImage;
   Config(
-      {@required this.id,
+      {@required this.customPrimaryKey,
+      @required this.id,
       this.email,
       this.password,
       @required this.notification,
@@ -1646,6 +1650,7 @@ class Config extends DataClass implements Insertable<Config> {
       this.hourOfDay,
       this.minuteOfDay,
       @required this.isPremium,
+      @required this.recentTags,
       @required this.tutorialCompleted,
       this.picsTaggedToday,
       this.lastTaggedPicDate,
@@ -1661,15 +1666,18 @@ class Config extends DataClass implements Insertable<Config> {
       @required this.tourCompleted,
       @required this.isBiometricActivated,
       this.secretKey,
+      @required this.starredPhotos,
       this.defaultWidgetImage});
   factory Config.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
+    final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
     final boolType = db.typeSystem.forDartType<bool>();
-    final intType = db.typeSystem.forDartType<int>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return Config(
+      customPrimaryKey: intType.mapFromDatabaseResponse(
+          data['${effectivePrefix}custom_primary_key']),
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       email:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}email']),
@@ -1686,6 +1694,8 @@ class Config extends DataClass implements Insertable<Config> {
           .mapFromDatabaseResponse(data['${effectivePrefix}minute_of_day']),
       isPremium: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_premium']),
+      recentTags: $ConfigsTable.$converter0.mapToDart(stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}recent_tags'])),
       tutorialCompleted: boolType.mapFromDatabaseResponse(
           data['${effectivePrefix}tutorial_completed']),
       picsTaggedToday: intType
@@ -1716,6 +1726,8 @@ class Config extends DataClass implements Insertable<Config> {
           data['${effectivePrefix}is_biometric_activated']),
       secretKey: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}secret_key']),
+      starredPhotos: $ConfigsTable.$converter1.mapToDart(stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}starred_photos'])),
       defaultWidgetImage: stringType.mapFromDatabaseResponse(
           data['${effectivePrefix}default_widget_image']),
     );
@@ -1723,6 +1735,9 @@ class Config extends DataClass implements Insertable<Config> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (!nullToAbsent || customPrimaryKey != null) {
+      map['custom_primary_key'] = Variable<int>(customPrimaryKey);
+    }
     if (!nullToAbsent || id != null) {
       map['id'] = Variable<String>(id);
     }
@@ -1749,6 +1764,10 @@ class Config extends DataClass implements Insertable<Config> {
     }
     if (!nullToAbsent || isPremium != null) {
       map['is_premium'] = Variable<bool>(isPremium);
+    }
+    if (!nullToAbsent || recentTags != null) {
+      final converter = $ConfigsTable.$converter0;
+      map['recent_tags'] = Variable<String>(converter.mapToSql(recentTags));
     }
     if (!nullToAbsent || tutorialCompleted != null) {
       map['tutorial_completed'] = Variable<bool>(tutorialCompleted);
@@ -1795,6 +1814,11 @@ class Config extends DataClass implements Insertable<Config> {
     if (!nullToAbsent || secretKey != null) {
       map['secret_key'] = Variable<String>(secretKey);
     }
+    if (!nullToAbsent || starredPhotos != null) {
+      final converter = $ConfigsTable.$converter1;
+      map['starred_photos'] =
+          Variable<String>(converter.mapToSql(starredPhotos));
+    }
     if (!nullToAbsent || defaultWidgetImage != null) {
       map['default_widget_image'] = Variable<String>(defaultWidgetImage);
     }
@@ -1803,6 +1827,9 @@ class Config extends DataClass implements Insertable<Config> {
 
   ConfigsCompanion toCompanion(bool nullToAbsent) {
     return ConfigsCompanion(
+      customPrimaryKey: customPrimaryKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(customPrimaryKey),
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       email:
           email == null && nullToAbsent ? const Value.absent() : Value(email),
@@ -1825,6 +1852,9 @@ class Config extends DataClass implements Insertable<Config> {
       isPremium: isPremium == null && nullToAbsent
           ? const Value.absent()
           : Value(isPremium),
+      recentTags: recentTags == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recentTags),
       tutorialCompleted: tutorialCompleted == null && nullToAbsent
           ? const Value.absent()
           : Value(tutorialCompleted),
@@ -1870,6 +1900,9 @@ class Config extends DataClass implements Insertable<Config> {
       secretKey: secretKey == null && nullToAbsent
           ? const Value.absent()
           : Value(secretKey),
+      starredPhotos: starredPhotos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(starredPhotos),
       defaultWidgetImage: defaultWidgetImage == null && nullToAbsent
           ? const Value.absent()
           : Value(defaultWidgetImage),
@@ -1880,6 +1913,7 @@ class Config extends DataClass implements Insertable<Config> {
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return Config(
+      customPrimaryKey: serializer.fromJson<int>(json['customPrimaryKey']),
       id: serializer.fromJson<String>(json['id']),
       email: serializer.fromJson<String>(json['email']),
       password: serializer.fromJson<String>(json['password']),
@@ -1889,6 +1923,7 @@ class Config extends DataClass implements Insertable<Config> {
       hourOfDay: serializer.fromJson<int>(json['hourOfDay']),
       minuteOfDay: serializer.fromJson<int>(json['minuteOfDay']),
       isPremium: serializer.fromJson<bool>(json['isPremium']),
+      recentTags: serializer.fromJson<List<String>>(json['recentTags']),
       tutorialCompleted: serializer.fromJson<bool>(json['tutorialCompleted']),
       picsTaggedToday: serializer.fromJson<int>(json['picsTaggedToday']),
       lastTaggedPicDate:
@@ -1908,6 +1943,7 @@ class Config extends DataClass implements Insertable<Config> {
       isBiometricActivated:
           serializer.fromJson<bool>(json['isBiometricActivated']),
       secretKey: serializer.fromJson<String>(json['secretKey']),
+      starredPhotos: serializer.fromJson<List<String>>(json['starredPhotos']),
       defaultWidgetImage:
           serializer.fromJson<String>(json['defaultWidgetImage']),
     );
@@ -1916,6 +1952,7 @@ class Config extends DataClass implements Insertable<Config> {
   Map<String, dynamic> toJson({ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
+      'customPrimaryKey': serializer.toJson<int>(customPrimaryKey),
       'id': serializer.toJson<String>(id),
       'email': serializer.toJson<String>(email),
       'password': serializer.toJson<String>(password),
@@ -1925,6 +1962,7 @@ class Config extends DataClass implements Insertable<Config> {
       'hourOfDay': serializer.toJson<int>(hourOfDay),
       'minuteOfDay': serializer.toJson<int>(minuteOfDay),
       'isPremium': serializer.toJson<bool>(isPremium),
+      'recentTags': serializer.toJson<List<String>>(recentTags),
       'tutorialCompleted': serializer.toJson<bool>(tutorialCompleted),
       'picsTaggedToday': serializer.toJson<int>(picsTaggedToday),
       'lastTaggedPicDate': serializer.toJson<DateTime>(lastTaggedPicDate),
@@ -1940,12 +1978,14 @@ class Config extends DataClass implements Insertable<Config> {
       'tourCompleted': serializer.toJson<bool>(tourCompleted),
       'isBiometricActivated': serializer.toJson<bool>(isBiometricActivated),
       'secretKey': serializer.toJson<String>(secretKey),
+      'starredPhotos': serializer.toJson<List<String>>(starredPhotos),
       'defaultWidgetImage': serializer.toJson<String>(defaultWidgetImage),
     };
   }
 
   Config copyWith(
-          {String id,
+          {int customPrimaryKey,
+          String id,
           String email,
           String password,
           bool notification,
@@ -1954,6 +1994,7 @@ class Config extends DataClass implements Insertable<Config> {
           int hourOfDay,
           int minuteOfDay,
           bool isPremium,
+          List<String> recentTags,
           bool tutorialCompleted,
           int picsTaggedToday,
           DateTime lastTaggedPicDate,
@@ -1969,8 +2010,10 @@ class Config extends DataClass implements Insertable<Config> {
           bool tourCompleted,
           bool isBiometricActivated,
           String secretKey,
+          List<String> starredPhotos,
           String defaultWidgetImage}) =>
       Config(
+        customPrimaryKey: customPrimaryKey ?? this.customPrimaryKey,
         id: id ?? this.id,
         email: email ?? this.email,
         password: password ?? this.password,
@@ -1980,6 +2023,7 @@ class Config extends DataClass implements Insertable<Config> {
         hourOfDay: hourOfDay ?? this.hourOfDay,
         minuteOfDay: minuteOfDay ?? this.minuteOfDay,
         isPremium: isPremium ?? this.isPremium,
+        recentTags: recentTags ?? this.recentTags,
         tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
         picsTaggedToday: picsTaggedToday ?? this.picsTaggedToday,
         lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
@@ -1996,11 +2040,13 @@ class Config extends DataClass implements Insertable<Config> {
         tourCompleted: tourCompleted ?? this.tourCompleted,
         isBiometricActivated: isBiometricActivated ?? this.isBiometricActivated,
         secretKey: secretKey ?? this.secretKey,
+        starredPhotos: starredPhotos ?? this.starredPhotos,
         defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
       );
   @override
   String toString() {
     return (StringBuffer('Config(')
+          ..write('customPrimaryKey: $customPrimaryKey, ')
           ..write('id: $id, ')
           ..write('email: $email, ')
           ..write('password: $password, ')
@@ -2010,6 +2056,7 @@ class Config extends DataClass implements Insertable<Config> {
           ..write('hourOfDay: $hourOfDay, ')
           ..write('minuteOfDay: $minuteOfDay, ')
           ..write('isPremium: $isPremium, ')
+          ..write('recentTags: $recentTags, ')
           ..write('tutorialCompleted: $tutorialCompleted, ')
           ..write('picsTaggedToday: $picsTaggedToday, ')
           ..write('lastTaggedPicDate: $lastTaggedPicDate, ')
@@ -2025,6 +2072,7 @@ class Config extends DataClass implements Insertable<Config> {
           ..write('tourCompleted: $tourCompleted, ')
           ..write('isBiometricActivated: $isBiometricActivated, ')
           ..write('secretKey: $secretKey, ')
+          ..write('starredPhotos: $starredPhotos, ')
           ..write('defaultWidgetImage: $defaultWidgetImage')
           ..write(')'))
         .toString();
@@ -2032,52 +2080,54 @@ class Config extends DataClass implements Insertable<Config> {
 
   @override
   int get hashCode => $mrjf($mrjc(
-      id.hashCode,
+      customPrimaryKey.hashCode,
       $mrjc(
-          email.hashCode,
+          id.hashCode,
           $mrjc(
-              password.hashCode,
+              email.hashCode,
               $mrjc(
-                  notification.hashCode,
+                  password.hashCode,
                   $mrjc(
-                      dailyChallenge.hashCode,
+                      notification.hashCode,
                       $mrjc(
-                          goal.hashCode,
+                          dailyChallenge.hashCode,
                           $mrjc(
-                              hourOfDay.hashCode,
+                              goal.hashCode,
                               $mrjc(
-                                  minuteOfDay.hashCode,
+                                  hourOfDay.hashCode,
                                   $mrjc(
-                                      isPremium.hashCode,
+                                      minuteOfDay.hashCode,
                                       $mrjc(
-                                          tutorialCompleted.hashCode,
+                                          isPremium.hashCode,
                                           $mrjc(
-                                              picsTaggedToday.hashCode,
+                                              recentTags.hashCode,
                                               $mrjc(
-                                                  lastTaggedPicDate.hashCode,
+                                                  tutorialCompleted.hashCode,
                                                   $mrjc(
-                                                      canTagToday.hashCode,
+                                                      picsTaggedToday.hashCode,
                                                       $mrjc(
-                                                          appLanguage.hashCode,
+                                                          lastTaggedPicDate
+                                                              .hashCode,
                                                           $mrjc(
-                                                              appVersion
+                                                              canTagToday
                                                                   .hashCode,
                                                               $mrjc(
-                                                                  hasGalleryPermission
+                                                                  appLanguage
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      loggedIn
+                                                                      appVersion
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          secretPhotos
+                                                                          hasGalleryPermission
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              isPinRegistered.hashCode,
-                                                                              $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, $mrjc(secretKey.hashCode, defaultWidgetImage.hashCode)))))))))))))))))))))))));
+                                                                              loggedIn.hashCode,
+                                                                              $mrjc(secretPhotos.hashCode, $mrjc(isPinRegistered.hashCode, $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, $mrjc(secretKey.hashCode, $mrjc(starredPhotos.hashCode, defaultWidgetImage.hashCode))))))))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Config &&
+          other.customPrimaryKey == this.customPrimaryKey &&
           other.id == this.id &&
           other.email == this.email &&
           other.password == this.password &&
@@ -2087,6 +2137,7 @@ class Config extends DataClass implements Insertable<Config> {
           other.hourOfDay == this.hourOfDay &&
           other.minuteOfDay == this.minuteOfDay &&
           other.isPremium == this.isPremium &&
+          other.recentTags == this.recentTags &&
           other.tutorialCompleted == this.tutorialCompleted &&
           other.picsTaggedToday == this.picsTaggedToday &&
           other.lastTaggedPicDate == this.lastTaggedPicDate &&
@@ -2102,10 +2153,12 @@ class Config extends DataClass implements Insertable<Config> {
           other.tourCompleted == this.tourCompleted &&
           other.isBiometricActivated == this.isBiometricActivated &&
           other.secretKey == this.secretKey &&
+          other.starredPhotos == this.starredPhotos &&
           other.defaultWidgetImage == this.defaultWidgetImage);
 }
 
 class ConfigsCompanion extends UpdateCompanion<Config> {
+  final Value<int> customPrimaryKey;
   final Value<String> id;
   final Value<String> email;
   final Value<String> password;
@@ -2115,6 +2168,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   final Value<int> hourOfDay;
   final Value<int> minuteOfDay;
   final Value<bool> isPremium;
+  final Value<List<String>> recentTags;
   final Value<bool> tutorialCompleted;
   final Value<int> picsTaggedToday;
   final Value<DateTime> lastTaggedPicDate;
@@ -2130,8 +2184,10 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   final Value<bool> tourCompleted;
   final Value<bool> isBiometricActivated;
   final Value<String> secretKey;
+  final Value<List<String>> starredPhotos;
   final Value<String> defaultWidgetImage;
   const ConfigsCompanion({
+    this.customPrimaryKey = const Value.absent(),
     this.id = const Value.absent(),
     this.email = const Value.absent(),
     this.password = const Value.absent(),
@@ -2141,6 +2197,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     this.hourOfDay = const Value.absent(),
     this.minuteOfDay = const Value.absent(),
     this.isPremium = const Value.absent(),
+    this.recentTags = const Value.absent(),
     this.tutorialCompleted = const Value.absent(),
     this.picsTaggedToday = const Value.absent(),
     this.lastTaggedPicDate = const Value.absent(),
@@ -2156,9 +2213,11 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     this.tourCompleted = const Value.absent(),
     this.isBiometricActivated = const Value.absent(),
     this.secretKey = const Value.absent(),
+    this.starredPhotos = const Value.absent(),
     this.defaultWidgetImage = const Value.absent(),
   });
   ConfigsCompanion.insert({
+    this.customPrimaryKey = const Value.absent(),
     @required String id,
     this.email = const Value.absent(),
     this.password = const Value.absent(),
@@ -2168,6 +2227,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     this.hourOfDay = const Value.absent(),
     this.minuteOfDay = const Value.absent(),
     @required bool isPremium,
+    @required List<String> recentTags,
     @required bool tutorialCompleted,
     this.picsTaggedToday = const Value.absent(),
     this.lastTaggedPicDate = const Value.absent(),
@@ -2183,11 +2243,13 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     @required bool tourCompleted,
     @required bool isBiometricActivated,
     this.secretKey = const Value.absent(),
+    @required List<String> starredPhotos,
     this.defaultWidgetImage = const Value.absent(),
   })  : id = Value(id),
         notification = Value(notification),
         dailyChallenge = Value(dailyChallenge),
         isPremium = Value(isPremium),
+        recentTags = Value(recentTags),
         tutorialCompleted = Value(tutorialCompleted),
         canTagToday = Value(canTagToday),
         hasGalleryPermission = Value(hasGalleryPermission),
@@ -2197,8 +2259,10 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
         keepAskingToDelete = Value(keepAskingToDelete),
         shouldDeleteOnPrivate = Value(shouldDeleteOnPrivate),
         tourCompleted = Value(tourCompleted),
-        isBiometricActivated = Value(isBiometricActivated);
+        isBiometricActivated = Value(isBiometricActivated),
+        starredPhotos = Value(starredPhotos);
   static Insertable<Config> custom({
+    Expression<int> customPrimaryKey,
     Expression<String> id,
     Expression<String> email,
     Expression<String> password,
@@ -2208,6 +2272,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     Expression<int> hourOfDay,
     Expression<int> minuteOfDay,
     Expression<bool> isPremium,
+    Expression<String> recentTags,
     Expression<bool> tutorialCompleted,
     Expression<int> picsTaggedToday,
     Expression<DateTime> lastTaggedPicDate,
@@ -2223,9 +2288,11 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     Expression<bool> tourCompleted,
     Expression<bool> isBiometricActivated,
     Expression<String> secretKey,
+    Expression<String> starredPhotos,
     Expression<String> defaultWidgetImage,
   }) {
     return RawValuesInsertable({
+      if (customPrimaryKey != null) 'custom_primary_key': customPrimaryKey,
       if (id != null) 'id': id,
       if (email != null) 'email': email,
       if (password != null) 'password': password,
@@ -2235,6 +2302,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       if (hourOfDay != null) 'hour_of_day': hourOfDay,
       if (minuteOfDay != null) 'minute_of_day': minuteOfDay,
       if (isPremium != null) 'is_premium': isPremium,
+      if (recentTags != null) 'recent_tags': recentTags,
       if (tutorialCompleted != null) 'tutorial_completed': tutorialCompleted,
       if (picsTaggedToday != null) 'pics_tagged_today': picsTaggedToday,
       if (lastTaggedPicDate != null) 'last_tagged_pic_date': lastTaggedPicDate,
@@ -2254,13 +2322,15 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       if (isBiometricActivated != null)
         'is_biometric_activated': isBiometricActivated,
       if (secretKey != null) 'secret_key': secretKey,
+      if (starredPhotos != null) 'starred_photos': starredPhotos,
       if (defaultWidgetImage != null)
         'default_widget_image': defaultWidgetImage,
     });
   }
 
   ConfigsCompanion copyWith(
-      {Value<String> id,
+      {Value<int> customPrimaryKey,
+      Value<String> id,
       Value<String> email,
       Value<String> password,
       Value<bool> notification,
@@ -2269,6 +2339,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       Value<int> hourOfDay,
       Value<int> minuteOfDay,
       Value<bool> isPremium,
+      Value<List<String>> recentTags,
       Value<bool> tutorialCompleted,
       Value<int> picsTaggedToday,
       Value<DateTime> lastTaggedPicDate,
@@ -2284,8 +2355,10 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       Value<bool> tourCompleted,
       Value<bool> isBiometricActivated,
       Value<String> secretKey,
+      Value<List<String>> starredPhotos,
       Value<String> defaultWidgetImage}) {
     return ConfigsCompanion(
+      customPrimaryKey: customPrimaryKey ?? this.customPrimaryKey,
       id: id ?? this.id,
       email: email ?? this.email,
       password: password ?? this.password,
@@ -2295,6 +2368,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       hourOfDay: hourOfDay ?? this.hourOfDay,
       minuteOfDay: minuteOfDay ?? this.minuteOfDay,
       isPremium: isPremium ?? this.isPremium,
+      recentTags: recentTags ?? this.recentTags,
       tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
       picsTaggedToday: picsTaggedToday ?? this.picsTaggedToday,
       lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
@@ -2311,6 +2385,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       tourCompleted: tourCompleted ?? this.tourCompleted,
       isBiometricActivated: isBiometricActivated ?? this.isBiometricActivated,
       secretKey: secretKey ?? this.secretKey,
+      starredPhotos: starredPhotos ?? this.starredPhotos,
       defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
     );
   }
@@ -2318,6 +2393,9 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
+    if (customPrimaryKey.present) {
+      map['custom_primary_key'] = Variable<int>(customPrimaryKey.value);
+    }
     if (id.present) {
       map['id'] = Variable<String>(id.value);
     }
@@ -2344,6 +2422,11 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     }
     if (isPremium.present) {
       map['is_premium'] = Variable<bool>(isPremium.value);
+    }
+    if (recentTags.present) {
+      final converter = $ConfigsTable.$converter0;
+      map['recent_tags'] =
+          Variable<String>(converter.mapToSql(recentTags.value));
     }
     if (tutorialCompleted.present) {
       map['tutorial_completed'] = Variable<bool>(tutorialCompleted.value);
@@ -2393,6 +2476,11 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     if (secretKey.present) {
       map['secret_key'] = Variable<String>(secretKey.value);
     }
+    if (starredPhotos.present) {
+      final converter = $ConfigsTable.$converter1;
+      map['starred_photos'] =
+          Variable<String>(converter.mapToSql(starredPhotos.value));
+    }
     if (defaultWidgetImage.present) {
       map['default_widget_image'] = Variable<String>(defaultWidgetImage.value);
     }
@@ -2402,6 +2490,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   @override
   String toString() {
     return (StringBuffer('ConfigsCompanion(')
+          ..write('customPrimaryKey: $customPrimaryKey, ')
           ..write('id: $id, ')
           ..write('email: $email, ')
           ..write('password: $password, ')
@@ -2411,6 +2500,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
           ..write('hourOfDay: $hourOfDay, ')
           ..write('minuteOfDay: $minuteOfDay, ')
           ..write('isPremium: $isPremium, ')
+          ..write('recentTags: $recentTags, ')
           ..write('tutorialCompleted: $tutorialCompleted, ')
           ..write('picsTaggedToday: $picsTaggedToday, ')
           ..write('lastTaggedPicDate: $lastTaggedPicDate, ')
@@ -2426,6 +2516,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
           ..write('tourCompleted: $tourCompleted, ')
           ..write('isBiometricActivated: $isBiometricActivated, ')
           ..write('secretKey: $secretKey, ')
+          ..write('starredPhotos: $starredPhotos, ')
           ..write('defaultWidgetImage: $defaultWidgetImage')
           ..write(')'))
         .toString();
@@ -2436,6 +2527,20 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
   final GeneratedDatabase _db;
   final String _alias;
   $ConfigsTable(this._db, [this._alias]);
+  final VerificationMeta _customPrimaryKeyMeta =
+      const VerificationMeta('customPrimaryKey');
+  GeneratedIntColumn _customPrimaryKey;
+  @override
+  GeneratedIntColumn get customPrimaryKey =>
+      _customPrimaryKey ??= _constructCustomPrimaryKey();
+  GeneratedIntColumn _constructCustomPrimaryKey() {
+    return GeneratedIntColumn(
+      'custom_primary_key',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _idMeta = const VerificationMeta('id');
   GeneratedTextColumn _id;
   @override
@@ -2545,6 +2650,18 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
   GeneratedBoolColumn _constructIsPremium() {
     return GeneratedBoolColumn(
       'is_premium',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _recentTagsMeta = const VerificationMeta('recentTags');
+  GeneratedTextColumn _recentTags;
+  @override
+  GeneratedTextColumn get recentTags => _recentTags ??= _constructRecentTags();
+  GeneratedTextColumn _constructRecentTags() {
+    return GeneratedTextColumn(
+      'recent_tags',
       $tableName,
       false,
     );
@@ -2754,6 +2871,20 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     );
   }
 
+  final VerificationMeta _starredPhotosMeta =
+      const VerificationMeta('starredPhotos');
+  GeneratedTextColumn _starredPhotos;
+  @override
+  GeneratedTextColumn get starredPhotos =>
+      _starredPhotos ??= _constructStarredPhotos();
+  GeneratedTextColumn _constructStarredPhotos() {
+    return GeneratedTextColumn(
+      'starred_photos',
+      $tableName,
+      false,
+    );
+  }
+
   final VerificationMeta _defaultWidgetImageMeta =
       const VerificationMeta('defaultWidgetImage');
   GeneratedTextColumn _defaultWidgetImage;
@@ -2770,6 +2901,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
 
   @override
   List<GeneratedColumn> get $columns => [
+        customPrimaryKey,
         id,
         email,
         password,
@@ -2779,6 +2911,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
         hourOfDay,
         minuteOfDay,
         isPremium,
+        recentTags,
         tutorialCompleted,
         picsTaggedToday,
         lastTaggedPicDate,
@@ -2794,6 +2927,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
         tourCompleted,
         isBiometricActivated,
         secretKey,
+        starredPhotos,
         defaultWidgetImage
       ];
   @override
@@ -2807,6 +2941,12 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
+    if (data.containsKey('custom_primary_key')) {
+      context.handle(
+          _customPrimaryKeyMeta,
+          customPrimaryKey.isAcceptableOrUnknown(
+              data['custom_primary_key'], _customPrimaryKeyMeta));
+    }
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
     } else if (isInserting) {
@@ -2856,6 +2996,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     } else if (isInserting) {
       context.missing(_isPremiumMeta);
     }
+    context.handle(_recentTagsMeta, const VerificationResult.success());
     if (data.containsKey('tutorial_completed')) {
       context.handle(
           _tutorialCompletedMeta,
@@ -2962,6 +3103,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
       context.handle(_secretKeyMeta,
           secretKey.isAcceptableOrUnknown(data['secret_key'], _secretKeyMeta));
     }
+    context.handle(_starredPhotosMeta, const VerificationResult.success());
     if (data.containsKey('default_widget_image')) {
       context.handle(
           _defaultWidgetImageMeta,
@@ -2972,7 +3114,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {customPrimaryKey};
   @override
   Config map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
@@ -2983,6 +3125,11 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
   $ConfigsTable createAlias(String alias) {
     return $ConfigsTable(_db, alias);
   }
+
+  static TypeConverter<List<String>, String> $converter0 =
+      ListStringConvertor();
+  static TypeConverter<List<String>, String> $converter1 =
+      ListStringConvertor();
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {

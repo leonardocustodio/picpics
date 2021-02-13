@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/model/tag.dart';
@@ -35,21 +36,29 @@ class DatabaseManager extends ChangeNotifier {
   double scale = 1.0;
 
   String selectedTagKey;
-  User userSettings;
+  Config userSettings;
 
   double adOffset = 48.0;
+  AppDatabase database = AppDatabase();
 
   bool adsIsLoaded = false;
   bool showShowAdAfterReload = false;
 
-  void requestNotification() {
-    var userBox = Hive.box('user');
+  void requestNotification() async {
+    // TODO: commented below line
+    // var userBox = Hive.box('user');
+
+    var userBox = await database.getSingleConfig();
+    
+    if (userBox.isNotEmpty) {}
+    userSettings = userBox[0];
     print('requesting notification...');
-    print('dailyChallenges: ${userSettings.dailyChallenges}');
+    print('dailyChallenges: ${userSettings}');
 
     if (Platform.isIOS) {
-      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-      _firebaseMessaging.requestNotificationPermissions(const IosNotificationSettings(sound: true, badge: true, alert: true));
+      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+      _firebaseMessaging.requestPermission(
+          sound: true, badge: true, alert: true);
 
       // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
       //   print("Settings registered: $settings");
@@ -65,9 +74,11 @@ class DatabaseManager extends ChangeNotifier {
 //      _firebaseMessaging.onIosSettingsRegistered.
     } else {
       print('its android!!!');
-      userSettings.notifications = true;
-      userSettings.dailyChallenges = true;
-      userBox.putAt(0, userSettings);
+
+      userBox.notifications = true;
+      userBox.dailyChallenges = true;
+
+      //userBox.putAt(0, userSettings);
     }
   }
 
@@ -126,7 +137,8 @@ class DatabaseManager extends ChangeNotifier {
     print('loading remote config....');
     final RemoteConfig remoteConfig = await RemoteConfig.instance;
     // Enable developer mode to relax fetch throttling
-    remoteConfig.setConfigSettings(RemoteConfigSettings()); //debugMode: kDebugMode));
+    remoteConfig
+        .setConfigSettings(RemoteConfigSettings()); //debugMode: kDebugMode));
     remoteConfig.setDefaults(<String, dynamic>{
       'daily_pics_for_ads': 25,
       'free_private_pics': 20,
@@ -171,7 +183,9 @@ class DatabaseManager extends ChangeNotifier {
 
   Future findLocation(double latitude, double longitude) async {
     print('Finding location...');
-    List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude, localeIdentifier: 'pt_BR');
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        latitude, longitude,
+        localeIdentifier: 'pt_BR');
     print('Placemark: ${placemarks.first.locality}');
     currentPhotoCity = placemarks.first.locality;
     currentPhotoState = placemarks.first.administrativeArea;

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:moor/moor.dart';
 import 'package:moor/ffi.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,6 +21,7 @@ class PhotosWithLabels extends Table {
   PhotosWithLabels(this.photo, this.labels);
 }
 
+/// Old Info @Hive: Pic
 class Photos extends Table {
   TextColumn get id => text()();
 
@@ -50,21 +53,25 @@ class LabelEntries extends Table {
   TextColumn get label => text()();
 }
 
+// Old Info @Hive: Secret
 class Privates extends Table {
   TextColumn get id => text()();
   TextColumn get path => text()();
   TextColumn get thumbPath => text().nullable()();
-
   DateTimeColumn get createDateTime => dateTime()();
-
   RealColumn get originalLatitude => real()();
   RealColumn get originalLongitude => real()();
-
   TextColumn get nonce => text()();
 }
 
+/// Old Info @Hive: made from : User and UserKey
 class Configs extends Table {
-  TextColumn get id => text()();
+  IntColumn get customPrimaryKey => integer()();
+  @override
+  Set<Column> get primaryKey => {customPrimaryKey};
+
+  TextColumn get id => text().nullable()();
+
   TextColumn get email => text().nullable()();
   TextColumn get password => text().nullable()();
 
@@ -77,8 +84,9 @@ class Configs extends Table {
 
   BoolColumn get isPremium => boolean()();
 
-// @HiveField(9)
-// final List<String> recentTags;
+  // @HiveField(9)
+  // List<String> recentTags
+  TextColumn get recentTags => text().map(ListStringConvertor())();
 
   BoolColumn get tutorialCompleted => boolean()();
   IntColumn get picsTaggedToday => integer().nullable()();
@@ -98,11 +106,32 @@ class Configs extends Table {
   BoolColumn get tourCompleted => boolean()();
   BoolColumn get isBiometricActivated => boolean()();
 
+  /// merged from userKey integration
   TextColumn get secretKey => text().nullable()();
-// @HiveField(25)
-// List<String> starredPhotos;
+  // @HiveField(25)
+  // List<String> starredPhotos
+  TextColumn get starredPhotos => text().map(ListStringConvertor())();
 
   TextColumn get defaultWidgetImage => text().nullable()();
+}
+
+class ListStringConvertor extends TypeConverter<List<String>, String> {
+  @override
+  List<String> mapToDart(String fromDb) {
+    if (fromDb == null) {
+      return null;
+    }
+    final hourly = json.decode(fromDb) as List<String>;
+    return hourly;
+  }
+
+  @override
+  String mapToSql(List<String> value) {
+    if (value == null) {
+      return null;
+    }
+    return json.encode(value);
+  }
 }
 
 LazyDatabase _openConnection() {
@@ -145,12 +174,23 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
+  Future updateConfig(Config newConfig) async {
+    return (update(configs)..where((tbl) => tbl.customPrimaryKey.equals(0)))
+        .replace(newConfig);
+  }
+
+  Future<List<Config>> getSingleConfig() =>
+      (select(configs)..where((tbl) => tbl._customPrimaryKey.equals(0))).get();
+
   Future<void> insertAllConfigs(User user, {UserKey userKey}) async {
     print('User goal: ${user.goal}');
 
     return into(configs).insert(
       ConfigsCompanion.insert(
+        customPrimaryKey: Value(0), /// TODO: This will prevent the user from being added to multiple rows
         id: user.id,
+        recentTags: user.recentTags,
+        starredPhotos: user.starredPhotos,
         email: user.email ?? Value.absent(),
         password: user.password ?? Value.absent(),
         notification: user.notifications ?? false,
@@ -176,10 +216,12 @@ class AppDatabase extends _$AppDatabase {
         secretKey: userKey != null ? Value(userKey.secretKey) : Value.absent(),
         defaultWidgetImage: Value.absent(), // Value(user.defaultWidgetImage),
       ),
+      mode: InsertMode.insertOrReplace,
     );
   }
 
-  Future<void> insertAllLabelsEntries(Map<String, List<String>> photosTags) async {
+  Future<void> insertAllLabelsEntries(
+      Map<String, List<String>> photosTags) async {
     List<LabelEntriesCompanion> labelsEntriesCompanions = [];
 
     photosTags.forEach((key, value) {
