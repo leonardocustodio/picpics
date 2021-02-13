@@ -674,6 +674,22 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0"
+  hive:
+    dependency: "direct main"
+    description:
+      name: hive
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.4+1"
+  hive_flutter:
+    dependency: "direct main"
+    description:
+      path: hive_flutter
+      ref: HEAD
+      resolved-ref: "59ad5403593283233d922f62f76832c64fa33a3b"
+      url: "git://github.com/hivedb/hive.git"
+    source: git
+    version: "0.3.1"
   home_widget:
     dependency: "direct main"
     description:
