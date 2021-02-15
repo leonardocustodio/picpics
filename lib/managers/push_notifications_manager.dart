@@ -82,7 +82,7 @@ class PushNotificationsManager {
       _firebaseMessaging.deleteInstanceID();
       print('unsubscribed');
       var userBox = Hive.box('user');
-      DatabaseManager.instance.userSettings.dailyChallenges = false;
+      DatabaseManager.instance.userSettings.dailyChallenges;// = false;
       userBox.putAt(0, DatabaseManager.instance.userSettings);
 
       print(

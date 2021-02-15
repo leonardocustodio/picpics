@@ -1616,18 +1616,20 @@ class Config extends DataClass implements Insertable<Config> {
   final String email;
   final String password;
   final bool notification;
-  final bool dailyChallenge;
+  final bool dailyChallenges;
+  final List<String> recentTags;
+  final String appLanguage;
+  final String appVersion;
+  final String secretKey;
+  final List<String> starredPhotos;
+  final String defaultWidgetImage;
   final int goal;
   final int hourOfDay;
   final int minuteOfDay;
-  final bool isPremium;
-  final List<String> recentTags;
-  final bool tutorialCompleted;
   final int picsTaggedToday;
-  final DateTime lastTaggedPicDate;
+  final bool isPremium;
+  final bool tutorialCompleted;
   final bool canTagToday;
-  final String appLanguage;
-  final String appVersion;
   final bool hasGalleryPermission;
   final bool loggedIn;
   final bool secretPhotos;
@@ -1636,27 +1638,27 @@ class Config extends DataClass implements Insertable<Config> {
   final bool shouldDeleteOnPrivate;
   final bool tourCompleted;
   final bool isBiometricActivated;
-  final String secretKey;
-  final List<String> starredPhotos;
-  final String defaultWidgetImage;
+  final DateTime lastTaggedPicDate;
   Config(
       {@required this.customPrimaryKey,
       @required this.id,
       this.email,
       this.password,
       @required this.notification,
-      @required this.dailyChallenge,
-      this.goal,
-      this.hourOfDay,
-      this.minuteOfDay,
-      @required this.isPremium,
-      @required this.recentTags,
-      @required this.tutorialCompleted,
-      this.picsTaggedToday,
-      this.lastTaggedPicDate,
-      @required this.canTagToday,
+      @required this.dailyChallenges,
+      this.recentTags,
       this.appLanguage,
       this.appVersion,
+      this.secretKey,
+      this.starredPhotos,
+      this.defaultWidgetImage,
+      @required this.goal,
+      @required this.hourOfDay,
+      @required this.minuteOfDay,
+      @required this.picsTaggedToday,
+      @required this.isPremium,
+      @required this.tutorialCompleted,
+      @required this.canTagToday,
       @required this.hasGalleryPermission,
       @required this.loggedIn,
       @required this.secretPhotos,
@@ -1665,9 +1667,7 @@ class Config extends DataClass implements Insertable<Config> {
       @required this.shouldDeleteOnPrivate,
       @required this.tourCompleted,
       @required this.isBiometricActivated,
-      this.secretKey,
-      @required this.starredPhotos,
-      this.defaultWidgetImage});
+      @required this.lastTaggedPicDate});
   factory Config.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1685,29 +1685,33 @@ class Config extends DataClass implements Insertable<Config> {
           .mapFromDatabaseResponse(data['${effectivePrefix}password']),
       notification: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}notification']),
-      dailyChallenge: boolType
-          .mapFromDatabaseResponse(data['${effectivePrefix}daily_challenge']),
+      dailyChallenges: boolType
+          .mapFromDatabaseResponse(data['${effectivePrefix}daily_challenges']),
+      recentTags: $ConfigsTable.$converter0.mapToDart(stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}recent_tags'])),
+      appLanguage: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}app_language']),
+      appVersion: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}app_version']),
+      secretKey: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}secret_key']),
+      starredPhotos: $ConfigsTable.$converter1.mapToDart(stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}starred_photos'])),
+      defaultWidgetImage: stringType.mapFromDatabaseResponse(
+          data['${effectivePrefix}default_widget_image']),
       goal: intType.mapFromDatabaseResponse(data['${effectivePrefix}goal']),
       hourOfDay: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}hour_of_day']),
       minuteOfDay: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}minute_of_day']),
-      isPremium: boolType
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_premium']),
-      recentTags: $ConfigsTable.$converter0.mapToDart(stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}recent_tags'])),
-      tutorialCompleted: boolType.mapFromDatabaseResponse(
-          data['${effectivePrefix}tutorial_completed']),
       picsTaggedToday: intType
           .mapFromDatabaseResponse(data['${effectivePrefix}pics_tagged_today']),
-      lastTaggedPicDate: dateTimeType.mapFromDatabaseResponse(
-          data['${effectivePrefix}last_tagged_pic_date']),
+      isPremium: boolType
+          .mapFromDatabaseResponse(data['${effectivePrefix}is_premium']),
+      tutorialCompleted: boolType.mapFromDatabaseResponse(
+          data['${effectivePrefix}tutorial_completed']),
       canTagToday: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}can_tag_today']),
-      appLanguage: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}app_language']),
-      appVersion: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}app_version']),
       hasGalleryPermission: boolType.mapFromDatabaseResponse(
           data['${effectivePrefix}has_gallery_permission']),
       loggedIn:
@@ -1724,12 +1728,8 @@ class Config extends DataClass implements Insertable<Config> {
           .mapFromDatabaseResponse(data['${effectivePrefix}tour_completed']),
       isBiometricActivated: boolType.mapFromDatabaseResponse(
           data['${effectivePrefix}is_biometric_activated']),
-      secretKey: stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}secret_key']),
-      starredPhotos: $ConfigsTable.$converter1.mapToDart(stringType
-          .mapFromDatabaseResponse(data['${effectivePrefix}starred_photos'])),
-      defaultWidgetImage: stringType.mapFromDatabaseResponse(
-          data['${effectivePrefix}default_widget_image']),
+      lastTaggedPicDate: dateTimeType.mapFromDatabaseResponse(
+          data['${effectivePrefix}last_tagged_pic_date']),
     );
   }
   @override
@@ -1750,8 +1750,29 @@ class Config extends DataClass implements Insertable<Config> {
     if (!nullToAbsent || notification != null) {
       map['notification'] = Variable<bool>(notification);
     }
-    if (!nullToAbsent || dailyChallenge != null) {
-      map['daily_challenge'] = Variable<bool>(dailyChallenge);
+    if (!nullToAbsent || dailyChallenges != null) {
+      map['daily_challenges'] = Variable<bool>(dailyChallenges);
+    }
+    if (!nullToAbsent || recentTags != null) {
+      final converter = $ConfigsTable.$converter0;
+      map['recent_tags'] = Variable<String>(converter.mapToSql(recentTags));
+    }
+    if (!nullToAbsent || appLanguage != null) {
+      map['app_language'] = Variable<String>(appLanguage);
+    }
+    if (!nullToAbsent || appVersion != null) {
+      map['app_version'] = Variable<String>(appVersion);
+    }
+    if (!nullToAbsent || secretKey != null) {
+      map['secret_key'] = Variable<String>(secretKey);
+    }
+    if (!nullToAbsent || starredPhotos != null) {
+      final converter = $ConfigsTable.$converter1;
+      map['starred_photos'] =
+          Variable<String>(converter.mapToSql(starredPhotos));
+    }
+    if (!nullToAbsent || defaultWidgetImage != null) {
+      map['default_widget_image'] = Variable<String>(defaultWidgetImage);
     }
     if (!nullToAbsent || goal != null) {
       map['goal'] = Variable<int>(goal);
@@ -1762,30 +1783,17 @@ class Config extends DataClass implements Insertable<Config> {
     if (!nullToAbsent || minuteOfDay != null) {
       map['minute_of_day'] = Variable<int>(minuteOfDay);
     }
+    if (!nullToAbsent || picsTaggedToday != null) {
+      map['pics_tagged_today'] = Variable<int>(picsTaggedToday);
+    }
     if (!nullToAbsent || isPremium != null) {
       map['is_premium'] = Variable<bool>(isPremium);
-    }
-    if (!nullToAbsent || recentTags != null) {
-      final converter = $ConfigsTable.$converter0;
-      map['recent_tags'] = Variable<String>(converter.mapToSql(recentTags));
     }
     if (!nullToAbsent || tutorialCompleted != null) {
       map['tutorial_completed'] = Variable<bool>(tutorialCompleted);
     }
-    if (!nullToAbsent || picsTaggedToday != null) {
-      map['pics_tagged_today'] = Variable<int>(picsTaggedToday);
-    }
-    if (!nullToAbsent || lastTaggedPicDate != null) {
-      map['last_tagged_pic_date'] = Variable<DateTime>(lastTaggedPicDate);
-    }
     if (!nullToAbsent || canTagToday != null) {
       map['can_tag_today'] = Variable<bool>(canTagToday);
-    }
-    if (!nullToAbsent || appLanguage != null) {
-      map['app_language'] = Variable<String>(appLanguage);
-    }
-    if (!nullToAbsent || appVersion != null) {
-      map['app_version'] = Variable<String>(appVersion);
     }
     if (!nullToAbsent || hasGalleryPermission != null) {
       map['has_gallery_permission'] = Variable<bool>(hasGalleryPermission);
@@ -1811,16 +1819,8 @@ class Config extends DataClass implements Insertable<Config> {
     if (!nullToAbsent || isBiometricActivated != null) {
       map['is_biometric_activated'] = Variable<bool>(isBiometricActivated);
     }
-    if (!nullToAbsent || secretKey != null) {
-      map['secret_key'] = Variable<String>(secretKey);
-    }
-    if (!nullToAbsent || starredPhotos != null) {
-      final converter = $ConfigsTable.$converter1;
-      map['starred_photos'] =
-          Variable<String>(converter.mapToSql(starredPhotos));
-    }
-    if (!nullToAbsent || defaultWidgetImage != null) {
-      map['default_widget_image'] = Variable<String>(defaultWidgetImage);
+    if (!nullToAbsent || lastTaggedPicDate != null) {
+      map['last_tagged_pic_date'] = Variable<DateTime>(lastTaggedPicDate);
     }
     return map;
   }
@@ -1839,9 +1839,27 @@ class Config extends DataClass implements Insertable<Config> {
       notification: notification == null && nullToAbsent
           ? const Value.absent()
           : Value(notification),
-      dailyChallenge: dailyChallenge == null && nullToAbsent
+      dailyChallenges: dailyChallenges == null && nullToAbsent
           ? const Value.absent()
-          : Value(dailyChallenge),
+          : Value(dailyChallenges),
+      recentTags: recentTags == null && nullToAbsent
+          ? const Value.absent()
+          : Value(recentTags),
+      appLanguage: appLanguage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appLanguage),
+      appVersion: appVersion == null && nullToAbsent
+          ? const Value.absent()
+          : Value(appVersion),
+      secretKey: secretKey == null && nullToAbsent
+          ? const Value.absent()
+          : Value(secretKey),
+      starredPhotos: starredPhotos == null && nullToAbsent
+          ? const Value.absent()
+          : Value(starredPhotos),
+      defaultWidgetImage: defaultWidgetImage == null && nullToAbsent
+          ? const Value.absent()
+          : Value(defaultWidgetImage),
       goal: goal == null && nullToAbsent ? const Value.absent() : Value(goal),
       hourOfDay: hourOfDay == null && nullToAbsent
           ? const Value.absent()
@@ -1849,30 +1867,18 @@ class Config extends DataClass implements Insertable<Config> {
       minuteOfDay: minuteOfDay == null && nullToAbsent
           ? const Value.absent()
           : Value(minuteOfDay),
-      isPremium: isPremium == null && nullToAbsent
-          ? const Value.absent()
-          : Value(isPremium),
-      recentTags: recentTags == null && nullToAbsent
-          ? const Value.absent()
-          : Value(recentTags),
-      tutorialCompleted: tutorialCompleted == null && nullToAbsent
-          ? const Value.absent()
-          : Value(tutorialCompleted),
       picsTaggedToday: picsTaggedToday == null && nullToAbsent
           ? const Value.absent()
           : Value(picsTaggedToday),
-      lastTaggedPicDate: lastTaggedPicDate == null && nullToAbsent
+      isPremium: isPremium == null && nullToAbsent
           ? const Value.absent()
-          : Value(lastTaggedPicDate),
+          : Value(isPremium),
+      tutorialCompleted: tutorialCompleted == null && nullToAbsent
+          ? const Value.absent()
+          : Value(tutorialCompleted),
       canTagToday: canTagToday == null && nullToAbsent
           ? const Value.absent()
           : Value(canTagToday),
-      appLanguage: appLanguage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(appLanguage),
-      appVersion: appVersion == null && nullToAbsent
-          ? const Value.absent()
-          : Value(appVersion),
       hasGalleryPermission: hasGalleryPermission == null && nullToAbsent
           ? const Value.absent()
           : Value(hasGalleryPermission),
@@ -1897,15 +1903,9 @@ class Config extends DataClass implements Insertable<Config> {
       isBiometricActivated: isBiometricActivated == null && nullToAbsent
           ? const Value.absent()
           : Value(isBiometricActivated),
-      secretKey: secretKey == null && nullToAbsent
+      lastTaggedPicDate: lastTaggedPicDate == null && nullToAbsent
           ? const Value.absent()
-          : Value(secretKey),
-      starredPhotos: starredPhotos == null && nullToAbsent
-          ? const Value.absent()
-          : Value(starredPhotos),
-      defaultWidgetImage: defaultWidgetImage == null && nullToAbsent
-          ? const Value.absent()
-          : Value(defaultWidgetImage),
+          : Value(lastTaggedPicDate),
     );
   }
 
@@ -1918,19 +1918,21 @@ class Config extends DataClass implements Insertable<Config> {
       email: serializer.fromJson<String>(json['email']),
       password: serializer.fromJson<String>(json['password']),
       notification: serializer.fromJson<bool>(json['notification']),
-      dailyChallenge: serializer.fromJson<bool>(json['dailyChallenge']),
+      dailyChallenges: serializer.fromJson<bool>(json['dailyChallenges']),
+      recentTags: serializer.fromJson<List<String>>(json['recentTags']),
+      appLanguage: serializer.fromJson<String>(json['appLanguage']),
+      appVersion: serializer.fromJson<String>(json['appVersion']),
+      secretKey: serializer.fromJson<String>(json['secretKey']),
+      starredPhotos: serializer.fromJson<List<String>>(json['starredPhotos']),
+      defaultWidgetImage:
+          serializer.fromJson<String>(json['defaultWidgetImage']),
       goal: serializer.fromJson<int>(json['goal']),
       hourOfDay: serializer.fromJson<int>(json['hourOfDay']),
       minuteOfDay: serializer.fromJson<int>(json['minuteOfDay']),
-      isPremium: serializer.fromJson<bool>(json['isPremium']),
-      recentTags: serializer.fromJson<List<String>>(json['recentTags']),
-      tutorialCompleted: serializer.fromJson<bool>(json['tutorialCompleted']),
       picsTaggedToday: serializer.fromJson<int>(json['picsTaggedToday']),
-      lastTaggedPicDate:
-          serializer.fromJson<DateTime>(json['lastTaggedPicDate']),
+      isPremium: serializer.fromJson<bool>(json['isPremium']),
+      tutorialCompleted: serializer.fromJson<bool>(json['tutorialCompleted']),
       canTagToday: serializer.fromJson<bool>(json['canTagToday']),
-      appLanguage: serializer.fromJson<String>(json['appLanguage']),
-      appVersion: serializer.fromJson<String>(json['appVersion']),
       hasGalleryPermission:
           serializer.fromJson<bool>(json['hasGalleryPermission']),
       loggedIn: serializer.fromJson<bool>(json['loggedIn']),
@@ -1942,10 +1944,8 @@ class Config extends DataClass implements Insertable<Config> {
       tourCompleted: serializer.fromJson<bool>(json['tourCompleted']),
       isBiometricActivated:
           serializer.fromJson<bool>(json['isBiometricActivated']),
-      secretKey: serializer.fromJson<String>(json['secretKey']),
-      starredPhotos: serializer.fromJson<List<String>>(json['starredPhotos']),
-      defaultWidgetImage:
-          serializer.fromJson<String>(json['defaultWidgetImage']),
+      lastTaggedPicDate:
+          serializer.fromJson<DateTime>(json['lastTaggedPicDate']),
     );
   }
   @override
@@ -1957,18 +1957,20 @@ class Config extends DataClass implements Insertable<Config> {
       'email': serializer.toJson<String>(email),
       'password': serializer.toJson<String>(password),
       'notification': serializer.toJson<bool>(notification),
-      'dailyChallenge': serializer.toJson<bool>(dailyChallenge),
+      'dailyChallenges': serializer.toJson<bool>(dailyChallenges),
+      'recentTags': serializer.toJson<List<String>>(recentTags),
+      'appLanguage': serializer.toJson<String>(appLanguage),
+      'appVersion': serializer.toJson<String>(appVersion),
+      'secretKey': serializer.toJson<String>(secretKey),
+      'starredPhotos': serializer.toJson<List<String>>(starredPhotos),
+      'defaultWidgetImage': serializer.toJson<String>(defaultWidgetImage),
       'goal': serializer.toJson<int>(goal),
       'hourOfDay': serializer.toJson<int>(hourOfDay),
       'minuteOfDay': serializer.toJson<int>(minuteOfDay),
-      'isPremium': serializer.toJson<bool>(isPremium),
-      'recentTags': serializer.toJson<List<String>>(recentTags),
-      'tutorialCompleted': serializer.toJson<bool>(tutorialCompleted),
       'picsTaggedToday': serializer.toJson<int>(picsTaggedToday),
-      'lastTaggedPicDate': serializer.toJson<DateTime>(lastTaggedPicDate),
+      'isPremium': serializer.toJson<bool>(isPremium),
+      'tutorialCompleted': serializer.toJson<bool>(tutorialCompleted),
       'canTagToday': serializer.toJson<bool>(canTagToday),
-      'appLanguage': serializer.toJson<String>(appLanguage),
-      'appVersion': serializer.toJson<String>(appVersion),
       'hasGalleryPermission': serializer.toJson<bool>(hasGalleryPermission),
       'loggedIn': serializer.toJson<bool>(loggedIn),
       'secretPhotos': serializer.toJson<bool>(secretPhotos),
@@ -1977,9 +1979,7 @@ class Config extends DataClass implements Insertable<Config> {
       'shouldDeleteOnPrivate': serializer.toJson<bool>(shouldDeleteOnPrivate),
       'tourCompleted': serializer.toJson<bool>(tourCompleted),
       'isBiometricActivated': serializer.toJson<bool>(isBiometricActivated),
-      'secretKey': serializer.toJson<String>(secretKey),
-      'starredPhotos': serializer.toJson<List<String>>(starredPhotos),
-      'defaultWidgetImage': serializer.toJson<String>(defaultWidgetImage),
+      'lastTaggedPicDate': serializer.toJson<DateTime>(lastTaggedPicDate),
     };
   }
 
@@ -1989,18 +1989,20 @@ class Config extends DataClass implements Insertable<Config> {
           String email,
           String password,
           bool notification,
-          bool dailyChallenge,
+          bool dailyChallenges,
+          List<String> recentTags,
+          String appLanguage,
+          String appVersion,
+          String secretKey,
+          List<String> starredPhotos,
+          String defaultWidgetImage,
           int goal,
           int hourOfDay,
           int minuteOfDay,
-          bool isPremium,
-          List<String> recentTags,
-          bool tutorialCompleted,
           int picsTaggedToday,
-          DateTime lastTaggedPicDate,
+          bool isPremium,
+          bool tutorialCompleted,
           bool canTagToday,
-          String appLanguage,
-          String appVersion,
           bool hasGalleryPermission,
           bool loggedIn,
           bool secretPhotos,
@@ -2009,27 +2011,27 @@ class Config extends DataClass implements Insertable<Config> {
           bool shouldDeleteOnPrivate,
           bool tourCompleted,
           bool isBiometricActivated,
-          String secretKey,
-          List<String> starredPhotos,
-          String defaultWidgetImage}) =>
+          DateTime lastTaggedPicDate}) =>
       Config(
         customPrimaryKey: customPrimaryKey ?? this.customPrimaryKey,
         id: id ?? this.id,
         email: email ?? this.email,
         password: password ?? this.password,
         notification: notification ?? this.notification,
-        dailyChallenge: dailyChallenge ?? this.dailyChallenge,
+        dailyChallenges: dailyChallenges ?? this.dailyChallenges,
+        recentTags: recentTags ?? this.recentTags,
+        appLanguage: appLanguage ?? this.appLanguage,
+        appVersion: appVersion ?? this.appVersion,
+        secretKey: secretKey ?? this.secretKey,
+        starredPhotos: starredPhotos ?? this.starredPhotos,
+        defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
         goal: goal ?? this.goal,
         hourOfDay: hourOfDay ?? this.hourOfDay,
         minuteOfDay: minuteOfDay ?? this.minuteOfDay,
-        isPremium: isPremium ?? this.isPremium,
-        recentTags: recentTags ?? this.recentTags,
-        tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
         picsTaggedToday: picsTaggedToday ?? this.picsTaggedToday,
-        lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
+        isPremium: isPremium ?? this.isPremium,
+        tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
         canTagToday: canTagToday ?? this.canTagToday,
-        appLanguage: appLanguage ?? this.appLanguage,
-        appVersion: appVersion ?? this.appVersion,
         hasGalleryPermission: hasGalleryPermission ?? this.hasGalleryPermission,
         loggedIn: loggedIn ?? this.loggedIn,
         secretPhotos: secretPhotos ?? this.secretPhotos,
@@ -2039,9 +2041,7 @@ class Config extends DataClass implements Insertable<Config> {
             shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
         tourCompleted: tourCompleted ?? this.tourCompleted,
         isBiometricActivated: isBiometricActivated ?? this.isBiometricActivated,
-        secretKey: secretKey ?? this.secretKey,
-        starredPhotos: starredPhotos ?? this.starredPhotos,
-        defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
+        lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
       );
   @override
   String toString() {
@@ -2051,18 +2051,20 @@ class Config extends DataClass implements Insertable<Config> {
           ..write('email: $email, ')
           ..write('password: $password, ')
           ..write('notification: $notification, ')
-          ..write('dailyChallenge: $dailyChallenge, ')
+          ..write('dailyChallenges: $dailyChallenges, ')
+          ..write('recentTags: $recentTags, ')
+          ..write('appLanguage: $appLanguage, ')
+          ..write('appVersion: $appVersion, ')
+          ..write('secretKey: $secretKey, ')
+          ..write('starredPhotos: $starredPhotos, ')
+          ..write('defaultWidgetImage: $defaultWidgetImage, ')
           ..write('goal: $goal, ')
           ..write('hourOfDay: $hourOfDay, ')
           ..write('minuteOfDay: $minuteOfDay, ')
-          ..write('isPremium: $isPremium, ')
-          ..write('recentTags: $recentTags, ')
-          ..write('tutorialCompleted: $tutorialCompleted, ')
           ..write('picsTaggedToday: $picsTaggedToday, ')
-          ..write('lastTaggedPicDate: $lastTaggedPicDate, ')
+          ..write('isPremium: $isPremium, ')
+          ..write('tutorialCompleted: $tutorialCompleted, ')
           ..write('canTagToday: $canTagToday, ')
-          ..write('appLanguage: $appLanguage, ')
-          ..write('appVersion: $appVersion, ')
           ..write('hasGalleryPermission: $hasGalleryPermission, ')
           ..write('loggedIn: $loggedIn, ')
           ..write('secretPhotos: $secretPhotos, ')
@@ -2071,9 +2073,7 @@ class Config extends DataClass implements Insertable<Config> {
           ..write('shouldDeleteOnPrivate: $shouldDeleteOnPrivate, ')
           ..write('tourCompleted: $tourCompleted, ')
           ..write('isBiometricActivated: $isBiometricActivated, ')
-          ..write('secretKey: $secretKey, ')
-          ..write('starredPhotos: $starredPhotos, ')
-          ..write('defaultWidgetImage: $defaultWidgetImage')
+          ..write('lastTaggedPicDate: $lastTaggedPicDate')
           ..write(')'))
         .toString();
   }
@@ -2090,39 +2090,38 @@ class Config extends DataClass implements Insertable<Config> {
                   $mrjc(
                       notification.hashCode,
                       $mrjc(
-                          dailyChallenge.hashCode,
+                          dailyChallenges.hashCode,
                           $mrjc(
-                              goal.hashCode,
+                              recentTags.hashCode,
                               $mrjc(
-                                  hourOfDay.hashCode,
+                                  appLanguage.hashCode,
                                   $mrjc(
-                                      minuteOfDay.hashCode,
+                                      appVersion.hashCode,
                                       $mrjc(
-                                          isPremium.hashCode,
+                                          secretKey.hashCode,
                                           $mrjc(
-                                              recentTags.hashCode,
+                                              starredPhotos.hashCode,
                                               $mrjc(
-                                                  tutorialCompleted.hashCode,
+                                                  defaultWidgetImage.hashCode,
                                                   $mrjc(
-                                                      picsTaggedToday.hashCode,
+                                                      goal.hashCode,
                                                       $mrjc(
-                                                          lastTaggedPicDate
-                                                              .hashCode,
+                                                          hourOfDay.hashCode,
                                                           $mrjc(
-                                                              canTagToday
+                                                              minuteOfDay
                                                                   .hashCode,
                                                               $mrjc(
-                                                                  appLanguage
+                                                                  picsTaggedToday
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      appVersion
+                                                                      isPremium
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          hasGalleryPermission
+                                                                          tutorialCompleted
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              loggedIn.hashCode,
-                                                                              $mrjc(secretPhotos.hashCode, $mrjc(isPinRegistered.hashCode, $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, $mrjc(secretKey.hashCode, $mrjc(starredPhotos.hashCode, defaultWidgetImage.hashCode))))))))))))))))))))))))))));
+                                                                              canTagToday.hashCode,
+                                                                              $mrjc(hasGalleryPermission.hashCode, $mrjc(loggedIn.hashCode, $mrjc(secretPhotos.hashCode, $mrjc(isPinRegistered.hashCode, $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, lastTaggedPicDate.hashCode))))))))))))))))))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -2132,18 +2131,20 @@ class Config extends DataClass implements Insertable<Config> {
           other.email == this.email &&
           other.password == this.password &&
           other.notification == this.notification &&
-          other.dailyChallenge == this.dailyChallenge &&
+          other.dailyChallenges == this.dailyChallenges &&
+          other.recentTags == this.recentTags &&
+          other.appLanguage == this.appLanguage &&
+          other.appVersion == this.appVersion &&
+          other.secretKey == this.secretKey &&
+          other.starredPhotos == this.starredPhotos &&
+          other.defaultWidgetImage == this.defaultWidgetImage &&
           other.goal == this.goal &&
           other.hourOfDay == this.hourOfDay &&
           other.minuteOfDay == this.minuteOfDay &&
-          other.isPremium == this.isPremium &&
-          other.recentTags == this.recentTags &&
-          other.tutorialCompleted == this.tutorialCompleted &&
           other.picsTaggedToday == this.picsTaggedToday &&
-          other.lastTaggedPicDate == this.lastTaggedPicDate &&
+          other.isPremium == this.isPremium &&
+          other.tutorialCompleted == this.tutorialCompleted &&
           other.canTagToday == this.canTagToday &&
-          other.appLanguage == this.appLanguage &&
-          other.appVersion == this.appVersion &&
           other.hasGalleryPermission == this.hasGalleryPermission &&
           other.loggedIn == this.loggedIn &&
           other.secretPhotos == this.secretPhotos &&
@@ -2152,9 +2153,7 @@ class Config extends DataClass implements Insertable<Config> {
           other.shouldDeleteOnPrivate == this.shouldDeleteOnPrivate &&
           other.tourCompleted == this.tourCompleted &&
           other.isBiometricActivated == this.isBiometricActivated &&
-          other.secretKey == this.secretKey &&
-          other.starredPhotos == this.starredPhotos &&
-          other.defaultWidgetImage == this.defaultWidgetImage);
+          other.lastTaggedPicDate == this.lastTaggedPicDate);
 }
 
 class ConfigsCompanion extends UpdateCompanion<Config> {
@@ -2163,18 +2162,20 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   final Value<String> email;
   final Value<String> password;
   final Value<bool> notification;
-  final Value<bool> dailyChallenge;
+  final Value<bool> dailyChallenges;
+  final Value<List<String>> recentTags;
+  final Value<String> appLanguage;
+  final Value<String> appVersion;
+  final Value<String> secretKey;
+  final Value<List<String>> starredPhotos;
+  final Value<String> defaultWidgetImage;
   final Value<int> goal;
   final Value<int> hourOfDay;
   final Value<int> minuteOfDay;
-  final Value<bool> isPremium;
-  final Value<List<String>> recentTags;
-  final Value<bool> tutorialCompleted;
   final Value<int> picsTaggedToday;
-  final Value<DateTime> lastTaggedPicDate;
+  final Value<bool> isPremium;
+  final Value<bool> tutorialCompleted;
   final Value<bool> canTagToday;
-  final Value<String> appLanguage;
-  final Value<String> appVersion;
   final Value<bool> hasGalleryPermission;
   final Value<bool> loggedIn;
   final Value<bool> secretPhotos;
@@ -2183,27 +2184,27 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   final Value<bool> shouldDeleteOnPrivate;
   final Value<bool> tourCompleted;
   final Value<bool> isBiometricActivated;
-  final Value<String> secretKey;
-  final Value<List<String>> starredPhotos;
-  final Value<String> defaultWidgetImage;
+  final Value<DateTime> lastTaggedPicDate;
   const ConfigsCompanion({
     this.customPrimaryKey = const Value.absent(),
     this.id = const Value.absent(),
     this.email = const Value.absent(),
     this.password = const Value.absent(),
     this.notification = const Value.absent(),
-    this.dailyChallenge = const Value.absent(),
+    this.dailyChallenges = const Value.absent(),
+    this.recentTags = const Value.absent(),
+    this.appLanguage = const Value.absent(),
+    this.appVersion = const Value.absent(),
+    this.secretKey = const Value.absent(),
+    this.starredPhotos = const Value.absent(),
+    this.defaultWidgetImage = const Value.absent(),
     this.goal = const Value.absent(),
     this.hourOfDay = const Value.absent(),
     this.minuteOfDay = const Value.absent(),
-    this.isPremium = const Value.absent(),
-    this.recentTags = const Value.absent(),
-    this.tutorialCompleted = const Value.absent(),
     this.picsTaggedToday = const Value.absent(),
-    this.lastTaggedPicDate = const Value.absent(),
+    this.isPremium = const Value.absent(),
+    this.tutorialCompleted = const Value.absent(),
     this.canTagToday = const Value.absent(),
-    this.appLanguage = const Value.absent(),
-    this.appVersion = const Value.absent(),
     this.hasGalleryPermission = const Value.absent(),
     this.loggedIn = const Value.absent(),
     this.secretPhotos = const Value.absent(),
@@ -2212,73 +2213,58 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     this.shouldDeleteOnPrivate = const Value.absent(),
     this.tourCompleted = const Value.absent(),
     this.isBiometricActivated = const Value.absent(),
-    this.secretKey = const Value.absent(),
-    this.starredPhotos = const Value.absent(),
-    this.defaultWidgetImage = const Value.absent(),
+    this.lastTaggedPicDate = const Value.absent(),
   });
   ConfigsCompanion.insert({
     this.customPrimaryKey = const Value.absent(),
-    @required String id,
+    this.id = const Value.absent(),
     this.email = const Value.absent(),
     this.password = const Value.absent(),
-    @required bool notification,
-    @required bool dailyChallenge,
+    this.notification = const Value.absent(),
+    this.dailyChallenges = const Value.absent(),
+    this.recentTags = const Value.absent(),
+    this.appLanguage = const Value.absent(),
+    this.appVersion = const Value.absent(),
+    this.secretKey = const Value.absent(),
+    this.starredPhotos = const Value.absent(),
+    this.defaultWidgetImage = const Value.absent(),
     this.goal = const Value.absent(),
     this.hourOfDay = const Value.absent(),
     this.minuteOfDay = const Value.absent(),
-    @required bool isPremium,
-    @required List<String> recentTags,
-    @required bool tutorialCompleted,
     this.picsTaggedToday = const Value.absent(),
+    this.isPremium = const Value.absent(),
+    this.tutorialCompleted = const Value.absent(),
+    this.canTagToday = const Value.absent(),
+    this.hasGalleryPermission = const Value.absent(),
+    this.loggedIn = const Value.absent(),
+    this.secretPhotos = const Value.absent(),
+    this.isPinRegistered = const Value.absent(),
+    this.keepAskingToDelete = const Value.absent(),
+    this.shouldDeleteOnPrivate = const Value.absent(),
+    this.tourCompleted = const Value.absent(),
+    this.isBiometricActivated = const Value.absent(),
     this.lastTaggedPicDate = const Value.absent(),
-    @required bool canTagToday,
-    this.appLanguage = const Value.absent(),
-    this.appVersion = const Value.absent(),
-    @required bool hasGalleryPermission,
-    @required bool loggedIn,
-    @required bool secretPhotos,
-    @required bool isPinRegistered,
-    @required bool keepAskingToDelete,
-    @required bool shouldDeleteOnPrivate,
-    @required bool tourCompleted,
-    @required bool isBiometricActivated,
-    this.secretKey = const Value.absent(),
-    @required List<String> starredPhotos,
-    this.defaultWidgetImage = const Value.absent(),
-  })  : id = Value(id),
-        notification = Value(notification),
-        dailyChallenge = Value(dailyChallenge),
-        isPremium = Value(isPremium),
-        recentTags = Value(recentTags),
-        tutorialCompleted = Value(tutorialCompleted),
-        canTagToday = Value(canTagToday),
-        hasGalleryPermission = Value(hasGalleryPermission),
-        loggedIn = Value(loggedIn),
-        secretPhotos = Value(secretPhotos),
-        isPinRegistered = Value(isPinRegistered),
-        keepAskingToDelete = Value(keepAskingToDelete),
-        shouldDeleteOnPrivate = Value(shouldDeleteOnPrivate),
-        tourCompleted = Value(tourCompleted),
-        isBiometricActivated = Value(isBiometricActivated),
-        starredPhotos = Value(starredPhotos);
+  });
   static Insertable<Config> custom({
     Expression<int> customPrimaryKey,
     Expression<String> id,
     Expression<String> email,
     Expression<String> password,
     Expression<bool> notification,
-    Expression<bool> dailyChallenge,
+    Expression<bool> dailyChallenges,
+    Expression<String> recentTags,
+    Expression<String> appLanguage,
+    Expression<String> appVersion,
+    Expression<String> secretKey,
+    Expression<String> starredPhotos,
+    Expression<String> defaultWidgetImage,
     Expression<int> goal,
     Expression<int> hourOfDay,
     Expression<int> minuteOfDay,
-    Expression<bool> isPremium,
-    Expression<String> recentTags,
-    Expression<bool> tutorialCompleted,
     Expression<int> picsTaggedToday,
-    Expression<DateTime> lastTaggedPicDate,
+    Expression<bool> isPremium,
+    Expression<bool> tutorialCompleted,
     Expression<bool> canTagToday,
-    Expression<String> appLanguage,
-    Expression<String> appVersion,
     Expression<bool> hasGalleryPermission,
     Expression<bool> loggedIn,
     Expression<bool> secretPhotos,
@@ -2287,9 +2273,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     Expression<bool> shouldDeleteOnPrivate,
     Expression<bool> tourCompleted,
     Expression<bool> isBiometricActivated,
-    Expression<String> secretKey,
-    Expression<String> starredPhotos,
-    Expression<String> defaultWidgetImage,
+    Expression<DateTime> lastTaggedPicDate,
   }) {
     return RawValuesInsertable({
       if (customPrimaryKey != null) 'custom_primary_key': customPrimaryKey,
@@ -2297,18 +2281,21 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       if (email != null) 'email': email,
       if (password != null) 'password': password,
       if (notification != null) 'notification': notification,
-      if (dailyChallenge != null) 'daily_challenge': dailyChallenge,
+      if (dailyChallenges != null) 'daily_challenges': dailyChallenges,
+      if (recentTags != null) 'recent_tags': recentTags,
+      if (appLanguage != null) 'app_language': appLanguage,
+      if (appVersion != null) 'app_version': appVersion,
+      if (secretKey != null) 'secret_key': secretKey,
+      if (starredPhotos != null) 'starred_photos': starredPhotos,
+      if (defaultWidgetImage != null)
+        'default_widget_image': defaultWidgetImage,
       if (goal != null) 'goal': goal,
       if (hourOfDay != null) 'hour_of_day': hourOfDay,
       if (minuteOfDay != null) 'minute_of_day': minuteOfDay,
-      if (isPremium != null) 'is_premium': isPremium,
-      if (recentTags != null) 'recent_tags': recentTags,
-      if (tutorialCompleted != null) 'tutorial_completed': tutorialCompleted,
       if (picsTaggedToday != null) 'pics_tagged_today': picsTaggedToday,
-      if (lastTaggedPicDate != null) 'last_tagged_pic_date': lastTaggedPicDate,
+      if (isPremium != null) 'is_premium': isPremium,
+      if (tutorialCompleted != null) 'tutorial_completed': tutorialCompleted,
       if (canTagToday != null) 'can_tag_today': canTagToday,
-      if (appLanguage != null) 'app_language': appLanguage,
-      if (appVersion != null) 'app_version': appVersion,
       if (hasGalleryPermission != null)
         'has_gallery_permission': hasGalleryPermission,
       if (loggedIn != null) 'logged_in': loggedIn,
@@ -2321,10 +2308,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       if (tourCompleted != null) 'tour_completed': tourCompleted,
       if (isBiometricActivated != null)
         'is_biometric_activated': isBiometricActivated,
-      if (secretKey != null) 'secret_key': secretKey,
-      if (starredPhotos != null) 'starred_photos': starredPhotos,
-      if (defaultWidgetImage != null)
-        'default_widget_image': defaultWidgetImage,
+      if (lastTaggedPicDate != null) 'last_tagged_pic_date': lastTaggedPicDate,
     });
   }
 
@@ -2334,18 +2318,20 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       Value<String> email,
       Value<String> password,
       Value<bool> notification,
-      Value<bool> dailyChallenge,
+      Value<bool> dailyChallenges,
+      Value<List<String>> recentTags,
+      Value<String> appLanguage,
+      Value<String> appVersion,
+      Value<String> secretKey,
+      Value<List<String>> starredPhotos,
+      Value<String> defaultWidgetImage,
       Value<int> goal,
       Value<int> hourOfDay,
       Value<int> minuteOfDay,
-      Value<bool> isPremium,
-      Value<List<String>> recentTags,
-      Value<bool> tutorialCompleted,
       Value<int> picsTaggedToday,
-      Value<DateTime> lastTaggedPicDate,
+      Value<bool> isPremium,
+      Value<bool> tutorialCompleted,
       Value<bool> canTagToday,
-      Value<String> appLanguage,
-      Value<String> appVersion,
       Value<bool> hasGalleryPermission,
       Value<bool> loggedIn,
       Value<bool> secretPhotos,
@@ -2354,27 +2340,27 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       Value<bool> shouldDeleteOnPrivate,
       Value<bool> tourCompleted,
       Value<bool> isBiometricActivated,
-      Value<String> secretKey,
-      Value<List<String>> starredPhotos,
-      Value<String> defaultWidgetImage}) {
+      Value<DateTime> lastTaggedPicDate}) {
     return ConfigsCompanion(
       customPrimaryKey: customPrimaryKey ?? this.customPrimaryKey,
       id: id ?? this.id,
       email: email ?? this.email,
       password: password ?? this.password,
       notification: notification ?? this.notification,
-      dailyChallenge: dailyChallenge ?? this.dailyChallenge,
+      dailyChallenges: dailyChallenges ?? this.dailyChallenges,
+      recentTags: recentTags ?? this.recentTags,
+      appLanguage: appLanguage ?? this.appLanguage,
+      appVersion: appVersion ?? this.appVersion,
+      secretKey: secretKey ?? this.secretKey,
+      starredPhotos: starredPhotos ?? this.starredPhotos,
+      defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
       goal: goal ?? this.goal,
       hourOfDay: hourOfDay ?? this.hourOfDay,
       minuteOfDay: minuteOfDay ?? this.minuteOfDay,
-      isPremium: isPremium ?? this.isPremium,
-      recentTags: recentTags ?? this.recentTags,
-      tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
       picsTaggedToday: picsTaggedToday ?? this.picsTaggedToday,
-      lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
+      isPremium: isPremium ?? this.isPremium,
+      tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
       canTagToday: canTagToday ?? this.canTagToday,
-      appLanguage: appLanguage ?? this.appLanguage,
-      appVersion: appVersion ?? this.appVersion,
       hasGalleryPermission: hasGalleryPermission ?? this.hasGalleryPermission,
       loggedIn: loggedIn ?? this.loggedIn,
       secretPhotos: secretPhotos ?? this.secretPhotos,
@@ -2384,9 +2370,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
           shouldDeleteOnPrivate ?? this.shouldDeleteOnPrivate,
       tourCompleted: tourCompleted ?? this.tourCompleted,
       isBiometricActivated: isBiometricActivated ?? this.isBiometricActivated,
-      secretKey: secretKey ?? this.secretKey,
-      starredPhotos: starredPhotos ?? this.starredPhotos,
-      defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
+      lastTaggedPicDate: lastTaggedPicDate ?? this.lastTaggedPicDate,
     );
   }
 
@@ -2408,8 +2392,30 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     if (notification.present) {
       map['notification'] = Variable<bool>(notification.value);
     }
-    if (dailyChallenge.present) {
-      map['daily_challenge'] = Variable<bool>(dailyChallenge.value);
+    if (dailyChallenges.present) {
+      map['daily_challenges'] = Variable<bool>(dailyChallenges.value);
+    }
+    if (recentTags.present) {
+      final converter = $ConfigsTable.$converter0;
+      map['recent_tags'] =
+          Variable<String>(converter.mapToSql(recentTags.value));
+    }
+    if (appLanguage.present) {
+      map['app_language'] = Variable<String>(appLanguage.value);
+    }
+    if (appVersion.present) {
+      map['app_version'] = Variable<String>(appVersion.value);
+    }
+    if (secretKey.present) {
+      map['secret_key'] = Variable<String>(secretKey.value);
+    }
+    if (starredPhotos.present) {
+      final converter = $ConfigsTable.$converter1;
+      map['starred_photos'] =
+          Variable<String>(converter.mapToSql(starredPhotos.value));
+    }
+    if (defaultWidgetImage.present) {
+      map['default_widget_image'] = Variable<String>(defaultWidgetImage.value);
     }
     if (goal.present) {
       map['goal'] = Variable<int>(goal.value);
@@ -2420,31 +2426,17 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     if (minuteOfDay.present) {
       map['minute_of_day'] = Variable<int>(minuteOfDay.value);
     }
+    if (picsTaggedToday.present) {
+      map['pics_tagged_today'] = Variable<int>(picsTaggedToday.value);
+    }
     if (isPremium.present) {
       map['is_premium'] = Variable<bool>(isPremium.value);
-    }
-    if (recentTags.present) {
-      final converter = $ConfigsTable.$converter0;
-      map['recent_tags'] =
-          Variable<String>(converter.mapToSql(recentTags.value));
     }
     if (tutorialCompleted.present) {
       map['tutorial_completed'] = Variable<bool>(tutorialCompleted.value);
     }
-    if (picsTaggedToday.present) {
-      map['pics_tagged_today'] = Variable<int>(picsTaggedToday.value);
-    }
-    if (lastTaggedPicDate.present) {
-      map['last_tagged_pic_date'] = Variable<DateTime>(lastTaggedPicDate.value);
-    }
     if (canTagToday.present) {
       map['can_tag_today'] = Variable<bool>(canTagToday.value);
-    }
-    if (appLanguage.present) {
-      map['app_language'] = Variable<String>(appLanguage.value);
-    }
-    if (appVersion.present) {
-      map['app_version'] = Variable<String>(appVersion.value);
     }
     if (hasGalleryPermission.present) {
       map['has_gallery_permission'] =
@@ -2473,16 +2465,8 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       map['is_biometric_activated'] =
           Variable<bool>(isBiometricActivated.value);
     }
-    if (secretKey.present) {
-      map['secret_key'] = Variable<String>(secretKey.value);
-    }
-    if (starredPhotos.present) {
-      final converter = $ConfigsTable.$converter1;
-      map['starred_photos'] =
-          Variable<String>(converter.mapToSql(starredPhotos.value));
-    }
-    if (defaultWidgetImage.present) {
-      map['default_widget_image'] = Variable<String>(defaultWidgetImage.value);
+    if (lastTaggedPicDate.present) {
+      map['last_tagged_pic_date'] = Variable<DateTime>(lastTaggedPicDate.value);
     }
     return map;
   }
@@ -2495,18 +2479,20 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
           ..write('email: $email, ')
           ..write('password: $password, ')
           ..write('notification: $notification, ')
-          ..write('dailyChallenge: $dailyChallenge, ')
+          ..write('dailyChallenges: $dailyChallenges, ')
+          ..write('recentTags: $recentTags, ')
+          ..write('appLanguage: $appLanguage, ')
+          ..write('appVersion: $appVersion, ')
+          ..write('secretKey: $secretKey, ')
+          ..write('starredPhotos: $starredPhotos, ')
+          ..write('defaultWidgetImage: $defaultWidgetImage, ')
           ..write('goal: $goal, ')
           ..write('hourOfDay: $hourOfDay, ')
           ..write('minuteOfDay: $minuteOfDay, ')
-          ..write('isPremium: $isPremium, ')
-          ..write('recentTags: $recentTags, ')
-          ..write('tutorialCompleted: $tutorialCompleted, ')
           ..write('picsTaggedToday: $picsTaggedToday, ')
-          ..write('lastTaggedPicDate: $lastTaggedPicDate, ')
+          ..write('isPremium: $isPremium, ')
+          ..write('tutorialCompleted: $tutorialCompleted, ')
           ..write('canTagToday: $canTagToday, ')
-          ..write('appLanguage: $appLanguage, ')
-          ..write('appVersion: $appVersion, ')
           ..write('hasGalleryPermission: $hasGalleryPermission, ')
           ..write('loggedIn: $loggedIn, ')
           ..write('secretPhotos: $secretPhotos, ')
@@ -2515,9 +2501,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
           ..write('shouldDeleteOnPrivate: $shouldDeleteOnPrivate, ')
           ..write('tourCompleted: $tourCompleted, ')
           ..write('isBiometricActivated: $isBiometricActivated, ')
-          ..write('secretKey: $secretKey, ')
-          ..write('starredPhotos: $starredPhotos, ')
-          ..write('defaultWidgetImage: $defaultWidgetImage')
+          ..write('lastTaggedPicDate: $lastTaggedPicDate')
           ..write(')'))
         .toString();
   }
@@ -2534,11 +2518,8 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
   GeneratedIntColumn get customPrimaryKey =>
       _customPrimaryKey ??= _constructCustomPrimaryKey();
   GeneratedIntColumn _constructCustomPrimaryKey() {
-    return GeneratedIntColumn(
-      'custom_primary_key',
-      $tableName,
-      false,
-    );
+    return GeneratedIntColumn('custom_primary_key', $tableName, false,
+        defaultValue: const Constant(0));
   }
 
   final VerificationMeta _idMeta = const VerificationMeta('id');
@@ -2546,11 +2527,8 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
   @override
   GeneratedTextColumn get id => _id ??= _constructId();
   GeneratedTextColumn _constructId() {
-    return GeneratedTextColumn(
-      'id',
-      $tableName,
-      false,
-    );
+    return GeneratedTextColumn('id', $tableName, false,
+        defaultValue: Constant(Uuid().v4()));
   }
 
   final VerificationMeta _emailMeta = const VerificationMeta('email');
@@ -2584,75 +2562,19 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
   GeneratedBoolColumn get notification =>
       _notification ??= _constructNotification();
   GeneratedBoolColumn _constructNotification() {
-    return GeneratedBoolColumn(
-      'notification',
-      $tableName,
-      false,
-    );
+    return GeneratedBoolColumn('notification', $tableName, false,
+        defaultValue: const Constant(false));
   }
 
-  final VerificationMeta _dailyChallengeMeta =
-      const VerificationMeta('dailyChallenge');
-  GeneratedBoolColumn _dailyChallenge;
+  final VerificationMeta _dailyChallengesMeta =
+      const VerificationMeta('dailyChallenges');
+  GeneratedBoolColumn _dailyChallenges;
   @override
-  GeneratedBoolColumn get dailyChallenge =>
-      _dailyChallenge ??= _constructDailyChallenge();
-  GeneratedBoolColumn _constructDailyChallenge() {
-    return GeneratedBoolColumn(
-      'daily_challenge',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _goalMeta = const VerificationMeta('goal');
-  GeneratedIntColumn _goal;
-  @override
-  GeneratedIntColumn get goal => _goal ??= _constructGoal();
-  GeneratedIntColumn _constructGoal() {
-    return GeneratedIntColumn(
-      'goal',
-      $tableName,
-      true,
-    );
-  }
-
-  final VerificationMeta _hourOfDayMeta = const VerificationMeta('hourOfDay');
-  GeneratedIntColumn _hourOfDay;
-  @override
-  GeneratedIntColumn get hourOfDay => _hourOfDay ??= _constructHourOfDay();
-  GeneratedIntColumn _constructHourOfDay() {
-    return GeneratedIntColumn(
-      'hour_of_day',
-      $tableName,
-      true,
-    );
-  }
-
-  final VerificationMeta _minuteOfDayMeta =
-      const VerificationMeta('minuteOfDay');
-  GeneratedIntColumn _minuteOfDay;
-  @override
-  GeneratedIntColumn get minuteOfDay =>
-      _minuteOfDay ??= _constructMinuteOfDay();
-  GeneratedIntColumn _constructMinuteOfDay() {
-    return GeneratedIntColumn(
-      'minute_of_day',
-      $tableName,
-      true,
-    );
-  }
-
-  final VerificationMeta _isPremiumMeta = const VerificationMeta('isPremium');
-  GeneratedBoolColumn _isPremium;
-  @override
-  GeneratedBoolColumn get isPremium => _isPremium ??= _constructIsPremium();
-  GeneratedBoolColumn _constructIsPremium() {
-    return GeneratedBoolColumn(
-      'is_premium',
-      $tableName,
-      false,
-    );
+  GeneratedBoolColumn get dailyChallenges =>
+      _dailyChallenges ??= _constructDailyChallenges();
+  GeneratedBoolColumn _constructDailyChallenges() {
+    return GeneratedBoolColumn('daily_challenges', $tableName, false,
+        defaultValue: const Constant(false));
   }
 
   final VerificationMeta _recentTagsMeta = const VerificationMeta('recentTags');
@@ -2663,63 +2585,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedTextColumn(
       'recent_tags',
       $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _tutorialCompletedMeta =
-      const VerificationMeta('tutorialCompleted');
-  GeneratedBoolColumn _tutorialCompleted;
-  @override
-  GeneratedBoolColumn get tutorialCompleted =>
-      _tutorialCompleted ??= _constructTutorialCompleted();
-  GeneratedBoolColumn _constructTutorialCompleted() {
-    return GeneratedBoolColumn(
-      'tutorial_completed',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _picsTaggedTodayMeta =
-      const VerificationMeta('picsTaggedToday');
-  GeneratedIntColumn _picsTaggedToday;
-  @override
-  GeneratedIntColumn get picsTaggedToday =>
-      _picsTaggedToday ??= _constructPicsTaggedToday();
-  GeneratedIntColumn _constructPicsTaggedToday() {
-    return GeneratedIntColumn(
-      'pics_tagged_today',
-      $tableName,
       true,
-    );
-  }
-
-  final VerificationMeta _lastTaggedPicDateMeta =
-      const VerificationMeta('lastTaggedPicDate');
-  GeneratedDateTimeColumn _lastTaggedPicDate;
-  @override
-  GeneratedDateTimeColumn get lastTaggedPicDate =>
-      _lastTaggedPicDate ??= _constructLastTaggedPicDate();
-  GeneratedDateTimeColumn _constructLastTaggedPicDate() {
-    return GeneratedDateTimeColumn(
-      'last_tagged_pic_date',
-      $tableName,
-      true,
-    );
-  }
-
-  final VerificationMeta _canTagTodayMeta =
-      const VerificationMeta('canTagToday');
-  GeneratedBoolColumn _canTagToday;
-  @override
-  GeneratedBoolColumn get canTagToday =>
-      _canTagToday ??= _constructCanTagToday();
-  GeneratedBoolColumn _constructCanTagToday() {
-    return GeneratedBoolColumn(
-      'can_tag_today',
-      $tableName,
-      false,
     );
   }
 
@@ -2749,116 +2615,6 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     );
   }
 
-  final VerificationMeta _hasGalleryPermissionMeta =
-      const VerificationMeta('hasGalleryPermission');
-  GeneratedBoolColumn _hasGalleryPermission;
-  @override
-  GeneratedBoolColumn get hasGalleryPermission =>
-      _hasGalleryPermission ??= _constructHasGalleryPermission();
-  GeneratedBoolColumn _constructHasGalleryPermission() {
-    return GeneratedBoolColumn(
-      'has_gallery_permission',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _loggedInMeta = const VerificationMeta('loggedIn');
-  GeneratedBoolColumn _loggedIn;
-  @override
-  GeneratedBoolColumn get loggedIn => _loggedIn ??= _constructLoggedIn();
-  GeneratedBoolColumn _constructLoggedIn() {
-    return GeneratedBoolColumn(
-      'logged_in',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _secretPhotosMeta =
-      const VerificationMeta('secretPhotos');
-  GeneratedBoolColumn _secretPhotos;
-  @override
-  GeneratedBoolColumn get secretPhotos =>
-      _secretPhotos ??= _constructSecretPhotos();
-  GeneratedBoolColumn _constructSecretPhotos() {
-    return GeneratedBoolColumn(
-      'secret_photos',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _isPinRegisteredMeta =
-      const VerificationMeta('isPinRegistered');
-  GeneratedBoolColumn _isPinRegistered;
-  @override
-  GeneratedBoolColumn get isPinRegistered =>
-      _isPinRegistered ??= _constructIsPinRegistered();
-  GeneratedBoolColumn _constructIsPinRegistered() {
-    return GeneratedBoolColumn(
-      'is_pin_registered',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _keepAskingToDeleteMeta =
-      const VerificationMeta('keepAskingToDelete');
-  GeneratedBoolColumn _keepAskingToDelete;
-  @override
-  GeneratedBoolColumn get keepAskingToDelete =>
-      _keepAskingToDelete ??= _constructKeepAskingToDelete();
-  GeneratedBoolColumn _constructKeepAskingToDelete() {
-    return GeneratedBoolColumn(
-      'keep_asking_to_delete',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _shouldDeleteOnPrivateMeta =
-      const VerificationMeta('shouldDeleteOnPrivate');
-  GeneratedBoolColumn _shouldDeleteOnPrivate;
-  @override
-  GeneratedBoolColumn get shouldDeleteOnPrivate =>
-      _shouldDeleteOnPrivate ??= _constructShouldDeleteOnPrivate();
-  GeneratedBoolColumn _constructShouldDeleteOnPrivate() {
-    return GeneratedBoolColumn(
-      'should_delete_on_private',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _tourCompletedMeta =
-      const VerificationMeta('tourCompleted');
-  GeneratedBoolColumn _tourCompleted;
-  @override
-  GeneratedBoolColumn get tourCompleted =>
-      _tourCompleted ??= _constructTourCompleted();
-  GeneratedBoolColumn _constructTourCompleted() {
-    return GeneratedBoolColumn(
-      'tour_completed',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _isBiometricActivatedMeta =
-      const VerificationMeta('isBiometricActivated');
-  GeneratedBoolColumn _isBiometricActivated;
-  @override
-  GeneratedBoolColumn get isBiometricActivated =>
-      _isBiometricActivated ??= _constructIsBiometricActivated();
-  GeneratedBoolColumn _constructIsBiometricActivated() {
-    return GeneratedBoolColumn(
-      'is_biometric_activated',
-      $tableName,
-      false,
-    );
-  }
-
   final VerificationMeta _secretKeyMeta = const VerificationMeta('secretKey');
   GeneratedTextColumn _secretKey;
   @override
@@ -2881,7 +2637,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     return GeneratedTextColumn(
       'starred_photos',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -2899,6 +2655,174 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     );
   }
 
+  final VerificationMeta _goalMeta = const VerificationMeta('goal');
+  GeneratedIntColumn _goal;
+  @override
+  GeneratedIntColumn get goal => _goal ??= _constructGoal();
+  GeneratedIntColumn _constructGoal() {
+    return GeneratedIntColumn('goal', $tableName, false,
+        defaultValue: const Constant(20));
+  }
+
+  final VerificationMeta _hourOfDayMeta = const VerificationMeta('hourOfDay');
+  GeneratedIntColumn _hourOfDay;
+  @override
+  GeneratedIntColumn get hourOfDay => _hourOfDay ??= _constructHourOfDay();
+  GeneratedIntColumn _constructHourOfDay() {
+    return GeneratedIntColumn('hour_of_day', $tableName, false,
+        defaultValue: const Constant(20));
+  }
+
+  final VerificationMeta _minuteOfDayMeta =
+      const VerificationMeta('minuteOfDay');
+  GeneratedIntColumn _minuteOfDay;
+  @override
+  GeneratedIntColumn get minuteOfDay =>
+      _minuteOfDay ??= _constructMinuteOfDay();
+  GeneratedIntColumn _constructMinuteOfDay() {
+    return GeneratedIntColumn('minute_of_day', $tableName, false,
+        defaultValue: const Constant(0));
+  }
+
+  final VerificationMeta _picsTaggedTodayMeta =
+      const VerificationMeta('picsTaggedToday');
+  GeneratedIntColumn _picsTaggedToday;
+  @override
+  GeneratedIntColumn get picsTaggedToday =>
+      _picsTaggedToday ??= _constructPicsTaggedToday();
+  GeneratedIntColumn _constructPicsTaggedToday() {
+    return GeneratedIntColumn('pics_tagged_today', $tableName, false,
+        defaultValue: const Constant(0));
+  }
+
+  final VerificationMeta _isPremiumMeta = const VerificationMeta('isPremium');
+  GeneratedBoolColumn _isPremium;
+  @override
+  GeneratedBoolColumn get isPremium => _isPremium ??= _constructIsPremium();
+  GeneratedBoolColumn _constructIsPremium() {
+    return GeneratedBoolColumn('is_premium', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _tutorialCompletedMeta =
+      const VerificationMeta('tutorialCompleted');
+  GeneratedBoolColumn _tutorialCompleted;
+  @override
+  GeneratedBoolColumn get tutorialCompleted =>
+      _tutorialCompleted ??= _constructTutorialCompleted();
+  GeneratedBoolColumn _constructTutorialCompleted() {
+    return GeneratedBoolColumn('tutorial_completed', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _canTagTodayMeta =
+      const VerificationMeta('canTagToday');
+  GeneratedBoolColumn _canTagToday;
+  @override
+  GeneratedBoolColumn get canTagToday =>
+      _canTagToday ??= _constructCanTagToday();
+  GeneratedBoolColumn _constructCanTagToday() {
+    return GeneratedBoolColumn('can_tag_today', $tableName, false,
+        defaultValue: const Constant(true));
+  }
+
+  final VerificationMeta _hasGalleryPermissionMeta =
+      const VerificationMeta('hasGalleryPermission');
+  GeneratedBoolColumn _hasGalleryPermission;
+  @override
+  GeneratedBoolColumn get hasGalleryPermission =>
+      _hasGalleryPermission ??= _constructHasGalleryPermission();
+  GeneratedBoolColumn _constructHasGalleryPermission() {
+    return GeneratedBoolColumn('has_gallery_permission', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _loggedInMeta = const VerificationMeta('loggedIn');
+  GeneratedBoolColumn _loggedIn;
+  @override
+  GeneratedBoolColumn get loggedIn => _loggedIn ??= _constructLoggedIn();
+  GeneratedBoolColumn _constructLoggedIn() {
+    return GeneratedBoolColumn('logged_in', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _secretPhotosMeta =
+      const VerificationMeta('secretPhotos');
+  GeneratedBoolColumn _secretPhotos;
+  @override
+  GeneratedBoolColumn get secretPhotos =>
+      _secretPhotos ??= _constructSecretPhotos();
+  GeneratedBoolColumn _constructSecretPhotos() {
+    return GeneratedBoolColumn('secret_photos', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _isPinRegisteredMeta =
+      const VerificationMeta('isPinRegistered');
+  GeneratedBoolColumn _isPinRegistered;
+  @override
+  GeneratedBoolColumn get isPinRegistered =>
+      _isPinRegistered ??= _constructIsPinRegistered();
+  GeneratedBoolColumn _constructIsPinRegistered() {
+    return GeneratedBoolColumn('is_pin_registered', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _keepAskingToDeleteMeta =
+      const VerificationMeta('keepAskingToDelete');
+  GeneratedBoolColumn _keepAskingToDelete;
+  @override
+  GeneratedBoolColumn get keepAskingToDelete =>
+      _keepAskingToDelete ??= _constructKeepAskingToDelete();
+  GeneratedBoolColumn _constructKeepAskingToDelete() {
+    return GeneratedBoolColumn('keep_asking_to_delete', $tableName, false,
+        defaultValue: const Constant(true));
+  }
+
+  final VerificationMeta _shouldDeleteOnPrivateMeta =
+      const VerificationMeta('shouldDeleteOnPrivate');
+  GeneratedBoolColumn _shouldDeleteOnPrivate;
+  @override
+  GeneratedBoolColumn get shouldDeleteOnPrivate =>
+      _shouldDeleteOnPrivate ??= _constructShouldDeleteOnPrivate();
+  GeneratedBoolColumn _constructShouldDeleteOnPrivate() {
+    return GeneratedBoolColumn('should_delete_on_private', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _tourCompletedMeta =
+      const VerificationMeta('tourCompleted');
+  GeneratedBoolColumn _tourCompleted;
+  @override
+  GeneratedBoolColumn get tourCompleted =>
+      _tourCompleted ??= _constructTourCompleted();
+  GeneratedBoolColumn _constructTourCompleted() {
+    return GeneratedBoolColumn('tour_completed', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _isBiometricActivatedMeta =
+      const VerificationMeta('isBiometricActivated');
+  GeneratedBoolColumn _isBiometricActivated;
+  @override
+  GeneratedBoolColumn get isBiometricActivated =>
+      _isBiometricActivated ??= _constructIsBiometricActivated();
+  GeneratedBoolColumn _constructIsBiometricActivated() {
+    return GeneratedBoolColumn('is_biometric_activated', $tableName, false,
+        defaultValue: const Constant(false));
+  }
+
+  final VerificationMeta _lastTaggedPicDateMeta =
+      const VerificationMeta('lastTaggedPicDate');
+  GeneratedDateTimeColumn _lastTaggedPicDate;
+  @override
+  GeneratedDateTimeColumn get lastTaggedPicDate =>
+      _lastTaggedPicDate ??= _constructLastTaggedPicDate();
+  GeneratedDateTimeColumn _constructLastTaggedPicDate() {
+    return GeneratedDateTimeColumn('last_tagged_pic_date', $tableName, false,
+        defaultValue: Constant(DateTime.now()));
+  }
+
   @override
   List<GeneratedColumn> get $columns => [
         customPrimaryKey,
@@ -2906,18 +2830,20 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
         email,
         password,
         notification,
-        dailyChallenge,
+        dailyChallenges,
+        recentTags,
+        appLanguage,
+        appVersion,
+        secretKey,
+        starredPhotos,
+        defaultWidgetImage,
         goal,
         hourOfDay,
         minuteOfDay,
-        isPremium,
-        recentTags,
-        tutorialCompleted,
         picsTaggedToday,
-        lastTaggedPicDate,
+        isPremium,
+        tutorialCompleted,
         canTagToday,
-        appLanguage,
-        appVersion,
         hasGalleryPermission,
         loggedIn,
         secretPhotos,
@@ -2926,9 +2852,7 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
         shouldDeleteOnPrivate,
         tourCompleted,
         isBiometricActivated,
-        secretKey,
-        starredPhotos,
-        defaultWidgetImage
+        lastTaggedPicDate
       ];
   @override
   $ConfigsTable get asDslTable => this;
@@ -2949,8 +2873,6 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
     }
     if (data.containsKey('id')) {
       context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
     }
     if (data.containsKey('email')) {
       context.handle(
@@ -2965,16 +2887,36 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
           _notificationMeta,
           notification.isAcceptableOrUnknown(
               data['notification'], _notificationMeta));
-    } else if (isInserting) {
-      context.missing(_notificationMeta);
     }
-    if (data.containsKey('daily_challenge')) {
+    if (data.containsKey('daily_challenges')) {
       context.handle(
-          _dailyChallengeMeta,
-          dailyChallenge.isAcceptableOrUnknown(
-              data['daily_challenge'], _dailyChallengeMeta));
-    } else if (isInserting) {
-      context.missing(_dailyChallengeMeta);
+          _dailyChallengesMeta,
+          dailyChallenges.isAcceptableOrUnknown(
+              data['daily_challenges'], _dailyChallengesMeta));
+    }
+    context.handle(_recentTagsMeta, const VerificationResult.success());
+    if (data.containsKey('app_language')) {
+      context.handle(
+          _appLanguageMeta,
+          appLanguage.isAcceptableOrUnknown(
+              data['app_language'], _appLanguageMeta));
+    }
+    if (data.containsKey('app_version')) {
+      context.handle(
+          _appVersionMeta,
+          appVersion.isAcceptableOrUnknown(
+              data['app_version'], _appVersionMeta));
+    }
+    if (data.containsKey('secret_key')) {
+      context.handle(_secretKeyMeta,
+          secretKey.isAcceptableOrUnknown(data['secret_key'], _secretKeyMeta));
+    }
+    context.handle(_starredPhotosMeta, const VerificationResult.success());
+    if (data.containsKey('default_widget_image')) {
+      context.handle(
+          _defaultWidgetImageMeta,
+          defaultWidgetImage.isAcceptableOrUnknown(
+              data['default_widget_image'], _defaultWidgetImageMeta));
     }
     if (data.containsKey('goal')) {
       context.handle(
@@ -2990,125 +2932,79 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
           minuteOfDay.isAcceptableOrUnknown(
               data['minute_of_day'], _minuteOfDayMeta));
     }
-    if (data.containsKey('is_premium')) {
-      context.handle(_isPremiumMeta,
-          isPremium.isAcceptableOrUnknown(data['is_premium'], _isPremiumMeta));
-    } else if (isInserting) {
-      context.missing(_isPremiumMeta);
-    }
-    context.handle(_recentTagsMeta, const VerificationResult.success());
-    if (data.containsKey('tutorial_completed')) {
-      context.handle(
-          _tutorialCompletedMeta,
-          tutorialCompleted.isAcceptableOrUnknown(
-              data['tutorial_completed'], _tutorialCompletedMeta));
-    } else if (isInserting) {
-      context.missing(_tutorialCompletedMeta);
-    }
     if (data.containsKey('pics_tagged_today')) {
       context.handle(
           _picsTaggedTodayMeta,
           picsTaggedToday.isAcceptableOrUnknown(
               data['pics_tagged_today'], _picsTaggedTodayMeta));
     }
-    if (data.containsKey('last_tagged_pic_date')) {
+    if (data.containsKey('is_premium')) {
+      context.handle(_isPremiumMeta,
+          isPremium.isAcceptableOrUnknown(data['is_premium'], _isPremiumMeta));
+    }
+    if (data.containsKey('tutorial_completed')) {
       context.handle(
-          _lastTaggedPicDateMeta,
-          lastTaggedPicDate.isAcceptableOrUnknown(
-              data['last_tagged_pic_date'], _lastTaggedPicDateMeta));
+          _tutorialCompletedMeta,
+          tutorialCompleted.isAcceptableOrUnknown(
+              data['tutorial_completed'], _tutorialCompletedMeta));
     }
     if (data.containsKey('can_tag_today')) {
       context.handle(
           _canTagTodayMeta,
           canTagToday.isAcceptableOrUnknown(
               data['can_tag_today'], _canTagTodayMeta));
-    } else if (isInserting) {
-      context.missing(_canTagTodayMeta);
-    }
-    if (data.containsKey('app_language')) {
-      context.handle(
-          _appLanguageMeta,
-          appLanguage.isAcceptableOrUnknown(
-              data['app_language'], _appLanguageMeta));
-    }
-    if (data.containsKey('app_version')) {
-      context.handle(
-          _appVersionMeta,
-          appVersion.isAcceptableOrUnknown(
-              data['app_version'], _appVersionMeta));
     }
     if (data.containsKey('has_gallery_permission')) {
       context.handle(
           _hasGalleryPermissionMeta,
           hasGalleryPermission.isAcceptableOrUnknown(
               data['has_gallery_permission'], _hasGalleryPermissionMeta));
-    } else if (isInserting) {
-      context.missing(_hasGalleryPermissionMeta);
     }
     if (data.containsKey('logged_in')) {
       context.handle(_loggedInMeta,
           loggedIn.isAcceptableOrUnknown(data['logged_in'], _loggedInMeta));
-    } else if (isInserting) {
-      context.missing(_loggedInMeta);
     }
     if (data.containsKey('secret_photos')) {
       context.handle(
           _secretPhotosMeta,
           secretPhotos.isAcceptableOrUnknown(
               data['secret_photos'], _secretPhotosMeta));
-    } else if (isInserting) {
-      context.missing(_secretPhotosMeta);
     }
     if (data.containsKey('is_pin_registered')) {
       context.handle(
           _isPinRegisteredMeta,
           isPinRegistered.isAcceptableOrUnknown(
               data['is_pin_registered'], _isPinRegisteredMeta));
-    } else if (isInserting) {
-      context.missing(_isPinRegisteredMeta);
     }
     if (data.containsKey('keep_asking_to_delete')) {
       context.handle(
           _keepAskingToDeleteMeta,
           keepAskingToDelete.isAcceptableOrUnknown(
               data['keep_asking_to_delete'], _keepAskingToDeleteMeta));
-    } else if (isInserting) {
-      context.missing(_keepAskingToDeleteMeta);
     }
     if (data.containsKey('should_delete_on_private')) {
       context.handle(
           _shouldDeleteOnPrivateMeta,
           shouldDeleteOnPrivate.isAcceptableOrUnknown(
               data['should_delete_on_private'], _shouldDeleteOnPrivateMeta));
-    } else if (isInserting) {
-      context.missing(_shouldDeleteOnPrivateMeta);
     }
     if (data.containsKey('tour_completed')) {
       context.handle(
           _tourCompletedMeta,
           tourCompleted.isAcceptableOrUnknown(
               data['tour_completed'], _tourCompletedMeta));
-    } else if (isInserting) {
-      context.missing(_tourCompletedMeta);
     }
     if (data.containsKey('is_biometric_activated')) {
       context.handle(
           _isBiometricActivatedMeta,
           isBiometricActivated.isAcceptableOrUnknown(
               data['is_biometric_activated'], _isBiometricActivatedMeta));
-    } else if (isInserting) {
-      context.missing(_isBiometricActivatedMeta);
     }
-    if (data.containsKey('secret_key')) {
-      context.handle(_secretKeyMeta,
-          secretKey.isAcceptableOrUnknown(data['secret_key'], _secretKeyMeta));
-    }
-    context.handle(_starredPhotosMeta, const VerificationResult.success());
-    if (data.containsKey('default_widget_image')) {
+    if (data.containsKey('last_tagged_pic_date')) {
       context.handle(
-          _defaultWidgetImageMeta,
-          defaultWidgetImage.isAcceptableOrUnknown(
-              data['default_widget_image'], _defaultWidgetImageMeta));
+          _lastTaggedPicDateMeta,
+          lastTaggedPicDate.isAcceptableOrUnknown(
+              data['last_tagged_pic_date'], _lastTaggedPicDateMeta));
     }
     return context;
   }

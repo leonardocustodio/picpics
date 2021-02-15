@@ -1,11 +1,5 @@
-import 'package:hive/hive.dart';
-part 'user_key.g.dart';
-
-@HiveType(typeId: 5)
-class UserKey extends HiveObject {
-  @HiveField(0)
+class UserKey {
   final String secretKey;
-
   UserKey({
     this.secretKey,
   });
