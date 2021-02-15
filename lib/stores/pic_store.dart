@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';

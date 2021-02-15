@@ -1,11 +1,10 @@
 import 'dart:math';
 import 'package:home_widget/home_widget.dart';
+import 'package:picPics/database/app_database.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:hive/hive.dart';
-import 'package:picPics/model/user.dart';
-import 'package:picPics/model/pic.dart';
 
 class WidgetManager {
+  static AppDatabase appDatabase = AppDatabase();
   static Future<void> saveData({List<PicStore> picsStores}) async {
     for (PicStore store in picsStores) {
       store.switchIsStarred();
@@ -24,10 +23,12 @@ class WidgetManager {
     try {
       print('Future send data');
 
-      var userBox = await Hive.openBox('user');
-      var picsBox = await Hive.openBox('pics');
+      //var userBox = await Hive.openBox('user');
+      //var picsBox = await Hive.openBox('pics');
 
-      User currentUser = userBox.getAt(0);
+      var configBox = await appDatabase.getSingleMoorUser();
+
+      MoorUser currentUser = configBox[0];
       List<String> starredPhotos = currentUser.starredPhotos;
       print('Number of starred photos: ${starredPhotos.length}');
 
@@ -40,7 +41,9 @@ class WidgetManager {
         int randInt = rand.nextInt(starredPhotos.length);
         print('Sorted number for widget: $randInt');
 
-        Pic pic = picsBox.get(starredPhotos[randInt]);
+        var picsBox =
+            await appDatabase.getPhotoByPhotoId(starredPhotos[randInt]);
+        Photo pic = picsBox[0];
         print('Base64: ${pic.base64encoded}');
         baseString = pic.base64encoded;
       }

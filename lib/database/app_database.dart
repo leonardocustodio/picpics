@@ -51,7 +51,8 @@ class Photos extends Table {
   RealColumn get longitude => real()();
 
   BoolColumn get isPrivate => boolean().withDefault(const Constant(false))();
-  BoolColumn get deletedFromCameraRoll => boolean().withDefault(const Constant(false))();
+  BoolColumn get deletedFromCameraRoll =>
+      boolean().withDefault(const Constant(false))();
   BoolColumn get isStarred => boolean().withDefault(const Constant(false))();
 
   TextColumn get specificLocation => text().nullable()();
@@ -83,7 +84,7 @@ class Privates extends Table {
 }
 
 /// Old Info @Hive: made from : User and UserKey-secretKey
-class Configs extends Table {
+class MoorUsers extends Table {
   IntColumn get customPrimaryKey => integer().withDefault(const Constant(0))();
   @override
   Set<Column> get primaryKey => {customPrimaryKey};
@@ -156,12 +157,32 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(tables: [Photos, Privates, Labels, LabelEntries, Configs])
+@UseMoor(tables: [Photos, Privates, Labels, LabelEntries, MoorUsers])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
+  /**
+   * 
+   * Photos CRUD operations Start
+   * 
+   */
+  Future createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
+
+  Future<List<Photo>> getPhotoByPhotoId(String photoId) =>
+      (select(photos)..where((pri) => pri.id.equals(photoId))).get();
+
+  Future<List<Photo>> getAllPhoto() => select(photos).get();
+
+  Future updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
+
+  Future deletePhoto(Photo oldPhoto) => delete(photos).delete(oldPhoto);
+  /**
+   * 
+   * Photos CRUD operations End
+   * 
+   */
 
   /**
    * 
@@ -170,9 +191,8 @@ class AppDatabase extends _$AppDatabase {
    */
   Future createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
 
-  Future<List<Private>> getPrivateByPhotoId(String photoId) => (select(privates)
-        ..where((pri) => pri.id.equals(photoId)))
-      .get();
+  Future<List<Private>> getPrivateByPhotoId(String photoId) =>
+      (select(privates)..where((pri) => pri.id.equals(photoId))).get();
 
   Future<List<Private>> getAllPrivate() => select(privates).get();
 
@@ -189,25 +209,39 @@ class AppDatabase extends _$AppDatabase {
 
   /**
    * 
-   * Config CRUD operations Start
+   * MoorUser CRUD operations Start
    * 
    */
-  Future createConfig(Config newConfig) => into(configs).insert(newConfig);
+  Future createMoorUser(MoorUser newMoorUser) =>
+      into(moorUsers).insert(newMoorUser);
 
-  Future<List<Config>> getSingleConfig() =>
-      (select(configs)..where((conf) => conf._customPrimaryKey.equals(0)))
+  //Future<List<MoorUser>> getAllMoorUser() => select(moorUsers).get();
+
+  Future<List<MoorUser>> getSingleMoorUser(
+      {bool createIfNotExist = true}) async {
+    var moorUserReturn = await (select(moorUsers)
+          ..where((u) => u._customPrimaryKey.equals(0)))
+        .get();
+    if (createIfNotExist && moorUserReturn.isEmpty) {
+      insertAllMoorUsers(null);
+      return await (select(moorUsers)
+            ..where((u) => u._customPrimaryKey.equals(0)))
           .get();
+    } else {
+      return moorUserReturn;
+    }
+  }
 
-  Future updateConfig(Config newConfig) =>
-      (update(configs)..where((conf) => conf.customPrimaryKey.equals(0)))
-          .replace(newConfig);
+  Future updateMoorUser(MoorUser newMoorUser) =>
+      (update(moorUsers)..where((u) => u.customPrimaryKey.equals(0)))
+          .replace(newMoorUser);
 
-  Future deleteConfig(Config newConfig) =>
-      (delete(configs)..where((conf) => conf.customPrimaryKey.equals(0)))
-          .delete(newConfig);
+  Future deleteMoorUser(MoorUser newMoorUser) =>
+      (delete(moorUsers)..where((u) => u.customPrimaryKey.equals(0)))
+          .delete(newMoorUser);
   /**
    * 
-   * Config CRUD operations End
+   * MoorUser CRUD operations End
    * 
    */
 
@@ -245,12 +279,14 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Future<void> insertAllConfigs(User user, {UserKey userKey}) async {
-    var configCompanionVariable;
+  Future<void> insertAllMoorUsers(User user, {UserKey userKey}) async {
+    var moorUserCompanionVariable;
     if (user == null) {
-      configCompanionVariable = ConfigsCompanion.insert();
+      moorUserCompanionVariable =
+          MoorUsersCompanion.insert(customPrimaryKey: const Value(0));
     } else {
-      configCompanionVariable = ConfigsCompanion.insert(
+      moorUserCompanionVariable = MoorUsersCompanion.insert(
+        customPrimaryKey: const Value(0),
         id: user.id.moorValue,
         recentTags: user.recentTags.moorValue,
         starredPhotos: user.starredPhotos.moorValue,
@@ -279,8 +315,8 @@ class AppDatabase extends _$AppDatabase {
         secretKey: userKey?.secretKey?.moorValue,
       );
     }
-    return into(configs).insert(
-      configCompanionVariable,
+    return into(moorUsers).insert(
+      moorUserCompanionVariable,
       mode: InsertMode.insertOrReplace,
     );
   }

@@ -7,7 +7,6 @@ import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:hive/hive.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -36,7 +35,7 @@ class DatabaseManager extends ChangeNotifier {
   double scale = 1.0;
 
   String selectedTagKey;
-  Config userSettings;
+  MoorUser userSettings;
 
   double adOffset = 48.0;
   AppDatabase database = AppDatabase();
@@ -46,12 +45,11 @@ class DatabaseManager extends ChangeNotifier {
 
   void requestNotification() async {
     // TODO: commented below line
-    // var userBox = Hive.box('user');
+    //var userBox = Hive.box('user');
 
-    var userBox = await database.getSingleConfig();
-    
-    if (userBox.isNotEmpty) {}
+    var userBox = await database.getSingleMoorUser();
     userSettings = userBox[0];
+
     print('requesting notification...');
     print('dailyChallenges: ${userSettings}');
 
@@ -63,21 +61,35 @@ class DatabaseManager extends ChangeNotifier {
       // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
       //   print("Settings registered: $settings");
       // });
-//      _firebaseMessaging.getToken().then((String token) {
-//        assert(token != null);
-//        print('got token this mean it did accept notification');
-//        userSettings.notifications = true;
-//        userSettings.dailyChallenges = true;
-//        userBox.putAt(0, userSettings);
-//      });
-//
-//      _firebaseMessaging.onIosSettingsRegistered.
+      /* _firebaseMessaging.getToken().then((String token) {
+        assert(token != null);
+        print('got token this mean it did accept notification');
+        //userSettings.notifications = true;
+        //userSettings.dailyChallenges = true;
+        //userBox.putAt(0, userSettings);
+
+
+      await database.updateConfig(
+        userSettings.copyWith(
+          notification: true,
+          dailyChallenges: true,
+        ),
+      );
+      });
+
+      _firebaseMessaging.onIosSettingsRegistered. */
     } else {
       print('its android!!!');
 
-      userBox.notifications = true;
-      userBox.dailyChallenges = true;
+      await database.updateMoorUser(
+        userSettings.copyWith(
+          notification: true,
+          dailyChallenges: true,
+        ),
+      );
 
+      //userBox.notifications = true;
+      //userBox.dailyChallenges = true;
       //userBox.putAt(0, userSettings);
     }
   }
@@ -160,9 +172,13 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   void changeUserLanguage(String appLanguage, {bool notify = true}) {
-    var userBox = Hive.box('user');
-    userSettings.appLanguage = appLanguage;
-    userBox.putAt(0, userSettings);
+    database.updateMoorUser(userSettings.copyWith(
+      appLanguage: appLanguage,
+    ));
+
+    //var userBox = Hive.box('user');
+    //userSettings.appLanguage = appLanguage;
+    //userBox.putAt(0, userSettings);
 
     if (notify = true) {
       Analytics.sendEvent(Event.changed_language);

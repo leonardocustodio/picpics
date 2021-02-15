@@ -84,11 +84,11 @@ dependencies:
   moor: ^3.4.0
   sqlite3_flutter_libs: ^0.3.0
   moor_db_viewer: ^2.0.3
-  hive: ^1.4.4+1
-  hive_flutter:
-    git:
-      url: git://github.com/hivedb/hive.git
-      path: hive_flutter
+  #hive: ^1.4.4+1
+  #hive_flutter:
+  #  git:
+  #    url: git://github.com/hivedb/hive.git
+  #    path: hive_flutter
 
 dev_dependencies:
 #  flutter_test:

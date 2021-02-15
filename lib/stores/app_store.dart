@@ -1,13 +1,14 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -35,47 +36,23 @@ abstract class _AppStore with Store {
   final String deviceLocale;
   final String initiatedWithProduct;
   final LocalAuthentication biometricAuth = LocalAuthentication();
+  AppDatabase database = AppDatabase();
 
   _AppStore({
     this.appVersion,
     this.deviceLocale,
     this.initiatedWithProduct,
   }) {
-    var userBox = Hive.box('user');
-    User user;
+    var userBox;
+    Future.wait([database.getSingleMoorUser(createIfNotExist: false)])
+        .then((value) => userBox = value);
+
+    MoorUser user;
 
     if (userBox.length == 0) {
 //      Locale locale = await DeviceLocale.getCurrentLocale();
-      User createUser = User(
-        id: Uuid().v4(),
-        email: null,
-        password: null,
-        notifications: false,
-        dailyChallenges: false,
-        goal: 20,
-        hourOfDay: 20,
-        minutesOfDay: 00,
-        isPremium: false,
-        recentTags: [],
-        tutorialCompleted: false,
-        picsTaggedToday: 0,
-        lastTaggedPicDate: DateTime.now(),
-        canTagToday: true,
-        appLanguage: deviceLocale,
-        hasGalleryPermission: null,
-        loggedIn: false,
-        secretPhotos: false,
-        isPinRegistered: false,
-        keepAskingToDelete: true,
-        tourCompleted: false,
-        isBiometricActivated: false,
-        starredPhotos: [],
-        defaultWidgetImage: null,
-      );
-
-      user = createUser;
-      userBox.put(0, createUser);
-
+      user = getDefaultMoorUser(deviceLocale: deviceLocale);
+      database.createMoorUser(user);
       Analytics.setUserId(user.id);
       Analytics.sendEvent(Event.created_user);
     } else {
@@ -84,10 +61,10 @@ abstract class _AppStore with Store {
       Analytics.sendEvent(Event.user_returned);
     }
 
-    notifications = user.notifications;
+    notifications = user.notification;
     dailyChallenges = user.dailyChallenges;
     hourOfDay = user.hourOfDay;
-    minutesOfDay = user.minutesOfDay;
+    minutesOfDay = user.minuteOfDay;
     isPremium = user.isPremium;
     tutorialCompleted = user.tutorialCompleted;
     appLanguage = user.appLanguage;
@@ -151,10 +128,10 @@ abstract class _AppStore with Store {
     var bytes = await entity.thumbDataWithSize(300, 300);
     String encoded = base64.encode(bytes);
 
-    var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.defaultWidgetImage = encoded;
-    currentUser.save();
+    var userBox = await database.getSingleMoorUser(createIfNotExist: true);
+    MoorUser currentUser = userBox[0];
+    await database
+        .updateMoorUser(currentUser.copyWith(defaultWidgetImage: encoded));
   }
 
   List<String> starredPhotos;
@@ -164,26 +141,35 @@ abstract class _AppStore with Store {
     }
 
     starredPhotos.add(photoId);
-
+/* 
     var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.starredPhotos = starredPhotos;
-    currentUser.save();
+    currentUser.save(); */
 
-    print('Added to starred photos!!');
+    database.getSingleMoorUser(createIfNotExist: true).then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database
+          .updateMoorUser(currentUser.copyWith(starredPhotos: starredPhotos));
+    });
   }
 
-  void removeFromStarredPhotos(String photoId) {
+  void removeFromStarredPhotos(String photoId) async {
     if (!starredPhotos.contains(photoId)) {
       return;
     }
 
     starredPhotos.remove(photoId);
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.starredPhotos = starredPhotos;
-    currentUser.save();
+    currentUser.save(); */
+    database.getSingleMoorUser(createIfNotExist: true).then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database
+          .updateMoorUser(currentUser.copyWith(starredPhotos: starredPhotos));
+    });
   }
 
   String initialRoute;
@@ -198,8 +184,13 @@ abstract class _AppStore with Store {
   }
 
   int get totalPrivatePics {
-    var secretBox = Hive.box('secrets');
-    return secretBox.length;
+    var len = 0;
+    Future.value([database.getAllPrivate()]).then((secretBox) {
+      len = secretBox.length;
+    });
+    return len;
+    /* var secretBox = Hive.box('secrets');
+    return secretBox.length; */
   }
 
   @action
@@ -224,28 +215,44 @@ abstract class _AppStore with Store {
   }
 
   @action
-  Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
-    return NotificationPermissions.getNotificationPermissionStatus().then((status) {
-      var userBox = Hive.box('user');
-      User currentUser = userBox.getAt(0);
+  Future<void> checkNotificationPermission(
+      {bool firstPermissionCheck = false}) async {
+    return NotificationPermissions.getNotificationPermissionStatus()
+        .then((status) async {
+      /* var userBox = Hive.box('user');
+      User currentUser = userBox.getAt(0); */
+      var userBox = await database.getSingleMoorUser();
+      MoorUser currentUser = userBox[0];
 
       if (status == PermissionStatus.denied) {
         print('user has no notification permission');
-        currentUser.notifications = false;
-//        if (firstPermissionCheck) {
+/*         currentUser.notifications = false;
+        //        if (firstPermissionCheck) {
         currentUser.dailyChallenges = false;
-//        }
-        currentUser.save();
+        //        }
+        currentUser.save(); */
+
+        await database.updateMoorUser(currentUser.copyWith(
+          notification: false,
+        ));
       } else {
         print('user has notification permission');
-        currentUser.notifications = true;
+/*         currentUser.notifications = true;
         if (firstPermissionCheck) {
           currentUser.dailyChallenges = false;
         }
-        currentUser.save();
+        currentUser.save(); */
+        var tempDailyChallenges = currentUser.dailyChallenges;
+        if (firstPermissionCheck) {
+          tempDailyChallenges = false;
+        }
+        await database.updateMoorUser(currentUser.copyWith(
+          notification: true,
+          dailyChallenges: tempDailyChallenges,
+        ));
       }
 
-      notifications = currentUser.notifications;
+      notifications = currentUser.notification;
       dailyChallenges = currentUser.dailyChallenges;
     });
   }
@@ -254,13 +261,19 @@ abstract class _AppStore with Store {
   bool dailyChallenges = false;
 
   @action
-  void switchDailyChallenges({String notificationTitle, String notificationDescription}) {
+  void switchDailyChallenges(
+      {String notificationTitle, String notificationDescription}) {
     dailyChallenges = !dailyChallenges;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.dailyChallenges = dailyChallenges;
-    currentUser.save();
+    currentUser.save(); */
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(
+          currentUser.copyWith(dailyChallenges: dailyChallenges));
+    });
 
     PushNotificationsManager push = PushNotificationsManager();
     if (dailyChallenges) {
@@ -284,10 +297,14 @@ abstract class _AppStore with Store {
   void setIsPinRegistered(bool value) {
     isPinRegistered = value;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.isPinRegistered = value;
-    currentUser.save();
+    currentUser.save(); */
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(currentUser.copyWith(isPinRegistered: value));
+    });
   }
 
   @observable
@@ -297,10 +314,14 @@ abstract class _AppStore with Store {
   void setKeepAskingToDelete(bool value) {
     keepAskingToDelete = value;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.keepAskingToDelete = value;
-    currentUser.save();
+    currentUser.save(); */
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
+    });
   }
 
   @observable
@@ -310,10 +331,15 @@ abstract class _AppStore with Store {
   void setShouldDeleteOnPrivate(bool value) {
     shouldDeleteOnPrivate = value;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.shouldDeleteOnPrivate = value;
-    currentUser.save();
+    currentUser.save(); */
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database
+          .updateMoorUser(currentUser.copyWith(shouldDeleteOnPrivate: value));
+    });
   }
 
   @observable
@@ -330,12 +356,15 @@ abstract class _AppStore with Store {
 
     print('After Switch Secret: $secretPhotos');
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.secretPhotos = secretPhotos;
-    currentUser.save();
-
-//    Analytics.sendEvent(Event.notification_switch);
+    currentUser.save(); */
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(currentUser.copyWith(secretPhotos: secretPhotos));
+    });
+    //    Analytics.sendEvent(Event.notification_switch);
   }
 
   @observable
@@ -344,7 +373,7 @@ abstract class _AppStore with Store {
   @action
   void setRequireSecret(int value) => requireSecret = value;
 
-//  int goal;
+  //  int goal;
 
   @observable
   int hourOfDay = 20;
@@ -357,17 +386,25 @@ abstract class _AppStore with Store {
     hourOfDay = hour;
     minutesOfDay = minute;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.hourOfDay = hour;
     currentUser.minutesOfDay = minute;
-    currentUser.save();
+    currentUser.save(); */
+
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(currentUser.copyWith(
+        hourOfDay: hour,
+        minuteOfDay: minute,
+      ));
+    });
 
     Analytics.sendEvent(Event.notification_time);
 
     if (dailyChallenges == true) {
-//      PushNotificationsManager push = PushNotificationsManager();
-//      push.scheduleNotification();
+      //      PushNotificationsManager push = PushNotificationsManager();
+      //      push.scheduleNotification();
       print('rescheduling notifications....');
     }
   }
@@ -379,10 +416,14 @@ abstract class _AppStore with Store {
   void setIsPremium(bool value) {
     isPremium = value;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.isPremium = value;
-    currentUser.save();
+    currentUser.save(); */
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(currentUser.copyWith(isPremium: value));
+    });
 
     if (isPremium == true) {
       setCanTagToday(true);
@@ -451,17 +492,22 @@ abstract class _AppStore with Store {
 
   @action
   void editRecentTags(String oldTagKey, String newTagKey) {
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
-
     if (recentTags.contains(oldTagKey)) {
       print('updating tag name in recent tags');
       int indexOfTag = recentTags.indexOf(oldTagKey);
       recentTags[indexOfTag] = newTagKey;
-
-      int indexOfRecentTag = getUser.recentTags.indexOf(oldTagKey);
+      /* var userBox = Hive.box('user');
+      User getUser = userBox.getAt(0); */
+      database.getSingleMoorUser().then((userBox) {
+        MoorUser currentUser = userBox[0];
+        int indexOfRecentTag = currentUser.recentTags.indexOf(oldTagKey);
+        var tempTags = List<String>.from(currentUser.recentTags);
+        tempTags[indexOfRecentTag] = newTagKey;
+        database.updateMoorUser(currentUser.copyWith(recentTags: tempTags));
+      });
+/* 
       getUser.recentTags[indexOfRecentTag] = newTagKey;
-      userBox.putAt(0, getUser);
+      userBox.putAt(0, getUser); */
     }
   }
 
@@ -472,10 +518,14 @@ abstract class _AppStore with Store {
   Future<void> setTutorialCompleted(bool value) async {
     tutorialCompleted = value;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.tutorialCompleted = value;
-    currentUser.save();
+    currentUser.save(); */
+
+    var userBox = await database.getSingleMoorUser();
+    MoorUser currentUser = userBox[0];
+    database.updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
 
     await requestGalleryPermission();
     Analytics.sendTutorialComplete();
@@ -491,10 +541,15 @@ abstract class _AppStore with Store {
   void setLoggedIn(bool value) {
     loggedIn = true;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.loggedIn = true;
-    currentUser.save();
+    currentUser.save(); */
+
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(currentUser.copyWith(loggedIn: true));
+    });
   }
 
   @observable
@@ -508,28 +563,33 @@ abstract class _AppStore with Store {
       canTagToday = value;
     }
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.canTagToday = canTagToday;
-    currentUser.save();
+    currentUser.save(); */
+
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(currentUser.copyWith(canTagToday: canTagToday));
+    });
   }
 
   @action
   Future<void> increaseTodayTaggedPics() async {
-    var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
+    /* var userBox = Hive.box('user');
+    User currentUser = userBox.getAt(0); */
+    var userBox = await database.getSingleMoorUser();
+    MoorUser currentUser = userBox[0];
 
     DateTime lastTaggedPicDate = currentUser.lastTaggedPicDate;
     DateTime dateNow = DateTime.now();
-
-    if (lastTaggedPicDate == null) {
-      print('date is null....');
-      currentUser.picsTaggedToday = 1;
-      currentUser.lastTaggedPicDate = dateNow;
-    } else if (Utils.isSameDay(lastTaggedPicDate, dateNow)) {
-      currentUser.picsTaggedToday += 1;
-      currentUser.lastTaggedPicDate = dateNow;
-      print('same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
+    var picsTaggedToday = currentUser.picsTaggedToday;
+    var lastTaggedPicNewDate = dateNow;
+    if (lastTaggedPicDate != null &&
+        Utils.isSameDay(lastTaggedPicDate, dateNow)) {
+      picsTaggedToday += 1;
+      print(
+          'same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
 
       final RemoteConfig remoteConfig = await RemoteConfig.instance;
       dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
@@ -537,16 +597,22 @@ abstract class _AppStore with Store {
 
       if (mod == 0) {
         print('### CALL ADS!!!');
-        currentUser.save();
+
+        await database.updateMoorUser(currentUser.copyWith(
+          picsTaggedToday: picsTaggedToday,
+          lastTaggedPicDate: lastTaggedPicNewDate,
+        ));
         setCanTagToday(false);
         return;
       }
     } else {
-      print('not same day... resetting counter....');
-      currentUser.picsTaggedToday = 1;
-      currentUser.lastTaggedPicDate = dateNow;
+      print('(date might be null) or (not same day... resetting counter....)');
+      picsTaggedToday = 1;
     }
-    currentUser.save();
+    await database.updateMoorUser(currentUser.copyWith(
+      picsTaggedToday: picsTaggedToday,
+      lastTaggedPicDate: lastTaggedPicNewDate,
+    ));
     setCanTagToday(true);
   }
 
@@ -568,10 +634,15 @@ abstract class _AppStore with Store {
       hasGalleryPermission = true;
     }
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.hasGalleryPermission = hasGalleryPermission;
-    currentUser.save();
+    currentUser.save(); */
+    var userBox = await database.getSingleMoorUser();
+    MoorUser currentUser = userBox[0];
+    database.updateMoorUser(currentUser.copyWith(
+      hasGalleryPermission: hasGalleryPermission,
+    ));
 
     return result;
   }
@@ -580,11 +651,17 @@ abstract class _AppStore with Store {
   void changeUserLanguage(String language) {
     appLanguage = language;
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.appLanguage = language;
-    currentUser.save();
+    currentUser.save(); */
 
+    database.getSingleMoorUser().then((userBox) {
+      MoorUser currentUser = userBox[0];
+      database.updateMoorUser(currentUser.copyWith(
+        hasGalleryPermission: hasGalleryPermission,
+      ));
+    });
     Analytics.sendEvent(Event.changed_language);
   }
 
@@ -638,41 +715,48 @@ abstract class _AppStore with Store {
   void addTagToRecent({String tagKey}) {
     print('adding tag to recent: $tagKey');
 
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
+    /* var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0); */
+    database.getSingleMoorUser().then((userBox) async {
+      MoorUser getUser = userBox[0];
 
-    if (recentTags.contains(tagKey)) {
-      recentTags.remove(tagKey);
+      if (recentTags.contains(tagKey)) {
+        recentTags.remove(tagKey);
+        recentTags.insert(0, tagKey);
+        getUser.recentTags.remove(tagKey);
+        getUser.recentTags.insert(0, tagKey);
+        await database.updateMoorUser(getUser);
+        print('final tags in recent: ${getUser.recentTags}');
+        return;
+      }
+
+      if (recentTags.length >= kMaxNumOfRecentTags) {
+        print('removing last');
+        recentTags.removeLast();
+        getUser.recentTags.removeLast();
+      }
+
       recentTags.insert(0, tagKey);
-      getUser.recentTags.remove(tagKey);
       getUser.recentTags.insert(0, tagKey);
-      userBox.putAt(0, getUser);
+      await database.updateMoorUser(getUser);
       print('final tags in recent: ${getUser.recentTags}');
-      return;
-    }
-
-    if (recentTags.length >= kMaxNumOfRecentTags) {
-      print('removing last');
-      recentTags.removeLast();
-      getUser.recentTags.removeLast();
-    }
-
-    recentTags.insert(0, tagKey);
-    getUser.recentTags.insert(0, tagKey);
-    userBox.putAt(0, getUser);
-    print('final tags in recent: ${getUser.recentTags}');
+    });
   }
 
   @action
   void removeTagFromRecent({String tagKey}) {
-    var userBox = Hive.box('user');
-    User getUser = userBox.getAt(0);
+    /* var userBox = Hive.box('user');
+    User getUser = userBox.getAt(0); */
 
     if (recentTags.contains(tagKey)) {
-      recentTags.remove(tagKey);
-      getUser.recentTags.remove(tagKey);
-      userBox.putAt(0, getUser);
-      print('recent tags after removed: ${getUser.recentTags}');
+      database.getSingleMoorUser().then((userBox) async {
+        MoorUser getUser = userBox[0];
+        recentTags.remove(tagKey);
+        getUser.recentTags.remove(tagKey);
+        await database.updateMoorUser(getUser);
+        /* userBox.putAt(0, getUser); */
+        print('recent tags after removed: ${getUser.recentTags}');
+      });
     }
   }
 
@@ -694,10 +778,17 @@ abstract class _AppStore with Store {
 
   String email;
   void setEmail(String value) {
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.email = value;
-    currentUser.save();
+    currentUser.save(); */
+
+    database.getSingleMoorUser().then((userBox) async {
+      MoorUser currentUser = userBox[0];
+      await database.updateMoorUser(currentUser.copyWith(
+        email: value,
+      ));
+    });
 
     email = value;
   }
@@ -706,7 +797,8 @@ abstract class _AppStore with Store {
   double photoHeightInCardWidget = 500;
 
   @action
-  void setPhotoHeightInCardWidget(double value) => photoHeightInCardWidget = value;
+  void setPhotoHeightInCardWidget(double value) =>
+      photoHeightInCardWidget = value;
 
   bool wantsToActivateBiometric = false;
 
@@ -719,10 +811,15 @@ abstract class _AppStore with Store {
       await deactivateBiometric();
     }
 
-    var userBox = Hive.box('user');
+    /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.isBiometricActivated = value;
-    currentUser.save();
+    currentUser.save(); */
+    var userBox = await database.getSingleMoorUser();
+    MoorUser currentUser = userBox[0];
+    await database.updateMoorUser(currentUser.copyWith(
+      isBiometricActivated: value,
+    ));
 
     isBiometricActivated = value;
   }
@@ -748,23 +845,33 @@ abstract class _AppStore with Store {
   }
 
   void saveSecretKey(String value) {
-    var userBox = Hive.box('userkey');
+    /* var userBox = Hive.box('userkey');
     UserKey userKey = UserKey(secretKey: value);
-    userBox.put(0, userKey);
+    userBox.put(0, userKey); */
+    database.getSingleMoorUser().then((userBox) async {
+      MoorUser currentUser = userBox[0];
+      await database.updateMoorUser(currentUser.copyWith(
+        secretKey: value,
+      ));
+    });
   }
 
   String getSecretKey() {
-    var userBox = Hive.box('userkey');
-    UserKey userKey = userBox.get(0);
-    return userKey.secretKey;
+    String secret = '';
+    Future.value(database.getSingleMoorUser())
+        .then((userBox) => secret = userBox[0].secretKey);
+    return secret;
   }
 
   @action
   Future<void> deactivateBiometric() async {
     await Crypto.deleteEncryptedPin();
 
-    var userBox = Hive.box('userkey');
-    userBox.delete(0);
+    /* var userBox = Hive.box('userkey');
+    userBox.delete(0); */
+    var userBox = await database.getSingleMoorUser();
+    var user = userBox[0];
+    await database.updateMoorUser(user.copyWith(secretKey: ''));
 
     print('Deleted encrypted info!');
   }
@@ -774,6 +881,37 @@ abstract class _AppStore with Store {
 
   @action
   void switchIsMenuExpanded() => isMenuExpanded = !isMenuExpanded;
+}
+
+MoorUser getDefaultMoorUser({String deviceLocale}) {
+  return MoorUser(
+    customPrimaryKey: 0,
+    id: Uuid().v4(),
+    email: null,
+    password: null,
+    notification: false,
+    dailyChallenges: false,
+    goal: 20,
+    hourOfDay: 20,
+    minuteOfDay: 00,
+    isPremium: false,
+    recentTags: [],
+    tutorialCompleted: false,
+    picsTaggedToday: 0,
+    lastTaggedPicDate: DateTime.now(),
+    canTagToday: true,
+    appLanguage: deviceLocale ?? '',
+    hasGalleryPermission: null,
+    loggedIn: false,
+    secretPhotos: false,
+    isPinRegistered: false,
+    keepAskingToDelete: true,
+    tourCompleted: false,
+    isBiometricActivated: false,
+    shouldDeleteOnPrivate: false,
+    starredPhotos: [],
+    defaultWidgetImage: null,
+  );
 }
 
 enum PopPinScreenTo {

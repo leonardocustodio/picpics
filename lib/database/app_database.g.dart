@@ -309,9 +309,9 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     @required double originalLongitude,
     @required double latitude,
     @required double longitude,
-    @required bool isPrivate,
-    @required bool deletedFromCameraRoll,
-    @required bool isStarred,
+    this.isPrivate = const Value.absent(),
+    this.deletedFromCameraRoll = const Value.absent(),
+    this.isStarred = const Value.absent(),
     this.specificLocation = const Value.absent(),
     this.generalLocation = const Value.absent(),
     this.base64encoded = const Value.absent(),
@@ -320,10 +320,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
         originalLatitude = Value(originalLatitude),
         originalLongitude = Value(originalLongitude),
         latitude = Value(latitude),
-        longitude = Value(longitude),
-        isPrivate = Value(isPrivate),
-        deletedFromCameraRoll = Value(deletedFromCameraRoll),
-        isStarred = Value(isStarred);
+        longitude = Value(longitude);
   static Insertable<Photo> custom({
     Expression<String> id,
     Expression<DateTime> createdAt,
@@ -533,11 +530,8 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
   @override
   GeneratedBoolColumn get isPrivate => _isPrivate ??= _constructIsPrivate();
   GeneratedBoolColumn _constructIsPrivate() {
-    return GeneratedBoolColumn(
-      'is_private',
-      $tableName,
-      false,
-    );
+    return GeneratedBoolColumn('is_private', $tableName, false,
+        defaultValue: const Constant(false));
   }
 
   final VerificationMeta _deletedFromCameraRollMeta =
@@ -547,11 +541,8 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
   GeneratedBoolColumn get deletedFromCameraRoll =>
       _deletedFromCameraRoll ??= _constructDeletedFromCameraRoll();
   GeneratedBoolColumn _constructDeletedFromCameraRoll() {
-    return GeneratedBoolColumn(
-      'deleted_from_camera_roll',
-      $tableName,
-      false,
-    );
+    return GeneratedBoolColumn('deleted_from_camera_roll', $tableName, false,
+        defaultValue: const Constant(false));
   }
 
   final VerificationMeta _isStarredMeta = const VerificationMeta('isStarred');
@@ -559,11 +550,8 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
   @override
   GeneratedBoolColumn get isStarred => _isStarred ??= _constructIsStarred();
   GeneratedBoolColumn _constructIsStarred() {
-    return GeneratedBoolColumn(
-      'is_starred',
-      $tableName,
-      false,
-    );
+    return GeneratedBoolColumn('is_starred', $tableName, false,
+        defaultValue: const Constant(false));
   }
 
   final VerificationMeta _specificLocationMeta =
@@ -676,22 +664,16 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     if (data.containsKey('is_private')) {
       context.handle(_isPrivateMeta,
           isPrivate.isAcceptableOrUnknown(data['is_private'], _isPrivateMeta));
-    } else if (isInserting) {
-      context.missing(_isPrivateMeta);
     }
     if (data.containsKey('deleted_from_camera_roll')) {
       context.handle(
           _deletedFromCameraRollMeta,
           deletedFromCameraRoll.isAcceptableOrUnknown(
               data['deleted_from_camera_roll'], _deletedFromCameraRollMeta));
-    } else if (isInserting) {
-      context.missing(_deletedFromCameraRollMeta);
     }
     if (data.containsKey('is_starred')) {
       context.handle(_isStarredMeta,
           isStarred.isAcceptableOrUnknown(data['is_starred'], _isStarredMeta));
-    } else if (isInserting) {
-      context.missing(_isStarredMeta);
     }
     if (data.containsKey('specific_location')) {
       context.handle(
@@ -731,19 +713,19 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
 class Private extends DataClass implements Insertable<Private> {
   final String id;
   final String path;
+  final String nonce;
   final String thumbPath;
   final DateTime createDateTime;
   final double originalLatitude;
   final double originalLongitude;
-  final String nonce;
   Private(
       {@required this.id,
       @required this.path,
+      @required this.nonce,
       this.thumbPath,
       @required this.createDateTime,
       @required this.originalLatitude,
-      @required this.originalLongitude,
-      @required this.nonce});
+      @required this.originalLongitude});
   factory Private.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -753,6 +735,8 @@ class Private extends DataClass implements Insertable<Private> {
     return Private(
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
       path: stringType.mapFromDatabaseResponse(data['${effectivePrefix}path']),
+      nonce:
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}nonce']),
       thumbPath: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}thumb_path']),
       createDateTime: dateTimeType
@@ -761,8 +745,6 @@ class Private extends DataClass implements Insertable<Private> {
           .mapFromDatabaseResponse(data['${effectivePrefix}original_latitude']),
       originalLongitude: doubleType.mapFromDatabaseResponse(
           data['${effectivePrefix}original_longitude']),
-      nonce:
-          stringType.mapFromDatabaseResponse(data['${effectivePrefix}nonce']),
     );
   }
   @override
@@ -773,6 +755,9 @@ class Private extends DataClass implements Insertable<Private> {
     }
     if (!nullToAbsent || path != null) {
       map['path'] = Variable<String>(path);
+    }
+    if (!nullToAbsent || nonce != null) {
+      map['nonce'] = Variable<String>(nonce);
     }
     if (!nullToAbsent || thumbPath != null) {
       map['thumb_path'] = Variable<String>(thumbPath);
@@ -786,9 +771,6 @@ class Private extends DataClass implements Insertable<Private> {
     if (!nullToAbsent || originalLongitude != null) {
       map['original_longitude'] = Variable<double>(originalLongitude);
     }
-    if (!nullToAbsent || nonce != null) {
-      map['nonce'] = Variable<String>(nonce);
-    }
     return map;
   }
 
@@ -796,6 +778,8 @@ class Private extends DataClass implements Insertable<Private> {
     return PrivatesCompanion(
       id: id == null && nullToAbsent ? const Value.absent() : Value(id),
       path: path == null && nullToAbsent ? const Value.absent() : Value(path),
+      nonce:
+          nonce == null && nullToAbsent ? const Value.absent() : Value(nonce),
       thumbPath: thumbPath == null && nullToAbsent
           ? const Value.absent()
           : Value(thumbPath),
@@ -808,8 +792,6 @@ class Private extends DataClass implements Insertable<Private> {
       originalLongitude: originalLongitude == null && nullToAbsent
           ? const Value.absent()
           : Value(originalLongitude),
-      nonce:
-          nonce == null && nullToAbsent ? const Value.absent() : Value(nonce),
     );
   }
 
@@ -819,11 +801,11 @@ class Private extends DataClass implements Insertable<Private> {
     return Private(
       id: serializer.fromJson<String>(json['id']),
       path: serializer.fromJson<String>(json['path']),
+      nonce: serializer.fromJson<String>(json['nonce']),
       thumbPath: serializer.fromJson<String>(json['thumbPath']),
       createDateTime: serializer.fromJson<DateTime>(json['createDateTime']),
       originalLatitude: serializer.fromJson<double>(json['originalLatitude']),
       originalLongitude: serializer.fromJson<double>(json['originalLongitude']),
-      nonce: serializer.fromJson<String>(json['nonce']),
     );
   }
   @override
@@ -832,41 +814,41 @@ class Private extends DataClass implements Insertable<Private> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'path': serializer.toJson<String>(path),
+      'nonce': serializer.toJson<String>(nonce),
       'thumbPath': serializer.toJson<String>(thumbPath),
       'createDateTime': serializer.toJson<DateTime>(createDateTime),
       'originalLatitude': serializer.toJson<double>(originalLatitude),
       'originalLongitude': serializer.toJson<double>(originalLongitude),
-      'nonce': serializer.toJson<String>(nonce),
     };
   }
 
   Private copyWith(
           {String id,
           String path,
+          String nonce,
           String thumbPath,
           DateTime createDateTime,
           double originalLatitude,
-          double originalLongitude,
-          String nonce}) =>
+          double originalLongitude}) =>
       Private(
         id: id ?? this.id,
         path: path ?? this.path,
+        nonce: nonce ?? this.nonce,
         thumbPath: thumbPath ?? this.thumbPath,
         createDateTime: createDateTime ?? this.createDateTime,
         originalLatitude: originalLatitude ?? this.originalLatitude,
         originalLongitude: originalLongitude ?? this.originalLongitude,
-        nonce: nonce ?? this.nonce,
       );
   @override
   String toString() {
     return (StringBuffer('Private(')
           ..write('id: $id, ')
           ..write('path: $path, ')
+          ..write('nonce: $nonce, ')
           ..write('thumbPath: $thumbPath, ')
           ..write('createDateTime: $createDateTime, ')
           ..write('originalLatitude: $originalLatitude, ')
-          ..write('originalLongitude: $originalLongitude, ')
-          ..write('nonce: $nonce')
+          ..write('originalLongitude: $originalLongitude')
           ..write(')'))
         .toString();
   }
@@ -877,91 +859,93 @@ class Private extends DataClass implements Insertable<Private> {
       $mrjc(
           path.hashCode,
           $mrjc(
-              thumbPath.hashCode,
+              nonce.hashCode,
               $mrjc(
-                  createDateTime.hashCode,
-                  $mrjc(originalLatitude.hashCode,
-                      $mrjc(originalLongitude.hashCode, nonce.hashCode)))))));
+                  thumbPath.hashCode,
+                  $mrjc(
+                      createDateTime.hashCode,
+                      $mrjc(originalLatitude.hashCode,
+                          originalLongitude.hashCode)))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Private &&
           other.id == this.id &&
           other.path == this.path &&
+          other.nonce == this.nonce &&
           other.thumbPath == this.thumbPath &&
           other.createDateTime == this.createDateTime &&
           other.originalLatitude == this.originalLatitude &&
-          other.originalLongitude == this.originalLongitude &&
-          other.nonce == this.nonce);
+          other.originalLongitude == this.originalLongitude);
 }
 
 class PrivatesCompanion extends UpdateCompanion<Private> {
   final Value<String> id;
   final Value<String> path;
+  final Value<String> nonce;
   final Value<String> thumbPath;
   final Value<DateTime> createDateTime;
   final Value<double> originalLatitude;
   final Value<double> originalLongitude;
-  final Value<String> nonce;
   const PrivatesCompanion({
     this.id = const Value.absent(),
     this.path = const Value.absent(),
+    this.nonce = const Value.absent(),
     this.thumbPath = const Value.absent(),
     this.createDateTime = const Value.absent(),
     this.originalLatitude = const Value.absent(),
     this.originalLongitude = const Value.absent(),
-    this.nonce = const Value.absent(),
   });
   PrivatesCompanion.insert({
     @required String id,
     @required String path,
+    @required String nonce,
     this.thumbPath = const Value.absent(),
     @required DateTime createDateTime,
     @required double originalLatitude,
     @required double originalLongitude,
-    @required String nonce,
   })  : id = Value(id),
         path = Value(path),
+        nonce = Value(nonce),
         createDateTime = Value(createDateTime),
         originalLatitude = Value(originalLatitude),
-        originalLongitude = Value(originalLongitude),
-        nonce = Value(nonce);
+        originalLongitude = Value(originalLongitude);
   static Insertable<Private> custom({
     Expression<String> id,
     Expression<String> path,
+    Expression<String> nonce,
     Expression<String> thumbPath,
     Expression<DateTime> createDateTime,
     Expression<double> originalLatitude,
     Expression<double> originalLongitude,
-    Expression<String> nonce,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (path != null) 'path': path,
+      if (nonce != null) 'nonce': nonce,
       if (thumbPath != null) 'thumb_path': thumbPath,
       if (createDateTime != null) 'create_date_time': createDateTime,
       if (originalLatitude != null) 'original_latitude': originalLatitude,
       if (originalLongitude != null) 'original_longitude': originalLongitude,
-      if (nonce != null) 'nonce': nonce,
     });
   }
 
   PrivatesCompanion copyWith(
       {Value<String> id,
       Value<String> path,
+      Value<String> nonce,
       Value<String> thumbPath,
       Value<DateTime> createDateTime,
       Value<double> originalLatitude,
-      Value<double> originalLongitude,
-      Value<String> nonce}) {
+      Value<double> originalLongitude}) {
     return PrivatesCompanion(
       id: id ?? this.id,
       path: path ?? this.path,
+      nonce: nonce ?? this.nonce,
       thumbPath: thumbPath ?? this.thumbPath,
       createDateTime: createDateTime ?? this.createDateTime,
       originalLatitude: originalLatitude ?? this.originalLatitude,
       originalLongitude: originalLongitude ?? this.originalLongitude,
-      nonce: nonce ?? this.nonce,
     );
   }
 
@@ -973,6 +957,9 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
     }
     if (path.present) {
       map['path'] = Variable<String>(path.value);
+    }
+    if (nonce.present) {
+      map['nonce'] = Variable<String>(nonce.value);
     }
     if (thumbPath.present) {
       map['thumb_path'] = Variable<String>(thumbPath.value);
@@ -986,9 +973,6 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
     if (originalLongitude.present) {
       map['original_longitude'] = Variable<double>(originalLongitude.value);
     }
-    if (nonce.present) {
-      map['nonce'] = Variable<String>(nonce.value);
-    }
     return map;
   }
 
@@ -997,11 +981,11 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
     return (StringBuffer('PrivatesCompanion(')
           ..write('id: $id, ')
           ..write('path: $path, ')
+          ..write('nonce: $nonce, ')
           ..write('thumbPath: $thumbPath, ')
           ..write('createDateTime: $createDateTime, ')
           ..write('originalLatitude: $originalLatitude, ')
-          ..write('originalLongitude: $originalLongitude, ')
-          ..write('nonce: $nonce')
+          ..write('originalLongitude: $originalLongitude')
           ..write(')'))
         .toString();
   }
@@ -1030,6 +1014,18 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
   GeneratedTextColumn _constructPath() {
     return GeneratedTextColumn(
       'path',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _nonceMeta = const VerificationMeta('nonce');
+  GeneratedTextColumn _nonce;
+  @override
+  GeneratedTextColumn get nonce => _nonce ??= _constructNonce();
+  GeneratedTextColumn _constructNonce() {
+    return GeneratedTextColumn(
+      'nonce',
       $tableName,
       false,
     );
@@ -1089,27 +1085,15 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
     );
   }
 
-  final VerificationMeta _nonceMeta = const VerificationMeta('nonce');
-  GeneratedTextColumn _nonce;
-  @override
-  GeneratedTextColumn get nonce => _nonce ??= _constructNonce();
-  GeneratedTextColumn _constructNonce() {
-    return GeneratedTextColumn(
-      'nonce',
-      $tableName,
-      false,
-    );
-  }
-
   @override
   List<GeneratedColumn> get $columns => [
         id,
         path,
+        nonce,
         thumbPath,
         createDateTime,
         originalLatitude,
-        originalLongitude,
-        nonce
+        originalLongitude
       ];
   @override
   $PrivatesTable get asDslTable => this;
@@ -1132,6 +1116,12 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
           _pathMeta, path.isAcceptableOrUnknown(data['path'], _pathMeta));
     } else if (isInserting) {
       context.missing(_pathMeta);
+    }
+    if (data.containsKey('nonce')) {
+      context.handle(
+          _nonceMeta, nonce.isAcceptableOrUnknown(data['nonce'], _nonceMeta));
+    } else if (isInserting) {
+      context.missing(_nonceMeta);
     }
     if (data.containsKey('thumb_path')) {
       context.handle(_thumbPathMeta,
@@ -1160,12 +1150,6 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
               data['original_longitude'], _originalLongitudeMeta));
     } else if (isInserting) {
       context.missing(_originalLongitudeMeta);
-    }
-    if (data.containsKey('nonce')) {
-      context.handle(
-          _nonceMeta, nonce.isAcceptableOrUnknown(data['nonce'], _nonceMeta));
-    } else if (isInserting) {
-      context.missing(_nonceMeta);
     }
     return context;
   }
@@ -1610,7 +1594,7 @@ class $LabelEntriesTable extends LabelEntries
   }
 }
 
-class Config extends DataClass implements Insertable<Config> {
+class MoorUser extends DataClass implements Insertable<MoorUser> {
   final int customPrimaryKey;
   final String id;
   final String email;
@@ -1639,7 +1623,7 @@ class Config extends DataClass implements Insertable<Config> {
   final bool tourCompleted;
   final bool isBiometricActivated;
   final DateTime lastTaggedPicDate;
-  Config(
+  MoorUser(
       {@required this.customPrimaryKey,
       @required this.id,
       this.email,
@@ -1668,14 +1652,14 @@ class Config extends DataClass implements Insertable<Config> {
       @required this.tourCompleted,
       @required this.isBiometricActivated,
       @required this.lastTaggedPicDate});
-  factory Config.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+  factory MoorUser.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final intType = db.typeSystem.forDartType<int>();
     final stringType = db.typeSystem.forDartType<String>();
     final boolType = db.typeSystem.forDartType<bool>();
     final dateTimeType = db.typeSystem.forDartType<DateTime>();
-    return Config(
+    return MoorUser(
       customPrimaryKey: intType.mapFromDatabaseResponse(
           data['${effectivePrefix}custom_primary_key']),
       id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
@@ -1687,7 +1671,7 @@ class Config extends DataClass implements Insertable<Config> {
           .mapFromDatabaseResponse(data['${effectivePrefix}notification']),
       dailyChallenges: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}daily_challenges']),
-      recentTags: $ConfigsTable.$converter0.mapToDart(stringType
+      recentTags: $MoorUsersTable.$converter0.mapToDart(stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}recent_tags'])),
       appLanguage: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}app_language']),
@@ -1695,7 +1679,7 @@ class Config extends DataClass implements Insertable<Config> {
           .mapFromDatabaseResponse(data['${effectivePrefix}app_version']),
       secretKey: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}secret_key']),
-      starredPhotos: $ConfigsTable.$converter1.mapToDart(stringType
+      starredPhotos: $MoorUsersTable.$converter1.mapToDart(stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}starred_photos'])),
       defaultWidgetImage: stringType.mapFromDatabaseResponse(
           data['${effectivePrefix}default_widget_image']),
@@ -1754,7 +1738,7 @@ class Config extends DataClass implements Insertable<Config> {
       map['daily_challenges'] = Variable<bool>(dailyChallenges);
     }
     if (!nullToAbsent || recentTags != null) {
-      final converter = $ConfigsTable.$converter0;
+      final converter = $MoorUsersTable.$converter0;
       map['recent_tags'] = Variable<String>(converter.mapToSql(recentTags));
     }
     if (!nullToAbsent || appLanguage != null) {
@@ -1767,7 +1751,7 @@ class Config extends DataClass implements Insertable<Config> {
       map['secret_key'] = Variable<String>(secretKey);
     }
     if (!nullToAbsent || starredPhotos != null) {
-      final converter = $ConfigsTable.$converter1;
+      final converter = $MoorUsersTable.$converter1;
       map['starred_photos'] =
           Variable<String>(converter.mapToSql(starredPhotos));
     }
@@ -1825,8 +1809,8 @@ class Config extends DataClass implements Insertable<Config> {
     return map;
   }
 
-  ConfigsCompanion toCompanion(bool nullToAbsent) {
-    return ConfigsCompanion(
+  MoorUsersCompanion toCompanion(bool nullToAbsent) {
+    return MoorUsersCompanion(
       customPrimaryKey: customPrimaryKey == null && nullToAbsent
           ? const Value.absent()
           : Value(customPrimaryKey),
@@ -1909,10 +1893,10 @@ class Config extends DataClass implements Insertable<Config> {
     );
   }
 
-  factory Config.fromJson(Map<String, dynamic> json,
+  factory MoorUser.fromJson(Map<String, dynamic> json,
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
-    return Config(
+    return MoorUser(
       customPrimaryKey: serializer.fromJson<int>(json['customPrimaryKey']),
       id: serializer.fromJson<String>(json['id']),
       email: serializer.fromJson<String>(json['email']),
@@ -1983,7 +1967,7 @@ class Config extends DataClass implements Insertable<Config> {
     };
   }
 
-  Config copyWith(
+  MoorUser copyWith(
           {int customPrimaryKey,
           String id,
           String email,
@@ -2012,7 +1996,7 @@ class Config extends DataClass implements Insertable<Config> {
           bool tourCompleted,
           bool isBiometricActivated,
           DateTime lastTaggedPicDate}) =>
-      Config(
+      MoorUser(
         customPrimaryKey: customPrimaryKey ?? this.customPrimaryKey,
         id: id ?? this.id,
         email: email ?? this.email,
@@ -2045,7 +2029,7 @@ class Config extends DataClass implements Insertable<Config> {
       );
   @override
   String toString() {
-    return (StringBuffer('Config(')
+    return (StringBuffer('MoorUser(')
           ..write('customPrimaryKey: $customPrimaryKey, ')
           ..write('id: $id, ')
           ..write('email: $email, ')
@@ -2125,7 +2109,7 @@ class Config extends DataClass implements Insertable<Config> {
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is Config &&
+      (other is MoorUser &&
           other.customPrimaryKey == this.customPrimaryKey &&
           other.id == this.id &&
           other.email == this.email &&
@@ -2156,7 +2140,7 @@ class Config extends DataClass implements Insertable<Config> {
           other.lastTaggedPicDate == this.lastTaggedPicDate);
 }
 
-class ConfigsCompanion extends UpdateCompanion<Config> {
+class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
   final Value<int> customPrimaryKey;
   final Value<String> id;
   final Value<String> email;
@@ -2185,7 +2169,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   final Value<bool> tourCompleted;
   final Value<bool> isBiometricActivated;
   final Value<DateTime> lastTaggedPicDate;
-  const ConfigsCompanion({
+  const MoorUsersCompanion({
     this.customPrimaryKey = const Value.absent(),
     this.id = const Value.absent(),
     this.email = const Value.absent(),
@@ -2215,7 +2199,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     this.isBiometricActivated = const Value.absent(),
     this.lastTaggedPicDate = const Value.absent(),
   });
-  ConfigsCompanion.insert({
+  MoorUsersCompanion.insert({
     this.customPrimaryKey = const Value.absent(),
     this.id = const Value.absent(),
     this.email = const Value.absent(),
@@ -2245,7 +2229,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     this.isBiometricActivated = const Value.absent(),
     this.lastTaggedPicDate = const Value.absent(),
   });
-  static Insertable<Config> custom({
+  static Insertable<MoorUser> custom({
     Expression<int> customPrimaryKey,
     Expression<String> id,
     Expression<String> email,
@@ -2312,7 +2296,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
     });
   }
 
-  ConfigsCompanion copyWith(
+  MoorUsersCompanion copyWith(
       {Value<int> customPrimaryKey,
       Value<String> id,
       Value<String> email,
@@ -2341,7 +2325,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       Value<bool> tourCompleted,
       Value<bool> isBiometricActivated,
       Value<DateTime> lastTaggedPicDate}) {
-    return ConfigsCompanion(
+    return MoorUsersCompanion(
       customPrimaryKey: customPrimaryKey ?? this.customPrimaryKey,
       id: id ?? this.id,
       email: email ?? this.email,
@@ -2396,7 +2380,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       map['daily_challenges'] = Variable<bool>(dailyChallenges.value);
     }
     if (recentTags.present) {
-      final converter = $ConfigsTable.$converter0;
+      final converter = $MoorUsersTable.$converter0;
       map['recent_tags'] =
           Variable<String>(converter.mapToSql(recentTags.value));
     }
@@ -2410,7 +2394,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
       map['secret_key'] = Variable<String>(secretKey.value);
     }
     if (starredPhotos.present) {
-      final converter = $ConfigsTable.$converter1;
+      final converter = $MoorUsersTable.$converter1;
       map['starred_photos'] =
           Variable<String>(converter.mapToSql(starredPhotos.value));
     }
@@ -2473,7 +2457,7 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
 
   @override
   String toString() {
-    return (StringBuffer('ConfigsCompanion(')
+    return (StringBuffer('MoorUsersCompanion(')
           ..write('customPrimaryKey: $customPrimaryKey, ')
           ..write('id: $id, ')
           ..write('email: $email, ')
@@ -2507,10 +2491,11 @@ class ConfigsCompanion extends UpdateCompanion<Config> {
   }
 }
 
-class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
+class $MoorUsersTable extends MoorUsers
+    with TableInfo<$MoorUsersTable, MoorUser> {
   final GeneratedDatabase _db;
   final String _alias;
-  $ConfigsTable(this._db, [this._alias]);
+  $MoorUsersTable(this._db, [this._alias]);
   final VerificationMeta _customPrimaryKeyMeta =
       const VerificationMeta('customPrimaryKey');
   GeneratedIntColumn _customPrimaryKey;
@@ -2855,13 +2840,13 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
         lastTaggedPicDate
       ];
   @override
-  $ConfigsTable get asDslTable => this;
+  $MoorUsersTable get asDslTable => this;
   @override
-  String get $tableName => _alias ?? 'configs';
+  String get $tableName => _alias ?? 'moor_users';
   @override
-  final String actualTableName = 'configs';
+  final String actualTableName = 'moor_users';
   @override
-  VerificationContext validateIntegrity(Insertable<Config> instance,
+  VerificationContext validateIntegrity(Insertable<MoorUser> instance,
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
@@ -3012,14 +2997,14 @@ class $ConfigsTable extends Configs with TableInfo<$ConfigsTable, Config> {
   @override
   Set<GeneratedColumn> get $primaryKey => {customPrimaryKey};
   @override
-  Config map(Map<String, dynamic> data, {String tablePrefix}) {
+  MoorUser map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
-    return Config.fromData(data, _db, prefix: effectivePrefix);
+    return MoorUser.fromData(data, _db, prefix: effectivePrefix);
   }
 
   @override
-  $ConfigsTable createAlias(String alias) {
-    return $ConfigsTable(_db, alias);
+  $MoorUsersTable createAlias(String alias) {
+    return $MoorUsersTable(_db, alias);
   }
 
   static TypeConverter<List<String>, String> $converter0 =
@@ -3039,11 +3024,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $LabelEntriesTable _labelEntries;
   $LabelEntriesTable get labelEntries =>
       _labelEntries ??= $LabelEntriesTable(this);
-  $ConfigsTable _configs;
-  $ConfigsTable get configs => _configs ??= $ConfigsTable(this);
+  $MoorUsersTable _moorUsers;
+  $MoorUsersTable get moorUsers => _moorUsers ??= $MoorUsersTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [photos, privates, labels, labelEntries, configs];
+      [photos, privates, labels, labelEntries, moorUsers];
 }

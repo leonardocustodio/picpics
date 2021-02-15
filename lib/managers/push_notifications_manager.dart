@@ -1,6 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hive/hive.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -10,17 +9,19 @@ class PushNotificationsManager {
 
   factory PushNotificationsManager() => _instance;
 
-  static final PushNotificationsManager _instance = PushNotificationsManager._();
+  static final PushNotificationsManager _instance =
+      PushNotificationsManager._();
 
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   bool _initialized = false;
 
   Future<void> init() async {
     if (!_initialized) {
       // For iOS request permission first.
-      _firebaseMessaging.requestNotificationPermissions();
+      _firebaseMessaging.requestPermission();
       // _firebaseMessaging.configure();
 
       // For testing purposes print the Firebase Messaging token
@@ -39,8 +40,12 @@ class PushNotificationsManager {
 //        userBox.putAt(0, DatabaseManager.instance.userSettings);
 //      });
 
-      var initializationSettingsAndroid = AndroidInitializationSettings('ic_launcher');
-      var initializationSettingsIOS = IOSInitializationSettings(requestAlertPermission: false, requestBadgePermission: false, requestSoundPermission: false);
+      var initializationSettingsAndroid =
+          AndroidInitializationSettings('ic_launcher');
+      var initializationSettingsIOS = IOSInitializationSettings(
+          requestAlertPermission: false,
+          requestBadgePermission: false,
+          requestSoundPermission: false);
 
       var initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid,
@@ -52,14 +57,18 @@ class PushNotificationsManager {
     }
   }
 
-  void register({int hourOfDay, int minutesOfDay, String title, String description}) async {
+  void register(
+      {int hourOfDay,
+      int minutesOfDay,
+      String title,
+      String description}) async {
     if (!_initialized) {
       init();
       print('subscribed');
       return;
     }
 
-    _firebaseMessaging.requestNotificationPermissions();
+    _firebaseMessaging.requestPermission();
     String token = await _firebaseMessaging.getToken();
     print("FirebaseMessaging token: $token");
     print('subscribed');
@@ -79,14 +88,19 @@ class PushNotificationsManager {
 
   void deregister() async {
     try {
-      _firebaseMessaging.deleteInstanceID();
+      _firebaseMessaging.deleteToken();
       print('unsubscribed');
-      var userBox = Hive.box('user');
-      DatabaseManager.instance.userSettings.dailyChallenges;// = false;
-      userBox.putAt(0, DatabaseManager.instance.userSettings);
+      //var userBox = Hive.box('user');
+      //DatabaseManager.instance.userSettings.dailyChallenges = false;
+      //userBox.putAt(0, DatabaseManager.instance.userSettings);
+      DatabaseManager.instance.database.updateConfig(
+        DatabaseManager.instance.userSettings.copyWith(
+          dailyChallenges: false,
+        ),
+      );
 
       print(
-          'User settings: notification: ${DatabaseManager.instance.userSettings.notifications} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
+          'User settings: notification: ${DatabaseManager.instance.userSettings.notification} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
 
       await _flutterLocalNotificationsPlugin.cancelAll();
     } catch (error) {
@@ -96,14 +110,19 @@ class PushNotificationsManager {
 
   tz.TZDateTime _nextInstanceOfTime(Time time) {
     final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, time.hour, time.minute);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(
+        tz.local, now.year, now.month, now.day, time.hour, time.minute);
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     return scheduledDate;
   }
 
-  void scheduleNotification({int hourOfDay, int minutesOfDay, String title, String description}) async {
+  void scheduleNotification(
+      {int hourOfDay,
+      int minutesOfDay,
+      String title,
+      String description}) async {
     await _flutterLocalNotificationsPlugin.cancelAll();
 
     var time = Time(
@@ -118,10 +137,13 @@ class PushNotificationsManager {
         description,
         _nextInstanceOfTime(time),
         const NotificationDetails(
-          android: AndroidNotificationDetails('0', 'Daily Goal', 'Notification for remembering your picPics daily goal'),
+          android: AndroidNotificationDetails('0', 'Daily Goal',
+              'Notification for remembering your picPics daily goal'),
         ),
         androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-        scheduledNotificationRepeatFrequency: ScheduledNotificationRepeatFrequency.daily);
+        uiLocalNotificationDateInterpretation:
+            UILocalNotificationDateInterpretation.absoluteTime,
+        scheduledNotificationRepeatFrequency:
+            ScheduledNotificationRepeatFrequency.daily);
   }
 }
