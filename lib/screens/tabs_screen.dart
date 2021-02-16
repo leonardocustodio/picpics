@@ -659,44 +659,64 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                             }
                                           }
                                         }),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 8.0),
-                                      child: TagsList(
-                                        title: galleryStore.searchText != ''
-                                            ? S.of(context).search_results
-                                            : S.of(context).recent_tags,
-                                        tags: galleryStore.tagsSuggestions,
-                                        tagStyle: TagStyle.GrayOutlined,
-                                        showEditTagModal: showEditTagModal,
-                                        onTap: (tagId, tagName) {
-                                          // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
-                                          //   return;
-                                          // }
+                                    FutureBuilder(
+                                        future: galleryStore.tagsSuggestions,
+                                        builder: (c, AsyncSnapshot snapshot) {
+                                          return snapshot.hasData
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 8.0),
+                                                  child: TagsList(
+                                                    title: galleryStore
+                                                                .searchText !=
+                                                            ''
+                                                        ? S
+                                                            .of(context)
+                                                            .search_results
+                                                        : S
+                                                            .of(context)
+                                                            .recent_tags,
+                                                    tags: snapshot.data,
+                                                    tagStyle:
+                                                        TagStyle.GrayOutlined,
+                                                    showEditTagModal:
+                                                        showEditTagModal,
+                                                    onTap: (tagId, tagName) {
+                                                      // if (!appStore.isPremium) {
+                                                      //   Navigator.pushNamed(
+                                                      //       context, PremiumScreen.id);
+                                                      //   return;
+                                                      // }
 
-                                          bottomTagsEditingController.clear();
-                                          galleryStore.setSearchText('');
-                                          galleryStore.addToMultiPicTags(tagId);
-                                        },
-                                        onDoubleTap: () {
-                                          // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
-                                          //   return;
-                                          // }
-                                          print('do nothing');
-                                        },
-                                        onPanEnd: () {
-                                          // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
-                                          //   return;
-                                          // }
-                                          print('do nothing');
-                                        },
-                                      ),
-                                    ),
+                                                      bottomTagsEditingController
+                                                          .clear();
+                                                      galleryStore
+                                                          .setSearchText('');
+                                                      galleryStore
+                                                          .addToMultiPicTags(
+                                                              tagId);
+                                                    },
+                                                    onDoubleTap: () {
+                                                      // if (!appStore.isPremium) {
+                                                      //   Navigator.pushNamed(
+                                                      //       context, PremiumScreen.id);
+                                                      //   return;
+                                                      // }
+                                                      print('do nothing');
+                                                    },
+                                                    onPanEnd: () {
+                                                      // if (!appStore.isPremium) {
+                                                      //   Navigator.pushNamed(
+                                                      //       context, PremiumScreen.id);
+                                                      //   return;
+                                                      // }
+                                                      print('do nothing');
+                                                    },
+                                                  ),
+                                                )
+                                              : Container();
+                                        }),
                                   ],
                                 ),
                               ),
