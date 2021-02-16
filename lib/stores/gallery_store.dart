@@ -272,18 +272,30 @@ abstract class _GalleryStore with Store {
   @action
   void setSearchText(String value) => searchText = value;
 
+  Future<List<Label>> getLabels() async {
+    return await database.getAllLabel();
+  }
+
+  Future<MoorUser> getUser() async {
+    return await database.getSingleMoorUser();
+  }
+
   @computed
-  Future<List<TagsStore>> get tagsSuggestions async {
+  List<TagsStore> get tagsSuggestions {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
-    var tagsList = await database.getAllLabel();
-    MoorUser getUser = await database.getSingleMoorUser();
+
+    List<Label> tagsList;
+    MoorUser user;
+
+    getLabels().then((value) => tagsList = value);
+    getUser().then((value) => user = value);
 
     List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
 
     if (searchText == '') {
-      for (var recent in getUser.recentTags) {
+      for (var recent in user.recentTags) {
         print('Recent Tag: $recent');
         if (multiPicTags.contains(recent) || recent == kSecretTagKey) {
           continue;
