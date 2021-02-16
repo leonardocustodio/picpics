@@ -280,7 +280,7 @@ abstract class _GalleryStore with Store {
     return await database.getSingleMoorUser();
   }
 
-  List<TagStore> continueTagSuggestions(List<Label> tagsList, MoorUser user) {
+  List<TagsStore> continueTagSuggestions(List<Label> tagsList, MoorUser user) {
     List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
 
