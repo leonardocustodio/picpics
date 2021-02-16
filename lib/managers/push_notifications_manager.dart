@@ -93,7 +93,7 @@ class PushNotificationsManager {
       //var userBox = Hive.box('user');
       //DatabaseManager.instance.userSettings.dailyChallenges = false;
       //userBox.putAt(0, DatabaseManager.instance.userSettings);
-      DatabaseManager.instance.database.updateConfig(
+      DatabaseManager.instance.database.updateMoorUser(
         DatabaseManager.instance.userSettings.copyWith(
           dailyChallenges: false,
         ),

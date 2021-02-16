@@ -58,11 +58,11 @@ mixin _$GalleryStore on _GalleryStore, Store {
           Computed<List<String>>(() => super.multiPicTagKeys,
               name: '_GalleryStore.multiPicTagKeys'))
       .value;
-  Computed<List<TagsStore>> _$tagsSuggestionsComputed;
+  Computed<Future<List<TagsStore>>> _$tagsSuggestionsComputed;
 
   @override
-  List<TagsStore> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
-          Computed<List<TagsStore>>(() => super.tagsSuggestions,
+  Future<List<TagsStore>> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
+          Computed<Future<List<TagsStore>>>(() => super.tagsSuggestions,
               name: '_GalleryStore.tagsSuggestions'))
       .value;
   Computed<List<String>> _$taggedKeysComputed;
@@ -625,7 +625,7 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void editTag({String oldTagKey, String newName}) {
+  Future<void> editTag({String oldTagKey, String newName}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.editTag');
     try {

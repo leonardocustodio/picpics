@@ -716,7 +716,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                         top: 8.0,
                                         bottom: 16.0),
                                     child: TagsList(
-                                      tags: galleryStore.tagsSuggestions,
+                                      tags: await galleryStore.tagsSuggestions,
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: widget.showEditTagModal,
                                       onTap: (tagId, tagName) {

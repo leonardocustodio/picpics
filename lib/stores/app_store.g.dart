@@ -336,6 +336,70 @@ mixin _$AppStore on _AppStore, Store {
             firstPermissionCheck: firstPermissionCheck));
   }
 
+  final _$switchDailyChallengesAsyncAction =
+      AsyncAction('_AppStore.switchDailyChallenges');
+
+  @override
+  Future<void> switchDailyChallenges(
+      {String notificationTitle, String notificationDescription}) {
+    return _$switchDailyChallengesAsyncAction.run(() => super
+        .switchDailyChallenges(
+            notificationTitle: notificationTitle,
+            notificationDescription: notificationDescription));
+  }
+
+  final _$setIsPinRegisteredAsyncAction =
+      AsyncAction('_AppStore.setIsPinRegistered');
+
+  @override
+  Future<void> setIsPinRegistered(bool value) {
+    return _$setIsPinRegisteredAsyncAction
+        .run(() => super.setIsPinRegistered(value));
+  }
+
+  final _$setKeepAskingToDeleteAsyncAction =
+      AsyncAction('_AppStore.setKeepAskingToDelete');
+
+  @override
+  Future<void> setKeepAskingToDelete(bool value) {
+    return _$setKeepAskingToDeleteAsyncAction
+        .run(() => super.setKeepAskingToDelete(value));
+  }
+
+  final _$setShouldDeleteOnPrivateAsyncAction =
+      AsyncAction('_AppStore.setShouldDeleteOnPrivate');
+
+  @override
+  Future<void> setShouldDeleteOnPrivate(bool value) {
+    return _$setShouldDeleteOnPrivateAsyncAction
+        .run(() => super.setShouldDeleteOnPrivate(value));
+  }
+
+  final _$switchSecretPhotosAsyncAction =
+      AsyncAction('_AppStore.switchSecretPhotos');
+
+  @override
+  Future<void> switchSecretPhotos() {
+    return _$switchSecretPhotosAsyncAction
+        .run(() => super.switchSecretPhotos());
+  }
+
+  final _$changeUserTimeOfDayAsyncAction =
+      AsyncAction('_AppStore.changeUserTimeOfDay');
+
+  @override
+  Future<void> changeUserTimeOfDay(int hour, int minute) {
+    return _$changeUserTimeOfDayAsyncAction
+        .run(() => super.changeUserTimeOfDay(hour, minute));
+  }
+
+  final _$setIsPremiumAsyncAction = AsyncAction('_AppStore.setIsPremium');
+
+  @override
+  Future<void> setIsPremium(bool value) {
+    return _$setIsPremiumAsyncAction.run(() => super.setIsPremium(value));
+  }
+
   final _$checkPremiumStatusAsyncAction =
       AsyncAction('_AppStore.checkPremiumStatus');
 
@@ -345,6 +409,21 @@ mixin _$AppStore on _AppStore, Store {
         .run(() => super.checkPremiumStatus());
   }
 
+  final _$loadTagsAsyncAction = AsyncAction('_AppStore.loadTags');
+
+  @override
+  Future<void> loadTags() {
+    return _$loadTagsAsyncAction.run(() => super.loadTags());
+  }
+
+  final _$editRecentTagsAsyncAction = AsyncAction('_AppStore.editRecentTags');
+
+  @override
+  Future<void> editRecentTags(String oldTagKey, String newTagKey) {
+    return _$editRecentTagsAsyncAction
+        .run(() => super.editRecentTags(oldTagKey, newTagKey));
+  }
+
   final _$setTutorialCompletedAsyncAction =
       AsyncAction('_AppStore.setTutorialCompleted');
 
@@ -352,6 +431,20 @@ mixin _$AppStore on _AppStore, Store {
   Future<void> setTutorialCompleted(bool value) {
     return _$setTutorialCompletedAsyncAction
         .run(() => super.setTutorialCompleted(value));
+  }
+
+  final _$setLoggedInAsyncAction = AsyncAction('_AppStore.setLoggedIn');
+
+  @override
+  Future<void> setLoggedIn(bool value) {
+    return _$setLoggedInAsyncAction.run(() => super.setLoggedIn(value));
+  }
+
+  final _$setCanTagTodayAsyncAction = AsyncAction('_AppStore.setCanTagToday');
+
+  @override
+  Future<void> setCanTagToday(bool value) {
+    return _$setCanTagTodayAsyncAction.run(() => super.setCanTagToday(value));
   }
 
   final _$increaseTodayTaggedPicsAsyncAction =
@@ -370,6 +463,41 @@ mixin _$AppStore on _AppStore, Store {
   Future<bool> requestGalleryPermission() {
     return _$requestGalleryPermissionAsyncAction
         .run(() => super.requestGalleryPermission());
+  }
+
+  final _$changeUserLanguageAsyncAction =
+      AsyncAction('_AppStore.changeUserLanguage');
+
+  @override
+  Future<void> changeUserLanguage(String language) {
+    return _$changeUserLanguageAsyncAction
+        .run(() => super.changeUserLanguage(language));
+  }
+
+  final _$createDefaultTagsAsyncAction =
+      AsyncAction('_AppStore.createDefaultTags');
+
+  @override
+  Future<void> createDefaultTags(BuildContext context) {
+    return _$createDefaultTagsAsyncAction
+        .run(() => super.createDefaultTags(context));
+  }
+
+  final _$addTagToRecentAsyncAction = AsyncAction('_AppStore.addTagToRecent');
+
+  @override
+  Future<void> addTagToRecent({String tagKey}) {
+    return _$addTagToRecentAsyncAction
+        .run(() => super.addTagToRecent(tagKey: tagKey));
+  }
+
+  final _$removeTagFromRecentAsyncAction =
+      AsyncAction('_AppStore.removeTagFromRecent');
+
+  @override
+  Future<void> removeTagFromRecent({String tagKey}) {
+    return _$removeTagFromRecentAsyncAction
+        .run(() => super.removeTagFromRecent(tagKey: tagKey));
   }
 
   final _$setIsBiometricActivatedAsyncAction =
@@ -413,102 +541,11 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void switchDailyChallenges(
-      {String notificationTitle, String notificationDescription}) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.switchDailyChallenges');
-    try {
-      return super.switchDailyChallenges(
-          notificationTitle: notificationTitle,
-          notificationDescription: notificationDescription);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setIsPinRegistered(bool value) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setIsPinRegistered');
-    try {
-      return super.setIsPinRegistered(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setKeepAskingToDelete(bool value) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setKeepAskingToDelete');
-    try {
-      return super.setKeepAskingToDelete(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setShouldDeleteOnPrivate(bool value) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setShouldDeleteOnPrivate');
-    try {
-      return super.setShouldDeleteOnPrivate(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void switchSecretPhotos() {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.switchSecretPhotos');
-    try {
-      return super.switchSecretPhotos();
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setRequireSecret(int value) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.setRequireSecret');
     try {
       return super.setRequireSecret(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void changeUserTimeOfDay(int hour, int minute) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.changeUserTimeOfDay');
-    try {
-      return super.changeUserTimeOfDay(hour, minute);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setIsPremium(bool value) {
-    final _$actionInfo =
-        _$_AppStoreActionController.startAction(name: '_AppStore.setIsPremium');
-    try {
-      return super.setIsPremium(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void loadTags() {
-    final _$actionInfo =
-        _$_AppStoreActionController.startAction(name: '_AppStore.loadTags');
-    try {
-      return super.loadTags();
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
@@ -554,83 +591,6 @@ mixin _$AppStore on _AppStore, Store {
         name: '_AppStore.addRecentTags');
     try {
       return super.addRecentTags(tagKey);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void editRecentTags(String oldTagKey, String newTagKey) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.editRecentTags');
-    try {
-      return super.editRecentTags(oldTagKey, newTagKey);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setLoggedIn(bool value) {
-    final _$actionInfo =
-        _$_AppStoreActionController.startAction(name: '_AppStore.setLoggedIn');
-    try {
-      return super.setLoggedIn(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void setCanTagToday(bool value) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setCanTagToday');
-    try {
-      return super.setCanTagToday(value);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void changeUserLanguage(String language) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.changeUserLanguage');
-    try {
-      return super.changeUserLanguage(language);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void createDefaultTags(BuildContext context) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.createDefaultTags');
-    try {
-      return super.createDefaultTags(context);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void addTagToRecent({String tagKey}) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.addTagToRecent');
-    try {
-      return super.addTagToRecent(tagKey: tagKey);
-    } finally {
-      _$_AppStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void removeTagFromRecent({String tagKey}) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.removeTagFromRecent');
-    try {
-      return super.removeTagFromRecent(tagKey: tagKey);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }

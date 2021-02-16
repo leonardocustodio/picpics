@@ -26,9 +26,7 @@ class WidgetManager {
       //var userBox = await Hive.openBox('user');
       //var picsBox = await Hive.openBox('pics');
 
-      var configBox = await appDatabase.getSingleMoorUser();
-
-      MoorUser currentUser = configBox[0];
+      MoorUser currentUser = await appDatabase.getSingleMoorUser();
       List<String> starredPhotos = currentUser.starredPhotos;
       print('Number of starred photos: ${starredPhotos.length}');
 
@@ -41,9 +39,7 @@ class WidgetManager {
         int randInt = rand.nextInt(starredPhotos.length);
         print('Sorted number for widget: $randInt');
 
-        var picsBox =
-            await appDatabase.getPhotoByPhotoId(starredPhotos[randInt]);
-        Photo pic = picsBox[0];
+        Photo pic = await appDatabase.getPhotoByPhotoId(starredPhotos[randInt]);
         print('Base64: ${pic.base64encoded}');
         baseString = pic.base64encoded;
       }

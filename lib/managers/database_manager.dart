@@ -47,8 +47,7 @@ class DatabaseManager extends ChangeNotifier {
     // TODO: commented below line
     //var userBox = Hive.box('user');
 
-    var userBox = await database.getSingleMoorUser();
-    userSettings = userBox[0];
+    var userSettings = await database.getSingleMoorUser();
 
     print('requesting notification...');
     print('dailyChallenges: ${userSettings}');
@@ -94,16 +93,17 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  String getTagName(String tagKey) {
-    var tagsBox = Hive.box('tags');
-    Tag getTag = tagsBox.get(tagKey);
+  Future<String> getTagName(String tagKey) async {
+    /* 
+    var tagsBox = Hive.box('tags'); */
+    Label getTag = await database.getLabelByLabelKey(tagKey);
 
     // Verificar isso aqui pois tem a ver com as sugestões!!!!
     print('TagKey: $tagKey');
 
     if (getTag != null) {
       print('Returning name');
-      return getTag.name;
+      return getTag.title;
     } else {
       print('### ERROR ### Returning key');
       return null;

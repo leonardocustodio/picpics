@@ -63,10 +63,10 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
     }
   }
 
-  showEditTagModal() {
+  showEditTagModal() async{
     if (DatabaseManager.instance.selectedTagKey != '') {
       TextEditingController alertInputController = TextEditingController();
-      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
+      String tagName = await DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
       alertInputController.text = tagName;
 
       print('showModal');

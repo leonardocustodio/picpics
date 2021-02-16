@@ -1,12 +1,10 @@
 import 'dart:convert';
 
-import 'package:flutter/animation.dart';
 import 'package:moor/moor.dart';
 import 'package:moor/ffi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
-
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
@@ -24,20 +22,20 @@ extension MoorTValue<T> on T {
     return Value(this);
   }
 
-  get moor {
+  /* get moor {
     if (this == null) {
       return Value.absent();
     }
     return this;
-  }
+  } */
 }
 
-class PhotosWithLabels extends Table {
+/* class PhotosWithLabels extends Table {
   final Photo photo;
   final List<Label> labels;
 
   PhotosWithLabels(this.photo, this.labels);
-}
+} */
 
 /// Old Info @Hive: Pic
 class Photos extends Table {
@@ -55,14 +53,19 @@ class Photos extends Table {
       boolean().withDefault(const Constant(false))();
   BoolColumn get isStarred => boolean().withDefault(const Constant(false))();
 
+  TextColumn get tags => text().nullable().map(ListStringConvertor())();
+
   TextColumn get specificLocation => text().nullable()();
   TextColumn get generalLocation => text().nullable()();
   TextColumn get base64encoded => text().nullable()();
 }
 
 class Labels extends Table {
-  TextColumn get id => text()();
-  TextColumn get title => text()();
+  TextColumn get key => text().withDefault(Constant(Uuid().v4()))();
+  @override
+  Set<Column> get primaryKey => {key};
+  TextColumn get title => text().nullable()();
+  TextColumn get photoId => text().nullable().map(ListStringConvertor())();
 }
 
 @DataClassName('LabelEntry')
@@ -163,6 +166,28 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  /**
+   * 
+   * Labels CRUD operations Start
+   * 
+   */
+  Future createLabel(Label newLabel) => into(labels).insert(newLabel);
+
+  Future<Label> getLabelByLabelKey(String labelKey) =>
+      (select(labels)..where((l) => l.key.equals(labelKey))).getSingle();
+
+  Future<List<Label>> getAllLabel() => select(labels).get();
+
+  Future updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
+
+  Future deleteLabel(Label oldLabel) => delete(labels).delete(oldLabel);
+  /**
+   * 
+   * Labels CRUD operations End
+   * 
+   */
+
   /**
    * 
    * Photos CRUD operations Start
@@ -170,12 +195,15 @@ class AppDatabase extends _$AppDatabase {
    */
   Future createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
 
-  Future<List<Photo>> getPhotoByPhotoId(String photoId) =>
-      (select(photos)..where((pri) => pri.id.equals(photoId))).get();
+  Future<Photo> getPhotoByPhotoId(String photoId) =>
+      (select(photos)..where((pri) => pri.id.equals(photoId))).getSingle();
 
   Future<List<Photo>> getAllPhoto() => select(photos).get();
 
   Future updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
+
+  Future deletePhotoByPhotoId(String photoId) =>
+      (delete(photos)..where((picture) => picture.id.equals(photoId))).go();
 
   Future deletePhoto(Photo oldPhoto) => delete(photos).delete(oldPhoto);
   /**
@@ -191,8 +219,8 @@ class AppDatabase extends _$AppDatabase {
    */
   Future createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
 
-  Future<List<Private>> getPrivateByPhotoId(String photoId) =>
-      (select(privates)..where((pri) => pri.id.equals(photoId))).get();
+  Future<Private> getPrivateByPhotoId(String photoId) =>
+      (select(privates)..where((pri) => pri.id.equals(photoId))).getSingle();
 
   Future<List<Private>> getAllPrivate() => select(privates).get();
 
@@ -217,16 +245,15 @@ class AppDatabase extends _$AppDatabase {
 
   //Future<List<MoorUser>> getAllMoorUser() => select(moorUsers).get();
 
-  Future<List<MoorUser>> getSingleMoorUser(
-      {bool createIfNotExist = true}) async {
+  Future<MoorUser> getSingleMoorUser({bool createIfNotExist = true}) async {
     var moorUserReturn = await (select(moorUsers)
           ..where((u) => u._customPrimaryKey.equals(0)))
-        .get();
-    if (createIfNotExist && moorUserReturn.isEmpty) {
+        .getSingle();
+    if (createIfNotExist && moorUserReturn == null) {
       insertAllMoorUsers(null);
       return await (select(moorUsers)
             ..where((u) => u._customPrimaryKey.equals(0)))
-          .get();
+          .getSingle();
     } else {
       return moorUserReturn;
     }
@@ -347,8 +374,9 @@ class AppDatabase extends _$AppDatabase {
     for (Tag tag in tags) {
       labelsCompanions.add(
         LabelsCompanion.insert(
-          id: 'tag.key', // TODO: make it tag.key
-          title: tag.name,
+          key: 'tag.key'.moorValue, // TODO: make it tag.key
+          title: tag.name.moorValue,
+          photoId: tag.photoId.moorValue,
         ),
       );
     }

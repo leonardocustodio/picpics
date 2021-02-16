@@ -4,10 +4,10 @@ import 'package:date_utils/date_utils.dart';
 import 'package:esys_flutter_share/esys_flutter_share.dart' as esys;
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/crypto_manager.dart';
@@ -38,6 +38,7 @@ class GalleryStore = _GalleryStore with _$GalleryStore;
 
 abstract class _GalleryStore with Store {
   final AppStore appStore;
+  final database = AppDatabase();
 
   _GalleryStore({this.appStore}) {
 //    loadTaggedPicsStore();
@@ -62,7 +63,10 @@ abstract class _GalleryStore with Store {
 
   @computed
   int get totalTaggedPics {
-    return taggedPics.map((element) => element.pics.length).toList().reduce((value, element) => value + element);
+    return taggedPics
+        .map((element) => element.pics.length)
+        .toList()
+        .reduce((value, element) => value + element);
   }
 
   PicStore currentPic;
@@ -97,16 +101,23 @@ abstract class _GalleryStore with Store {
   @observable
   bool isLoaded = false;
 
-  ObservableList<AssetPathEntity> assetsPath = ObservableList<AssetPathEntity>();
+  ObservableList<AssetPathEntity> assetsPath =
+      ObservableList<AssetPathEntity>();
   ObservableList<PicStore> allPics = ObservableList<PicStore>();
 
-  ObservableList<UntaggedPicsStore> untaggedPics = ObservableList<UntaggedPicsStore>();
-  ObservableList<UntaggedGridPicStore> untaggedGridPics = ObservableList<UntaggedGridPicStore>();
-  ObservableList<UntaggedGridPicStore> untaggedGridPicsByMonth = ObservableList<UntaggedGridPicStore>();
+  ObservableList<UntaggedPicsStore> untaggedPics =
+      ObservableList<UntaggedPicsStore>();
+  ObservableList<UntaggedGridPicStore> untaggedGridPics =
+      ObservableList<UntaggedGridPicStore>();
+  ObservableList<UntaggedGridPicStore> untaggedGridPicsByMonth =
+      ObservableList<UntaggedGridPicStore>();
 
-  ObservableList<TaggedDatePicsStore> taggedDatePics = ObservableList<TaggedDatePicsStore>();
-  ObservableList<TaggedGridPicStore> taggedGridPics = ObservableList<TaggedGridPicStore>();
-  ObservableList<TaggedPicsStore> taggedPics = ObservableList<TaggedPicsStore>();
+  ObservableList<TaggedDatePicsStore> taggedDatePics =
+      ObservableList<TaggedDatePicsStore>();
+  ObservableList<TaggedGridPicStore> taggedGridPics =
+      ObservableList<TaggedGridPicStore>();
+  ObservableList<TaggedPicsStore> taggedPics =
+      ObservableList<TaggedPicsStore>();
   ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
 
   ObservableList<PicStore> swipePics = ObservableList<PicStore>();
@@ -235,7 +246,8 @@ abstract class _GalleryStore with Store {
   @action
   void addToMultiPicTags(String tagKey) {
     if (!multiPicTagKeys.contains(tagKey)) {
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore =
+          appStore.tags.firstWhere((element) => element.id == tagKey);
       multiPicTags.add(tagsStore);
     }
   }
@@ -243,7 +255,8 @@ abstract class _GalleryStore with Store {
   @action
   void removeFromMultiPicTags(String tagKey) {
     if (multiPicTagKeys.contains(tagKey)) {
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore =
+          appStore.tags.firstWhere((element) => element.id == tagKey);
       multiPicTags.remove(tagsStore);
     }
   }
@@ -260,10 +273,11 @@ abstract class _GalleryStore with Store {
   void setSearchText(String value) => searchText = value;
 
   @computed
-  List<TagsStore> get tagsSuggestions {
-    var userBox = Hive.box('user');
-    var tagsBox = Hive.box('tags');
-    User getUser = userBox.getAt(0);
+  Future<List<TagsStore>> get tagsSuggestions async {
+    //var userBox = Hive.box('user');
+    //var tagsBox = Hive.box('tags');
+    var tagsList = await database.getAllLabel();
+    MoorUser getUser = await database.getSingleMoorUser();
 
     List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
@@ -277,18 +291,22 @@ abstract class _GalleryStore with Store {
         suggestionTags.add(recent);
       }
 
-      print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+      print(
+          'Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
 //            continue;
 //          }
       if (suggestionTags.length < kMaxNumOfSuggestions) {
-        for (var tagKey in tagsBox.keys) {
+        for (Label tag in tagsList) {
+          var tagKey = tag.key;
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (multiPicTagKeys.contains(tagKey) || suggestionTags.contains(tagKey) || tagKey == kSecretTagKey) {
+          if (multiPicTagKeys.contains(tagKey) ||
+              suggestionTags.contains(tagKey) ||
+              tagKey == kSecretTagKey) {
             continue;
           }
           print('Adding tag key: $tagKey');
@@ -297,7 +315,8 @@ abstract class _GalleryStore with Store {
       }
 //      }
     } else {
-      for (var tagKey in tagsBox.keys) {
+      for (Label tag in tagsList) {
+        var tagKey = tag.key;
         if (tagKey == kSecretTagKey) continue;
 
         String tagName = Helpers.decryptTag(tagKey);
@@ -308,14 +327,19 @@ abstract class _GalleryStore with Store {
     }
 
     print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
-    if (!multiPicTagKeys.contains(kSecretTagKey) && !searchingTagsKeys.contains(kSecretTagKey) && appStore.secretPhotos == true && searchText == '') {
+    if (!multiPicTagKeys.contains(kSecretTagKey) &&
+        !searchingTagsKeys.contains(kSecretTagKey) &&
+        appStore.secretPhotos == true &&
+        searchText == '') {
       suggestionTags.add(kSecretTagKey);
     }
 
     print('find suggestions: $searchText - exclude tags: $multiPicTags');
     print(suggestionTags);
     print('AppStore Tags: ${appStore.tags}');
-    List<TagsStore> suggestions = appStore.tags.where((element) => suggestionTags.contains(element.id)).toList();
+    List<TagsStore> suggestions = appStore.tags
+        .where((element) => suggestionTags.contains(element.id))
+        .toList();
     print('Suggestions Tag Store: $suggestions');
     return suggestions;
   }
@@ -342,7 +366,8 @@ abstract class _GalleryStore with Store {
   @action
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
     for (TagsStore tag in picStore.tags) {
-      TaggedPicsStore taggedPicsStore = taggedPics.firstWhere((element) => element.tag == tag, orElse: () => null);
+      TaggedPicsStore taggedPicsStore = taggedPics
+          .firstWhere((element) => element.tag == tag, orElse: () => null);
 
       if (taggedPicsStore == null) {
         taggedPicsStore = TaggedPicsStore(tag: tag);
@@ -362,7 +387,9 @@ abstract class _GalleryStore with Store {
 
     print('Find right place to add tagged ${picStore.photoId}');
     DateTime picDate = picStore.createdAt;
-    TaggedDatePicsStore taggedDatePicsStore = taggedDatePics.firstWhere((element) => Utils.isSameDay(element.date, picDate), orElse: () => null);
+    TaggedDatePicsStore taggedDatePicsStore = taggedDatePics.firstWhere(
+        (element) => Utils.isSameDay(element.date, picDate),
+        orElse: () => null);
     if (taggedDatePicsStore == null) {
       taggedDatePicsStore = TaggedDatePicsStore(date: picDate);
 
@@ -389,7 +416,8 @@ abstract class _GalleryStore with Store {
     var date = taggedDatePicsStore.date;
     var newPicStore = TaggedGridPicStore(picStore: picStore);
 
-    var gridPicIndex = taggedGridPics.indexWhere((element) => element.date == date);
+    var gridPicIndex =
+        taggedGridPics.indexWhere((element) => element.date == date);
 
     if (gridPicIndex != -1) {
       print('Different than null');
@@ -451,7 +479,8 @@ abstract class _GalleryStore with Store {
       return;
     }
 
-    PicStore picStore = allPics.firstWhere((element) => element.photoId == entityId);
+    PicStore picStore =
+        allPics.firstWhere((element) => element.photoId == entityId);
     removePicFromTaggedPics(picStore: picStore, forceDelete: true);
     removePicFromUntaggedPics(picStore: picStore);
     filteredPics.remove(picStore);
@@ -501,7 +530,9 @@ abstract class _GalleryStore with Store {
   void addPicToUntaggedPics({PicStore picStore}) {
     DateTime picDate = picStore.createdAt;
 
-    UntaggedPicsStore untaggedPicsStore = untaggedPics.firstWhere((element) => Utils.isSameDay(element.date, picDate), orElse: () => null);
+    UntaggedPicsStore untaggedPicsStore = untaggedPics.firstWhere(
+        (element) => Utils.isSameDay(element.date, picDate),
+        orElse: () => null);
     if (untaggedPicsStore == null) {
       untaggedPicsStore = UntaggedPicsStore(date: picDate);
 
@@ -528,7 +559,8 @@ abstract class _GalleryStore with Store {
     var date = untaggedPicsStore.date;
     var newPicStore = UntaggedGridPicStore(picStore: picStore);
 
-    var gridPicIndex = untaggedGridPics.indexWhere((element) => element.date == date);
+    var gridPicIndex =
+        untaggedGridPics.indexWhere((element) => element.date == date);
 
     if (gridPicIndex != -1) {
       print('Different than null');
@@ -549,7 +581,8 @@ abstract class _GalleryStore with Store {
       }
     }
 
-    var gridPicMonthIndex = untaggedGridPicsByMonth.indexWhere((element) => element.date == DateTime.utc(date.year, date.month));
+    var gridPicMonthIndex = untaggedGridPicsByMonth.indexWhere(
+        (element) => element.date == DateTime.utc(date.year, date.month));
     if (gridPicMonthIndex != -1) {
       untaggedGridPicsByMonth.insert(gridPicMonthIndex + 1, newPicStore);
     } else {
@@ -558,7 +591,8 @@ abstract class _GalleryStore with Store {
           continue;
         }
         if (untaggedGridPicsByMonth[x].date.isBefore(date)) {
-          var newDateStore = UntaggedGridPicStore(date: DateTime.utc(date.year, date.month));
+          var newDateStore =
+              UntaggedGridPicStore(date: DateTime.utc(date.year, date.month));
           untaggedGridPicsByMonth.insert(x, newPicStore);
           untaggedGridPicsByMonth.insert(x, newDateStore);
           break;
@@ -578,7 +612,8 @@ abstract class _GalleryStore with Store {
         print('Removing ${picStore.photoId} from untagged pic store');
         untaggedPicStore.removePicStore(picStore);
         untaggedGridPics.removeWhere((element) => element.picStore == picStore);
-        untaggedGridPicsByMonth.removeWhere((element) => element.picStore == picStore);
+        untaggedGridPicsByMonth
+            .removeWhere((element) => element.picStore == picStore);
 
         if (untaggedPicStore.picStoresIds.length == 0) {
           print('Removing untaggedPicStore since there are no more pics in it');
@@ -590,9 +625,13 @@ abstract class _GalleryStore with Store {
 
     for (var untaggedPicStore in toDelete) {
       untaggedPics.remove(untaggedPicStore);
-      untaggedGridPics.removeWhere((element) => element.date == untaggedPicStore.date);
+      untaggedGridPics
+          .removeWhere((element) => element.date == untaggedPicStore.date);
 
-      int indexOfMonth = untaggedGridPicsByMonth.indexWhere((element) => element.date == DateTime.utc(untaggedPicStore.date.year, untaggedPicStore.date.month));
+      int indexOfMonth = untaggedGridPicsByMonth.indexWhere((element) =>
+          element.date ==
+          DateTime.utc(
+              untaggedPicStore.date.year, untaggedPicStore.date.month));
       print('Index of Month: $indexOfMonth');
 
       if (indexOfMonth >= untaggedGridPicsByMonth.length - 1) {
@@ -612,7 +651,8 @@ abstract class _GalleryStore with Store {
     }
 
     AssetPathEntity assetPathEntity = assetsPath[0];
-    final List<AssetEntity> list = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
+    final List<AssetEntity> list = await assetPathEntity.getAssetListRange(
+        start: 0, end: assetPathEntity.assetCount);
 
     DateTime currentDate = DateTime(1000);
 
@@ -675,7 +715,8 @@ abstract class _GalleryStore with Store {
     for (var untaggedPic in untaggedPics) {
       untaggedGridPics.add(UntaggedGridPicStore(date: untaggedPic.date));
 
-      var monthDate = DateTime.utc(untaggedPic.date.year, untaggedPic.date.month);
+      var monthDate =
+          DateTime.utc(untaggedPic.date.year, untaggedPic.date.month);
       if (currentMonth != monthDate) {
         untaggedGridPicsByMonth.add(UntaggedGridPicStore(date: monthDate));
         currentMonth = monthDate;
@@ -721,14 +762,15 @@ abstract class _GalleryStore with Store {
       print('Secret photos is off - not loading private pics');
       return;
     }
+/* 
+    var secretBox = Hive.box('secrets'); */
+    var secretBox = await database.getAllPrivate();
 
-    var secretBox = Hive.box('secrets');
-
-    for (Secret secretPic in secretBox.values) {
+    for (Private secretPic in secretBox) {
       PicStore pic = PicStore(
         appStore: appStore,
         entity: null,
-        photoId: secretPic.photoId,
+        photoId: secretPic.id,
         createdAt: secretPic.createDateTime,
         originalLatitude: secretPic.originalLatitude,
         originalLongitude: secretPic.originalLongitude,
@@ -766,43 +808,51 @@ abstract class _GalleryStore with Store {
 
     bool deleted = false;
 
-    final List<String> result = await PhotoManager.editor.deleteWithIds(selectedPicsIds);
+    final List<String> result =
+        await PhotoManager.editor.deleteWithIds(selectedPicsIds);
     if (result.isNotEmpty) {
       deleted = true;
     }
 
     if (deleted) {
-      var picsBox = Hive.box('pics');
-      var tagsBox = Hive.box('tags');
+      /* var picsBox = Hive.box('pics');
+      var tagsBox = Hive.box('tags'); */
 
-      for (PicStore picStore in selectedPics) {
-        Pic pic = picsBox.get(picStore.photoId);
+      Future.wait([
+        Future.forEach(selectedPics, (PicStore picStore) async {
+          Photo pic = await database.getPhotoByPhotoId(picStore.photoId);
 
-        if (pic != null) {
-          print('pic is in db... removing it from db!');
-          List<String> picTags = List.of(pic.tags);
-          for (String tagKey in picTags) {
-            Tag tag = tagsBox.get(tagKey);
-            tag.photoId.remove(picStore.photoId);
-            print('removed ${picStore.photoId} from tag ${tag.name}');
-            tagsBox.put(tagKey, tag);
+          if (pic != null) {
+            print('pic is in db... removing it from db!');
+            List<String> picTags = List<String>.from(pic.tags);
+            Future.wait([
+              Future.forEach(picTags, (tagKey) async {
+                Label tag = await database.getLabelByLabelKey(tagKey);
+                tag.photoId.remove(picStore.photoId);
+                print('removed ${picStore.photoId} from tag ${tag.title}');
+                await database.updateLabel(tag);
+                //tagsBox.put(tagKey, tag);
 
-            if (tagKey == kSecretTagKey) {
-              picStore.removePrivatePath();
-              picStore.deleteEncryptedPic();
-            }
+                if (tagKey == kSecretTagKey) {
+                  picStore.removePrivatePath();
+                  picStore.deleteEncryptedPic();
+                }
+              })
+            ]);
+
+            //picsBox.delete(picStore.photoId);
+            await database.deletePhotoByPhotoId(picStore.photoId);
+            print('removed ${picStore.photoId} from database');
           }
-          picsBox.delete(picStore.photoId);
-          print('removed ${picStore.photoId} from database');
-        }
 
-        filteredPics.remove(picStore);
-        removePicFromTaggedPics(picStore: picStore, forceDelete: true);
-        swipePics.remove(picStore);
-        removePicFromUntaggedPics(picStore: picStore);
-        allPics.remove(picStore);
-        appStore.setDefaultWidgetImage(allPics[0].entity);
-      }
+          filteredPics.remove(picStore);
+          removePicFromTaggedPics(picStore: picStore, forceDelete: true);
+          swipePics.remove(picStore);
+          removePicFromUntaggedPics(picStore: picStore);
+          allPics.remove(picStore);
+          appStore.setDefaultWidgetImage(allPics[0].entity);
+        })
+      ]);
 
       Analytics.sendEvent(Event.deleted_photo);
       print('Reaction!');
@@ -833,7 +883,8 @@ abstract class _GalleryStore with Store {
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
     Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File('${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    File imageFile = new File(
+        '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
     return imageFile.path;
@@ -902,7 +953,7 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void editTag({String oldTagKey, String newName}) {
+  Future<void> editTag({String oldTagKey, String newName}) async {
     var tagsBox = Hive.box('tags');
     var picsBox = Hive.box('pics');
 
@@ -923,7 +974,8 @@ abstract class _GalleryStore with Store {
     }
 
     // Altera a tag
-    appStore.editTag(oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
+    appStore.editTag(
+        oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
     appStore.editRecentTags(oldTagKey, newTagKey);
     tagsBox.delete(oldTagKey);
 
@@ -939,9 +991,11 @@ abstract class _GalleryStore with Store {
       print('found tag going to delete it');
 
       // Remove a tag das fotos já taggeadas
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore =
+          appStore.tags.firstWhere((element) => element.id == tagKey);
       print('TagsStore Tag: ${tagsStore.name}');
-      TaggedPicsStore taggedPicsStore = taggedPics.firstWhere((element) => element.tag == tagsStore);
+      TaggedPicsStore taggedPicsStore =
+          taggedPics.firstWhere((element) => element.tag == tagsStore);
       for (PicStore picTagged in taggedPicsStore.pics) {
         print('Tagged Pic Store Pics: ${picTagged.photoId}');
         picTagged.removeTagFromPic(tagKey: tagsStore.id);
@@ -965,7 +1019,8 @@ abstract class _GalleryStore with Store {
       return;
     }
 
-    TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == DatabaseManager.instance.selectedTagKey);
+    TagsStore tagsStore = appStore.tags.firstWhere(
+        (element) => element.id == DatabaseManager.instance.selectedTagKey);
     searchingTags.add(tagsStore);
     print('searching tags: $searchingTags');
     searchPicsWithTags();
@@ -973,7 +1028,8 @@ abstract class _GalleryStore with Store {
 
   void removeTagFromSearchFilter() {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-      TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == DatabaseManager.instance.selectedTagKey);
+      TagsStore tagsStore = appStore.tags.firstWhere(
+          (element) => element.id == DatabaseManager.instance.selectedTagKey);
       searchingTags.remove(tagsStore);
       print('searching tags: $searchingTags');
       searchPicsWithTags();
@@ -1018,7 +1074,9 @@ abstract class _GalleryStore with Store {
 
     // print('Temp photos ids: $tempPhotosIds');
     // print('All Pics: ${allPicsKeys}');
-    filteredPics.addAll(allPics.where((element) => tempPhotosIds.contains(element.photoId)).toList()); // Verificar essa classe para otimizar
+    filteredPics.addAll(allPics
+        .where((element) => tempPhotosIds.contains(element.photoId))
+        .toList()); // Verificar essa classe para otimizar
     // print('Search Photos: $filteredPics');
     print('Searcing Tags Keys: $searchingTags');
 
@@ -1192,7 +1250,8 @@ abstract class _GalleryStore with Store {
     );
 
     final AssetPathEntity assetPathEntity = assets[0];
-    final List<AssetEntity> assetList = await assetPathEntity.getAssetListRange(start: 0, end: assetPathEntity.assetCount);
+    final List<AssetEntity> assetList = await assetPathEntity.getAssetListRange(
+        start: 0, end: assetPathEntity.assetCount);
     final Set<String> entitiesIds = assetList.map((e) => e.id).toSet();
     final bool isEqual = SetEquality().equals(entitiesIds, allPicsKeys);
 
@@ -1225,7 +1284,8 @@ abstract class _GalleryStore with Store {
   bool shouldRefreshTaggedGallery = false;
 
   @action
-  void setShouldRefreshTaggedGallery(bool value) => shouldRefreshTaggedGallery = value;
+  void setShouldRefreshTaggedGallery(bool value) =>
+      shouldRefreshTaggedGallery = value;
 
   @action
   void removeTagFromPic({PicStore picStore, String tagKey}) {

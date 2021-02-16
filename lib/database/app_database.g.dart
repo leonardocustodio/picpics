@@ -17,6 +17,7 @@ class Photo extends DataClass implements Insertable<Photo> {
   final bool isPrivate;
   final bool deletedFromCameraRoll;
   final bool isStarred;
+  final List<String> tags;
   final String specificLocation;
   final String generalLocation;
   final String base64encoded;
@@ -30,6 +31,7 @@ class Photo extends DataClass implements Insertable<Photo> {
       @required this.isPrivate,
       @required this.deletedFromCameraRoll,
       @required this.isStarred,
+      this.tags,
       this.specificLocation,
       this.generalLocation,
       this.base64encoded});
@@ -58,6 +60,8 @@ class Photo extends DataClass implements Insertable<Photo> {
           data['${effectivePrefix}deleted_from_camera_roll']),
       isStarred: boolType
           .mapFromDatabaseResponse(data['${effectivePrefix}is_starred']),
+      tags: $PhotosTable.$converter0.mapToDart(
+          stringType.mapFromDatabaseResponse(data['${effectivePrefix}tags'])),
       specificLocation: stringType
           .mapFromDatabaseResponse(data['${effectivePrefix}specific_location']),
       generalLocation: stringType
@@ -95,6 +99,10 @@ class Photo extends DataClass implements Insertable<Photo> {
     }
     if (!nullToAbsent || isStarred != null) {
       map['is_starred'] = Variable<bool>(isStarred);
+    }
+    if (!nullToAbsent || tags != null) {
+      final converter = $PhotosTable.$converter0;
+      map['tags'] = Variable<String>(converter.mapToSql(tags));
     }
     if (!nullToAbsent || specificLocation != null) {
       map['specific_location'] = Variable<String>(specificLocation);
@@ -135,6 +143,7 @@ class Photo extends DataClass implements Insertable<Photo> {
       isStarred: isStarred == null && nullToAbsent
           ? const Value.absent()
           : Value(isStarred),
+      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
       specificLocation: specificLocation == null && nullToAbsent
           ? const Value.absent()
           : Value(specificLocation),
@@ -161,6 +170,7 @@ class Photo extends DataClass implements Insertable<Photo> {
       deletedFromCameraRoll:
           serializer.fromJson<bool>(json['deletedFromCameraRoll']),
       isStarred: serializer.fromJson<bool>(json['isStarred']),
+      tags: serializer.fromJson<List<String>>(json['tags']),
       specificLocation: serializer.fromJson<String>(json['specificLocation']),
       generalLocation: serializer.fromJson<String>(json['generalLocation']),
       base64encoded: serializer.fromJson<String>(json['base64encoded']),
@@ -179,6 +189,7 @@ class Photo extends DataClass implements Insertable<Photo> {
       'isPrivate': serializer.toJson<bool>(isPrivate),
       'deletedFromCameraRoll': serializer.toJson<bool>(deletedFromCameraRoll),
       'isStarred': serializer.toJson<bool>(isStarred),
+      'tags': serializer.toJson<List<String>>(tags),
       'specificLocation': serializer.toJson<String>(specificLocation),
       'generalLocation': serializer.toJson<String>(generalLocation),
       'base64encoded': serializer.toJson<String>(base64encoded),
@@ -195,6 +206,7 @@ class Photo extends DataClass implements Insertable<Photo> {
           bool isPrivate,
           bool deletedFromCameraRoll,
           bool isStarred,
+          List<String> tags,
           String specificLocation,
           String generalLocation,
           String base64encoded}) =>
@@ -209,6 +221,7 @@ class Photo extends DataClass implements Insertable<Photo> {
         deletedFromCameraRoll:
             deletedFromCameraRoll ?? this.deletedFromCameraRoll,
         isStarred: isStarred ?? this.isStarred,
+        tags: tags ?? this.tags,
         specificLocation: specificLocation ?? this.specificLocation,
         generalLocation: generalLocation ?? this.generalLocation,
         base64encoded: base64encoded ?? this.base64encoded,
@@ -225,6 +238,7 @@ class Photo extends DataClass implements Insertable<Photo> {
           ..write('isPrivate: $isPrivate, ')
           ..write('deletedFromCameraRoll: $deletedFromCameraRoll, ')
           ..write('isStarred: $isStarred, ')
+          ..write('tags: $tags, ')
           ..write('specificLocation: $specificLocation, ')
           ..write('generalLocation: $generalLocation, ')
           ..write('base64encoded: $base64encoded')
@@ -252,11 +266,13 @@ class Photo extends DataClass implements Insertable<Photo> {
                                   $mrjc(
                                       isStarred.hashCode,
                                       $mrjc(
-                                          specificLocation.hashCode,
+                                          tags.hashCode,
                                           $mrjc(
-                                              generalLocation.hashCode,
-                                              base64encoded
-                                                  .hashCode))))))))))));
+                                              specificLocation.hashCode,
+                                              $mrjc(
+                                                  generalLocation.hashCode,
+                                                  base64encoded
+                                                      .hashCode)))))))))))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
@@ -270,6 +286,7 @@ class Photo extends DataClass implements Insertable<Photo> {
           other.isPrivate == this.isPrivate &&
           other.deletedFromCameraRoll == this.deletedFromCameraRoll &&
           other.isStarred == this.isStarred &&
+          other.tags == this.tags &&
           other.specificLocation == this.specificLocation &&
           other.generalLocation == this.generalLocation &&
           other.base64encoded == this.base64encoded);
@@ -285,6 +302,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
   final Value<bool> isPrivate;
   final Value<bool> deletedFromCameraRoll;
   final Value<bool> isStarred;
+  final Value<List<String>> tags;
   final Value<String> specificLocation;
   final Value<String> generalLocation;
   final Value<String> base64encoded;
@@ -298,6 +316,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     this.isPrivate = const Value.absent(),
     this.deletedFromCameraRoll = const Value.absent(),
     this.isStarred = const Value.absent(),
+    this.tags = const Value.absent(),
     this.specificLocation = const Value.absent(),
     this.generalLocation = const Value.absent(),
     this.base64encoded = const Value.absent(),
@@ -312,6 +331,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     this.isPrivate = const Value.absent(),
     this.deletedFromCameraRoll = const Value.absent(),
     this.isStarred = const Value.absent(),
+    this.tags = const Value.absent(),
     this.specificLocation = const Value.absent(),
     this.generalLocation = const Value.absent(),
     this.base64encoded = const Value.absent(),
@@ -331,6 +351,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     Expression<bool> isPrivate,
     Expression<bool> deletedFromCameraRoll,
     Expression<bool> isStarred,
+    Expression<String> tags,
     Expression<String> specificLocation,
     Expression<String> generalLocation,
     Expression<String> base64encoded,
@@ -346,6 +367,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       if (deletedFromCameraRoll != null)
         'deleted_from_camera_roll': deletedFromCameraRoll,
       if (isStarred != null) 'is_starred': isStarred,
+      if (tags != null) 'tags': tags,
       if (specificLocation != null) 'specific_location': specificLocation,
       if (generalLocation != null) 'general_location': generalLocation,
       if (base64encoded != null) 'base64encoded': base64encoded,
@@ -362,6 +384,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       Value<bool> isPrivate,
       Value<bool> deletedFromCameraRoll,
       Value<bool> isStarred,
+      Value<List<String>> tags,
       Value<String> specificLocation,
       Value<String> generalLocation,
       Value<String> base64encoded}) {
@@ -376,6 +399,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       deletedFromCameraRoll:
           deletedFromCameraRoll ?? this.deletedFromCameraRoll,
       isStarred: isStarred ?? this.isStarred,
+      tags: tags ?? this.tags,
       specificLocation: specificLocation ?? this.specificLocation,
       generalLocation: generalLocation ?? this.generalLocation,
       base64encoded: base64encoded ?? this.base64encoded,
@@ -413,6 +437,10 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     if (isStarred.present) {
       map['is_starred'] = Variable<bool>(isStarred.value);
     }
+    if (tags.present) {
+      final converter = $PhotosTable.$converter0;
+      map['tags'] = Variable<String>(converter.mapToSql(tags.value));
+    }
     if (specificLocation.present) {
       map['specific_location'] = Variable<String>(specificLocation.value);
     }
@@ -437,6 +465,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
           ..write('isPrivate: $isPrivate, ')
           ..write('deletedFromCameraRoll: $deletedFromCameraRoll, ')
           ..write('isStarred: $isStarred, ')
+          ..write('tags: $tags, ')
           ..write('specificLocation: $specificLocation, ')
           ..write('generalLocation: $generalLocation, ')
           ..write('base64encoded: $base64encoded')
@@ -554,6 +583,18 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
         defaultValue: const Constant(false));
   }
 
+  final VerificationMeta _tagsMeta = const VerificationMeta('tags');
+  GeneratedTextColumn _tags;
+  @override
+  GeneratedTextColumn get tags => _tags ??= _constructTags();
+  GeneratedTextColumn _constructTags() {
+    return GeneratedTextColumn(
+      'tags',
+      $tableName,
+      true,
+    );
+  }
+
   final VerificationMeta _specificLocationMeta =
       const VerificationMeta('specificLocation');
   GeneratedTextColumn _specificLocation;
@@ -607,6 +648,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
         isPrivate,
         deletedFromCameraRoll,
         isStarred,
+        tags,
         specificLocation,
         generalLocation,
         base64encoded
@@ -675,6 +717,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
       context.handle(_isStarredMeta,
           isStarred.isAcceptableOrUnknown(data['is_starred'], _isStarredMeta));
     }
+    context.handle(_tagsMeta, const VerificationResult.success());
     if (data.containsKey('specific_location')) {
       context.handle(
           _specificLocationMeta,
@@ -708,6 +751,9 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
   $PhotosTable createAlias(String alias) {
     return $PhotosTable(_db, alias);
   }
+
+  static TypeConverter<List<String>, String> $converter0 =
+      ListStringConvertor();
 }
 
 class Private extends DataClass implements Insertable<Private> {
@@ -1169,36 +1215,46 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
 }
 
 class Label extends DataClass implements Insertable<Label> {
-  final String id;
+  final String key;
   final String title;
-  Label({@required this.id, @required this.title});
+  final List<String> photoId;
+  Label({@required this.key, this.title, this.photoId});
   factory Label.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
     return Label(
-      id: stringType.mapFromDatabaseResponse(data['${effectivePrefix}id']),
+      key: stringType.mapFromDatabaseResponse(data['${effectivePrefix}key']),
       title:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
+      photoId: $LabelsTable.$converter0.mapToDart(stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}photo_id'])),
     );
   }
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (!nullToAbsent || id != null) {
-      map['id'] = Variable<String>(id);
+    if (!nullToAbsent || key != null) {
+      map['key'] = Variable<String>(key);
     }
     if (!nullToAbsent || title != null) {
       map['title'] = Variable<String>(title);
+    }
+    if (!nullToAbsent || photoId != null) {
+      final converter = $LabelsTable.$converter0;
+      map['photo_id'] = Variable<String>(converter.mapToSql(photoId));
     }
     return map;
   }
 
   LabelsCompanion toCompanion(bool nullToAbsent) {
     return LabelsCompanion(
-      id: id == null && nullToAbsent ? const Value.absent() : Value(id),
+      key: key == null && nullToAbsent ? const Value.absent() : Value(key),
       title:
           title == null && nullToAbsent ? const Value.absent() : Value(title),
+      photoId: photoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photoId),
     );
   }
 
@@ -1206,77 +1262,95 @@ class Label extends DataClass implements Insertable<Label> {
       {ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return Label(
-      id: serializer.fromJson<String>(json['id']),
+      key: serializer.fromJson<String>(json['key']),
       title: serializer.fromJson<String>(json['title']),
+      photoId: serializer.fromJson<List<String>>(json['photoId']),
     );
   }
   @override
   Map<String, dynamic> toJson({ValueSerializer serializer}) {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
+      'key': serializer.toJson<String>(key),
       'title': serializer.toJson<String>(title),
+      'photoId': serializer.toJson<List<String>>(photoId),
     };
   }
 
-  Label copyWith({String id, String title}) => Label(
-        id: id ?? this.id,
+  Label copyWith({String key, String title, List<String> photoId}) => Label(
+        key: key ?? this.key,
         title: title ?? this.title,
+        photoId: photoId ?? this.photoId,
       );
   @override
   String toString() {
     return (StringBuffer('Label(')
-          ..write('id: $id, ')
-          ..write('title: $title')
+          ..write('key: $key, ')
+          ..write('title: $title, ')
+          ..write('photoId: $photoId')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => $mrjf($mrjc(id.hashCode, title.hashCode));
+  int get hashCode =>
+      $mrjf($mrjc(key.hashCode, $mrjc(title.hashCode, photoId.hashCode)));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
-      (other is Label && other.id == this.id && other.title == this.title);
+      (other is Label &&
+          other.key == this.key &&
+          other.title == this.title &&
+          other.photoId == this.photoId);
 }
 
 class LabelsCompanion extends UpdateCompanion<Label> {
-  final Value<String> id;
+  final Value<String> key;
   final Value<String> title;
+  final Value<List<String>> photoId;
   const LabelsCompanion({
-    this.id = const Value.absent(),
+    this.key = const Value.absent(),
     this.title = const Value.absent(),
+    this.photoId = const Value.absent(),
   });
   LabelsCompanion.insert({
-    @required String id,
-    @required String title,
-  })  : id = Value(id),
-        title = Value(title);
+    this.key = const Value.absent(),
+    this.title = const Value.absent(),
+    this.photoId = const Value.absent(),
+  });
   static Insertable<Label> custom({
-    Expression<String> id,
+    Expression<String> key,
     Expression<String> title,
+    Expression<String> photoId,
   }) {
     return RawValuesInsertable({
-      if (id != null) 'id': id,
+      if (key != null) 'key': key,
       if (title != null) 'title': title,
+      if (photoId != null) 'photo_id': photoId,
     });
   }
 
-  LabelsCompanion copyWith({Value<String> id, Value<String> title}) {
+  LabelsCompanion copyWith(
+      {Value<String> key, Value<String> title, Value<List<String>> photoId}) {
     return LabelsCompanion(
-      id: id ?? this.id,
+      key: key ?? this.key,
       title: title ?? this.title,
+      photoId: photoId ?? this.photoId,
     );
   }
 
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
     final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
+    if (key.present) {
+      map['key'] = Variable<String>(key.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
+    }
+    if (photoId.present) {
+      final converter = $LabelsTable.$converter0;
+      map['photo_id'] = Variable<String>(converter.mapToSql(photoId.value));
     }
     return map;
   }
@@ -1284,8 +1358,9 @@ class LabelsCompanion extends UpdateCompanion<Label> {
   @override
   String toString() {
     return (StringBuffer('LabelsCompanion(')
-          ..write('id: $id, ')
-          ..write('title: $title')
+          ..write('key: $key, ')
+          ..write('title: $title, ')
+          ..write('photoId: $photoId')
           ..write(')'))
         .toString();
   }
@@ -1295,16 +1370,13 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
   final GeneratedDatabase _db;
   final String _alias;
   $LabelsTable(this._db, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  GeneratedTextColumn _id;
+  final VerificationMeta _keyMeta = const VerificationMeta('key');
+  GeneratedTextColumn _key;
   @override
-  GeneratedTextColumn get id => _id ??= _constructId();
-  GeneratedTextColumn _constructId() {
-    return GeneratedTextColumn(
-      'id',
-      $tableName,
-      false,
-    );
+  GeneratedTextColumn get key => _key ??= _constructKey();
+  GeneratedTextColumn _constructKey() {
+    return GeneratedTextColumn('key', $tableName, false,
+        defaultValue: Constant(Uuid().v4()));
   }
 
   final VerificationMeta _titleMeta = const VerificationMeta('title');
@@ -1315,12 +1387,24 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
     return GeneratedTextColumn(
       'title',
       $tableName,
-      false,
+      true,
+    );
+  }
+
+  final VerificationMeta _photoIdMeta = const VerificationMeta('photoId');
+  GeneratedTextColumn _photoId;
+  @override
+  GeneratedTextColumn get photoId => _photoId ??= _constructPhotoId();
+  GeneratedTextColumn _constructPhotoId() {
+    return GeneratedTextColumn(
+      'photo_id',
+      $tableName,
+      true,
     );
   }
 
   @override
-  List<GeneratedColumn> get $columns => [id, title];
+  List<GeneratedColumn> get $columns => [key, title, photoId];
   @override
   $LabelsTable get asDslTable => this;
   @override
@@ -1332,22 +1416,20 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
       {bool isInserting = false}) {
     final context = VerificationContext();
     final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id'], _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
+    if (data.containsKey('key')) {
+      context.handle(
+          _keyMeta, key.isAcceptableOrUnknown(data['key'], _keyMeta));
     }
     if (data.containsKey('title')) {
       context.handle(
           _titleMeta, title.isAcceptableOrUnknown(data['title'], _titleMeta));
-    } else if (isInserting) {
-      context.missing(_titleMeta);
     }
+    context.handle(_photoIdMeta, const VerificationResult.success());
     return context;
   }
 
   @override
-  Set<GeneratedColumn> get $primaryKey => <GeneratedColumn>{};
+  Set<GeneratedColumn> get $primaryKey => {key};
   @override
   Label map(Map<String, dynamic> data, {String tablePrefix}) {
     final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
@@ -1358,6 +1440,9 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
   $LabelsTable createAlias(String alias) {
     return $LabelsTable(_db, alias);
   }
+
+  static TypeConverter<List<String>, String> $converter0 =
+      ListStringConvertor();
 }
 
 class LabelEntry extends DataClass implements Insertable<LabelEntry> {
