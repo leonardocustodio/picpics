@@ -272,7 +272,6 @@ abstract class _GalleryStore with Store {
   @action
   void setSearchText(String value) => searchText = value;
 
-
   Future<List<Label>> getLabels() async {
     return await database.getAllLabel();
   }
@@ -289,12 +288,8 @@ abstract class _GalleryStore with Store {
     List<Label> tagsList;
     MoorUser user;
 
-    getLabels().then((value) => {
-      tagsList = value;
-    });
-    getUser().then((value) => {
-      user = value;
-    });
+    getLabels().then((value) => tagsList = value);
+    getUser().then((value) => user = value);
 
     List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
