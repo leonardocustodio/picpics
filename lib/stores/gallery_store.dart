@@ -280,17 +280,7 @@ abstract class _GalleryStore with Store {
     return await database.getSingleMoorUser();
   }
 
-  @computed
-  List<TagsStore> get tagsSuggestions {
-    //var userBox = Hive.box('user');
-    //var tagsBox = Hive.box('tags');
-
-    List<Label> tagsList;
-    MoorUser user;
-
-    getLabels().then((value) => tagsList = value);
-    getUser().then((value) => user = value);
-
+  List<TagStore> continueTagSuggestions(List<Label> tagsList, MoorUser user) {
     List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
 
@@ -354,6 +344,23 @@ abstract class _GalleryStore with Store {
         .toList();
     print('Suggestions Tag Store: $suggestions');
     return suggestions;
+  }
+
+  @computed
+  List<TagsStore> get tagsSuggestions {
+    //var userBox = Hive.box('user');
+    //var tagsBox = Hive.box('tags');
+
+    List<Label> tagsList;
+    MoorUser user;
+
+    getLabels().then((value) {
+      tagsList = value;
+      getUser().then((value) {
+        user = value;
+        return continueTagSuggestions(tagsList, user);
+      });
+    });
   }
 
   @computed
