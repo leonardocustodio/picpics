@@ -17,7 +17,7 @@ enum TagStyle {
 }
 
 class TagsList extends StatefulWidget {
-  final List<TagsStore> tags;
+  final dynamic tags;
   final TextEditingController textEditingController;
   final FocusNode textFocusNode;
   final bool addTagField;
@@ -64,7 +64,7 @@ class _TagsListState extends State<TagsList> {
   String tagBeingPanned;
   bool swipedRightDirection = false;
 
-  Widget _buildTagsWidget(BuildContext context) {
+  Widget _buildTagsWidget(BuildContext context, List<TagsStore> tags) {
     LinearGradient getGradient(int num) {
       switch (num) {
         case 0:
@@ -91,9 +91,9 @@ class _TagsListState extends State<TagsList> {
     }
 
     List<Widget> tagsWidgets = [];
-    print('Tags in TagsList: ${widget.tags}');
+    print('Tags in TagsList: ${tags}');
 
-    if (widget.tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
+    if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.only(top: 10.0, left: 18.0, bottom: 8.0),
@@ -112,8 +112,8 @@ class _TagsListState extends State<TagsList> {
       );
     }
 
-    for (int i = 0; i < widget.tags.length; i++) {
-      TagsStore tag = widget.tags[i];
+    for (int i = 0; i < tags.length; i++) {
+      TagsStore tag = tags[i];
       var mod = i % 4;
 
       tagsWidgets.add(
@@ -158,7 +158,8 @@ class _TagsListState extends State<TagsList> {
               if (widget.shouldChangeToSwipeMode) {
                 setState(() {
                   if (showSwiperInIndex == null) {
-                    showSwiperInIndex = widget.tags.indexWhere((element) => element.id == tag.id);
+                    showSwiperInIndex =
+                        tags.indexWhere((element) => element.id == tag.id);
                   } else {
                     showSwiperInIndex = null;
                   }
@@ -179,17 +180,22 @@ class _TagsListState extends State<TagsList> {
               child: showSwiperInIndex != i
                   ? tag.id != kSecretTagKey
                       ? Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 16.0),
                           child: Text(
                             tag.name,
                             textScaleFactor: 1.0,
-                            style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                            style: widget.tagStyle == TagStyle.MultiColored
+                                ? kWhiteTextStyle
+                                : kGrayTextStyle,
                           ),
                         )
                       : Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5.2, horizontal: 19.0),
-                          child:
-                              widget.tagStyle == TagStyle.MultiColored ? Image.asset('lib/images/locktagwhite.png') : Image.asset('lib/images/locktaggray.png'),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5.2, horizontal: 19.0),
+                          child: widget.tagStyle == TagStyle.MultiColored
+                              ? Image.asset('lib/images/locktagwhite.png')
+                              : Image.asset('lib/images/locktaggray.png'),
                         )
                   : CustomAnimation<double>(
                       control: CustomAnimationControl.LOOP,
@@ -243,11 +249,15 @@ class _TagsListState extends State<TagsList> {
                             Opacity(
                               opacity: firstOpct,
                               child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16.0),
                                 child: Text(
                                   tag.name,
                                   textScaleFactor: 1.0,
-                                  style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                                  style:
+                                      widget.tagStyle == TagStyle.MultiColored
+                                          ? kWhiteTextStyle
+                                          : kGrayTextStyle,
                                 ),
                               ),
                             ),
@@ -273,7 +283,9 @@ class _TagsListState extends State<TagsList> {
                               child: Text(
                                 S.of(context).delete,
                                 textScaleFactor: 1.0,
-                                style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                                style: widget.tagStyle == TagStyle.MultiColored
+                                    ? kWhiteTextStyle
+                                    : kGrayTextStyle,
                               ),
                             ),
                           ],
@@ -362,9 +374,12 @@ class _TagsListState extends State<TagsList> {
                           ),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.only(left: 6.0),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                            border: OutlineInputBorder(borderSide: BorderSide.none),
+                            enabledBorder:
+                                OutlineInputBorder(borderSide: BorderSide.none),
+                            focusedBorder:
+                                OutlineInputBorder(borderSide: BorderSide.none),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide.none),
                             hintText: S.of(context).add_tags,
                             hintStyle: TextStyle(
                               fontFamily: 'Lato',
@@ -382,7 +397,8 @@ class _TagsListState extends State<TagsList> {
                           padding: const EdgeInsets.all(0),
                           minSize: 30,
                           onPressed: () {
-                            widget.onSubmitted(widget.textEditingController.text);
+                            widget
+                                .onSubmitted(widget.textEditingController.text);
                           },
                           child: Container(
                             child: Image.asset('lib/images/plusaddtagico.png'),
@@ -445,6 +461,14 @@ class _TagsListState extends State<TagsList> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildTagsWidget(context);
+    return widget.tags is Future
+        ? FutureBuilder<List<TagsStore>>(
+            future: widget.tags,
+            builder: (c, AsyncSnapshot<List<TagsStore>> snapshot) {
+              return snapshot.hasData
+                  ? _buildTagsWidget(context, snapshot.data)
+                  : Container();
+            })
+        : _buildTagsWidget(context, widget.tags);
   }
 }

@@ -281,7 +281,7 @@ abstract class _GalleryStore with Store {
   }
 
   @computed
-  List<TagsStore> get tagsSuggestions {
+  Future<List<TagsStore>> get tagsSuggestions async{
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
 
