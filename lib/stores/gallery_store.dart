@@ -281,21 +281,17 @@ abstract class _GalleryStore with Store {
   }
 
   @computed
-  Future<List<TagsStore>> get tagsSuggestions async{
+  Future<List<TagsStore>> get tagsSuggestions async {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
-
-    List<Label> tagsList;
-    MoorUser user;
-
-    getLabels().then((value) => tagsList = value);
-    getUser().then((value) => user = value);
+    var tagsList = await database.getAllLabel();
+    MoorUser getUser = await database.getSingleMoorUser();
 
     List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
 
     if (searchText == '') {
-      for (var recent in user.recentTags) {
+      for (var recent in getUser.recentTags) {
         print('Recent Tag: $recent');
         if (multiPicTags.contains(recent) || recent == kSecretTagKey) {
           continue;
@@ -966,40 +962,51 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> editTag({String oldTagKey, String newName}) async {
-    var tagsBox = Hive.box('tags');
-    var picsBox = Hive.box('pics');
+    //var tagsBox = Hive.box('tags');
+    //var picsBox = Hive.box('pics');
 
     String newTagKey = Helpers.encryptTag(newName);
-    Tag oldTag = tagsBox.get(oldTagKey);
+    Label oldTag = await database.getLabelByLabelKey(oldTagKey);
 
-    // Creating new tag
-    Tag createTag = Tag(newName, oldTag.photoId);
-    tagsBox.put(newTagKey, createTag);
+    // Creating new label
+    Label createTag =
+        Label(key: newTagKey, title: newName, photoId: oldTag.photoId);
+    await database.createLabel(createTag);
+    //tagsBox.put(newTagKey, createTag);
 
-    for (String photoId in createTag.photoId) {
-      Pic pic = picsBox.get(photoId);
-      int indexOfOldTag = pic.tags.indexOf(oldTagKey);
-      print('Tags in this picture: ${pic.tags}');
-      pic.tags[indexOfOldTag] = newTagKey;
-      picsBox.put(photoId, pic);
-      print('updated tag in pic ${pic.photoId}');
-    }
+    await Future.wait(
+      [
+        Future.forEach(createTag.photoId, (photoId) async {
+          Photo pic = await database.getPhotoByPhotoId(photoId);
+          //Pic pic = picsBox.get(photoId);
+          int indexOfOldTag = pic.tags.indexOf(oldTagKey);
+          print('Tags in this picture: ${pic.tags}');
+          pic.tags[indexOfOldTag] = newTagKey;
+          await database.updatePhoto(pic);
+          //picsBox.put(photoId, pic);
+          print('updated tag in pic ${pic.id}');
+        })
+      ],
+    );
 
     // Altera a tag
     appStore.editTag(
         oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
     appStore.editRecentTags(oldTagKey, newTagKey);
-    tagsBox.delete(oldTagKey);
+    await database.deleteLabelByLabelId(oldTagKey);
+    //tagsBox.delete(oldTagKey);
 
     print('finished updating all tags');
     Analytics.sendEvent(Event.edited_tag);
   }
 
   @action
-  void deleteTag({String tagKey}) {
-    var tagsBox = Hive.box('tags');
+  Future<void> deleteTag({String tagKey}) async {
+    //var tagsBox = Hive.box('tags');
 
-    if (tagsBox.containsKey(tagKey)) {
+    var label = await database.getLabelByLabelKey(tagKey);
+
+    if (label != null) {
       print('found tag going to delete it');
 
       // Remove a tag das fotos já taggeadas
@@ -1019,7 +1026,8 @@ abstract class _GalleryStore with Store {
       taggedPics.remove(taggedPicsStore);
       appStore.removeTagFromRecent(tagKey: tagKey);
       appStore.removeTag(tagsStore: tagsStore);
-      tagsBox.delete(tagKey);
+      await database.deleteLabelByLabelId(tagKey);
+      //tagsBox.delete(tagKey);
       print('deleted from tags db');
       Analytics.sendEvent(Event.deleted_tag);
     }
@@ -1049,40 +1057,45 @@ abstract class _GalleryStore with Store {
   }
 
   @action
-  void searchPicsWithTags() {
-    var tagsBox = Hive.box('tags');
-    print('%%%% Tags Keys: ${tagsBox.keys}');
+  Future<void> searchPicsWithTags() async {
+    //var tagsBox = Hive.box('tags');
+    //print('%%%% Tags Keys: ${tagsBox.keys}');
 
     filteredPics.clear();
 
     List<String> tempPhotosIds = [];
     bool firstInteraction = true;
 
-    for (var tagKey in searchingTagsKeys) {
-      print('filtering tag: $tagKey');
-      Tag getTag = tagsBox.get(tagKey);
-      List<String> photosIds = getTag.photoId;
-      print('photos Ids in this tag: $photosIds');
+    Future.wait(
+      [
+        Future.forEach(searchingTagsKeys, (tagKey) async {
+          print('filtering tag: $tagKey');
+          Label getTag = await database.getLabelByLabelKey(tagKey);
+          //Tag getTag = tagsBox.get(tagKey);
+          List<String> photosIds = getTag.photoId;
+          print('photos Ids in this tag: $photosIds');
 
-      if (firstInteraction) {
-        print('adding all photos because it is firt interaction');
-        tempPhotosIds.addAll(photosIds);
-        firstInteraction = false;
-      } else {
-        // print('tempPhotoId: $tempPhotosIds');
-        List<String> auxArray = [];
-        auxArray.addAll(tempPhotosIds);
+          if (firstInteraction) {
+            print('adding all photos because it is firt interaction');
+            tempPhotosIds.addAll(photosIds);
+            firstInteraction = false;
+          } else {
+            // print('tempPhotoId: $tempPhotosIds');
+            List<String> auxArray = [];
+            auxArray.addAll(tempPhotosIds);
 
-        for (var photoId in tempPhotosIds) {
-          print('checking if photoId is there: $photoId');
-          if (!photosIds.contains(photoId)) {
-            auxArray.remove(photoId);
-            print('removing $photoId because doesnt have $tagKey');
+            for (var photoId in tempPhotosIds) {
+              print('checking if photoId is there: $photoId');
+              if (!photosIds.contains(photoId)) {
+                auxArray.remove(photoId);
+                print('removing $photoId because doesnt have $tagKey');
+              }
+            }
+            tempPhotosIds = auxArray;
           }
-        }
-        tempPhotosIds = auxArray;
-      }
-    }
+        }),
+      ],
+    );
 
     // print('Temp photos ids: $tempPhotosIds');
     // print('All Pics: ${allPicsKeys}');
@@ -1118,20 +1131,24 @@ abstract class _GalleryStore with Store {
   }
 
   // Create tag for using in multipic
-  void createTag(String tagName) {
-    var tagsBox = Hive.box('tags');
-    print(tagsBox.keys);
+  Future<void> createTag(String tagName) async {
+    //var tagsBox = Hive.box('tags');
+    //print(tagsBox.keys);
 
     String tagKey = Helpers.encryptTag(tagName);
     print('Adding tag: $tagName');
 
-    if (tagsBox.containsKey(tagKey)) {
+    Label lab = await database.getLabelByLabelKey(tagKey);
+
+    if (lab != null) {
       print('user already has this tag');
       return;
     }
 
     print('adding tag to database...');
-    tagsBox.put(tagKey, Tag(tagName, []));
+    await database
+        .createLabel(Label(key: tagKey, title: tagName, photoId: <String>[]));
+    //tagsBox.put(tagKey, Tag(tagName, []));
 
     TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
     appStore.addTag(tagsStore);
@@ -1145,46 +1162,52 @@ abstract class _GalleryStore with Store {
 
   @action
   Future<void> addTagsToSelectedPics() async {
-    var tagsBox = Hive.box('tags');
+    //var tagsBox = Hive.box('tags');
 
-    for (PicStore picStore in selectedPics) {
-      for (String tagKey in multiPicTagKeys) {
-        if (picStore.tagsKeys.contains(tagKey)) {
-          print('this tag is already in this picture');
-          continue;
-        }
-        if (tagKey == kSecretTagKey) {
-          print('Should add secret tag in the end!!!');
-          if (!privatePics.contains(picStore)) {
-            await picStore.setIsPrivate(true);
-            await Crypto.encryptImage(picStore, appStore.encryptionKey);
-            print('this pic now is private');
-            privatePics.add(picStore);
-          } else {
-            print('this pic is already private');
+    Future.wait(
+      [
+        Future.forEach(selectedPics, (PicStore picStore) async {
+          for (String tagKey in multiPicTagKeys) {
+            if (picStore.tagsKeys.contains(tagKey)) {
+              print('this tag is already in this picture');
+              continue;
+            }
+            if (tagKey == kSecretTagKey) {
+              print('Should add secret tag in the end!!!');
+              if (!privatePics.contains(picStore)) {
+                await picStore.setIsPrivate(true);
+                await Crypto.encryptImage(picStore, appStore.encryptionKey);
+                print('this pic now is private');
+                privatePics.add(picStore);
+              } else {
+                print('this pic is already private');
+              }
+              continue;
+            }
+
+            //Tag getTag = tagsBox.get(tagKey);
+            Label getTag = await database.getLabelByLabelKey(tagKey);
+            getTag.photoId.add(picStore.photoId);
+            await database.updateLabel(getTag);
+            //tagsBox.put(tagKey, getTag);
+
+            await picStore.addTagToPic(
+              tagKey: tagKey,
+              photoId: picStore.photoId,
+            );
+
+            print('update pictures in tag');
           }
-          continue;
-        }
 
-        Tag getTag = tagsBox.get(tagKey);
-        getTag.photoId.add(picStore.photoId);
-        tagsBox.put(tagKey, getTag);
-
-        await picStore.addTagToPic(
-          tagKey: tagKey,
-          photoId: picStore.photoId,
-        );
-
-        print('update pictures in tag');
-      }
-
-      if (selectedPicsAreTagged != true) {
-        print('Adding pic to tagged pics!');
-        await addPicToTaggedPics(picStore: picStore);
-        removePicFromUntaggedPics(picStore: picStore);
-        swipePics.remove(picStore);
-      }
-    }
+          if (selectedPicsAreTagged != true) {
+            print('Adding pic to tagged pics!');
+            await addPicToTaggedPics(picStore: picStore);
+            removePicFromUntaggedPics(picStore: picStore);
+            swipePics.remove(picStore);
+          }
+        }),
+      ],
+    );
 
     clearSelectedPics();
     clearMultiPicTags();

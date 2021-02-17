@@ -281,6 +281,30 @@ mixin _$GalleryStore on _GalleryStore, Store {
         .run(() => super.sharePics(picsStores: picsStores));
   }
 
+  final _$editTagAsyncAction = AsyncAction('_GalleryStore.editTag');
+
+  @override
+  Future<void> editTag({String oldTagKey, String newName}) {
+    return _$editTagAsyncAction
+        .run(() => super.editTag(oldTagKey: oldTagKey, newName: newName));
+  }
+
+  final _$deleteTagAsyncAction = AsyncAction('_GalleryStore.deleteTag');
+
+  @override
+  Future<void> deleteTag({String tagKey}) {
+    return _$deleteTagAsyncAction.run(() => super.deleteTag(tagKey: tagKey));
+  }
+
+  final _$searchPicsWithTagsAsyncAction =
+      AsyncAction('_GalleryStore.searchPicsWithTags');
+
+  @override
+  Future<void> searchPicsWithTags() {
+    return _$searchPicsWithTagsAsyncAction
+        .run(() => super.searchPicsWithTags());
+  }
+
   final _$addTagsToSelectedPicsAsyncAction =
       AsyncAction('_GalleryStore.addTagsToSelectedPics');
 
@@ -625,44 +649,11 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  Future<void> editTag({String oldTagKey, String newName}) {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.editTag');
-    try {
-      return super.editTag(oldTagKey: oldTagKey, newName: newName);
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void deleteTag({String tagKey}) {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.deleteTag');
-    try {
-      return super.deleteTag(tagKey: tagKey);
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void addTagToSearchFilter() {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.addTagToSearchFilter');
     try {
       return super.addTagToSearchFilter();
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void searchPicsWithTags() {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.searchPicsWithTags');
-    try {
-      return super.searchPicsWithTags();
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

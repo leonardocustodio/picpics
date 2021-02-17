@@ -179,6 +179,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Label>> getAllLabel() => select(labels).get();
 
+  Future deleteLabelByLabelId(String labelKey) =>
+      (delete(labels)..where((l) => l.key.equals(labelKey))).go();
+
   Future updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
 
   Future deleteLabel(Label oldLabel) => delete(labels).delete(oldLabel);
