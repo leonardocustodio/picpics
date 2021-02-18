@@ -165,7 +165,12 @@ LazyDatabase _openConnection() {
 
 @UseMoor(tables: [Photos, Privates, Labels, LabelEntries, MoorUsers])
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  static final AppDatabase _singleton = AppDatabase._internal();
+
+  factory AppDatabase() {
+    return _singleton;
+  }
+  AppDatabase._internal() : super(_openConnection());
 
   @override
   int get schemaVersion => 1;
@@ -183,8 +188,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Label>> getAllLabel() => select(labels).get();
 
-  Future deleteLabelByLabelId(String labelKey) =>
-      (delete(labels)..where((l) => l?.key?.equals(labelKey) ?? const Constant(false))).go();
+  Future deleteLabelByLabelId(String labelKey) => (delete(labels)
+        ..where((l) => l?.key?.equals(labelKey) ?? const Constant(false)))
+      .go();
 
   Future updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
 
