@@ -853,6 +853,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.3"
+  moor_ffi:
+    dependency: "direct overridden"
+    description:
+      path: moor_ffi
+      ref: beta
+      resolved-ref: "85206d2fd7ab74f36326b91bab109ee75919b842"
+      url: "https://github.com/simolus3/moor.git"
+    source: git
+    version: "0.8.0"
   moor_flutter:
     dependency: transitive
     description:
@@ -1238,6 +1247,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.8"
+  sqlite3_flutter_libs:
+    dependency: transitive
+    description:
+      name: sqlite3_flutter_libs
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   sqlparser:
     dependency: transitive
     description:

@@ -636,7 +636,7 @@ abstract class _PicStore with Store {
 
     if (pic != null) {
       print('pic is in db... removing it from db!');
-      List<String> picTags = List.of(pic.tags);
+      List<String> picTags = List<String>.from(pic.tags);
       for (String tagKey in picTags) {
         removeTagFromPic(tagKey: tagKey);
 

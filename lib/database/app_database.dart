@@ -141,7 +141,11 @@ class ListStringConvertor extends TypeConverter<List<String>, String> {
     if (fromDb == null) {
       return <String>[];
     }
-    return json.decode(fromDb);
+    var r = json.decode(fromDb);
+    if (r is List) {
+      return r?.toList()?.map((e) => e.toString())?.toList() ?? <String>[];
+    }
+    return r;
   }
 
   @override
@@ -278,9 +282,8 @@ class AppDatabase extends _$AppDatabase {
     }
   }
 
-  Future updateMoorUser(MoorUser newMoorUser) => (update(moorUsers)
-        ..where((u) => u?.customPrimaryKey?.equals(0) ?? const Constant(false)))
-      .replace(newMoorUser);
+  Future updateMoorUser(MoorUser newMoorUser) =>
+      update(moorUsers).replace(newMoorUser.copyWith(customPrimaryKey: 0));
 
   Future deleteMoorUser(MoorUser newMoorUser) => (delete(moorUsers)
         ..where((u) => u?.customPrimaryKey?.equals(0) ?? const Constant(false)))

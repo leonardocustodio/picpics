@@ -105,8 +105,9 @@ abstract class _AppStore with Store {
         secretuserHiveBox.length > 0) {
       initialRoute = MigrationScreen.id;
     } else {
-      //Hive.deleteFromDisk();
       initialRoute = (tutorialCompleted) ? TabsScreen.id : LoginScreen.id;
+      //TODO: when all the errors are reduced
+      //Hive.deleteFromDisk();
     }
 
     if (user.hasGalleryPermission != null || user.tutorialCompleted) {
