@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/crypto_manager.dart';
@@ -42,6 +43,8 @@ abstract class _PicStore with Store {
   final double originalLatitude;
   final double originalLongitude;
 
+  final AppDatabase database = AppDatabase();
+
   _PicStore({
     this.appStore,
     this.entity,
@@ -68,23 +71,27 @@ abstract class _PicStore with Store {
     bool value = isStarred == null ? true : !isStarred;
     print('Setting starred photo $photoId to $value');
 
-    var picsBox = Hive.box('pics');
-    Pic pic = picsBox.get(photoId);
-    pic.isStarred = value;
-
+    //var picsBox = Hive.box('pics');
+    Photo pic = await database.getPhotoByPhotoId(photoId);
+    //pic.isStarred = value;
+    String base64encoded;
     print('teste');
     if (value == true) {
       var bytes = await entity.thumbDataWithSize(300, 300);
       String encoded = base64.encode(bytes);
-      pic.base64encoded = encoded;
+      base64encoded = encoded;
       appStore.addToStarredPhotos(photoId);
     } else {
-      pic.base64encoded = null;
       appStore.removeFromStarredPhotos(photoId);
     }
 
     isStarred = value;
-    pic.save();
+    await database.updatePhoto(
+      pic.copyWith(
+        base64encoded: base64encoded,
+        isStarred: value,
+      ),
+    );
     print('isStarred value: $isStarred');
   }
 
@@ -92,17 +99,18 @@ abstract class _PicStore with Store {
   String photoId;
 
   @action
-  void setChangePhotoId(String value) {
-    var tagsBox = Hive.box('tags');
+  Future<void> setChangePhotoId(String value) async {
+    //var tagsBox = Hive.box('tags');
 
-    for (String tagsKeys in tagsKeys) {
-      Tag getTag = tagsBox.get(tagsKeys);
+    await Future.forEach(tagsKeys, (tKeys) async {
+      Label getTag = await database.getLabelByLabelKey(tKeys);
 
       getTag.photoId.remove(photoId);
       getTag.photoId.add(value);
-      print('Replaced tag in ${getTag.name} tagsbox');
-      getTag.save();
-    }
+      print('Replaced tag in ${getTag.title} tagsbox');
+      await database.updateLabel(getTag);
+      //getTag.save();
+    });
 
     photoId = value;
   }
@@ -111,15 +119,16 @@ abstract class _PicStore with Store {
   AssetEntity entity;
 
   @action
-  void changeAssetEntity(AssetEntity picEntity) {
+  Future<void> changeAssetEntity(AssetEntity picEntity) async {
     print('Changing asset entity of $photoId to ${picEntity.id}');
 
-    var picsBox = Hive.box('pics');
-    Pic picOld = picsBox.get(photoId);
+    //var picsBox = Hive.box('pics');
+    //Pic picOld = picsBox.get(photoId);
+    Photo picOld = await database.getPhotoByPhotoId(photoId);
 
     if (picOld != null) {
-      Pic createPic = Pic(
-        photoId: picEntity.id,
+      Photo createPic = Photo(
+        id: picEntity.id,
         createdAt: picOld.createdAt,
         originalLatitude: picOld.originalLatitude,
         originalLongitude: picOld.originalLongitude,
@@ -128,9 +137,14 @@ abstract class _PicStore with Store {
         specificLocation: picOld.specificLocation,
         generalLocation: picOld.generalLocation,
         tags: picOld.tags,
+        isPrivate: false,
+        deletedFromCameraRoll: false,
+        isStarred: false,
       );
-      picsBox.put(picEntity.id, createPic);
-      picOld.delete();
+      //picsBox.put(picEntity.id, createPic);
+      await database.createPhoto(createPic);
+      //picOld.delete();
+      await database.deletePhoto(picOld);
     }
 
     entity = picEntity;
@@ -161,30 +175,33 @@ abstract class _PicStore with Store {
   String thumbPath;
   bool deletedFromCameraRoll;
 
-  void setDeletedFromCameraRoll(bool value) {
+  Future<void> setDeletedFromCameraRoll(bool value) async {
     print('Setting deleted from camera roll as $value');
     deletedFromCameraRoll = value;
 
-    var picsBox = Hive.box('pics');
-    Pic pic = picsBox.get(photoId);
-    pic.deletedFromCameraRoll = value;
-    pic.save();
+    //var picsBox = Hive.box('pics');
+    //Pic pic = picsBox.get(photoId);
+    Photo pic = await database.getPhotoByPhotoId(photoId);
+    //pic.deletedFromCameraRoll = value;
+    //pic.save();
+    await database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
   }
 
   @action
   Future<void> setPrivatePath(
       String picPath, String thumbnailPath, String picNonce) async {
-    var secretBox = Hive.box('secrets');
-    Secret secret = Secret(
-      photoId: photoId,
-      photoPath: picPath,
+    //var secretBox = Hive.box('secrets');
+    Private secret = Private(
+      id: photoId,
+      path: picPath,
       thumbPath: thumbnailPath,
       originalLatitude: originalLatitude,
       originalLongitude: originalLongitude,
       createDateTime: createdAt,
       nonce: picNonce,
     );
-    secretBox.put(photoId, secret);
+    //secretBox.put(photoId, secret);
+    await database.updatePrivate(secret);
     photoPath = picPath;
     thumbPath = thumbnailPath;
     nonce = picNonce;
@@ -211,11 +228,13 @@ abstract class _PicStore with Store {
   Future<void> removePrivatePath() async {
     print('Removing pic from secrets box...');
 
-    var secretBox = Hive.box('secrets');
-    Secret secretPic = secretBox.get(photoId);
+    //var secretBox = Hive.box('secrets');
+    //Secret secretPic = secretBox.get(photoId);
+    Private secretPic = await database.getPrivateByPhotoId(photoId);
 
     if (secretPic != null) {
-      secretPic.delete();
+      //secretPic.delete();
+      await database.deletePrivate(secretPic);
       print('Pic deleted from secrets box!!!');
       return;
     }
@@ -253,15 +272,15 @@ abstract class _PicStore with Store {
   }
 
   @action
-  void loadPicInfo() {
+  Future<void> loadPicInfo() async {
     // loadExifData();
 
-    var picsBox = Hive.box('pics');
-    var secretBox = Hive.box('secrets');
-
-    if (picsBox.containsKey(photoId)) {
+    //var picsBox = Hive.box('pics');
+    //var secretBox = Hive.box('secrets');
+    Photo pic = await database.getPhotoByPhotoId(photoId);
+    if (pic != null) {
       // print('pic $photoId exists, loading data....');
-      Pic pic = picsBox.get(photoId);
+      //Pic pic = picsBox.get(photoId);
 
       latitude = pic.latitude;
       longitude = pic.longitude;
@@ -273,10 +292,10 @@ abstract class _PicStore with Store {
 
       print('Is private: $isPrivate');
       if (isPrivate == true) {
-        Secret secretPic = secretBox.get(photoId);
+        Private secretPic = await database.getPrivateByPhotoId(photoId);
 
         if (secretPic != null) {
-          photoPath = secretPic.photoPath;
+          photoPath = secretPic.path;
           thumbPath = secretPic.thumbPath;
           nonce = secretPic.nonce;
           print(
@@ -330,15 +349,17 @@ abstract class _PicStore with Store {
     print(
         'Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
 
-    var picsBox = Hive.box('pics');
-    Pic getPic = picsBox.get(photoId);
-    getPic.isPrivate = value;
-    picsBox.put(photoId, getPic);
+    //var picsBox = Hive.box('pics');
+    Photo getPic = await database.getPhotoByPhotoId(photoId);
+    //getPic.isPrivate = value;
+    //picsBox.put(photoId, getPic);
+    await database.updatePhoto(getPic.copyWith(isPrivate: value));
   }
 
   Future<void> addSecretTagToPic() async {
-    var tagsBox = Hive.box('tags');
-    Tag getTag = tagsBox.get(kSecretTagKey);
+    //var tagsBox = Hive.box('tags');
+    //Tag getTag = tagsBox.get(kSecretTagKey);
+    Label getTag = await database.getLabelByLabelKey(kSecretTagKey);
 
     if (getTag.photoId.contains(photoId)) {
       print('this tag is already in this picture');
@@ -346,7 +367,8 @@ abstract class _PicStore with Store {
     }
 
     getTag.photoId.add(photoId);
-    tagsBox.put(kSecretTagKey, getTag);
+    //tagsBox.put(kSecretTagKey, getTag);
+    await database.updateLabel(getTag);
 
     await addTagToPic(
       tagKey: kSecretTagKey,
@@ -378,8 +400,10 @@ abstract class _PicStore with Store {
   }
 
   @computed
-  List<TagsStore> get tagsSuggestions {
-    var tagsBox = Hive.box('tags');
+  Future<List<TagsStore>> get tagsSuggestions async {
+    //var tagsBox = Hive.box('tags');
+    var tagsBox = await database.getAllLabel();
+    var tagsBoxKeys = tagsBox.map((e) => e.key);
     List<String> suggestionTags = [];
 
     if (searchText == '') {
@@ -398,7 +422,7 @@ abstract class _PicStore with Store {
 //            continue;
 //          }
       if (suggestionTags.length < kMaxNumOfSuggestions) {
-        for (var tagKey in tagsBox.keys) {
+        for (var tagKey in tagsBoxKeys) {
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
@@ -412,7 +436,7 @@ abstract class _PicStore with Store {
       }
 //      }
     } else {
-      for (var tagKey in tagsBox.keys) {
+      for (var tagKey in tagsBoxKeys) {
         if (tagKey == kSecretTagKey) continue;
 
         String tagName = Helpers.decryptTag(tagKey);
@@ -434,16 +458,17 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> addTag({String tagName}) async {
-    var tagsBox = Hive.box('tags');
-    print(tagsBox.keys);
+    //var tagsBox = Hive.box('tags');
+    //print(tagsBox.keys);
 
     String tagKey = Helpers.encryptTag(tagName);
     print('Adding tag: $tagName');
+    Label getTag = await database.getLabelByLabelKey(tagKey);
 
-    if (tagsBox.containsKey(tagKey)) {
+    if (getTag != null) {
       print('user already has this tag');
 
-      Tag getTag = tagsBox.get(tagKey);
+      //Tag getTag = tagsBox.get(tagKey);
 
       if (getTag.photoId.contains(photoId)) {
         print('this tag is already in this picture');
@@ -451,7 +476,8 @@ abstract class _PicStore with Store {
       }
 
       getTag.photoId.add(photoId);
-      tagsBox.put(tagKey, getTag);
+      //tagsBox.put(tagKey, getTag);
+      await database.updateLabel(getTag);
       await addTagToPic(
         tagKey: tagKey,
         photoId: photoId,
@@ -471,7 +497,9 @@ abstract class _PicStore with Store {
     TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
     appStore.addTag(tagsStore);
 
-    tagsBox.put(tagKey, Tag(tagName, [photoId]));
+    //tagsBox.put(tagKey, Tag(tagName, [photoId]));
+    await database
+        .createLabel(Label(key: tagKey, title: tagName, photoId: [photoId]));
     await addTagToPic(
       tagKey: tagKey,
       photoId: photoId,
@@ -485,12 +513,13 @@ abstract class _PicStore with Store {
       String tagNameX,
       String photoId,
       List<AssetEntity> entities}) async {
-    var picsBox = Hive.box('pics');
+    //var picsBox = Hive.box('pics');
+    Photo getPic = await database.getPhotoByPhotoId(photoId);
 
-    if (picsBox.containsKey(photoId)) {
+    if (getPic != null) {
       print('this picture is in db going to update');
 
-      Pic getPic = picsBox.get(photoId);
+      //Pic getPic = picsBox.get(photoId);
 
       if (getPic.tags.contains(tagKey)) {
         print('this tag is already in this picture');
@@ -498,8 +527,9 @@ abstract class _PicStore with Store {
       }
 
       getPic.tags.add(tagKey);
-      print('photoId: ${getPic.photoId} - tags: ${getPic.tags}');
-      picsBox.put(photoId, getPic);
+      print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+      //picsBox.put(photoId, getPic);
+      await database.updatePhoto(getPic);
       print('updated picture');
 
       TagsStore tagsStore =
@@ -521,8 +551,8 @@ abstract class _PicStore with Store {
         appStore.tags.firstWhere((element) => element.id == tagKey);
     tags.add(tagsStore);
 
-    Pic pic = Pic(
-      photoId: photoId,
+    Photo pic = Photo(
+      id: photoId,
       createdAt: createdAt,
       originalLatitude: originalLatitude,
       originalLongitude: originalLongitude,
@@ -531,10 +561,13 @@ abstract class _PicStore with Store {
       specificLocation: null,
       generalLocation: null,
       tags: [tagKey],
+      isStarred: false,
+      deletedFromCameraRoll: false,
       isPrivate: tagKey == kSecretTagKey ? true : false,
     );
 
-    await picsBox.put(photoId, pic);
+    //await picsBox.put(photoId, pic);
+    await database.createPhoto(pic);
     print('@@@@@@@@ tagsKey: ${tagKey}');
 
     // Increase today tagged pics everytime it adds a new pic to database.
@@ -597,8 +630,9 @@ abstract class _PicStore with Store {
       }
     }
 
-    var picsBox = Hive.box('pics');
-    Pic pic = picsBox.get(photoId);
+    //var picsBox = Hive.box('pics');
+    //Pic pic = picsBox.get(photoId);
+    Photo pic = await database.getPhotoByPhotoId(photoId);
 
     if (pic != null) {
       print('pic is in db... removing it from db!');
@@ -610,7 +644,8 @@ abstract class _PicStore with Store {
           deleteEncryptedPic();
         }
       }
-      picsBox.delete(photoId);
+      //picsBox.delete(photoId);
+      await database.deletePhotoByPhotoId(photoId);
       print('removed ${photoId} from database');
     }
 
@@ -618,28 +653,32 @@ abstract class _PicStore with Store {
   }
 
   @action
-  void removeTagFromPic({String tagKey}) {
+  Future<void> removeTagFromPic({String tagKey}) async {
     print('removing tag: $tagKey from pic $photoId');
-    var tagsBox = Hive.box('tags');
-    var picsBox = Hive.box('pics');
+    //var tagsBox = Hive.box('tags');
+    //var picsBox = Hive.box('pics');
 
-    Tag getTag = tagsBox.get(tagKey);
+    //Tag getTag = tagsBox.get(tagKey);
+    Label getTag = await database.getLabelByLabelKey(tagKey);
 
     print('Tag photos ids: ${getTag.photoId}');
     int indexOfPicInTag = getTag.photoId.indexOf(photoId);
     print('Tag index to remove: $indexOfPicInTag');
     if (indexOfPicInTag != null) {
       getTag.photoId.removeAt(indexOfPicInTag);
-      tagsBox.put(tagKey, getTag);
+      //tagsBox.put(tagKey, getTag);
+      await database.updateLabel(getTag);
       print('removed pic from tag');
     }
 
-    Pic getPic = picsBox.get(photoId);
+    //Pic getPic = picsBox.get(photoId);
+    Photo getPic = await database.getPhotoByPhotoId(photoId);
     int indexOfTagInPic = getPic.tags.indexOf(tagKey);
 
     if (indexOfTagInPic != null) {
       getPic.tags.removeAt(indexOfTagInPic);
-      picsBox.put(photoId, getPic);
+      //picsBox.put(photoId, getPic);
+      await database.updatePhoto(getPic);
       print('removed tag from pic');
       tags.removeWhere((element) => element.id == tagKey);
     }
@@ -650,29 +689,37 @@ abstract class _PicStore with Store {
 
     Analytics.sendEvent(
       Event.removed_tag,
-      params: {'tagName': getTag.name},
+      params: {'tagName': getTag.title},
     );
   }
 
   @action
-  void saveLocation(
-      {double lat, double long, String specific, String general}) {
-    var picsBox = Hive.box('pics');
+  Future<void> saveLocation(
+      {double lat, double long, String specific, String general}) async {
+    //var picsBox = Hive.box('pics');
 
-    Pic getPic = picsBox.get(photoId);
+    //Pic getPic = picsBox.get(photoId);
+    Photo getPic = await database.getPhotoByPhotoId(photoId);
+
     if (getPic != null) {
       print('found pic');
 
-      getPic.latitude = lat;
-      getPic.longitude = long;
-      getPic.specificLocation = specific;
-      getPic.generalLocation = general;
-      getPic.save();
+      //getPic.latitude = lat;
+      //getPic.longitude = long;
+      //getPic.specificLocation = specific;
+      //getPic.generalLocation = general;
+      //getPic.save();
+      await database.updatePhoto(getPic.copyWith(
+        latitude: lat,
+        longitude: long,
+        specificLocation: specific,
+        generalLocation: general,
+      ));
       print('updated pic with new values');
     } else {
       print('Did not found pic!');
-      Pic createPic = Pic(
-        photoId: photoId,
+      Photo createPic = Photo(
+        id: photoId,
         createdAt: createdAt,
         originalLatitude: originalLatitude,
         originalLongitude: originalLongitude,
@@ -681,8 +728,12 @@ abstract class _PicStore with Store {
         specificLocation: specificLocation,
         generalLocation: generalLocation,
         tags: [],
+        isStarred: false,
+        isPrivate: false,
+        deletedFromCameraRoll: false,
       );
-      picsBox.put(photoId, createPic);
+      //picsBox.put(photoId, createPic);
+      await database.createPhoto(createPic);
       print('Saved pic to database!');
     }
 
@@ -722,7 +773,7 @@ abstract class _PicStore with Store {
         appStore.appLanguage.split('_')[0] == 'de' ||
         appStore.appLanguage.split('_')[0] == 'ja') {
       print('Offline translating it...');
-      return tagsText.map((e) => Labels.labelTranslation(e, context)).toList();
+      return tagsText.map((e) => PredefinedLabels.labelTranslation(e, context)).toList();
     }
 
     final _credentials = new ServiceAccountCredentials.fromJson(r'''

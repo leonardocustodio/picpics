@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:picPics/generated/l10n.dart';
 
-class Labels {
+class PredefinedLabels {
   static String labelTranslation(String label, BuildContext context) {
     switch (label) {
       case 'Team':

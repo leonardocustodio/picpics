@@ -4,6 +4,7 @@ import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -91,22 +92,22 @@ abstract class _AppStore with Store {
       addRecentTags(tagKey);
     }
 
-    var userHiveBox /* = Hive.box('user') */;
-    var picsuserHiveBox /* = Hive.box('pics') */;
-    var tagsuserHiveBox /* = Hive.box('tags') */;
-    var secretuserHiveBox /* = Hive.box('secrets') */;
-    var keyuserHiveBox /* = Hive.box('userkey') */;
+    var userHiveBox = Hive.box('user');
+    var picsuserHiveBox = Hive.box('pics');
+    var tagsuserHiveBox = Hive.box('tags');
+    var secretuserHiveBox = Hive.box('secrets');
+    var keyuserHiveBox = Hive.box('userkey');
 
     if (keyuserHiveBox.length > 0 ||
         userHiveBox.length > 0 ||
         picsuserHiveBox.length > 0 ||
         tagsuserHiveBox.length > 0 ||
-        secretuserHiveBox.length > 0)
+        secretuserHiveBox.length > 0) {
       initialRoute = MigrationScreen.id;
-    else if (tutorialCompleted)
-      initialRoute = TabsScreen.id;
-    else
-      initialRoute = LoginScreen.id;
+    } else {
+      //Hive.deleteFromDisk();
+      initialRoute = (tutorialCompleted) ? TabsScreen.id : LoginScreen.id;
+    }
 
     if (user.hasGalleryPermission != null || user.tutorialCompleted) {
       requestGalleryPermission();
@@ -507,7 +508,7 @@ abstract class _AppStore with Store {
   }
 
   @observable
-  bool tutorialCompleted;
+  bool tutorialCompleted = false;
 
   @action
   Future<void> setTutorialCompleted(bool value) async {

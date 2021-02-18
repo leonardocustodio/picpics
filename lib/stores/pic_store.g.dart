@@ -16,11 +16,11 @@ mixin _$PicStore on _PicStore, Store {
       (_$tagsKeysComputed ??= Computed<List<String>>(() => super.tagsKeys,
               name: '_PicStore.tagsKeys'))
           .value;
-  Computed<List<TagsStore>> _$tagsSuggestionsComputed;
+  Computed<Future<List<TagsStore>>> _$tagsSuggestionsComputed;
 
   @override
-  List<TagsStore> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
-          Computed<List<TagsStore>>(() => super.tagsSuggestions,
+  Future<List<TagsStore>> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
+          Computed<Future<List<TagsStore>>>(() => super.tagsSuggestions,
               name: '_PicStore.tagsSuggestions'))
       .value;
 
@@ -196,6 +196,24 @@ mixin _$PicStore on _PicStore, Store {
     return _$switchIsStarredAsyncAction.run(() => super.switchIsStarred());
   }
 
+  final _$setChangePhotoIdAsyncAction =
+      AsyncAction('_PicStore.setChangePhotoId');
+
+  @override
+  Future<void> setChangePhotoId(String value) {
+    return _$setChangePhotoIdAsyncAction
+        .run(() => super.setChangePhotoId(value));
+  }
+
+  final _$changeAssetEntityAsyncAction =
+      AsyncAction('_PicStore.changeAssetEntity');
+
+  @override
+  Future<void> changeAssetEntity(AssetEntity picEntity) {
+    return _$changeAssetEntityAsyncAction
+        .run(() => super.changeAssetEntity(picEntity));
+  }
+
   final _$setPrivatePathAsyncAction = AsyncAction('_PicStore.setPrivatePath');
 
   @override
@@ -211,6 +229,13 @@ mixin _$PicStore on _PicStore, Store {
   @override
   Future<void> removePrivatePath() {
     return _$removePrivatePathAsyncAction.run(() => super.removePrivatePath());
+  }
+
+  final _$loadPicInfoAsyncAction = AsyncAction('_PicStore.loadPicInfo');
+
+  @override
+  Future<void> loadPicInfo() {
+    return _$loadPicInfoAsyncAction.run(() => super.loadPicInfo());
   }
 
   final _$setIsPrivateAsyncAction = AsyncAction('_PicStore.setIsPrivate');
@@ -256,6 +281,24 @@ mixin _$PicStore on _PicStore, Store {
     return _$deletePicAsyncAction.run(() => super.deletePic());
   }
 
+  final _$removeTagFromPicAsyncAction =
+      AsyncAction('_PicStore.removeTagFromPic');
+
+  @override
+  Future<void> removeTagFromPic({String tagKey}) {
+    return _$removeTagFromPicAsyncAction
+        .run(() => super.removeTagFromPic(tagKey: tagKey));
+  }
+
+  final _$saveLocationAsyncAction = AsyncAction('_PicStore.saveLocation');
+
+  @override
+  Future<void> saveLocation(
+      {double lat, double long, String specific, String general}) {
+    return _$saveLocationAsyncAction.run(() => super.saveLocation(
+        lat: lat, long: long, specific: specific, general: general));
+  }
+
   final _$getAiSuggestionsAsyncAction =
       AsyncAction('_PicStore.getAiSuggestions');
 
@@ -268,68 +311,11 @@ mixin _$PicStore on _PicStore, Store {
   final _$_PicStoreActionController = ActionController(name: '_PicStore');
 
   @override
-  void setChangePhotoId(String value) {
-    final _$actionInfo = _$_PicStoreActionController.startAction(
-        name: '_PicStore.setChangePhotoId');
-    try {
-      return super.setChangePhotoId(value);
-    } finally {
-      _$_PicStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void changeAssetEntity(AssetEntity picEntity) {
-    final _$actionInfo = _$_PicStoreActionController.startAction(
-        name: '_PicStore.changeAssetEntity');
-    try {
-      return super.changeAssetEntity(picEntity);
-    } finally {
-      _$_PicStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void loadPicInfo() {
-    final _$actionInfo =
-        _$_PicStoreActionController.startAction(name: '_PicStore.loadPicInfo');
-    try {
-      return super.loadPicInfo();
-    } finally {
-      _$_PicStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void setSearchText(String value) {
     final _$actionInfo = _$_PicStoreActionController.startAction(
         name: '_PicStore.setSearchText');
     try {
       return super.setSearchText(value);
-    } finally {
-      _$_PicStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void removeTagFromPic({String tagKey}) {
-    final _$actionInfo = _$_PicStoreActionController.startAction(
-        name: '_PicStore.removeTagFromPic');
-    try {
-      return super.removeTagFromPic(tagKey: tagKey);
-    } finally {
-      _$_PicStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
-  void saveLocation(
-      {double lat, double long, String specific, String general}) {
-    final _$actionInfo =
-        _$_PicStoreActionController.startAction(name: '_PicStore.saveLocation');
-    try {
-      return super.saveLocation(
-          lat: lat, long: long, specific: specific, general: general);
     } finally {
       _$_PicStoreActionController.endAction(_$actionInfo);
     }

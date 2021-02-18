@@ -80,87 +80,87 @@ void main() async {
   }).sendPort);
 
   await Hive.initFlutter();
-  Hive.registerAdapter(UserAdapter());
+/*   Hive.registerAdapter(UserAdapter());
   Hive.registerAdapter(PicAdapter());
   Hive.registerAdapter(TagAdapter());
   Hive.registerAdapter(SecretAdapter());
-  Hive.registerAdapter(UserKeyAdapter());
+  Hive.registerAdapter(UserKeyAdapter()); */
 
-  var userBox = await Hive.openBox('user');
-  var picsBox = await Hive.openBox('pics');
-  var tagsBox = await Hive.openBox('tags');
+  /* var userBox = */ await Hive.openBox('user');
+  /* var picsBox = */ await Hive.openBox('pics');
+  /* var tagsBox = */ await Hive.openBox('tags');
 
-  var secretKey = Uint8List.fromList([
-    76,
-    224,
-    117,
-    70,
-    57,
-    101,
-    39,
-    29,
-    48,
-    239,
-    215,
-    240,
-    41,
-    149,
-    198,
-    69,
-    64,
-    5,
-    207,
-    227,
-    190,
-    126,
-    8,
-    133,
-    136,
-    234,
-    130,
-    91,
-    254,
-    104,
-    196,
-    158
-  ]);
-  var secretBox = await Hive.openBox('secrets', encryptionKey: secretKey);
+  /* var secretBox = */ await Hive.openBox('secrets',
+      encryptionKey: Uint8List.fromList([
+        76,
+        224,
+        117,
+        70,
+        57,
+        101,
+        39,
+        29,
+        48,
+        239,
+        215,
+        240,
+        41,
+        149,
+        198,
+        69,
+        64,
+        5,
+        207,
+        227,
+        190,
+        126,
+        8,
+        133,
+        136,
+        234,
+        130,
+        91,
+        254,
+        104,
+        196,
+        158
+      ]));
 
-  var skey = Uint8List.fromList([
-    71,
-    204,
-    179,
-    71,
-    12,
-    51,
-    19,
-    9,
-    98,
-    19,
-    225,
-    200,
-    1,
-    5,
-    6,
-    79,
-    55,
-    18,
-    13,
-    18,
-    19,
-    25,
-    6,
-    5,
-    18,
-    22,
-    135,
-    97,
-    22,
-    17,
-    188,
-    155
-  ]);
-  var keyBox = await Hive.openBox('userkey', encryptionKey: skey);
+  /* var keyBox = */ await Hive.openBox('userkey',
+      encryptionKey: Uint8List.fromList([
+        71,
+        204,
+        179,
+        71,
+        12,
+        51,
+        19,
+        9,
+        98,
+        19,
+        225,
+        200,
+        1,
+        5,
+        6,
+        79,
+        55,
+        18,
+        13,
+        18,
+        19,
+        25,
+        6,
+        5,
+        18,
+        22,
+        135,
+        97,
+        22,
+        17,
+        188,
+        155
+      ]));
 
   String deviceLocale = await DeviceLocale.getCurrentLocale()
       .then((Locale locale) => locale.toString());

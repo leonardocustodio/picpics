@@ -43,7 +43,7 @@ abstract class _GalleryStore with Store {
   _GalleryStore({this.appStore}) {
 //    loadTaggedPicsStore();
 
-    if (appStore.tutorialCompleted) {
+    if (appStore?.tutorialCompleted ?? false) {
       loadAssetsPath();
     }
 

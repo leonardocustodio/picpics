@@ -10,6 +10,7 @@ import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/model/user_key.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:uuid/uuid.dart';
 
 part 'app_database.g.dart';
@@ -156,7 +157,9 @@ LazyDatabase _openConnection() {
     // for your app.
     final dbFolder = await getApplicationDocumentsDirectory();
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(file);
+    return VmDatabase(file, setup: (rawDb) {
+      rawDb.execute("PRAGMA key = 'Leonardo';");
+    });
   });
 }
 
@@ -174,13 +177,14 @@ class AppDatabase extends _$AppDatabase {
    */
   Future createLabel(Label newLabel) => into(labels).insert(newLabel);
 
-  Future<Label> getLabelByLabelKey(String labelKey) =>
-      (select(labels)..where((l) => l.key.equals(labelKey))).getSingle();
+  Future<Label> getLabelByLabelKey(String labelKey) => (select(labels)
+        ..where((l) => l?.key?.equals(labelKey) ?? const Constant(false)))
+      .getSingle();
 
   Future<List<Label>> getAllLabel() => select(labels).get();
 
   Future deleteLabelByLabelId(String labelKey) =>
-      (delete(labels)..where((l) => l.key.equals(labelKey))).go();
+      (delete(labels)..where((l) => l?.key?.equals(labelKey) ?? const Constant(false))).go();
 
   Future updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
 
@@ -198,15 +202,18 @@ class AppDatabase extends _$AppDatabase {
    */
   Future createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
 
-  Future<Photo> getPhotoByPhotoId(String photoId) =>
-      (select(photos)..where((pri) => pri.id.equals(photoId))).getSingle();
+  Future<Photo> getPhotoByPhotoId(String photoId) => (select(photos)
+        ..where((pri) => pri?.id?.equals(photoId) ?? const Constant(false)))
+      .getSingle();
 
   Future<List<Photo>> getAllPhoto() => select(photos).get();
 
   Future updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
 
-  Future deletePhotoByPhotoId(String photoId) =>
-      (delete(photos)..where((picture) => picture.id.equals(photoId))).go();
+  Future deletePhotoByPhotoId(String photoId) => (delete(photos)
+        ..where(
+            (picture) => picture?.id?.equals(photoId) ?? const Constant(false)))
+      .go();
 
   Future deletePhoto(Photo oldPhoto) => delete(photos).delete(oldPhoto);
   /**
@@ -222,8 +229,9 @@ class AppDatabase extends _$AppDatabase {
    */
   Future createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
 
-  Future<Private> getPrivateByPhotoId(String photoId) =>
-      (select(privates)..where((pri) => pri.id.equals(photoId))).getSingle();
+  Future<Private> getPrivateByPhotoId(String photoId) => (select(privates)
+        ..where((pri) => pri?.id?.equals(photoId) ?? const Constant(false)))
+      .getSingle();
 
   Future<List<Private>> getAllPrivate() => select(privates).get();
 
@@ -250,25 +258,27 @@ class AppDatabase extends _$AppDatabase {
 
   Future<MoorUser> getSingleMoorUser({bool createIfNotExist = true}) async {
     var moorUserReturn = await (select(moorUsers)
-          ..where((u) => u._customPrimaryKey.equals(0)))
+          ..where(
+              (u) => u?._customPrimaryKey?.equals(0) ?? const Constant(false)))
         .getSingle();
     if (createIfNotExist && moorUserReturn == null) {
       insertAllMoorUsers(null);
       return await (select(moorUsers)
-            ..where((u) => u._customPrimaryKey.equals(0)))
+            ..where((u) =>
+                u?._customPrimaryKey?.equals(0) ?? const Constant(false)))
           .getSingle();
     } else {
       return moorUserReturn;
     }
   }
 
-  Future updateMoorUser(MoorUser newMoorUser) =>
-      (update(moorUsers)..where((u) => u.customPrimaryKey.equals(0)))
-          .replace(newMoorUser);
+  Future updateMoorUser(MoorUser newMoorUser) => (update(moorUsers)
+        ..where((u) => u?.customPrimaryKey?.equals(0) ?? const Constant(false)))
+      .replace(newMoorUser);
 
-  Future deleteMoorUser(MoorUser newMoorUser) =>
-      (delete(moorUsers)..where((u) => u.customPrimaryKey.equals(0)))
-          .delete(newMoorUser);
+  Future deleteMoorUser(MoorUser newMoorUser) => (delete(moorUsers)
+        ..where((u) => u?.customPrimaryKey?.equals(0) ?? const Constant(false)))
+      .delete(newMoorUser);
   /**
    * 
    * MoorUser CRUD operations End
