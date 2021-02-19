@@ -204,8 +204,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                     style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
-                    onPressed: () {
-                      appStore.changeUserLanguage(
+                    onPressed: () async {
+                      await appStore.changeUserLanguage(
                           supportedLocales[temporaryLanguage].toString());
                       Navigator.pop(context);
                       setState(() {

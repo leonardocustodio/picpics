@@ -44,10 +44,10 @@ abstract class _AppStore with Store {
     this.deviceLocale,
     this.initiatedWithProduct,
   }) {
-    initialize();
+    Future.wait([initialize()]);
   }
 
-  initialize() async {
+  Future initialize() async {
     MoorUser user = await database.getSingleMoorUser(createIfNotExist: false);
 
     if (user == null) {
@@ -505,6 +505,7 @@ abstract class _AppStore with Store {
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
         .updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
+    MoorUser user = await database.getSingleMoorUser();
 
     await requestGalleryPermission();
     Analytics.sendTutorialComplete();
@@ -632,7 +633,7 @@ abstract class _AppStore with Store {
 
     MoorUser currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser.copyWith(
-      hasGalleryPermission: hasGalleryPermission,
+      appLanguage: language,
     ));
 
     Analytics.sendEvent(Event.changed_language);

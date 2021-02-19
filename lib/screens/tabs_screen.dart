@@ -190,8 +190,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
             },
             defaultButtonTitle: S.of(context).ok,
             onPressedDefault: () {
-              print(
-                  'Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+/* print(Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}'); */
               if (tagName != alertInputController.text) {
                 galleryStore.editTag(
                   oldTagKey: DatabaseManager.instance.selectedTagKey,
@@ -228,22 +227,22 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
     // RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
     //   if (event == RewardedVideoAdEvent.loaded) {
-    //     print('@@@ loaded');
+    print('@@@ loaded');
     //   }
     //
     //   if (event == RewardedVideoAdEvent.rewarded) {
-    //     print('@@@ rewarded');
+    print('@@@ rewarded');
     //     appStore.setCanTagToday(true);
     //   }
     //
     //   if (event == RewardedVideoAdEvent.closed) {
-    //     print('@@@@ closed');
+    print('@@@@ closed');
     //     DatabaseManager.instance.adsIsLoaded = false;
     //     Ads.loadRewarded();
     //   }
     //
     //   if (event == RewardedVideoAdEvent.failedToLoad) {
-    //     print('@@@ failed');
+    print('@@@ failed');
     //     DatabaseManager.instance.adsIsLoaded = false;
     //   }
     // };

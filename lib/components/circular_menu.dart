@@ -71,7 +71,8 @@ class CircularMenu extends StatefulWidget {
   CircularMenuState createState() => CircularMenuState();
 }
 
-class CircularMenuState extends State<CircularMenu> with SingleTickerProviderStateMixin {
+class CircularMenuState extends State<CircularMenu>
+    with SingleTickerProviderStateMixin {
   AnimationController _animationController;
   Animation<double> _animation;
 
@@ -94,8 +95,14 @@ class CircularMenuState extends State<CircularMenu> with SingleTickerProviderSta
     )..addListener(() {
         setState(() {});
       });
-    _animation = Tween(begin: widget.isExpanded ? 1.0 : 0.0, end: widget.isExpanded ? 0.0 : 1.0).animate(
-      CurvedAnimation(parent: _animationController, curve: widget.curve, reverseCurve: widget.reverseCurve),
+    _animation = Tween(
+            begin: widget.isExpanded ? 1.0 : 0.0,
+            end: widget.isExpanded ? 0.0 : 1.0)
+        .animate(
+      CurvedAnimation(
+          parent: _animationController,
+          curve: widget.curve,
+          reverseCurve: widget.reverseCurve),
     );
   }
 
@@ -108,8 +115,14 @@ class CircularMenuState extends State<CircularMenu> with SingleTickerProviderSta
             alignment: widget.alignment,
             child: Transform.translate(
               offset: widget.useInHorizontal
-                  ? Offset.fromDirection(-1.0 * math.pi, _animation.value * widget.radius + (index * widget.radius))
-                  : Offset.fromDirection(-0.5 * math.pi, _animation.value * widget.radius + (index * widget.radius)),
+                  ? Offset.fromDirection(
+                      -1.0 * math.pi,
+                      _animation.value * widget.radius +
+                          (index * widget.radius))
+                  : Offset.fromDirection(
+                      -0.5 * math.pi,
+                      _animation.value * widget.radius +
+                          (index * widget.radius)),
               child: Transform.scale(
                 scale: _animation.value,
                 child: item,
@@ -132,7 +145,9 @@ class CircularMenuState extends State<CircularMenu> with SingleTickerProviderSta
           color: widget.toggleButtonColor ?? Theme.of(context).primaryColor,
 //          padding: (-_animation.value * widget.toggleButtonPadding * 0.5) + widget.toggleButtonPadding,
           onTap: () {
-            _animationController.status == AnimationStatus.dismissed ? (_animationController).forward() : (_animationController).reverse();
+            _animationController.status == AnimationStatus.dismissed
+                ? (_animationController).forward()
+                : (_animationController).reverse();
             if (widget.toggleButtonOnPressed != null) {
               widget.toggleButtonOnPressed();
             }

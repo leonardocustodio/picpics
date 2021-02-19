@@ -117,12 +117,14 @@ class _EmailScreenState extends State<EmailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       CupertinoButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5.0, vertical: 10.0),
                         onPressed: () {
                           appStore.setWaitingAccessCode(false);
                           Navigator.pop(context);
                         },
-                        child: Image.asset('lib/images/backarrowwithdropshadow.png'),
+                        child: Image.asset(
+                            'lib/images/backarrowwithdropshadow.png'),
                       ),
                     ],
                   ),
@@ -147,7 +149,8 @@ class _EmailScreenState extends State<EmailScreen> {
                           ),
                           Spacer(),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0, vertical: 32.0),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8.0),
@@ -173,29 +176,34 @@ class _EmailScreenState extends State<EmailScreen> {
                                     maxLines: 1,
                                     onChanged: pinStore.setEmail,
                                     decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.only(left: 10.0, right: 5.0),
-                                      fillColor: Color(0xFFF1F3F5).withOpacity(0.3),
+                                      contentPadding: const EdgeInsets.only(
+                                          left: 10.0, right: 5.0),
+                                      fillColor:
+                                          Color(0xFFF1F3F5).withOpacity(0.3),
                                       filled: true,
                                       border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
-                                        borderRadius: BorderRadius.circular(8.0),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
-                                        borderRadius: BorderRadius.circular(8.0),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
-                                        borderRadius: BorderRadius.circular(8.0),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
                                       ),
                                     ),
                                   ),

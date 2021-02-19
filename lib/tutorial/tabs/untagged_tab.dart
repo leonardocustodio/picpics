@@ -44,7 +44,9 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
   // }
 
   void refreshGridPositionFirstTab() {
-    var offset = scrollControllerFirstTab.hasClients ? scrollControllerFirstTab.offset : scrollControllerFirstTab.initialScrollOffset;
+    var offset = scrollControllerFirstTab.hasClients
+        ? scrollControllerFirstTab.offset
+        : scrollControllerFirstTab.initialScrollOffset;
 
     if (offset >= 86) {
       tabsStore.setTopOffsetFirstTab(10.0);
@@ -64,7 +66,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
       return Container();
     }
 
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: false);
     return RepaintBoundary(
       child: ExtendedImage(
         image: imageProvider,
@@ -97,7 +100,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print(
+                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -136,7 +140,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                                       gradient: kSecondaryGradient,
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                    child: Image.asset('lib/images/checkwhiteico.png'),
+                                    child: Image.asset(
+                                        'lib/images/checkwhiteico.png'),
                                   ),
                                 ),
                               ],
@@ -185,7 +190,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
   }
 
 //   Widget _buildNewItem(BuildContext context, int index, double size) {
-//     print('Curret Index: $index');
+/* print('Curret Index: $index'); */
 //
 //     List<Widget> childs = [];
 //     int endIndex = (index + 1) * 3;
@@ -258,7 +263,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                     child: () {
 //                       return GestureDetector(
 //                         onLongPress: () {
-//                           print('LongPress');
+/* print('LongPress'); */
 //                           if (tabsStore.multiPicBar == false) {
 //                             galleryStore.setSelectedPics(
 //                               picStore: picStore,
@@ -275,7 +280,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                                 picStore: picStore,
 //                                 picIsTagged: false,
 //                               );
-//                               print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+/* print('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
 //                               return;
 //                             }
 //
@@ -507,12 +512,15 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
             crossAxisCount: 5,
             mainAxisSpacing: 2.0,
             crossAxisSpacing: 2.0,
-            itemCount: galleryStore.isLoaded ? galleryStore.untaggedGridPicsByMonth.length : 0,
+            itemCount: galleryStore.isLoaded
+                ? galleryStore.untaggedGridPicsByMonth.length
+                : 0,
             itemBuilder: (BuildContext context, int index) {
               return _buildItem(context, index);
             },
             staggeredTileBuilder: (int index) {
-              PicStore picStore = galleryStore.untaggedGridPicsByMonth[index].picStore;
+              PicStore picStore =
+                  galleryStore.untaggedGridPicsByMonth[index].picStore;
               if (picStore == null) {
                 return StaggeredTile.fit(5);
               }
@@ -529,7 +537,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
           crossAxisCount: 3,
           mainAxisSpacing: 2.0,
           crossAxisSpacing: 2.0,
-          itemCount: galleryStore.isLoaded ? galleryStore.untaggedGridPics.length : 0,
+          itemCount:
+              galleryStore.isLoaded ? galleryStore.untaggedGridPics.length : 0,
           itemBuilder: (BuildContext context, int index) {
             return _buildItem(context, index);
           },
@@ -558,15 +567,21 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
-      formatter = tabsStore.toggleIndexUntagged == 0 ? DateFormat.MMMM() : DateFormat.MMMEd();
+      formatter = tabsStore.toggleIndexUntagged == 0
+          ? DateFormat.MMMM()
+          : DateFormat.MMMEd();
     } else {
-      formatter = tabsStore.toggleIndexUntagged == 0 ? DateFormat.yMMMM() : DateFormat.yMMMEd();
+      formatter = tabsStore.toggleIndexUntagged == 0
+          ? DateFormat.yMMMM()
+          : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
   }
 
   Widget _buildItem(BuildContext context, int index) {
-    var untaggedPicsStore = tabsStore.toggleIndexUntagged == 0 ? galleryStore.untaggedGridPicsByMonth : galleryStore.untaggedGridPics;
+    var untaggedPicsStore = tabsStore.toggleIndexUntagged == 0
+        ? galleryStore.untaggedGridPicsByMonth
+        : galleryStore.untaggedGridPics;
     PicStore picStore = untaggedPicsStore[index].picStore;
 
     if (picStore == null) {
@@ -594,7 +609,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: false);
 
     return RepaintBoundary(
       child: ExtendedImage(
@@ -628,7 +644,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print(
+                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -667,7 +684,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                                       gradient: kSecondaryGradient,
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                    child: Image.asset('lib/images/checkwhiteico.png'),
+                                    child: Image.asset(
+                                        'lib/images/checkwhiteico.png'),
                                   ),
                                 ),
                               ],
@@ -721,7 +739,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
-    scrollControllerFirstTab = ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
+    scrollControllerFirstTab =
+        ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
     scrollControllerFirstTab.addListener(() {
       refreshGridPositionFirstTab();
     });
@@ -761,7 +780,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                 ),
               ],
             );
-          } else if (galleryStore.isLoaded && galleryStore.untaggedPics.isEmpty) {
+          } else if (galleryStore.isLoaded &&
+              galleryStore.untaggedPics.isEmpty) {
             return Stack(
               children: <Widget>[
                 Container(
@@ -792,7 +812,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   padding: const EdgeInsets.only(top: 48.0),
                   child: GestureDetector(
 //                              onScaleUpdate: (update) {
-//                                print(update.scale);
+/* print(update.scale); */
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
                     child: _buildGridView(context),
@@ -821,7 +841,10 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+                        tabsStore.multiPicBar
+                            ? S.of(context).photo_gallery_count(
+                                galleryStore.selectedPics.length)
+                            : S.of(context).photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -839,10 +862,13 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   curve: Curves.linear,
                   duration: Duration(milliseconds: 300),
                   onEnd: () {
-                    tabsStore.setIsToggleBarVisible(tabsStore.isScrolling ? false : true);
+                    tabsStore.setIsToggleBarVisible(
+                        tabsStore.isScrolling ? false : true);
                   },
                   child: Visibility(
-                    visible: tabsStore.isScrolling ? tabsStore.isToggleBarVisible : true,
+                    visible: tabsStore.isScrolling
+                        ? tabsStore.isToggleBarVisible
+                        : true,
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(

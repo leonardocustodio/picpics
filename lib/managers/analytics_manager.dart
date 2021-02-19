@@ -55,7 +55,8 @@ enum Event {
 class Analytics {
   static FacebookAppEvents facebookAppEvents = FacebookAppEvents();
   static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
@@ -101,7 +102,8 @@ class Analytics {
     }
 
     await analytics.logTutorialBegin();
-    await facebookAppEvents.logEvent(name: '${enumToString(Event.tutorial_begin)}');
+    await facebookAppEvents.logEvent(
+        name: '${enumToString(Event.tutorial_begin)}');
   }
 
   static sendTutorialComplete() async {
@@ -113,7 +115,13 @@ class Analytics {
     await facebookAppEvents.logEvent(name: 'fb_mobile_tutorial_completion');
   }
 
-  static sendPresentOffer({String itemId, String itemName, String itemCategory, int quantity, double price, String currency}) async {
+  static sendPresentOffer(
+      {String itemId,
+      String itemName,
+      String itemCategory,
+      int quantity,
+      double price,
+      String currency}) async {
     if (kDebugMode) {
       return;
     }

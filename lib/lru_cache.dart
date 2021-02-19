@@ -29,7 +29,10 @@ class _ImageCacheEntity {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is _ImageCacheEntity && runtimeType == other.runtimeType && entity == other.entity && size == other.size;
+      other is _ImageCacheEntity &&
+          runtimeType == other.runtimeType &&
+          entity == other.entity &&
+          size == other.size;
 
   @override
   int get hashCode => entity.hashCode ^ size.hashCode;

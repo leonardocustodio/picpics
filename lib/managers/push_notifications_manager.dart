@@ -30,15 +30,16 @@ class PushNotificationsManager {
       print("FirebaseMessaging token: $token");
 
       _initialized = true;
+/* 
+      _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
+      //print("Settings registered: $settings");
 
-//      _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-//        print("Settings registered: $settings");
-//
-//        var userBox = Hive.box('user');
-//        DatabaseManager.instance.userSettings.notifications = settings.alert;
-//        DatabaseManager.instance.userSettings.dailyChallenges = settings.alert;
-//        userBox.putAt(0, DatabaseManager.instance.userSettings);
-//      });
+        var userBox = Hive.box('user');
+        DatabaseManager.instance.userSettings.notifications = settings.alert;
+        DatabaseManager.instance.userSettings.dailyChallenges = settings.alert;
+        userBox.putAt(0, DatabaseManager.instance.userSettings);
+      }); 
+*/
 
       var initializationSettingsAndroid =
           AndroidInitializationSettings('ic_launcher');
@@ -81,10 +82,10 @@ class PushNotificationsManager {
     );
   }
 
-//  void register() {
-//    _firebaseMessaging.subscribeToTopic('all_users');
-//    print('subscribed to topic: all_users');
-//  }
+/*   void register() {
+  _firebaseMessaging.subscribeToTopic('all_users');
+//print('subscribed to topic: all_users');
+  } */
 
   void deregister() async {
     try {

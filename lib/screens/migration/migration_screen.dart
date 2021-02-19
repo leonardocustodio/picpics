@@ -28,7 +28,8 @@ class _MigrationScreenState extends State<MigrationScreen> {
 
   void seeDb() {
     final db = AppDatabase(); //This should be a singleton
-    Navigator.of(context).push(MaterialPageRoute(builder: (context) => MoorDbViewer(db)));
+    Navigator.of(context)
+        .push(MaterialPageRoute(builder: (context) => MoorDbViewer(db)));
   }
 
   @override
@@ -84,16 +85,19 @@ class _MigrationScreenState extends State<MigrationScreen> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.only(bottom: 32.0, top: 32.0),
+                                  padding: const EdgeInsets.only(
+                                      bottom: 32.0, top: 32.0),
                                   child: Center(
                                     child: CircularProgressIndicator(
                                       strokeWidth: 6.0,
-                                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
                                     ),
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
                                   child: Text(
                                     'Nós estamos otimizando o aplicativo para melhorar a performance e possibilitar novas funcionalidades!',
                                     textScaleFactor: 1.0,
@@ -124,7 +128,8 @@ class _MigrationScreenState extends State<MigrationScreen> {
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16.0),
                                   child: Text(
                                     'Pronto o processo foi concluído, você pode continuar usando agora o melhor gerenciador de fotos!',
                                     textScaleFactor: 1.0,
@@ -153,7 +158,8 @@ class _MigrationScreenState extends State<MigrationScreen> {
                           padding: const EdgeInsets.all(0),
                           child: Container(
                             height: 66.0,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             decoration: BoxDecoration(
                               gradient: kPrimaryGradient,
                               borderRadius: BorderRadius.circular(8.0),

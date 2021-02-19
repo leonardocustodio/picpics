@@ -5,7 +5,10 @@ class ArrowPainter extends CustomPainter {
   final PaintingStyle paintingStyle;
   final double strokeWidth;
 
-  ArrowPainter({this.strokeColor = Colors.black, this.strokeWidth = 3, this.paintingStyle = PaintingStyle.stroke});
+  ArrowPainter(
+      {this.strokeColor = Colors.black,
+      this.strokeWidth = 3,
+      this.paintingStyle = PaintingStyle.stroke});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -31,6 +34,8 @@ class ArrowPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(ArrowPainter oldDelegate) {
-    return oldDelegate.strokeColor != strokeColor || oldDelegate.paintingStyle != paintingStyle || oldDelegate.strokeWidth != strokeWidth;
+    return oldDelegate.strokeColor != strokeColor ||
+        oldDelegate.paintingStyle != paintingStyle ||
+        oldDelegate.strokeWidth != strokeWidth;
   }
 }

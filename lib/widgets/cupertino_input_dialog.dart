@@ -77,8 +77,10 @@ class CupertinoInputDialog extends StatelessWidget {
                       ),
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.only(left: 6.0),
-                        enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                        focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                        enabledBorder:
+                            OutlineInputBorder(borderSide: BorderSide.none),
+                        focusedBorder:
+                            OutlineInputBorder(borderSide: BorderSide.none),
                         border: OutlineInputBorder(borderSide: BorderSide.none),
                       ),
                     ),

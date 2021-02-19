@@ -73,7 +73,8 @@ abstract class _PinStore with Store {
 
   @action
   Future<bool> requestRecoveryKey(String userEmail) async {
-    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
+    final HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
     //..timeout = const Duration(seconds: 30);
 
     Random rand = new Random();
@@ -88,13 +89,14 @@ abstract class _PinStore with Store {
         },
       );
 
-      // print(result.data);
+      print(result.data);
 
       if (result.data != false) {
-        // print('Recovery Key Encrypted: ${result.data}');
+        print('Recovery Key Encrypted: ${result.data}');
         encryptedRecoveryKey = result.data;
         setIsWaitingRecoveryKey(true);
-        // print('Saving ${result.data} with access code $accessCode and pin $pin');
+        print(
+            'Saving ${result.data} with access code $accessCode and pin $pin');
         // await Crypto.saveSaltKey();
         // await Crypto.saveSpKey(accessCode, result.data, pin);
         return true;
@@ -116,9 +118,10 @@ abstract class _PinStore with Store {
 
   @action
   Future<bool> isRecoveryCodeValid(AppStore appStore) async {
-    // print('Typed Recovery Code: $recoveryCode');
+    print('Typed Recovery Code: $recoveryCode');
 
-    bool valid = await Crypto.checkRecoveryKey(encryptedRecoveryKey, recoveryCode, generatedIv, appStore);
+    bool valid = await Crypto.checkRecoveryKey(
+        encryptedRecoveryKey, recoveryCode, generatedIv, appStore);
     if (valid == true) {
       return true;
     }
@@ -136,7 +139,7 @@ abstract class _PinStore with Store {
 
   @action
   Future<Map<String, dynamic>> register() async {
-    // print('Email: $email - Pin: $pin');
+    print('Email: $email - Pin: $pin');
 
     Map<String, dynamic> result = {};
 
@@ -169,12 +172,14 @@ abstract class _PinStore with Store {
 
   @action
   Future<bool> validateAccessCode(AppStore appStore) async {
-    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('validateAccessCode');
+    final HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('validateAccessCode');
     //. = const Duration(seconds: 30);
 
     Random rand = new Random();
     int randomNumber = rand.nextInt(900000) + 100000;
-    String accessKey = await Crypto.encryptAccessKey(accessCode, email, '$randomNumber');
+    String accessKey =
+        await Crypto.encryptAccessKey(accessCode, email, '$randomNumber');
 
     try {
       final HttpsCallableResult result = await callable.call(
@@ -183,10 +188,11 @@ abstract class _PinStore with Store {
           'random_iv': randomNumber,
         },
       );
-      // print(result.data);
+      print(result.data);
 
       if (result.data != false) {
-        // print('Saving ${result.data} with access code $accessCode and pin $pin');
+        print(
+            'Saving ${result.data} with access code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
         await Crypto.saveSpKey(accessCode, result.data, pin, email, appStore);
         return true;

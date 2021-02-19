@@ -58,11 +58,10 @@ class DatabaseManager extends ChangeNotifier {
           sound: true, badge: true, alert: true);
 
       // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-      //   print("Settings registered: $settings");
       // });
       /* _firebaseMessaging.getToken().then((String token) {
         assert(token != null);
-        print('got token this mean it did accept notification');
+print('got token this mean it did accept notification');
         //userSettings.notifications = true;
         //userSettings.dailyChallenges = true;
         //userBox.putAt(0, userSettings);
@@ -171,8 +170,9 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  void changeUserLanguage(String appLanguage, {bool notify = true}) {
-    database.updateMoorUser(userSettings.copyWith(
+  Future<void> changeUserLanguage(String appLanguage,
+      {bool notify = true}) async {
+    await database.updateMoorUser(userSettings.copyWith(
       appLanguage: appLanguage,
     ));
 

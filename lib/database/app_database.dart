@@ -164,11 +164,9 @@ LazyDatabase _openConnection() {
     final path = p.join(dbFolder.path, 'db.sqlite');
     print('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(
-      file, /* setup: (rawDb) {
+    return VmDatabase(file, setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");
-    } */
-    );
+    });
   });
 }
 
@@ -267,7 +265,7 @@ class AppDatabase extends _$AppDatabase {
    * 
    */
   Future createMoorUser(MoorUser newMoorUser) =>
-      into(moorUsers).insert(newMoorUser);
+      into(moorUsers).insert(newMoorUser, mode: InsertMode.insertOrReplace);
 
   //Future<List<MoorUser>> getAllMoorUser() => select(moorUsers).get();
 
@@ -275,7 +273,7 @@ class AppDatabase extends _$AppDatabase {
     var moorUserReturn = await select(moorUsers).getSingle();
     if (createIfNotExist && moorUserReturn == null) {
       await createMoorUser(getDefaultMoorUser());
-      return await getSingleMoorUser(createIfNotExist: false);
+      return await select(moorUsers).getSingle();
     } else {
       return moorUserReturn;
     }

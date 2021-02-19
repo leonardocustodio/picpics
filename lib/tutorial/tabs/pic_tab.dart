@@ -71,7 +71,8 @@ class _TutsPicTabState extends State<TutsPicTab> {
       constraints: BoxConstraints.expand(),
       decoration: new BoxDecoration(
         image: DecorationImage(
-          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+          colorFilter: new ColorFilter.mode(
+              Colors.black.withOpacity(0.1), BlendMode.dstATop),
           image: AssetImage('lib/images/background.png'),
           fit: BoxFit.cover,
         ),
@@ -100,7 +101,8 @@ class _TutsPicTabState extends State<TutsPicTab> {
                 return Expanded(
                   child: Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(kSecondaryColor),
                     ),
                   ),
                 );
@@ -147,12 +149,12 @@ class _TutsPicTabState extends State<TutsPicTab> {
                           },
                           onScrolled: (double) {
 //                              if (galleryStore.swipeIndex <= galleryStore.swipeCutOff && galleryStore.swipeIndex != 0) {
-//                                print('changing scroll physics');
+                            print('changing scroll physics');
 //                                setState(() {
 //                                  scrollPhysics = NeverScrollableScrollPhysics();
 //                                });
 //                              }
-//                              print('scrolled $double');
+                            print('scrolled $double');
                           },
                         ),
                       );

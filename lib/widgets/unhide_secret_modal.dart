@@ -18,7 +18,9 @@ class UnhideSecretModal extends StatelessWidget {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360 ? EdgeInsets.symmetric(horizontal: 20.0) : EdgeInsets.symmetric(horizontal: 40.0),
+      insetPadding: width < 360
+          ? EdgeInsets.symmetric(horizontal: 20.0)
+          : EdgeInsets.symmetric(horizontal: 40.0),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -92,7 +94,8 @@ class UnhideSecretModal extends StatelessWidget {
                         child: Container(
                           height: 44.0,
                           decoration: BoxDecoration(
-                            border: Border.all(color: kSecondaryColor, width: 1.0),
+                            border:
+                                Border.all(color: kSecondaryColor, width: 1.0),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Center(

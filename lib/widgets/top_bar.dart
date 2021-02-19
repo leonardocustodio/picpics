@@ -42,7 +42,8 @@ class TopBar extends StatelessWidget {
                         print('hasFocus: ${searchFocusNode.hasFocus}');
                         if (searchFocusNode.hasFocus == true) {
                           galleryStore.setIsSearching(true);
-                        } else if (searchFocusNode.hasFocus == false && galleryStore.searchingTagsKeys.length == 0) {
+                        } else if (searchFocusNode.hasFocus == false &&
+                            galleryStore.searchingTagsKeys.length == 0) {
                           galleryStore.setIsSearching(false);
                         }
                       },
@@ -71,9 +72,12 @@ class TopBar extends StatelessWidget {
                         ),
                         decoration: InputDecoration(
                           contentPadding: const EdgeInsets.only(right: 2.0),
-                          enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                          focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                          border: OutlineInputBorder(borderSide: BorderSide.none),
+                          enabledBorder:
+                              OutlineInputBorder(borderSide: BorderSide.none),
+                          focusedBorder:
+                              OutlineInputBorder(borderSide: BorderSide.none),
+                          border:
+                              OutlineInputBorder(borderSide: BorderSide.none),
                           prefixIcon: Image.asset('lib/images/searchico.png'),
                           hintText: S.of(context).search,
                           hintStyle: TextStyle(

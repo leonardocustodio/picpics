@@ -186,11 +186,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (loginStore.slideIndex ==
                                 loginStore.totalSlides - 1) {
                               Navigator.pushNamed(context, PremiumScreen.id);
-                              /* await appStore.requestNotificationPermission();
-                              await appStore.checkNotificationPermission(
-                                  firstPermissionCheck: true); */
-                              await appStore.setTutorialCompleted(true);
-                              // await galleryStore.loadAssetsPath();
 
                               return;
                             }

@@ -168,7 +168,7 @@ class _PhotoCardState extends State<PhotoCard> {
     print('Other info: ${picStore.photoPath}');
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
-    // print('In secret db: ${secret.photoId} - ${secret.photoPath}');
+    /* print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
 
     AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore,
         thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
@@ -390,7 +390,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     aiButtonTitle: 'All Tags',
                     onAiButtonTap: () {
                       Navigator.pushNamed(context, TagsScreen.id);
-                      // print('ai button tapped');
+                      print('ai button tapped');
                       // picStore.switchAiTags(context);
                     },
                     onTap: (tagName) {

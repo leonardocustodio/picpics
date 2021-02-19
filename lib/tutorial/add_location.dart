@@ -53,7 +53,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
       String state;
       String country;
 
-      for (var components in selectedGeolocation.fullJSON["address_components"]) {
+      for (var components
+          in selectedGeolocation.fullJSON["address_components"]) {
         var types = components["types"];
         if (types.contains("establishment")) {
           print('find establishment: ${components["long_name"]}');
@@ -103,7 +104,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
   void getUserPosition() async {
     print('getting current location');
 
-    Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    Position position =
+        await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
     final geolocation = LatLng(position.latitude, position.longitude);
 
@@ -134,7 +136,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
 
     if (picStore.latitude != null && picStore.longitude != null) {
       latLng = LatLng(picStore.latitude, picStore.longitude);
-    } else if (picStore.originalLatitude != null && picStore.originalLongitude != null) {
+    } else if (picStore.originalLatitude != null &&
+        picStore.originalLongitude != null) {
       latLng = LatLng(picStore.originalLatitude, picStore.originalLongitude);
     }
 
@@ -183,7 +186,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: true);
     return Scaffold(
       key: homeScaffoldKey,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -204,7 +208,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
             SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                padding: const EdgeInsets.only(
+                    left: 16.0, right: 16.0, bottom: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -230,7 +235,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                                   Widget loader;
                                   switch (state.extendedImageLoadState) {
                                     case LoadState.loading:
-                                      loader = const ColoredBox(color: kGreyPlaceholder);
+                                      loader = const ColoredBox(
+                                          color: kGreyPlaceholder);
                                       break;
                                     case LoadState.completed:
                                       loader = FadeImageBuilder(
@@ -258,11 +264,13 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                           ),
                         ),
                         CupertinoButton(
-                          padding: const EdgeInsets.only(left: 14.0, right: 0, bottom: 0.0, top: 14.0),
+                          padding: const EdgeInsets.only(
+                              left: 14.0, right: 0, bottom: 0.0, top: 14.0),
                           onPressed: () {
                             getUserPosition();
                           },
-                          child: Image.asset('lib/images/getcurrentlocationico.png'),
+                          child: Image.asset(
+                              'lib/images/getcurrentlocationico.png'),
                         ),
                       ],
                     ),
@@ -321,14 +329,17 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                       position: geolocation.coordinates,
                     );
 
-                    final GoogleMapController controller = await _mapController.future;
+                    final GoogleMapController controller =
+                        await _mapController.future;
                     _markers.clear();
                     setState(() {
                       _markers.add(destination);
                     });
 
-                    controller.animateCamera(CameraUpdate.newLatLng(geolocation.coordinates));
-                    controller.animateCamera(CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
+                    controller.animateCamera(
+                        CameraUpdate.newLatLng(geolocation.coordinates));
+                    controller.animateCamera(
+                        CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
                   },
                 ),
               ),

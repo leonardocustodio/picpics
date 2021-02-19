@@ -35,9 +35,12 @@ class WatchAdModal extends StatelessWidget {
                 Spacer(),
                 Image.asset('lib/images/bigpremiumlogo.png'),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 52.0, vertical: 32.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 52.0, vertical: 32.0),
                   child: Text(
-                    S.of(context).premium_modal_description(appStore.dailyPicsForAds),
+                    S
+                        .of(context)
+                        .premium_modal_description(appStore.dailyPicsForAds),
                     textScaleFactor: 1.0,
                     style: TextStyle(
                       color: kSecondaryColor,
@@ -75,7 +78,8 @@ class WatchAdModal extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 24.0, top: 17.0),
+                  padding: const EdgeInsets.only(
+                      left: 16.0, right: 16.0, bottom: 24.0, top: 17.0),
                   child: CupertinoButton(
                     onPressed: onPressedGetPremium,
                     padding: const EdgeInsets.all(0),
@@ -101,7 +105,9 @@ class WatchAdModal extends StatelessWidget {
                               height: 6.0,
                             ),
                             Text(
-                              S.of(context).premium_modal_get_premium_description,
+                              S
+                                  .of(context)
+                                  .premium_modal_get_premium_description,
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -113,7 +119,8 @@ class WatchAdModal extends StatelessWidget {
                           ],
                         ),
                       ),
-                      gradient: LinearGradient(colors: [Color(0xFFFFA4D1), Color(0xFFFFCC00)]),
+                      gradient: LinearGradient(
+                          colors: [Color(0xFFFFA4D1), Color(0xFFFFCC00)]),
                       strokeWidth: 2.0,
                       radius: Radius.circular(8.0),
                     ),

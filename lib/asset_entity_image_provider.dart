@@ -88,7 +88,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     }
 
     // if (picStore.isPrivate == true) {
-    //   print('entity is null!!!');
+    print('entity is null!!!');
     //   data = await key.picStore.assetOriginBytes;
     //   return decode(data);
     // }

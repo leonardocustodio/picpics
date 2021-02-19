@@ -4,19 +4,22 @@ import 'dart:io';
 import 'package:picPics/managers/database_manager.dart';
 
 class Ads {
-  static final String appId = Platform.isAndroid ? 'ca-app-pub-4850390878205651~5454538550' : 'ca-app-pub-4850390878205651~6175952653';
-  static final String rewardedId = Platform.isAndroid ? 'ca-app-pub-4850390878205651/2428279339' : 'ca-app-pub-4850390878205651/6587016195';
+  static final String appId = Platform.isAndroid
+      ? 'ca-app-pub-4850390878205651~5454538550'
+      : 'ca-app-pub-4850390878205651~6175952653';
+  static final String rewardedId = Platform.isAndroid
+      ? 'ca-app-pub-4850390878205651/2428279339'
+      : 'ca-app-pub-4850390878205651/6587016195';
 
   static void initialize() {
     // FirebaseAdMob.instance.initialize(appId: kDebugMode ? FirebaseAdMob.testAppId : appId);
-    // print('Did initialize admob!!!');
+    print('Did initialize admob!!!');
   }
 
   static void loadRewarded() {
     // RewardedVideoAd.instance.load(adUnitId: kDebugMode ? RewardedVideoAd.testAdUnitId : rewardedId, targetingInfo: targetingInfo).catchError((e) {
-    //   print(e.toString());
+    //print(e.toString());
     // }).then((value) {
-    //   print('Did load rewarded!!!');
     //   DatabaseManager.instance.adsIsLoaded = true;
     //   if (DatabaseManager.instance.showShowAdAfterReload) {
     //     DatabaseManager.instance.showShowAdAfterReload = false;

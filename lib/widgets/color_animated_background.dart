@@ -18,10 +18,12 @@ class ColorAnimatedBackground extends StatefulWidget {
   });
 
   @override
-  _ColorAnimatedBackgroundState createState() => _ColorAnimatedBackgroundState();
+  _ColorAnimatedBackgroundState createState() =>
+      _ColorAnimatedBackgroundState();
 }
 
-class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground> with AnimationMixin {
+class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
+    with AnimationMixin {
   AnimationController widthController;
   AnimationController heightController;
   Animation<double> x_animation;

@@ -188,6 +188,11 @@ void main() async {
   if (Platform.isIOS) {
     initiatedWithProduct = await checkForAppStoreInitiatedProducts();
   }
+  AppStore appStore = AppStore(
+    appVersion: appVersion,
+    deviceLocale: deviceLocale,
+    initiatedWithProduct: initiatedWithProduct,
+  );
 
   Analytics.sendAppOpen();
   Ads.initialize();
@@ -199,11 +204,12 @@ void main() async {
     if (data.containsKey("+clicked_branch_link") &&
         data["+clicked_branch_link"] == true) {
       //Link clicked. Add logic to get link data
-      // print('Custom string: ${data["custom_string"]}');
+      print('Custom string: ${data["custom_string"]}');
     }
   }, onError: (error) {
     PlatformException platformException = error as PlatformException;
-    // print('InitSession error: ${platformException.code} - ${platformException.message}');
+    print(
+        'InitSession error: ${platformException.code} - ${platformException.message}');
   });
 
   bool setAppGroup =
@@ -211,27 +217,20 @@ void main() async {
   print('Has setted app group: $setAppGroup');
 
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
-
-  runZonedGuarded<Future<void>>(() async {
+  runZonedGuarded<void>(() {
     runApp(
       PicPicsApp(
-        appVersion: appVersion,
-        deviceLocale: deviceLocale,
-        initiatedWithProduct: initiatedWithProduct,
+        appStore: appStore,
       ),
     );
   }, FirebaseCrashlytics.instance.recordError);
 }
 
 class PicPicsApp extends StatefulWidget {
-  final String appVersion;
-  final String deviceLocale;
-  final String initiatedWithProduct;
+  final AppStore appStore;
 
   PicPicsApp({
-    @required this.appVersion,
-    @required this.deviceLocale,
-    @required this.initiatedWithProduct,
+    @required this.appStore,
   });
 
   @override
@@ -239,20 +238,15 @@ class PicPicsApp extends StatefulWidget {
 }
 
 class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
-  AppStore appStore;
   GalleryStore galleryStore;
 
   @override
   void initState() {
-    appStore = AppStore(
-      appVersion: widget.appVersion,
-      deviceLocale: widget.deviceLocale,
-      initiatedWithProduct: widget.initiatedWithProduct,
-    );
     galleryStore = GalleryStore(
-      appStore: appStore,
+      appStore: widget.appStore,
     );
-    if (initialRoute == LoginScreen.id && appStore.tutorialCompleted) {
+    if (initialRoute != MigrationScreen.id &&
+        widget.appStore.tutorialCompleted) {
       initialRoute = TabsScreen.id;
       //TODO: uncomment
       //Hive.deleteFromDisk();
@@ -262,9 +256,9 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
-    if (appStore.encryptionKey == null) {
-      if (appStore.secretPhotos == true) {
-        appStore.switchSecretPhotos();
+    if (widget.appStore.encryptionKey == null) {
+      if (widget.appStore.secretPhotos == true) {
+        widget.appStore.switchSecretPhotos();
         galleryStore.removeAllPrivatePics();
       }
     }
@@ -279,7 +273,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     }
 
     if (state == AppLifecycleState.resumed) {
-      // print('&&&&&&&&& App got back from background');
+      print('&&&&&&&&& App got back from background');
       // if (appStore.secretPhotos) {
       //   appStore.switchSecretPhotos();
       //   galleryStore.removeAllPrivatePics();
@@ -296,14 +290,14 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     return MultiProvider(
       providers: [
         Provider<AppStore>.value(
-          value: appStore,
+          value: widget.appStore,
         ),
         Provider<GalleryStore>.value(
           value: galleryStore,
         ),
         Provider<TabsStore>.value(
           value: TabsStore(
-            appStore: appStore,
+            appStore: widget.appStore,
             galleryStore: galleryStore,
           ),
         ),
@@ -322,7 +316,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          locale: appStore.appLocale,
+          locale: widget.appStore.appLocale,
           supportedLocales: S.delegate.supportedLocales,
           debugShowCheckedModeBanner: kDebugMode,
           initialRoute: initialRoute,

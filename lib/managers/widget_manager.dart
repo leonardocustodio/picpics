@@ -79,7 +79,7 @@ class WidgetManager {
   //           .then((value) => _messageController.text = value),
   //     ]);
   //   } catch (exception) {
-  //     debugPrint('Error Getting Data. $exception');
+  //     debugprint('Error Getting Data. $exception');
   //   }
   // }
 

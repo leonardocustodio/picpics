@@ -37,7 +37,9 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360 ? EdgeInsets.symmetric(horizontal: 20.0) : EdgeInsets.symmetric(horizontal: 40.0),
+      insetPadding: width < 360
+          ? EdgeInsets.symmetric(horizontal: 20.0)
+          : EdgeInsets.symmetric(horizontal: 40.0),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -114,12 +116,17 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                             height: 20.0,
                             width: 20.0,
                             margin: const EdgeInsets.only(right: 8.0),
-                            child: keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
+                            child: keepAsking
+                                ? Image.asset('lib/images/checkwhiteico.png')
+                                : null,
                             decoration: keepAsking
                                 ? BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     gradient: LinearGradient(
-                                      colors: [kSecondaryColor, Color(0xffff7878)],
+                                      colors: [
+                                        kSecondaryColor,
+                                        Color(0xffff7878)
+                                      ],
                                       stops: [0, 1],
                                       begin: Alignment(-1.00, 0.00),
                                       end: Alignment(1.00, -0.00),
@@ -162,12 +169,17 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                             height: 20.0,
                             width: 20.0,
                             margin: const EdgeInsets.only(right: 8.0),
-                            child: !keepAsking ? Image.asset('lib/images/checkwhiteico.png') : null,
+                            child: !keepAsking
+                                ? Image.asset('lib/images/checkwhiteico.png')
+                                : null,
                             decoration: !keepAsking
                                 ? BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
                                     gradient: LinearGradient(
-                                      colors: [kSecondaryColor, Color(0xffff7878)],
+                                      colors: [
+                                        kSecondaryColor,
+                                        Color(0xffff7878)
+                                      ],
                                       stops: [0, 1],
                                       begin: Alignment(-1.00, 0.00),
                                       end: Alignment(1.00, -0.00),
@@ -215,7 +227,8 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                         child: Container(
                           height: 44.0,
                           decoration: BoxDecoration(
-                            border: Border.all(color: kSecondaryColor, width: 1.0),
+                            border:
+                                Border.all(color: kSecondaryColor, width: 1.0),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Center(

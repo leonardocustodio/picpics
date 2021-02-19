@@ -56,9 +56,12 @@ class _TagsScreenState extends State<TagsScreen> {
                           ),
                           decoration: InputDecoration(
                             contentPadding: const EdgeInsets.all(0),
-                            border: OutlineInputBorder(borderSide: BorderSide.none),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide.none),
+                            enabledBorder:
+                                OutlineInputBorder(borderSide: BorderSide.none),
+                            focusedBorder:
+                                OutlineInputBorder(borderSide: BorderSide.none),
                             hintText: 'Search...',
                             hintStyle: TextStyle(
                               fontFamily: 'Lato',

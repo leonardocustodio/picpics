@@ -19,10 +19,12 @@ class OriginalImageItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<Uint8List>(
-      future: entity.thumbDataWithSize(entity.size.width.toInt(), entity.size.height.toInt()),
+      future: entity.thumbDataWithSize(
+          entity.size.width.toInt(), entity.size.height.toInt()),
       builder: (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
         var futureData = snapshot.data;
-        if (snapshot.connectionState == ConnectionState.done && futureData != null) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            futureData != null) {
           return _buildImageItem(context, futureData);
         }
 

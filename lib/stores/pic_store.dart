@@ -57,7 +57,7 @@ abstract class _PicStore with Store {
     this.deletedFromCameraRoll,
     this.isStarred,
   }) {
-    // print('loading pic info......');
+    print('loading pic info......');
     loadPicInfo();
 
     autorun((_) {});
@@ -279,7 +279,7 @@ abstract class _PicStore with Store {
     //var secretBox = Hive.box('secrets');
     Photo pic = await database.getPhotoByPhotoId(photoId);
     if (pic != null) {
-      // print('pic $photoId exists, loading data....');
+      print('pic $photoId exists, loading data....');
       //Pic pic = picsBox.get(photoId);
 
       latitude = pic.latitude;
@@ -313,7 +313,7 @@ abstract class _PicStore with Store {
         tags.add(tagsStore);
       }
     } else {
-      // print('pic $photoId doesnt exists in database');
+      print('pic $photoId doesnt exists in database');
     }
   }
 
@@ -459,7 +459,7 @@ abstract class _PicStore with Store {
   @action
   Future<void> addTag({String tagName}) async {
     //var tagsBox = Hive.box('tags');
-    //print(tagsBox.keys);
+    /* print(tagsBox.keys); */
 
     String tagKey = Helpers.encryptTag(tagName);
     print('Adding tag: $tagName');
@@ -773,7 +773,9 @@ abstract class _PicStore with Store {
         appStore.appLanguage.split('_')[0] == 'de' ||
         appStore.appLanguage.split('_')[0] == 'ja') {
       print('Offline translating it...');
-      return tagsText.map((e) => PredefinedLabels.labelTranslation(e, context)).toList();
+      return tagsText
+          .map((e) => PredefinedLabels.labelTranslation(e, context))
+          .toList();
     }
 
     final _credentials = new ServiceAccountCredentials.fromJson(r'''
@@ -861,7 +863,7 @@ abstract class _PicStore with Store {
   //   double minValue = buffer.reduce(min);
   //   double maxValue = buffer.reduce(max);
   //
-  //   print('Min: $minValue - Max: $maxValue - Mean: $mean');
+  /* print('Min: $minValue - Max: $maxValue - Mean: $mean'); */
   //
   //   return convertedBytes.buffer.asFloat32List();
   // }
@@ -908,17 +910,17 @@ abstract class _PicStore with Store {
     // var imageBytes = (await entity.file).readAsBytesSync().buffer;
     // var resizedImage = resizeImage(imageBytes, inputSize);
     // var input = imageToByteListFloat32(resizedImage, inputSize, 127.5, 255).reshape([1, 224, 224, 3]);
-    // print('Input: $input');
+    /* print('Input: $input'); */
     //
-    // // print(input.)
+    // print(input.)
     //
     // final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
     // var output = List(1 * 1000).reshape([1, 1000]);
     //
     // interpreter.run(input, output);
-    // print(output);
+    /* print(output); */
     // interpreter.close();
-    // print('doSomething() executed in ${stopwatch.elapsed}');
+    /* print('doSomething() executed in ${stopwatch.elapsed}'); */
 
     final FirebaseVisionImage visionImage =
         FirebaseVisionImage.fromFile(await entity.file);

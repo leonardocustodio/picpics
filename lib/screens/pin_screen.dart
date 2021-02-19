@@ -41,7 +41,8 @@ class _PinScreenState extends State<PinScreen> {
 
   Future<void> _authenticate() async {
     try {
-      bool authenticated = await appStore.biometricAuth.authenticateWithBiometrics(
+      bool authenticated =
+          await appStore.biometricAuth.authenticateWithBiometrics(
         localizedReason: 'Scan your fingerprint to authenticate',
         useErrorDialogs: true,
         stickyAuth: true,
@@ -76,8 +77,10 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   GlobalKey<AnimatorWidgetState> _shakeKey = GlobalKey<AnimatorWidgetState>();
-  GlobalKey<AnimatorWidgetState> _shakeKeyConfirm = GlobalKey<AnimatorWidgetState>();
-  GlobalKey<AnimatorWidgetState> _shakeRecovery = GlobalKey<AnimatorWidgetState>();
+  GlobalKey<AnimatorWidgetState> _shakeKeyConfirm =
+      GlobalKey<AnimatorWidgetState>();
+  GlobalKey<AnimatorWidgetState> _shakeRecovery =
+      GlobalKey<AnimatorWidgetState>();
 
   Future<void> validateAccessCode() async {
     setState(() {
@@ -134,7 +137,8 @@ class _PinScreenState extends State<PinScreen> {
       isLoading = true;
     });
 
-    bool request = await pinStore.requestRecoveryKey(appStore.email ?? pinStore.email);
+    bool request =
+        await pinStore.requestRecoveryKey(appStore.email ?? pinStore.email);
 
     setState(() {
       isLoading = false;
@@ -212,7 +216,8 @@ class _PinScreenState extends State<PinScreen> {
     galleryStore = Provider.of<GalleryStore>(context);
     pinStore = Provider.of<PinStore>(context);
 
-    if (appStore.isPinRegistered == true && appStore.isBiometricActivated == true) {
+    if (appStore.isPinRegistered == true &&
+        appStore.isBiometricActivated == true) {
       _authenticate();
     }
   }
@@ -270,7 +275,8 @@ class _PinScreenState extends State<PinScreen> {
           ),
           Shake(
             key: key,
-            preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
+            preferences:
+                AnimationPreferences(autoPlay: AnimationPlayStates.None),
             child: Observer(builder: (_) {
               int filledPositions;
 
@@ -335,7 +341,8 @@ class _PinScreenState extends State<PinScreen> {
     if (pinStore.isWaitingRecoveryKey == true) {
       if (carouselPage == 0) {
         if (value == '\u0008') {
-          pinStore.setRecoveryCode(Helpers.removeLastCharacter(pinStore.recoveryCode));
+          pinStore.setRecoveryCode(
+              Helpers.removeLastCharacter(pinStore.recoveryCode));
           return;
         }
         pinStore.setRecoveryCode('${pinStore.recoveryCode}${value}');
@@ -372,7 +379,8 @@ class _PinScreenState extends State<PinScreen> {
       }
 
       if (value == '\u0008') {
-        pinStore.setConfirmPinTemp(Helpers.removeLastCharacter(pinStore.confirmPinTemp));
+        pinStore.setConfirmPinTemp(
+            Helpers.removeLastCharacter(pinStore.confirmPinTemp));
         return;
       }
       pinStore.setConfirmPinTemp('${pinStore.confirmPinTemp}${value}');
@@ -382,7 +390,8 @@ class _PinScreenState extends State<PinScreen> {
           print('Setting new pin!!!!!');
           carouselPage = 0;
           pinStore.pin = pinStore.pinTemp;
-          appStore.setEmail(pinStore.email); // Tem que deixar antes pois é utilizado quando salva o pin
+          appStore.setEmail(pinStore
+              .email); // Tem que deixar antes pois é utilizado quando salva o pin
 
           await pinStore.saveNewPin(appStore);
 
@@ -449,7 +458,8 @@ class _PinScreenState extends State<PinScreen> {
 
     if (appStore.waitingAccessCode == true) {
       if (value == '\u0008') {
-        pinStore.setAccessCode(Helpers.removeLastCharacter(pinStore.accessCode));
+        pinStore
+            .setAccessCode(Helpers.removeLastCharacter(pinStore.accessCode));
         return;
       }
       pinStore.setAccessCode('${pinStore.accessCode}${value}');
@@ -471,7 +481,8 @@ class _PinScreenState extends State<PinScreen> {
     }
 
     if (value == '\u0008') {
-      pinStore.setConfirmPinTemp(Helpers.removeLastCharacter(pinStore.confirmPinTemp));
+      pinStore.setConfirmPinTemp(
+          Helpers.removeLastCharacter(pinStore.confirmPinTemp));
       return;
     }
     pinStore.setConfirmPinTemp('${pinStore.confirmPinTemp}${value}');
@@ -515,14 +526,16 @@ class _PinScreenState extends State<PinScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       CupertinoButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5.0, vertical: 10.0),
                         onPressed: () {
                           if (pinStore.isWaitingRecoveryKey == true) {
                             pinStore.setIsWaitingRecoveryKey(false);
                           }
                           Navigator.pop(context);
                         },
-                        child: Image.asset('lib/images/backarrowwithdropshadow.png'),
+                        child: Image.asset(
+                            'lib/images/backarrowwithdropshadow.png'),
                       ),
 //                          CupertinoButton(
 //                            onPressed: () {
@@ -600,11 +613,14 @@ class _PinScreenState extends State<PinScreen> {
                         String assetImage;
 
                         if (appStore.isBiometricActivated == true) {
-                          if (appStore.availableBiometrics.contains(BiometricType.face)) {
+                          if (appStore.availableBiometrics
+                              .contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (appStore.availableBiometrics.contains(BiometricType.iris)) {
+                          } else if (appStore.availableBiometrics
+                              .contains(BiometricType.iris)) {
                             assetImage = 'lib/images/irisscannerwhiteico.png';
-                          } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
+                          } else if (appStore.availableBiometrics
+                              .contains(BiometricType.fingerprint)) {
                             assetImage = 'lib/images/fingerprintwhiteico.png';
                           }
                         }
@@ -628,7 +644,8 @@ class _PinScreenState extends State<PinScreen> {
                             ),
                             Shake(
                               key: _shakeKey,
-                              preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                              preferences: AnimationPreferences(
+                                  autoPlay: AnimationPlayStates.None),
                               child: Observer(builder: (_) {
                                 return PinPlaceholder(
                                   filledPositions: pinStore.pinTemp.length,
@@ -691,7 +708,9 @@ class _PinScreenState extends State<PinScreen> {
                         children: [
                           Spacer(),
                           Text(
-                            pinStore.invalidAccessCode ? 'Invalid Access Code' : S.of(context).access_code,
+                            pinStore.invalidAccessCode
+                                ? 'Invalid Access Code'
+                                : S.of(context).access_code,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kSecondaryColor,
@@ -704,7 +723,8 @@ class _PinScreenState extends State<PinScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
                             child: Text(
-                              S.of(context).access_code_sent('${pinStore.email ?? 'user@email.com'}'),
+                              S.of(context).access_code_sent(
+                                  '${pinStore.email ?? 'user@email.com'}'),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',
@@ -718,7 +738,8 @@ class _PinScreenState extends State<PinScreen> {
                           Spacer(),
                           Shake(
                             key: _shakeKey,
-                            preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                            preferences: AnimationPreferences(
+                                autoPlay: AnimationPlayStates.None),
                             child: Observer(
                               builder: (_) {
                                 return PinPlaceholder(

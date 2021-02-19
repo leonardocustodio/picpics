@@ -19,8 +19,10 @@ abstract class _ClassificationStore with Store {
   @action
   Future<void> makeClassification(File image) async {
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(image);
-    final ImageLabeler cloudLabeler = FirebaseVision.instance.cloudImageLabeler();
-    final List<ImageLabel> cloudLabels = await cloudLabeler.processImage(visionImage);
+    final ImageLabeler cloudLabeler =
+        FirebaseVision.instance.cloudImageLabeler();
+    final List<ImageLabel> cloudLabels =
+        await cloudLabeler.processImage(visionImage);
 
     for (ImageLabel label in cloudLabels) {
       final String text = label.text;
