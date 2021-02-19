@@ -60,7 +60,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        if (loginStore.slideIndex != 0) Image.asset('lib/images/picpics_small.png'),
+                        if (loginStore.slideIndex != 0)
+                          Image.asset('lib/images/picpics_small.png'),
                         Expanded(
                           child: new Swiper(
                             loop: false,
@@ -71,12 +72,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     horizontal: 26.0,
                                   ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: <Widget>[
                                       Spacer(
                                         flex: 2,
                                       ),
-                                      Image.asset('lib/images/picpics_small.png'),
+                                      Image.asset(
+                                          'lib/images/picpics_small.png'),
                                       Spacer(
                                         flex: 1,
                                       ),
@@ -104,7 +107,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                     flex: 1,
                                   ),
                                   Container(
-                                    constraints: BoxConstraints(maxHeight: height / 3 - 20),
+                                    constraints: BoxConstraints(
+                                        maxHeight: height / 3 - 20),
                                     child: loginStore.getImage(index),
                                   ),
                                   Spacer(
@@ -138,10 +142,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               loginStore.setSlideIndex(index);
                             },
                             pagination: new SwiperCustomPagination(
-                              builder: (BuildContext context, SwiperPluginConfig config) {
+                              builder: (BuildContext context,
+                                  SwiperPluginConfig config) {
                                 List<Widget> navIndicators = [];
 
-                                for (int x = 0; x < loginStore.totalSlides; x++) {
+                                for (int x = 0;
+                                    x < loginStore.totalSlides;
+                                    x++) {
                                   navIndicators.add(
                                     Container(
                                       height: 8.0,
@@ -150,8 +157,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                         horizontal: 7.0,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: config.activeIndex == x ? kWhiteColor : kGrayColor,
-                                        borderRadius: BorderRadius.circular(4.0),
+                                        color: config.activeIndex == x
+                                            ? kWhiteColor
+                                            : kGrayColor,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
                                       ),
                                     ),
                                   );
@@ -173,8 +183,15 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         CupertinoButton(
                           onPressed: () async {
-                            if (loginStore.slideIndex == loginStore.totalSlides - 1) {
+                            if (loginStore.slideIndex ==
+                                loginStore.totalSlides - 1) {
                               Navigator.pushNamed(context, PremiumScreen.id);
+                              /* await appStore.requestNotificationPermission();
+                              await appStore.checkNotificationPermission(
+                                  firstPermissionCheck: true); */
+                              await appStore.setTutorialCompleted(true);
+                              // await galleryStore.loadAssetsPath();
+
                               return;
                             }
                             swiperController.next(animation: true);
@@ -182,14 +199,18 @@ class _LoginScreenState extends State<LoginScreen> {
                           padding: const EdgeInsets.all(0),
                           child: Container(
                             height: 66.0,
-                            margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
                             decoration: BoxDecoration(
                               gradient: kPrimaryGradient,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Center(
                               child: Text(
-                                loginStore.slideIndex == loginStore.totalSlides - 1 ? S.of(context).start.toUpperCase() : S.of(context).next.toUpperCase(),
+                                loginStore.slideIndex ==
+                                        loginStore.totalSlides - 1
+                                    ? S.of(context).start.toUpperCase()
+                                    : S.of(context).next.toUpperCase(),
                                 textScaleFactor: 1.0,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(

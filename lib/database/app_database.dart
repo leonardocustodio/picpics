@@ -10,6 +10,7 @@ import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/model/user_key.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:uuid/uuid.dart';
 
@@ -159,11 +160,15 @@ LazyDatabase _openConnection() {
   return LazyDatabase(() async {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
-    final dbFolder = await getApplicationDocumentsDirectory();
+    final dbFolder = await getExternalStorageDirectory();
+    final path = p.join(dbFolder.path, 'db.sqlite');
+    print('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(file, setup: (rawDb) {
+    return VmDatabase(
+      file, /* setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");
-    });
+    } */
+    );
   });
 }
 
@@ -267,16 +272,10 @@ class AppDatabase extends _$AppDatabase {
   //Future<List<MoorUser>> getAllMoorUser() => select(moorUsers).get();
 
   Future<MoorUser> getSingleMoorUser({bool createIfNotExist = true}) async {
-    var moorUserReturn = await (select(moorUsers)
-          ..where(
-              (u) => u?._customPrimaryKey?.equals(0) ?? const Constant(false)))
-        .getSingle();
+    var moorUserReturn = await select(moorUsers).getSingle();
     if (createIfNotExist && moorUserReturn == null) {
-      insertAllMoorUsers(null);
-      return await (select(moorUsers)
-            ..where((u) =>
-                u?._customPrimaryKey?.equals(0) ?? const Constant(false)))
-          .getSingle();
+      await createMoorUser(getDefaultMoorUser());
+      return await getSingleMoorUser(createIfNotExist: false);
     } else {
       return moorUserReturn;
     }
@@ -331,8 +330,7 @@ class AppDatabase extends _$AppDatabase {
   Future<void> insertAllMoorUsers(User user, {UserKey userKey}) async {
     var moorUserCompanionVariable;
     if (user == null) {
-      moorUserCompanionVariable =
-          MoorUsersCompanion.insert(customPrimaryKey: const Value(0));
+      moorUserCompanionVariable = MoorUsersCompanion.insert();
     } else {
       moorUserCompanionVariable = MoorUsersCompanion.insert(
         customPrimaryKey: const Value(0),

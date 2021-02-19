@@ -580,7 +580,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ),
                                 Observer(builder: (_) {
                                   if (appStore.secretPhotos == true &&
-                                      appStore.availableBiometrics.isNotEmpty) {
+                                      // TODO: throwing error at appStore.availableBiometrics.isNotEmpty :
+                                      // error: The getter 'isNotEmpty' was called on null.
+                                      (appStore.availableBiometrics
+                                              ?.isNotEmpty ??
+                                          false)) {
                                     String enableBiometric;
 
                                     if (appStore.availableBiometrics

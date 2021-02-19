@@ -59,25 +59,10 @@ void backgroundFetchHeadlessTask(String taskId) async {
   BackgroundFetch.finish(taskId);
 }
 
+String initialRoute = LoginScreen.id;
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  GestureBinding.instance.resamplingEnabled = true;
-
-  // CloudFunctions.instance.useFunctionsEmulator(origin: Platform.isAndroid ? 'http://10.0.2.2:5001' : 'http://localhost:5001');
-
-  await Firebase.initializeApp();
-  // await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-  await FirebaseCrashlytics.instance
-      .setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
-
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-  Isolate.current.addErrorListener(RawReceivePort((pair) async {
-    final List<dynamic> errorAndStacktrace = pair;
-    await FirebaseCrashlytics.instance.recordError(
-      errorAndStacktrace.first,
-      errorAndStacktrace.last,
-    );
-  }).sendPort);
 
   await Hive.initFlutter();
 /*   Hive.registerAdapter(UserAdapter());
@@ -86,11 +71,10 @@ void main() async {
   Hive.registerAdapter(SecretAdapter());
   Hive.registerAdapter(UserKeyAdapter()); */
 
-  /* var userBox = */ await Hive.openBox('user');
-  /* var picsBox = */ await Hive.openBox('pics');
-  /* var tagsBox = */ await Hive.openBox('tags');
-
-  /* var secretBox = */ await Hive.openBox('secrets',
+  await Hive.openBox('user');
+  await Hive.openBox('pics');
+  await Hive.openBox('tags');
+  await Hive.openBox('secrets',
       encryptionKey: Uint8List.fromList([
         76,
         224,
@@ -162,6 +146,38 @@ void main() async {
         155
       ]));
 
+  var userHiveBox = Hive.box('user');
+  var picsuserHiveBox = Hive.box('pics');
+  var tagsuserHiveBox = Hive.box('tags');
+  var secretuserHiveBox = Hive.box('secrets');
+  var keyuserHiveBox = Hive.box('userkey');
+
+  if (keyuserHiveBox.length > 0 ||
+      userHiveBox.length > 0 ||
+      picsuserHiveBox.length > 0 ||
+      tagsuserHiveBox.length > 0 ||
+      secretuserHiveBox.length > 0) {
+    initialRoute = MigrationScreen.id;
+  }
+
+  GestureBinding.instance.resamplingEnabled = true;
+
+  // CloudFunctions.instance.useFunctionsEmulator(origin: Platform.isAndroid ? 'http://10.0.2.2:5001' : 'http://localhost:5001');
+
+  await Firebase.initializeApp();
+  // await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+  await FirebaseCrashlytics.instance
+      .setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
+
+  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  Isolate.current.addErrorListener(RawReceivePort((pair) async {
+    final List<dynamic> errorAndStacktrace = pair;
+    await FirebaseCrashlytics.instance.recordError(
+      errorAndStacktrace.first,
+      errorAndStacktrace.last,
+    );
+  }).sendPort);
+
   String deviceLocale = await DeviceLocale.getCurrentLocale()
       .then((Locale locale) => locale.toString());
   String appVersion = await PackageInfo.fromPlatform()
@@ -228,12 +244,6 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    super.initState();
-    WidgetsBinding.instance.addObserver(this);
-
-    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-
     appStore = AppStore(
       appVersion: widget.appVersion,
       deviceLocale: widget.deviceLocale,
@@ -242,6 +252,15 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     galleryStore = GalleryStore(
       appStore: appStore,
     );
+    if (initialRoute == LoginScreen.id && appStore.tutorialCompleted) {
+      initialRoute = TabsScreen.id;
+      //TODO: uncomment
+      //Hive.deleteFromDisk();
+    }
+    WidgetsBinding.instance.addObserver(this);
+
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
     if (appStore.encryptionKey == null) {
       if (appStore.secretPhotos == true) {
@@ -249,6 +268,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         galleryStore.removeAllPrivatePics();
       }
     }
+    super.initState();
   }
 
   @override
@@ -305,7 +325,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           locale: appStore.appLocale,
           supportedLocales: S.delegate.supportedLocales,
           debugShowCheckedModeBanner: kDebugMode,
-          initialRoute: appStore.initialRoute,
+          initialRoute: initialRoute,
           navigatorObservers: [Analytics.observer],
           routes: {
             LoginScreen.id: (context) => LoginScreen(),

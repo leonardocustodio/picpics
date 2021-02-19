@@ -92,24 +92,6 @@ abstract class _AppStore with Store {
       addRecentTags(tagKey);
     }
 
-    var userHiveBox = Hive.box('user');
-    var picsuserHiveBox = Hive.box('pics');
-    var tagsuserHiveBox = Hive.box('tags');
-    var secretuserHiveBox = Hive.box('secrets');
-    var keyuserHiveBox = Hive.box('userkey');
-
-    if (keyuserHiveBox.length > 0 ||
-        userHiveBox.length > 0 ||
-        picsuserHiveBox.length > 0 ||
-        tagsuserHiveBox.length > 0 ||
-        secretuserHiveBox.length > 0) {
-      initialRoute = MigrationScreen.id;
-    } else {
-      initialRoute = (tutorialCompleted) ? TabsScreen.id : LoginScreen.id;
-      //TODO: when all the errors are reduced
-      //Hive.deleteFromDisk();
-    }
-
     if (user.hasGalleryPermission != null || user.tutorialCompleted) {
       requestGalleryPermission();
     }
@@ -177,7 +159,7 @@ abstract class _AppStore with Store {
         .updateMoorUser(currentUser.copyWith(starredPhotos: starredPhotos));
   }
 
-  String initialRoute;
+  //String initialRoute;
   String tryBuyId;
   int dailyPicsForAds = 25;
   // int freePrivatePics = 20;
@@ -610,7 +592,7 @@ abstract class _AppStore with Store {
   }
 
   @observable
-  String appLanguage = 'pt_BR';
+  String appLanguage = 'en';
 
   @computed
   Locale get appLocale {
