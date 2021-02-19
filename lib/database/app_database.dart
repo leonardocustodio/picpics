@@ -392,7 +392,7 @@ class AppDatabase extends _$AppDatabase {
     for (Tag tag in tags) {
       labelsCompanions.add(
         LabelsCompanion.insert(
-          key: 'tag.key'.moorValue, // TODO: make it tag.key
+          key: tag.key.moorValue,
           title: tag.name.moorValue,
           photoId: tag.photoId.moorValue,
         ),
