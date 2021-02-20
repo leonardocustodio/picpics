@@ -82,10 +82,6 @@ dependencies:
   background_fetch: ^0.6.0
   lottie: ^0.7.0+1
   moor: ^3.4.0
-  sqlcipher_flutter_libs:
-    git:
-      url: https://github.com/simolus3/sqlite3.dart.git
-      path: sqlcipher_flutter_libs
   #sqlite3_flutter_libs: ^0.3.0
   moor_db_viewer: ^2.0.3
   hive: ^1.4.4+1
@@ -93,8 +89,17 @@ dependencies:
     git:
       url: git://github.com/hivedb/hive.git
       path: hive_flutter
+  sqlcipher_flutter_libs:
+    git:
+      url: https://github.com/simolus3/sqlite3.dart.git
+      path: sqlcipher_flutter_libs
 
 dependency_overrides:
+  sqflite:
+    git:
+      url: https://www.github.com/davidmartos96/sqflite_sqlcipher.git
+      path: sqflite
+      ref: fmdb_override
   moor_ffi:
     git:
       url: https://github.com/simolus3/moor.git

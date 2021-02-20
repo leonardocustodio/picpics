@@ -43,9 +43,7 @@ abstract class _AppStore with Store {
     this.appVersion,
     this.deviceLocale,
     this.initiatedWithProduct,
-  }) {
-    Future.wait([initialize()]);
-  }
+  });
 
   Future initialize() async {
     MoorUser user = await database.getSingleMoorUser(createIfNotExist: false);

@@ -193,6 +193,7 @@ void main() async {
     deviceLocale: deviceLocale,
     initiatedWithProduct: initiatedWithProduct,
   );
+  await appStore.initialize();
 
   Analytics.sendAppOpen();
   Ads.initialize();
