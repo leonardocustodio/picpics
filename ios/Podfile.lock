@@ -165,7 +165,7 @@ PODS:
     - SQLCipher
   - geocoding (1.0.5):
     - Flutter
-  - geolocator (6.1.9):
+  - geolocator (6.2.0):
     - Flutter
   - google_maps_flutter (0.0.1):
     - Flutter
@@ -245,7 +245,7 @@ PODS:
   - Protobuf (3.14.0)
   - Purchases (3.9.2):
     - PurchasesCoreSwift (= 3.9.2)
-  - purchases_flutter (2.0.0):
+  - purchases_flutter (2.0.3):
     - Flutter
     - PurchasesHybridCommon (= 1.5.0)
   - PurchasesCoreSwift (3.9.2)
@@ -268,9 +268,6 @@ PODS:
   - SQLCipher/common (4.4.2)
   - SQLCipher/standard (4.4.2):
     - SQLCipher/common
-  - sqlcipher_flutter_libs (0.0.1):
-    - Flutter
-    - SQLCipher (~> 4.4.0)
   - sqlite3 (3.32.3):
     - sqlite3/common (= 3.32.3)
   - sqlite3/common (3.32.3)
@@ -328,7 +325,6 @@ DEPENDENCIES:
   - share_extend (from `.symlinks/plugins/share_extend/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
-  - sqlcipher_flutter_libs (from `.symlinks/plugins/sqlcipher_flutter_libs/ios`)
   - sqlite3_flutter_libs (from `.symlinks/plugins/sqlite3_flutter_libs/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
 
@@ -438,8 +434,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/shared_preferences/ios"
   sqflite:
     :path: ".symlinks/plugins/sqflite/ios"
-  sqlcipher_flutter_libs:
-    :path: ".symlinks/plugins/sqlcipher_flutter_libs/ios"
   sqlite3_flutter_libs:
     :path: ".symlinks/plugins/sqlite3_flutter_libs/ios"
   url_launcher:
@@ -484,7 +478,7 @@ SPEC CHECKSUMS:
   flutter_vibrate: c0ca4ac994ff97c3f147f69865458bbc0cc3508b
   FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   geocoding: 32cfcdb16d38d907caaba65e2e42ad10d38bee58
-  geolocator: 057a0c63a43e9c5296d8ad845a3ac8e6df23d899
+  geolocator: f5e3de65e241caba7ce3e8a618803387bda73384
   google_maps_flutter: c7f9c73576de1fbe152a227bfd6e6c4ae8088619
   GoogleAPIClientForREST: 4bb409633efcc2e1b3f945afe7e35039b5a61db2
   GoogleAppMeasurement: 8d3c0aeede16ab7764144b5a4ca8e1d4323841b7
@@ -503,7 +497,7 @@ SPEC CHECKSUMS:
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Protobuf: 0cde852566359049847168e51bd1c690e0f70056
   Purchases: d8a798c9c7552fe66b550bf314a143e94ffa70c8
-  purchases_flutter: 27f87080055c0fd2cd124c247b10cae75b46e7e1
+  purchases_flutter: c1ef4056da1346795a708bdefce81e0a56e8134f
   PurchasesCoreSwift: ea4eabae180416e580ac60366f41aa1fefec0693
   PurchasesHybridCommon: d9bfb34309db4c9ba82a6f7f3a6275c13befdca7
   rate_my_app: 3b64dd0876bd286001595ee2e69193e757c4d77c
@@ -512,7 +506,6 @@ SPEC CHECKSUMS:
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   sqflite: 9b549b4a8b0a7f9ea465738a929b247655c8da27
   SQLCipher: 1ab0b9486a77d141e72e92ff30681926ed79c07a
-  sqlcipher_flutter_libs: b4e12e09a4cb4f69f9440e01776562471f591b4c
   sqlite3: 8f7d2078ae27778699a622a94b853285793422a2
   sqlite3_flutter_libs: 5651f8ff48e3b44d910863c4ea5916085b1b245f
   url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
