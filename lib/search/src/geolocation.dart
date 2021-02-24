@@ -29,8 +29,7 @@ class Geolocation {
     try {
       return LatLng(_coordinates["lat"], _coordinates["lng"]);
     } catch (e) {
-      print(
-          "You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with the latitude and longitude");
+      //print(          "You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with the latitude and longitude");
       return _coordinates;
     }
   }
@@ -46,8 +45,7 @@ class Geolocation {
             LatLng(_bounds["northeast"]["lat"], _bounds["northeast"]["lng"]),
       );
     } catch (e) {
-      print(
-          "You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with southwest and northeast bounds");
+      //print(          "You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with southwest and northeast bounds");
       return _bounds;
     }
   }

@@ -70,7 +70,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
           .getTagName(DatabaseManager.instance.selectedTagKey);
       alertInputController.text = tagName;
 
-      print('showModal');
+      //print('showModal');
       showDialog<void>(
         context: context,
         barrierDismissible: true,
@@ -87,8 +87,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
             },
             defaultButtonTitle: S.of(context).ok,
             onPressedDefault: () {
-              print(
-                  'Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+              //print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 galleryStore.editTag(
                   oldTagKey: DatabaseManager.instance.selectedTagKey,
@@ -431,14 +430,14 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                               context, 'show_keyboard');
                                         },
                                         onTap: (tagName) {
-                                          print('ignore click');
+                                          //print('ignore click');
                                         },
                                         onDoubleTap: () {
 //                                        galleryStore.currentThumbnailPic
 //                                        galleryStore.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                                         },
                                         onPanEnd: () {
-                                          print('teste');
+                                          //print('teste');
                                         },
                                         showEditTagModal: showEditTagModal,
                                       ),

@@ -48,7 +48,7 @@ abstract class _GalleryStore with Store {
     }
 
     autorun((_) {
-      print('auto run');
+      // print('auto run');
     });
   }
 
@@ -90,7 +90,7 @@ print('finished adding all tagged pics stores!'); */
 //      int val = value - 5;
 //      if (val > swipeCutOff) {
 //        swipeCutOff = value - 5;
-    print('&&&&&&&&& setting cutoff to $swipeCutOff');
+    // print('&&&&&&&&& setting cutoff to $swipeCutOff');
 //      }
 //    }
 
@@ -293,15 +293,14 @@ print('finished adding all tagged pics stores!'); */
 
     if (searchText == '') {
       for (var recent in getUser.recentTags) {
-        print('Recent Tag: $recent');
+        // print('Recent Tag: $recent');
         if (multiPicTags.contains(recent) || recent == kSecretTagKey) {
           continue;
         }
         suggestionTags.add(recent);
       }
 
-      print(
-          'Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+      // print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
@@ -318,7 +317,7 @@ print('finished adding all tagged pics stores!'); */
               tagKey == kSecretTagKey) {
             continue;
           }
-          print('Adding tag key: $tagKey');
+          // print('Adding tag key: $tagKey');
           suggestionTags.add(tagKey);
         }
       }
@@ -335,7 +334,7 @@ print('finished adding all tagged pics stores!'); */
       }
     }
 
-    print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
+    // print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
     if (!multiPicTagKeys.contains(kSecretTagKey) &&
         !searchingTagsKeys.contains(kSecretTagKey) &&
         appStore.secretPhotos == true &&
@@ -343,13 +342,13 @@ print('finished adding all tagged pics stores!'); */
       suggestionTags.add(kSecretTagKey);
     }
 
-    print('find suggestions: $searchText - exclude tags: $multiPicTags');
-    print(suggestionTags);
-    print('AppStore Tags: ${appStore.tags}');
+    // print('find suggestions: $searchText - exclude tags: $multiPicTags');
+    // print(suggestionTags);
+    // print('AppStore Tags: ${appStore.tags}');
     List<TagsStore> suggestions = appStore.tags
         .where((element) => suggestionTags.contains(element.id))
         .toList();
-    print('Suggestions Tag Store: $suggestions');
+    // print('Suggestions Tag Store: $suggestions');
     return suggestions;
   }
 
@@ -359,7 +358,7 @@ print('finished adding all tagged pics stores!'); */
     taggedPics.forEach((element) {
       tags.add(element.tag.id);
     });
-    print('Tagged Keys: ${tags}');
+    // print('Tagged Keys: ${tags}');
     return tags.toList();
   }
 
@@ -394,7 +393,7 @@ print('finished adding all tagged pics stores!'); */
       }
     }
 
-    print('Find right place to add tagged ${picStore.photoId}');
+    // print('Find right place to add tagged ${picStore.photoId}');
     DateTime picDate = picStore.createdAt;
     TaggedDatePicsStore taggedDatePicsStore = taggedDatePics.firstWhere(
         (element) => Utils.isSameDay(element.date, picDate),
@@ -403,20 +402,20 @@ print('finished adding all tagged pics stores!'); */
       taggedDatePicsStore = TaggedDatePicsStore(date: picDate);
 
       if (taggedDatePics.length == 0) {
-        print('Adding picStore from $picDate to index 0');
+        // print('Adding picStore from $picDate to index 0');
         taggedDatePics.add(taggedDatePicsStore);
       } else {
         bool hasAdded = false;
         for (int x = 0; x < taggedDatePics.length; x++) {
           if (taggedDatePics[x].date.isBefore(picDate)) {
-            print('Adding picStore from $picDate to index $x');
+            // print('Adding picStore from $picDate to index $x');
             taggedDatePics.insert(x, taggedDatePicsStore);
             hasAdded = true;
             break;
           }
         }
         if (hasAdded == false) {
-          print('Adding picStore from $picDate to last index');
+          // print('Adding picStore from $picDate to last index');
           taggedDatePics.add(taggedDatePicsStore);
         }
       }
@@ -429,16 +428,16 @@ print('finished adding all tagged pics stores!'); */
         taggedGridPics.indexWhere((element) => element.date == date);
 
     if (gridPicIndex != -1) {
-      print('Different than null');
+      // print('Different than null');
       taggedGridPics.insert(gridPicIndex + 1, newPicStore);
     } else {
-      print('Is null');
+      // print('Is null');
       for (int x = 0; x < taggedGridPics.length; x++) {
         if (taggedGridPics[x].date == null) {
           continue;
         }
         if (taggedGridPics[x].date.isBefore(date)) {
-          print('Date is before');
+          // print('Date is before');
           var newDateStore = TaggedGridPicStore(date: date);
           taggedGridPics.insert(x, newPicStore);
           taggedGridPics.insert(x, newDateStore);
@@ -453,17 +452,17 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   void removePicFromTaggedPics({PicStore picStore, bool forceDelete = false}) {
-    print('removePicFromTaggedPics');
+    // print('removePicFromTaggedPics');
     List<TaggedPicsStore> toDelete = [];
 
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
       if (picStore.tags.contains(taggedPicsStore.tag) && forceDelete == false) {
-        print('this tag should not be removed');
+        // print('this tag should not be removed');
         continue;
       }
 
       if (taggedPicsStore.pics.contains(picStore)) {
-        print('Removed ${picStore.photoId} from ${taggedPicsStore.tag.name}');
+        // print('Removed ${picStore.photoId} from ${taggedPicsStore.tag.name}');
         taggedPicsStore.pics.remove(picStore);
         if (taggedPicsStore.pics.isEmpty) {
           toDelete.add(taggedPicsStore);
@@ -480,10 +479,10 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   void deleteEntity(String entityId) {
-    print('Deleting entity...');
+    // print('Deleting entity...');
 
     if (!allPicsKeys.contains(entityId)) {
-      print('This pic is not on picPics!!!');
+      // print('This pic is not on picPics!!!');
       return;
     }
 
@@ -495,15 +494,15 @@ print('finished adding all tagged pics stores!'); */
     swipePics.remove(picStore);
     allPics.remove(picStore);
 
-    print('#@#@#@# Total photos: ${allPics.length}');
+    // print('#@#@#@# Total photos: ${allPics.length}');
   }
 
   @action
   void addEntity(AssetEntity entity) {
-    print('Adding new entity....');
+    // print('Adding new entity....');
 
     if (allPicsKeys.contains(entity.id)) {
-      print('This pic is already in picPics!!!');
+      // print('This pic is already in picPics!!!');
       return;
     }
 
@@ -517,21 +516,21 @@ print('finished adding all tagged pics stores!'); */
     );
 
     if (pic.isPrivate == true) {
-      print('This pic is private not loading it!');
+      // print('This pic is private not loading it!');
       return;
     }
 
     allPics.insert(0, pic);
     if (pic.tags.length > 0) {
-      print('has pic info! and this pic has tags in it!!!!');
+      //print('has pic info! and this pic has tags in it!!!!');
       addPicToTaggedPics(picStore: pic, toInitialIndex: true);
     } else {
-      print('has pic info! and this pic doesnt have tag!!!!');
+      //print('has pic info! and this pic doesnt have tag!!!!');
       swipePics.insert(0, pic);
       addPicToUntaggedPics(picStore: pic);
     }
 
-    print('#@#@#@# Total photos: ${allPics.length}');
+    // print('#@#@#@# Total photos: ${allPics.length}');
   }
 
   @action
@@ -545,20 +544,20 @@ print('finished adding all tagged pics stores!'); */
       untaggedPicsStore = UntaggedPicsStore(date: picDate);
 
       if (untaggedPics.length == 0) {
-        print('Adding picStore from $picDate to index 0');
+        // print('Adding picStore from $picDate to index 0');
         untaggedPics.add(untaggedPicsStore);
       } else {
         bool hasAdded = false;
         for (int x = 0; x < untaggedPics.length; x++) {
           if (untaggedPics[x].date.isBefore(picDate)) {
-            print('Adding picStore from $picDate to index $x');
+            // print('Adding picStore from $picDate to index $x');
             untaggedPics.insert(x, untaggedPicsStore);
             hasAdded = true;
             break;
           }
         }
         if (hasAdded == false) {
-          print('Adding picStore from $picDate to last index');
+          // print('Adding picStore from $picDate to last index');
           untaggedPics.add(untaggedPicsStore);
         }
       }
@@ -571,16 +570,16 @@ print('finished adding all tagged pics stores!'); */
         untaggedGridPics.indexWhere((element) => element.date == date);
 
     if (gridPicIndex != -1) {
-      print('Different than null');
+      // print('Different than null');
       untaggedGridPics.insert(gridPicIndex + 1, newPicStore);
     } else {
-      print('Is null');
+      // print('Is null');
       for (int x = 0; x < untaggedGridPics.length; x++) {
         if (untaggedGridPics[x].date == null) {
           continue;
         }
         if (untaggedGridPics[x].date.isBefore(date)) {
-          print('Date is Before');
+          // print('Date is Before');
           var newDateStore = UntaggedGridPicStore(date: date);
           untaggedGridPics.insert(x, newPicStore);
           untaggedGridPics.insert(x, newDateStore);
@@ -617,14 +616,14 @@ print('finished adding all tagged pics stores!'); */
 
     for (var untaggedPicStore in untaggedPics) {
       if (untaggedPicStore.picStoresIds.contains(picStore.photoId)) {
-        print('Removing ${picStore.photoId} from untagged pic store');
+        // print('Removing ${picStore.photoId} from untagged pic store');
         untaggedPicStore.removePicStore(picStore);
         untaggedGridPics.removeWhere((element) => element.picStore == picStore);
         untaggedGridPicsByMonth
             .removeWhere((element) => element.picStore == picStore);
 
         if (untaggedPicStore.picStoresIds.length == 0) {
-          print('Removing untaggedPicStore since there are no more pics in it');
+          // print('Removing untaggedPicStore since there are no more pics in it');
           toDelete.add(untaggedPicStore);
         }
         break;
@@ -640,7 +639,7 @@ print('finished adding all tagged pics stores!'); */
           element.date ==
           DateTime.utc(
               untaggedPicStore.date.year, untaggedPicStore.date.month));
-      print('Index of Month: $indexOfMonth');
+      // print('Index of Month: $indexOfMonth');
 
       if (indexOfMonth >= untaggedGridPicsByMonth.length - 1) {
         continue;
@@ -665,7 +664,7 @@ print('finished adding all tagged pics stores!'); */
     DateTime currentDate = DateTime(1000);
 
     for (AssetEntity entity in list) {
-      print(entity.id);
+      // print(entity.id);
 
       PicStore pic = PicStore(
         appStore: appStore,
@@ -678,17 +677,17 @@ print('finished adding all tagged pics stores!'); */
       // debugprint('Created At: ${entity.modifiedDateTime}');
 
       if (pic.isPrivate == true) {
-        print('This pic is private not loading it!');
+        //print('This pic is private not loading it!');
         continue;
       }
 
       allPics.add(pic);
 
       if (pic.tags.length > 0) {
-        print('has pic info! and this pic has tags in it!!!!');
+        // print('has pic info! and this pic has tags in it!!!!');
         addPicToTaggedPics(picStore: pic);
       } else {
-        print('has pic info! and this pic doesnt have tag!!!!');
+        // print('has pic info! and this pic doesnt have tag!!!!');
         swipePics.add(pic);
         addPicToUntaggedPics(picStore: pic);
       }
@@ -697,7 +696,7 @@ print('finished adding all tagged pics stores!'); */
     sortUntaggedPhotos();
     sortTaggedPhotos();
     appStore.setDefaultWidgetImage(allPics[0].entity);
-    print('#@#@#@# Total photos: ${allPics.length}');
+    // print('#@#@#@# Total photos: ${allPics.length}');
   }
 
   @action
@@ -728,7 +727,7 @@ print('finished adding all tagged pics stores!'); */
       if (currentMonth != monthDate) {
         untaggedGridPicsByMonth.add(UntaggedGridPicStore(date: monthDate));
         currentMonth = monthDate;
-        print('Adding month date: $monthDate');
+        // print('Adding month date: $monthDate');
       }
 
       for (var picStore in untaggedPic.picStores) {
@@ -756,7 +755,7 @@ print('finished adding all tagged pics stores!'); */
       filterOption: filterOptionGroup,
     );
     assetsPath.addAll(assets);
-    print('#@#@#@# Total galleries: ${assetsPath.length}');
+    // print('#@#@#@# Total galleries: ${assetsPath.length}');
     await loadEntities();
     await loadPrivateAssets();
 
@@ -767,7 +766,7 @@ print('finished adding all tagged pics stores!'); */
   @action
   Future<void> loadPrivateAssets() async {
     if (appStore.secretPhotos != true) {
-      print('Secret photos is off - not loading private pics');
+      // print('Secret photos is off - not loading private pics');
       return;
     }
 /* 
@@ -787,21 +786,21 @@ print('finished adding all tagged pics stores!'); */
       allPics.insert(0, pic);
 
       if (pic.tags.length > 0) {
-        print('has pic info! and this pic has tags in it!!!!');
+        // print('has pic info! and this pic has tags in it!!!!');
         addPicToTaggedPics(picStore: pic);
       } else {
-        print('has pic info! and this pic doesnt have tag!!!!');
+        // print('has pic info! and this pic doesnt have tag!!!!');
         swipePics.insert(0, pic);
         addPicToUntaggedPics(picStore: pic);
       }
 
       if (pic.isPrivate == true) {
-        print('Adding pic to private pics!!!');
+        // print('Adding pic to private pics!!!');
         privatePics.add(pic);
       }
     }
 
-    print('#@#@#@# Total photos with private photos: ${allPics.length}');
+    // print('#@#@#@# Total photos with private photos: ${allPics.length}');
   }
 
   @observable
@@ -831,13 +830,13 @@ print('finished adding all tagged pics stores!'); */
           Photo pic = await database.getPhotoByPhotoId(picStore.photoId);
 
           if (pic != null) {
-            print('pic is in db... removing it from db!');
+            // print('pic is in db... removing it from db!');
             List<String> picTags = List<String>.from(pic.tags);
             Future.wait([
               Future.forEach(picTags, (tagKey) async {
                 Label tag = await database.getLabelByLabelKey(tagKey);
                 tag.photoId.remove(picStore.photoId);
-                print('removed ${picStore.photoId} from tag ${tag.title}');
+                // print('removed ${picStore.photoId} from tag ${tag.title}');
                 await database.updateLabel(tag);
                 //tagsBox.put(tagKey, tag);
 
@@ -850,7 +849,7 @@ print('finished adding all tagged pics stores!'); */
 
             //picsBox.delete(picStore.photoId);
             await database.deletePhotoByPhotoId(picStore.photoId);
-            print('removed ${picStore.photoId} from database');
+            // print('removed ${picStore.photoId} from database');
           }
 
           filteredPics.remove(picStore);
@@ -863,7 +862,7 @@ print('finished adding all tagged pics stores!'); */
       ]);
 
       Analytics.sendEvent(Event.deleted_photo);
-      print('Reaction!');
+      // print('Reaction!');
       selectedPics.clear();
       setTrashedPic(true);
     }
@@ -871,9 +870,9 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   Future<void> trashPic(PicStore picStore) async {
-    print('Going to trash pic!');
+    // print('Going to trash pic!');
     bool deleted = await picStore.deletePic();
-    print('Deleted pic: $deleted');
+    // print('Deleted pic: $deleted');
 
     if (deleted) {
       filteredPics.remove(picStore);
@@ -885,7 +884,7 @@ print('finished adding all tagged pics stores!'); */
     }
 
     Analytics.sendEvent(Event.deleted_photo);
-    print('Reaction!');
+    // print('Reaction!');
     setTrashedPic(true);
   }
 
@@ -945,8 +944,8 @@ print('finished adding all tagged pics stores!'); */
 //      x++;
     }
 
-    print('Image List: $imageList');
-    print('Mime List: $mimeList');
+    // print('Image List: $imageList');
+    // print('Mime List: $mimeList');
 
     Analytics.sendEvent(Event.shared_photos);
 
@@ -980,11 +979,11 @@ print('finished adding all tagged pics stores!'); */
           Photo pic = await database.getPhotoByPhotoId(photoId);
           //Pic pic = picsBox.get(photoId);
           int indexOfOldTag = pic.tags.indexOf(oldTagKey);
-          print('Tags in this picture: ${pic.tags}');
+          // print('Tags in this picture: ${pic.tags}');
           pic.tags[indexOfOldTag] = newTagKey;
           await database.updatePhoto(pic);
           //picsBox.put(photoId, pic);
-          print('updated tag in pic ${pic.id}');
+          // print('updated tag in pic ${pic.id}');
         })
       ],
     );
@@ -996,7 +995,7 @@ print('finished adding all tagged pics stores!'); */
     await database.deleteLabelByLabelId(oldTagKey);
     //tagsBox.delete(oldTagKey);
 
-    print('finished updating all tags');
+    // print('finished updating all tags');
     Analytics.sendEvent(Event.edited_tag);
   }
 
@@ -1007,19 +1006,19 @@ print('finished adding all tagged pics stores!'); */
     var label = await database.getLabelByLabelKey(tagKey);
 
     if (label != null) {
-      print('found tag going to delete it');
+      // print('found tag going to delete it');
 
       // Remove a tag das fotos já taggeadas
       TagsStore tagsStore =
           appStore.tags.firstWhere((element) => element.id == tagKey);
-      print('TagsStore Tag: ${tagsStore.name}');
+      // print('TagsStore Tag: ${tagsStore.name}');
       TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);
       for (PicStore picTagged in taggedPicsStore.pics) {
-        print('Tagged Pic Store Pics: ${picTagged.photoId}');
+        // print('Tagged Pic Store Pics: ${picTagged.photoId}');
         picTagged.removeTagFromPic(tagKey: tagsStore.id);
         if (picTagged.tags.length == 0 && picTagged != currentPic) {
-          print('this pic is not tagged anymore!');
+          // print('this pic is not tagged anymore!');
           addPicToUntaggedPics(picStore: picTagged);
         }
       }
@@ -1028,7 +1027,7 @@ print('finished adding all tagged pics stores!'); */
       appStore.removeTag(tagsStore: tagsStore);
       await database.deleteLabelByLabelId(tagKey);
       //tagsBox.delete(tagKey);
-      print('deleted from tags db');
+      // print('deleted from tags db');
       Analytics.sendEvent(Event.deleted_tag);
     }
   }
@@ -1042,7 +1041,7 @@ print('finished adding all tagged pics stores!'); */
     TagsStore tagsStore = appStore.tags.firstWhere(
         (element) => element.id == DatabaseManager.instance.selectedTagKey);
     searchingTags.add(tagsStore);
-    print('searching tags: $searchingTags');
+    // print('searching tags: $searchingTags');
     searchPicsWithTags();
   }
 
@@ -1051,7 +1050,7 @@ print('finished adding all tagged pics stores!'); */
       TagsStore tagsStore = appStore.tags.firstWhere(
           (element) => element.id == DatabaseManager.instance.selectedTagKey);
       searchingTags.remove(tagsStore);
-      print('searching tags: $searchingTags');
+      // print('searching tags: $searchingTags');
       searchPicsWithTags();
     }
   }
@@ -1059,7 +1058,7 @@ print('finished adding all tagged pics stores!'); */
   @action
   Future<void> searchPicsWithTags() async {
     //var tagsBox = Hive.box('tags');
-    /* print('%%%% Tags Keys: ${tagsBox.keys}'); */
+    /*// print('%%%% Tags Keys: ${tagsBox.keys}'); */
 
     filteredPics.clear();
 
@@ -1069,26 +1068,26 @@ print('finished adding all tagged pics stores!'); */
     Future.wait(
       [
         Future.forEach(searchingTagsKeys, (tagKey) async {
-          print('filtering tag: $tagKey');
+          // print('filtering tag: $tagKey');
           Label getTag = await database.getLabelByLabelKey(tagKey);
           //Tag getTag = tagsBox.get(tagKey);
           List<String> photosIds = getTag.photoId;
-          print('photos Ids in this tag: $photosIds');
+          // print('photos Ids in this tag: $photosIds');
 
           if (firstInteraction) {
-            print('adding all photos because it is firt interaction');
+            // print('adding all photos because it is firt interaction');
             tempPhotosIds.addAll(photosIds);
             firstInteraction = false;
           } else {
-            print('tempPhotoId: $tempPhotosIds');
+            // print('tempPhotoId: $tempPhotosIds');
             List<String> auxArray = [];
             auxArray.addAll(tempPhotosIds);
 
             for (var photoId in tempPhotosIds) {
-              print('checking if photoId is there: $photoId');
+              // print('checking if photoId is there: $photoId');
               if (!photosIds.contains(photoId)) {
                 auxArray.remove(photoId);
-                print('removing $photoId because doesnt have $tagKey');
+                // print('removing $photoId because doesnt have $tagKey');
               }
             }
             tempPhotosIds = auxArray;
@@ -1097,13 +1096,13 @@ print('finished adding all tagged pics stores!'); */
       ],
     );
 
-    print('Temp photos ids: $tempPhotosIds');
-    print('All Pics: ${allPicsKeys}');
+    // print('Temp photos ids: $tempPhotosIds');
+    // print('All Pics: ${allPicsKeys}');
     filteredPics.addAll(allPics
         .where((element) => tempPhotosIds.contains(element.photoId))
         .toList()); // Verificar essa classe para otimizar
-    print('Search Photos: $filteredPics');
-    print('Searcing Tags Keys: $searchingTags');
+    // print('Search Photos: $filteredPics');
+    // print('Searcing Tags Keys: $searchingTags');
 
     setShouldRefreshTaggedGallery(true);
     Analytics.sendEvent(Event.searched_photos);
@@ -1133,19 +1132,19 @@ print('finished adding all tagged pics stores!'); */
   // Create tag for using in multipic
   Future<void> createTag(String tagName) async {
     //var tagsBox = Hive.box('tags');
-    /* print(tagsBox.keys); */
+    /*// print(tagsBox.keys); */
 
     String tagKey = Helpers.encryptTag(tagName);
-    print('Adding tag: $tagName');
+    // print('Adding tag: $tagName');
 
     Label lab = await database.getLabelByLabelKey(tagKey);
 
     if (lab != null) {
-      print('user already has this tag');
+      // print('user already has this tag');
       return;
     }
 
-    print('adding tag to database...');
+    // print('adding tag to database...');
     await database
         .createLabel(Label(key: tagKey, title: tagName, photoId: <String>[]));
     //tagsBox.put(tagKey, Tag(tagName, []));
@@ -1169,18 +1168,18 @@ print('finished adding all tagged pics stores!'); */
         Future.forEach(selectedPics, (PicStore picStore) async {
           for (String tagKey in multiPicTagKeys) {
             if (picStore.tagsKeys.contains(tagKey)) {
-              print('this tag is already in this picture');
+              // print('this tag is already in this picture');
               continue;
             }
             if (tagKey == kSecretTagKey) {
-              print('Should add secret tag in the end!!!');
+              // print('Should add secret tag in the end!!!');
               if (!privatePics.contains(picStore)) {
                 await picStore.setIsPrivate(true);
                 await Crypto.encryptImage(picStore, appStore.encryptionKey);
-                print('this pic now is private');
+                // print('this pic now is private');
                 privatePics.add(picStore);
               } else {
-                print('this pic is already private');
+                // print('this pic is already private');
               }
               continue;
             }
@@ -1196,11 +1195,11 @@ print('finished adding all tagged pics stores!'); */
               photoId: picStore.photoId,
             );
 
-            print('update pictures in tag');
+            // print('update pictures in tag');
           }
 
           if (selectedPicsAreTagged != true) {
-            print('Adding pic to tagged pics!');
+            // print('Adding pic to tagged pics!');
             await addPicToTaggedPics(picStore: picStore);
             removePicFromUntaggedPics(picStore: picStore);
             swipePics.remove(picStore);
@@ -1215,29 +1214,29 @@ print('finished adding all tagged pics stores!'); */
 
 //  void registerObserve() {
 //    try {
-/* print('%%%%%% Registered change notifier'); */
+/*// print('%%%%%% Registered change notifier'); */
 //      PhotoManager.addChangeCallback(_onAssetChange);
 //      PhotoManager.startChangeNotify();
 //    } catch (e) {
-/* print('Error when registering assets callback: $e'); */
+/*// print('Error when registering assets callback: $e'); */
 //    }
 //  }
 
   @action
   Future<void> _onAssetChange(MethodCall call) async {
-    print('#!#!#!#!#!#! asset changed: ${call.arguments}');
+    // print('#!#!#!#!#!#! asset changed: ${call.arguments}');
 //
 //    List<dynamic> createdPics = call.arguments['create'];
 //    List<dynamic> deletedPics = call.arguments['delete'];
 //
 //    return;
 //
-/* print(deletedPics); */
+/*// print(deletedPics); */
 //
 //    if (deletedPics.length > 0) {
-    print('### deleted pics from library!');
+    // print('### deleted pics from library!');
 //      for (var pic in deletedPics) {
-/* print('Pic deleted Id: ${pic['id']}'); */
+/*// print('Pic deleted Id: ${pic['id']}'); */
 ////        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 ////        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
 ////
@@ -1253,7 +1252,7 @@ print('finished adding all tagged pics stores!'); */
 //
 //    if (createdPics.length > 0) {
 //      for (var pic in createdPics) {
-/* print('Pic created Id: ${pic['id']}'); */
+/*// print('Pic created Id: ${pic['id']}'); */
 //        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
 //        addEntity(picEntity);
 //      }
@@ -1276,7 +1275,7 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   Future<void> checkIsLibraryUpdated() async {
-    print('Scanning library again....');
+    // print('Scanning library again....');
 
     final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
       hasAll: true,
@@ -1291,16 +1290,16 @@ print('finished adding all tagged pics stores!'); */
     final bool isEqual = SetEquality().equals(entitiesIds, allPicsKeys);
 
     if (isEqual) {
-      print('Library is updated!!!!!!');
-      print('#@#@#@# Total photos: ${allPics.length}');
+      // print('Library is updated!!!!!!');
+      // print('#@#@#@# Total photos: ${allPics.length}');
     } else {
-      print('Library not updated!!!');
+      // print('Library not updated!!!');
 
       final Set<String> createdPics = entitiesIds.difference(allPicsKeys);
       final Set<String> deletedPics = allPicsKeys.difference(entitiesIds);
 
-      print('Created: $createdPics');
-      print('Deleted: $deletedPics');
+      // print('Created: $createdPics');
+      // print('Deleted: $deletedPics');
 
       for (String created in createdPics) {
         AssetEntity entity = await AssetEntity.fromId(created);
@@ -1329,14 +1328,14 @@ print('finished adding all tagged pics stores!'); */
 
     if (picStore.tags.isEmpty) {
       addPicToUntaggedPics(picStore: picStore);
-      print('this pic now doesnt have tags!');
+      // print('this pic now doesnt have tags!');
     }
   }
 
   @action
   Future<void> addTagToPic({PicStore picStore, String tagName}) async {
     if (picStore.tags.isEmpty) {
-      print('this pic now has tags!');
+      // print('this pic now has tags!');
       removePicFromUntaggedPics(picStore: picStore);
     }
 
@@ -1356,11 +1355,11 @@ print('finished adding all tagged pics stores!'); */
       if (!privatePics.contains(currentPic)) {
         await Crypto.encryptImage(picStore, appStore.encryptionKey);
 
-        print('this pic now is private');
+        // print('this pic now is private');
         privatePics.add(currentPic);
 
         if (currentPic.tags.length == 1) {
-          print('this pic now has tags!');
+          // print('this pic now has tags!');
           removePicFromUntaggedPics(picStore: currentPic);
         }
 
@@ -1368,17 +1367,17 @@ print('finished adding all tagged pics stores!'); */
       }
     } else {
       if (privatePics.contains(currentPic)) {
-        print('removing pic from private pics');
+        // print('removing pic from private pics');
         privatePics.remove(currentPic);
         removePicFromTaggedPics(picStore: currentPic);
 
         if (currentPic.tags.isEmpty) {
           addPicToUntaggedPics(picStore: currentPic);
-          print('this pic now doesnt have tags!');
+          // print('this pic now doesnt have tags!');
         }
         // else {
         //   if (originalPhotoId != currentPic.photoId) {
-        print('##### PHOTO ID HAS CHANGED... REFRESHING IDS IN TAGS');
+        // print('##### PHOTO ID HAS CHANGED... REFRESHING IDS IN TAGS');
         //     // setShouldRefreshTaggedGallery(true);
         //
         //     for (TagsStore tagStore in currentPic.tags) {
@@ -1386,16 +1385,16 @@ print('finished adding all tagged pics stores!'); */
         //           (element) => element.tag == tagStore,
         //           orElse: () => null);
         //       if (taggedPicsStore != null) {
-        /* print('Replacing id in ${taggedPicsStore.tag.name}'); */
+        /*// print('Replacing id in ${taggedPicsStore.tag.name}'); */
         //         PicStore picStore = taggedPicsStore.pics.firstWhere(
         //             (e) => e.photoId == currentPic.photoId,
         //             orElse: () => null);
         //         if (picStore != null) {
-        /* print(         'Found pic ${currentPic.photoId} in taggedPicsStore ${taggedPicsStore.tag.name}'); */
+        /*// print(         'Found pic ${currentPic.photoId} in taggedPicsStore ${taggedPicsStore.tag.name}'); */
         //           var tagsBox = Hive.box('tags');
         //           Tag tag = tagsBox.get(taggedPicsStore.tag.id);
-        /* print(               'Tag contains new photo id: ${tag.photoId.contains(currentPic.photoId)}');
-        print(           'Tag contains original photo id: ${tag.photoId.contains(originalPhotoId)}'); */
+        /*// print(               'Tag contains new photo id: ${tag.photoId.contains(currentPic.photoId)}');
+       // print(           'Tag contains original photo id: ${tag.photoId.contains(originalPhotoId)}'); */
         //         }
         //       }
         //     }

@@ -57,7 +57,7 @@ abstract class _PicStore with Store {
     this.deletedFromCameraRoll,
     this.isStarred,
   }) {
-    print('loading pic info......');
+    //print('loading pic info......');
     loadPicInfo();
 
     autorun((_) {});
@@ -69,13 +69,13 @@ abstract class _PicStore with Store {
   @action
   Future<void> switchIsStarred() async {
     bool value = isStarred == null ? true : !isStarred;
-    print('Setting starred photo $photoId to $value');
+    //print('Setting starred photo $photoId to $value');
 
     //var picsBox = Hive.box('pics');
     Photo pic = await database.getPhotoByPhotoId(photoId);
     //pic.isStarred = value;
     String base64encoded;
-    print('teste');
+    //print('teste');
     if (value == true) {
       var bytes = await entity.thumbDataWithSize(300, 300);
       String encoded = base64.encode(bytes);
@@ -92,7 +92,7 @@ abstract class _PicStore with Store {
         isStarred: value,
       ),
     );
-    print('isStarred value: $isStarred');
+    //print('isStarred value: $isStarred');
   }
 
   @observable
@@ -107,7 +107,7 @@ abstract class _PicStore with Store {
 
       getTag.photoId.remove(photoId);
       getTag.photoId.add(value);
-      print('Replaced tag in ${getTag.title} tagsbox');
+      //print('Replaced tag in ${getTag.title} tagsbox');
       await database.updateLabel(getTag);
       //getTag.save();
     });
@@ -120,7 +120,7 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> changeAssetEntity(AssetEntity picEntity) async {
-    print('Changing asset entity of $photoId to ${picEntity.id}');
+    //print('Changing asset entity of $photoId to ${picEntity.id}');
 
     //var picsBox = Hive.box('pics');
     //Pic picOld = picsBox.get(photoId);
@@ -149,14 +149,14 @@ abstract class _PicStore with Store {
 
     entity = picEntity;
     setChangePhotoId(picEntity.id);
-    print('Changed asset entity');
+    //print('Changed asset entity');
   }
 
   Future<Uint8List> get assetOriginBytes async {
     if (isPrivate == false && entity != null) {
       return await entity.originBytes;
     }
-    print('Returning decrypt image in privatePath: $photoPath');
+    //print('Returning decrypt image in privatePath: $photoPath');
     return await Crypto.decryptImage(
         photoPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
   }
@@ -166,7 +166,7 @@ abstract class _PicStore with Store {
       return await entity.thumbDataWithSize(
           kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
     }
-    print('Returning decrypt image in privatePath: $thumbPath');
+    //print('Returning decrypt image in privatePath: $thumbPath');
     return await Crypto.decryptImage(
         thumbPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
   }
@@ -176,7 +176,7 @@ abstract class _PicStore with Store {
   bool deletedFromCameraRoll;
 
   Future<void> setDeletedFromCameraRoll(bool value) async {
-    print('Setting deleted from camera roll as $value');
+    //print('Setting deleted from camera roll as $value');
     deletedFromCameraRoll = value;
 
     //var picsBox = Hive.box('pics');
@@ -207,7 +207,7 @@ abstract class _PicStore with Store {
     nonce = picNonce;
 
     if (appStore.shouldDeleteOnPrivate == true) {
-      print('**** Deleted original pic!!!');
+      //print('**** Deleted original pic!!!');
       if (Platform.isAndroid) {
         PhotoManager.editor.deleteWithIds([entity.id]);
       } else {
@@ -226,7 +226,7 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> removePrivatePath() async {
-    print('Removing pic from secrets box...');
+    //print('Removing pic from secrets box...');
 
     //var secretBox = Hive.box('secrets');
     //Secret secretPic = secretBox.get(photoId);
@@ -235,32 +235,32 @@ abstract class _PicStore with Store {
     if (secretPic != null) {
       //secretPic.delete();
       await database.deletePrivate(secretPic);
-      print('Pic deleted from secrets box!!!');
+      //print('Pic deleted from secrets box!!!');
       return;
     }
 
-    print('Did not find the pic in secretbox');
+    //print('Did not find the pic in secretbox');
   }
 
   Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
-    print('Deleting $photoPath and $thumbPath');
+    //print('Deleting $photoPath and $thumbPath');
     Directory appDocumentsDir = await getApplicationDocumentsDirectory();
 
     File photoFile = File(p.join(appDocumentsDir.path, photoPath));
     File thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
-      print('Pic has entity? ${entity == null ? false : true}');
+      //print('Pic has entity? ${entity == null ? false : true}');
       Uint8List picData = await assetOriginBytes;
       final AssetEntity imageEntity =
           await PhotoManager.editor.saveImage(picData);
       changeAssetEntity(imageEntity);
-      print('copied image back to gallery with id: ${imageEntity.id}');
+      //print('copied image back to gallery with id: ${imageEntity.id}');
     }
 
     photoFile.delete();
     thumbFile.delete();
-    print('Removed both files...');
+    //print('Removed both files...');
   }
 
   Future<void> loadExifData() async {
@@ -268,7 +268,7 @@ abstract class _PicStore with Store {
     var originBytes = originFile.readAsBytesSync();
 
     var mapResult = md.MetaData.extractXMP(originBytes, raw: true);
-    print(mapResult['dc:subject']);
+    //print(mapResult['dc:subject']);
   }
 
   @action
@@ -279,7 +279,7 @@ abstract class _PicStore with Store {
     //var secretBox = Hive.box('secrets');
     Photo pic = await database.getPhotoByPhotoId(photoId);
     if (pic != null) {
-      print('pic $photoId exists, loading data....');
+      //print('pic $photoId exists, loading data....');
       //Pic pic = picsBox.get(photoId);
 
       latitude = pic.latitude;
@@ -290,7 +290,7 @@ abstract class _PicStore with Store {
       deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
       isStarred = pic.isStarred ?? false;
 
-      print('Is private: $isPrivate');
+      //print('Is private: $isPrivate');
       if (isPrivate == true) {
         Private secretPic = await database.getPrivateByPhotoId(photoId);
 
@@ -298,8 +298,7 @@ abstract class _PicStore with Store {
           photoPath = secretPic.path;
           thumbPath = secretPic.thumbPath;
           nonce = secretPic.nonce;
-          print(
-              'Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
+          //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
         }
       }
 
@@ -307,13 +306,13 @@ abstract class _PicStore with Store {
         TagsStore tagsStore = appStore.tags
             .firstWhere((element) => element.id == tagKey, orElse: () => null);
         if (tagsStore == null) {
-          print('&&&&##### DID NOT FIND TAG: ${tagKey}');
+          //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
         }
         tags.add(tagsStore);
       }
     } else {
-      print('pic $photoId doesnt exists in database');
+      //print('pic $photoId doesnt exists in database');
     }
   }
 
@@ -344,10 +343,9 @@ abstract class _PicStore with Store {
     }
 
     isPrivate = value;
-    print('Pic isPrivate: $value');
-    print('Pic Entity Exists: ${entity == null ? false : true}');
-    print(
-        'Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
+    //print('Pic isPrivate: $value');
+    //print('Pic Entity Exists: ${entity == null ? false : true}');
+    //print('Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
 
     //var picsBox = Hive.box('pics');
     Photo getPic = await database.getPhotoByPhotoId(photoId);
@@ -362,7 +360,7 @@ abstract class _PicStore with Store {
     Label getTag = await database.getLabelByLabelKey(kSecretTagKey);
 
     if (getTag.photoId.contains(photoId)) {
-      print('this tag is already in this picture');
+      //print('this tag is already in this picture');
       return;
     }
 
@@ -374,12 +372,12 @@ abstract class _PicStore with Store {
       tagKey: kSecretTagKey,
       photoId: photoId,
     );
-    print('Added secret tag to pic!');
+    //print('Added secret tag to pic!');
   }
 
   Future<void> removeSecretTagFromPic() async {
     await removeTagFromPic(tagKey: kSecretTagKey);
-    print('Added secret tag to pic!');
+    //print('Added secret tag to pic!');
   }
 
   @observable
@@ -395,7 +393,7 @@ abstract class _PicStore with Store {
 
   @computed
   List<String> get tagsKeys {
-    print('####!!!! Tags Keys: $tags');
+    //print('####!!!! Tags Keys: $tags');
     return tags.map((element) => element.id).toList();
   }
 
@@ -414,8 +412,7 @@ abstract class _PicStore with Store {
         suggestionTags.add(recent);
       }
 
-      print(
-          'Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+      //print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
@@ -445,8 +442,8 @@ abstract class _PicStore with Store {
         }
       }
     }
-    print('find suggestions: $searchText - exclude: $tagsKeys');
-    print(suggestionTags);
+    //print('find suggestions: $searchText - exclude: $tagsKeys');
+    //print(suggestionTags);
 
     List<TagsStore> suggestions = [];
     for (String tagId in suggestionTags) {
@@ -462,16 +459,16 @@ abstract class _PicStore with Store {
     /* print(tagsBox.keys); */
 
     String tagKey = Helpers.encryptTag(tagName);
-    print('Adding tag: $tagName');
+    //print('Adding tag: $tagName');
     Label getTag = await database.getLabelByLabelKey(tagKey);
 
     if (getTag != null) {
-      print('user already has this tag');
+      //print('user already has this tag');
 
       //Tag getTag = tagsBox.get(tagKey);
 
       if (getTag.photoId.contains(photoId)) {
-        print('this tag is already in this picture');
+        //print('this tag is already in this picture');
         return;
       }
 
@@ -484,8 +481,8 @@ abstract class _PicStore with Store {
       );
 
       appStore.addTagToRecent(tagKey: tagKey);
-      print('updated pictures in tag');
-      print('Tag photos ids: ${getTag.photoId}');
+      //print('updated pictures in tag');
+      //print('Tag photos ids: ${getTag.photoId}');
       return;
     }
 
@@ -493,7 +490,7 @@ abstract class _PicStore with Store {
       Event.created_tag,
       params: {'tagName': tagName},
     );
-    print('adding tag to database...');
+    //print('adding tag to database...');
     TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
     appStore.addTag(tagsStore);
 
@@ -517,20 +514,20 @@ abstract class _PicStore with Store {
     Photo getPic = await database.getPhotoByPhotoId(photoId);
 
     if (getPic != null) {
-      print('this picture is in db going to update');
+      //print('this picture is in db going to update');
 
       //Pic getPic = picsBox.get(photoId);
 
       if (getPic.tags.contains(tagKey)) {
-        print('this tag is already in this picture');
+        //print('this tag is already in this picture');
         return;
       }
 
       getPic.tags.add(tagKey);
-      print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+      //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
       //picsBox.put(photoId, getPic);
       await database.updatePhoto(getPic);
-      print('updated picture');
+      //print('updated picture');
 
       TagsStore tagsStore =
           appStore.tags.firstWhere((element) => element.id == tagKey);
@@ -544,8 +541,8 @@ abstract class _PicStore with Store {
       return;
     }
 
-    print('this picture is not in db, adding it...');
-    print('Photo Id: $photoId');
+    //print('this picture is not in db, adding it...');
+    //print('Photo Id: $photoId');
 
     TagsStore tagsStore =
         appStore.tags.firstWhere((element) => element.id == tagKey);
@@ -568,7 +565,7 @@ abstract class _PicStore with Store {
 
     //await picsBox.put(photoId, pic);
     await database.createPhoto(pic);
-    print('@@@@@@@@ tagsKey: ${tagKey}');
+    //print('@@@@@@@@ tagsKey: ${tagKey}');
 
     // Increase today tagged pics everytime it adds a new pic to database.
     appStore.increaseTodayTaggedPics();
@@ -618,7 +615,7 @@ abstract class _PicStore with Store {
 
   @action
   Future<bool> deletePic() async {
-    print('Before photo manager delete: ${entity.id}');
+    //print('Before photo manager delete: ${entity.id}');
 
     if (Platform.isAndroid) {
       PhotoManager.editor.deleteWithIds([entity.id]);
@@ -635,7 +632,7 @@ abstract class _PicStore with Store {
     Photo pic = await database.getPhotoByPhotoId(photoId);
 
     if (pic != null) {
-      print('pic is in db... removing it from db!');
+      //print('pic is in db... removing it from db!');
       List<String> picTags = List<String>.from(pic.tags);
       for (String tagKey in picTags) {
         removeTagFromPic(tagKey: tagKey);
@@ -646,7 +643,7 @@ abstract class _PicStore with Store {
       }
       //picsBox.delete(photoId);
       await database.deletePhotoByPhotoId(photoId);
-      print('removed ${photoId} from database');
+      //print('removed ${photoId} from database');
     }
 
     return true;
@@ -654,21 +651,21 @@ abstract class _PicStore with Store {
 
   @action
   Future<void> removeTagFromPic({String tagKey}) async {
-    print('removing tag: $tagKey from pic $photoId');
+    //print('removing tag: $tagKey from pic $photoId');
     //var tagsBox = Hive.box('tags');
     //var picsBox = Hive.box('pics');
 
     //Tag getTag = tagsBox.get(tagKey);
     Label getTag = await database.getLabelByLabelKey(tagKey);
 
-    print('Tag photos ids: ${getTag.photoId}');
+    //print('Tag photos ids: ${getTag.photoId}');
     int indexOfPicInTag = getTag.photoId.indexOf(photoId);
-    print('Tag index to remove: $indexOfPicInTag');
+    //print('Tag index to remove: $indexOfPicInTag');
     if (indexOfPicInTag != null) {
       getTag.photoId.removeAt(indexOfPicInTag);
       //tagsBox.put(tagKey, getTag);
       await database.updateLabel(getTag);
-      print('removed pic from tag');
+      //print('removed pic from tag');
     }
 
     //Pic getPic = picsBox.get(photoId);
@@ -679,7 +676,7 @@ abstract class _PicStore with Store {
       getPic.tags.removeAt(indexOfTagInPic);
       //picsBox.put(photoId, getPic);
       await database.updatePhoto(getPic);
-      print('removed tag from pic');
+      //print('removed tag from pic');
       tags.removeWhere((element) => element.id == tagKey);
     }
 
@@ -702,7 +699,7 @@ abstract class _PicStore with Store {
     Photo getPic = await database.getPhotoByPhotoId(photoId);
 
     if (getPic != null) {
-      print('found pic');
+      //print('found pic');
 
       //getPic.latitude = lat;
       //getPic.longitude = long;
@@ -715,9 +712,9 @@ abstract class _PicStore with Store {
         specificLocation: specific,
         generalLocation: general,
       ));
-      print('updated pic with new values');
+      //print('updated pic with new values');
     } else {
-      print('Did not found pic!');
+      //print('Did not found pic!');
       Photo createPic = Photo(
         id: photoId,
         createdAt: createdAt,
@@ -734,7 +731,7 @@ abstract class _PicStore with Store {
       );
       //picsBox.put(photoId, createPic);
       await database.createPhoto(createPic);
-      print('Saved pic to database!');
+      //print('Saved pic to database!');
     }
 
     latitude = lat;
@@ -772,7 +769,7 @@ abstract class _PicStore with Store {
         appStore.appLanguage.split('_')[0] == 'es' ||
         appStore.appLanguage.split('_')[0] == 'de' ||
         appStore.appLanguage.split('_')[0] == 'ja') {
-      print('Offline translating it...');
+      //print('Offline translating it...');
       return tagsText
           .map((e) => PredefinedLabels.labelTranslation(e, context))
           .toList();
@@ -932,7 +929,7 @@ abstract class _PicStore with Store {
       final String labelText = label.text;
       final String entityId = label.entityId;
       final double confidence = label.confidence;
-      print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
+      //print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
       tags.add(labelText);
     }
 

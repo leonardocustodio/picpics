@@ -49,8 +49,8 @@ class DatabaseManager extends ChangeNotifier {
 
     var userSettings = await database.getSingleMoorUser();
 
-    print('requesting notification...');
-    print('dailyChallenges: ${userSettings}');
+    //print('requesting notification...');
+    //print('dailyChallenges: ${userSettings}');
 
     if (Platform.isIOS) {
       final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
@@ -77,7 +77,7 @@ print('got token this mean it did accept notification');
 
       _firebaseMessaging.onIosSettingsRegistered. */
     } else {
-      print('its android!!!');
+      //print('its android!!!');
 
       await database.updateMoorUser(
         userSettings.copyWith(
@@ -98,13 +98,13 @@ print('got token this mean it did accept notification');
     Label getTag = await database.getLabelByLabelKey(tagKey);
 
     // Verificar isso aqui pois tem a ver com as sugestões!!!!
-    print('TagKey: $tagKey');
+    //print('TagKey: $tagKey');
 
     if (getTag != null) {
-      print('Returning name');
+      //print('Returning name');
       return getTag.title;
     } else {
-      print('### ERROR ### Returning key');
+      //print('### ERROR ### Returning key');
       return null;
     }
   }
@@ -122,19 +122,19 @@ print('got token this mean it did accept notification');
   Future<bool> checkPremiumStatus() async {
     try {
       PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
-      print('### ${purchaserInfo.entitlements}');
-      print('### ${purchaserInfo.entitlements.all}');
+      //print('### ${purchaserInfo.entitlements}');
+      //print('### ${purchaserInfo.entitlements.all}');
       if (purchaserInfo.entitlements.all.isEmpty) {
-        print('Could not fetch information from premium status!!!');
+        //print('Could not fetch information from premium status!!!');
         return null;
       }
 
       if (purchaserInfo.entitlements.all["Premium"].isActive) {
         // Grant user "pro" access
-        print('you are still premium');
+        //print('you are still premium');
         return true;
       } else {
-        print('not premium anymore');
+        //print('not premium anymore');
         return false;
       }
       // access latest purchaserInfo
@@ -145,7 +145,7 @@ print('got token this mean it did accept notification');
   }
 
   void loadRemoteConfig() async {
-    print('loading remote config....');
+    //print('loading remote config....');
     final RemoteConfig remoteConfig = await RemoteConfig.instance;
     // Enable developer mode to relax fetch throttling
     remoteConfig
@@ -159,14 +159,13 @@ print('got token this mean it did accept notification');
       // Using default duration to force fetching from remote server.
       await remoteConfig.fetch(expiration: const Duration(hours: 5));
       await remoteConfig.activateFetched();
-      print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
-      print('free_private_pics: ${remoteConfig.getInt('free_private_pics')}');
+      //print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
+      //print('free_private_pics: ${remoteConfig.getInt('free_private_pics')}');
     } on FetchThrottledException catch (exception) {
       // Fetch throttled.
-      print(exception);
+      //print(exception);
     } catch (exception) {
-      print('Unable to fetch remote config. Cached or default values will be '
-          'used');
+      //print('Unable to fetch remote config. Cached or default values will be ''used');
     }
   }
 
@@ -194,15 +193,15 @@ print('got token this mean it did accept notification');
 
   void gridScale(double multiplier) {
     scale = scale;
-    print('new scale value: $scale');
+    //print('new scale value: $scale');
   }
 
   Future findLocation(double latitude, double longitude) async {
-    print('Finding location...');
+    //print('Finding location...');
     List<Placemark> placemarks = await placemarkFromCoordinates(
         latitude, longitude,
         localeIdentifier: 'pt_BR');
-    print('Placemark: ${placemarks.first.locality}');
+    //print('Placemark: ${placemarks.first.locality}');
     currentPhotoCity = placemarks.first.locality;
     currentPhotoState = placemarks.first.administrativeArea;
     lastLocationRequest = [latitude, longitude];

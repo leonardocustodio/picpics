@@ -79,7 +79,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       return;
     }
 
-    print('showModal');
+    //print('showModal');
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -128,7 +128,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       return;
     }
 
-    print('showModal');
+    //print('showModal');
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -172,7 +172,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
           .getTagName(DatabaseManager.instance.selectedTagKey);
       alertInputController.text = tagName;
 
-      print('showModal');
+      //print('showModal');
       showDialog<void>(
         context: context,
         barrierDismissible: true,
@@ -183,7 +183,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
             title: S.of(context).edit_tag,
             destructiveButtonTitle: S.of(context).delete,
             onPressedDestructive: () {
-              print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
+              //print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
               galleryStore.deleteTag(
                   tagKey: DatabaseManager.instance.selectedTagKey);
               Navigator.of(context).pop();
@@ -209,7 +209,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     KeyboardVisibilityController().onChange.listen((bool visible) {
-      print('keyboard: $visible');
+      //print('keyboard: $visible');
 
       if (visible && tabsStore.multiTagSheet) {
         setState(() {
@@ -227,22 +227,22 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
     // RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
     //   if (event == RewardedVideoAdEvent.loaded) {
-    print('@@@ loaded');
+    //print('@@@ loaded');
     //   }
     //
     //   if (event == RewardedVideoAdEvent.rewarded) {
-    print('@@@ rewarded');
+    //print('@@@ rewarded');
     //     appStore.setCanTagToday(true);
     //   }
     //
     //   if (event == RewardedVideoAdEvent.closed) {
-    print('@@@@ closed');
+    //print('@@@@ closed');
     //     DatabaseManager.instance.adsIsLoaded = false;
     //     Ads.loadRewarded();
     //   }
     //
     //   if (event == RewardedVideoAdEvent.failedToLoad) {
-    print('@@@ failed');
+    //print('@@@ failed');
     //     DatabaseManager.instance.adsIsLoaded = false;
     //   }
     // };
@@ -264,7 +264,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
             requiresDeviceIdle: false,
             requiredNetworkType: NetworkType.NONE), (String taskId) async {
       // This is the fetch-event callback.
-      print("[BackgroundFetch] Event received $taskId");
+      //print("[BackgroundFetch] Event received $taskId");
 
       await WidgetManager.sendAndUpdate();
 
@@ -272,9 +272,9 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       // for taking too long in the background.
       BackgroundFetch.finish(taskId);
     }).then((int status) {
-      print('[BackgroundFetch] configure success: $status');
+      //print('[BackgroundFetch] configure success: $status');
     }).catchError((e) {
-      print('[BackgroundFetch] configure ERROR: $e');
+      //print('[BackgroundFetch] configure ERROR: $e');
     });
 
     // Optionally query the current BackgroundFetch status.
@@ -330,7 +330,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     if (galleryStore.selectedPics.isEmpty) {
       return;
     }
-    print('sharing selected pics....');
+    //print('sharing selected pics....');
     tabsStore.setIsLoading(true);
     await galleryStore.sharePics(
         picsStores: galleryStore.selectedPics.toList());
@@ -421,7 +421,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
     disposer3 = reaction((_) => tabsStore.showDeleteSecretModal, (showModal) {
       if (showModal) {
-        print('show delete secret modal!!!');
+        //print('show delete secret modal!!!');
 //        setState(() {
 //          showEditTagModal();
 //        });
@@ -432,13 +432,13 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     disposer4 = reaction((_) => appStore.secretPhotos, (secretPhotos) {
       if (secretPhotos) {
         if (appStore.hasObserver == false) {
-          print('adding observer to change screen!');
+          //print('adding observer to change screen!');
           WidgetsBinding.instance.addObserver(this);
           appStore.hasObserver = true;
         }
       } else {
         if (appStore.hasObserver == true) {
-          print('removing observer of changing screen');
+          //print('removing observer of changing screen');
           WidgetsBinding.instance.removeObserver(this);
           appStore.hasObserver = false;
         }
@@ -462,7 +462,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
-        print("&&&& Paused");
+        //print("&&&& Paused");
         setState(() {
           _appCycleState = state;
         });
@@ -471,19 +471,19 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         setState(() {
           _appCycleState = state;
         });
-        print("&&& inactive");
+        //print("&&& inactive");
         break;
       case AppLifecycleState.detached:
         setState(() {
           _appCycleState = state;
         });
-        print("&&&& detached");
+        //print("&&&& detached");
         break;
       case AppLifecycleState.resumed:
         setState(() {
           _appCycleState = state;
         });
-        print("&&&& resumed");
+        //print("&&&& resumed");
         break;
     }
   }
@@ -495,7 +495,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     // }
 
     Locale myLocale = Localizations.localeOf(context);
-    print('Language Code: ${myLocale.languageCode}');
+    //print('Language Code: ${myLocale.languageCode}');
 
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     var height = MediaQuery.of(context).size.height;
@@ -607,7 +607,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                           //       context, PremiumScreen.id);
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          //print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
@@ -625,7 +625,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                           //       context, PremiumScreen.id);
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          //print('do nothing');
                                         },
                                         onChanged: (text) {
                                           galleryStore.setSearchText(text);
@@ -649,8 +649,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                                           element.id == tagKey,
                                                       orElse: () => null) ==
                                                   null) {
-                                                print(
-                                                    'tag does not exist! creating it!');
+                                                //print(                                                    'tag does not exist! creating it!');
                                                 galleryStore.createTag(text);
                                               }
                                               galleryStore
@@ -702,7 +701,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                                       //       context, PremiumScreen.id);
                                                       //   return;
                                                       // }
-                                                      print('do nothing');
+                                                      //print('do nothing');
                                                     },
                                                     onPanEnd: () {
                                                       // if (!appStore.isPremium) {
@@ -710,7 +709,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                                       //       context, PremiumScreen.id);
                                                       //   return;
                                                       // }
-                                                      print('do nothing');
+                                                      //print('do nothing');
                                                     },
                                                   ),
                                                 )
@@ -1057,7 +1056,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
-                              print('ignore');
+                              //print('ignore');
                             },
                             child: Container(
                               margin: EdgeInsets.only(

@@ -47,8 +47,8 @@ class Photos extends Table {
 
   RealColumn get originalLatitude => real()();
   RealColumn get originalLongitude => real()();
-  RealColumn get latitude => real()();
-  RealColumn get longitude => real()();
+  RealColumn get latitude => real().nullable()();
+  RealColumn get longitude => real().nullable()();
 
   BoolColumn get isPrivate => boolean().withDefault(const Constant(false))();
   BoolColumn get deletedFromCameraRoll =>
@@ -162,7 +162,7 @@ LazyDatabase _openConnection() {
     // for your app.
     final dbFolder = await getApplicationSupportDirectory();
     final path = p.join(dbFolder.path, 'db.sqlite');
-    print('db:path:-$path');
+    //print('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return VmDatabase(file, setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");
@@ -416,8 +416,8 @@ class AppDatabase extends _$AppDatabase {
           createdAt: pic.createdAt,
           originalLatitude: pic.originalLatitude ?? 0.0,
           originalLongitude: pic.originalLongitude ?? 0.0,
-          latitude: pic.latitude ?? 0.0,
-          longitude: pic.longitude ?? 0.0,
+          latitude: pic.latitude.moorValue,
+          longitude: pic.longitude.moorValue,
           specificLocation: pic.specificLocation.moorValue,
           generalLocation: pic.generalLocation.moorValue,
           isPrivate: pic.isPrivate.moorValue,

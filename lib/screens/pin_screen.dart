@@ -65,7 +65,7 @@ class _PinScreenState extends State<PinScreen> {
         pinStore.setConfirmPinTemp('');
       }
     } on PlatformException catch (e) {
-      print(e);
+      //print(e);
       _shakeKey.currentState.forward();
       pinStore.setPinTemp('');
       pinStore.setConfirmPinTemp('');
@@ -95,7 +95,7 @@ class _PinScreenState extends State<PinScreen> {
     });
 
     if (valid) {
-      print('Is valid: $valid');
+      //print('Is valid: $valid');
       showCreatedKeyModal();
     } else {
       _shakeKey.currentState.forward();
@@ -105,11 +105,11 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   void askEmail() async {
-    print('asking email');
+    //print('asking email');
 
     TextEditingController alertInputController = TextEditingController();
 
-    print('showModal');
+    //print('showModal');
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -223,7 +223,7 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   Widget _buildPinPad(BuildContext context, int index) {
-    print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
+    //print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
     String title;
     GlobalKey<AnimatorWidgetState> key;
@@ -337,7 +337,7 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   void pinTapped(String value) async {
-    print('Value: $value');
+    //print('Value: $value');
     if (pinStore.isWaitingRecoveryKey == true) {
       if (carouselPage == 0) {
         if (value == '\u0008') {
@@ -387,7 +387,7 @@ class _PinScreenState extends State<PinScreen> {
 
       if (pinStore.confirmPinTemp.length == 6) {
         if (pinStore.pinTemp == pinStore.confirmPinTemp) {
-          print('Setting new pin!!!!!');
+          //print('Setting new pin!!!!!');
           carouselPage = 0;
           pinStore.pin = pinStore.pinTemp;
           appStore.setEmail(pinStore

@@ -26,8 +26,8 @@ class Photo extends DataClass implements Insertable<Photo> {
       @required this.createdAt,
       @required this.originalLatitude,
       @required this.originalLongitude,
-      @required this.latitude,
-      @required this.longitude,
+      this.latitude,
+      this.longitude,
       @required this.isPrivate,
       @required this.deletedFromCameraRoll,
       @required this.isStarred,
@@ -326,8 +326,8 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     @required DateTime createdAt,
     @required double originalLatitude,
     @required double originalLongitude,
-    @required double latitude,
-    @required double longitude,
+    this.latitude = const Value.absent(),
+    this.longitude = const Value.absent(),
     this.isPrivate = const Value.absent(),
     this.deletedFromCameraRoll = const Value.absent(),
     this.isStarred = const Value.absent(),
@@ -338,9 +338,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
   })  : id = Value(id),
         createdAt = Value(createdAt),
         originalLatitude = Value(originalLatitude),
-        originalLongitude = Value(originalLongitude),
-        latitude = Value(latitude),
-        longitude = Value(longitude);
+        originalLongitude = Value(originalLongitude);
   static Insertable<Photo> custom({
     Expression<String> id,
     Expression<DateTime> createdAt,
@@ -538,7 +536,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     return GeneratedRealColumn(
       'latitude',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -550,7 +548,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     return GeneratedRealColumn(
       'longitude',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -694,14 +692,10 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     if (data.containsKey('latitude')) {
       context.handle(_latitudeMeta,
           latitude.isAcceptableOrUnknown(data['latitude'], _latitudeMeta));
-    } else if (isInserting) {
-      context.missing(_latitudeMeta);
     }
     if (data.containsKey('longitude')) {
       context.handle(_longitudeMeta,
           longitude.isAcceptableOrUnknown(data['longitude'], _longitudeMeta));
-    } else if (isInserting) {
-      context.missing(_longitudeMeta);
     }
     if (data.containsKey('is_private')) {
       context.handle(_isPrivateMeta,

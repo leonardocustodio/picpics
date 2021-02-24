@@ -13,7 +13,7 @@ class Ads {
 
   static void initialize() {
     // FirebaseAdMob.instance.initialize(appId: kDebugMode ? FirebaseAdMob.testAppId : appId);
-    print('Did initialize admob!!!');
+    //print('Did initialize admob!!!');
   }
 
   static void loadRewarded() {

@@ -37,7 +37,7 @@ class _TutsPicTabState extends State<TutsPicTab> {
   ReactionDisposer disposer;
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
-    print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
+    //print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
@@ -133,7 +133,7 @@ class _TutsPicTabState extends State<TutsPicTab> {
                           if (index < galleryStore.swipeCutOff) {
                             return Container();
                           }
-                          print('calling index $index');
+                          //print('calling index $index');
                           return _buildPhotoSlider(context, index);
                         },
                         options: CarouselOptions(
@@ -149,12 +149,12 @@ class _TutsPicTabState extends State<TutsPicTab> {
                           },
                           onScrolled: (double) {
 //                              if (galleryStore.swipeIndex <= galleryStore.swipeCutOff && galleryStore.swipeIndex != 0) {
-                            print('changing scroll physics');
+                            //print('changing scroll physics');
 //                                setState(() {
 //                                  scrollPhysics = NeverScrollableScrollPhysics();
 //                                });
 //                              }
-                            print('scrolled $double');
+                            //print('scrolled $double');
                           },
                         ),
                       );

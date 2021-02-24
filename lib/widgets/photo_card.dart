@@ -103,13 +103,13 @@ class _PhotoCardState extends State<PhotoCard> {
     List<Placemark> placemark = await placemarkFromCoordinates(
         picStore.originalLatitude, picStore.originalLongitude);
 
-    print('Placemark: ${placemark.length}');
+    //print('Placemark: ${placemark.length}');
     for (var place in placemark) {
-      print('${place.name} - ${place.locality} - ${place.country}');
+      //print('${place.name} - ${place.locality} - ${place.country}');
     }
 
     if (placemark.isNotEmpty) {
-      print('Saving pic!!!');
+      //print('Saving pic!!!');
       picStore.saveLocation(
         lat: picStore.originalLatitude,
         long: picStore.originalLongitude,
@@ -126,7 +126,7 @@ class _PhotoCardState extends State<PhotoCard> {
 
   void getSizeAndPosition() {
     RenderBox _cardBox = _photoSpaceKey.currentContext.findRenderObject();
-    print('Card Box Size: ${_cardBox.size.height}');
+    //print('Card Box Size: ${_cardBox.size.height}');
     appStore.setPhotoHeightInCardWidget(_cardBox.size.height);
   }
 
@@ -136,7 +136,7 @@ class _PhotoCardState extends State<PhotoCard> {
     tagsFocusNode = FocusNode();
 
     if (KeyboardVisibility.isVisible) {
-      print('#### keyboard is visible!!!!');
+      //print('#### keyboard is visible!!!!');
       tagsFocusNode.requestFocus();
     }
   }
@@ -158,14 +158,14 @@ class _PhotoCardState extends State<PhotoCard> {
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
     photoSize = <int>[height, height];
 
-    print('Did Change Dep!!!');
+    //print('Did Change Dep!!!');
   }
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    print('Pic Store Photo Id: ${picStore.photoId}');
-    print('Other info: ${picStore.photoPath}');
+    //print('Pic Store Photo Id: ${picStore.photoId}');
+    //print('Other info: ${picStore.photoPath}');
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
     /* print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
@@ -249,7 +249,7 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Observer(
                   builder: (_) {
-                    print('Photo Height: ${appStore.photoHeightInCardWidget}');
+                    //print('Photo Height: ${appStore.photoHeightInCardWidget}');
                     return CircularMenu(
                       // appStore: appStore,
                       isExpanded: appStore.isMenuExpanded,
@@ -390,14 +390,14 @@ class _PhotoCardState extends State<PhotoCard> {
                     aiButtonTitle: 'All Tags',
                     onAiButtonTap: () {
                       Navigator.pushNamed(context, TagsScreen.id);
-                      print('ai button tapped');
+                      //print('ai button tapped');
                       // picStore.switchAiTags(context);
                     },
                     onTap: (tagName) {
-                      print('do nothing');
+                      //print('do nothing');
                     },
                     onDoubleTap: () {
-                      print('do nothing');
+                      //print('do nothing');
                     },
                     onPanEnd: () {
                       if (!appStore.canTagToday) {
@@ -413,7 +413,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       picStore.setSearchText(text);
                     },
                     onSubmitted: (text) async {
-                      print('return');
+                      //print('return');
 
                       if (text != '') {
                         if (!appStore.canTagToday) {
@@ -498,10 +498,10 @@ class _PhotoCardState extends State<PhotoCard> {
                         picStore.setSearchText('');
                       },
                       onDoubleTap: () {
-                        print('do nothing');
+                        //print('do nothing');
                       },
                       onPanEnd: () {
-                        print('do nothing');
+                        //print('do nothing');
                       },
                     );
                   }),

@@ -11,9 +11,9 @@ class Helpers {
     final iv = E.IV.fromLength(16);
     final encrypter = E.Encrypter(E.AES(key));
     final encrypted = encrypter.encrypt(plainText, iv: iv);
-    print('Stripped tag: $tag');
+    //print('Stripped tag: $tag');
 
-    print('Encrypted tag: ${encrypted.base16}');
+    //print('Encrypted tag: ${encrypted.base16}');
     return encrypted.base16;
   }
 
@@ -24,7 +24,7 @@ class Helpers {
     var encrypt = E.Encrypted.fromBase16(encrypted);
     final decrypted = encrypter.decrypt(encrypt, iv: iv);
 
-    print('Decrypted tag: $decrypted');
+    //print('Decrypted tag: $decrypted');
     return decrypted;
   }
 

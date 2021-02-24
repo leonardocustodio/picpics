@@ -7,7 +7,7 @@ class TagsStore = _TagsStore with _$TagsStore;
 abstract class _TagsStore with Store {
   _TagsStore({this.id, this.name}) {
     autorun((_) {
-      print('autorun');
+      //print('autorun');
     });
   }
 
@@ -19,7 +19,7 @@ abstract class _TagsStore with Store {
 
   @action
   void setTagInfo({String tagId, tagName}) {
-    print('Setting new tag info!!!!!!');
+    //print('Setting new tag info!!!!!!');
     id = tagId;
     name = tagName;
   }
