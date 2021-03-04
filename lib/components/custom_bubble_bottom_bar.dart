@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 const double _kBottomMargin = 8.0;
 enum CustomBubbleBottomBarFabLocation { end, center }
 
+// ignore: must_be_immutable
 class CustomBubbleBottomBar extends StatefulWidget {
   CustomBubbleBottomBar(
       {Key key,

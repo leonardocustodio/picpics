@@ -468,7 +468,7 @@ SPEC CHECKSUMS:
   FirebaseMLCommon: 6d7ee249c9945f2a7b47fa22090c3a1611c08d58
   FirebaseMLVision: 8fb6dced9cc214c61d2b22026e3456c8e0e08a75
   FirebaseRemoteConfig: 826fad8bec5ce1912ef97a124d6ec0ce4dcf6ec1
-  Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
+  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_branch_sdk: ecbe8c173d747c9f8d18a74e72de96cc9159375f
   flutter_device_locale: 94fbcacb38980dc1a9e31eb4ee8ae6d1c3a73042
   flutter_inapp_purchase: 5c6a1ac3f11b11d0c8c0321c0c41c1f05805e4c8
