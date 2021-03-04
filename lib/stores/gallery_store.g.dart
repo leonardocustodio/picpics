@@ -51,13 +51,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$isFilteredComputed ??= Computed<bool>(() => super.isFiltered,
               name: '_GalleryStore.isFiltered'))
           .value;
-  Computed<List<String>> _$multiPicTagKeysComputed;
-
-  @override
-  List<String> get multiPicTagKeys => (_$multiPicTagKeysComputed ??=
-          Computed<List<String>>(() => super.multiPicTagKeys,
-              name: '_GalleryStore.multiPicTagKeys'))
-      .value;
   Computed<Future<List<TagsStore>>> _$tagsSuggestionsComputed;
 
   @override
@@ -722,7 +715,6 @@ filteredPicsKeys: ${filteredPicsKeys},
 currentThumbnailPic: ${currentThumbnailPic},
 searchingTagsKeys: ${searchingTagsKeys},
 isFiltered: ${isFiltered},
-multiPicTagKeys: ${multiPicTagKeys},
 tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
 deviceHasPics: ${deviceHasPics}

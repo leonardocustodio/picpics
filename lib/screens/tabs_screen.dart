@@ -554,8 +554,9 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         //   return;
                                         // }
 
-                                        if (galleryStore.multiPicTagKeys
-                                            .contains(kSecretTagKey)) {
+                                        if (galleryStore
+                                                .multiPicTags[kSecretTagKey] !=
+                                            null) {
                                           showDeleteSecretModalForMultiPic();
                                           return;
                                         }
@@ -595,8 +596,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tags:
-                                            galleryStore.multiPicTags.toList(),
+                                        tags: galleryStore.multiPicTags.values
+                                            .toList(),
                                         addTagField: true,
                                         textEditingController:
                                             bottomTagsEditingController,
@@ -642,8 +643,9 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                             String tagKey =
                                                 Helpers.encryptTag(text);
 
-                                            if (!galleryStore.multiPicTagKeys
-                                                .contains(tagKey)) {
+                                            if (galleryStore
+                                                    .multiPicTags[tagKey] ==
+                                                null) {
                                               if (appStore.tags.firstWhere(
                                                       (element) =>
                                                           element.id == tagKey,

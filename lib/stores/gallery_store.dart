@@ -237,28 +237,27 @@ print('finished adding all tagged pics stores!'); */
     selectedPics.clear();
   }
 
-  ObservableList<TagsStore> multiPicTags = ObservableList<TagsStore>();
+  ObservableMap<String, TagsStore> multiPicTags = ObservableMap<String, TagsStore>();
 
-  @computed
+/*   @computed
   List<String> get multiPicTagKeys {
     return multiPicTags.map((element) => element.id).toList();
-  }
+  } */
 
   @action
   void addToMultiPicTags(String tagKey) {
-    if (!multiPicTagKeys.contains(tagKey)) {
+    if (multiPicTags[tagKey] == null) {
       TagsStore tagsStore =
           appStore.tags.firstWhere((element) => element.id == tagKey);
-      multiPicTags.add(tagsStore);
+      multiPicTags[tagKey] = tagsStore;
     }
   }
 
   @action
   void removeFromMultiPicTags(String tagKey) {
-    if (multiPicTagKeys.contains(tagKey)) {
-      TagsStore tagsStore =
-          appStore.tags.firstWhere((element) => element.id == tagKey);
-      multiPicTags.remove(tagsStore);
+    if (multiPicTags[tagKey] != null) {
+      //TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      multiPicTags.remove(tagKey);
     }
   }
 
@@ -288,13 +287,13 @@ print('finished adding all tagged pics stores!'); */
     var tagsList = await database.getAllLabel();
     MoorUser getUser = await database.getSingleMoorUser();
 
-    List<String> multiPicTags = multiPicTagKeys.toList();
+    //List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
 
     if (searchText == '') {
       for (var recent in getUser.recentTags) {
         // print('Recent Tag: $recent');
-        if (multiPicTags.contains(recent) || recent == kSecretTagKey) {
+        if (multiPicTags[recent] != null || recent == kSecretTagKey) {
           continue;
         }
         suggestionTags.add(recent);
@@ -312,7 +311,7 @@ print('finished adding all tagged pics stores!'); */
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
-          if (multiPicTagKeys.contains(tagKey) ||
+          if (multiPicTags[tagKey] != null ||
               suggestionTags.contains(tagKey) ||
               tagKey == kSecretTagKey) {
             continue;
@@ -335,7 +334,7 @@ print('finished adding all tagged pics stores!'); */
     }
 
     // print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
-    if (!multiPicTagKeys.contains(kSecretTagKey) &&
+    if (multiPicTags[kSecretTagKey] == null &&
         !searchingTagsKeys.contains(kSecretTagKey) &&
         appStore.secretPhotos == true &&
         searchText == '') {
@@ -1166,7 +1165,7 @@ print('finished adding all tagged pics stores!'); */
     Future.wait(
       [
         Future.forEach(selectedPics, (PicStore picStore) async {
-          for (String tagKey in multiPicTagKeys) {
+          for (String tagKey in multiPicTags.keys.toList()) {
             if (picStore.tagsKeys.contains(tagKey)) {
               // print('this tag is already in this picture');
               continue;
