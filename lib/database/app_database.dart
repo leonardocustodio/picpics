@@ -70,7 +70,8 @@ class Labels extends Table {
   @override
   Set<Column> get primaryKey => {key};
   IntColumn get counter => integer().withDefault(const Constant(0))();
-  DateTimeColumn get usedAt => dateTime()();
+  DateTimeColumn get lastUsedAt =>
+      dateTime().withDefault(Constant(DateTime.now()))();
   TextColumn get title => text().nullable()();
   TextColumn get photoId => text().nullable().map(ListStringConvertor())();
 }
