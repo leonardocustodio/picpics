@@ -273,7 +273,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                         sigmaY: 2.0,
                       ),
                       child: Container(
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -331,7 +331,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                           constraints: BoxConstraints(
                             minHeight: 184.0,
                           ),
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
@@ -362,9 +362,9 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                       children: <Widget>[
                                         RichText(
                                           textScaleFactor: 1.0,
-                                          text: new TextSpan(
+                                          text: TextSpan(
                                             children: [
-                                              new TextSpan(
+                                              TextSpan(
                                                   text: galleryStore
                                                           .currentThumbnailPic
                                                           .specificLocation ??
@@ -380,7 +380,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                                     letterSpacing:
                                                         -0.4099999964237213,
                                                   )),
-                                              new TextSpan(
+                                              TextSpan(
                                                 text:
                                                     '  ${galleryStore.currentThumbnailPic.generalLocation ?? S.of(context).country}',
                                                 style: TextStyle(
@@ -453,7 +453,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                   if (showSlideshow)
                     ClipRect(
                       child: Container(
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,

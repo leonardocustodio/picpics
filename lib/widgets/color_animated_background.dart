@@ -53,7 +53,7 @@ class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
                   sigmaY: 18.0,
                 ),
                 child: Container(
-                  decoration: new BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,

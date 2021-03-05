@@ -35,7 +35,7 @@ class WidgetManager {
       if (starredPhotos.length == 0) {
         baseString = currentUser.defaultWidgetImage;
       } else {
-        Random rand = new Random();
+        Random rand = Random();
         int randInt = rand.nextInt(starredPhotos.length);
         //print('Sorted number for widget: $randInt');
 

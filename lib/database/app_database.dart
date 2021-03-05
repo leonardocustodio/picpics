@@ -43,6 +43,9 @@ extension MoorTValue<T> on T {
 class Photos extends Table {
   TextColumn get id => text()();
 
+  @override
+  Set<Column> get primaryKey => {id};
+
   DateTimeColumn get createdAt => dateTime()();
 
   RealColumn get originalLatitude => real()();
@@ -66,6 +69,8 @@ class Labels extends Table {
   TextColumn get key => text().withDefault(Constant(Uuid().v4()))();
   @override
   Set<Column> get primaryKey => {key};
+  IntColumn get counter => integer().withDefault(const Constant(0))();
+  DateTimeColumn get usedAt => dateTime()();
   TextColumn get title => text().nullable()();
   TextColumn get photoId => text().nullable().map(ListStringConvertor())();
 }

@@ -77,7 +77,7 @@ abstract class _PinStore with Store {
         FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
     //..timeout = const Duration(seconds: 30);
 
-    Random rand = new Random();
+    Random rand = Random();
     int randomNumber = rand.nextInt(900000) + 100000;
     setGeneratedIv('$randomNumber');
 
@@ -175,7 +175,7 @@ abstract class _PinStore with Store {
         FirebaseFunctions.instance.httpsCallable('validateAccessCode');
     //. = const Duration(seconds: 30);
 
-    Random rand = new Random();
+    Random rand = Random();
     int randomNumber = rand.nextInt(900000) + 100000;
     String accessKey =
         await Crypto.encryptAccessKey(accessCode, email, '$randomNumber');

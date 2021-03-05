@@ -1020,10 +1020,10 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                             height: 40.0,
                           ),
                           Expanded(
-                            child: new Swiper(
+                            child: Swiper(
                               loop: false,
                               itemBuilder: (BuildContext context, int index) {
-                                String text = '';
+                                String text;
                                 Image image;
 
                                 if (index == 0) {
@@ -1075,7 +1075,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                               onIndexChanged: (index) {
                                 tabsStore.setTutorialIndex(index);
                               },
-                              pagination: new SwiperCustomPagination(
+                              pagination: SwiperCustomPagination(
                                 builder: (BuildContext context,
                                     SwiperPluginConfig config) {
                                   return Align(
@@ -1132,7 +1132,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                           CupertinoButton(
                             onPressed: () async {
                               if (tabsStore.tutorialIndex == 2) {
-                                //print('Requesting notification....');
+                                print('Requesting notification....');
 
                                 await appStore.requestNotificationPermission();
                                 await appStore.checkNotificationPermission(

@@ -87,7 +87,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
             },
             defaultButtonTitle: S.of(context).ok,
             onPressedDefault: () {
-              //print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+              //print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 galleryStore.editTag(
                   oldTagKey: DatabaseManager.instance.selectedTagKey,
@@ -273,7 +273,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         sigmaY: 2.0,
                       ),
                       child: Container(
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
@@ -331,7 +331,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                           constraints: BoxConstraints(
                             minHeight: 184.0,
                           ),
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
@@ -362,9 +362,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       children: <Widget>[
                                         RichText(
                                           textScaleFactor: 1.0,
-                                          text: new TextSpan(
+                                          text: TextSpan(
                                             children: [
-                                              new TextSpan(
+                                              TextSpan(
                                                   text: galleryStore
                                                           .currentThumbnailPic
                                                           .specificLocation ??
@@ -380,7 +380,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                                     letterSpacing:
                                                         -0.4099999964237213,
                                                   )),
-                                              new TextSpan(
+                                              TextSpan(
                                                 text:
                                                     '  ${galleryStore.currentThumbnailPic.generalLocation ?? S.of(context).country}',
                                                 style: TextStyle(
@@ -453,7 +453,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                   if (showSlideshow)
                     ClipRect(
                       child: Container(
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,

@@ -328,13 +328,13 @@ class _PhotoCardState extends State<PhotoCard> {
                   children: <Widget>[
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
-                      onPressed: () async {
+                      onPressed: () {
                         Navigator.pushNamed(context, AddLocationScreen.id);
                       },
                       child: Observer(builder: (_) {
                         return RichText(
                           textScaleFactor: 1.0,
-                          text: new TextSpan(
+                          text: TextSpan(
                             children: [
                               TextSpan(
                                 text: picStore.specificLocation ??

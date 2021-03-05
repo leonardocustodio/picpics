@@ -68,9 +68,9 @@ class _PicTabState extends State<PicTab> {
     return Container(
       padding: const EdgeInsets.only(bottom: 0.0),
       constraints: BoxConstraints.expand(),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          colorFilter: new ColorFilter.mode(
+          colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.1), BlendMode.dstATop),
           image: AssetImage('lib/images/background.png'),
           fit: BoxFit.cover,

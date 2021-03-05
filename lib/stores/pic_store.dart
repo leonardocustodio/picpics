@@ -577,7 +577,7 @@ abstract class _PicStore with Store {
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
     Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File(
+    File imageFile = File(
         '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
@@ -775,7 +775,7 @@ abstract class _PicStore with Store {
           .toList();
     }
 
-    final _credentials = new ServiceAccountCredentials.fromJson(r'''
+    final _credentials = ServiceAccountCredentials.fromJson(r'''
 {
   "type": "service_account",
   "project_id": "picpics",

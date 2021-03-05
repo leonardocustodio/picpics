@@ -237,7 +237,8 @@ print('finished adding all tagged pics stores!'); */
     selectedPics.clear();
   }
 
-  ObservableMap<String, TagsStore> multiPicTags = ObservableMap<String, TagsStore>();
+  ObservableMap<String, TagsStore> multiPicTags =
+      ObservableMap<String, TagsStore>();
 
 /*   @computed
   List<String> get multiPicTagKeys {
@@ -889,7 +890,7 @@ print('finished adding all tagged pics stores!'); */
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
     Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File(
+    File imageFile = File(
         '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
@@ -904,8 +905,7 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   Future<void> sharePics({List<PicStore> picsStores}) async {
-    var imageList = List<String>();
-    var mimeList = List<String>();
+    var imageList = <String>[], mimeList = <String>[];
 
     for (PicStore pic in picsStores) {
       AssetEntity data = pic.entity;
@@ -1061,7 +1061,7 @@ print('finished adding all tagged pics stores!'); */
 
     filteredPics.clear();
 
-    List<String> tempPhotosIds = [];
+    var tempPhotosIds = <String>[];
     bool firstInteraction = true;
 
     Future.wait(

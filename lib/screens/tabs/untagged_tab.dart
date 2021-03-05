@@ -506,6 +506,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
+        /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
           //print('Start scrolling');
           tabsStore.setIsScrolling(true);
@@ -606,55 +607,58 @@ class _UntaggedTabState extends State<UntaggedTab> {
           // ),
           //
 
-          Observer(builder: (_) {
-        if (tabsStore.toggleIndexUntagged == 0) {
+          Observer(
+        builder: (_) {
+          if (tabsStore.toggleIndexUntagged == 0) {
+            return StaggeredGridView.countBuilder(
+              key: Key('month'),
+              controller: scrollControllerFirstTab,
+              physics: const CustomScrollPhysics(),
+              padding: EdgeInsets.only(top: 82.0),
+              crossAxisCount: 5,
+              mainAxisSpacing: 2.0,
+              crossAxisSpacing: 2.0,
+              itemCount: galleryStore.isLoaded
+                  ? galleryStore.untaggedGridPicsByMonth.length
+                  : 0,
+              itemBuilder: (BuildContext context, int index) {
+                return _buildItem(context, index);
+              },
+              staggeredTileBuilder: (int index) {
+                PicStore picStore =
+                    galleryStore.untaggedGridPicsByMonth[index].picStore;
+                if (picStore == null) {
+                  return StaggeredTile.fit(5);
+                }
+                return StaggeredTile.count(1, 1);
+              },
+            );
+          }
+
           return StaggeredGridView.countBuilder(
-            key: Key('month'),
+            key: Key('day'),
             controller: scrollControllerFirstTab,
             physics: const CustomScrollPhysics(),
             padding: EdgeInsets.only(top: 82.0),
-            crossAxisCount: 5,
+            crossAxisCount: 3,
             mainAxisSpacing: 2.0,
             crossAxisSpacing: 2.0,
             itemCount: galleryStore.isLoaded
-                ? galleryStore.untaggedGridPicsByMonth.length
+                ? galleryStore.untaggedGridPics.length
                 : 0,
             itemBuilder: (BuildContext context, int index) {
               return _buildItem(context, index);
             },
             staggeredTileBuilder: (int index) {
-              PicStore picStore =
-                  galleryStore.untaggedGridPicsByMonth[index].picStore;
+              PicStore picStore = galleryStore.untaggedGridPics[index].picStore;
               if (picStore == null) {
-                return StaggeredTile.fit(5);
+                return StaggeredTile.fit(3);
               }
               return StaggeredTile.count(1, 1);
             },
           );
-        }
-
-        return StaggeredGridView.countBuilder(
-          key: Key('day'),
-          controller: scrollControllerFirstTab,
-          physics: const CustomScrollPhysics(),
-          padding: EdgeInsets.only(top: 82.0),
-          crossAxisCount: 3,
-          mainAxisSpacing: 2.0,
-          crossAxisSpacing: 2.0,
-          itemCount:
-              galleryStore.isLoaded ? galleryStore.untaggedGridPics.length : 0,
-          itemBuilder: (BuildContext context, int index) {
-            return _buildItem(context, index);
-          },
-          staggeredTileBuilder: (int index) {
-            PicStore picStore = galleryStore.untaggedGridPics[index].picStore;
-            if (picStore == null) {
-              return StaggeredTile.fit(3);
-            }
-            return StaggeredTile.count(1, 1);
-          },
-        );
-      }),
+        },
+      ),
     );
   }
 

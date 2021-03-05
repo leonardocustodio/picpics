@@ -63,7 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (loginStore.slideIndex != 0)
                           Image.asset('lib/images/picpics_small.png'),
                         Expanded(
-                          child: new Swiper(
+                          child: Swiper(
                             loop: false,
                             itemBuilder: (BuildContext context, int index) {
                               if (index == 0) {
@@ -141,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             onIndexChanged: (index) {
                               loginStore.setSlideIndex(index);
                             },
-                            pagination: new SwiperCustomPagination(
+                            pagination: SwiperCustomPagination(
                               builder: (BuildContext context,
                                   SwiperPluginConfig config) {
                                 List<Widget> navIndicators = [];
@@ -182,11 +182,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 64.0,
                         ),
                         CupertinoButton(
-                          onPressed: () async {
+                          onPressed: () {
                             if (loginStore.slideIndex ==
                                 loginStore.totalSlides - 1) {
                               Navigator.pushNamed(context, PremiumScreen.id);
-
                               return;
                             }
                             swiperController.next(animation: true);

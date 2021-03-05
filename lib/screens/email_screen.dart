@@ -216,7 +216,7 @@ class _EmailScreenState extends State<EmailScreen> {
                           ),
                           CupertinoButton(
                             padding: const EdgeInsets.all(0),
-                            onPressed: () async {
+                            onPressed: () {
                               startRegistration();
                             },
                             child: Container(

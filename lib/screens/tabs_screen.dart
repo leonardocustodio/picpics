@@ -974,19 +974,21 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   ),
                                   CupertinoButton(
                                     padding: const EdgeInsets.all(0),
-                                    onPressed: () async {
-                                      bool hasPermission = await appStore
-                                          .requestGalleryPermission();
-                                      if (hasPermission) {
-                                        await appStore
-                                            .requestNotificationPermission();
-                                        await appStore
-                                            .checkNotificationPermission(
-                                                firstPermissionCheck: true);
-                                        await appStore
-                                            .setTutorialCompleted(true);
-                                        await galleryStore.loadAssetsPath();
-                                      }
+                                    onPressed: () {
+                                      appStore
+                                          .requestGalleryPermission()
+                                          .then((hasPermission) async {
+                                        if (hasPermission) {
+                                          await appStore
+                                              .requestNotificationPermission();
+                                          await appStore
+                                              .checkNotificationPermission(
+                                                  firstPermissionCheck: true);
+                                          await appStore
+                                              .setTutorialCompleted(true);
+                                          await galleryStore.loadAssetsPath();
+                                        }
+                                      });
                                     },
                                     child: Container(
                                       width: 201.0,

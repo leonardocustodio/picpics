@@ -796,7 +796,7 @@ class PinPlaceholder extends StatelessWidget {
           width: 16.0,
           height: 16.0,
           margin: const EdgeInsets.symmetric(horizontal: 12.0),
-          decoration: new BoxDecoration(
+          decoration: BoxDecoration(
             color: x < filledPositions ? kWhiteColor : Colors.transparent,
             borderRadius: BorderRadius.circular(8.0),
             border: Border.all(

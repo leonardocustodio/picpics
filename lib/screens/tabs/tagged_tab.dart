@@ -337,14 +337,13 @@ class _TaggedTabState extends State<TaggedTab> {
             ),
           ),
           CupertinoButton(
-            onPressed: () async {
+            onPressed: () {
               tabsStore.setIsLoading(true);
 
               if (taggedPicsStore != null) {
-                await galleryStore.sharePics(picsStores: taggedPicsStore.pics);
+                galleryStore.sharePics(picsStores: taggedPicsStore.pics);
               } else {
-                await galleryStore.sharePics(
-                    picsStores: galleryStore.filteredPics);
+                galleryStore.sharePics(picsStores: galleryStore.filteredPics);
               }
 
               tabsStore.setIsLoading(false);

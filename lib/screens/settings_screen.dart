@@ -204,12 +204,30 @@ class _SettingsScreenState extends State<SettingsScreen>
                     style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
-                    onPressed: () async {
-                      await appStore.changeUserLanguage(
-                          supportedLocales[temporaryLanguage].toString());
-                      Navigator.pop(context);
-                      setState(() {
-                        S.load(supportedLocales[temporaryLanguage]);
+                    onPressed: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) => Center(
+                                child: Container(
+                                  width: 60.0,
+                                  height: 60.0,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(4.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: CupertinoActivityIndicator(),
+                                  ),
+                                ),
+                              ));
+                      appStore
+                          .changeUserLanguage(
+                              supportedLocales[temporaryLanguage].toString())
+                          .then((_) {
+                        setState(
+                            () => S.load(supportedLocales[temporaryLanguage]));
+                        Navigator.pop(context);
                       });
                     },
                     child: Container(
@@ -622,7 +640,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                       padding:
                                                           const EdgeInsets.all(
                                                               0),
-                                                      onPressed: () async {
+                                                      onPressed: () {
                                                         if (appStore
                                                                 .isBiometricActivated !=
                                                             true) {
@@ -636,8 +654,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                               PinScreen.id);
                                                           return;
                                                         }
-
-                                                        await appStore
+                                                        appStore
                                                             .setIsBiometricActivated(
                                                                 false);
                                                       },
