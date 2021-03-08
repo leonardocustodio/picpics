@@ -11,7 +11,6 @@ import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/model/user_key.dart';
 import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/utils/helpers.dart';
 import 'package:uuid/uuid.dart';
 
 part 'app_database.g.dart';
@@ -200,7 +199,6 @@ class AppDatabase extends _$AppDatabase {
       .getSingle();
 
   Future<List<Label>> getAllLabel() => select(labels).get();
-
   Future deleteLabelByLabelId(String labelKey) => (delete(labels)
         ..where((l) => l?.key?.equals(labelKey) ?? const Constant(false)))
       .go();
@@ -208,6 +206,39 @@ class AppDatabase extends _$AppDatabase {
   Future updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
 
   Future deleteLabel(Label oldLabel) => delete(labels).delete(oldLabel);
+
+  Future<List<Label>> getAllLabelsInAscendingOrder() => (select(labels)
+        ..orderBy([
+          (u) => OrderingTerm(expression: u.title, mode: OrderingMode.asc),
+        ]))
+      .get();
+
+  Future<List<Label>> fetchMostUsedLabels(Label oldLabel) => (select(labels)
+        ..orderBy([
+          (u) => OrderingTerm(expression: u.counter, mode: OrderingMode.desc),
+          (u) => OrderingTerm(expression: u.title, mode: OrderingMode.asc),
+        ]))
+      .get();
+
+  Future<List<Label>> fetchLastWeekUsedLabels(Label oldLabel) {
+    var sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+    return (select(labels)
+          ..where((tbl) => tbl.lastUsedAt.isBiggerOrEqualValue(sevenDaysAgo))
+          ..orderBy([
+            (u) => OrderingTerm(expression: u.counter, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  Future<List<Label>> fetchLastMonthUsedLabels(Label oldLabel) {
+    var thirty1Days = DateTime.now().subtract(const Duration(days: 31));
+    return (select(labels)
+          ..where((tbl) => tbl.lastUsedAt.isBiggerOrEqualValue(thirty1Days))
+          ..orderBy([
+            (u) => OrderingTerm(expression: u.counter, mode: OrderingMode.desc),
+          ]))
+        .get();
+  }
   /**
    * 
    * Labels CRUD operations End

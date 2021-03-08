@@ -344,7 +344,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
     galleryStore.trashMultiplePics(galleryStore.selectedPics);
   }
 
-  setTabIndex(int index) async {
+  setTabIndex(int index) {
     if (!galleryStore.deviceHasPics) {
       tabsStore.setCurrentTab(index);
       return;
@@ -357,11 +357,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         if (tabsStore.currentTab == 0) {
           tagAction();
         } else {
-          await starredAction();
+          starredAction();
         }
       } else if (index == 2) {
         if (tabsStore.currentTab == 0) {
-          await shareAction();
+          shareAction();
         } else {
           tagAction();
         }
@@ -369,7 +369,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         if (tabsStore.currentTab == 0) {
           trashAction();
         } else {
-          await shareAction();
+          shareAction();
         }
       } else if (index == 4) {
         trashAction();
@@ -460,12 +460,12 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    switch (state) {
+    /* switch (state) {
       case AppLifecycleState.paused:
         //print("&&&& Paused");
-        setState(() {
+         setState(() {
           _appCycleState = state;
-        });
+        }); 
         break;
       case AppLifecycleState.inactive:
         setState(() {
@@ -483,9 +483,13 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         setState(() {
           _appCycleState = state;
         });
-        //print("&&&& resumed");
+        print("&&&& resumed");
         break;
-    }
+    } */
+
+    setState(() {
+      _appCycleState = state;
+    });
   }
 
   @override

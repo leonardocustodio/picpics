@@ -123,44 +123,44 @@ class _PremiumScreenState extends State<PremiumScreen> {
       Navigator.pushNamedAndRemoveUntil(
           context, TabsScreen.id, (route) => false);
       // Navigator.pop(context);
-      return;
-    }
+      //return;
+    } else {
+      Analytics.sendBeginCheckout(
+        currency: package.product.currencyCode,
+        price: package.product.price,
+      );
 
-    Analytics.sendBeginCheckout(
-      currency: package.product.currencyCode,
-      price: package.product.price,
-    );
+      try {
+        PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
 
-    try {
-      PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
+        if (purchaserInfo.entitlements.all["Premium"] != null) {
+          if (purchaserInfo.entitlements.all["Premium"].isActive) {
+            // Unlock that great "pro" content
+            setState(() {
+              isLoading = false;
+            });
 
-      if (purchaserInfo.entitlements.all["Premium"] != null) {
-        if (purchaserInfo.entitlements.all["Premium"].isActive) {
-          // Unlock that great "pro" content
-          setState(() {
-            isLoading = false;
-          });
-
-          Analytics.sendPurchase(
-            currency: package.product.currencyCode,
-            price: package.product.price,
-          );
-          appStore.setIsPremium(true);
-          // Navigator.pop(context);
-          Navigator.pushNamedAndRemoveUntil(
-              context, TabsScreen.id, (route) => false);
-          return;
+            Analytics.sendPurchase(
+              currency: package.product.currencyCode,
+              price: package.product.price,
+            );
+            appStore.setIsPremium(true);
+            // Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(
+                context, TabsScreen.id, (route) => false);
+            return;
+          }
         }
-      }
-      showError(
-          title: 'Error has occurred',
-          description: 'An error has occurred, please try again!');
-    } on PlatformException catch (e) {
-      var errorCode = PurchasesErrorHelper.getErrorCode(e);
-      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
         showError(
             title: 'Error has occurred',
             description: 'An error has occurred, please try again!');
+      } on PlatformException catch (e) {
+        var errorCode = PurchasesErrorHelper.getErrorCode(e);
+        if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+          showError(
+              title: 'Error has occurred',
+              description: 'An error has occurred, please try again!');
+        }
       }
     }
   }

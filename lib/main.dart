@@ -43,6 +43,8 @@ import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:picPics/managers/widget_manager.dart';
 
+import 'screens/all_tags_screen.dart';
+
 Future<String> checkForAppStoreInitiatedProducts() async {
 //print('Checking if appstore initiated products');
   List<IAPItem> appStoreProducts =
@@ -319,9 +321,10 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           locale: widget.appStore.appLocale,
           supportedLocales: S.delegate.supportedLocales,
           debugShowCheckedModeBanner: kDebugMode,
-          initialRoute: initialRoute,
+          initialRoute: AllTagsScreen.id,
           navigatorObservers: [Analytics.observer],
           routes: {
+            AllTagsScreen.id: (context) => AllTagsScreen(),
             LoginScreen.id: (context) => LoginScreen(),
             TabsScreen.id: (context) => TabsScreen(),
             PhotoScreen.id: (context) => PhotoScreen(),
