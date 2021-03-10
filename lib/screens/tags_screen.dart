@@ -3,14 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/constants.dart';
 
-class TagsScreen extends StatefulWidget {
+class TagsScreen_ extends StatefulWidget {
   static String id = 'tags_screen';
 
   @override
-  _TagsScreenState createState() => _TagsScreenState();
+  _TagsScreen_State createState() => _TagsScreen_State();
 }
 
-class _TagsScreenState extends State<TagsScreen> {
+class _TagsScreen_State extends State<TagsScreen_> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

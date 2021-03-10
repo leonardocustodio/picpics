@@ -10,6 +10,7 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/screens/add_location.dart';
+import 'package:picPics/screens/all_tags_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
@@ -17,6 +18,7 @@ import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
@@ -28,6 +30,8 @@ import 'package:picPics/components/circular_menu_item.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/screens/tags_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'show_watch_ad_modal.dart';
 
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
@@ -63,26 +67,6 @@ class _PhotoCardState extends State<PhotoCard> {
 
   TextEditingController tagsEditingController = TextEditingController();
   FocusNode tagsFocusNode;
-
-  showWatchAdModal(BuildContext context) {
-    Analytics.sendEvent(Event.watch_ads_modal);
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return WatchAdModal(
-          onPressedWatchAdd: () {
-            Navigator.pop(context);
-            Ads.showRewarded();
-            Analytics.sendAdImpression();
-          },
-          onPressedGetPremium: () {
-            Navigator.popAndPushNamed(context, PremiumScreen.id);
-          },
-        );
-      },
-    );
-  }
 
   String dateFormat(DateTime dateTime) {
     var formatter = DateFormat.yMMMEd();
@@ -389,11 +373,15 @@ class _PhotoCardState extends State<PhotoCard> {
                     shouldChangeToSwipeMode: true,
                     aiButtonTitle: 'All Tags',
                     onAiButtonTap: () {
-                      Navigator.pushNamed(context, TagsScreen.id);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AllTagsScreen(picStore: picStore)));
                       //print('ai button tapped');
                       // picStore.switchAiTags(context);
                     },
-                    onTap: (tagName) {
+                    onTap: (id, tagName) {
                       //print('do nothing');
                     },
                     onDoubleTap: () {
@@ -484,16 +472,14 @@ class _PhotoCardState extends State<PhotoCard> {
                           : picStore.tagsSuggestions,
                       tagStyle: TagStyle.GrayOutlined,
                       showEditTagModal: widget.showEditTagModal,
-                      onTap: (tagId, tagName) async {
+                      onTap: (tagId, tagName) {
                         if (!appStore.canTagToday) {
                           showWatchAdModal(context);
                           return;
                         }
 
-                        await galleryStore.addTagToPic(
-                          picStore: picStore,
-                          tagName: tagName,
-                        );
+                        galleryStore.addTagToPic(
+                            picStore: picStore, tagName: tagName);
                         tagsEditingController.clear();
                         picStore.setSearchText('');
                       },

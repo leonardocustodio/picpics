@@ -412,7 +412,7 @@ abstract class _AppStore with Store {
     }
   }
 
-  ObservableList<TagsStore> tags = ObservableList<TagsStore>();
+  ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
 
   @action
   Future<void> loadTags() async {
@@ -443,17 +443,20 @@ abstract class _AppStore with Store {
 
   @action
   void addTag(TagsStore tagsStore) {
-    if (tags.contains(tagsStore)) {
+    if (tags[tagsStore.id] != null) {
       return;
     }
     //print('Adding tag to AppStore: $tagsStore');
-    tags.add(tagsStore);
+    tags[tagsStore.id] = tagsStore;
   }
 
   @action
   void editTag({String oldTagKey, String newTagKey, String newName}) {
-    TagsStore tagsStore = tags.firstWhere((element) => element.id == oldTagKey);
+    TagsStore tagsStore =
+        tags[oldTagKey]; //.firstWhere((element) => element.id == oldTagKey);
     tagsStore.setTagInfo(tagId: newTagKey, tagName: newName);
+    tags[newTagKey] = tagsStore;
+    tags.remove(oldTagKey);
   }
 
   @action

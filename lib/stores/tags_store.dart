@@ -23,4 +23,9 @@ abstract class _TagsStore with Store {
     id = tagId;
     name = tagName;
   }
+
+  @override
+  int get hashCode {
+    return this.id.hashCode ^ this.name.hashCode;
+  }
 }

@@ -247,10 +247,11 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   void addToMultiPicTags(String tagKey) {
-    if (multiPicTags[tagKey] == null) {
-      TagsStore tagsStore =
+    if (multiPicTags[tagKey] == null && appStore.tags[tagKey] != null) {
+      /* TagsStore tagsStore =
           appStore.tags.firstWhere((element) => element.id == tagKey);
-      multiPicTags[tagKey] = tagsStore;
+      multiPicTags[tagKey] = tagsStore; */
+      multiPicTags[tagKey] = appStore.tags[tagKey];
     }
   }
 
@@ -345,9 +346,15 @@ print('finished adding all tagged pics stores!'); */
     // print('find suggestions: $searchText - exclude tags: $multiPicTags');
     // print(suggestionTags);
     // print('AppStore Tags: ${appStore.tags}');
-    List<TagsStore> suggestions = appStore.tags
+    /* List<TagsStore> suggestions = appStore.tags
         .where((element) => suggestionTags.contains(element.id))
-        .toList();
+        .toList(); */
+    var suggestions = <TagsStore>[];
+    suggestionTags.forEach((suggestedTag) {
+      if (appStore.tags[suggestedTag] != null) {
+        suggestions.add(appStore.tags[suggestedTag]);
+      }
+    });
     // print('Suggestions Tag Store: $suggestions');
     return suggestions;
   }
@@ -1008,8 +1015,7 @@ print('finished adding all tagged pics stores!'); */
       // print('found tag going to delete it');
 
       // Remove a tag das fotos já taggeadas
-      TagsStore tagsStore =
-          appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore = appStore.tags[tagKey];
       // print('TagsStore Tag: ${tagsStore.name}');
       TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);
@@ -1037,8 +1043,8 @@ print('finished adding all tagged pics stores!'); */
       return;
     }
 
-    TagsStore tagsStore = appStore.tags.firstWhere(
-        (element) => element.id == DatabaseManager.instance.selectedTagKey);
+    TagsStore tagsStore =
+        appStore.tags[DatabaseManager.instance.selectedTagKey];
     searchingTags.add(tagsStore);
     // print('searching tags: $searchingTags');
     searchPicsWithTags();
@@ -1046,8 +1052,8 @@ print('finished adding all tagged pics stores!'); */
 
   void removeTagFromSearchFilter() {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-      TagsStore tagsStore = appStore.tags.firstWhere(
-          (element) => element.id == DatabaseManager.instance.selectedTagKey);
+      TagsStore tagsStore =
+          appStore.tags[DatabaseManager.instance.selectedTagKey];
       searchingTags.remove(tagsStore);
       // print('searching tags: $searchingTags');
       searchPicsWithTags();
@@ -1118,7 +1124,8 @@ print('finished adding all tagged pics stores!'); */
     setShowSearchTagsResults(true);
     searchTagsResults.clear();
 
-    for (TagsStore tagStore in appStore.tags) {
+    for (MapEntry<String, TagsStore> map in appStore.tags.entries) {
+      TagsStore tagStore = map.value;
       if (Helpers.stripTag(tagStore.name).startsWith(Helpers.stripTag(text))) {
         if (tagStore.id == kSecretTagKey) {
           continue;

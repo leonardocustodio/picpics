@@ -6,15 +6,10 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/utils/enum.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
-
-enum TagStyle {
-  MultiColored,
-  RedFilled,
-  GrayOutlined,
-}
 
 class TagsList extends StatefulWidget {
   final dynamic tags;
@@ -102,7 +97,7 @@ class _TagsListState extends State<TagsList> {
             style: TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff979a9b),
-              fontSize: 12,
+              fontSize: 13,
               fontWeight: FontWeight.w700,
               fontStyle: FontStyle.normal,
               letterSpacing: -0.4099999964237213,

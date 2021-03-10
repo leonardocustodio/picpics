@@ -11,6 +11,8 @@ import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
@@ -60,45 +62,6 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
         });
         SystemChrome.setEnabledSystemUIOverlays([]);
       }
-    }
-  }
-
-  showEditTagModal() async {
-    if (DatabaseManager.instance.selectedTagKey != '') {
-      TextEditingController alertInputController = TextEditingController();
-      String tagName = await DatabaseManager.instance
-          .getTagName(DatabaseManager.instance.selectedTagKey);
-      alertInputController.text = tagName;
-
-      //print('showModal');
-      showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext buildContext) {
-          return CupertinoInputDialog(
-            prefixImage: Image.asset('lib/images/smalladdtag.png'),
-            alertInputController: alertInputController,
-            title: S.of(context).edit_tag,
-            destructiveButtonTitle: S.of(context).delete,
-            onPressedDestructive: () {
-              galleryStore.deleteTag(
-                  tagKey: DatabaseManager.instance.selectedTagKey);
-              Navigator.of(context).pop();
-            },
-            defaultButtonTitle: S.of(context).ok,
-            onPressedDefault: () {
-              //print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
-              if (tagName != alertInputController.text) {
-                galleryStore.editTag(
-                  oldTagKey: DatabaseManager.instance.selectedTagKey,
-                  newName: alertInputController.text,
-                );
-              }
-              Navigator.of(context).pop();
-            },
-          );
-        },
-      );
     }
   }
 
@@ -439,7 +402,9 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                         onPanEnd: () {
                                           //print('teste');
                                         },
-                                        showEditTagModal: showEditTagModal,
+                                        showEditTagModal: () =>
+                                            showEditTagModal(
+                                                context, galleryStore, false),
                                       ),
                                     );
                                   }),

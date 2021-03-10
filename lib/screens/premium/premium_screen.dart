@@ -114,9 +114,6 @@ class _PremiumScreenState extends State<PremiumScreen> {
   }
 
   void makePurchase(BuildContext context, Package package) async {
-    setState(() {
-      isLoading = true;
-    });
     // TODO: remove true
     if (true || kDebugMode) {
       appStore.setIsPremium(true);
@@ -125,6 +122,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
       // Navigator.pop(context);
       //return;
     } else {
+      setState(() {
+        isLoading = true;
+      });
       Analytics.sendBeginCheckout(
         currency: package.product.currencyCode,
         price: package.product.price,

@@ -15,6 +15,7 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
+import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +47,7 @@ class _TaggedTabState extends State<TaggedTab> {
   FocusNode searchFocusNode = FocusNode();
 
   var taggedItems = [];
-  List<bool> isTitleWidget = [];
+  var isTitleWidget = <bool>[];
 
   TextEditingController tagsEditingController = TextEditingController();
 
@@ -99,9 +100,8 @@ class _TaggedTabState extends State<TaggedTab> {
             if (findTaggedPicStore != null) {
               taggedPicsStores.add(findTaggedPicStore);
             } else {
-              TaggedPicsStore createTaggedPicStore = TaggedPicsStore(
-                  tag: appStore.tags
-                      .firstWhere((element) => element.id == tagKey));
+              TaggedPicsStore createTaggedPicStore =
+                  TaggedPicsStore(tag: appStore.tags[tagKey]);
               taggedPicsStores.add(createTaggedPicStore);
             }
           }

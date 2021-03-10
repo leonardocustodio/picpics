@@ -303,8 +303,7 @@ abstract class _PicStore with Store {
       }
 
       for (String tagKey in pic.tags) {
-        TagsStore tagsStore = appStore.tags
-            .firstWhere((element) => element.id == tagKey, orElse: () => null);
+        TagsStore tagsStore = appStore.tags[tagKey];
         if (tagsStore == null) {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
@@ -447,8 +446,7 @@ abstract class _PicStore with Store {
 
     List<TagsStore> suggestions = [];
     for (String tagId in suggestionTags) {
-      suggestions
-          .add(appStore.tags.firstWhere((element) => element.id == tagId));
+      suggestions.add(appStore.tags[tagId]);
     }
     return suggestions;
   }
@@ -529,8 +527,7 @@ abstract class _PicStore with Store {
       await database.updatePhoto(getPic);
       //print('updated picture');
 
-      TagsStore tagsStore =
-          appStore.tags.firstWhere((element) => element.id == tagKey);
+      TagsStore tagsStore = appStore.tags[tagKey];
 
       tags.add(tagsStore);
 
@@ -544,8 +541,7 @@ abstract class _PicStore with Store {
     //print('this picture is not in db, adding it...');
     //print('Photo Id: $photoId');
 
-    TagsStore tagsStore =
-        appStore.tags.firstWhere((element) => element.id == tagKey);
+    TagsStore tagsStore = appStore.tags[tagKey];
     tags.add(tagsStore);
 
     Photo pic = Photo(
@@ -939,8 +935,7 @@ abstract class _PicStore with Store {
 
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);
-      TagsStore tagStore = appStore.tags
-          .firstWhere((element) => element.id == tagKey, orElse: () => null);
+      TagsStore tagStore = appStore.tags[tagKey];
       if (tagStore == null) {
         tagStore = TagsStore(
           id: tagKey,

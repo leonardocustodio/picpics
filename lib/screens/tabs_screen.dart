@@ -20,7 +20,9 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
+import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -161,48 +163,6 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
         );
       },
     );
-  }
-
-  Future<void> showEditTagModal() async {
-    if (DatabaseManager.instance.selectedTagKey != '' &&
-        DatabaseManager.instance.selectedTagKey != kSecretTagKey) {
-      TextEditingController alertInputController = TextEditingController();
-//      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-      String tagName = await DatabaseManager.instance
-          .getTagName(DatabaseManager.instance.selectedTagKey);
-      alertInputController.text = tagName;
-
-      //print('showModal');
-      showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext buildContext) {
-          return CupertinoInputDialog(
-            prefixImage: Image.asset('lib/images/smalladdtag.png'),
-            alertInputController: alertInputController,
-            title: S.of(context).edit_tag,
-            destructiveButtonTitle: S.of(context).delete,
-            onPressedDestructive: () {
-              //print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
-              galleryStore.deleteTag(
-                  tagKey: DatabaseManager.instance.selectedTagKey);
-              Navigator.of(context).pop();
-            },
-            defaultButtonTitle: S.of(context).ok,
-            onPressedDefault: () {
-/* print(Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}'); */
-              if (tagName != alertInputController.text) {
-                galleryStore.editTag(
-                  oldTagKey: DatabaseManager.instance.selectedTagKey,
-                  newName: alertInputController.text,
-                );
-              }
-              Navigator.of(context).pop();
-            },
-          );
-        },
-      );
-    }
   }
 
   @override
@@ -605,7 +565,9 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                         addTagField: true,
                                         textEditingController:
                                             bottomTagsEditingController,
-                                        showEditTagModal: showEditTagModal,
+                                        showEditTagModal: () =>
+                                            showEditTagModal(
+                                                context, galleryStore),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
                                           //   Navigator.pushNamed(
@@ -650,10 +612,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                             if (galleryStore
                                                     .multiPicTags[tagKey] ==
                                                 null) {
-                                              if (appStore.tags.firstWhere(
-                                                      (element) =>
-                                                          element.id == tagKey,
-                                                      orElse: () => null) ==
+                                              if (appStore.tags[tagKey] ==
                                                   null) {
                                                 //print(                                                    'tag does not exist! creating it!');
                                                 galleryStore.createTag(text);
@@ -684,8 +643,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                                     tags: snapshot.data,
                                                     tagStyle:
                                                         TagStyle.GrayOutlined,
-                                                    showEditTagModal:
-                                                        showEditTagModal,
+                                                    showEditTagModal: () =>
+                                                        showEditTagModal(
+                                                            context,
+                                                            galleryStore),
                                                     onTap: (tagId, tagName) {
                                                       // if (!appStore.isPremium) {
                                                       //   Navigator.pushNamed(
@@ -1032,12 +993,15 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                   else if (tabsStore.currentTab == 1 &&
                       appStore.hasGalleryPermission)
                     wgt = PicTab(
-                      showEditTagModal: showEditTagModal,
+                      showEditTagModal: () =>
+                          showEditTagModal(context, galleryStore),
                       showDeleteSecretModal: showDeleteSecretModal,
                     );
                   else if (tabsStore.currentTab == 2 &&
                       appStore.hasGalleryPermission)
-                    wgt = TaggedTab(showEditTagModal: showEditTagModal);
+                    wgt = TaggedTab(
+                        showEditTagModal: () =>
+                            showEditTagModal(context, galleryStore));
                   return wgt ?? Container();
                 }),
               ],
@@ -1079,7 +1043,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                     ? galleryStore.swipePics[index]
                                     : galleryStore.thumbnailsPics[index],
                                 picsInThumbnails: PicSource.UNTAGGED,
-                                showEditTagModal: showEditTagModal,
+                                showEditTagModal: () =>
+                                    showEditTagModal(context, galleryStore),
                                 showDeleteSecretModal: showDeleteSecretModal,
                               ),
                             ),
