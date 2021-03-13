@@ -420,21 +420,37 @@ abstract class _AppStore with Store {
     tags.clear();
 
     for (Label tag in tagsBox) {
-      TagsStore tagsStore = TagsStore(id: tag.key, name: tag.title);
+      TagsStore tagsStore = TagsStore(
+        id: tag.key,
+        name: tag.title,
+        count: tag.counter,
+        time: tag.lastUsedAt,
+      );
       addTag(tagsStore);
     }
 
-    Label secretTag = tagsBox.firstWhere(
-        (Label element) => element.key == kSecretTagKey,
-        orElse: () => null);
-    if (secretTag == null) {
+    /* Label secretTag = tagsBox.firstWhere(
+      (Label element) => element.key == kSecretTagKey,
+      orElse: () => null,
+    ); */
+    if (tags[kSecretTagKey] == null) {
       //print('Creating secret tag in db!');
-      Label createSecretLabel =
-          Label(key: kSecretTagKey, title: 'Secret Pics', photoId: []);
+      Label createSecretLabel = Label(
+        key: kSecretTagKey,
+        title: 'Secret Pics',
+        photoId: [],
+        counter: 1,
+        lastUsedAt: DateTime.now(),
+      );
       await database.createLabel(createSecretLabel);
       //tagsBox.put(kSecretTagKey, createSecretTag);
 
-      TagsStore tagsStore = TagsStore(id: kSecretTagKey, name: 'Secret Pics');
+      TagsStore tagsStore = TagsStore(
+        id: kSecretTagKey,
+        name: 'Secret Pics',
+        count: 1,
+        time: DateTime.now(),
+      );
       addTag(tagsStore);
     }
 
@@ -454,7 +470,11 @@ abstract class _AppStore with Store {
   void editTag({String oldTagKey, String newTagKey, String newName}) {
     TagsStore tagsStore =
         tags[oldTagKey]; //.firstWhere((element) => element.id == oldTagKey);
-    tagsStore.setTagInfo(tagId: newTagKey, tagName: newName);
+    tagsStore.setTagInfo(
+        tagId: newTagKey,
+        tagName: newName,
+        count: tagsStore.count,
+        time: DateTime.now());
     tags[newTagKey] = tagsStore;
     tags.remove(oldTagKey);
   }
@@ -657,42 +677,62 @@ abstract class _AppStore with Store {
 
     //print('adding default tags...');
     Label tag1 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).family_tag),
         title: S.of(context).family_tag,
         photoId: []);
     Label tag2 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).travel_tag),
         title: S.of(context).travel_tag,
         photoId: []);
     Label tag3 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).pets_tag),
         title: S.of(context).pets_tag,
         photoId: []);
     Label tag4 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).work_tag),
         title: S.of(context).work_tag,
         photoId: []);
     Label tag5 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).selfies_tag),
         title: S.of(context).selfies_tag,
         photoId: []);
     Label tag6 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).parties_tag),
         title: S.of(context).parties_tag,
         photoId: []);
     Label tag7 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).sports_tag),
         title: S.of(context).sports_tag,
         photoId: []);
     Label tag8 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).home_tag),
         title: S.of(context).home_tag,
         photoId: []);
     Label tag9 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).foods_tag),
         title: S.of(context).foods_tag,
         photoId: []);
     Label tag10 = Label(
+        counter: 1,
+        lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).screenshots_tag),
         title: S.of(context).screenshots_tag,
         photoId: []);

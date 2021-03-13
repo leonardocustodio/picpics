@@ -39,14 +39,49 @@ mixin _$TagsStore on _TagsStore, Store {
     });
   }
 
+  final _$countAtom = Atom(name: '_TagsStore.count');
+
+  @override
+  int get count {
+    _$countAtom.reportRead();
+    return super.count;
+  }
+
+  @override
+  set count(int value) {
+    _$countAtom.reportWrite(value, super.count, () {
+      super.count = value;
+    });
+  }
+
+  final _$timeAtom = Atom(name: '_TagsStore.time');
+
+  @override
+  DateTime get time {
+    _$timeAtom.reportRead();
+    return super.time;
+  }
+
+  @override
+  set time(DateTime value) {
+    _$timeAtom.reportWrite(value, super.time, () {
+      super.time = value;
+    });
+  }
+
   final _$_TagsStoreActionController = ActionController(name: '_TagsStore');
 
   @override
-  void setTagInfo({String tagId, dynamic tagName}) {
+  void setTagInfo(
+      {String tagId,
+      String tagName,
+      @required int count,
+      @required DateTime time}) {
     final _$actionInfo =
         _$_TagsStoreActionController.startAction(name: '_TagsStore.setTagInfo');
     try {
-      return super.setTagInfo(tagId: tagId, tagName: tagName);
+      return super
+          .setTagInfo(tagId: tagId, tagName: tagName, count: count, time: time);
     } finally {
       _$_TagsStoreActionController.endAction(_$actionInfo);
     }
@@ -56,7 +91,9 @@ mixin _$TagsStore on _TagsStore, Store {
   String toString() {
     return '''
 id: ${id},
-name: ${name}
+name: ${name},
+count: ${count},
+time: ${time}
     ''';
   }
 }

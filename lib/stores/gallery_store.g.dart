@@ -333,14 +333,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
         .run(() => super.checkIsLibraryUpdated());
   }
 
-  final _$addTagToPicAsyncAction = AsyncAction('_GalleryStore.addTagToPic');
-
-  @override
-  Future<void> addTagToPic({PicStore picStore, String tagName}) {
-    return _$addTagToPicAsyncAction
-        .run(() => super.addTagToPic(picStore: picStore, tagName: tagName));
-  }
-
   final _$setPrivatePicAsyncAction = AsyncAction('_GalleryStore.setPrivatePic');
 
   @override
@@ -680,6 +672,19 @@ mixin _$GalleryStore on _GalleryStore, Store {
         name: '_GalleryStore.removeTagFromPic');
     try {
       return super.removeTagFromPic(picStore: picStore, tagKey: tagKey);
+    } finally {
+      _$_GalleryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void addTagToPic(
+      {PicStore picStore, String tagName, @required String tagId}) {
+    final _$actionInfo = _$_GalleryStoreActionController.startAction(
+        name: '_GalleryStore.addTagToPic');
+    try {
+      return super
+          .addTagToPic(picStore: picStore, tagName: tagName, tagId: tagId);
     } finally {
       _$_GalleryStoreActionController.endAction(_$actionInfo);
     }

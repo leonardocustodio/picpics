@@ -68,7 +68,7 @@ class Labels extends Table {
   TextColumn get key => text().withDefault(Constant(Uuid().v4()))();
   @override
   Set<Column> get primaryKey => {key};
-  IntColumn get counter => integer().withDefault(const Constant(0))();
+  IntColumn get counter => integer().withDefault(const Constant(1))();
   DateTimeColumn get lastUsedAt =>
       dateTime().withDefault(Constant(DateTime.now()))();
   TextColumn get title => text().nullable()();
@@ -198,7 +198,28 @@ class AppDatabase extends _$AppDatabase {
         ..where((l) => l?.key?.equals(labelKey) ?? const Constant(false)))
       .getSingle();
 
+  Future<void> incrementLabelByKey(String labelKey) async {
+    var label = await getLabelByLabelKey(labelKey);
+    if (label != null) {
+      var updatedLabel = label.copyWith(
+          counter: label.counter + 1, lastUsedAt: DateTime.now());
+      await updateLabel(updatedLabel);
+    }
+  }
+
+  Future<void> decrementLabelByKey(String labelKey) async {
+    var label = await getLabelByLabelKey(labelKey);
+    if (label != null) {
+      var count = (label.counter - 1);
+      if (count < 1) count = 1;
+      var updatedLabel =
+          label.copyWith(counter: count, lastUsedAt: DateTime.now());
+      await updateLabel(updatedLabel);
+    }
+  }
+
   Future<List<Label>> getAllLabel() => select(labels).get();
+
   Future deleteLabelByLabelId(String labelKey) => (delete(labels)
         ..where((l) => l?.key?.equals(labelKey) ?? const Constant(false)))
       .go();

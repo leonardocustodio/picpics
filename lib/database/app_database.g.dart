@@ -1210,15 +1210,28 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
 
 class Label extends DataClass implements Insertable<Label> {
   final String key;
+  final int counter;
+  final DateTime lastUsedAt;
   final String title;
   final List<String> photoId;
-  Label({@required this.key, this.title, this.photoId});
+  Label(
+      {@required this.key,
+      @required this.counter,
+      @required this.lastUsedAt,
+      this.title,
+      this.photoId});
   factory Label.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
     final stringType = db.typeSystem.forDartType<String>();
+    final intType = db.typeSystem.forDartType<int>();
+    final dateTimeType = db.typeSystem.forDartType<DateTime>();
     return Label(
       key: stringType.mapFromDatabaseResponse(data['${effectivePrefix}key']),
+      counter:
+          intType.mapFromDatabaseResponse(data['${effectivePrefix}counter']),
+      lastUsedAt: dateTimeType
+          .mapFromDatabaseResponse(data['${effectivePrefix}last_used_at']),
       title:
           stringType.mapFromDatabaseResponse(data['${effectivePrefix}title']),
       photoId: $LabelsTable.$converter0.mapToDart(stringType
@@ -1230,6 +1243,12 @@ class Label extends DataClass implements Insertable<Label> {
     final map = <String, Expression>{};
     if (!nullToAbsent || key != null) {
       map['key'] = Variable<String>(key);
+    }
+    if (!nullToAbsent || counter != null) {
+      map['counter'] = Variable<int>(counter);
+    }
+    if (!nullToAbsent || lastUsedAt != null) {
+      map['last_used_at'] = Variable<DateTime>(lastUsedAt);
     }
     if (!nullToAbsent || title != null) {
       map['title'] = Variable<String>(title);
@@ -1244,6 +1263,12 @@ class Label extends DataClass implements Insertable<Label> {
   LabelsCompanion toCompanion(bool nullToAbsent) {
     return LabelsCompanion(
       key: key == null && nullToAbsent ? const Value.absent() : Value(key),
+      counter: counter == null && nullToAbsent
+          ? const Value.absent()
+          : Value(counter),
+      lastUsedAt: lastUsedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(lastUsedAt),
       title:
           title == null && nullToAbsent ? const Value.absent() : Value(title),
       photoId: photoId == null && nullToAbsent
@@ -1257,6 +1282,8 @@ class Label extends DataClass implements Insertable<Label> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return Label(
       key: serializer.fromJson<String>(json['key']),
+      counter: serializer.fromJson<int>(json['counter']),
+      lastUsedAt: serializer.fromJson<DateTime>(json['lastUsedAt']),
       title: serializer.fromJson<String>(json['title']),
       photoId: serializer.fromJson<List<String>>(json['photoId']),
     );
@@ -1266,13 +1293,23 @@ class Label extends DataClass implements Insertable<Label> {
     serializer ??= moorRuntimeOptions.defaultSerializer;
     return <String, dynamic>{
       'key': serializer.toJson<String>(key),
+      'counter': serializer.toJson<int>(counter),
+      'lastUsedAt': serializer.toJson<DateTime>(lastUsedAt),
       'title': serializer.toJson<String>(title),
       'photoId': serializer.toJson<List<String>>(photoId),
     };
   }
 
-  Label copyWith({String key, String title, List<String> photoId}) => Label(
+  Label copyWith(
+          {String key,
+          int counter,
+          DateTime lastUsedAt,
+          String title,
+          List<String> photoId}) =>
+      Label(
         key: key ?? this.key,
+        counter: counter ?? this.counter,
+        lastUsedAt: lastUsedAt ?? this.lastUsedAt,
         title: title ?? this.title,
         photoId: photoId ?? this.photoId,
       );
@@ -1280,6 +1317,8 @@ class Label extends DataClass implements Insertable<Label> {
   String toString() {
     return (StringBuffer('Label(')
           ..write('key: $key, ')
+          ..write('counter: $counter, ')
+          ..write('lastUsedAt: $lastUsedAt, ')
           ..write('title: $title, ')
           ..write('photoId: $photoId')
           ..write(')'))
@@ -1287,47 +1326,69 @@ class Label extends DataClass implements Insertable<Label> {
   }
 
   @override
-  int get hashCode =>
-      $mrjf($mrjc(key.hashCode, $mrjc(title.hashCode, photoId.hashCode)));
+  int get hashCode => $mrjf($mrjc(
+      key.hashCode,
+      $mrjc(
+          counter.hashCode,
+          $mrjc(
+              lastUsedAt.hashCode, $mrjc(title.hashCode, photoId.hashCode)))));
   @override
   bool operator ==(dynamic other) =>
       identical(this, other) ||
       (other is Label &&
           other.key == this.key &&
+          other.counter == this.counter &&
+          other.lastUsedAt == this.lastUsedAt &&
           other.title == this.title &&
           other.photoId == this.photoId);
 }
 
 class LabelsCompanion extends UpdateCompanion<Label> {
   final Value<String> key;
+  final Value<int> counter;
+  final Value<DateTime> lastUsedAt;
   final Value<String> title;
   final Value<List<String>> photoId;
   const LabelsCompanion({
     this.key = const Value.absent(),
+    this.counter = const Value.absent(),
+    this.lastUsedAt = const Value.absent(),
     this.title = const Value.absent(),
     this.photoId = const Value.absent(),
   });
   LabelsCompanion.insert({
     this.key = const Value.absent(),
+    this.counter = const Value.absent(),
+    this.lastUsedAt = const Value.absent(),
     this.title = const Value.absent(),
     this.photoId = const Value.absent(),
   });
   static Insertable<Label> custom({
     Expression<String> key,
+    Expression<int> counter,
+    Expression<DateTime> lastUsedAt,
     Expression<String> title,
     Expression<String> photoId,
   }) {
     return RawValuesInsertable({
       if (key != null) 'key': key,
+      if (counter != null) 'counter': counter,
+      if (lastUsedAt != null) 'last_used_at': lastUsedAt,
       if (title != null) 'title': title,
       if (photoId != null) 'photo_id': photoId,
     });
   }
 
   LabelsCompanion copyWith(
-      {Value<String> key, Value<String> title, Value<List<String>> photoId}) {
+      {Value<String> key,
+      Value<int> counter,
+      Value<DateTime> lastUsedAt,
+      Value<String> title,
+      Value<List<String>> photoId}) {
     return LabelsCompanion(
       key: key ?? this.key,
+      counter: counter ?? this.counter,
+      lastUsedAt: lastUsedAt ?? this.lastUsedAt,
       title: title ?? this.title,
       photoId: photoId ?? this.photoId,
     );
@@ -1338,6 +1399,12 @@ class LabelsCompanion extends UpdateCompanion<Label> {
     final map = <String, Expression>{};
     if (key.present) {
       map['key'] = Variable<String>(key.value);
+    }
+    if (counter.present) {
+      map['counter'] = Variable<int>(counter.value);
+    }
+    if (lastUsedAt.present) {
+      map['last_used_at'] = Variable<DateTime>(lastUsedAt.value);
     }
     if (title.present) {
       map['title'] = Variable<String>(title.value);
@@ -1353,6 +1420,8 @@ class LabelsCompanion extends UpdateCompanion<Label> {
   String toString() {
     return (StringBuffer('LabelsCompanion(')
           ..write('key: $key, ')
+          ..write('counter: $counter, ')
+          ..write('lastUsedAt: $lastUsedAt, ')
           ..write('title: $title, ')
           ..write('photoId: $photoId')
           ..write(')'))
@@ -1371,6 +1440,25 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
   GeneratedTextColumn _constructKey() {
     return GeneratedTextColumn('key', $tableName, false,
         defaultValue: Constant(Uuid().v4()));
+  }
+
+  final VerificationMeta _counterMeta = const VerificationMeta('counter');
+  GeneratedIntColumn _counter;
+  @override
+  GeneratedIntColumn get counter => _counter ??= _constructCounter();
+  GeneratedIntColumn _constructCounter() {
+    return GeneratedIntColumn('counter', $tableName, false,
+        defaultValue: const Constant(1));
+  }
+
+  final VerificationMeta _lastUsedAtMeta = const VerificationMeta('lastUsedAt');
+  GeneratedDateTimeColumn _lastUsedAt;
+  @override
+  GeneratedDateTimeColumn get lastUsedAt =>
+      _lastUsedAt ??= _constructLastUsedAt();
+  GeneratedDateTimeColumn _constructLastUsedAt() {
+    return GeneratedDateTimeColumn('last_used_at', $tableName, false,
+        defaultValue: Constant(DateTime.now()));
   }
 
   final VerificationMeta _titleMeta = const VerificationMeta('title');
@@ -1398,7 +1486,8 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
   }
 
   @override
-  List<GeneratedColumn> get $columns => [key, title, photoId];
+  List<GeneratedColumn> get $columns =>
+      [key, counter, lastUsedAt, title, photoId];
   @override
   $LabelsTable get asDslTable => this;
   @override
@@ -1413,6 +1502,16 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
     if (data.containsKey('key')) {
       context.handle(
           _keyMeta, key.isAcceptableOrUnknown(data['key'], _keyMeta));
+    }
+    if (data.containsKey('counter')) {
+      context.handle(_counterMeta,
+          counter.isAcceptableOrUnknown(data['counter'], _counterMeta));
+    }
+    if (data.containsKey('last_used_at')) {
+      context.handle(
+          _lastUsedAtMeta,
+          lastUsedAt.isAcceptableOrUnknown(
+              data['last_used_at'], _lastUsedAtMeta));
     }
     if (data.containsKey('title')) {
       context.handle(

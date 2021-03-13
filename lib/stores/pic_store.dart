@@ -471,8 +471,14 @@ abstract class _PicStore with Store {
       }
 
       getTag.photoId.add(photoId);
+
+      /// Updating the last used time and also incrementing the counter.
+      var count = getTag.counter + 1;
+      if (count < 0) count = 1;
+      var updatedTag =
+          getTag.copyWith(counter: count, lastUsedAt: DateTime.now());
       //tagsBox.put(tagKey, getTag);
-      await database.updateLabel(getTag);
+      await database.updateLabel(updatedTag);
       await addTagToPic(
         tagKey: tagKey,
         photoId: photoId,
@@ -489,12 +495,17 @@ abstract class _PicStore with Store {
       params: {'tagName': tagName},
     );
     //print('adding tag to database...');
-    TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
+    TagsStore tagsStore = TagsStore(
+        id: tagKey, name: tagName, count: 1, time: DateTime.now());
     appStore.addTag(tagsStore);
 
     //tagsBox.put(tagKey, Tag(tagName, [photoId]));
-    await database
-        .createLabel(Label(key: tagKey, title: tagName, photoId: [photoId]));
+    await database.createLabel(Label(
+        key: tagKey,
+        title: tagName,
+        photoId: [photoId],
+        counter: 1,
+        lastUsedAt: DateTime.now()));
     await addTagToPic(
       tagKey: tagKey,
       photoId: photoId,
@@ -657,7 +668,7 @@ abstract class _PicStore with Store {
     //print('Tag photos ids: ${getTag.photoId}');
     int indexOfPicInTag = getTag.photoId.indexOf(photoId);
     //print('Tag index to remove: $indexOfPicInTag');
-    if (indexOfPicInTag != null) {
+    if (indexOfPicInTag != null && indexOfPicInTag != -1) {
       getTag.photoId.removeAt(indexOfPicInTag);
       //tagsBox.put(tagKey, getTag);
       await database.updateLabel(getTag);

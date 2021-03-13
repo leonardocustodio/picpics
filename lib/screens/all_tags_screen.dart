@@ -1,4 +1,3 @@
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,11 +7,8 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tags_store.dart';
-import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/customised_tags_list.dart';
-import 'package:picPics/widgets/show_watch_ad_modal.dart';
-import 'package:picPics/widgets/tags_list.dart';
 import 'package:provider/provider.dart';
 
 import '../constants.dart';
@@ -30,8 +26,19 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
   AppStore appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
+  FocusNode focusNode = FocusNode();
+  String searchedText = '';
   var textEditingController = TextEditingController();
-  var tagStore = <TagsStore>[];
+  var selectedTags = <String, TagsStore>{},
+      allTagsAvailable = <String, TagsStore>{};
+  var mostUsedTags = <TagsStore>[],
+      recentWeekUsedTags = <TagsStore>[],
+      recentMonthUsedTags = <TagsStore>[];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void didChangeDependencies() {
@@ -39,8 +46,12 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
     appStore = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
-    tagStore = List<TagsStore>.from(
-        galleryStore.tagsFromPic(picStore: widget.picStore));
+
+    galleryStore
+        .tagsFromPic(picStore: widget.picStore)
+        .forEach((TagsStore tag_element) {
+      selectedTags[tag_element.id] = tag_element;
+    });
   }
 
   @override
@@ -65,10 +76,13 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                         },
                         child: Image.asset('lib/images/backarrowgray.png'),
                       ),
-                      Image.asset('lib/images/searchico.png'),
-                      SizedBox(
-                        width: 10.0,
-                      ),
+                      GestureDetector(
+                          onTap: () {
+                            if (!focusNode.hasFocus)
+                              Focus.of(context).requestFocus(focusNode);
+                          },
+                          child: Image.asset('lib/images/searchico.png')),
+                      const SizedBox(width: 10.0),
                       /*  Expanded(
                         child: TextField(
                           // controller: _textEditingController,
@@ -115,10 +129,19 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             children: [
                               Expanded(
                                 child: Container(
-                                  child: SimpleAutoCompleteTextField(
+                                  child: TextFormField(
                                     key: widget.key,
                                     controller: textEditingController,
-                                    suggestions: appStore.tags.values
+                                    focusNode: focusNode,
+                                    onChanged: (text) {
+                                      searchedText = text.trim();
+                                      setState(() {});
+                                    },
+                                    onFieldSubmitted: (text) {
+                                      searchedText = text.trim();
+                                      setState(() {});
+                                    },
+                                    /* suggestions: appStore.tags.values
                                         .map((e) => e.name)
                                         .toList(),
                                     clearOnSubmit: false,
@@ -126,7 +149,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                       if (text.trim() != '') {
                                         setState(() {});
                                       }
-                                    },
+                                    }, */
+
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff606566),
@@ -156,11 +180,23 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                   ),
                                 ),
                               ),
+                              GestureDetector(
+                                  onTap: () {
+                                    if (searchedText != '') {
+                                      searchedText = '';
+                                      focusNode.unfocus();
+                                      textEditingController.clear();
+                                      //setState(() {});
+                                    }
+                                  },
+                                  child: AnimatedContainer(
+                                      width: searchedText != '' ? 40 : 0,
+                                      duration: Duration(milliseconds: 200),
+                                      child: Icon(Icons.clear))),
                             ],
                           ),
                         ),
                       ),
-                      Container(width: 15.0),
                       // if (widget.hasClearButton)
                       //   GestureDetector(
                       //     onTap: () {
@@ -200,28 +236,31 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                       ),
                       CustomisedTagsList(
                         tags: appStore.tags.values.toList(),
-                        selectedTags: tagStore,
-                        onTap: (String tagId, String tagName) {
+                        selectedTags: selectedTags,
+                        onTap: (String tagId, String tagName, int count,
+                            DateTime time) {
                           //print('do nothing');
                           /* if (!appStore.canTagToday) {
                           showWatchAdModal(context);
                           return;
                         } */
-                          if (tagStore.firstWhere(
-                                  (element) => element.id == tagId,
-                                  orElse: () => null) !=
-                              null) {
+                          if (selectedTags[tagId] != null) {
+                            selectedTags.remove(tagId);
+                            setState(() {});
                             galleryStore.removeTagFromPic(
                                 picStore: widget.picStore, tagKey: tagId);
                           } else {
+                            selectedTags[tagId] = TagsStore(
+                                id: tagId,
+                                name: tagName,
+                                count: count,
+                                time: time);
+                            setState(() {});
                             galleryStore.addTagToPic(
-                                picStore: widget.picStore, tagName: tagName);
+                                picStore: widget.picStore,
+                                tagName: tagName,
+                                tagId: tagId);
                           }
-                          setState(() {
-                            tagStore = List<TagsStore>.from(galleryStore
-                                .tagsFromPic(picStore: widget.picStore));
-                            print(tagStore.map((e) => e.name).toList());
-                          });
                         },
                         onDoubleTap: () {
                           //print('do nothing');

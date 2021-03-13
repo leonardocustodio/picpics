@@ -55,6 +55,7 @@ dependencies:
   geocoding: ^1.0.5
   geolocator: ^6.1.9
   google_maps_flutter: ^1.1.0
+  get: ^3.26.0
   hive: ^1.4.4+1
   local_auth: ^0.6.3+4
   lottie: ^0.7.0+1

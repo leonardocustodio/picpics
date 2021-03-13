@@ -113,6 +113,22 @@ class _TagsListState extends State<TagsList> {
 
       tagsWidgets.add(
         GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () {
+            if (widget.shouldChangeToSwipeMode) {
+              setState(() {
+                if (showSwiperInIndex == null) {
+                  showSwiperInIndex =
+                      tags.indexWhere((element) => element.id == tag.id);
+                } else {
+                  showSwiperInIndex = null;
+                }
+              });
+            }
+            Vibrate.feedback(FeedbackType.success);
+            DatabaseManager.instance.selectedTagKey = tag.id;
+            widget.onTap(tag.id, tag.name);
+          },
           onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
             DatabaseManager.instance.selectedTagKey = tag.id;
@@ -146,10 +162,12 @@ class _TagsListState extends State<TagsList> {
               swipedRightDirection = false;
             }
           },
-          child: CupertinoButton(
+          child:
+              /*  CupertinoButton(
             minSize: 0,
             padding: const EdgeInsets.all(0),
             onPressed: () {
+              
               if (widget.shouldChangeToSwipeMode) {
                 setState(() {
                   if (showSwiperInIndex == null) {
@@ -163,132 +181,132 @@ class _TagsListState extends State<TagsList> {
 
               Vibrate.feedback(FeedbackType.success);
               DatabaseManager.instance.selectedTagKey = tag.id;
-              widget.onTap(tag.id, tag.name);
+              widget.onTap(tag.id, tag.name); 
             },
-            child: Container(
-              decoration: widget.tagStyle == TagStyle.MultiColored
-                  ? BoxDecoration(
-                      gradient: getGradient(mod),
-                      borderRadius: BorderRadius.circular(19.0),
-                    )
-                  : kGrayBoxDecoration,
-              child: showSwiperInIndex != i
-                  ? tag.id != kSecretTagKey
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 16.0),
-                          child: Text(
-                            tag.name,
-                            textScaleFactor: 1.0,
-                            style: widget.tagStyle == TagStyle.MultiColored
-                                ? kWhiteTextStyle
-                                : kGrayTextStyle,
-                          ),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5.2, horizontal: 19.0),
-                          child: widget.tagStyle == TagStyle.MultiColored
-                              ? Image.asset('lib/images/locktagwhite.png')
-                              : Image.asset('lib/images/locktaggray.png'),
-                        )
-                  : CustomAnimation<double>(
-                      control: CustomAnimationControl.LOOP,
-                      tween: 0.0.tweenTo(600.0),
-                      duration: 7.seconds,
-                      startPosition: 0.0,
-                      builder: (context, child, value) {
-                        double firstOpct = 0.0;
-                        double secondOpct = 0.0;
-                        double thirdOpct = 0.0;
+            child: */
+              Container(
+            decoration: widget.tagStyle == TagStyle.MultiColored
+                ? BoxDecoration(
+                    gradient: getGradient(mod),
+                    borderRadius: BorderRadius.circular(19.0),
+                  )
+                : kGrayBoxDecoration,
+            child: showSwiperInIndex != i
+                ? tag.id != kSecretTagKey
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Text(
+                          tag.name,
+                          textScaleFactor: 1.0,
+                          style: widget.tagStyle == TagStyle.MultiColored
+                              ? kWhiteTextStyle
+                              : kGrayTextStyle,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5.2, horizontal: 19.0),
+                        child: widget.tagStyle == TagStyle.MultiColored
+                            ? Image.asset('lib/images/locktagwhite.png')
+                            : Image.asset('lib/images/locktaggray.png'),
+                      )
+                : CustomAnimation<double>(
+                    control: CustomAnimationControl.LOOP,
+                    tween: 0.0.tweenTo(600.0),
+                    duration: 7.seconds,
+                    startPosition: 0.0,
+                    builder: (context, child, value) {
+                      double firstOpct = 0.0;
+                      double secondOpct = 0.0;
+                      double thirdOpct = 0.0;
 
-                        if (value <= 300) {
-                          firstOpct = 0.0;
-                          thirdOpct = 0.0;
+                      if (value <= 300) {
+                        firstOpct = 0.0;
+                        thirdOpct = 0.0;
+                        secondOpct = 1.0;
+
+                        if (value <= 20) {
+                          secondOpct = value / 20.0;
+                        } else if (value <= 280) {
                           secondOpct = 1.0;
-
-                          if (value <= 20) {
-                            secondOpct = value / 20.0;
-                          } else if (value <= 280) {
-                            secondOpct = 1.0;
-                          } else {
-                            secondOpct = 1.0 - ((value - 280.0) / 20.0);
-                          }
-                        } else if (value <= 500) {
-                          firstOpct = 0.0;
-                          secondOpct = 0.0;
-
-                          if (value <= 380) {
-                            thirdOpct = (value - 300.0) / 80.0;
-                          } else if (value <= 420) {
-                            thirdOpct = 1.0;
-                          } else {
-                            thirdOpct = 1.0 - ((value - 420.0) / 80);
-                          }
-                        } else if (value <= 700) {
-                          secondOpct = 0.0;
-                          thirdOpct = 0.0;
-
-                          if (value <= 580) {
-                            firstOpct = (value - 500.0) / 80.0;
-                          } else if (value <= 620) {
-                            firstOpct = 1.0;
-                          } else {
-                            firstOpct = 1.0 - ((value - 620) / 80.0);
-                          }
+                        } else {
+                          secondOpct = 1.0 - ((value - 280.0) / 20.0);
                         }
+                      } else if (value <= 500) {
+                        firstOpct = 0.0;
+                        secondOpct = 0.0;
 
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: <Widget>[
-                            Opacity(
-                              opacity: firstOpct,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 16.0),
-                                child: Text(
-                                  tag.name,
-                                  textScaleFactor: 1.0,
-                                  style:
-                                      widget.tagStyle == TagStyle.MultiColored
-                                          ? kWhiteTextStyle
-                                          : kGrayTextStyle,
-                                ),
-                              ),
-                            ),
-                            Opacity(
-                              opacity: secondOpct,
-                              child: Container(
-                                height: 30.0,
-                                width: 30.0,
-                                child: Transform.rotate(
-                                  angle: pi / 2,
-                                  child: FlareActor(
-                                    'lib/anims/swipe_arrow.flr',
-                                    alignment: Alignment.center,
-                                    fit: BoxFit.contain,
-                                    animation: 'arrow_left',
-                                    color: kWhiteColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Opacity(
-                              opacity: thirdOpct,
+                        if (value <= 380) {
+                          thirdOpct = (value - 300.0) / 80.0;
+                        } else if (value <= 420) {
+                          thirdOpct = 1.0;
+                        } else {
+                          thirdOpct = 1.0 - ((value - 420.0) / 80);
+                        }
+                      } else if (value <= 700) {
+                        secondOpct = 0.0;
+                        thirdOpct = 0.0;
+
+                        if (value <= 580) {
+                          firstOpct = (value - 500.0) / 80.0;
+                        } else if (value <= 620) {
+                          firstOpct = 1.0;
+                        } else {
+                          firstOpct = 1.0 - ((value - 620) / 80.0);
+                        }
+                      }
+
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Opacity(
+                            opacity: firstOpct,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 16.0),
                               child: Text(
-                                S.of(context).delete,
+                                tag.name,
                                 textScaleFactor: 1.0,
                                 style: widget.tagStyle == TagStyle.MultiColored
                                     ? kWhiteTextStyle
                                     : kGrayTextStyle,
                               ),
                             ),
-                          ],
-                        );
-                      },
-                    ),
-            ),
+                          ),
+                          Opacity(
+                            opacity: secondOpct,
+                            child: Container(
+                              height: 30.0,
+                              width: 30.0,
+                              child: Transform.rotate(
+                                angle: pi / 2,
+                                child: FlareActor(
+                                  'lib/anims/swipe_arrow.flr',
+                                  alignment: Alignment.center,
+                                  fit: BoxFit.contain,
+                                  animation: 'arrow_left',
+                                  color: kWhiteColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Opacity(
+                            opacity: thirdOpct,
+                            child: Text(
+                              S.of(context).delete,
+                              textScaleFactor: 1.0,
+                              style: widget.tagStyle == TagStyle.MultiColored
+                                  ? kWhiteTextStyle
+                                  : kGrayTextStyle,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
           ),
+          // ),
         ),
       );
     }

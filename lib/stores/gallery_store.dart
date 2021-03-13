@@ -974,8 +974,12 @@ print('finished adding all tagged pics stores!'); */
     Label oldTag = await database.getLabelByLabelKey(oldTagKey);
 
     // Creating new label
-    Label createTag =
-        Label(key: newTagKey, title: newName, photoId: oldTag.photoId);
+    Label createTag = Label(
+        key: newTagKey,
+        title: newName,
+        photoId: oldTag.photoId,
+        counter: oldTag.counter < 1 ? 1 : oldTag.counter,
+        lastUsedAt: DateTime.now());
     await database.createLabel(createTag);
     //tagsBox.put(newTagKey, createTag);
 
@@ -1151,11 +1155,16 @@ print('finished adding all tagged pics stores!'); */
     }
 
     // print('adding tag to database...');
-    await database
-        .createLabel(Label(key: tagKey, title: tagName, photoId: <String>[]));
+    await database.createLabel(Label(
+        key: tagKey,
+        title: tagName,
+        photoId: <String>[],
+        counter: 1,
+        lastUsedAt: DateTime.now()));
     //tagsBox.put(tagKey, Tag(tagName, []));
 
-    TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
+    TagsStore tagsStore = TagsStore(
+        id: tagKey, name: tagName, count: 1, time: DateTime.now());
     appStore.addTag(tagsStore);
     appStore.addTagToRecent(tagKey: tagKey);
 
@@ -1339,15 +1348,15 @@ print('finished adding all tagged pics stores!'); */
   }
 
   @action
-  Future<void> addTagToPic({PicStore picStore, String tagName}) async {
+  void addTagToPic(
+      {PicStore picStore, String tagName, @required String tagId}) {
     if (picStore.tags.isEmpty) {
       // print('this pic now has tags!');
       removePicFromUntaggedPics(picStore: picStore);
     }
 
-    await picStore.addTag(
-      tagName: tagName,
-    );
+    picStore.addTag(tagName: tagName);
+    database.incrementLabelByKey(tagId);
 
     addPicToTaggedPics(picStore: picStore);
   }

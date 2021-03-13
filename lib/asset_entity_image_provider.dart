@@ -44,9 +44,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   @override
   ImageStreamCompleter load(
-    AssetEntityImageProvider key,
-    DecoderCallback decode,
-  ) {
+      AssetEntityImageProvider key, DecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
