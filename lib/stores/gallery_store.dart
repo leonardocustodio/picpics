@@ -1163,8 +1163,8 @@ print('finished adding all tagged pics stores!'); */
         lastUsedAt: DateTime.now()));
     //tagsBox.put(tagKey, Tag(tagName, []));
 
-    TagsStore tagsStore = TagsStore(
-        id: tagKey, name: tagName, count: 1, time: DateTime.now());
+    TagsStore tagsStore =
+        TagsStore(id: tagKey, name: tagName, count: 1, time: DateTime.now());
     appStore.addTag(tagsStore);
     appStore.addTagToRecent(tagKey: tagKey);
 

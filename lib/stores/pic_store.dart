@@ -495,8 +495,8 @@ abstract class _PicStore with Store {
       params: {'tagName': tagName},
     );
     //print('adding tag to database...');
-    TagsStore tagsStore = TagsStore(
-        id: tagKey, name: tagName, count: 1, time: DateTime.now());
+    TagsStore tagsStore =
+        TagsStore(id: tagKey, name: tagName, count: 1, time: DateTime.now());
     appStore.addTag(tagsStore);
 
     //tagsBox.put(tagKey, Tag(tagName, [photoId]));

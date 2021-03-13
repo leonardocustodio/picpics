@@ -6,8 +6,7 @@ part 'tags_store.g.dart';
 class TagsStore = _TagsStore with _$TagsStore;
 
 abstract class _TagsStore with Store {
-  _TagsStore(
-      {this.id, this.name, @required this.count, @required this.time}) {
+  _TagsStore({this.id, this.name, @required this.count, @required this.time}) {
     autorun((_) {
       //print('autorun');
     });
