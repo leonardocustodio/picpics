@@ -32,7 +32,7 @@ abstract class _GalleryStore with Store {
   final database = AppDatabase();
 
   _GalleryStore({this.appStore}) {
-//    loadTaggedPicsStore();
+    loadTaggedPicsStore();
 
     if (appStore?.tutorialCompleted ?? false) {
       loadAssetsPath();
@@ -43,15 +43,15 @@ abstract class _GalleryStore with Store {
     });
   }
 
-//  @action
-//  void loadTaggedPicsStore() {
-//    for (TagsStore tagsStore in appStore.tags) {
-//      TaggedPicsStore taggedPicsStore = TaggedPicsStore(tag: tagsStore);
-//      taggedPics.add(taggedPicsStore);
-//    }
-/* 
-print('finished adding all tagged pics stores!'); */
-//  }
+  @action
+  void loadTaggedPicsStore() {
+    for (TagsStore tagsStore in appStore.tags.values.toList()) {
+      TaggedPicsStore taggedPicsStore = TaggedPicsStore(tag: tagsStore);
+      taggedPics.add(taggedPicsStore);
+    }
+
+    print('finished adding all tagged pics stores!');
+  }
 
   @computed
   int get totalTaggedPics {

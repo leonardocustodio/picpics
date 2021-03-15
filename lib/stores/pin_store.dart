@@ -96,7 +96,7 @@ abstract class _PinStore with Store {
         encryptedRecoveryKey = result.data;
         setIsWaitingRecoveryKey(true);
         //print(            'Saving ${result.data} with access code $accessCode and pin $pin');
-        // await Crypto.saveSaltKey();
+        await Crypto.saveSaltKey();
         // await Crypto.saveSpKey(accessCode, result.data, pin);
         return true;
       }

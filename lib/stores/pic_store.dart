@@ -758,7 +758,7 @@ abstract class _PicStore with Store {
     }
   }
 
-  List<TagsStore> aiSuggestions = [];
+  var aiSuggestions = <TagsStore>[];
 
   @observable
   bool aiTagsLoaded = false;

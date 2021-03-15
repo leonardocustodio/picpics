@@ -82,9 +82,9 @@ abstract class _AppStore with Store {
       addRecentTags(tagKey);
     }
 
-    /* if (user.hasGalleryPermission != null || user.tutorialCompleted) {
+    if (user.hasGalleryPermission != null || user.tutorialCompleted) {
       requestGalleryPermission();
-    } */
+    }
 
     // Executa primeira vez para ver se ainda tem permissão
     checkNotificationPermission();
