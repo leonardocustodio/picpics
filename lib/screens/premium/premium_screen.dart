@@ -459,6 +459,11 @@ class _PremiumScreenState extends State<PremiumScreen> {
     var yearSub = _items.firstWhere((e) => e.packageType == PackageType.annual,
         orElse: null);
 
+    print(yearSub);
+    var daysFree = yearSub.product.introductoryPrice == null
+        ? 3
+        : yearSub.product.introductoryPrice.introPricePeriodNumberOfUnits;
+
     return [
       Container(
         width: double.maxFinite,
@@ -467,8 +472,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           text: TextSpan(
             children: [
               TextSpan(
-                text:
-                    'Try ${yearSub.product.introductoryPrice.introPricePeriodNumberOfUnits} days for free\n',
+                text: 'Try $daysFree days for free\n',
                 style: const TextStyle(
                   color: const Color(0xff606566),
                   fontWeight: FontWeight.bold,
