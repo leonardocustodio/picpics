@@ -4,7 +4,6 @@ import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
 import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -13,19 +12,12 @@ import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/screens/login_screen.dart';
-import 'package:picPics/model/tag.dart';
-import 'package:picPics/model/user.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/stores/tags_store.dart';
-import 'package:picPics/screens/tabs_screen.dart';
-import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:uuid/uuid.dart';
-import 'package:picPics/tutorial/tabs_screen.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:picPics/model/user_key.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 
 part 'app_store.g.dart';
@@ -122,7 +114,7 @@ abstract class _AppStore with Store {
   }
 
   List<String> starredPhotos;
-  void addToStarredPhotos(String photoId) async {
+  Future<void> addToStarredPhotos(String photoId) async {
     if (starredPhotos.contains(photoId)) {
       return;
     }

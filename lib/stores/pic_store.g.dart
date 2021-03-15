@@ -9,13 +9,6 @@ part of 'pic_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PicStore on _PicStore, Store {
-  Computed<List<String>> _$tagsKeysComputed;
-
-  @override
-  List<String> get tagsKeys =>
-      (_$tagsKeysComputed ??= Computed<List<String>>(() => super.tagsKeys,
-              name: '_PicStore.tagsKeys'))
-          .value;
   Computed<Future<List<TagsStore>>> _$tagsSuggestionsComputed;
 
   @override
@@ -368,7 +361,6 @@ isPrivate: ${isPrivate},
 searchText: ${searchText},
 aiTags: ${aiTags},
 aiTagsLoaded: ${aiTagsLoaded},
-tagsKeys: ${tagsKeys},
 tagsSuggestions: ${tagsSuggestions}
     ''';
   }

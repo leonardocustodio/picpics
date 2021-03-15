@@ -166,7 +166,7 @@ LazyDatabase _openConnection() {
     // put the database file, called db.sqlite here, into the documents folder
     // for your app.
     final dbFolder = await getApplicationSupportDirectory();
-    final path = p.join(dbFolder.path, 'db.sqlite');
+    //final path = p.join(dbFolder.path, 'db.sqlite');
     //print('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return VmDatabase(file, setup: (rawDb) {

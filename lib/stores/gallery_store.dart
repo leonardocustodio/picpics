@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:date_utils/date_utils.dart';
-import 'package:esys_flutter_share/esys_flutter_share.dart' as esys;
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mobx/mobx.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -12,10 +10,6 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/model/pic.dart';
-import 'package:picPics/model/secret.dart';
-import 'package:picPics/model/tag.dart';
-import 'package:picPics/model/user.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tagged_date_pics_store.dart';
@@ -26,10 +20,7 @@ import 'package:picPics/stores/untagged_grid_pic_store.dart';
 import 'package:picPics/stores/untagged_pics_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:share/share.dart';
-import 'package:share_extend/share_extend.dart';
 import 'package:collection/collection.dart';
-import 'package:path/path.dart' as p;
-import 'package:uuid/uuid.dart';
 import 'package:mime/mime.dart';
 
 part 'gallery_store.g.dart';
@@ -185,6 +176,7 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   void setIsSearching(bool value) => isSearching = value;
+  int count = 0;
 
   @action
   void clearSearchTags() {
@@ -200,6 +192,7 @@ print('finished adding all tagged pics stores!'); */
 
   @computed
   List<String> get searchingTagsKeys {
+    print('${count++} :searchingTagsKeys');
     return searchingTags.map((element) => element.id).toList();
   }
 
@@ -380,7 +373,7 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
-    for (TagsStore tag in picStore.tags) {
+    for (TagsStore tag in picStore.tags.values.toList()) {
       TaggedPicsStore taggedPicsStore = taggedPics
           .firstWhere((element) => element.tag == tag, orElse: () => null);
 
@@ -463,7 +456,8 @@ print('finished adding all tagged pics stores!'); */
     List<TaggedPicsStore> toDelete = [];
 
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
-      if (picStore.tags.contains(taggedPicsStore.tag) && forceDelete == false) {
+      if (picStore.tags[taggedPicsStore.tag.id] != null &&
+          forceDelete == false) {
         // print('this tag should not be removed');
         continue;
       }
@@ -619,7 +613,7 @@ print('finished adding all tagged pics stores!'); */
 
   @action
   void removePicFromUntaggedPics({PicStore picStore}) {
-    List<UntaggedPicsStore> toDelete = [];
+    var toDelete = <UntaggedPicsStore>[];
 
     for (var untaggedPicStore in untaggedPics) {
       if (untaggedPicStore.picStoresIds.contains(picStore.photoId)) {
@@ -1025,7 +1019,7 @@ print('finished adding all tagged pics stores!'); */
           taggedPics.firstWhere((element) => element.tag == tagsStore);
       for (PicStore picTagged in taggedPicsStore.pics) {
         // print('Tagged Pic Store Pics: ${picTagged.photoId}');
-        picTagged.removeTagFromPic(tagKey: tagsStore.id);
+        await picTagged.removeTagFromPic(tagKey: tagsStore.id);
         if (picTagged.tags.length == 0 && picTagged != currentPic) {
           // print('this pic is not tagged anymore!');
           addPicToUntaggedPics(picStore: picTagged);
@@ -1182,7 +1176,7 @@ print('finished adding all tagged pics stores!'); */
       [
         Future.forEach(selectedPics, (PicStore picStore) async {
           for (String tagKey in multiPicTags.keys.toList()) {
-            if (picStore.tagsKeys.contains(tagKey)) {
+            if (picStore.tags[tagKey] != null) {
               // print('this tag is already in this picture');
               continue;
             }
@@ -1215,7 +1209,7 @@ print('finished adding all tagged pics stores!'); */
 
           if (selectedPicsAreTagged != true) {
             // print('Adding pic to tagged pics!');
-            await addPicToTaggedPics(picStore: picStore);
+            addPicToTaggedPics(picStore: picStore);
             removePicFromUntaggedPics(picStore: picStore);
             swipePics.remove(picStore);
           }
@@ -1337,8 +1331,8 @@ print('finished adding all tagged pics stores!'); */
       shouldRefreshTaggedGallery = value;
 
   @action
-  void removeTagFromPic({PicStore picStore, String tagKey}) {
-    picStore.removeTagFromPic(tagKey: tagKey);
+  Future<void> removeTagFromPic({PicStore picStore, String tagKey}) async {
+    await picStore.removeTagFromPic(tagKey: tagKey);
     removePicFromTaggedPics(picStore: picStore);
 
     if (picStore.tags.isEmpty) {
@@ -1348,17 +1342,15 @@ print('finished adding all tagged pics stores!'); */
   }
 
   @action
-  void addTagToPic(
-      {PicStore picStore, String tagName, @required String tagId}) {
+  Future<void> addTagToPic({PicStore picStore, String tagName}) async {
     if (picStore.tags.isEmpty) {
       // print('this pic now has tags!');
       removePicFromUntaggedPics(picStore: picStore);
     }
 
-    picStore.addTag(tagName: tagName);
-    database.incrementLabelByKey(tagId);
+    await picStore.addTag(tagName: tagName);
 
-    addPicToTaggedPics(picStore: picStore);
+    await addPicToTaggedPics(picStore: picStore);
   }
 
   @action
@@ -1420,7 +1412,7 @@ print('finished adding all tagged pics stores!'); */
   }
 
   List<TagsStore> tagsFromPic({PicStore picStore}) {
-    List<TagsStore> tagsList = picStore.tags.toList();
+    var tagsList = picStore.tags.values.toList();
     if (picStore.isPrivate == true) {
       tagsList.removeWhere((element) => element.id == kSecretTagKey);
     }

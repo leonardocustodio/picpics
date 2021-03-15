@@ -5,15 +5,12 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/managers/admob_manager.dart';
-import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/all_tags_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -23,12 +20,10 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
-import 'package:picPics/widgets/watch_ad_modal.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:picPics/screens/tags_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'show_watch_ad_modal.dart';
@@ -387,13 +382,13 @@ class _PhotoCardState extends State<PhotoCard> {
                     onDoubleTap: () {
                       //print('do nothing');
                     },
-                    onPanEnd: () {
+                    onPanEnd: () async {
                       if (!appStore.canTagToday) {
                         showWatchAdModal(context);
                         return;
                       }
 
-                      galleryStore.removeTagFromPic(
+                      await galleryStore.removeTagFromPic(
                           picStore: picStore,
                           tagKey: DatabaseManager.instance.selectedTagKey);
                     },
@@ -427,7 +422,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   child: Observer(builder: (_) {
                     String suggestionsTitle;
 
-                    if (picStore.aiTags == true) {
+                    if (picStore.aiTags) {
                       if (picStore.aiTagsLoaded == false) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -465,30 +460,35 @@ class _PhotoCardState extends State<PhotoCard> {
                       suggestionsTitle = S.of(context).recent_tags;
                     }
 
-                    return TagsList(
-                      title: suggestionsTitle,
-                      tags: picStore.aiTags
-                          ? picStore.aiSuggestions
-                          : picStore.tagsSuggestions,
-                      tagStyle: TagStyle.GrayOutlined,
-                      showEditTagModal: widget.showEditTagModal,
-                      onTap: (tagId, tagName) {
-                        if (!appStore.canTagToday) {
-                          showWatchAdModal(context);
-                          return;
-                        }
+                    print(
+                        '${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');
 
-                        galleryStore.addTagToPic(
-                            picStore: picStore, tagName: tagName);
-                        tagsEditingController.clear();
-                        picStore.setSearchText('');
-                      },
-                      onDoubleTap: () {
-                        //print('do nothing');
-                      },
-                      onPanEnd: () {
-                        //print('do nothing');
-                      },
+                    return Observer(
+                      builder: (_) => TagsList(
+                        title: suggestionsTitle,
+                        tags: picStore.aiTags
+                            ? picStore.aiSuggestions
+                            : picStore.tagsSuggestions,
+                        tagStyle: TagStyle.GrayOutlined,
+                        showEditTagModal: widget.showEditTagModal,
+                        onTap: (tagId, tagName) async {
+                          if (!appStore.canTagToday) {
+                            showWatchAdModal(context);
+                            return;
+                          }
+
+                          await galleryStore.addTagToPic(
+                              picStore: picStore, tagName: tagName);
+                          tagsEditingController.clear();
+                          picStore.setSearchText('');
+                        },
+                        onDoubleTap: () {
+                          //print('do nothing');
+                        },
+                        onPanEnd: () {
+                          //print('do nothing');
+                        },
+                      ),
                     );
                   }),
                 ),

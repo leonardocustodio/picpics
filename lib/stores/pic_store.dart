@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
@@ -11,9 +10,6 @@ import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/model/pic.dart';
-import 'package:picPics/model/secret.dart';
-import 'package:picPics/model/tag.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -102,14 +98,14 @@ abstract class _PicStore with Store {
   Future<void> setChangePhotoId(String value) async {
     //var tagsBox = Hive.box('tags');
 
-    await Future.forEach(tagsKeys, (tKeys) async {
+    var tagKeys = tags.keys.toList();
+    tagKeys.forEach((tKeys) async {
       Label getTag = await database.getLabelByLabelKey(tKeys);
 
       getTag.photoId.remove(photoId);
       getTag.photoId.add(value);
       //print('Replaced tag in ${getTag.title} tagsbox');
       await database.updateLabel(getTag);
-      //getTag.save();
     });
 
     photoId = value;
@@ -308,7 +304,7 @@ abstract class _PicStore with Store {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
         }
-        tags.add(tagsStore);
+        tags[tagKey] = tagsStore;
       }
     } else {
       //print('pic $photoId doesnt exists in database');
@@ -385,29 +381,29 @@ abstract class _PicStore with Store {
   @action
   void setSearchText(String value) {
     searchText = value;
-    aiTags = false;
+    setAiTags(false);
   }
 
-  ObservableList<TagsStore> tags = ObservableList<TagsStore>();
+  ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
 
-  @computed
+/*   @computed
   List<String> get tagsKeys {
     //print('####!!!! Tags Keys: $tags');
     return tags.map((element) => element.id).toList();
-  }
+  } */
 
   @computed
   Future<List<TagsStore>> get tagsSuggestions async {
     //var tagsBox = Hive.box('tags');
     var tagsBox = await database.getAllLabel();
     var tagsBoxKeys = tagsBox.map((e) => e.key);
-    List<String> suggestionTags = [];
+    var suggestionTags = <String>[];
 
     if (searchText == '') {
+      var tagsKeys = tags.keys.toList();
+
       for (var recent in appStore.recentTags) {
-        if (tagsKeys.contains(recent)) {
-          continue;
-        }
+        if (tagsKeys.contains(recent)) continue;
         suggestionTags.add(recent);
       }
 
@@ -434,8 +430,7 @@ abstract class _PicStore with Store {
     } else {
       for (var tagKey in tagsBoxKeys) {
         if (tagKey == kSecretTagKey) continue;
-
-        String tagName = Helpers.decryptTag(tagKey);
+        var tagName = Helpers.decryptTag(tagKey);
         if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
         }
@@ -444,10 +439,11 @@ abstract class _PicStore with Store {
     //print('find suggestions: $searchText - exclude: $tagsKeys');
     //print(suggestionTags);
 
-    List<TagsStore> suggestions = [];
+    var suggestions = <TagsStore>[];
     for (String tagId in suggestionTags) {
       suggestions.add(appStore.tags[tagId]);
     }
+
     return suggestions;
   }
 
@@ -540,7 +536,7 @@ abstract class _PicStore with Store {
 
       TagsStore tagsStore = appStore.tags[tagKey];
 
-      tags.add(tagsStore);
+      tags[tagKey] = tagsStore;
 
       Analytics.sendEvent(
         Event.added_tag,
@@ -553,7 +549,7 @@ abstract class _PicStore with Store {
     //print('Photo Id: $photoId');
 
     TagsStore tagsStore = appStore.tags[tagKey];
-    tags.add(tagsStore);
+    tags[tagKey] = tagsStore;
 
     Photo pic = Photo(
       id: photoId,
@@ -642,7 +638,7 @@ abstract class _PicStore with Store {
       //print('pic is in db... removing it from db!');
       List<String> picTags = List<String>.from(pic.tags);
       for (String tagKey in picTags) {
-        removeTagFromPic(tagKey: tagKey);
+        await removeTagFromPic(tagKey: tagKey);
 
         if (tagKey == kSecretTagKey) {
           deleteEncryptedPic();
@@ -684,7 +680,7 @@ abstract class _PicStore with Store {
       //picsBox.put(photoId, getPic);
       await database.updatePhoto(getPic);
       //print('removed tag from pic');
-      tags.removeWhere((element) => element.id == tagKey);
+      tags.remove(tagKey);
     }
 
     if (tagKey == kSecretTagKey) {

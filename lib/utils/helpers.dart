@@ -1,5 +1,8 @@
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
+import 'package:flutter/material.dart';
+
+import '../constants.dart';
 
 class Helpers {
   static String stripTag(String tag) => removeDiacritics(tag.toLowerCase());
@@ -35,5 +38,18 @@ class Helpers {
     }
 
     return result ?? '';
+  }
+}
+
+LinearGradient getGradient(int _) {
+  switch (_) {
+    case 0:
+      return kPrimaryGradient;
+    case 1:
+      return kSecondaryGradient;
+    case 2:
+      return kPinkGradient;
+    default:
+      return kCardYellowGradient;
   }
 }
