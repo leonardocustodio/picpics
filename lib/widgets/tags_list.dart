@@ -7,6 +7,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
@@ -60,31 +61,6 @@ class _TagsListState extends State<TagsList> {
   bool swipedRightDirection = false;
 
   Widget _buildTagsWidget(BuildContext context, List<TagsStore> tags) {
-    LinearGradient getGradient(int num) {
-      switch (num) {
-        case 0:
-          {
-            return kPrimaryGradient;
-          }
-          break;
-        case 1:
-          {
-            return kSecondaryGradient;
-          }
-          break;
-        case 2:
-          {
-            return kPinkGradient;
-          }
-          break;
-        default:
-          {
-            return kCardYellowGradient;
-          }
-          break;
-      }
-    }
-
     List<Widget> tagsWidgets = [];
     //print('Tags in TagsList: ${tags}');
 
@@ -127,16 +103,16 @@ class _TagsListState extends State<TagsList> {
             }
             Vibrate.feedback(FeedbackType.success);
             DatabaseManager.instance.selectedTagKey = tag.id;
-            widget.onTap(tag.id, tag.name);
+            if (widget.onTap != null) widget.onTap(tag.id, tag.name);
           },
           onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
             DatabaseManager.instance.selectedTagKey = tag.id;
-            widget.onDoubleTap();
+            if (widget.onDoubleTap != null) widget.onDoubleTap();
           },
           onLongPress: () {
             DatabaseManager.instance.selectedTagKey = tag.id;
-            widget.showEditTagModal();
+            if (widget.showEditTagModal != null) widget.showEditTagModal();
           },
           onPanStart: (details) {
             //print('Started pan on tag: ${tag.id}');
@@ -188,8 +164,7 @@ class _TagsListState extends State<TagsList> {
             decoration: widget.tagStyle == TagStyle.MultiColored
                 ? BoxDecoration(
                     gradient: getGradient(mod),
-                    borderRadius: BorderRadius.circular(19.0),
-                  )
+                    borderRadius: BorderRadius.circular(19.0))
                 : kGrayBoxDecoration,
             child: showSwiperInIndex != i
                 ? tag.id != kSecretTagKey

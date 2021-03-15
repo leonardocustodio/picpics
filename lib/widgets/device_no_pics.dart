@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/generated/l10n.dart';
 
 class DeviceHasNoPics extends StatelessWidget {
   final String message;

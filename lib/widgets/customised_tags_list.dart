@@ -5,6 +5,7 @@ import 'package:picPics/managers/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/utils/helpers.dart';
 
 typedef OnTap = Function(
     String tagId, String tagName, int counter, DateTime lastUsedAt);
@@ -117,18 +118,5 @@ class CustomisedTagsList extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-LinearGradient getGradient(int _) {
-  switch (_) {
-    case 0:
-      return kPrimaryGradient;
-    case 1:
-      return kSecondaryGradient;
-    case 2:
-      return kPinkGradient;
-    default:
-      return kCardYellowGradient;
   }
 }

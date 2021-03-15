@@ -1,7 +1,5 @@
 // import 'package:firebase_admob/firebase_admob.dart';
-import 'package:flutter/foundation.dart';
 import 'dart:io';
-import 'package:picPics/managers/database_manager.dart';
 
 class Ads {
   static final String appId = Platform.isAndroid

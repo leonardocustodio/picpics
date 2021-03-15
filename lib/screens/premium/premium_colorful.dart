@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:picPics/constants.dart';
 import 'package:flutter/material.dart';
 

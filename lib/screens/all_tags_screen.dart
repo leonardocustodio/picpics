@@ -238,7 +238,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                         tags: appStore.tags.values.toList(),
                         selectedTags: selectedTags,
                         onTap: (String tagId, String tagName, int count,
-                            DateTime time) {
+                            DateTime time) async {
                           //print('do nothing');
                           /* if (!appStore.canTagToday) {
                           showWatchAdModal(context);
@@ -247,7 +247,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                           if (selectedTags[tagId] != null) {
                             selectedTags.remove(tagId);
                             setState(() {});
-                            galleryStore.removeTagFromPic(
+                            await galleryStore.removeTagFromPic(
                                 picStore: widget.picStore, tagKey: tagId);
                           } else {
                             selectedTags[tagId] = TagsStore(
@@ -256,10 +256,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                 count: count,
                                 time: time);
                             setState(() {});
-                            galleryStore.addTagToPic(
-                                picStore: widget.picStore,
-                                tagName: tagName,
-                                tagId: tagId);
+                            await galleryStore.addTagToPic(
+                                picStore: widget.picStore, tagName: tagName);
                           }
                         },
                         onDoubleTap: () {

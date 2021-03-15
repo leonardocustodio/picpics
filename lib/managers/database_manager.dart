@@ -4,16 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
-import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/model/tag.dart';
-import 'package:picPics/model/user.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
-import 'package:picPics/managers/push_notifications_manager.dart';
-import 'package:notification_permissions/notification_permissions.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
@@ -138,7 +133,7 @@ print('got token this mean it did accept notification');
         return false;
       }
       // access latest purchaserInfo
-    } on PlatformException catch (e) {
+    } on PlatformException catch (_) {
       // Error fetching purchaser info
       return null;
     }
