@@ -391,6 +391,8 @@ class _PhotoCardState extends State<PhotoCard> {
                       await galleryStore.removeTagFromPic(
                           picStore: picStore,
                           tagKey: DatabaseManager.instance.selectedTagKey);
+
+                      await picStore.tagsSuggestionsCalculate();
                     },
                     onChanged: (text) {
                       picStore.setSearchText(text);
@@ -410,6 +412,8 @@ class _PhotoCardState extends State<PhotoCard> {
                           picStore: picStore,
                           tagName: text,
                         );
+
+                        await picStore.tagsSuggestionsCalculate();
                         Vibrate.feedback(FeedbackType.success);
                         tagsEditingController.clear();
                         picStore.setSearchText('');

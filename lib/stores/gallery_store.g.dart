@@ -51,13 +51,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$isFilteredComputed ??= Computed<bool>(() => super.isFiltered,
               name: '_GalleryStore.isFiltered'))
           .value;
-  Computed<Future<List<TagsStore>>> _$tagsSuggestionsComputed;
-
-  @override
-  Future<List<TagsStore>> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
-          Computed<Future<List<TagsStore>>>(() => super.tagsSuggestions,
-              name: '_GalleryStore.tagsSuggestions'))
-      .value;
   Computed<List<String>> _$taggedKeysComputed;
 
   @override
@@ -177,6 +170,21 @@ mixin _$GalleryStore on _GalleryStore, Store {
   set searchText(String value) {
     _$searchTextAtom.reportWrite(value, super.searchText, () {
       super.searchText = value;
+    });
+  }
+
+  final _$tagsSuggestionsAtom = Atom(name: '_GalleryStore.tagsSuggestions');
+
+  @override
+  List<TagsStore> get tagsSuggestions {
+    _$tagsSuggestionsAtom.reportRead();
+    return super.tagsSuggestions;
+  }
+
+  @override
+  set tagsSuggestions(List<TagsStore> value) {
+    _$tagsSuggestionsAtom.reportWrite(value, super.tagsSuggestions, () {
+      super.tagsSuggestions = value;
     });
   }
 
@@ -715,6 +723,7 @@ selectedThumbnail: ${selectedThumbnail},
 isSearching: ${isSearching},
 showSearchTagsResults: ${showSearchTagsResults},
 searchText: ${searchText},
+tagsSuggestions: ${tagsSuggestions},
 trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
 shouldRefreshTaggedGallery: ${shouldRefreshTaggedGallery},
@@ -724,7 +733,6 @@ filteredPicsKeys: ${filteredPicsKeys},
 currentThumbnailPic: ${currentThumbnailPic},
 searchingTagsKeys: ${searchingTagsKeys},
 isFiltered: ${isFiltered},
-tagsSuggestions: ${tagsSuggestions},
 taggedKeys: ${taggedKeys},
 deviceHasPics: ${deviceHasPics}
     ''';

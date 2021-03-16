@@ -13,7 +13,7 @@ import 'package:supercharged/supercharged.dart';
 import 'dart:math';
 
 class TagsList extends StatefulWidget {
-  final dynamic tags;
+  final List<TagsStore> tags;
   final TextEditingController textEditingController;
   final FocusNode textFocusNode;
   final bool addTagField;
@@ -449,14 +449,6 @@ class _TagsListState extends State<TagsList> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.tags is Future
-        ? FutureBuilder<List<TagsStore>>(
-            future: widget.tags,
-            builder: (c, AsyncSnapshot<List<TagsStore>> snapshot) {
-              return snapshot.hasData
-                  ? _buildTagsWidget(context, snapshot.data)
-                  : Container();
-            })
-        : _buildTagsWidget(context, widget.tags);
+    return _buildTagsWidget(context, widget.tags);
   }
 }

@@ -41,6 +41,36 @@ abstract class _PicStore with Store {
 
   final AppDatabase database = AppDatabase();
 
+  ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
+
+  @observable
+  bool aiTags = false;
+
+  var aiSuggestions = <TagsStore>[];
+
+  @observable
+  bool aiTagsLoaded = false;
+
+  @observable
+  String searchText = '';
+
+  @observable
+  double latitude;
+
+  @observable
+  double longitude;
+
+  @observable
+  String specificLocation;
+
+  @observable
+  String generalLocation;
+
+  String nonce;
+
+  @observable
+  bool isPrivate = false;
+
   _PicStore({
     this.appStore,
     this.entity,
@@ -54,6 +84,7 @@ abstract class _PicStore with Store {
     this.isStarred,
   }) {
     //print('loading pic info......');
+    tagsSuggestionsCalculate();
     loadPicInfo();
 
     autorun((_) {});
@@ -311,23 +342,6 @@ abstract class _PicStore with Store {
     }
   }
 
-  @observable
-  double latitude;
-
-  @observable
-  double longitude;
-
-  @observable
-  String specificLocation;
-
-  @observable
-  String generalLocation;
-
-  String nonce;
-
-  @observable
-  bool isPrivate = false;
-
   @action
   Future<void> setIsPrivate(bool value) async {
     if (value) {
@@ -367,33 +381,35 @@ abstract class _PicStore with Store {
       tagKey: kSecretTagKey,
       photoId: photoId,
     );
+    await tagsSuggestionsCalculate();
     //print('Added secret tag to pic!');
   }
 
   Future<void> removeSecretTagFromPic() async {
     await removeTagFromPic(tagKey: kSecretTagKey);
+    await tagsSuggestionsCalculate();
     //print('Added secret tag to pic!');
   }
-
-  @observable
-  String searchText = '';
 
   @action
   void setSearchText(String value) {
     searchText = value;
     setAiTags(false);
+    tagsSuggestionsCalculate();
   }
 
-  ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
-
-/*   @computed
+/*
+  @computed
   List<String> get tagsKeys {
     //print('####!!!! Tags Keys: $tags');
     return tags.map((element) => element.id).toList();
-  } */
+  }
+  */
 
-  @computed
-  Future<List<TagsStore>> get tagsSuggestions async {
+  @observable
+  List<TagsStore> tagsSuggestions = <TagsStore>[];
+
+  Future<List<TagsStore>> tagsSuggestionsCalculate() async {
     //var tagsBox = Hive.box('tags');
     var tagsBox = await database.getAllLabel();
     var tagsBoxKeys = tagsBox.map((e) => e.key);
@@ -443,6 +459,8 @@ abstract class _PicStore with Store {
     for (String tagId in suggestionTags) {
       suggestions.add(appStore.tags[tagId]);
     }
+
+    tagsSuggestions = suggestions;
 
     return suggestions;
   }
@@ -525,6 +543,7 @@ abstract class _PicStore with Store {
 
       if (getPic.tags.contains(tagKey)) {
         //print('this tag is already in this picture');
+        await tagsSuggestionsCalculate();
         return;
       }
 
@@ -537,6 +556,8 @@ abstract class _PicStore with Store {
       TagsStore tagsStore = appStore.tags[tagKey];
 
       tags[tagKey] = tagsStore;
+
+      await tagsSuggestionsCalculate();
 
       Analytics.sendEvent(
         Event.added_tag,
@@ -572,6 +593,8 @@ abstract class _PicStore with Store {
 
     // Increase today tagged pics everytime it adds a new pic to database.
     appStore.increaseTodayTaggedPics();
+
+    await tagsSuggestionsCalculate();
     Analytics.sendEvent(
       Event.added_tag,
       params: {'tagName': tagsStore.name},
@@ -687,6 +710,8 @@ abstract class _PicStore with Store {
       removePrivatePath();
     }
 
+    await tagsSuggestionsCalculate();
+
     Analytics.sendEvent(
       Event.removed_tag,
       params: {'tagName': getTag.title},
@@ -743,9 +768,6 @@ abstract class _PicStore with Store {
     generalLocation = general;
   }
 
-  @observable
-  bool aiTags = false;
-
   @action
   void setAiTags(bool value) => aiTags = value;
 
@@ -757,11 +779,6 @@ abstract class _PicStore with Store {
       getAiSuggestions(context);
     }
   }
-
-  var aiSuggestions = <TagsStore>[];
-
-  @observable
-  bool aiTagsLoaded = false;
 
   @action
   void setAiTagsLoaded(bool value) => aiTagsLoaded = value;

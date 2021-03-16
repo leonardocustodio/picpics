@@ -9,56 +9,48 @@ part of 'pic_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$PicStore on _PicStore, Store {
-  Computed<Future<List<TagsStore>>> _$tagsSuggestionsComputed;
+  final _$aiTagsAtom = Atom(name: '_PicStore.aiTags');
 
   @override
-  Future<List<TagsStore>> get tagsSuggestions => (_$tagsSuggestionsComputed ??=
-          Computed<Future<List<TagsStore>>>(() => super.tagsSuggestions,
-              name: '_PicStore.tagsSuggestions'))
-      .value;
-
-  final _$isStarredAtom = Atom(name: '_PicStore.isStarred');
-
-  @override
-  bool get isStarred {
-    _$isStarredAtom.reportRead();
-    return super.isStarred;
+  bool get aiTags {
+    _$aiTagsAtom.reportRead();
+    return super.aiTags;
   }
 
   @override
-  set isStarred(bool value) {
-    _$isStarredAtom.reportWrite(value, super.isStarred, () {
-      super.isStarred = value;
+  set aiTags(bool value) {
+    _$aiTagsAtom.reportWrite(value, super.aiTags, () {
+      super.aiTags = value;
     });
   }
 
-  final _$photoIdAtom = Atom(name: '_PicStore.photoId');
+  final _$aiTagsLoadedAtom = Atom(name: '_PicStore.aiTagsLoaded');
 
   @override
-  String get photoId {
-    _$photoIdAtom.reportRead();
-    return super.photoId;
+  bool get aiTagsLoaded {
+    _$aiTagsLoadedAtom.reportRead();
+    return super.aiTagsLoaded;
   }
 
   @override
-  set photoId(String value) {
-    _$photoIdAtom.reportWrite(value, super.photoId, () {
-      super.photoId = value;
+  set aiTagsLoaded(bool value) {
+    _$aiTagsLoadedAtom.reportWrite(value, super.aiTagsLoaded, () {
+      super.aiTagsLoaded = value;
     });
   }
 
-  final _$entityAtom = Atom(name: '_PicStore.entity');
+  final _$searchTextAtom = Atom(name: '_PicStore.searchText');
 
   @override
-  AssetEntity get entity {
-    _$entityAtom.reportRead();
-    return super.entity;
+  String get searchText {
+    _$searchTextAtom.reportRead();
+    return super.searchText;
   }
 
   @override
-  set entity(AssetEntity value) {
-    _$entityAtom.reportWrite(value, super.entity, () {
-      super.entity = value;
+  set searchText(String value) {
+    _$searchTextAtom.reportWrite(value, super.searchText, () {
+      super.searchText = value;
     });
   }
 
@@ -137,48 +129,63 @@ mixin _$PicStore on _PicStore, Store {
     });
   }
 
-  final _$searchTextAtom = Atom(name: '_PicStore.searchText');
+  final _$isStarredAtom = Atom(name: '_PicStore.isStarred');
 
   @override
-  String get searchText {
-    _$searchTextAtom.reportRead();
-    return super.searchText;
+  bool get isStarred {
+    _$isStarredAtom.reportRead();
+    return super.isStarred;
   }
 
   @override
-  set searchText(String value) {
-    _$searchTextAtom.reportWrite(value, super.searchText, () {
-      super.searchText = value;
+  set isStarred(bool value) {
+    _$isStarredAtom.reportWrite(value, super.isStarred, () {
+      super.isStarred = value;
     });
   }
 
-  final _$aiTagsAtom = Atom(name: '_PicStore.aiTags');
+  final _$photoIdAtom = Atom(name: '_PicStore.photoId');
 
   @override
-  bool get aiTags {
-    _$aiTagsAtom.reportRead();
-    return super.aiTags;
+  String get photoId {
+    _$photoIdAtom.reportRead();
+    return super.photoId;
   }
 
   @override
-  set aiTags(bool value) {
-    _$aiTagsAtom.reportWrite(value, super.aiTags, () {
-      super.aiTags = value;
+  set photoId(String value) {
+    _$photoIdAtom.reportWrite(value, super.photoId, () {
+      super.photoId = value;
     });
   }
 
-  final _$aiTagsLoadedAtom = Atom(name: '_PicStore.aiTagsLoaded');
+  final _$entityAtom = Atom(name: '_PicStore.entity');
 
   @override
-  bool get aiTagsLoaded {
-    _$aiTagsLoadedAtom.reportRead();
-    return super.aiTagsLoaded;
+  AssetEntity get entity {
+    _$entityAtom.reportRead();
+    return super.entity;
   }
 
   @override
-  set aiTagsLoaded(bool value) {
-    _$aiTagsLoadedAtom.reportWrite(value, super.aiTagsLoaded, () {
-      super.aiTagsLoaded = value;
+  set entity(AssetEntity value) {
+    _$entityAtom.reportWrite(value, super.entity, () {
+      super.entity = value;
+    });
+  }
+
+  final _$tagsSuggestionsAtom = Atom(name: '_PicStore.tagsSuggestions');
+
+  @override
+  List<TagsStore> get tagsSuggestions {
+    _$tagsSuggestionsAtom.reportRead();
+    return super.tagsSuggestions;
+  }
+
+  @override
+  set tagsSuggestions(List<TagsStore> value) {
+    _$tagsSuggestionsAtom.reportWrite(value, super.tagsSuggestions, () {
+      super.tagsSuggestions = value;
     });
   }
 
@@ -350,17 +357,17 @@ mixin _$PicStore on _PicStore, Store {
   @override
   String toString() {
     return '''
-isStarred: ${isStarred},
-photoId: ${photoId},
-entity: ${entity},
+aiTags: ${aiTags},
+aiTagsLoaded: ${aiTagsLoaded},
+searchText: ${searchText},
 latitude: ${latitude},
 longitude: ${longitude},
 specificLocation: ${specificLocation},
 generalLocation: ${generalLocation},
 isPrivate: ${isPrivate},
-searchText: ${searchText},
-aiTags: ${aiTags},
-aiTagsLoaded: ${aiTagsLoaded},
+isStarred: ${isStarred},
+photoId: ${photoId},
+entity: ${entity},
 tagsSuggestions: ${tagsSuggestions}
     ''';
   }

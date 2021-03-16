@@ -32,6 +32,7 @@ abstract class _GalleryStore with Store {
   final database = AppDatabase();
 
   _GalleryStore({this.appStore}) {
+    tagsSuggestionsCalculate();
     loadTaggedPicsStore();
 
     if (appStore?.tutorialCompleted ?? false) {
@@ -265,18 +266,23 @@ abstract class _GalleryStore with Store {
   String searchText = '';
 
   @action
-  void setSearchText(String value) => searchText = value;
+  void setSearchText(String value) {
+    searchText = value;
+    tagsSuggestionsCalculate();
+  }
 
-  Future<List<Label>> getLabels() async {
+  @observable
+  List<TagsStore> tagsSuggestions = <TagsStore>[];
+
+/*   Future<List<Label>> getLabels() async {
     return await database.getAllLabel();
   }
 
   Future<MoorUser> getUser() async {
     return await database.getSingleMoorUser();
-  }
+  } */
 
-  @computed
-  Future<List<TagsStore>> get tagsSuggestions async {
+  Future<List<TagsStore>> tagsSuggestionsCalculate() async {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
     var tagsList = await database.getAllLabel();
@@ -349,6 +355,7 @@ abstract class _GalleryStore with Store {
       }
     });
     // print('Suggestions Tag Store: $suggestions');
+    tagsSuggestions = suggestions;
     return suggestions;
   }
 
@@ -476,6 +483,7 @@ abstract class _GalleryStore with Store {
     }
 
     setShouldRefreshTaggedGallery(true);
+    tagsSuggestionsCalculate();
   }
 
   @action
@@ -609,6 +617,8 @@ abstract class _GalleryStore with Store {
     }
 
     untaggedPicsStore.addPicStore(picStore);
+
+    tagsSuggestionsCalculate();
   }
 
   @action
@@ -1339,6 +1349,7 @@ abstract class _GalleryStore with Store {
       addPicToUntaggedPics(picStore: picStore);
       // print('this pic now doesnt have tags!');
     }
+    await tagsSuggestionsCalculate();
   }
 
   @action
@@ -1351,6 +1362,7 @@ abstract class _GalleryStore with Store {
     await picStore.addTag(tagName: tagName);
 
     await addPicToTaggedPics(picStore: picStore);
+    await tagsSuggestionsCalculate();
   }
 
   @action

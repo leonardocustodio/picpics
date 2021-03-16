@@ -378,7 +378,8 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                       padding: const EdgeInsets.only(top: 16.0),
                                       child: TagsList(
                                         tags: galleryStore
-                                            .currentThumbnailPic.tags,
+                                            .currentThumbnailPic.tags.values
+                                            .toList(),
                                         tagStyle: TagStyle.MultiColored,
                                         addTagButton: () {
                                           galleryStore.setCurrentPic(

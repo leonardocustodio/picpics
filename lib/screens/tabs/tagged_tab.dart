@@ -706,50 +706,36 @@ class _TaggedTabState extends State<TaggedTab> {
                               builder: (_) {
                                 if (!galleryStore.showSearchTagsResults) {
                                   //print(                                      '############ ${galleryStore.tagsSuggestions}');
-                                  return FutureBuilder(
-                                    future: galleryStore.tagsSuggestions,
-                                    builder: (c, AsyncSnapshot snapshot) {
-                                      return snapshot.hasData
-                                          ? Padding(
-                                              padding: const EdgeInsets.only(
-                                                  left: 16.0,
-                                                  right: 16,
-                                                  top: 8.0,
-                                                  bottom: 16.0),
-                                              child: TagsList(
-                                                tags: snapshot.data,
-                                                tagStyle: TagStyle.GrayOutlined,
-                                                showEditTagModal:
-                                                    widget.showEditTagModal,
-                                                onTap: (tagId, tagName) {
-                                                  if (tabsStore
-                                                          .toggleIndexTagged ==
-                                                      0) {
-                                                    tabsStore
-                                                        .setToggleIndexTagged(
-                                                            1);
-                                                  }
+                                  return Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 16.0,
+                                        right: 16,
+                                        top: 8.0,
+                                        bottom: 16.0),
+                                    child: TagsList(
+                                      tags: galleryStore.tagsSuggestions,
+                                      tagStyle: TagStyle.GrayOutlined,
+                                      showEditTagModal: widget.showEditTagModal,
+                                      onTap: (tagId, tagName) {
+                                        if (tabsStore.toggleIndexTagged == 0) {
+                                          tabsStore.setToggleIndexTagged(1);
+                                        }
 
-                                                  galleryStore
-                                                      .addTagToSearchFilter();
-                                                  searchEditingController
-                                                      .clear();
-                                                  galleryStore.searchResultsTags(
-                                                      searchEditingController
-                                                          .text);
-                                                },
-                                                onDoubleTap: () {
-                                                  //print('do nothing');
-                                                },
-                                                onPanEnd: () {
-                                                  //print('do nothing');
-                                                },
-                                              ),
-                                            )
-                                          : Container();
-                                    },
+                                        galleryStore.addTagToSearchFilter();
+                                        searchEditingController.clear();
+                                        galleryStore.searchResultsTags(
+                                            searchEditingController.text);
+                                      },
+                                      onDoubleTap: () {
+                                        //print('do nothing');
+                                      },
+                                      onPanEnd: () {
+                                        //print('do nothing');
+                                      },
+                                    ),
                                   );
                                 }
+
                                 if (galleryStore.searchTagsResults.isEmpty) {
                                   return Container(
                                     padding: const EdgeInsets.only(
