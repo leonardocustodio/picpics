@@ -413,10 +413,10 @@ abstract class _AppStore with Store {
   @action
   void loadMostUsedTags({int maxTagsLength = 12}) {
     mostUsedTags.clear();
-    mostUsedTags = List<TagsStore>.from(tags.values.toList());
-    mostUsedTags.sort(
-        (a, b) => b.count.compareTo(a.count) /* & a.name.compareTo(b.name) */);
-    mostUsedTags.sublist(0, maxTagsLength);
+    var tempTags = List<TagsStore>.from(tags.values);
+    tempTags.sort((a, b) => b.count.compareTo(a.count));
+    mostUsedTags = List<TagsStore>.from(tempTags);
+    mostUsedTags = mostUsedTags.sublist(0, maxTagsLength);
   }
 
   @observable
@@ -426,15 +426,16 @@ abstract class _AppStore with Store {
     DateTime now = DateTime.now();
     return DateTime(date.year, date.month, date.day)
         .difference(DateTime(now.year, now.month, now.day))
-        .inDays;
+        .inMinutes;
   }
 
   @action
   void loadLastWeekUsedTags({int maxTagsLength = 12}) {
     lastWeekUsedTags.clear();
-    lastWeekUsedTags = List<TagsStore>.from(tags.values.toList());
-    lastWeekUsedTags.sort((a, b) =>
-        calculateDifference(a.time).compareTo(calculateDifference(b.time)));
+    var tempTags = List<TagsStore>.from(tags.values);
+    tempTags.sort((a, b) =>
+        calculateDifference(b.time).compareTo(calculateDifference(a.time)));
+    lastWeekUsedTags = List<TagsStore>.from(tempTags);
     lastWeekUsedTags.sublist(0, maxTagsLength);
   }
 
