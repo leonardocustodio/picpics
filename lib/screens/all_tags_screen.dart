@@ -235,7 +235,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                         ),
                       ),
                       CustomisedTagsList(
-                        tags: appStore.tags.values.toList(),
+                        tags: appStore.mostUsedTags,
                         selectedTags: selectedTags,
                         onTap: (String tagId, String tagName, int count,
                             DateTime time) async {
@@ -259,6 +259,64 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             await galleryStore.addTagToPic(
                                 picStore: widget.picStore, tagName: tagName);
                           }
+                          appStore.loadTags();
+                        },
+                        onDoubleTap: () {
+                          //print('do nothing');
+                        },
+                        showEditTagModal: () =>
+                            showEditTagModal(context, galleryStore),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Observer(
+                builder: (_) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: Text(
+                          'Last Week Used',
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff979a9b),
+                            fontSize: 33,
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.normal,
+                            letterSpacing: -0.4099999964237213,
+                          ),
+                        ),
+                      ),
+                      CustomisedTagsList(
+                        tags: appStore.lastWeekUsedTags,
+                        selectedTags: selectedTags,
+                        onTap: (String tagId, String tagName, int count,
+                            DateTime time) async {
+                          //print('do nothing');
+                          /* if (!appStore.canTagToday) {
+                          showWatchAdModal(context);
+                          return;
+                        } */
+                          if (selectedTags[tagId] != null) {
+                            selectedTags.remove(tagId);
+                            appStore.loadMostUsedTags();
+                            setState(() {});
+                            await galleryStore.removeTagFromPic(
+                                picStore: widget.picStore, tagKey: tagId);
+                          } else {
+                            selectedTags[tagId] = TagsStore(
+                                id: tagId,
+                                name: tagName,
+                                count: count,
+                                time: time);
+                            setState(() {});
+                            await galleryStore.addTagToPic(
+                                picStore: widget.picStore, tagName: tagName);
+                          }
+                          appStore.loadTags();
                         },
                         onDoubleTap: () {
                           //print('do nothing');

@@ -404,7 +404,39 @@ abstract class _AppStore with Store {
     }
   }
 
-  ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
+  @observable
+  Map<String, TagsStore> tags = <String, TagsStore>{};
+
+  @observable
+  List<TagsStore> mostUsedTags = <TagsStore>[];
+
+  @action
+  void loadMostUsedTags({int maxTagsLength = 12}) {
+    mostUsedTags.clear();
+    mostUsedTags = List<TagsStore>.from(tags.values.toList());
+    mostUsedTags.sort(
+        (a, b) => b.count.compareTo(a.count) /* & a.name.compareTo(b.name) */);
+    mostUsedTags.sublist(0, maxTagsLength);
+  }
+
+  @observable
+  List<TagsStore> lastWeekUsedTags = <TagsStore>[];
+
+  int calculateDifference(DateTime date) {
+    DateTime now = DateTime.now();
+    return DateTime(date.year, date.month, date.day)
+        .difference(DateTime(now.year, now.month, now.day))
+        .inDays;
+  }
+
+  @action
+  void loadLastWeekUsedTags({int maxTagsLength = 12}) {
+    lastWeekUsedTags.clear();
+    lastWeekUsedTags = List<TagsStore>.from(tags.values.toList());
+    lastWeekUsedTags.sort((a, b) =>
+        calculateDifference(a.time).compareTo(calculateDifference(b.time)));
+    lastWeekUsedTags.sublist(0, maxTagsLength);
+  }
 
   @action
   Future<void> loadTags() async {
@@ -445,6 +477,8 @@ abstract class _AppStore with Store {
       );
       addTag(tagsStore);
     }
+    loadMostUsedTags();
+    loadLastWeekUsedTags();
 
     //print('******************* loaded tags **********');
   }
