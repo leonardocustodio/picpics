@@ -82,9 +82,9 @@ abstract class _AppStore with Store {
       addRecentTags(tagKey);
     }
 
-    if (user.hasGalleryPermission != null || user.tutorialCompleted) {
+    /*    if (user.hasGalleryPermission != null || user.tutorialCompleted) {
       requestGalleryPermission();
-    }
+    } */
 
     // Executa primeira vez para ver se ainda tem permissão
     checkNotificationPermission();
@@ -416,7 +416,8 @@ abstract class _AppStore with Store {
     var tempTags = List<TagsStore>.from(tags.values);
     tempTags.sort((a, b) => b.count.compareTo(a.count));
     mostUsedTags = List<TagsStore>.from(tempTags);
-    mostUsedTags = mostUsedTags.sublist(0, maxTagsLength);
+    if (mostUsedTags.length > maxTagsLength)
+      mostUsedTags = mostUsedTags.sublist(0, maxTagsLength);
   }
 
   @observable
@@ -433,10 +434,27 @@ abstract class _AppStore with Store {
   void loadLastWeekUsedTags({int maxTagsLength = 12}) {
     lastWeekUsedTags.clear();
     var tempTags = List<TagsStore>.from(tags.values);
+    // TODO: see for a better approach/algorithm to select out the tags
     tempTags.sort((a, b) =>
         calculateDifference(b.time).compareTo(calculateDifference(a.time)));
     lastWeekUsedTags = List<TagsStore>.from(tempTags);
-    lastWeekUsedTags.sublist(0, maxTagsLength);
+    if (lastWeekUsedTags.length > maxTagsLength)
+      lastWeekUsedTags = lastWeekUsedTags.sublist(0, maxTagsLength);
+  }
+
+  @observable
+  List<TagsStore> lastMonthUsedTags = <TagsStore>[];
+
+  @action
+  void loadLastMonthUsedTags({int maxTagsLength = 12}) {
+    lastMonthUsedTags.clear();
+    var tempTags = List<TagsStore>.from(tags.values);
+    // TODO: see for a better approach/algorithm to select out the tags
+    tempTags.sort((a, b) =>
+        calculateDifference(b.time).compareTo(calculateDifference(a.time)));
+    lastMonthUsedTags = List<TagsStore>.from(tempTags);
+    if (lastMonthUsedTags.length > maxTagsLength)
+      lastMonthUsedTags = lastMonthUsedTags.sublist(0, maxTagsLength);
   }
 
   @action
@@ -480,6 +498,7 @@ abstract class _AppStore with Store {
     }
     loadMostUsedTags();
     loadLastWeekUsedTags();
+    loadLastMonthUsedTags();
 
     //print('******************* loaded tags **********');
   }

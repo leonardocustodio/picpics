@@ -220,6 +220,21 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$lastMonthUsedTagsAtom = Atom(name: '_AppStore.lastMonthUsedTags');
+
+  @override
+  List<TagsStore> get lastMonthUsedTags {
+    _$lastMonthUsedTagsAtom.reportRead();
+    return super.lastMonthUsedTags;
+  }
+
+  @override
+  set lastMonthUsedTags(List<TagsStore> value) {
+    _$lastMonthUsedTagsAtom.reportWrite(value, super.lastMonthUsedTags, () {
+      super.lastMonthUsedTags = value;
+    });
+  }
+
   final _$tutorialCompletedAtom = Atom(name: '_AppStore.tutorialCompleted');
 
   @override
@@ -619,6 +634,17 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void loadLastMonthUsedTags({int maxTagsLength = 12}) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.loadLastMonthUsedTags');
+    try {
+      return super.loadLastMonthUsedTags(maxTagsLength: maxTagsLength);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void addTag(TagsStore tagsStore) {
     final _$actionInfo =
         _$_AppStoreActionController.startAction(name: '_AppStore.addTag');
@@ -712,6 +738,7 @@ isPremium: ${isPremium},
 tags: ${tags},
 mostUsedTags: ${mostUsedTags},
 lastWeekUsedTags: ${lastWeekUsedTags},
+lastMonthUsedTags: ${lastMonthUsedTags},
 tutorialCompleted: ${tutorialCompleted},
 canTagToday: ${canTagToday},
 appLanguage: ${appLanguage},
