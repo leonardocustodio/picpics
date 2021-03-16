@@ -175,6 +175,51 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$tagsAtom = Atom(name: '_AppStore.tags');
+
+  @override
+  Map<String, TagsStore> get tags {
+    _$tagsAtom.reportRead();
+    return super.tags;
+  }
+
+  @override
+  set tags(Map<String, TagsStore> value) {
+    _$tagsAtom.reportWrite(value, super.tags, () {
+      super.tags = value;
+    });
+  }
+
+  final _$mostUsedTagsAtom = Atom(name: '_AppStore.mostUsedTags');
+
+  @override
+  List<TagsStore> get mostUsedTags {
+    _$mostUsedTagsAtom.reportRead();
+    return super.mostUsedTags;
+  }
+
+  @override
+  set mostUsedTags(List<TagsStore> value) {
+    _$mostUsedTagsAtom.reportWrite(value, super.mostUsedTags, () {
+      super.mostUsedTags = value;
+    });
+  }
+
+  final _$lastWeekUsedTagsAtom = Atom(name: '_AppStore.lastWeekUsedTags');
+
+  @override
+  List<TagsStore> get lastWeekUsedTags {
+    _$lastWeekUsedTagsAtom.reportRead();
+    return super.lastWeekUsedTags;
+  }
+
+  @override
+  set lastWeekUsedTags(List<TagsStore> value) {
+    _$lastWeekUsedTagsAtom.reportWrite(value, super.lastWeekUsedTags, () {
+      super.lastWeekUsedTags = value;
+    });
+  }
+
   final _$tutorialCompletedAtom = Atom(name: '_AppStore.tutorialCompleted');
 
   @override
@@ -552,6 +597,28 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
+  void loadMostUsedTags({int maxTagsLength = 12}) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.loadMostUsedTags');
+    try {
+      return super.loadMostUsedTags(maxTagsLength: maxTagsLength);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void loadLastWeekUsedTags({int maxTagsLength = 12}) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.loadLastWeekUsedTags');
+    try {
+      return super.loadLastWeekUsedTags(maxTagsLength: maxTagsLength);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   void addTag(TagsStore tagsStore) {
     final _$actionInfo =
         _$_AppStoreActionController.startAction(name: '_AppStore.addTag');
@@ -642,6 +709,9 @@ requireSecret: ${requireSecret},
 hourOfDay: ${hourOfDay},
 minutesOfDay: ${minutesOfDay},
 isPremium: ${isPremium},
+tags: ${tags},
+mostUsedTags: ${mostUsedTags},
+lastWeekUsedTags: ${lastWeekUsedTags},
 tutorialCompleted: ${tutorialCompleted},
 canTagToday: ${canTagToday},
 appLanguage: ${appLanguage},
