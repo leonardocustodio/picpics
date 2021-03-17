@@ -89,7 +89,6 @@ class _TagsListState extends State<TagsList> {
 
       tagsWidgets.add(
         GestureDetector(
-          behavior: HitTestBehavior.translucent,
           onTap: () {
             if (widget.shouldChangeToSwipeMode) {
               setState(() {
