@@ -29,6 +29,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
   GalleryStore galleryStore;
   FocusNode focusNode = FocusNode();
   String searchedText = '';
+  bool doFullSearching = true;
   var searchEditingController = TextEditingController();
   var selectedTags = <String, TagsStore>{},
       allTagsAvailable = <String, TagsStore>{},
@@ -51,6 +52,38 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
         .tagsFromPic(picStore: widget.picStore)
         .forEach((TagsStore tag_element) {
       selectedTags[tag_element.id] = tag_element;
+    });
+  }
+
+  void doSearching() {
+    if (searchedText == '') return;
+    var tempTags;
+    if (!doFullSearching) {
+      // copy the already searched tags into temporary variable
+      tempTags = Map<String, TagsStore>.from(searchedTags);
+    }
+    searchedTags.clear();
+    var listOfLetters = searchedText.toLowerCase().split('');
+    (!doFullSearching ? tempTags : appStore.tags).forEach((key, value) {
+      var matched = true;
+      var title = value.name.toLowerCase();
+      var i = 0;
+      for (var index = 0; index < listOfLetters.length; index++) {
+        var found = false;
+        while (i < title.length) {
+          if (listOfLetters[index] == title[i]) {
+            found = true;
+            i++;
+            break;
+          }
+          i++;
+        }
+        if (!found) {
+          matched = false;
+          break;
+        }
+      }
+      if (matched) searchedTags[key] = value;
     });
   }
 
@@ -138,23 +171,44 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                       key: widget.key,
                                       controller: searchEditingController,
                                       focusNode: focusNode,
-                                      onChanged: (text) {
-                                        searchedText = text.trim();
-                                        if (searchedText != '') {
-                                          appStore.tags.forEach((key, value) {
-                                            if (value.name
-                                                .toLowerCase()
-                                                .startsWith(searchedText
-                                                    .toLowerCase())) {
-                                              searchedTags[key] = value;
-                                            }
-                                          });
+                                      onChanged: (t) {
+                                        var text = t.trim();
+                                        if (searchedText == '') {
+                                          if (text != '') {
+                                            // New letter came
+                                            searchedText = text;
+                                            doFullSearching = true;
+                                            doSearching();
+                                          }
                                         } else {
-                                          searchedTags.clear();
+                                          // searchedText already has some data
+                                          if (text == '') {
+                                            searchedText = '';
+                                            doFullSearching = true;
+                                            searchedTags.clear();
+                                          } else if (searchedText.length <
+                                              text.length) {
+                                            // more new letters added
+                                            searchedText = text;
+                                            doFullSearching = false;
+                                            doSearching();
+                                          } else if (searchedText.length >
+                                              text.length) {
+                                            // letters deleted
+                                            searchedText = text;
+                                            doFullSearching = true;
+                                            doSearching();
+                                          } else {
+                                            // New letter came
+                                            searchedText = text;
+                                            doFullSearching = true;
+                                            doSearching();
+                                          }
                                         }
                                         setState(() {});
                                       },
                                       onFieldSubmitted: (text) {
+                                        /* 
                                         searchedText = text.trim();
                                         if (searchedText != '') {
                                           appStore.tags.forEach((key, value) {
@@ -168,7 +222,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                         } else {
                                           searchedTags.clear();
                                         }
-                                        setState(() {});
+                                        setState(() {}); */
                                       },
                                       /* suggestions: appStore.tags.values
                                           .map((e) => e.name)
@@ -214,6 +268,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                       onTap: () {
                                         if (searchedText != '') {
                                           searchedText = '';
+                                          doFullSearching = true;
+                                          searchedTags.clear();
                                           focusNode.unfocus();
                                           searchEditingController.clear();
                                           setState(() {});
@@ -354,8 +410,9 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                       );
                     },
                   ),
-                if (searchedText == '') const SizedBox(height: 20),
-                if (searchedText == '')
+                if (appStore.lastWeekUsedTags.isNotEmpty && searchedText == '')
+                  const SizedBox(height: 20),
+                if (appStore.lastWeekUsedTags.isNotEmpty && searchedText == '')
                   Observer(
                     builder: (_) {
                       return Column(
@@ -413,8 +470,9 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                       );
                     },
                   ),
-                if (searchedText == '') const SizedBox(height: 20),
-                if (searchedText == '')
+                if (appStore.lastMonthUsedTags.isNotEmpty && searchedText == '')
+                  const SizedBox(height: 20),
+                if (appStore.lastMonthUsedTags.isNotEmpty && searchedText == '')
                   Observer(
                     builder: (_) {
                       return Column(

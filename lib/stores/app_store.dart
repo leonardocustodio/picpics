@@ -414,7 +414,8 @@ abstract class _AppStore with Store {
   void loadMostUsedTags({int maxTagsLength = 12}) {
     mostUsedTags.clear();
     var tempTags = List<TagsStore>.from(tags.values);
-    tempTags.sort((a, b) => b.count.compareTo(a.count));
+    tempTags
+        .sort((a, b) => b.count.compareTo(a.count) & b.name.compareTo(a.name));
     mostUsedTags = List<TagsStore>.from(tempTags);
     if (mostUsedTags.length > maxTagsLength)
       mostUsedTags = mostUsedTags.sublist(0, maxTagsLength);
@@ -423,23 +424,23 @@ abstract class _AppStore with Store {
   @observable
   List<TagsStore> lastWeekUsedTags = <TagsStore>[];
 
-  int calculateDifference(DateTime date) {
-    DateTime now = DateTime.now();
-    return DateTime(date.year, date.month, date.day)
-        .difference(DateTime(now.year, now.month, now.day))
-        .inMinutes;
-  }
-
   @action
   void loadLastWeekUsedTags({int maxTagsLength = 12}) {
     lastWeekUsedTags.clear();
-    var tempTags = List<TagsStore>.from(tags.values);
-    // TODO: see for a better approach/algorithm to select out the tags
-    tempTags.sort((a, b) =>
-        calculateDifference(b.time).compareTo(calculateDifference(a.time)));
-    lastWeekUsedTags = List<TagsStore>.from(tempTags);
-    if (lastWeekUsedTags.length > maxTagsLength)
-      lastWeekUsedTags = lastWeekUsedTags.sublist(0, maxTagsLength);
+    var now = DateTime.now();
+    var sevenDaysBack =
+        DateTime(now.year, now.month, (now.day - now.weekday - 1));
+    doSortingOfWeeksAndMonth(lastMonthUsedTags, sevenDaysBack, maxTagsLength);
+    /* tags.values.forEach((element) {
+      if (element.time.isBefore(sevenDaysBack)) {
+        lastWeekUsedTags.add(element);
+      }
+    });
+    if (lastWeekUsedTags.isNotEmpty) {
+      lastWeekUsedTags.sort((a, b) => a.time.day.compareTo(b.time.day));
+      if (lastWeekUsedTags.length > maxTagsLength)
+        lastWeekUsedTags = lastWeekUsedTags.sublist(0, maxTagsLength);
+    } */
   }
 
   @observable
@@ -448,13 +449,33 @@ abstract class _AppStore with Store {
   @action
   void loadLastMonthUsedTags({int maxTagsLength = 12}) {
     lastMonthUsedTags.clear();
-    var tempTags = List<TagsStore>.from(tags.values);
-    // TODO: see for a better approach/algorithm to select out the tags
-    tempTags.sort((a, b) =>
-        calculateDifference(b.time).compareTo(calculateDifference(a.time)));
-    lastMonthUsedTags = List<TagsStore>.from(tempTags);
-    if (lastMonthUsedTags.length > maxTagsLength)
-      lastMonthUsedTags = lastMonthUsedTags.sublist(0, maxTagsLength);
+    var now = DateTime.now();
+    var monthBack = DateTime(now.year, now.month, 1);
+    doSortingOfWeeksAndMonth(lastMonthUsedTags, monthBack, maxTagsLength);
+
+    /* tags.values.forEach((element) {
+      if (element.time.isBefore(monthBack)) {
+        lastMonthUsedTags.add(element);
+      }
+    });
+    if (lastMonthUsedTags.isNotEmpty) {
+      lastMonthUsedTags.sort((a, b) => a.time.day.compareTo(b.time.day));
+      if (lastMonthUsedTags.length > maxTagsLength)
+        lastMonthUsedTags = lastMonthUsedTags.sublist(0, maxTagsLength);
+    } */
+  }
+
+  void doSortingOfWeeksAndMonth(
+      dynamic list, DateTime back, int maxTagsLength) {
+    tags.values.forEach((element) {
+      if (element.time.isBefore(back)) {
+        list.add(element);
+      }
+    });
+    if (list.isNotEmpty) {
+      list.sort((a, b) => a.time.day.compareTo(b.time.day));
+      if (list.length > maxTagsLength) list = list.sublist(0, maxTagsLength);
+    }
   }
 
   @action

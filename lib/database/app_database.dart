@@ -234,14 +234,14 @@ class AppDatabase extends _$AppDatabase {
         ]))
       .get();
 
-  Future<List<Label>> fetchMostUsedLabels(Label oldLabel) => (select(labels)
+  Future<List<Label>> fetchMostUsedLabels() => (select(labels)
         ..orderBy([
           (u) => OrderingTerm(expression: u.counter, mode: OrderingMode.desc),
           (u) => OrderingTerm(expression: u.title, mode: OrderingMode.asc),
         ]))
       .get();
 
-  Future<List<Label>> fetchLastWeekUsedLabels(Label oldLabel) {
+  Future<List<Label>> fetchLastWeekUsedLabels() {
     var sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
     return (select(labels)
           ..where((tbl) => tbl.lastUsedAt.isBiggerOrEqualValue(sevenDaysAgo))
@@ -251,7 +251,7 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
-  Future<List<Label>> fetchLastMonthUsedLabels(Label oldLabel) {
+  Future<List<Label>> fetchLastMonthUsedLabels() {
     var thirty1Days = DateTime.now().subtract(const Duration(days: 31));
     return (select(labels)
           ..where((tbl) => tbl.lastUsedAt.isBiggerOrEqualValue(thirty1Days))
