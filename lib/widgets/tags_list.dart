@@ -166,7 +166,7 @@ class _TagsListState extends State<TagsList> {
                     borderRadius: BorderRadius.circular(19.0))
                 : kGrayBoxDecoration,
             child: showSwiperInIndex != i
-                ? tag.id != kSecretTagKey
+                ? tag?.id != kSecretTagKey
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),

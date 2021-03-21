@@ -414,8 +414,13 @@ abstract class _AppStore with Store {
   void loadMostUsedTags({int maxTagsLength = 12}) {
     mostUsedTags.clear();
     var tempTags = List<TagsStore>.from(tags.values);
-    tempTags
-        .sort((a, b) => b.count.compareTo(a.count) & b.name.compareTo(a.name));
+    tempTags.sort((a, b) {
+      var count = b.count.compareTo(a.count);
+      if (count == 0)
+        return b.name.toLowerCase().compareTo(a.name.toLowerCase());
+
+      return count;
+    });
     mostUsedTags = List<TagsStore>.from(tempTags);
     if (mostUsedTags.length > maxTagsLength)
       mostUsedTags = mostUsedTags.sublist(0, maxTagsLength);
@@ -431,16 +436,6 @@ abstract class _AppStore with Store {
     var sevenDaysBack =
         DateTime(now.year, now.month, (now.day - now.weekday - 1));
     doSortingOfWeeksAndMonth(lastMonthUsedTags, sevenDaysBack, maxTagsLength);
-    /* tags.values.forEach((element) {
-      if (element.time.isBefore(sevenDaysBack)) {
-        lastWeekUsedTags.add(element);
-      }
-    });
-    if (lastWeekUsedTags.isNotEmpty) {
-      lastWeekUsedTags.sort((a, b) => a.time.day.compareTo(b.time.day));
-      if (lastWeekUsedTags.length > maxTagsLength)
-        lastWeekUsedTags = lastWeekUsedTags.sublist(0, maxTagsLength);
-    } */
   }
 
   @observable
@@ -452,17 +447,6 @@ abstract class _AppStore with Store {
     var now = DateTime.now();
     var monthBack = DateTime(now.year, now.month, 1);
     doSortingOfWeeksAndMonth(lastMonthUsedTags, monthBack, maxTagsLength);
-
-    /* tags.values.forEach((element) {
-      if (element.time.isBefore(monthBack)) {
-        lastMonthUsedTags.add(element);
-      }
-    });
-    if (lastMonthUsedTags.isNotEmpty) {
-      lastMonthUsedTags.sort((a, b) => a.time.day.compareTo(b.time.day));
-      if (lastMonthUsedTags.length > maxTagsLength)
-        lastMonthUsedTags = lastMonthUsedTags.sublist(0, maxTagsLength);
-    } */
   }
 
   void doSortingOfWeeksAndMonth(
@@ -473,7 +457,7 @@ abstract class _AppStore with Store {
       }
     });
     if (list.isNotEmpty) {
-      list.sort((a, b) => a.time.day.compareTo(b.time.day));
+      list.sort((a, b) => b.time.day.compareTo(a.time.day));
       if (list.length > maxTagsLength) list = list.sublist(0, maxTagsLength);
     }
   }

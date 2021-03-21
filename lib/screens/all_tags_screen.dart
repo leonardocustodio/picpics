@@ -7,6 +7,7 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/customised_tags_list.dart';
 import 'package:picPics/widgets/show_watch_ad_modal.dart';
@@ -56,6 +57,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
   }
 
   void doSearching() {
+    searchedText = searchedText.trim();
     if (searchedText == '') return;
     var tempTags;
     if (!doFullSearching) {
@@ -64,27 +66,15 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
     }
     searchedTags.clear();
     var listOfLetters = searchedText.toLowerCase().split('');
-    (!doFullSearching ? tempTags : appStore.tags).forEach((key, value) {
-      var matched = true;
-      var title = value.name.toLowerCase();
-      var i = 0;
-      for (var index = 0; index < listOfLetters.length; index++) {
-        var found = false;
-        while (i < title.length) {
-          if (listOfLetters[index] == title[i]) {
-            found = true;
-            i++;
-            break;
-          }
-          i++;
-        }
-        if (!found) {
-          matched = false;
-          break;
-        }
-      }
-      if (matched) searchedTags[key] = value;
-    });
+    (!doFullSearching ? tempTags : appStore.tags).forEach(
+      (key, value) => doCustomisedSearching(
+        value,
+        listOfLetters,
+        (matched) {
+          if (matched) searchedTags[key] = value;
+        },
+      ),
+    );
   }
 
   @override

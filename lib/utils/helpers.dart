@@ -1,6 +1,7 @@
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
+import 'package:picPics/stores/tags_store.dart';
 
 import '../constants.dart';
 
@@ -52,4 +53,31 @@ LinearGradient getGradient(int _) {
     default:
       return kCardYellowGradient;
   }
+}
+
+typedef CallBack = Function(bool);
+
+void doCustomisedSearching(
+    TagsStore tag, List<String> listOfLetters, CallBack callback) {
+  if (tag == null) callback(false);
+
+  var matched = true;
+  var title = tag.name.toLowerCase();
+  var i = 0;
+  for (var index = 0; index < listOfLetters.length; index++) {
+    var found = false;
+    while (i < title.length) {
+      if (listOfLetters[index] == title[i]) {
+        found = true;
+        i++;
+        break;
+      }
+      i++;
+    }
+    if (!found) {
+      matched = false;
+      break;
+    }
+  }
+  callback(matched);
 }

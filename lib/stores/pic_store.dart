@@ -413,9 +413,12 @@ abstract class _PicStore with Store {
     //var tagsBox = Hive.box('tags');
     var tagsBox = await database.getAllLabel();
     var tagsBoxKeys = tagsBox.map((e) => e.key);
-    var suggestionTags = <String>[];
+    tagsSuggestions.clear();
+    searchText = searchText.trim();
 
     if (searchText == '') {
+      var suggestions = <TagsStore>[];
+      var suggestionTags = <String>[];
       var tagsKeys = tags.keys.toList();
 
       for (var recent in appStore.recentTags) {
@@ -442,27 +445,35 @@ abstract class _PicStore with Store {
           suggestionTags.add(tagKey);
         }
       }
+
+      for (String tagId in suggestionTags) {
+        suggestions.add(appStore.tags[tagId]);
+      }
+
+      tagsSuggestions = suggestions;
 //      }
     } else {
+      var listOfLetters = searchText.toLowerCase().split('');
       for (var tagKey in tagsBoxKeys) {
         if (tagKey == kSecretTagKey) continue;
         var tagName = Helpers.decryptTag(tagKey);
-        if (tagName.startsWith(Helpers.stripTag(searchText))) {
+        doCustomisedSearching(
+          appStore.tags[tagKey],
+          listOfLetters,
+          (matched) {
+            if (matched && appStore.tags[tagKey] != null)
+              tagsSuggestions.add(appStore.tags[tagKey]);
+          },
+        );
+        /* if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
-        }
+        } */
       }
     }
     //print('find suggestions: $searchText - exclude: $tagsKeys');
     //print(suggestionTags);
 
-    var suggestions = <TagsStore>[];
-    for (String tagId in suggestionTags) {
-      suggestions.add(appStore.tags[tagId]);
-    }
-
-    tagsSuggestions = suggestions;
-
-    return suggestions;
+    return <TagsStore>[];
   }
 
   @action

@@ -290,6 +290,7 @@ abstract class _GalleryStore with Store {
 
     //List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
+    searchText = searchText.trim();
 
     if (searchText == '') {
       for (var recent in getUser.recentTags) {
@@ -323,14 +324,19 @@ abstract class _GalleryStore with Store {
       }
 //      }
     } else {
+      var listOfLetters = searchText.toLowerCase().split('');
       for (Label tag in tagsList) {
         var tagKey = tag.key;
         if (tagKey == kSecretTagKey) continue;
 
-        String tagName = Helpers.decryptTag(tagKey);
+        var tagsStoreValue = appStore.tags[tagKey];
+        doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
+          suggestionTags.add(tagKey);
+        });
+        /* String tagName = Helpers.decryptTag(tagKey);
         if (tagName.startsWith(Helpers.stripTag(searchText))) {
           suggestionTags.add(tagKey);
-        }
+        } */
       }
     }
 
@@ -1123,23 +1129,28 @@ abstract class _GalleryStore with Store {
 
   @action
   void searchResultsTags(String text) {
+    text = text.trim();
+    searchTagsResults.clear();
     if (text == '') {
       setShowSearchTagsResults(false);
-      searchTagsResults.clear();
       return;
     }
+    var listOfLetters = text.toLowerCase().split('');
 
     setShowSearchTagsResults(true);
-    searchTagsResults.clear();
 
     for (MapEntry<String, TagsStore> map in appStore.tags.entries) {
       TagsStore tagStore = map.value;
-      if (Helpers.stripTag(tagStore.name).startsWith(Helpers.stripTag(text))) {
-        if (tagStore.id == kSecretTagKey) {
-          continue;
-        }
-        searchTagsResults.add(tagStore);
+      if (tagStore.id == kSecretTagKey) {
+        continue;
       }
+
+      doCustomisedSearching(tagStore, listOfLetters, (matched) {
+        if (matched) searchTagsResults.add(tagStore);
+      });
+      /* if (Helpers.stripTag(tagStore.name).startsWith(Helpers.stripTag(text))) {
+        searchTagsResults.add(tagStore);
+      } */
     }
   }
 
