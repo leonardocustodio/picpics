@@ -654,8 +654,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 return StaggeredTile.count(1, 1);
               },
             ),
-            itemCount: galleryStore.isLoaded
-                ? galleryStore.untaggedGridPics.length
+            itemCount: (galleryStore?.isLoaded ?? false)
+                ? (galleryStore?.untaggedGridPics?.length ?? 0)
                 : 0,
             itemBuilder: (BuildContext context, int index) {
               return _buildItem(context, index);
