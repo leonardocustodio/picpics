@@ -450,14 +450,14 @@ abstract class _AppStore with Store {
   }
 
   void doSortingOfWeeksAndMonth(
-      dynamic list, DateTime back, int maxTagsLength) {
+      List<TagsStore> list, DateTime back, int maxTagsLength) {
     tags.values.forEach((element) {
       if (element.time.isBefore(back)) {
         list.add(element);
       }
     });
     if (list.isNotEmpty) {
-      list.sort((a, b) => b.time.day.compareTo(a.time.day));
+      list.sort((TagsStore a, TagsStore b) => b.time.day.compareTo(a.time.day));
       if (list.length > maxTagsLength) list = list.sublist(0, maxTagsLength);
     }
   }
