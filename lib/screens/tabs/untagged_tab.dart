@@ -42,21 +42,17 @@ class MyDynamicHeader extends SliverPersistentHeaderDelegate {
       return Container(
         padding: const EdgeInsets.only(left: 14.0, right: 8.0),
         height: constraints.maxHeight,
-        child: Row(
-          children: [
-            Text(
-              headerTitle,
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
-            ),
-          ],
+        child: Text(
+          headerTitle,
+          textScaleFactor: 1.0,
+          style: TextStyle(
+            fontFamily: 'Lato',
+            color: Color(0xff606566),
+            fontSize: 14.0,
+            fontWeight: FontWeight.w400,
+            fontStyle: FontStyle.normal,
+            letterSpacing: -0.4099999964237213,
+          ),
         ),
       );
     });
@@ -98,8 +94,8 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Stack(
+      clipBehavior: Clip.none,
       fit: StackFit.expand,
-      overflow: Overflow.visible,
       children: [
         // shrinkOffset / expandedHeight
         Positioned(
@@ -884,8 +880,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
           if (!galleryStore.isLoaded) {
             return Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-              ),
+                  // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                  ),
             );
           } else if (!galleryStore.deviceHasPics) {
             return Stack(

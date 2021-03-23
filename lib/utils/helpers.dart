@@ -33,8 +33,8 @@ class Helpers {
   }
 
   static String removeLastCharacter(String str) {
-    String result = null;
-    if ((str != null) && (str.length > 0)) {
+    String result;
+    if (str?.isNotEmpty ?? false) {
       result = str.substring(0, str.length - 1);
     }
 

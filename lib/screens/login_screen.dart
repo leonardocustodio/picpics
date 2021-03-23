@@ -178,9 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          height: 64.0,
-                        ),
+                        SizedBox(height: 64.0),
                         CupertinoButton(
                           onPressed: () {
                             if (loginStore.slideIndex ==
@@ -188,6 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.pushNamed(context, PremiumScreen.id);
                               return;
                             }
+                            print('next');
                             swiperController.next(animation: true);
                           },
                           padding: const EdgeInsets.all(0),
@@ -199,22 +198,21 @@ class _LoginScreenState extends State<LoginScreen> {
                               gradient: kPrimaryGradient,
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            child: Center(
-                              child: Text(
-                                loginStore.slideIndex ==
-                                        loginStore.totalSlides - 1
-                                    ? S.of(context).start.toUpperCase()
-                                    : S.of(context).next.toUpperCase(),
-                                textScaleFactor: 1.0,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kWhiteColor,
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w700,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              loginStore.slideIndex ==
+                                      loginStore.totalSlides - 1
+                                  ? S.of(context).start.toUpperCase()
+                                  : S.of(context).next.toUpperCase(),
+                              textScaleFactor: 1.0,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: 22,
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
                               ),
                             ),
                           ),

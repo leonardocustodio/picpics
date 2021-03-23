@@ -85,6 +85,8 @@ class LabelEntries extends Table {
 // Old Info @Hive: Secret
 class Privates extends Table {
   TextColumn get id => text()();
+  @override
+  Set<Column> get primaryKey => {id};
   TextColumn get path => text()();
   TextColumn get nonce => text()();
   TextColumn get thumbPath => text().nullable()();

@@ -337,7 +337,7 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   void pinTapped(String value) async {
-    print('Value: $value');
+    print('Value: ${pinStore.recoveryCode}${value}');
     if (pinStore.isWaitingRecoveryKey == true) {
       if (carouselPage == 0) {
         if (value == '\u0008') {
@@ -836,8 +836,8 @@ class NumberPad extends StatelessWidget {
       for (int y = 0; y < 3; y++) {
         if (pin == 10) {
           number.add(
-            CupertinoButton(
-              onPressed: () {
+            GestureDetector(
+              onTap: () {
                 onPinTapped('\u0008');
               },
               child: Container(
@@ -853,15 +853,15 @@ class NumberPad extends StatelessWidget {
 
         int value = pin;
         number.add(
-          CupertinoButton(
+          GestureDetector(
             // padding: const EdgeInsets.all(0),
-            minSize: 44.0,
-            onPressed: () {
+            //minSize: 44.0,
+            onTap: () {
               onPinTapped('${value == 11 ? '0' : value}');
             },
             child: Container(
-              width: 44.0,
-              height: 44.0,
+              width: 44,
+              height: 44,
               child: Center(
                 child: Text(
                   '${pin == 11 ? '0' : pin}',
