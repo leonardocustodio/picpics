@@ -632,14 +632,14 @@ abstract class _GalleryStore with Store {
     var toDelete = <UntaggedPicsStore>[];
 
     for (var untaggedPicStore in untaggedPics) {
-      if (untaggedPicStore.picStoresIds.contains(picStore.photoId)) {
+      if (untaggedPicStore.picStores[picStore.photoId] != null) {
         // print('Removing ${picStore.photoId} from untagged pic store');
         untaggedPicStore.removePicStore(picStore);
         untaggedGridPics.removeWhere((element) => element.picStore == picStore);
         untaggedGridPicsByMonth
             .removeWhere((element) => element.picStore == picStore);
 
-        if (untaggedPicStore.picStoresIds.length == 0) {
+        if (untaggedPicStore.picStores.length == 0) {
           // print('Removing untaggedPicStore since there are no more pics in it');
           toDelete.add(untaggedPicStore);
         }
@@ -723,7 +723,7 @@ abstract class _GalleryStore with Store {
     for (var taggedPic in taggedDatePics) {
       taggedGridPics.add(TaggedGridPicStore(date: taggedPic.date));
 
-      for (var picStore in taggedPic.picStores) {
+      for (var picStore in taggedPic.picStores.values) {
         var gridPicStore = TaggedGridPicStore(picStore: picStore);
         taggedGridPics.add(gridPicStore);
       }
@@ -747,7 +747,7 @@ abstract class _GalleryStore with Store {
         // print('Adding month date: $monthDate');
       }
 
-      for (var picStore in untaggedPic.picStores) {
+      for (var picStore in untaggedPic.picStores.values) {
         var gridPicStore = UntaggedGridPicStore(picStore: picStore);
         untaggedGridPics.add(gridPicStore);
         untaggedGridPicsByMonth.add(gridPicStore);
@@ -1447,7 +1447,7 @@ abstract class _GalleryStore with Store {
     clearPicThumbnails();
 
     for (var store in untaggedPics) {
-      addPicsToThumbnails(store.picStores);
+      addPicsToThumbnails(store.picStores.values);
     }
   }
 }

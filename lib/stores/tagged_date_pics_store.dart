@@ -12,20 +12,15 @@ abstract class _TaggedDatePicsStore with Store {
     this.date,
   });
 
-  ObservableList<PicStore> picStores = ObservableList<PicStore>();
-
-  @computed
-  List<String> get picStoresIds {
-    return picStores.map((element) => element.photoId).toList();
-  }
+  ObservableMap<String, PicStore> picStores = ObservableMap<String, PicStore>();
 
   @action
   void addPicStore(PicStore picStore) {
-    picStores.add(picStore);
+    picStores[picStore.photoId] = picStore;
   }
 
   @action
   void removePicStore(PicStore picStore) {
-    picStores.remove(picStore);
+    picStores.remove(picStore.photoId);
   }
 }

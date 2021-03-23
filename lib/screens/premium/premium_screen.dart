@@ -104,12 +104,13 @@ class _PremiumScreenState extends State<PremiumScreen> {
           }
         }
       }
-    } on PlatformException catch (e) {
+    } catch (e) {
+      makePurchase(context, null);
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       //print('#### Error Code: ${errorCode}');
-      setState(() {
+      /* setState(() {
         getOfferingError = errorCode;
-      });
+      }); */
     }
   }
 
