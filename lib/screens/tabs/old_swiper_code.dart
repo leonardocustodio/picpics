@@ -6,7 +6,7 @@
                               onIndexChanged: (index) async {
                                 DatabaseManager.instance.setSwiperIndex(index);
                                 picSwiper = index;
-//print('picSwiper = $index');
+print('picSwiper = $index');
                                 bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
                                 if (shouldShowAds) {
                                   showWatchAdModal(context);

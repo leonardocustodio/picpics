@@ -12,7 +12,7 @@ class PinStore = _PinStore with _$PinStore;
 abstract class _PinStore with Store {
   _PinStore() {
     autorun((_) {
-      //print('autorun');
+      print('autorun');
     });
   }
 
@@ -89,13 +89,14 @@ abstract class _PinStore with Store {
         },
       );
 
-      //print(result.data);
+      print(result.data);
 
       if (result.data != false) {
-        //print('Recovery Key Encrypted: ${result.data}');
+        print('Recovery Key Encrypted: ${result.data}');
         encryptedRecoveryKey = result.data;
         setIsWaitingRecoveryKey(true);
-        //print(            'Saving ${result.data} with access code $accessCode and pin $pin');
+        print(
+            'Saving ${result.data} with access code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
         // await Crypto.saveSpKey(accessCode, result.data, pin);
         return true;
@@ -103,13 +104,13 @@ abstract class _PinStore with Store {
 
       return result.data;
     } on FirebaseFunctionsException catch (e) {
-      //print('caught firebase functions exception');
-      //print(e.code);
-      //print(e.message);
-      //print(e.details);
+      print('caught firebase functions exception');
+      print(e.code);
+      print(e.message);
+      print(e.details);
     } catch (e) {
-      //print('caught generic exception');
-      //print(e);
+      print('caught generic exception');
+      print(e);
     }
 
     return false;
@@ -117,7 +118,7 @@ abstract class _PinStore with Store {
 
   @action
   Future<bool> isRecoveryCodeValid(AppStore appStore) async {
-    //print('Typed Recovery Code: $recoveryCode');
+    print('Typed Recovery Code: $recoveryCode');
 
     bool valid = await Crypto.checkRecoveryKey(
         encryptedRecoveryKey, recoveryCode, generatedIv, appStore);
@@ -133,12 +134,12 @@ abstract class _PinStore with Store {
     appStore.setTempEncryptionKey(null);
     pin = null;
     setIsWaitingRecoveryKey(false);
-    //print('Saved new pin!!!');
+    print('Saved new pin!!!');
   }
 
   @action
   Future<Map<String, dynamic>> register() async {
-    //print('Email: $email - Pin: $pin');
+    print('Email: $email - Pin: $pin');
 
     Map<String, dynamic> result = {};
 
@@ -158,13 +159,13 @@ abstract class _PinStore with Store {
         return result;
       }
     } catch (error) {
-      //print('Error creating user: $error');
+      print('Error creating user: $error');
       result['success'] = false;
       result['errorCode'] = error.code;
       return result;
     }
 
-    //print('User: $user');
+    print('User: $user');
     result['success'] = true;
     return result;
   }
@@ -187,10 +188,11 @@ abstract class _PinStore with Store {
           'random_iv': randomNumber,
         },
       );
-      //print(result.data);
+      print(result.data);
 
       if (result.data != false) {
-        //print(            'Saving ${result.data} with access code $accessCode and pin $pin');
+        print(
+            'Saving ${result.data} with access code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
         await Crypto.saveSpKey(accessCode, result.data, pin, email, appStore);
         return true;
@@ -198,13 +200,13 @@ abstract class _PinStore with Store {
 
       return result.data;
     } on FirebaseFunctionsException catch (e) {
-      //print('caught firebase functions exception');
-      //print(e.code);
-      //print(e.message);
-      //print(e.details);
+      print('caught firebase functions exception');
+      print(e.code);
+      print(e.message);
+      print(e.details);
     } catch (e) {
-      //print('caught generic exception');
-      //print(e);
+      print('caught generic exception');
+      print(e);
     }
 
     return false;

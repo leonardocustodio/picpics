@@ -39,7 +39,7 @@ class TopBar extends StatelessWidget {
                   child: FocusScope(
                     child: Focus(
                       onFocusChange: (focus) {
-                        //print('hasFocus: ${searchFocusNode.hasFocus}');
+                        print('hasFocus: ${searchFocusNode.hasFocus}');
                         if (searchFocusNode.hasFocus == true) {
                           galleryStore.setIsSearching(true);
                         } else if (searchFocusNode.hasFocus == false &&
@@ -51,11 +51,11 @@ class TopBar extends StatelessWidget {
                         controller: searchEditingController,
                         focusNode: searchFocusNode,
                         onChanged: (text) {
-                          //print('searching: $text');
+                          print('searching: $text');
                           galleryStore.searchResultsTags(text);
                         },
                         onSubmitted: (text) {
-                          //print('return');
+                          print('return');
                           searchEditingController.clear();
                           galleryStore.searchTagsResults.clear();
 //                          DatabaseManager.instance.searchResults = null;
@@ -99,7 +99,7 @@ class TopBar extends StatelessWidget {
                   child: SecretSwitch(
                       value: true,
                       onChanged: (value) {
-                        //print('turn off');
+                        print('turn off');
                         appStore.switchSecretPhotos();
                         galleryStore.removeAllPrivatePics();
                       }),

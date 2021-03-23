@@ -13,7 +13,7 @@ abstract class _TabsStore with Store {
 
   _TabsStore({this.appStore, this.galleryStore}) {
     autorun((_) {
-      //print('autorun!');
+      print('autorun!');
     });
   }
 

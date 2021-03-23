@@ -46,7 +46,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
 
   void saveLocation(BuildContext context) {
     if (selectedGeolocation != null) {
-      //print(selectedGeolocation.fullJSON.toString());
+      print(selectedGeolocation.fullJSON.toString());
 
       String location;
       String city;
@@ -57,23 +57,23 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
           in selectedGeolocation.fullJSON["address_components"]) {
         var types = components["types"];
         if (types.contains("establishment")) {
-          //print('find establishment: ${components["long_name"]}');
+          print('find establishment: ${components["long_name"]}');
           location = components["long_name"];
           continue;
         } else if (types.contains("locality")) {
-          //print('locality: ${components["long_name"]}');
+          print('locality: ${components["long_name"]}');
           city = components["long_name"];
           continue;
         } else if (types.contains("administrative_area_level_2")) {
-          //print('find administrative_area_level_2: ${components["long_name"]}');
+          print('find administrative_area_level_2: ${components["long_name"]}');
           city = components["long_name"];
           continue;
         } else if (types.contains("administrative_area_level_1")) {
-          //print('find administrative_area_level_1: ${components["long_name"]}');
+          print('find administrative_area_level_1: ${components["long_name"]}');
           state = components["long_name"];
           continue;
         } else if (types.contains("country")) {
-          //print('country: ${components["long_name"]}');
+          print('country: ${components["long_name"]}');
           country = components["long_name"];
           break;
         }
@@ -102,7 +102,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
   }
 
   void getUserPosition() async {
-    //print('getting current location');
+    print('getting current location');
 
     Position position =
         await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
@@ -128,7 +128,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
 
     controller.animateCamera(CameraUpdate.newLatLng(geolocation));
 
-    //print('finished');
+    print('finished');
   }
 
   void findInitialCamera() async {
@@ -159,7 +159,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
         _markers.add(destination);
       });
 
-      //print(latLng);
+      print(latLng);
 
       final CameraPosition position = CameraPosition(
         target: latLng == nullLocation ? rioDeJaneiro : latLng,
@@ -277,7 +277,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        //print('saving location...');
+                        print('saving location...');
                         saveLocation(context);
                       },
                       child: Container(

@@ -8,7 +8,7 @@ class TagsStore = _TagsStore with _$TagsStore;
 abstract class _TagsStore with Store {
   _TagsStore({this.id, this.name, @required this.count, @required this.time}) {
     autorun((_) {
-      //print('autorun');
+      print('autorun');
     });
   }
 
@@ -30,7 +30,7 @@ abstract class _TagsStore with Store {
       String tagName,
       @required int count,
       @required DateTime time}) {
-    //print('Setting new tag info!!!!!!');
+    print('Setting new tag info!!!!!!');
     id = tagId;
     name = tagName;
     count = count;

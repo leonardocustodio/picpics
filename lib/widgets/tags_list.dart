@@ -62,7 +62,7 @@ class _TagsListState extends State<TagsList> {
 
   Widget _buildTagsWidget(BuildContext context, List<TagsStore> tags) {
     List<Widget> tagsWidgets = [];
-    //print('Tags in TagsList: ${tags}');
+    print('Tags in TagsList: ${tags}');
 
     if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
@@ -114,7 +114,7 @@ class _TagsListState extends State<TagsList> {
             if (widget.showEditTagModal != null) widget.showEditTagModal();
           },
           onPanStart: (details) {
-            //print('Started pan on tag: ${tag.id}');
+            print('Started pan on tag: ${tag.id}');
             tagBeingPanned = tag.id;
           },
           onPanUpdate: (details) {
@@ -124,7 +124,7 @@ class _TagsListState extends State<TagsList> {
 
             if (details.delta.dy < 0) {
               // swiping in right direction
-              //print(details.delta.dy);
+              print(details.delta.dy);
               swipedRightDirection = true;
             }
           },

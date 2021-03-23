@@ -537,10 +537,10 @@ abstract class _GalleryStore with Store {
 
     allPics.insert(0, pic);
     if (pic.tags.length > 0) {
-      //print('has pic info! and this pic has tags in it!!!!');
+      print('has pic info! and this pic has tags in it!!!!');
       addPicToTaggedPics(picStore: pic, toInitialIndex: true);
     } else {
-      //print('has pic info! and this pic doesnt have tag!!!!');
+      print('has pic info! and this pic doesnt have tag!!!!');
       swipePics.insert(0, pic);
       addPicToUntaggedPics(picStore: pic);
     }
@@ -694,7 +694,7 @@ abstract class _GalleryStore with Store {
       // debugprint('Created At: ${entity.modifiedDateTime}');
 
       if (pic.isPrivate == true) {
-        //print('This pic is private not loading it!');
+        print('This pic is private not loading it!');
         continue;
       }
 

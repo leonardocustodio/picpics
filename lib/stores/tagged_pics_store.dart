@@ -9,7 +9,7 @@ class TaggedPicsStore = _TaggedPicsStore with _$TaggedPicsStore;
 abstract class _TaggedPicsStore with Store {
   _TaggedPicsStore({this.tag}) {
     autorun((_) {
-      //print('autorun');
+      print('autorun');
     });
   }
 

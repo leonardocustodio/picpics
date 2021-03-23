@@ -33,7 +33,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
-    //print('Width: $width');
+    print('Width: $width');
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -61,7 +61,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                     opacity: 0.0,
                     child: CupertinoButton(
                       onPressed: () {
-                        //print('teste');
+                        print('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),

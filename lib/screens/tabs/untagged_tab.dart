@@ -189,7 +189,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      //print('LongPress');
+                      print('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -206,7 +206,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          //print(                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print(
+                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -478,7 +479,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //   }
 
   Widget _buildGridView(BuildContext context) {
-    //print('&&&&& Building grid view');
+    print('&&&&& Building grid view');
     // List<Widget> sliverGrids = [];
     //
     // for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
@@ -507,10 +508,10 @@ class _UntaggedTabState extends State<UntaggedTab> {
       onNotification: (scrollNotification) {
         /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
-          //print('Start scrolling');
+          print('Start scrolling');
           tabsStore.setIsScrolling(true);
         } else if (scrollNotification is ScrollEndNotification) {
-          //print('End scrolling');
+          print('End scrolling');
           tabsStore.setIsScrolling(false);
         }
         return;
@@ -676,7 +677,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
-    //print('Date Time Formatting: $dateTime');
+    print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
       formatter = tabsStore.toggleIndexUntagged == 0
@@ -739,7 +740,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      //print('LongPress');
+                      print('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -756,7 +757,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          //print(                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print(
+                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 

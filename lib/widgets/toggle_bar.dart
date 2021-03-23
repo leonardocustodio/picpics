@@ -92,7 +92,7 @@ class _ToggleBarState extends State<ToggleBar> {
                           ),
                         ),
                         onPressed: () {
-                          //print('Teste');
+                          print('Teste');
                           widget.onToggle(0);
                         },
                       ),
@@ -110,7 +110,7 @@ class _ToggleBarState extends State<ToggleBar> {
                           ),
                         ),
                         onPressed: () {
-                          //print('Teste');
+                          print('Teste');
                           widget.onToggle(1);
                         },
                       ),

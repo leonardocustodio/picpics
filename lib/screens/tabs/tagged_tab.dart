@@ -68,18 +68,18 @@ class _TaggedTabState extends State<TaggedTab> {
   }
 
   void refreshItems(bool filtered) {
-    //print('Calling refresh items!!!');
+    print('Calling refresh items!!!');
     if (isTitleWidget.isEmpty ||
         galleryStore.shouldRefreshTaggedGallery == true) {
       taggedItems = [];
       isTitleWidget = [];
 
-      //print('Refreshing tagged library!!!!!');
+      print('Refreshing tagged library!!!!!');
       galleryStore.clearPicThumbnails();
 
       if (filtered) {
         if (galleryStore.filteredPics.isEmpty) {
-          //print('Filtered Pics is empty');
+          print('Filtered Pics is empty');
           isTitleWidget.addAll([true, true]);
           taggedItems.addAll([null, null]);
         } else {
@@ -108,7 +108,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
           for (TaggedPicsStore taggedPicsStore in taggedPicsStores) {
             if (taggedPicsStore.pics.isEmpty) {
-              //print('&&&& IS EMPTY &&&&');
+              print('&&&& IS EMPTY &&&&');
               isTitleWidget.add(true);
               taggedItems.add(taggedPicsStore);
               isTitleWidget.add(true);
@@ -134,14 +134,14 @@ class _TaggedTabState extends State<TaggedTab> {
         }
       }
 
-      //print('@@@@@ Tagged Items Length: ${taggedItems.length}');
+      print('@@@@@ Tagged Items Length: ${taggedItems.length}');
       galleryStore.setShouldRefreshTaggedGallery(false);
     }
   }
 
   Widget _buildTaggedGridView(BuildContext context) {
-    //print('Rebuilding tagged gridview');
-    //print('&&&&&&&&&&&&&&&&& Build grid items!!!');
+    print('Rebuilding tagged gridview');
+    print('&&&&&&&&&&&&&&&&& Build grid items!!!');
 
     double newPadding = 0.0;
     if (galleryStore.isSearching) {
@@ -156,10 +156,10 @@ class _TaggedTabState extends State<TaggedTab> {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollStartNotification) {
-          //print('Start scrolling');
+          print('Start scrolling');
           tabsStore.setIsScrolling(true);
         } else if (scrollNotification is ScrollEndNotification) {
-          //print('End scrolling');
+          print('End scrolling');
           tabsStore.setIsScrolling(false);
         }
         return;
@@ -247,7 +247,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
-    //print('Date Time Formatting: $dateTime');
+    print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
       formatter = DateFormat.MMMEd();
@@ -374,7 +374,7 @@ class _TaggedTabState extends State<TaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      //print('LongPress');
+                      print('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -391,11 +391,12 @@ class _TaggedTabState extends State<TaggedTab> {
                             picStore: picStore,
                             picIsTagged: true,
                           );
-                          //print(                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print(
+                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
-                        //print('Selected photo: ${picStore.photoId}');
+                        print('Selected photo: ${picStore.photoId}');
                         galleryStore.setCurrentPic(picStore);
                         galleryStore.setInitialSelectedThumbnail(picStore);
                         Navigator.pushNamed(context, PhotoScreen.id);
@@ -492,7 +493,7 @@ class _TaggedTabState extends State<TaggedTab> {
 
                         if (picStore.isStarred == true &&
                             !tabsStore.multiPicBar) {
-                          //print('Adding starred yellow ico');
+                          print('Adding starred yellow ico');
                           items.add(
                             Positioned(
                               left: 6.0,
@@ -545,7 +546,7 @@ class _TaggedTabState extends State<TaggedTab> {
       if (refresh) {
         setState(() {
           refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
-          //print('##### Rebuild everything!');
+          print('##### Rebuild everything!');
         });
       }
     });
@@ -661,7 +662,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                   tags: galleryStore.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (tagId, tagName) {
-                                    //print('do nothing');
+                                    print('do nothing');
                                     galleryStore.removeTagFromSearchFilter();
                                     if (galleryStore
                                             .searchingTagsKeys.isEmpty &&
@@ -678,7 +679,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                     }
                                   },
                                   onDoubleTap: () {
-                                    //print('do nothing');
+                                    print('do nothing');
                                   },
                                   showEditTagModal: widget.showEditTagModal,
                                 ),
@@ -705,7 +706,8 @@ class _TaggedTabState extends State<TaggedTab> {
                             Observer(
                               builder: (_) {
                                 if (!galleryStore.showSearchTagsResults) {
-                                  //print(                                      '############ ${galleryStore.tagsSuggestions}');
+                                  print(
+                                      '############ ${galleryStore.tagsSuggestions}');
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 16.0,
@@ -727,10 +729,10 @@ class _TaggedTabState extends State<TaggedTab> {
                                             searchEditingController.text);
                                       },
                                       onDoubleTap: () {
-                                        //print('do nothing');
+                                        print('do nothing');
                                       },
                                       onPanEnd: () {
-                                        //print('do nothing');
+                                        print('do nothing');
                                       },
                                     ),
                                   );
@@ -777,10 +779,10 @@ class _TaggedTabState extends State<TaggedTab> {
                                           searchEditingController.text);
                                     },
                                     onDoubleTap: () {
-                                      //print('do nothing');
+                                      print('do nothing');
                                     },
                                     onPanEnd: () {
-                                      //print('do nothing');
+                                      print('do nothing');
                                     },
                                   ),
                                 );
@@ -870,7 +872,7 @@ class _TaggedTabState extends State<TaggedTab> {
                             setState(() {
                               refreshItems(
                                   galleryStore.searchingTagsKeys.isNotEmpty);
-                              //print('##### Rebuild everything!');
+                              print('##### Rebuild everything!');
                             });
                           }
                           tabsStore.setToggleIndexTagged(index);

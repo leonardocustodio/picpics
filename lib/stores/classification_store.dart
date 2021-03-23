@@ -12,7 +12,7 @@ abstract class _ClassificationStore with Store {
     // loadModels();
 
     autorun((_) {
-      //print('auto run');
+      print('auto run');
     });
   }
 
@@ -28,7 +28,7 @@ abstract class _ClassificationStore with Store {
       final String text = label.text;
       final String entityId = label.entityId;
       final double confidence = label.confidence;
-      //print('Text: $text - Entity: $entityId - Confidence: $confidence');
+      print('Text: $text - Entity: $entityId - Confidence: $confidence');
     }
 
     cloudLabeler.close();

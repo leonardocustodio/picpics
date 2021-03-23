@@ -9,7 +9,7 @@ class DeviceHasNoPics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    //print('Device Height: $height');
+    print('Device Height: $height');
 
     return Center(
       child: Column(

@@ -83,13 +83,13 @@ class _EmailScreenState extends State<EmailScreen> {
       appStore.setWaitingAccessCode(true);
       Navigator.pushNamed(context, PinScreen.id);
     } else {
-      //print('Result: $result');
+      print('Result: $result');
       if (result['errorCode'] == 'email-already-in-use') {
         showErrorModal('This e-mail is already in use by another account.');
-        //print('Error !!!');
+        print('Error !!!');
       } else {
         showErrorModal('An error has occured. Please try again!');
-        //print('Error !!!');
+        print('Error !!!');
       }
     }
   }
@@ -97,7 +97,7 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
-    //print('Height: ${size.height} - Width: ${size.width}');
+    print('Height: ${size.height} - Width: ${size.width}');
 
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(

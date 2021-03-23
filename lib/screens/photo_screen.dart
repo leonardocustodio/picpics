@@ -392,14 +392,14 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                               context, 'show_keyboard');
                                         },
                                         onTap: (tagName) {
-                                          //print('ignore click');
+                                          print('ignore click');
                                         },
                                         onDoubleTap: () {
 //                                        galleryStore.currentThumbnailPic
 //                                        galleryStore.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                                         },
                                         onPanEnd: () {
-                                          //print('teste');
+                                          print('teste');
                                         },
                                         showEditTagModal: () =>
                                             showEditTagModal(

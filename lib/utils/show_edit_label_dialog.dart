@@ -17,7 +17,7 @@ Future<void> showEditTagModal(BuildContext context, GalleryStore galleryStore,
         .getTagName(DatabaseManager.instance.selectedTagKey);
     alertInputController.text = tagName;
 
-    //print('showModal');
+    print('showModal');
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -28,7 +28,7 @@ Future<void> showEditTagModal(BuildContext context, GalleryStore galleryStore,
           title: S.of(context).edit_tag,
           destructiveButtonTitle: S.of(context).delete,
           onPressedDestructive: () {
-            //print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
+            print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
             galleryStore.deleteTag(
                 tagKey: DatabaseManager.instance.selectedTagKey);
             Navigator.of(context).pop();

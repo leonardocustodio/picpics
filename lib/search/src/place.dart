@@ -19,7 +19,7 @@ class Place {
       this._geocode = geocode;
       this.fullJSON = place;
     } catch (e) {
-      //print("The argument you passed for Place is not compatible.");
+      print("The argument you passed for Place is not compatible.");
     }
   }
 
