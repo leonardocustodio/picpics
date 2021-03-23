@@ -1447,7 +1447,7 @@ abstract class _GalleryStore with Store {
     clearPicThumbnails();
 
     for (var store in untaggedPics) {
-      addPicsToThumbnails(store.picStores.values);
+      addPicsToThumbnails(store.picStores.values.toList());
     }
   }
 }
