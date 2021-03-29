@@ -13,7 +13,7 @@ abstract class _TabsStore with Store {
 
   _TabsStore({this.appStore, this.galleryStore}) {
     autorun((_) {
-      print('autorun!');
+      //print('autorun!');
     });
   }
 
@@ -123,7 +123,7 @@ abstract class _TabsStore with Store {
   void setIsToggleBarVisible(bool value) => isToggleBarVisible = value;
 
   @observable
-  int toggleIndexUntagged = 1;
+  int toggleIndexUntagged = 0;
 
   @action
   void setToggleIndexUntagged(int value) => toggleIndexUntagged = value;

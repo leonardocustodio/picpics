@@ -312,7 +312,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                         selectedTags: selectedTags,
                         onTap: (String tagId, String tagName, int count,
                             DateTime time) async {
-                          print('do nothing');
+                          //print('do nothing');
                           if (!appStore.canTagToday) {
                             showWatchAdModal(context);
                             return;
@@ -335,7 +335,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                           appStore.loadTags();
                         },
                         onDoubleTap: () {
-                          print('do nothing');
+                          //print('do nothing');
                         },
                         showEditTagModal: () =>
                             showEditTagModal(context, galleryStore),
@@ -367,7 +367,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             selectedTags: selectedTags,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
-                              print('do nothing');
+                              //print('do nothing');
                               /* if (!appStore.canTagToday) {
                             showWatchAdModal(context);
                             return;
@@ -391,7 +391,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                               appStore.loadTags();
                             },
                             onDoubleTap: () {
-                              print('do nothing');
+                              //print('do nothing');
                             },
                             showEditTagModal: () =>
                                 showEditTagModal(context, galleryStore),
@@ -427,7 +427,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             selectedTags: selectedTags,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
-                              print('do nothing');
+                              //print('do nothing');
                               /* if (!appStore.canTagToday) {
                             showWatchAdModal(context);
                             return;
@@ -451,7 +451,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                               appStore.loadTags();
                             },
                             onDoubleTap: () {
-                              print('do nothing');
+                              //print('do nothing');
                             },
                             showEditTagModal: () =>
                                 showEditTagModal(context, galleryStore),
@@ -487,7 +487,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             selectedTags: selectedTags,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
-                              print('do nothing');
+                              //print('do nothing');
                               /* if (!appStore.canTagToday) {
                             showWatchAdModal(context);
                             return;
@@ -511,7 +511,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                               appStore.loadTags();
                             },
                             onDoubleTap: () {
-                              print('do nothing');
+                              //print('do nothing');
                             },
                             showEditTagModal: () =>
                                 showEditTagModal(context, galleryStore),
@@ -546,7 +546,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             selectedTags: selectedTags,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
-                              print('do nothing');
+                              //print('do nothing');
                               /* if (!appStore.canTagToday) {
                             showWatchAdModal(context);
                             return;
@@ -570,7 +570,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                               appStore.loadTags();
                             },
                             onDoubleTap: () {
-                              print('do nothing');
+                              //print('do nothing');
                             },
                             showEditTagModal: () =>
                                 showEditTagModal(context, galleryStore),

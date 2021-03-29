@@ -186,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.pushNamed(context, PremiumScreen.id);
                               return;
                             }
-                            print('next');
+                            //print('next');
                             swiperController.next(animation: true);
                           },
                           padding: const EdgeInsets.all(0),

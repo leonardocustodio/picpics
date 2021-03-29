@@ -70,8 +70,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
           offerings.current.availablePackages.isNotEmpty) {
         getOfferingError = null;
 
-        print(offerings.current.availablePackages);
-        print(offerings.getOffering("full_subscription").availablePackages);
+        //print(offerings.current.availablePackages);
+        //print(offerings.getOffering("full_subscription").availablePackages);
 
         setState(() {
           _items = offerings.getOffering("full_subscription").availablePackages;
@@ -96,8 +96,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
               orElse: () => null);
 
           if (getPackage != null) {
-            print(getPackage);
-            print('making purchase!!!');
+            //print(getPackage);
+            //print('making purchase!!!');
             makePurchase(context, getPackage);
 
             appStore.setTryBuyId(null);
@@ -107,7 +107,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     } catch (e) {
       makePurchase(context, null);
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
-      print('#### Error Code: ${errorCode}');
+      //print('#### Error Code: ${errorCode}');
       /* setState(() {
         getOfferingError = errorCode;
       }); */
@@ -180,7 +180,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             isLoading = false;
           });
           // Unlock that great "pro" content
-          print('know you are fucking pro!');
+          //print('know you are fucking pro!');
           appStore.setIsPremium(true);
           // Navigator.pop(context);
           Navigator.pushNamedAndRemoveUntil(
@@ -192,7 +192,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           title: S.of(context).no_previous_purchase,
           description: S.of(context).no_valid_subscription);
     } on PlatformException catch (e) {
-      print(e);
+      //print(e);
       showError(
           title: 'Error has occurred',
           description: 'An error has occurred, please try again!');
@@ -203,7 +203,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      print('Could not launch $url');
+      //print('Could not launch $url');
     }
   }
 
@@ -460,7 +460,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     var yearSub = _items.firstWhere((e) => e.packageType == PackageType.annual,
         orElse: null);
 
-    print(yearSub);
+    //print(yearSub);
     var daysFree = yearSub.product.introductoryPrice == null
         ? 3
         : yearSub.product.introductoryPrice.introPricePeriodNumberOfUnits;
@@ -629,7 +629,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
     double save =
         100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
-    print('Save: $save');
+    //print('Save: $save');
 
     return Column(
       children: [

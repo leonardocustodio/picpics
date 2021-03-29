@@ -26,12 +26,12 @@ class PushNotificationsManager {
       // For testing purposes print the Firebase Messaging token
       var token = await _firebaseMessaging.getToken();
 
-      print("FirebaseMessaging token: $token");
+      //print("FirebaseMessaging token: $token");
 
       _initialized = true;
 /* 
       _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
+      //print("Settings registered: $settings");
 
         var userBox = Hive.box('user');
         DatabaseManager.instance.userSettings.notifications = settings.alert;
@@ -52,7 +52,7 @@ class PushNotificationsManager {
         iOS: initializationSettingsIOS,
       );
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
-      print('scheduling notification');
+      //print('scheduling notification');
 //      scheduleNotification();
     }
   }
@@ -64,14 +64,14 @@ class PushNotificationsManager {
       String description}) async {
     if (!_initialized) {
       init();
-      print('subscribed');
+      //print('subscribed');
       return;
     }
 
     _firebaseMessaging.requestPermission();
     String token = await _firebaseMessaging.getToken();
-    print("FirebaseMessaging token: $token");
-    print('subscribed');
+    //print("FirebaseMessaging token: $token");
+    //print('subscribed');
 
     scheduleNotification(
       hourOfDay: hourOfDay,
@@ -83,13 +83,13 @@ class PushNotificationsManager {
 
 /*   void register() {
   _firebaseMessaging.subscribeToTopic('all_users');
-print('subscribed to topic: all_users');
+//print('subscribed to topic: all_users');
   } */
 
   void deregister() async {
     try {
       _firebaseMessaging.deleteToken();
-      print('unsubscribed');
+      //print('unsubscribed');
       //var userBox = Hive.box('user');
       //DatabaseManager.instance.userSettings.dailyChallenges = false;
       //userBox.putAt(0, DatabaseManager.instance.userSettings);
@@ -99,12 +99,11 @@ print('subscribed to topic: all_users');
         ),
       );
 
-      print(
-          'User settings: notification: ${DatabaseManager.instance.userSettings.notification} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
+      //print('User settings: notification: ${DatabaseManager.instance.userSettings.notification} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
 
       await _flutterLocalNotificationsPlugin.cancelAll();
     } catch (error) {
-      print(error);
+      //print(error);
     }
   }
 

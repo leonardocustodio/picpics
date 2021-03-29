@@ -16,13 +16,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
       (_$totalTaggedPicsComputed ??= Computed<int>(() => super.totalTaggedPics,
               name: '_GalleryStore.totalTaggedPics'))
           .value;
-  Computed<Set<String>> _$allPicsKeysComputed;
-
-  @override
-  Set<String> get allPicsKeys =>
-      (_$allPicsKeysComputed ??= Computed<Set<String>>(() => super.allPicsKeys,
-              name: '_GalleryStore.allPicsKeys'))
-          .value;
   Computed<List<String>> _$filteredPicsKeysComputed;
 
   @override
@@ -233,6 +226,13 @@ mixin _$GalleryStore on _GalleryStore, Store {
         .reportWrite(value, super.shouldRefreshTaggedGallery, () {
       super.shouldRefreshTaggedGallery = value;
     });
+  }
+
+  final _$addEntityAsyncAction = AsyncAction('_GalleryStore.addEntity');
+
+  @override
+  Future<void> addEntity(AssetEntity entity) {
+    return _$addEntityAsyncAction.run(() => super.addEntity(entity));
   }
 
   final _$loadEntitiesAsyncAction = AsyncAction('_GalleryStore.loadEntities');
@@ -593,17 +593,6 @@ mixin _$GalleryStore on _GalleryStore, Store {
   }
 
   @override
-  void addEntity(AssetEntity entity) {
-    final _$actionInfo = _$_GalleryStoreActionController.startAction(
-        name: '_GalleryStore.addEntity');
-    try {
-      return super.addEntity(entity);
-    } finally {
-      _$_GalleryStoreActionController.endAction(_$actionInfo);
-    }
-  }
-
-  @override
   void addPicToUntaggedPics({PicStore picStore}) {
     final _$actionInfo = _$_GalleryStoreActionController.startAction(
         name: '_GalleryStore.addPicToUntaggedPics');
@@ -728,7 +717,6 @@ trashedPic: ${trashedPic},
 sharedPic: ${sharedPic},
 shouldRefreshTaggedGallery: ${shouldRefreshTaggedGallery},
 totalTaggedPics: ${totalTaggedPics},
-allPicsKeys: ${allPicsKeys},
 filteredPicsKeys: ${filteredPicsKeys},
 currentThumbnailPic: ${currentThumbnailPic},
 searchingTagsKeys: ${searchingTagsKeys},

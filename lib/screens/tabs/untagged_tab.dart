@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:mobx/mobx.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -131,7 +132,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
   TabsStore tabsStore;
   GalleryStore galleryStore;
 
-  ScrollController scrollControllerFirstTab;
+  //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
   ReactionDisposer disposer;
 
@@ -145,7 +146,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
   //   return slivers;
   // }
 
-  void refreshGridPositionFirstTab() {
+/*   void refreshGridPositionFirstTab() {
     var offset = scrollControllerFirstTab.hasClients
         ? scrollControllerFirstTab.offset
         : scrollControllerFirstTab.initialScrollOffset;
@@ -161,7 +162,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
     if (scrollControllerFirstTab.hasClients) {
       tabsStore.offsetFirstTab = scrollControllerFirstTab.offset;
     }
-  }
+  } */
 
   Widget _buildSliverGridItem(BuildContext context, PicStore picStore) {
     if (picStore == null) {
@@ -185,7 +186,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      print('LongPress');
+                      //print('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -202,8 +203,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          print(
-                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          //print('Pics Selected Length: ');
+                          //print('${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -380,7 +381,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //                                 picStore: picStore,
 //                                 picIsTagged: false,
 //                               );
-/* print('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
+/* //print('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
 //                               return;
 //                             }
 //
@@ -475,7 +476,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //   }
 
   Widget _buildGridView(BuildContext context) {
-    print('&&&&& Building grid view');
+    //print('&&&&& Building grid view');
     // List<Widget> sliverGrids = [];
     //
     // for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
@@ -504,10 +505,10 @@ class _UntaggedTabState extends State<UntaggedTab> {
       onNotification: (scrollNotification) {
         /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
-          print('Start scrolling');
+          //print('Start scrolling');
           tabsStore.setIsScrolling(true);
         } else if (scrollNotification is ScrollEndNotification) {
-          print('End scrolling');
+          //print('End scrolling');
           tabsStore.setIsScrolling(false);
         }
         return;
@@ -606,36 +607,84 @@ class _UntaggedTabState extends State<UntaggedTab> {
           Observer(
         builder: (_) {
           if (tabsStore.toggleIndexUntagged == 0) {
-            return StaggeredGridView.builder(
-              key: Key('month'),
-              controller: scrollControllerFirstTab,
-              //physics: const CustomScrollPhysics(),
-              padding: EdgeInsets.only(top: 82.0),
-              gridDelegate: SliverStaggeredGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 5,
-                mainAxisSpacing: 2.0,
-                crossAxisSpacing: 2.0,
-                staggeredTileBuilder: (int index) {
-                  PicStore picStore =
-                      galleryStore.untaggedGridPicsByMonth[index].picStore;
-                  if (picStore == null) {
-                    return StaggeredTile.fit(5);
-                  }
-                  return StaggeredTile.count(1, 1);
-                },
-              ),
-              itemCount: (galleryStore?.isLoaded ?? false)
-                  ? (galleryStore?.untaggedGridPicsByMonth?.length ?? 0)
-                  : 0,
-              itemBuilder: (BuildContext context, int index) {
-                return _buildItem(context, index);
-              },
-            );
+            List<DateTime> keys = galleryStore.isLoaded
+                ? galleryStore.untaggedGridPicsByMonth.keys.toList()
+                : <DateTime>[];
+            /* keys.sort((a, b) {
+              var year = b.year.compareTo(a.year);
+              if (year == 0) return b.month.compareTo(a.month);
+              return year;
+            }); */
+            var width = (MediaQuery.of(context).size.width / 5) - 3;
+            return ListView.builder(
+                itemCount: keys.length,
+                physics: const CustomScrollPhysics(),
+                itemBuilder: (context, index) {
+                  DateTime dateTime = keys[index];
+                  var innerMap = galleryStore.untaggedGridPicsByMonth[dateTime];
+                  return Observer(builder: (_) {
+                    return Container(
+                        child: Column(
+                      children: [
+                        buildDateHeader(dateTime),
+                        Wrap(
+                          spacing: 3,
+                          runSpacing: 3,
+                          children: [
+                            for (var key in innerMap.keys)
+                              Observer(builder: (_) {
+                                return galleryStore.allPics[key] == null
+                                    ? Container(
+                                        width: width,
+                                        height: width,
+                                        padding: const EdgeInsets.all(10),
+                                        color: kGreyPlaceholder
+                                      )
+                                    : ClipRRect(
+                                        borderRadius: BorderRadius.circular(6),
+                                        child: Container(
+                                          width: width,
+                                          height: width,
+                                          child: _buildItem(
+                                              galleryStore.allPics[key]),
+                                        ),
+                                      );
+                              }),
+                          ],
+                        ),
+                        const SizedBox(height: 20)
+                      ],
+                    ));
+                  });
+                });
+            /* StaggeredGridView.countBuilder(
+            key: Key('month'),
+            controller: scrollControllerFirstTab,
+            physics: const CustomScrollPhysics(),
+            padding: EdgeInsets.only(top: 82.0),
+            crossAxisCount: 5,
+            mainAxisSpacing: 2.0,
+            crossAxisSpacing: 2.0,
+            itemCount: galleryStore.isLoaded
+                ? galleryStore.untaggedGridPicsByMonth.length
+                : 0,
+            itemBuilder: (BuildContext context, int index) {
+              return _buildItem(context, index);
+            },
+            staggeredTileBuilder: (int index) {
+              PicStore picStore =
+                  galleryStore.untaggedGridPicsByMonth[index].picStore;
+              if (picStore == null) {
+                return StaggeredTile.fit(5);
+              }
+              return StaggeredTile.count(1, 1);
+            },
+          ); */
           }
 
           return StaggeredGridView.builder(
             key: Key('day'),
-            controller: scrollControllerFirstTab,
+            //controller: scrollControllerFirstTab,
             //physics: const CustomScrollPhysics(),
             padding: EdgeInsets.only(top: 82.0),
             gridDelegate: SliverStaggeredGridDelegateWithFixedCrossAxisCount(
@@ -655,7 +704,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 ? (galleryStore?.untaggedGridPics?.length ?? 0)
                 : 0,
             itemBuilder: (BuildContext context, int index) {
-              return _buildItem(context, index);
+              PicStore picStore = galleryStore.untaggedGridPics[index].picStore;
+              if (picStore == null)
+                return buildDateHeader(
+                    galleryStore.untaggedGridPics[index].date);
+              return _buildItem(picStore);
             },
           );
         },
@@ -673,11 +726,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
-    print('Date Time Formatting: $dateTime');
+    //print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
       formatter = tabsStore.toggleIndexUntagged == 0
-          ? DateFormat.MMMM()
+          ? DateFormat.yMMMM()
           : DateFormat.MMMEd();
     } else {
       formatter = tabsStore.toggleIndexUntagged == 0
@@ -687,35 +740,30 @@ class _UntaggedTabState extends State<UntaggedTab> {
     return formatter.format(dateTime);
   }
 
-  Widget _buildItem(BuildContext context, int index) {
-    var untaggedPicsStore = tabsStore.toggleIndexUntagged == 0
-        ? galleryStore.untaggedGridPicsByMonth
-        : galleryStore.untaggedGridPics;
-    PicStore picStore = untaggedPicsStore[index].picStore;
-
-    if (picStore == null) {
-      return Container(
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        height: 40.0,
-        child: Row(
-          children: [
-            Text(
-              '${dateFormat(untaggedPicsStore[index].date)}',
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
+  Widget buildDateHeader(DateTime date) {
+    return Container(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      height: 40.0,
+      child: Row(
+        children: [
+          Text(
+            '${dateFormat(date)}',
+            textScaleFactor: 1.0,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff606566),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildItem(PicStore picStore) {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
     final AssetEntityImageProvider imageProvider =
@@ -736,7 +784,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      print('LongPress');
+                      //print('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -753,8 +801,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          print(
-                              'Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          //print('Pics Selected Length: ');
+                          //print('${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -851,12 +899,12 @@ class _UntaggedTabState extends State<UntaggedTab> {
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
-    scrollControllerFirstTab =
+    /* scrollControllerFirstTab =
         ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
     scrollControllerFirstTab.addListener(() {
       refreshGridPositionFirstTab();
     });
-    refreshGridPositionFirstTab();
+    refreshGridPositionFirstTab(); */
 
     disposer = reaction((_) => galleryStore.isLoaded, (isLoaded) {
       if (isLoaded == true) {
@@ -872,6 +920,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
 
   @override
   Widget build(BuildContext context) {
+    tabsStore = Provider.of<TabsStore>(context);
+    galleryStore = Provider.of<GalleryStore>(context);
+    var hasPics = galleryStore.untaggedGridPics.isEmpty ||
+        galleryStore.untaggedGridPicsByMonth.isEmpty;
+
     return Container(
       constraints: BoxConstraints.expand(),
       color: kWhiteColor,
@@ -883,7 +936,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                   // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
                   ),
             );
-          } else if (!galleryStore.deviceHasPics) {
+          } else if (!hasPics) {
             return Stack(
               children: <Widget>[
                 Container(
@@ -906,8 +959,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 ),
               ],
             );
-          } else if (galleryStore.isLoaded &&
-              galleryStore.untaggedPics.isEmpty) {
+          } else if (galleryStore.isLoaded && !hasPics) {
             return Stack(
               children: <Widget>[
                 Container(
@@ -931,14 +983,14 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 ),
               ],
             );
-          } else if (galleryStore.isLoaded && galleryStore.deviceHasPics) {
+          } else if (galleryStore.isLoaded && hasPics) {
             return Stack(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 48.0),
                   child: GestureDetector(
 //                              onScaleUpdate: (update) {
-/* print(update.scale); */
+/* //print(update.scale); */
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
                     child: _buildGridView(context),
@@ -961,7 +1013,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 ),
                 Positioned(
                   left: 16.0,
-                  top: tabsStore.topOffsetFirstTab,
+                  top: 10.0,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[

@@ -40,7 +40,7 @@ import 'package:picPics/managers/widget_manager.dart';
 import 'screens/all_tags_screen.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
-  print('Checking if appstore initiated products');
+  //print('Checking if appstore initiated products');
   List<IAPItem> appStoreProducts =
       await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
   if (appStoreProducts.length > 0) {
@@ -50,7 +50,7 @@ Future<String> checkForAppStoreInitiatedProducts() async {
 }
 
 void backgroundFetchHeadlessTask(String taskId) async {
-  print('[BackgroundFetch] Headless event received.');
+  //print('[BackgroundFetch] Headless event received.');
   await WidgetManager.sendAndUpdate();
   BackgroundFetch.finish(taskId);
 }
@@ -178,7 +178,7 @@ void main() async {
       .then((Locale locale) => locale.toString());
   String appVersion = await PackageInfo.fromPlatform()
       .then((PackageInfo packageInfo) => packageInfo.version);
-  print('Device Locale: $deviceLocale');
+  //print('Device Locale: $deviceLocale');
 
   String initiatedWithProduct;
   if (Platform.isIOS) {
@@ -201,17 +201,17 @@ void main() async {
     if (data.containsKey("+clicked_branch_link") &&
         data["+clicked_branch_link"] == true) {
       //Link clicked. Add logic to get link data
-      print('Custom string: ${data["custom_string"]}');
+      //print('Custom string: ${data["custom_string"]}');
     }
   }, onError: (error) {
     PlatformException platformException = error as PlatformException;
-    print(
-        'InitSession error: ${platformException.code} - ${platformException.message}');
+    //print('InitSession error: ${platformException.code}');
+                              //print(' - ${platformException.message}');
   });
 
   bool setAppGroup =
       await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
-  print('Has setted app group: $setAppGroup');
+  //print('Has setted app group: $setAppGroup');
 
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   runZonedGuarded<void>(() {
@@ -265,12 +265,12 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      print('&&&& Here lifecycle!');
+      //print('&&&& Here lifecycle!');
       WidgetManager.sendAndUpdate();
     }
 
     if (state == AppLifecycleState.resumed) {
-      print('&&&&&&&&& App got back from background');
+      //print('&&&&&&&&& App got back from background');
       // if (appStore.secretPhotos) {
       //   appStore.switchSecretPhotos();
       //   galleryStore.removeAllPrivatePics();
@@ -283,7 +283,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    print('Main Build!!!');
+    //print('Main Build!!!');
     return MultiProvider(
       providers: [
         Provider<AppStore>.value(

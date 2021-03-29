@@ -169,7 +169,7 @@ LazyDatabase _openConnection() {
     // for your app.
     final dbFolder = await getApplicationSupportDirectory();
     //final path = p.join(dbFolder.path, 'db.sqlite');
-    //print('db:path:-$path');
+    ////print('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return VmDatabase(file, setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");
@@ -278,6 +278,8 @@ class AppDatabase extends _$AppDatabase {
   Future<Photo> getPhotoByPhotoId(String photoId) => (select(photos)
         ..where((pri) => pri?.id?.equals(photoId) ?? const Constant(false)))
       .getSingle();
+  Future<List<Photo>> getNonPrivatePhotoIdList() =>
+      (select(photos)..where((tbl) => tbl.isPrivate.equals(true))).get();
 
   Future<List<Photo>> getAllPhoto() => select(photos).get();
 

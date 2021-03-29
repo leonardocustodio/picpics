@@ -76,7 +76,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
       return;
     }
 
-    print('showModal');
+    //print('showModal');
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -125,7 +125,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
       return;
     }
 
-    print('showModal');
+    //print('showModal');
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -164,7 +164,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
   void initState() {
     super.initState();
     KeyboardVisibility.onChange.listen((bool visible) {
-      print('keyboard: $visible');
+      //print('keyboard: $visible');
 
       if (visible && tabsStore.multiTagSheet) {
         setState(() {
@@ -182,22 +182,22 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
 
     // RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
     //   if (event == RewardedVideoAdEvent.loaded) {
-    print('@@@ loaded');
+    //print('@@@ loaded');
     //   }
     //
     //   if (event == RewardedVideoAdEvent.rewarded) {
-    print('@@@ rewarded');
+    //print('@@@ rewarded');
     //     appStore.setCanTagToday(true);
     //   }
     //
     //   if (event == RewardedVideoAdEvent.closed) {
-    print('@@@@ closed');
+    //print('@@@@ closed');
     //     DatabaseManager.instance.adsIsLoaded = false;
     //     Ads.loadRewarded();
     //   }
     //
     //   if (event == RewardedVideoAdEvent.failedToLoad) {
-    print('@@@ failed');
+    //print('@@@ failed');
     //     DatabaseManager.instance.adsIsLoaded = false;
     //   }
     // };
@@ -240,7 +240,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
         if (galleryStore.selectedPics.isEmpty) {
           return;
         }
-        print('sharing selected pics....');
+        //print('sharing selected pics....');
         tabsStore.setIsLoading(true);
         await galleryStore.sharePics(
             picsStores: galleryStore.selectedPics.toList());
@@ -298,7 +298,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
 
     disposer3 = reaction((_) => tabsStore.showDeleteSecretModal, (showModal) {
       if (showModal) {
-        print('show delete secret modal!!!');
+        //print('show delete secret modal!!!');
 //        setState(() {
 //          showEditTagModal();
 //        });
@@ -309,13 +309,13 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
     disposer4 = reaction((_) => appStore.secretPhotos, (secretPhotos) {
       if (secretPhotos) {
         if (appStore.hasObserver == false) {
-          print('adding observer to change screen!');
+          //print('adding observer to change screen!');
           WidgetsBinding.instance.addObserver(this);
           appStore.hasObserver = true;
         }
       } else {
         if (appStore.hasObserver == true) {
-          print('removing observer of changing screen');
+          //print('removing observer of changing screen');
           WidgetsBinding.instance.removeObserver(this);
           appStore.hasObserver = false;
         }
@@ -339,7 +339,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
-        print("&&&& Paused");
+        //print("&&&& Paused");
         setState(() {
           _appCycleState = state;
         });
@@ -348,19 +348,19 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
         setState(() {
           _appCycleState = state;
         });
-        print("&&& inactive");
+        //print("&&& inactive");
         break;
       case AppLifecycleState.detached:
         setState(() {
           _appCycleState = state;
         });
-        print("&&&& detached");
+        //print("&&&& detached");
         break;
       case AppLifecycleState.resumed:
         setState(() {
           _appCycleState = state;
         });
-        print("&&&& resumed");
+        //print("&&&& resumed");
         break;
     }
   }
@@ -372,7 +372,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
     // }
 
     Locale myLocale = Localizations.localeOf(context);
-    print('Language Code: ${myLocale.languageCode}');
+    //print('Language Code: ${myLocale.languageCode}');
 
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     var height = MediaQuery.of(context).size.height;
@@ -487,7 +487,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           //       context, PremiumScreen.id);
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          //print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
@@ -505,7 +505,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           //       context, PremiumScreen.id);
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          //print('do nothing');
                                         },
                                         onChanged: (text) {
                                           galleryStore.setSearchText(text);
@@ -527,8 +527,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                                 null) {
                                               if (appStore.tags[tagKey] ==
                                                   null) {
-                                                print(
-                                                    'tag does not exist! creating it!');
+                                                //print('tag does not exist! creating it!');
                                                 galleryStore.createTag(text);
                                               }
                                               galleryStore
@@ -564,7 +563,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           //       context, PremiumScreen.id);
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          //print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
@@ -572,7 +571,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           //       context, PremiumScreen.id);
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          //print('do nothing');
                                         },
                                       ),
                                     ),
@@ -904,7 +903,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                     child: SafeArea(
                       child: GestureDetector(
                         onTap: () {
-                          print('ignore');
+                          //print('ignore');
                         },
                         child: Container(
                           margin: EdgeInsets.only(
@@ -1094,7 +1093,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                           CupertinoButton(
                             onPressed: () async {
                               if (tabsStore.tutorialIndex == 2) {
-                                print('Requesting notification....');
+                                //print('Requesting notification....');
 
                                 await appStore.requestNotificationPermission();
                                 await appStore.checkNotificationPermission(

@@ -42,7 +42,7 @@ class UnhideSecretModal extends StatelessWidget {
                     opacity: 0.0,
                     child: CupertinoButton(
                       onPressed: () {
-                        print('teste');
+                        //print('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
@@ -60,7 +60,7 @@ class UnhideSecretModal extends StatelessWidget {
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      print('teste');
+                      //print('teste');
                     },
                     child: Image.asset('lib/images/closegrayico.png'),
                   ),
