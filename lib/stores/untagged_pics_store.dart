@@ -9,12 +9,12 @@ class UntaggedPicsStore {
 
   ObservableMap<String, PicStore> picStores = ObservableMap<String, PicStore>();
 
-  @action
+  //@action
   void addPicStore(PicStore picStore) {
     picStores[picStore.photoId] = picStore;
   }
 
-  @action
+  //@action
   void removePicStore(PicStore picStore) {
     picStores.remove(picStore.photoId);
   }

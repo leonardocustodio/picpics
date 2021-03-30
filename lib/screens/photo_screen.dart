@@ -1,8 +1,6 @@
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -18,7 +16,6 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 import 'package:extended_image/extended_image.dart';
 
 class PhotoScreen extends StatefulWidget {

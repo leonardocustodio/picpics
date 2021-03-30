@@ -15,7 +15,7 @@ class TagsStore {
   @observable
   DateTime time;
 
-  @action
+  //@action
   void setTagInfo(
       {String tagId,
       String tagName,

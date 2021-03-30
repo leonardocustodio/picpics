@@ -4,6 +4,7 @@ import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
@@ -19,18 +20,66 @@ import 'package:uuid/uuid.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 
-class AppStore {
-  final String appVersion;
-  final String deviceLocale;
-  final String initiatedWithProduct;
+class AppStore extends GetxController {
+  static AppStore get to => Get.find();
+  String appVersion;
+  String deviceLocale;
+  String initiatedWithProduct;
   final LocalAuthentication biometricAuth = LocalAuthentication();
   AppDatabase database = AppDatabase();
 
-  AppStore({
+  /* AppStore({
     this.appVersion,
     this.deviceLocale,
     this.initiatedWithProduct,
-  });
+  }); */
+  // observable bool
+  final notifications = false.obs;
+  final dailyChallenges = false.obs;
+  final isPinRegistered = false.obs;
+  final keepAskingToDelete = false.obs;
+  final shouldDeleteOnPrivate = false.obs;
+  final secretPhotos = false.obs;
+  final isPremium = false.obs;
+  final tutorialCompleted = false.obs;
+  final canTagToday = false.obs;
+  final hasGalleryPermission = false.obs;
+  final waitingAccessCode = false.obs;
+  final isMenuExpanded = true.obs;
+  final isBiometricActivated = false.obs;
+  // observable integers
+  final requireSecret = 0.obs;
+  final hourOfDay = 20.obs;
+  final minutesOfDay = 0.obs;
+  final photoHeightInCardWidget = 500.0.obs;
+  // observable strings
+  final appLanguage = 'en'.obs;
+  final currentLanguage = ''.obs;
+  // observable maps
+  final tags = <String, TagsStore>{}.obs;
+  // observable lists
+  final mostUsedTags = <TagsStore>[].obs;
+  final lastWeekUsedTags = <TagsStore>[].obs;
+  final lastMonthUsedTags = <TagsStore>[].obs;
+  final recentTags = <String>[].obs;
+  final availableBiometrics = <BiometricType>[].obs;
+  final appLocale = Rx<Locale>(null);
+
+  @override
+  void onInit() {
+    initialize();
+    _settingCurrentLanguage(null);
+    ever(appLanguage, _settingCurrentLanguage);
+    super.onInit();
+  }
+
+  void _settingCurrentLanguage(_) {
+    appLocale.value = Locale(appLanguage.split('_')[0]);
+
+    String lang = appLanguage.split('_')[0];
+    var local = LanguageLocal();
+    currentLanguage.value = '${local.getDisplayLanguage(lang)['nativeName']}';
+  }
 
   Future initialize() async {
     MoorUser user = await database.getSingleMoorUser(createIfNotExist: false);
@@ -46,24 +95,24 @@ class AppStore {
       Analytics.sendEvent(Event.user_returned);
     }
 
-    notifications = user.notification;
-    dailyChallenges = user.dailyChallenges;
-    hourOfDay = user.hourOfDay;
-    minutesOfDay = user.minuteOfDay;
-    isPremium = user.isPremium;
-    tutorialCompleted = user.tutorialCompleted;
-    appLanguage = user.appLanguage;
-    hasGalleryPermission = user.hasGalleryPermission;
-    canTagToday = user.canTagToday;
+    notifications.value = user.notification;
+    dailyChallenges.value = user.dailyChallenges;
+    hourOfDay.value = user.hourOfDay;
+    minutesOfDay.value = user.minuteOfDay;
+    isPremium.value = user.isPremium;
+    tutorialCompleted.value = user.tutorialCompleted;
+    appLanguage.value = user.appLanguage;
+    hasGalleryPermission.value = user.hasGalleryPermission;
+    canTagToday.value = user.canTagToday;
     loggedIn = user.loggedIn ?? false;
     tryBuyId = initiatedWithProduct;
-    secretPhotos = user.secretPhotos ?? false;
-    isPinRegistered = user.isPinRegistered ?? false;
-    keepAskingToDelete = user.keepAskingToDelete ?? true;
-    shouldDeleteOnPrivate = user.shouldDeleteOnPrivate ?? false;
+    secretPhotos.value = user.secretPhotos ?? false;
+    isPinRegistered.value = user.isPinRegistered ?? false;
+    keepAskingToDelete.value = user.keepAskingToDelete ?? true;
+    shouldDeleteOnPrivate.value = user.shouldDeleteOnPrivate ?? false;
     email = user.email;
     tourCompleted = user.tourCompleted ?? false;
-    isBiometricActivated = user.isBiometricActivated ?? false;
+    isBiometricActivated.value = user.isBiometricActivated ?? false;
     starredPhotos = user.starredPhotos ?? [];
 
     // if (secretBox.length > 0) {
@@ -92,10 +141,6 @@ class AppStore {
     }
 
     checkAvailableBiometrics();
-
-    autorun((_) {
-      //print('autorun');
-    });
   }
 
   Future<void> setDefaultWidgetImage(AssetEntity entity) async {
@@ -165,13 +210,10 @@ class AppStore {
     return secretBox.length; */
   }
 
-  @action
+  //@action
   void setTryBuyId(String value) => tryBuyId = value;
 
-  @observable
-  bool notifications = false;
-
-  @action
+  //@action
   Future<void> requestNotificationPermission() async {
     PushNotificationsManager push = PushNotificationsManager();
     await push.init();
@@ -186,7 +228,7 @@ class AppStore {
     // }
   }
 
-  @action
+  //@action
   Future<void> checkNotificationPermission(
       {bool firstPermissionCheck = false}) async {
     return NotificationPermissions.getNotificationPermissionStatus()
@@ -223,34 +265,31 @@ class AppStore {
         ));
       }
 
-      notifications = currentUser.notification;
-      dailyChallenges = currentUser.dailyChallenges;
+      notifications.value = currentUser.notification;
+      dailyChallenges.value = currentUser.dailyChallenges;
     });
   }
 
-  @observable
-  bool dailyChallenges = false;
-
-  @action
+  //@action
   Future<void> switchDailyChallenges(
       {String notificationTitle, String notificationDescription}) async {
-    dailyChallenges = !dailyChallenges;
+    dailyChallenges.value = !dailyChallenges.value;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.dailyChallenges = dailyChallenges;
     currentUser.save(); */
     MoorUser currentUser = await database.getSingleMoorUser();
-    await database
-        .updateMoorUser(currentUser.copyWith(dailyChallenges: dailyChallenges));
+    await database.updateMoorUser(
+        currentUser.copyWith(dailyChallenges: dailyChallenges.value));
 
     PushNotificationsManager push = PushNotificationsManager();
-    if (dailyChallenges) {
+    if (dailyChallenges.value) {
       push.deregister();
     } else {
       push.register(
-        hourOfDay: hourOfDay,
-        minutesOfDay: minutesOfDay,
+        hourOfDay: hourOfDay.value,
+        minutesOfDay: minutesOfDay.value,
         title: notificationTitle,
         description: notificationDescription,
       );
@@ -259,12 +298,9 @@ class AppStore {
     Analytics.sendEvent(Event.notification_switch);
   }
 
-  @observable
-  bool isPinRegistered = false;
-
-  @action
+  //@action
   Future<void> setIsPinRegistered(bool value) async {
-    isPinRegistered = value;
+    isPinRegistered.value = value;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
@@ -275,12 +311,9 @@ class AppStore {
     await database.updateMoorUser(currentUser.copyWith(isPinRegistered: value));
   }
 
-  @observable
-  bool keepAskingToDelete;
-
-  @action
+  //@action
   Future<void> setKeepAskingToDelete(bool value) async {
-    keepAskingToDelete = value;
+    keepAskingToDelete.value = value;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
@@ -291,12 +324,9 @@ class AppStore {
         .updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
   }
 
-  @observable
-  bool shouldDeleteOnPrivate = false;
-
-  @action
+  //@action
   Future<void> setShouldDeleteOnPrivate(bool value) async {
-    shouldDeleteOnPrivate = value;
+    shouldDeleteOnPrivate.value = value;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
@@ -307,12 +337,9 @@ class AppStore {
         .updateMoorUser(currentUser.copyWith(shouldDeleteOnPrivate: value));
   }
 
-  @observable
-  bool secretPhotos = false;
-
-  @action
+  //@action
   Future<void> switchSecretPhotos() async {
-    secretPhotos = !secretPhotos;
+    secretPhotos.value = !secretPhotos.value;
 
     if (secretPhotos == false) {
       //print('Cleared encryption key in memory!!!');
@@ -327,29 +354,20 @@ class AppStore {
     currentUser.save(); */
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(secretPhotos: secretPhotos));
+        .updateMoorUser(currentUser.copyWith(secretPhotos: secretPhotos.value));
 
     //    Analytics.sendEvent(Event.notification_switch);
   }
 
-  @observable
-  int requireSecret = 0;
-
-  @action
-  void setRequireSecret(int value) => requireSecret = value;
+  //@action
+  void setRequireSecret(int value) => requireSecret.value = value;
 
   //  int goal;
 
-  @observable
-  int hourOfDay = 20;
-
-  @observable
-  int minutesOfDay = 00;
-
-  @action
+  // //@action
   Future<void> changeUserTimeOfDay(int hour, int minute) async {
-    hourOfDay = hour;
-    minutesOfDay = minute;
+    hourOfDay.value = hour;
+    minutesOfDay.value = minute;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
@@ -372,12 +390,9 @@ class AppStore {
     }
   }
 
-  @observable
-  bool isPremium = false;
-
-  @action
+  //@action
   Future<void> setIsPremium(bool value) async {
-    isPremium = value;
+    isPremium.value = value;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
@@ -391,7 +406,7 @@ class AppStore {
     }
   }
 
-  @action
+  //@action
   Future<void> checkPremiumStatus() async {
     bool premium = await DatabaseManager.instance.checkPremiumStatus();
     if (premium == false) {
@@ -399,13 +414,7 @@ class AppStore {
     }
   }
 
-  @observable
-  Map<String, TagsStore> tags = <String, TagsStore>{};
-
-  @observable
-  List<TagsStore> mostUsedTags = <TagsStore>[];
-
-  @action
+  //@action
   void loadMostUsedTags({int maxTagsLength = 12}) {
     mostUsedTags.clear();
     var tempTags = List<TagsStore>.from(tags.values);
@@ -415,15 +424,12 @@ class AppStore {
         return b.name.toLowerCase().compareTo(a.name.toLowerCase());
       return count;
     });
-    mostUsedTags = List<TagsStore>.from(tempTags);
+    mostUsedTags.value = List<TagsStore>.from(tempTags);
     if (mostUsedTags.length > maxTagsLength)
-      mostUsedTags = mostUsedTags.sublist(0, maxTagsLength);
+      mostUsedTags.value = mostUsedTags.sublist(0, maxTagsLength);
   }
 
-  @observable
-  List<TagsStore> lastWeekUsedTags = <TagsStore>[];
-
-  @action
+  //@action
   void loadLastWeekUsedTags({int maxTagsLength = 12}) {
     lastWeekUsedTags.clear();
     var now = DateTime.now();
@@ -432,10 +438,7 @@ class AppStore {
     doSortingOfWeeksAndMonth(lastMonthUsedTags, sevenDaysBack, maxTagsLength);
   }
 
-  @observable
-  List<TagsStore> lastMonthUsedTags = <TagsStore>[];
-
-  @action
+  //@action
   void loadLastMonthUsedTags({int maxTagsLength = 12}) {
     lastMonthUsedTags.clear();
     var now = DateTime.now();
@@ -444,7 +447,7 @@ class AppStore {
   }
 
   void doSortingOfWeeksAndMonth(
-      List<TagsStore> list, DateTime back, int maxTagsLength) {
+      RxList<TagsStore> list, DateTime back, int maxTagsLength) {
     tags.values.forEach((element) {
       if (element.time.isBefore(back)) {
         list.add(element);
@@ -452,11 +455,12 @@ class AppStore {
     });
     if (list.isNotEmpty) {
       list.sort((TagsStore a, TagsStore b) => b.time.day.compareTo(a.time.day));
-      if (list.length > maxTagsLength) list = list.sublist(0, maxTagsLength);
+      if (list.length > maxTagsLength)
+        list.value = List<TagsStore>.from(list.sublist(0, maxTagsLength));
     }
   }
 
-  @action
+  //@action
   Future<void> loadTags() async {
     var tagsBox = await database.getAllLabel();
     tags.clear();
@@ -502,7 +506,7 @@ class AppStore {
     //print('******************* loaded tags **********');
   }
 
-  @action
+  //@action
   void addTag(TagsStore tagsStore) {
     if (tags[tagsStore.id] != null) {
       return;
@@ -511,7 +515,7 @@ class AppStore {
     tags[tagsStore.id] = tagsStore;
   }
 
-  @action
+  //@action
   void editTag({String oldTagKey, String newTagKey, String newName}) {
     TagsStore tagsStore =
         tags[oldTagKey]; //.firstWhere((element) => element.id == oldTagKey);
@@ -524,19 +528,17 @@ class AppStore {
     tags.remove(oldTagKey);
   }
 
-  @action
+  //@action
   void removeTag({TagsStore tagsStore}) {
     tags.remove(tagsStore);
   }
 
-  ObservableList<String> recentTags = ObservableList<String>();
-
-  @action
+  //@action
   void addRecentTags(String tagKey) {
     recentTags.add(tagKey);
   }
 
-  @action
+  //@action
   Future<void> editRecentTags(String oldTagKey, String newTagKey) async {
     if (recentTags.contains(oldTagKey)) {
       //print('updating tag name in recent tags');
@@ -556,12 +558,9 @@ class AppStore {
     }
   }
 
-  @observable
-  bool tutorialCompleted = false;
-
-  @action
+  //@action
   Future<void> setTutorialCompleted(bool value) async {
-    tutorialCompleted = value;
+    tutorialCompleted.value = value;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
@@ -581,7 +580,7 @@ class AppStore {
 
   bool loggedIn;
 
-  @action
+  //@action
   Future<void> setLoggedIn(bool value) async {
     loggedIn = true;
 
@@ -594,15 +593,12 @@ class AppStore {
     await database.updateMoorUser(currentUser.copyWith(loggedIn: true));
   }
 
-  @observable
-  bool canTagToday;
-
-  @action
+  //@action
   Future<void> setCanTagToday(bool value) async {
-    if (isPremium) {
-      canTagToday = true;
+    if (isPremium.value) {
+      canTagToday.value = true;
     } else {
-      canTagToday = value;
+      canTagToday.value = value;
     }
 
     /* var userBox = Hive.box('user');
@@ -612,10 +608,10 @@ class AppStore {
 
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(canTagToday: canTagToday));
+        .updateMoorUser(currentUser.copyWith(canTagToday: canTagToday.value));
   }
 
-  @action
+  //@action
   Future<void> increaseTodayTaggedPics() async {
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0); */
@@ -655,22 +651,11 @@ class AppStore {
     setCanTagToday(true);
   }
 
-  @observable
-  String appLanguage = 'en';
-
-  // remove @computed
-  Locale get appLocale {
-    return Locale(appLanguage.split('_')[0]);
-  }
-
-  @observable
-  bool hasGalleryPermission = false;
-
-  @action
+  //@action
   Future<bool> requestGalleryPermission() async {
     var result = await PhotoManager.requestPermission();
     if (result) {
-      hasGalleryPermission = true;
+      hasGalleryPermission.value = true;
     }
 
     /* var userBox = Hive.box('user');
@@ -679,15 +664,15 @@ class AppStore {
     currentUser.save(); */
     MoorUser currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser.copyWith(
-      hasGalleryPermission: hasGalleryPermission,
+      hasGalleryPermission: hasGalleryPermission.value,
     ));
 
     return result;
   }
 
-  @action
+  //@action
   Future<void> changeUserLanguage(String language) async {
-    appLanguage = language;
+    appLanguage.value = language;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
@@ -702,15 +687,7 @@ class AppStore {
     Analytics.sendEvent(Event.changed_language);
   }
 
-  // remove @computed
-  String get currentLanguage {
-    //print('App Language: $appLanguage');
-    String lang = appLanguage.split('_')[0];
-    var local = LanguageLocal();
-    return '${local.getDisplayLanguage(lang)['nativeName']}';
-  }
-
-  @action
+  //@action
   Future<void> createDefaultTags(BuildContext context) async {
     var tagsBox = await database.getAllLabel();
 
@@ -798,7 +775,7 @@ class AppStore {
         .then((_) => loadTags());
   }
 
-  @action
+  //@action
   Future<void> addTagToRecent({String tagKey}) async {
     //print('adding tag to recent: $tagKey');
 
@@ -828,7 +805,7 @@ class AppStore {
     //print('final tags in recent: ${getUser.recentTags}');
   }
 
-  @action
+  //@action
   Future<void> removeTagFromRecent({String tagKey}) async {
     /* var userBox = Hive.box('user');
     User getUser = userBox.getAt(0); */
@@ -843,11 +820,8 @@ class AppStore {
     }
   }
 
-  @observable
-  bool waitingAccessCode = false;
-
-  @action
-  void setWaitingAccessCode(bool value) => waitingAccessCode = value;
+  //@action
+  void setWaitingAccessCode(bool value) => waitingAccessCode.value = value;
 
   bool hasObserver = false;
 
@@ -874,19 +848,13 @@ class AppStore {
     email = value;
   }
 
-  @observable
-  double photoHeightInCardWidget = 500;
-
-  @action
+  //@action
   void setPhotoHeightInCardWidget(double value) =>
-      photoHeightInCardWidget = value;
+      photoHeightInCardWidget.value = value;
 
   bool wantsToActivateBiometric = false;
 
-  @observable
-  bool isBiometricActivated;
-
-  @action
+  //@action
   Future<void> setIsBiometricActivated(bool value) async {
     if (value == false) {
       await deactivateBiometric();
@@ -901,20 +869,19 @@ class AppStore {
       isBiometricActivated: value,
     ));
 
-    isBiometricActivated = value;
+    isBiometricActivated.value = value;
   }
 
-  @observable
-  List<BiometricType> availableBiometrics;
-
-  @action
+  //@action
   Future<void> checkAvailableBiometrics() async {
     bool canCheckBiometrics;
     try {
       canCheckBiometrics = await biometricAuth.canCheckBiometrics;
       if (canCheckBiometrics) {
         try {
-          availableBiometrics = await biometricAuth.getAvailableBiometrics();
+          biometricAuth.getAvailableBiometrics().then((val) {
+            availableBiometrics.value = List<BiometricType>.from(val);
+          });
         } catch (e) {
           //print(e);
         }
@@ -941,7 +908,7 @@ class AppStore {
     return secret;
   }
 
-  @action
+  //@action
   Future<void> deactivateBiometric() async {
     await Crypto.deleteEncryptedPin();
 
@@ -953,11 +920,8 @@ class AppStore {
     //print('Deleted encrypted info!');
   }
 
-  @observable
-  bool isMenuExpanded = true;
-
-  @action
-  void switchIsMenuExpanded() => isMenuExpanded = !isMenuExpanded;
+  //@action
+  void switchIsMenuExpanded() => isMenuExpanded.value = !isMenuExpanded.value;
 }
 
 MoorUser getDefaultMoorUser({String deviceLocale}) {

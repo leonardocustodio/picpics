@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:date_utils/date_utils.dart';
 import 'package:flutter/services.dart';
-
+import 'package:get/state_manager.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
@@ -16,6 +16,7 @@ import 'package:picPics/stores/tagged_date_pics_store.dart';
 import 'package:picPics/stores/tagged_grid_pic_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/stores/untagged_grid_pic_store.dart';
 import 'package:picPics/stores/untagged_pics_store.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -23,20 +24,67 @@ import 'package:share/share.dart';
 import 'package:collection/collection.dart';
 import 'package:mime/mime.dart';
 
-class GalleryStore {
-  final AppStore appStore;
+class GalleryStore extends GetxController {
+  AppStore appStore = AppStore.to;
   final database = AppDatabase();
 
-  GalleryStore({this.appStore}) {
+  final swipeIndex = 0.obs;
+  final shouldRefreshTaggedGallery = false.obs;
+  final sharedPic = false.obs;
+  final trashedPic = false.obs;
+  final tagsSuggestions = <TagsStore>[].obs;
+  final searchText = ''.obs;
+  final multiPicTags = <String, TagsStore>{}.obs;
+  final currentThumbnailPic = Rx<PicStore>(null);
+
+  final searchTagsResults = <TagsStore>[].obs;
+
+  final showSearchTagsResults = false.obs;
+
+  final searchingTags = <TagsStore>[].obs;
+
+  final isSearching = false.obs;
+  final selectedSwipe = 0.obs;
+  final selectedThumbnail = 0.obs;
+  final totalTaggedPics = 0.obs;
+
+  final isLoaded = false;
+
+  final assetsPath = <AssetPathEntity>[].obs;
+  final allPics = <String, PicStore>{}.obs;
+
+  final untaggedPics = <UntaggedPicsStore>[].obs;
+  final untaggedGridPics = <UntaggedGridPicStore>[].obs;
+  final untaggedGridPicsByMonth = <DateTime, Map<String, PicStore>>{}.obs;
+
+  final taggedDatePics = <TaggedDatePicsStore>[].obs;
+  final taggedGridPics = <TaggedGridPicStore>[].obs;
+  final taggedPics = <TaggedPicsStore>[].obs;
+  final filteredPics = <PicStore>[].obs;
+  final filteredPicsKeys = <String>[].obs;
+
+  final swipePics = <PicStore>[].obs;
+  final thumbnailsPics = <PicStore>[].obs;
+  final selectedPics = <PicStore>[].obs;
+  final privatePics = <PicStore>[].obs;
+
+/*   GalleryStore({this.appStore}) {
     tagsSuggestionsCalculate();
     loadTaggedPicsStore();
 
     if (appStore?.tutorialCompleted ?? false) {
       loadAssetsPath();
     }
+  } */
+
+  @override
+  void onInit() {
+    ever(taggedPics, runTotalTaggedPicsComputation);
+    ever(filteredPics, runFilteredPicsKeysComputation);
+    super.onInit();
   }
 
-  @action
+  //@action
   void loadTaggedPicsStore() {
     for (TagsStore tagsStore in appStore.tags.values.toList()) {
       TaggedPicsStore taggedPicsStore = TaggedPicsStore(tag: tagsStore);
@@ -46,12 +94,16 @@ class GalleryStore {
     //print('finished adding all tagged pics stores!');
   }
 
-  // remove @computed
-  int get totalTaggedPics {
-    return taggedPics
+  void runTotalTaggedPicsComputation(_) {
+    totalTaggedPics.value = taggedPics
         .map((element) => element.pics.length)
         .toList()
         .reduce((value, element) => value + element);
+  }
+
+  void runFilteredPicsKeysComputation(_) {
+    filteredPicsKeys.value = List<String>.from(
+        filteredPics.map((element) => element.photoId).toList());
   }
 
   PicStore currentPic;
@@ -60,12 +112,9 @@ class GalleryStore {
     currentPic = picStore;
   }
 
-  @observable
-  int swipeIndex = 0;
-
   int swipeCutOff = 0;
 
-  @action
+  //@action
   void setSwipeIndex(int value) {
     if (swipePics.isEmpty) {
       return;
@@ -78,49 +127,17 @@ class GalleryStore {
 //      }
 //    }
 
-    swipeIndex = value;
-    setCurrentPic(swipePics[swipeIndex]);
+    swipeIndex.value = value;
+    setCurrentPic(swipePics[swipeIndex.value]);
     Analytics.sendEvent(Event.swiped_photo);
   }
 
-  @observable
-  bool isLoaded = false;
-
-  ObservableList<AssetPathEntity> assetsPath =
-      ObservableList<AssetPathEntity>();
-  ObservableMap<String, PicStore> allPics = ObservableMap<String, PicStore>();
-
-  ObservableList<UntaggedPicsStore> untaggedPics =
-      ObservableList<UntaggedPicsStore>();
-  ObservableList<UntaggedGridPicStore> untaggedGridPics =
-      ObservableList<UntaggedGridPicStore>();
-  ObservableMap<DateTime, Map<String, PicStore>> untaggedGridPicsByMonth =
-      ObservableMap<DateTime, Map<String, PicStore>>();
-
-  ObservableList<TaggedDatePicsStore> taggedDatePics =
-      ObservableList<TaggedDatePicsStore>();
-  ObservableList<TaggedGridPicStore> taggedGridPics =
-      ObservableList<TaggedGridPicStore>();
-  ObservableList<TaggedPicsStore> taggedPics =
-      ObservableList<TaggedPicsStore>();
-  ObservableList<PicStore> filteredPics = ObservableList<PicStore>();
-
-  ObservableList<PicStore> swipePics = ObservableList<PicStore>();
-  ObservableList<PicStore> thumbnailsPics = ObservableList<PicStore>();
-  ObservableSet<PicStore> selectedPics = ObservableSet<PicStore>();
-  ObservableList<PicStore> privatePics = ObservableList<PicStore>();
-
-  // remove @computed
-  List<String> get filteredPicsKeys {
-    return filteredPics.map((element) => element.photoId).toList();
-  }
-
-  @action
+  //@action
   void clearPicThumbnails() {
     thumbnailsPics.clear();
   }
 
-  @action
+  //@action
   void addPicToThumbnails(PicStore picStore) {
     if (thumbnailsPics.contains(picStore)) {
       return;
@@ -128,45 +145,36 @@ class GalleryStore {
     thumbnailsPics.add(picStore);
   }
 
-  @action
+  //@action
   void addPicsToThumbnails(List<PicStore> picStores) {
     thumbnailsPics.addAll(picStores);
   }
 
-  @observable
-  int selectedSwipe = 0;
+  //@action
+  void setSelectedSwipe(int value) => selectedSwipe.value = value;
 
-  @action
-  void setSelectedSwipe(int value) => selectedSwipe = value;
+  //@action
+  void setSelectedThumbnail(int value) => selectedThumbnail.value = value;
 
-  @observable
-  int selectedThumbnail = 0;
-
-  @action
-  void setSelectedThumbnail(int value) => selectedThumbnail = value;
-
-  // remove @computed
-  PicStore get currentThumbnailPic {
-    if (thumbnailsPics == null) {
-      return null;
-    }
-    return thumbnailsPics[selectedThumbnail];
+  //@computed
+  void runcurrentThumbnailPicComputation(_) {
+    currentThumbnailPic.value = (thumbnailsPics == null ||
+            selectedThumbnail.value >= thumbnailsPics.length)
+        ? null
+        : thumbnailsPics[selectedThumbnail.value];
   }
 
-  @action
+  //@action
   void setInitialSelectedThumbnail(PicStore picStore) {
     int indexOf = thumbnailsPics.indexOf(picStore);
-    selectedThumbnail = indexOf;
+    selectedThumbnail.value = indexOf;
   }
 
-  @observable
-  bool isSearching = false;
-
-  @action
-  void setIsSearching(bool value) => isSearching = value;
+  //@action
+  void setIsSearching(bool value) => isSearching.value = value;
   int count = 0;
 
-  @action
+  //@action
   void clearSearchTags() {
     setSearchText('');
     setShowSearchTagsResults(false);
@@ -176,15 +184,13 @@ class GalleryStore {
     filteredPics.clear();
   }
 
-  ObservableList<TagsStore> searchingTags = ObservableList<TagsStore>();
-
-  // remove @computed
+  @computed
   List<String> get searchingTagsKeys {
     //print('${count++} :searchingTagsKeys');
     return searchingTags.map((element) => element.id).toList();
   }
 
-  // remove @computed
+  @computed
   bool get isFiltered {
     if (searchingTags.length > 0) {
       return true;
@@ -192,17 +198,13 @@ class GalleryStore {
     return false;
   }
 
-  ObservableList<TagsStore> searchTagsResults = ObservableList<TagsStore>();
-
-  @observable
-  bool showSearchTagsResults = false;
-
-  @action
-  void setShowSearchTagsResults(bool value) => showSearchTagsResults = value;
+  //@action
+  void setShowSearchTagsResults(bool value) =>
+      showSearchTagsResults.value = value;
 
   bool selectedPicsAreTagged;
 
-  @action
+  //@action
   void setSelectedPics({PicStore picStore, bool picIsTagged}) {
     if (selectedPics.contains(picStore)) {
       selectedPics.remove(picStore);
@@ -212,21 +214,13 @@ class GalleryStore {
     selectedPicsAreTagged = picIsTagged;
   }
 
-  @action
+  //@action
   void clearSelectedPics() {
     selectedPicsAreTagged = null;
     selectedPics.clear();
   }
 
-  ObservableMap<String, TagsStore> multiPicTags =
-      ObservableMap<String, TagsStore>();
-
-/*   // remove @computed
-  List<String> get multiPicTagKeys {
-    return multiPicTags.map((element) => element.id).toList();
-  } */
-
-  @action
+  //@action
   void addToMultiPicTags(String tagKey) {
     if (multiPicTags[tagKey] == null && appStore.tags[tagKey] != null) {
       /* TagsStore tagsStore =
@@ -236,7 +230,7 @@ class GalleryStore {
     }
   }
 
-  @action
+  //@action
   void removeFromMultiPicTags(String tagKey) {
     if (multiPicTags[tagKey] != null) {
       //TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
@@ -244,22 +238,16 @@ class GalleryStore {
     }
   }
 
-  @action
+  //@action
   void clearMultiPicTags() {
     multiPicTags.clear();
   }
 
-  @observable
-  String searchText = '';
-
-  @action
+  //@action
   void setSearchText(String value) {
     searchText = value;
     tagsSuggestionsCalculate();
   }
-
-  @observable
-  List<TagsStore> tagsSuggestions = <TagsStore>[];
 
 /*   Future<List<Label>> getLabels() async {
     return await database.getAllLabel();
@@ -352,7 +340,7 @@ class GalleryStore {
     return suggestions;
   }
 
-  // remove @computed
+  @computed
   List<String> get taggedKeys {
     Set<String> tags = Set();
     taggedPics.forEach((element) {
@@ -362,7 +350,7 @@ class GalleryStore {
     return tags.toList();
   }
 
-  // remove @computed
+  @computed
   bool get deviceHasPics {
     if (allPics.length == 0) {
       return false;
@@ -371,7 +359,7 @@ class GalleryStore {
     }
   }
 
-  @action
+  //@action
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
     for (TagsStore tag in picStore.tags.values.toList()) {
       TaggedPicsStore taggedPicsStore = taggedPics
@@ -450,7 +438,7 @@ class GalleryStore {
     setShouldRefreshTaggedGallery(true);
   }
 
-  @action
+  //@action
   void removePicFromTaggedPics({PicStore picStore, bool forceDelete = false}) {
     // //print('removePicFromTaggedPics');
     List<TaggedPicsStore> toDelete = [];
@@ -479,7 +467,7 @@ class GalleryStore {
     tagsSuggestionsCalculate();
   }
 
-  @action
+  //@action
   void deleteEntity(String entityId) {
     // //print('Deleting entity...');
 
@@ -498,7 +486,7 @@ class GalleryStore {
     // //print('#@#@#@# Total photos: ${allPics.length}');
   }
 
-  @action
+  //@action
   Future<void> addEntity(AssetEntity entity) async {
     // //print('Adding new entity....');
 
@@ -536,7 +524,7 @@ class GalleryStore {
     // //print('#@#@#@# Total photos: ${allPics.length}');
   }
 
-  @action
+  //@action
   void addPicToUntaggedPics({PicStore picStore}) {
     DateTime picDate = picStore.createdAt;
 
@@ -621,7 +609,7 @@ class GalleryStore {
     //tagsSuggestionsCalculate();
   }
 
-  @action
+  //@action
   void removePicFromUntaggedPics({PicStore picStore}) {
     var toDelete = <UntaggedPicsStore>[];
 
@@ -671,7 +659,7 @@ class GalleryStore {
     }
   }
 
-  @action
+  //@action
   Future<void> loadEntities() async {
     if (assetsPath.isEmpty) {
       return;
@@ -751,7 +739,7 @@ class GalleryStore {
     // //print('#@#@#@# Total photos: ${allPics.length}');
   }
 
-  @action
+  //@action
   void sortTaggedPhotos() {
     taggedGridPics.clear();
 
@@ -765,7 +753,7 @@ class GalleryStore {
     }
   }
 
-  @action
+  //@action
   void sortUntaggedPhotos() {
     //untaggedGridPics.clear();
 
@@ -790,7 +778,7 @@ class GalleryStore {
     } */
   }
 
-  @action
+  //@action
   Future<void> loadAssetsPath() async {
     FilterOptionGroup filterOptionGroup = FilterOptionGroup();
     filterOptionGroup.addOrderOption(
@@ -815,7 +803,7 @@ class GalleryStore {
     setSwipeIndex(0);
   }
 
-  @action
+  //@action
   Future<void> loadPrivateAssets() async {
     if (appStore.secretPhotos != true) {
       // //print('Secret photos is off - not loading private pics');
@@ -857,13 +845,10 @@ class GalleryStore {
     // //print('#@#@#@# Total photos with private photos: ${allPics.length}');
   }
 
-  @observable
-  bool trashedPic = false;
-
-  @action
+  //@action
   void setTrashedPic(bool value) => trashedPic = value;
 
-  @action
+  //@action
   Future<void> trashMultiplePics(Set<PicStore> selectedPics) async {
     List<String> selectedPicsIds = selectedPics.map((e) => e.photoId).toList();
 
@@ -922,7 +907,7 @@ class GalleryStore {
     }
   }
 
-  @action
+  //@action
   Future<void> trashPic(PicStore picStore) async {
     // //print('Going to trash pic!');
     bool deleted = await picStore.deletePic();
@@ -951,13 +936,10 @@ class GalleryStore {
     return imageFile.path;
   }
 
-  @observable
-  bool sharedPic = false;
-
-  @action
+  //@action
   void setSharedPic(bool value) => sharedPic = value;
 
-  @action
+  //@action
   Future<void> sharePics({List<PicStore> picsStores}) async {
     var imageList = <String>[], mimeList = <String>[];
 
@@ -1012,7 +994,7 @@ class GalleryStore {
     return;
   }
 
-  @action
+  //@action
   Future<void> editTag({String oldTagKey, String newName}) async {
     //var tagsBox = Hive.box('tags');
     //var picsBox = Hive.box('pics');
@@ -1056,7 +1038,7 @@ class GalleryStore {
     Analytics.sendEvent(Event.edited_tag);
   }
 
-  @action
+  //@action
   Future<void> deleteTag({String tagKey}) async {
     //var tagsBox = Hive.box('tags');
 
@@ -1088,7 +1070,7 @@ class GalleryStore {
     }
   }
 
-  @action
+  //@action
   void addTagToSearchFilter() {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
       return;
@@ -1111,7 +1093,7 @@ class GalleryStore {
     }
   }
 
-  @action
+  //@action
   Future<void> searchPicsWithTags() async {
     //var tagsBox = Hive.box('tags');
     /*// //print('%%%% Tags Keys: ${tagsBox.keys}'); */
@@ -1165,7 +1147,7 @@ class GalleryStore {
     Analytics.sendEvent(Event.searched_photos);
   }
 
-  @action
+  //@action
   void searchResultsTags(String text) {
     text = text.trim();
     searchTagsResults.clear();
@@ -1227,7 +1209,7 @@ class GalleryStore {
     );
   }
 
-  @action
+  //@action
   Future<void> addTagsToSelectedPics() async {
     //var tagsBox = Hive.box('tags');
 
@@ -1290,7 +1272,7 @@ class GalleryStore {
 //    }
 //  }
 
-  @action
+  //@action
   Future<void> _onAssetChange(MethodCall call) async {
     // //print('#!#!#!#!#!#! asset changed: ${call.arguments}');
 //
@@ -1327,7 +1309,7 @@ class GalleryStore {
 //    }
   }
 
-  @action
+  //@action
   Future<void> removeAllPrivatePics() async {
     for (PicStore private in privatePics) {
       removePicFromTaggedPics(picStore: private, forceDelete: true);
@@ -1341,7 +1323,7 @@ class GalleryStore {
     privatePics.clear();
   }
 
-  @action
+  //@action
   Future<void> checkIsLibraryUpdated() async {
     // //print('Scanning library again....');
 
@@ -1385,14 +1367,11 @@ class GalleryStore {
     await loadPrivateAssets();
   }
 
-  @observable
-  bool shouldRefreshTaggedGallery = false;
-
-  @action
+  //@action
   void setShouldRefreshTaggedGallery(bool value) =>
       shouldRefreshTaggedGallery = value;
 
-  @action
+  //@action
   Future<void> removeTagFromPic({PicStore picStore, String tagKey}) async {
     await picStore.removeTagFromPic(tagKey: tagKey);
     removePicFromTaggedPics(picStore: picStore);
@@ -1404,7 +1383,7 @@ class GalleryStore {
     await tagsSuggestionsCalculate();
   }
 
-  @action
+  //@action
   Future<void> addTagToPic({PicStore picStore, String tagName}) async {
     if (picStore.tags.isEmpty) {
       // //print('this pic now has tags!');
@@ -1417,7 +1396,7 @@ class GalleryStore {
     await tagsSuggestionsCalculate();
   }
 
-  @action
+  //@action
   Future<void> setPrivatePic({PicStore picStore, bool private}) async {
     String originalPhotoId = '${currentPic.photoId}';
     await currentPic.setIsPrivate(private);
@@ -1483,7 +1462,7 @@ class GalleryStore {
     return tagsList;
   }
 
-  @action
+  //@action
   void refreshPicThumbnails() {
     clearPicThumbnails();
 

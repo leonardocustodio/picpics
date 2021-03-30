@@ -3,11 +3,10 @@ import 'dart:io';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
 class ClassificationStore {
-  ClassificationStore() {
+  /* ClassificationStore() {
     // loadModels();
-  }
+  } */
 
-  @action
   Future<void> makeClassification(File image) async {
     final FirebaseVisionImage visionImage = FirebaseVisionImage.fromFile(image);
     final ImageLabeler cloudLabeler =

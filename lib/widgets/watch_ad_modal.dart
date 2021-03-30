@@ -4,7 +4,6 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/stores/app_store.dart';
-import 'package:provider/provider.dart';
 
 class WatchAdModal extends StatelessWidget {
   final Function onPressedWatchAdd;

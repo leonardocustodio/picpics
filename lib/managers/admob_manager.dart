@@ -1,4 +1,3 @@
-// import 'package:firebase_admob/firebase_admob.dart';
 import 'dart:io';
 
 class Ads {

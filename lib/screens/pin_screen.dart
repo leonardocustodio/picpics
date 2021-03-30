@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animator/animation/animator_play_states.dart';
-
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -19,7 +18,6 @@ import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:picPics/widgets/general_modal.dart';
 import 'package:flutter_animator/flutter_animator.dart';
-import 'package:provider/provider.dart';
 import 'package:local_auth/local_auth.dart';
 
 class PinScreen extends StatefulWidget {

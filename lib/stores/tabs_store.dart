@@ -11,7 +11,7 @@ class TabsStore {
   @observable
   int currentTab = 0;
 
-  @action
+  //@action
   void setCurrentTab(int value) {
     if (currentTab == value) {
       return;
@@ -30,7 +30,7 @@ class TabsStore {
   @observable
   bool multiPicBar = false;
 
-  @action
+  //@action
   void setMultiPicBar(bool value) {
     if (value) {
       Analytics.sendEvent(Event.selected_photos);
@@ -41,7 +41,7 @@ class TabsStore {
   @observable
   bool multiTagSheet = false;
 
-  @action
+  //@action
   void setMultiTagSheet(bool value) {
     multiTagSheet = value;
   }
@@ -49,7 +49,7 @@ class TabsStore {
   @observable
   bool isLoading = false;
 
-  @action
+  //@action
   void setIsLoading(bool value) {
     isLoading = value;
   }
@@ -57,7 +57,7 @@ class TabsStore {
   @observable
   bool modalCard = false;
 
-  @action
+  //@action
   void setModalCard(bool value) {
     Analytics.sendEvent(Event.showed_card);
     modalCard = value;
@@ -66,7 +66,7 @@ class TabsStore {
   @observable
   int tutorialIndex = 0;
 
-  @action
+  //@action
   void setTutorialIndex(int value) => tutorialIndex = value;
 
   double offsetFirstTab = 0.0;
@@ -74,7 +74,7 @@ class TabsStore {
   @observable
   double topOffsetFirstTab = 64.0;
 
-  @action
+  //@action
   void setTopOffsetFirstTab(double value) {
     if (value == topOffsetFirstTab) {
       return;
@@ -87,7 +87,7 @@ class TabsStore {
   @observable
   bool hideTitleThirdTab = false;
 
-  @action
+  //@action
   void setHideTitleThirdTab(bool value) {
     if (value == hideTitleThirdTab) {
       return;
@@ -98,30 +98,30 @@ class TabsStore {
   @observable
   bool showDeleteSecretModal = false;
 
-  @action
+  //@action
   void setShowDeleteSecretModal(bool value) => showDeleteSecretModal = value;
 
   @observable
   bool isScrolling = false;
 
-  @action
+  //@action
   void setIsScrolling(bool value) => isScrolling = value;
 
   @observable
   bool isToggleBarVisible = true;
 
-  @action
+  //@action
   void setIsToggleBarVisible(bool value) => isToggleBarVisible = value;
 
   @observable
   int toggleIndexUntagged = 0;
 
-  @action
+  //@action
   void setToggleIndexUntagged(int value) => toggleIndexUntagged = value;
 
   @observable
   int toggleIndexTagged = 1;
 
-  @action
+  //@action
   void setToggleIndexTagged(int value) => toggleIndexTagged = value;
 }

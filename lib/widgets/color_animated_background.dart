@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:picPics/components/colorful_background.dart';
 import 'package:simple_animations/simple_animations.dart';

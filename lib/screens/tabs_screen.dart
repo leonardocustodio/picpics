@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/screens/pin_screen.dart';
@@ -24,7 +23,6 @@ import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
-import 'package:provider/provider.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';

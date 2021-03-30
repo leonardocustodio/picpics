@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/stores/app_store.dart';
@@ -13,43 +12,43 @@ class PinStore {
 
   String pin = '';
 
-  @action
+  //@action
   void setEmail(String value) => email = value;
 
   @observable
   String pinTemp = '';
 
-  @action
+  //@action
   void setPinTemp(String value) => pinTemp = value;
 
   @observable
   String confirmPinTemp = '';
 
-  @action
+  //@action
   void setConfirmPinTemp(String value) => confirmPinTemp = value;
 
   @observable
   String accessCode = '';
 
-  @action
+  //@action
   void setAccessCode(String value) => accessCode = value;
 
   @observable
   bool invalidAccessCode = false;
 
-  @action
+  //@action
   void setInvalidAccessCode(bool value) => invalidAccessCode = value;
 
   @observable
   bool isWaitingRecoveryKey = false;
 
-  @action
+  //@action
   void setIsWaitingRecoveryKey(bool value) => isWaitingRecoveryKey = value;
 
   @observable
   bool isSettingNewPin = false;
 
-  @action
+  //@action
   void setIsSettingNewPin(bool value) => isSettingNewPin = value;
 
   String encryptedRecoveryKey;
@@ -57,13 +56,13 @@ class PinStore {
   @observable
   String recoveryCode = '';
 
-  @action
+  //@action
   void setRecoveryCode(String value) => recoveryCode = value;
 
   String generatedIv;
   void setGeneratedIv(String value) => generatedIv = value;
 
-  @action
+  //@action
   Future<bool> requestRecoveryKey(String userEmail) async {
     final HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
@@ -108,7 +107,7 @@ class PinStore {
     return false;
   }
 
-  @action
+  //@action
   Future<bool> isRecoveryCodeValid(AppStore appStore) async {
     //print('Typed Recovery Code: $recoveryCode');
 
@@ -120,7 +119,7 @@ class PinStore {
     return false;
   }
 
-  @action
+  //@action
   Future<void> saveNewPin(AppStore appStore) async {
     await Crypto.reSaveSpKey(pin, appStore);
     appStore.setTempEncryptionKey(null);
@@ -129,7 +128,7 @@ class PinStore {
     //print('Saved new pin!!!');
   }
 
-  @action
+  //@action
   Future<Map<String, dynamic>> register() async {
     //print('Email: $email - Pin: $pin');
 
@@ -162,7 +161,7 @@ class PinStore {
     return result;
   }
 
-  @action
+  //@action
   Future<bool> validateAccessCode(AppStore appStore) async {
     final HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('validateAccessCode');
@@ -204,18 +203,18 @@ class PinStore {
     return false;
   }
 
-  @action
+  //@action
   Future<bool> isPinValid(AppStore appStore) async {
     bool valid = await Crypto.checkIsPinValid(pinTemp, appStore);
     return valid;
   }
 
-  @action
+  //@action
   Future<void> activateBiometric(AppStore appStore) async {
     await Crypto.saveEncryptedPin(pinTemp, appStore);
   }
 
-  @action
+  //@action
   Future<bool> isBiometricValidated(AppStore appStore) async {
     String pin = await Crypto.getEncryptedPin(appStore);
     if (pin == null) {

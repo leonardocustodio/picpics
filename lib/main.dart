@@ -20,7 +20,7 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:provider/provider.dart';
+
 import 'package:flutter/services.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -36,7 +36,6 @@ import 'dart:io';
 import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:picPics/managers/widget_manager.dart';
-
 import 'screens/all_tags_screen.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {

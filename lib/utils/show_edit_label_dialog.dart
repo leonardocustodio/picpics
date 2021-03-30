@@ -3,7 +3,6 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
-
 import '../constants.dart';
 
 Future<void> showEditTagModal(BuildContext context, GalleryStore galleryStore,

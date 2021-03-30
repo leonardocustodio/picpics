@@ -2,7 +2,7 @@
 //import 'package:flutter/services.dart';
 //import 'package:photo_manager/photo_manager.dart';
 //import 'package:picPics/stores/gallery_store.dart';
-//import 'package:provider/provider.dart';
+//
 //
 //class AssetChangeNotifier {
 //  static void registerObserve() {

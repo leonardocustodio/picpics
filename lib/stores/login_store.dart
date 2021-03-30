@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-
 import 'package:picPics/generated/l10n.dart';
 
 class LoginStore {
@@ -14,7 +13,7 @@ class LoginStore {
 
   int totalSlides = Board.values.length;
 
-  @action
+  //@action
   void setSlideIndex(int value) => slideIndex = value;
 
   String getDescription(BuildContext context, int value) {

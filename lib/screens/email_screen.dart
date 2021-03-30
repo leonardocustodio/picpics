@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -12,7 +11,6 @@ import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:picPics/widgets/general_modal.dart';
 import 'package:email_validator/email_validator.dart';
-import 'package:provider/provider.dart';
 
 class EmailScreen extends StatefulWidget {
   static const String id = 'email_screen';

@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -11,8 +10,6 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/customised_tags_list.dart';
 import 'package:picPics/widgets/show_watch_ad_modal.dart';
-import 'package:provider/provider.dart';
-
 import '../constants.dart';
 
 class AllTagsScreen extends StatefulWidget {

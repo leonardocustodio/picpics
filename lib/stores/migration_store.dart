@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/secret.dart';
@@ -15,10 +14,10 @@ class MigrationStore {
   @observable
   bool isMigrating = true;
 
-  @action
+  //@action
   void setIsMigrating(bool value) => isMigrating = value;
 
-  @action
+  //@action
   Future<void> startMigration() async {
     var userBox = Hive.box('user');
     var picsBox = Hive.box('pics');

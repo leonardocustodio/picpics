@@ -3,7 +3,6 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
@@ -20,13 +19,7 @@ import 'package:googleapis/translate/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:strings/strings.dart';
 import 'package:path/path.dart' as p;
-// import 'package:tflite_flutter/tflite_flutter.dart' as tfl;
-// import 'package:image/image.dart' as img;
 import 'package:metadata/metadata.dart' as md;
-// import 'package:exif/exif.dart';
-// import 'package:edit_exif/edit_exif.dart';
-// import 'package:psd_sdk/psd_sdk.dart' as psd;
-// import 'package:tflite/tflite.dart';
 import 'dart:convert';
 
 class PicStore {
@@ -88,7 +81,7 @@ class PicStore {
   @observable
   bool isStarred;
 
-  @action
+  //@action
   Future<void> switchIsStarred() async {
     bool value = isStarred == null ? true : !isStarred;
     //print('Setting starred photo $photoId to $value');
@@ -120,7 +113,7 @@ class PicStore {
   @observable
   String photoId;
 
-  @action
+  //@action
   Future<void> setChangePhotoId(String value) async {
     //var tagsBox = Hive.box('tags');
 
@@ -140,7 +133,7 @@ class PicStore {
   @observable
   AssetEntity entity;
 
-  @action
+  //@action
   Future<void> changeAssetEntity(AssetEntity picEntity) async {
     //print('Changing asset entity of $photoId to ${picEntity.id}');
 
@@ -209,7 +202,7 @@ class PicStore {
     await database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
   }
 
-  @action
+  //@action
   Future<void> setPrivatePath(
       String picPath, String thumbnailPath, String picNonce) async {
     //var secretBox = Hive.box('secrets');
@@ -246,7 +239,7 @@ class PicStore {
     setDeletedFromCameraRoll(false);
   }
 
-  @action
+  //@action
   Future<void> removePrivatePath() async {
     //print('Removing pic from secrets box...');
 
@@ -293,7 +286,7 @@ class PicStore {
     //print(mapResult['dc:subject']);
   }
 
-  @action
+  //@action
   Future<void> loadPicInfo() async {
     // loadExifData();
 
@@ -337,7 +330,7 @@ class PicStore {
     }
   }
 
-  @action
+  //@action
   Future<void> setIsPrivate(bool value) async {
     if (value) {
       await addSecretTagToPic();
@@ -386,7 +379,7 @@ class PicStore {
     //print('Added secret tag to pic!');
   }
 
-  @action
+  //@action
   void setSearchText(String value) {
     searchText = value;
     setAiTags(false);
@@ -462,7 +455,7 @@ class PicStore {
     return <TagsStore>[];
   }
 
-  @action
+  //@action
   Future<void> addTag({String tagName}) async {
     //var tagsBox = Hive.box('tags');
     /* //print(tagsBox.keys); */
@@ -523,7 +516,7 @@ class PicStore {
     await appStore.addTagToRecent(tagKey: tagKey);
   }
 
-  @action
+  //@action
   Future<void> addTagToPic(
       {String tagKey,
       String tagNameX,
@@ -606,7 +599,7 @@ class PicStore {
     return imageFile.path;
   }
 
-  @action
+  //@action
   Future<void> sharePic() async {
     String path = '';
 
@@ -635,7 +628,7 @@ class PicStore {
     ShareExtend.share(path, "image");
   }
 
-  @action
+  //@action
   Future<bool> deletePic() async {
     //print('Before photo manager delete: ${entity.id}');
 
@@ -671,7 +664,7 @@ class PicStore {
     return true;
   }
 
-  @action
+  //@action
   Future<void> removeTagFromPic({String tagKey}) async {
     //print('removing tag: $tagKey from pic $photoId');
     //var tagsBox = Hive.box('tags');
@@ -714,7 +707,7 @@ class PicStore {
     );
   }
 
-  @action
+  //@action
   Future<void> saveLocation(
       {double lat, double long, String specific, String general}) async {
     //var picsBox = Hive.box('pics');
@@ -764,10 +757,10 @@ class PicStore {
     generalLocation = general;
   }
 
-  @action
+  //@action
   void setAiTags(bool value) => aiTags = value;
 
-  @action
+  //@action
   void switchAiTags(BuildContext context) {
     aiTags = !aiTags;
 
@@ -776,7 +769,7 @@ class PicStore {
     }
   }
 
-  @action
+  //@action
   void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
 
   Future<List<String>> translateTags(
@@ -907,7 +900,7 @@ class PicStore {
 //     return img.decodeJpg(imageBytes.asUint8List());
 //   }
 
-  @action
+  //@action
   Future<void> getAiSuggestions(BuildContext context) async {
     if (aiTagsLoaded == true) {
       return;

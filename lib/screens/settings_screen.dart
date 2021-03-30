@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
@@ -15,7 +14,6 @@ import 'package:picPics/widgets/secret_switch.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 import 'package:esys_flutter_share/esys_flutter_share.dart';
-import 'package:provider/provider.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:local_auth/local_auth.dart';

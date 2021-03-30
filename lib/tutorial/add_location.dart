@@ -14,7 +14,6 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:provider/provider.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 final homeScaffoldKey = GlobalKey<ScaffoldState>();

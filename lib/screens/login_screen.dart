@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
@@ -11,7 +10,6 @@ import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/login_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';

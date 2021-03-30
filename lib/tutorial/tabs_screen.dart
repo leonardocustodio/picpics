@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -25,14 +24,13 @@ import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
-import 'package:provider/provider.dart';
+
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/generated/l10n.dart';
-// import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
