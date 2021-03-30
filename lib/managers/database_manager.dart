@@ -161,7 +161,7 @@ class DatabaseManager extends ChangeNotifier {
       //print(exception);
     } catch (exception) {
       //print('Unable to fetch remote config. Cached or default values will be '
-          //print('used');
+      //print('used');
     }
   }
 

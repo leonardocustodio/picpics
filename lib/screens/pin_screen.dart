@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animator/animation/animator_play_states.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mobx/mobx.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
@@ -29,11 +29,7 @@ import 'package:metadata/metadata.dart' as md;
 // import 'package:tflite/tflite.dart';
 import 'dart:convert';
 
-part 'pic_store.g.dart';
-
-class PicStore = _PicStore with _$PicStore;
-
-abstract class _PicStore with Store {
+class PicStore {
   final AppStore appStore;
   final DateTime createdAt;
   final double originalLatitude;
@@ -71,7 +67,7 @@ abstract class _PicStore with Store {
   @observable
   bool isPrivate = false;
 
-  _PicStore({
+  PicStore({
     this.appStore,
     this.entity,
     this.photoPath,

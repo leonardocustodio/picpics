@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:date_utils/date_utils.dart';
 import 'package:flutter/services.dart';
-import 'package:mobx/mobx.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
@@ -23,25 +23,17 @@ import 'package:share/share.dart';
 import 'package:collection/collection.dart';
 import 'package:mime/mime.dart';
 
-part 'gallery_store.g.dart';
-
-class GalleryStore = _GalleryStore with _$GalleryStore;
-
-abstract class _GalleryStore with Store {
+class GalleryStore {
   final AppStore appStore;
   final database = AppDatabase();
 
-  _GalleryStore({this.appStore}) {
+  GalleryStore({this.appStore}) {
     tagsSuggestionsCalculate();
     loadTaggedPicsStore();
 
     if (appStore?.tutorialCompleted ?? false) {
       loadAssetsPath();
     }
-
-    autorun((_) {
-      // //print('auto run');
-    });
   }
 
   @action
@@ -54,7 +46,7 @@ abstract class _GalleryStore with Store {
     //print('finished adding all tagged pics stores!');
   }
 
-  @computed
+  // remove @computed
   int get totalTaggedPics {
     return taggedPics
         .map((element) => element.pics.length)
@@ -118,7 +110,7 @@ abstract class _GalleryStore with Store {
   ObservableSet<PicStore> selectedPics = ObservableSet<PicStore>();
   ObservableList<PicStore> privatePics = ObservableList<PicStore>();
 
-  @computed
+  // remove @computed
   List<String> get filteredPicsKeys {
     return filteredPics.map((element) => element.photoId).toList();
   }
@@ -153,7 +145,7 @@ abstract class _GalleryStore with Store {
   @action
   void setSelectedThumbnail(int value) => selectedThumbnail = value;
 
-  @computed
+  // remove @computed
   PicStore get currentThumbnailPic {
     if (thumbnailsPics == null) {
       return null;
@@ -186,13 +178,13 @@ abstract class _GalleryStore with Store {
 
   ObservableList<TagsStore> searchingTags = ObservableList<TagsStore>();
 
-  @computed
+  // remove @computed
   List<String> get searchingTagsKeys {
     //print('${count++} :searchingTagsKeys');
     return searchingTags.map((element) => element.id).toList();
   }
 
-  @computed
+  // remove @computed
   bool get isFiltered {
     if (searchingTags.length > 0) {
       return true;
@@ -229,7 +221,7 @@ abstract class _GalleryStore with Store {
   ObservableMap<String, TagsStore> multiPicTags =
       ObservableMap<String, TagsStore>();
 
-/*   @computed
+/*   // remove @computed
   List<String> get multiPicTagKeys {
     return multiPicTags.map((element) => element.id).toList();
   } */
@@ -360,7 +352,7 @@ abstract class _GalleryStore with Store {
     return suggestions;
   }
 
-  @computed
+  // remove @computed
   List<String> get taggedKeys {
     Set<String> tags = Set();
     taggedPics.forEach((element) {
@@ -370,7 +362,7 @@ abstract class _GalleryStore with Store {
     return tags.toList();
   }
 
-  @computed
+  // remove @computed
   bool get deviceHasPics {
     if (allPics.length == 0) {
       return false;

@@ -1,21 +1,12 @@
-import 'package:mobx/mobx.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
-part 'tabs_store.g.dart';
-
-class TabsStore = _TabsStore with _$TabsStore;
-
-abstract class _TabsStore with Store {
+class TabsStore {
   final AppStore appStore;
   final GalleryStore galleryStore;
 
-  _TabsStore({this.appStore, this.galleryStore}) {
-    autorun((_) {
-      //print('autorun!');
-    });
-  }
+  TabsStore({this.appStore, this.galleryStore}) {}
 
   @observable
   int currentTab = 0;

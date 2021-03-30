@@ -1,16 +1,12 @@
 import 'package:hive/hive.dart';
-import 'package:mobx/mobx.dart';
+
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
 
-part 'migration_store.g.dart';
-
-class MigrationStore = _MigrationStore with _$MigrationStore;
-
-abstract class _MigrationStore with Store {
-  _MigrationStore() {
+class MigrationStore {
+  MigrationStore() {
     // autorun((_) {
     // //print('autorun');
     // });

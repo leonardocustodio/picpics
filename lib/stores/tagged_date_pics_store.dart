@@ -1,14 +1,9 @@
-import 'package:mobx/mobx.dart';
 import 'package:picPics/stores/pic_store.dart';
 
-part 'tagged_date_pics_store.g.dart';
-
-class TaggedDatePicsStore = _TaggedDatePicsStore with _$TaggedDatePicsStore;
-
-abstract class _TaggedDatePicsStore with Store {
+class TaggedDatePicsStore {
   DateTime date;
 
-  _TaggedDatePicsStore({
+  TaggedDatePicsStore({
     this.date,
   });
 

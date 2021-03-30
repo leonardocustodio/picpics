@@ -4,7 +4,6 @@ import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:mobx/mobx.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
@@ -20,18 +19,14 @@ import 'package:uuid/uuid.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 
-part 'app_store.g.dart';
-
-class AppStore = _AppStore with _$AppStore;
-
-abstract class _AppStore with Store {
+class AppStore {
   final String appVersion;
   final String deviceLocale;
   final String initiatedWithProduct;
   final LocalAuthentication biometricAuth = LocalAuthentication();
   AppDatabase database = AppDatabase();
 
-  _AppStore({
+  AppStore({
     this.appVersion,
     this.deviceLocale,
     this.initiatedWithProduct,
@@ -663,7 +658,7 @@ abstract class _AppStore with Store {
   @observable
   String appLanguage = 'en';
 
-  @computed
+  // remove @computed
   Locale get appLocale {
     return Locale(appLanguage.split('_')[0]);
   }
@@ -707,7 +702,7 @@ abstract class _AppStore with Store {
     Analytics.sendEvent(Event.changed_language);
   }
 
-  @computed
+  // remove @computed
   String get currentLanguage {
     //print('App Language: $appLanguage');
     String lang = appLanguage.split('_')[0];

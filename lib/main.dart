@@ -206,7 +206,7 @@ void main() async {
   }, onError: (error) {
     PlatformException platformException = error as PlatformException;
     //print('InitSession error: ${platformException.code}');
-                              //print(' - ${platformException.message}');
+    //print(' - ${platformException.message}');
   });
 
   bool setAppGroup =

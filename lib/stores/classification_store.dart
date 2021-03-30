@@ -1,19 +1,10 @@
-import 'package:mobx/mobx.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
-part 'classification_store.g.dart';
-
-class ClassificationStore = _ClassificationStore with _$ClassificationStore;
-
-abstract class _ClassificationStore with Store {
-  _ClassificationStore() {
+class ClassificationStore {
+  ClassificationStore() {
     // loadModels();
-
-    autorun((_) {
-      //print('auto run');
-    });
   }
 
   @action

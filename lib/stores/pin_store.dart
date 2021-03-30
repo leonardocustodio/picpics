@@ -1,20 +1,12 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mobx/mobx.dart';
+
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 
-part 'pin_store.g.dart';
-
-class PinStore = _PinStore with _$PinStore;
-
-abstract class _PinStore with Store {
-  _PinStore() {
-    autorun((_) {
-      //print('autorun');
-    });
-  }
+class PinStore {
+  PinStore() {}
 
   @observable
   String email = '';
@@ -96,7 +88,7 @@ abstract class _PinStore with Store {
         encryptedRecoveryKey = result.data;
         setIsWaitingRecoveryKey(true);
         //print('Saving ${result.data} with access ');
-                              //print('code $accessCode and pin $pin');
+        //print('code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
         // await Crypto.saveSpKey(accessCode, result.data, pin);
         return true;
@@ -192,7 +184,7 @@ abstract class _PinStore with Store {
 
       if (result.data != false) {
         //print('Saving ${result.data} with access code ');
-                              //print('$accessCode and pin $pin');
+        //print('$accessCode and pin $pin');
         await Crypto.saveSaltKey();
         await Crypto.saveSpKey(accessCode, result.data, pin, email, appStore);
         return true;

@@ -1,13 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mobx/mobx.dart';
+
 import 'package:picPics/generated/l10n.dart';
 
-part 'login_store.g.dart';
-
-class LoginStore = _LoginStore with _$LoginStore;
-
-abstract class _LoginStore with Store {
-  _LoginStore() {
+class LoginStore {
+  LoginStore() {
     // autorun((_) {
     // //print('autorun');
     // });
