@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/screens/pin_screen.dart';
@@ -35,27 +36,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:background_fetch/background_fetch.dart';
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends GetView<TabsStore> {
   static const id = 'tabs_screen';
-
-  @override
-  _TabsScreenState createState() => _TabsScreenState();
-}
-
-class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
-  AppStore appStore;
-  TabsStore tabsStore;
-  GalleryStore galleryStore;
 
   ReactionDisposer disposer;
   ReactionDisposer disposer2;
   ReactionDisposer disposer3;
   ReactionDisposer disposer4;
-
-  ExpandableController expandableController =
-      ExpandableController(initialExpanded: false);
-  ExpandableController expandablePaddingController =
-      ExpandableController(initialExpanded: false);
 
   // Swiper do Tutorial
   SwiperController tutorialSwiperController = SwiperController();
@@ -65,114 +52,22 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
   Throttle _changeThrottle;
   AppLifecycleState _appCycleState;
 
-  void showDeleteSecretModalForMultiPic() {
-    if (appStore.keepAskingToDelete == false) {
-      tabsStore.setMultiTagSheet(false);
-      tabsStore.setMultiPicBar(false);
-      galleryStore.addTagsToSelectedPics();
-      return;
-    }
-
-    //print('showModal');
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return DeleteSecretModal(
-          onPressedClose: () {
-            Navigator.of(context).pop();
-          },
-          onPressedDelete: () {
-            appStore.setShouldDeleteOnPrivate(false);
-            tabsStore.setMultiTagSheet(false);
-            tabsStore.setMultiPicBar(false);
-            galleryStore.addTagsToSelectedPics();
-            Navigator.of(context).pop();
-          },
-          onPressedOk: () {
-            appStore.setShouldDeleteOnPrivate(true);
-            tabsStore.setMultiTagSheet(false);
-            tabsStore.setMultiPicBar(false);
-            galleryStore.addTagsToSelectedPics();
-            Navigator.of(context).pop();
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> showDeleteSecretModal(PicStore picStore) async {
-    if (appStore.secretPhotos != true) {
-      appStore.popPinScreen = PopPinScreenTo.TabsScreen;
-      Navigator.pushNamed(context, PinScreen.id);
-      return;
-    }
-
-    if (appStore.isPremium == false) {
-      int freePrivatePics = await appStore.freePrivatePics;
-      if (appStore.totalPrivatePics >= freePrivatePics &&
-          picStore.isPrivate == false) {
-        Navigator.pushNamed(context, PremiumScreen.id);
-        return;
-      }
-    }
-
-    if (appStore.keepAskingToDelete == false && picStore.isPrivate == false) {
-      galleryStore.setPrivatePic(picStore: picStore, private: true);
-      return;
-    }
-
-    //print('showModal');
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        if (picStore.isPrivate == true) {
-          return UnhideSecretModal(
-            onPressedDelete: () {
-              Navigator.of(context).pop();
-            },
-            onPressedOk: () {
-              galleryStore.setPrivatePic(picStore: picStore, private: false);
-              Navigator.of(context).pop();
-            },
-          );
-        }
-        return DeleteSecretModal(
-          onPressedClose: () {
-            Navigator.of(context).pop();
-          },
-          onPressedDelete: () {
-            galleryStore.setPrivatePic(picStore: picStore, private: true);
-            appStore.setShouldDeleteOnPrivate(false);
-            Navigator.of(context).pop();
-          },
-          onPressedOk: () {
-            galleryStore.setPrivatePic(picStore: picStore, private: true);
-            appStore.setShouldDeleteOnPrivate(true);
-            Navigator.of(context).pop();
-          },
-        );
-      },
-    );
-  }
-
-  @override
+ /*  @override
   void initState() {
     super.initState();
     KeyboardVisibilityController().onChange.listen((bool visible) {
       //print('keyboard: $visible');
 
-      if (visible && tabsStore.multiTagSheet) {
+      if (visible && controller.multiTagSheet) {
         setState(() {
           expandablePaddingController.expanded = true;
         });
-      } else if (!visible && tabsStore.multiTagSheet) {
+      } else if (!visible && controller.multiTagSheet) {
         setState(() {
           expandablePaddingController.expanded = false;
         });
       }
-    });
+    }); */
 
 //    _changeThrottle = Throttle(onCall: _onAssetChange);
 //    PhotoManager.addChangeCallback(_changeThrottle.call);
@@ -259,18 +154,18 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
   void returnAction() {
     galleryStore.clearSelectedPics();
-    tabsStore.setMultiPicBar(false);
+    controller.setMultiPicBar(false);
   }
 
   Future<void> starredAction() async {
     await WidgetManager.saveData(
         picsStores: galleryStore.selectedPics.toList());
     galleryStore.clearSelectedPics();
-    tabsStore.setMultiPicBar(false);
+    controller.setMultiPicBar(false);
   }
 
   void tagAction() {
-    tabsStore.setMultiTagSheet(true);
+    controller.setMultiTagSheet(true);
     Future.delayed(Duration(milliseconds: 200), () {
       setState(() {
         expandableController.expanded = true;
@@ -283,10 +178,10 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       return;
     }
     //print('sharing selected pics....');
-    tabsStore.setIsLoading(true);
+    controller.setIsLoading(true);
     await galleryStore.sharePics(
         picsStores: galleryStore.selectedPics.toList());
-    tabsStore.setIsLoading(false);
+    controller.setIsLoading(false);
   }
 
   void trashAction() {
@@ -298,27 +193,27 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
   setTabIndex(int index) {
     if (!galleryStore.deviceHasPics) {
-      tabsStore.setCurrentTab(index);
+      controller.setCurrentTab(index);
       return;
     }
 
-    if (tabsStore.multiPicBar) {
+    if (controller.multiPicBar) {
       if (index == 0) {
         returnAction();
       } else if (index == 1) {
-        if (tabsStore.currentTab == 0) {
+        if (controller.currentTab == 0) {
           tagAction();
         } else {
           starredAction();
         }
       } else if (index == 2) {
-        if (tabsStore.currentTab == 0) {
+        if (controller.currentTab == 0) {
           shareAction();
         } else {
           tagAction();
         }
       } else if (index == 3) {
-        if (tabsStore.currentTab == 0) {
+        if (controller.currentTab == 0) {
           trashAction();
         } else {
           shareAction();
@@ -329,7 +224,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       return;
     }
 
-    tabsStore.setCurrentTab(index);
+    controller.setCurrentTab(index);
   }
 
   Widget _buildLoading() {
@@ -348,15 +243,15 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
   void didChangeDependencies() {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
-    tabsStore = Provider.of<TabsStore>(context);
+    controller = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
     disposer = reaction((_) => galleryStore.trashedPic, (trashedPic) {
       if (trashedPic) {
-        if (tabsStore.modalCard) {
-          tabsStore.setModalCard(false);
+        if (controller.modalCard) {
+          controller.setModalCard(false);
         }
-        if (tabsStore.currentTab != 1) {
+        if (controller.currentTab != 1) {
           galleryStore.setTrashedPic(false);
         }
       }
@@ -364,14 +259,14 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
 
     disposer2 = reaction((_) => galleryStore.sharedPic, (sharedPic) {
       if (sharedPic) {
-        if (tabsStore.multiPicBar) {
+        if (controller.multiPicBar) {
           galleryStore.clearSelectedPics();
-          tabsStore.setMultiPicBar(false);
+          controller.setMultiPicBar(false);
         }
       }
     });
 
-    disposer3 = reaction((_) => tabsStore.showDeleteSecretModal, (showModal) {
+    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
       if (showModal) {
         //print('show delete secret modal!!!');
 //        setState(() {
@@ -460,7 +355,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
       children: <Widget>[
         Scaffold(
           bottomNavigationBar: Observer(builder: (_) {
-            return tabsStore.multiTagSheet
+            return controller.multiTagSheet
                 ? ExpandableNotifier(
                     child: Container(
                       color: Color(0xF1F3F5),
@@ -485,7 +380,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   children: <Widget>[
                                     CupertinoButton(
                                       onPressed: () {
-                                        tabsStore.setMultiTagSheet(false);
+                                        controller.setMultiTagSheet(false);
                                       },
                                       child: Container(
                                         width: 80.0,
@@ -517,8 +412,8 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                           return;
                                         }
 
-                                        tabsStore.setMultiTagSheet(false);
-                                        tabsStore.setMultiPicBar(false);
+                                        controller.setMultiTagSheet(false);
+                                        controller.setMultiPicBar(false);
                                         galleryStore.addTagsToSelectedPics();
                                       },
                                       child: Container(
@@ -669,11 +564,11 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                       ),
                     ),
                   )
-                : Observer(builder: (_) {
-                    if (!tabsStore.multiPicBar) {
+                : Obx(() {
+                    if (!controller.multiPicBar) {
                       return Platform.isIOS
                           ? CupertinoTabBar(
-                              currentIndex: tabsStore.currentTab,
+                              currentIndex: controller.currentTab,
                               onTap: (index) {
                                 setTabIndex(index);
                               },
@@ -708,7 +603,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                           : SizedBox(
                               height: 64.0,
                               child: BottomNavigationBar(
-                                currentIndex: tabsStore.currentTab,
+                                currentIndex: controller.currentTab,
                                 onTap: (index) {
                                   setTabIndex(index);
                                 },
@@ -757,7 +652,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 icon: Image.asset(
                                     'lib/images/returntabbutton.png'),
                               ),
-                              if (tabsStore.currentTab == 2)
+                              if (controller.currentTab == 2)
                                 BottomNavigationBarItem(
                                   //title: Container(),
                                   icon: Image.asset('lib/images/starico.png'),
@@ -806,7 +701,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                   icon: Image.asset(
                                       'lib/images/returntabbutton.png'),
                                 ),
-                                if (tabsStore.currentTab == 2)
+                                if (controller.currentTab == 2)
                                   BottomNavigationBarItem(
                                     label: 'Feature',
                                     icon: Image.asset('lib/images/starico.png'),
@@ -959,17 +854,17 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                         ),
                       ),
                     );
-                  } else if (tabsStore.currentTab == 0 &&
+                  } else if (controller.currentTab == 0 &&
                       appStore.hasGalleryPermission)
                     wgt = UntaggedTab();
-                  else if (tabsStore.currentTab == 1 &&
+                  else if (controller.currentTab == 1 &&
                       appStore.hasGalleryPermission)
                     wgt = PicTab(
                       showEditTagModal: () =>
                           showEditTagModal(context, galleryStore),
                       showDeleteSecretModal: showDeleteSecretModal,
                     );
-                  else if (tabsStore.currentTab == 2 &&
+                  else if (controller.currentTab == 2 &&
                       appStore.hasGalleryPermission)
                     wgt = TaggedTab(
                         showEditTagModal: () =>
@@ -981,19 +876,19 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
           ),
         ),
         Observer(builder: (_) {
-          if (tabsStore.modalCard) {
+          if (controller.modalCard) {
             return Material(
               color: Colors.transparent,
               child: Center(
                 child: GestureDetector(
                   onTap: () {
-                    tabsStore.setModalCard(false);
+                    controller.setModalCard(false);
                   },
                   child: Container(
                     color: Colors.black.withOpacity(0.4),
                     child: SafeArea(
                       child: CarouselSlider.builder(
-                        itemCount: tabsStore.currentTab == 0
+                        itemCount: controller.currentTab == 0
                             ? galleryStore.swipePics.length
                             : galleryStore.thumbnailsPics.length,
                         // carouselController: carouselController,
@@ -1011,7 +906,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                                 right: 2.0,
                               ),
                               child: PhotoCard(
-                                picStore: tabsStore.currentTab == 0
+                                picStore: controller.currentTab == 0
                                     ? galleryStore.swipePics[index]
                                     : galleryStore.thumbnailsPics[index],
                                 picsInThumbnails: PicSource.UNTAGGED,
@@ -1023,7 +918,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
                           );
                         },
                         options: CarouselOptions(
-                          initialPage: tabsStore.currentTab == 0
+                          initialPage: controller.currentTab == 0
                               ? galleryStore.selectedSwipe
                               : galleryStore.selectedThumbnail,
                           enableInfiniteScroll: false,
@@ -1046,7 +941,7 @@ class _TabsScreenState extends State<TabsScreen> with WidgetsBindingObserver {
           return Container();
         }),
         Observer(builder: (_) {
-          if (tabsStore.isLoading) {
+          if (controller.isLoading) {
             return Material(
               color: Colors.black.withOpacity(0.7),
               child: Center(

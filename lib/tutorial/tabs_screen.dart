@@ -1,4 +1,4 @@
-import 'dart:async';
+/* import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -160,14 +160,15 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
   @override
   void initState() {
     super.initState();
+    // ignore: deprecated_member_use
     KeyboardVisibility.onChange.listen((bool visible) {
       //print('keyboard: $visible');
 
-      if (visible && tabsStore.multiTagSheet) {
+      if (visible && tabsStore.multiTagSheet.value) {
         setState(() {
           expandablePaddingController.expanded = true;
         });
-      } else if (!visible && tabsStore.multiTagSheet) {
+      } else if (!visible && tabsStore.multiTagSheet.value) {
         setState(() {
           expandablePaddingController.expanded = false;
         });
@@ -214,44 +215,6 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
       WidgetsBinding.instance.removeObserver(this);
     }
     super.dispose();
-  }
-
-  setTabIndex(int index) async {
-    if (!galleryStore.deviceHasPics) {
-      tabsStore.setCurrentTab(index);
-      return;
-    }
-
-    if (tabsStore.multiPicBar) {
-      if (index == 0) {
-        galleryStore.clearSelectedPics();
-        tabsStore.setMultiPicBar(false);
-      } else if (index == 1) {
-        tabsStore.setMultiTagSheet(true);
-        Future.delayed(Duration(milliseconds: 200), () {
-          setState(() {
-            expandableController.expanded = true;
-          });
-        });
-      } else if (index == 2) {
-        if (galleryStore.selectedPics.isEmpty) {
-          return;
-        }
-        //print('sharing selected pics....');
-        tabsStore.setIsLoading(true);
-        await galleryStore.sharePics(
-            picsStores: galleryStore.selectedPics.toList());
-        tabsStore.setIsLoading(false);
-      } else if (index == 3) {
-        if (galleryStore.selectedPics.isEmpty) {
-          return;
-        }
-        galleryStore.trashMultiplePics(galleryStore.selectedPics);
-      }
-      return;
-    }
-
-    tabsStore.setCurrentTab(index);
   }
 
   Widget _buildLoading() {
@@ -1143,3 +1106,4 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
     );
   }
 }
+ */

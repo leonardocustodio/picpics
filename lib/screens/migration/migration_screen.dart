@@ -2,32 +2,34 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/migration_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:moor_db_viewer/moor_db_viewer.dart';
 
+/* 
 class MigrationScreen extends StatefulWidget {
   static const id = 'migration_screen';
 
   @override
   _MigrationScreenState createState() => _MigrationScreenState();
 }
-
-class _MigrationScreenState extends State<MigrationScreen> {
-  AppStore appStore;
-  MigrationStore migrationStore = MigrationStore();
+ */
+class MigrationScreen extends GetView<MigrationStore> {
+  MigrationScreen({Key key}) : super(key: key);
 
   void seeDb() {
     final db = AppDatabase(); //This should be a singleton
+    /* 
     Navigator.of(context)
-        .push(MaterialPageRoute(builder: (context) => MoorDbViewer(db)));
+        .push(MaterialPageRoute(builder: (context) => MoorDbViewer(db))); */
+    Get.to(MoorDbViewer(db));
   }
 
-  @override
+/*   @override
   void initState() {
     super.initState();
     // Analytics.sendCurrentScreen(Screen.login_screen);
@@ -39,7 +41,7 @@ class _MigrationScreenState extends State<MigrationScreen> {
     appStore = Provider.of<AppStore>(context);
     migrationStore.startMigration();
   }
-
+ */
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +55,7 @@ class _MigrationScreenState extends State<MigrationScreen> {
               blurFilter: false,
             ),
             SafeArea(
-              child: Observer(builder: (_) {
+              child: Obx(() {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
@@ -65,7 +67,7 @@ class _MigrationScreenState extends State<MigrationScreen> {
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              if (migrationStore.isMigrating) ...[
+                              if (controller.isMigrating.value) ...[
                                 Text(
                                   'Please wait',
                                   textScaleFactor: 1.0,
@@ -108,7 +110,7 @@ class _MigrationScreenState extends State<MigrationScreen> {
                                   ),
                                 ),
                               ],
-                              if (migrationStore.isMigrating == false) ...[
+                              if (controller.isMigrating.value == false) ...[
                                 Text(
                                   'Processo concluído!',
                                   textScaleFactor: 1.0,
@@ -143,9 +145,7 @@ class _MigrationScreenState extends State<MigrationScreen> {
                             ],
                           ),
                         ),
-                        SizedBox(
-                          height: 64.0,
-                        ),
+                        SizedBox(height: 64.0),
                         CupertinoButton(
                           onPressed: () async {
                             seeDb();

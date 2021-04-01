@@ -5,218 +5,42 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animator/animation/animator_play_states.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/email_screen.dart';
-import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
-import 'package:picPics/widgets/cupertino_input_dialog.dart';
-import 'package:picPics/widgets/general_modal.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
 
-class PinScreen extends StatefulWidget {
+class PinScreen extends GetView<PinStore> {
   static const String id = 'pin_screen';
-
-  @override
-  _PinScreenState createState() => _PinScreenState();
-}
-
-class _PinScreenState extends State<PinScreen> {
-  AppStore appStore;
-  GalleryStore galleryStore;
-  PinStore pinStore;
 
   bool isLoading = false;
 
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
 
-  Future<void> _authenticate() async {
-    try {
-      bool authenticated =
-          await appStore.biometricAuth.authenticateWithBiometrics(
-        localizedReason: 'Scan your fingerprint to authenticate',
-        useErrorDialogs: true,
-        stickyAuth: true,
-      );
-
-      if (authenticated == true) {
-        bool valid = await pinStore.isBiometricValidated(appStore);
-
-        if (valid == true) {
-          appStore.switchSecretPhotos();
-          galleryStore.checkIsLibraryUpdated();
-          pinStore.setPinTemp('');
-          pinStore.setConfirmPinTemp('');
-          Navigator.pop(context);
-          return;
-        }
-
-        _shakeKey.currentState.forward();
-        pinStore.setPinTemp('');
-        pinStore.setConfirmPinTemp('');
-      }
-    } on PlatformException catch (e) {
-      //print(e);
-      _shakeKey.currentState.forward();
-      pinStore.setPinTemp('');
-      pinStore.setConfirmPinTemp('');
-    }
-  }
-
-  void _cancelAuthentication() {
-    appStore.biometricAuth.stopAuthentication();
-  }
-
-  GlobalKey<AnimatorWidgetState> _shakeKey = GlobalKey<AnimatorWidgetState>();
-  GlobalKey<AnimatorWidgetState> _shakeKeyConfirm =
-      GlobalKey<AnimatorWidgetState>();
-  GlobalKey<AnimatorWidgetState> _shakeRecovery =
-      GlobalKey<AnimatorWidgetState>();
-
-  Future<void> validateAccessCode() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    bool valid = await pinStore.validateAccessCode(appStore);
-
-    pinStore.setAccessCode('');
-    setState(() {
-      isLoading = false;
-    });
-
-    if (valid) {
-      //print('Is valid: $valid');
-      showCreatedKeyModal();
-    } else {
-      _shakeKey.currentState.forward();
-      pinStore.setInvalidAccessCode(true);
-      // showErrorModal('The access code you typed is invalid!');
-    }
-  }
-
-  void askEmail() async {
-    //print('asking email');
-
-    TextEditingController alertInputController = TextEditingController();
-
-    //print('showModal');
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return CupertinoInputDialog(
-          alertInputController: alertInputController,
-          title: 'Type your email',
-          destructiveButtonTitle: S.of(context).cancel,
-          onPressedDestructive: () {
-            Navigator.of(context).pop();
-          },
-          defaultButtonTitle: S.of(context).ok,
-          onPressedDefault: () {
-            pinStore.setEmail(alertInputController.text);
-            Navigator.of(context).pop();
-            recoverPin();
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> recoverPin() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    bool request =
-        await pinStore.requestRecoveryKey(appStore.email ?? pinStore.email);
-
-    setState(() {
-      isLoading = false;
-    });
-
-    if (request == true) {
-      showErrorModal('We will send an access code soon');
-      return;
-    }
-
-    showErrorModal('An error has occurred, please try again!');
-  }
-
-  void setPinAndPop() {
-    appStore.setEmail(pinStore.email);
-    appStore.setIsPinRegistered(true);
-    appStore.switchSecretPhotos();
-    appStore.setWaitingAccessCode(false);
-
-    if (appStore.popPinScreen == PopPinScreenTo.SettingsScreen) {
-      Navigator.popUntil(context, ModalRoute.withName(SettingsScreen.id));
-    } else {
-      Navigator.popUntil(context, ModalRoute.withName(TabsScreen.id));
-    }
-  }
-
-  void showErrorModal(String message) {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return GeneralModal(
-          message: message,
-          onPressedDelete: () {
-            Navigator.pop(context);
-          },
-          onPressedOk: () {
-            Navigator.pop(context);
-          },
-        );
-      },
-    );
-  }
-
-  void showCreatedKeyModal() {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return GeneralModal(
-          message: 'Secret Key successfully created!',
-          onPressedDelete: () {
-            Navigator.pop(context);
-          },
-          onPressedOk: () {
-            Navigator.pop(context);
-          },
-        );
-      },
-    ).then((_) {
-      setPinAndPop();
-    });
-  }
-
-  @override
+/*   @override
   void initState() {
     super.initState();
 //    Analytics.sendCurrentScreen(Screen.login_screen);
-  }
+  } */
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
+    AppStore.to = Provider.of<AppStore>(context);
+    GalleryStore.to = Provider.of<GalleryStore>(context);
     pinStore = Provider.of<PinStore>(context);
 
-    if (appStore.isPinRegistered == true &&
-        appStore.isBiometricActivated == true) {
-      _authenticate();
+    if (AppStore.to.isPinRegistered == true &&
+        AppStore.to.isBiometricActivated == true) {
+      controller.authenticate();
     }
   }
 
@@ -226,24 +50,24 @@ class _PinScreenState extends State<PinScreen> {
     String title;
     GlobalKey<AnimatorWidgetState> key;
 
-    if (pinStore.isWaitingRecoveryKey == true) {
+    if (controller.isWaitingRecoveryKey.value == true) {
       if (index == 0) {
         title = 'Recovery Code';
-        key = _shakeRecovery;
+        key = controller.shakeRecovery;
       } else if (index == 1) {
-        title = S.of(context).new_secret_key;
-        key = _shakeKey;
+        title = S.current.new_secret_key;
+        key = controller.shakeKey;
       } else {
-        title = S.of(context).confirm_secret_key;
-        key = _shakeKeyConfirm;
+        title = S.current.confirm_secret_key;
+        key = controller.shakeKeyConfirm;
       }
     } else {
       if (index == 0) {
-        title = S.of(context).new_secret_key;
-        key = _shakeKey;
+        title = S.current.new_secret_key;
+        key = controller.shakeKey;
       } else {
-        title = S.of(context).confirm_secret_key;
-        key = _shakeKeyConfirm;
+        title = S.current.confirm_secret_key;
+        key = controller.shakeKeyConfirm;
       }
     }
 
@@ -278,19 +102,19 @@ class _PinScreenState extends State<PinScreen> {
             child: Observer(builder: (_) {
               int filledPositions;
 
-              if (pinStore.isWaitingRecoveryKey == true) {
+              if (controller.isWaitingRecoveryKey.value == true) {
                 if (index == 0) {
-                  filledPositions = pinStore.recoveryCode.length;
+                  filledPositions = controller.recoveryCode.value.length;
                 } else if (index == 1) {
-                  filledPositions = pinStore.pinTemp.length;
+                  filledPositions = controller.pinTemp.value.length;
                 } else {
-                  filledPositions = pinStore.confirmPinTemp.length;
+                  filledPositions = controller.confirmPinTemp.value.length;
                 }
               } else {
                 if (index == 0) {
-                  filledPositions = pinStore.pinTemp.length;
+                  filledPositions = controller.pinTemp.value.length;
                 } else {
-                  filledPositions = pinStore.confirmPinTemp.length;
+                  filledPositions = controller.confirmPinTemp.value.length;
                 }
               }
 
@@ -305,14 +129,14 @@ class _PinScreenState extends State<PinScreen> {
             onPinTapped: pinTapped,
           ),
           Spacer(),
-          if (pinStore.isWaitingRecoveryKey != true) ...[
+          if (controller.isWaitingRecoveryKey != true) ...[
             CupertinoButton(
               onPressed: () {
-                if (appStore.email == null) {
-                  askEmail();
+                if (AppStore.to.email == null) {
+                  controller.askEmail();
                   return;
                 }
-                recoverPin();
+                controller.recoverPin();
               },
               child: Text(
                 'Already have an account?',
@@ -335,41 +159,42 @@ class _PinScreenState extends State<PinScreen> {
   }
 
   void pinTapped(String value) async {
-    //print('Value: ${pinStore.recoveryCode}${value}');
-    if (pinStore.isWaitingRecoveryKey == true) {
+    //print('Value: ${controller.recoveryCode}${value}');
+    if (controller.isWaitingRecoveryKey == true) {
       if (carouselPage == 0) {
         if (value == '\u0008') {
-          pinStore.setRecoveryCode(
-              Helpers.removeLastCharacter(pinStore.recoveryCode));
+          controller.setRecoveryCode(
+              Helpers.removeLastCharacter(controller.recoveryCode.value));
           return;
         }
-        pinStore.setRecoveryCode('${pinStore.recoveryCode}${value}');
+        controller.setRecoveryCode('${controller.recoveryCode}${value}');
 
-        if (pinStore.recoveryCode.length == 6) {
+        if (controller.recoveryCode.value.length == 6) {
           // set true
-          bool valid = await pinStore.isRecoveryCodeValid(appStore);
+          bool valid = await controller.isRecoveryCodeValid(AppStore.to);
 
           if (valid) {
             carouselController.nextPage();
             carouselPage = 1;
-            pinStore.setRecoveryCode('');
+            controller.setRecoveryCode('');
             return;
           }
 
-          _shakeRecovery.currentState.forward();
-          pinStore.setRecoveryCode('');
+          controller.shakeRecovery.currentState.forward();
+          controller.setRecoveryCode('');
         }
         return;
       }
 
       if (carouselPage == 1) {
         if (value == '\u0008') {
-          pinStore.setPinTemp(Helpers.removeLastCharacter(pinStore.pinTemp));
+          controller.setPinTemp(
+              Helpers.removeLastCharacter(controller.pinTemp.value));
           return;
         }
-        pinStore.setPinTemp('${pinStore.pinTemp}${value}');
+        controller.setPinTemp('${controller.pinTemp}${value}');
 
-        if (pinStore.pinTemp.length == 6) {
+        if (controller.pinTemp.value.length == 6) {
           carouselPage = 2;
           carouselController.nextPage();
         }
@@ -377,37 +202,37 @@ class _PinScreenState extends State<PinScreen> {
       }
 
       if (value == '\u0008') {
-        pinStore.setConfirmPinTemp(
-            Helpers.removeLastCharacter(pinStore.confirmPinTemp));
+        controller.setConfirmPinTemp(
+            Helpers.removeLastCharacter(controller.confirmPinTemp.value));
         return;
       }
-      pinStore.setConfirmPinTemp('${pinStore.confirmPinTemp}${value}');
+      controller.setConfirmPinTemp('${controller.confirmPinTemp}${value}');
 
-      if (pinStore.confirmPinTemp.length == 6) {
-        if (pinStore.pinTemp == pinStore.confirmPinTemp) {
+      if (controller.confirmPinTemp.value.length == 6) {
+        if (controller.pinTemp == controller.confirmPinTemp) {
           //print('Setting new pin!!!!!');
           carouselPage = 0;
-          pinStore.pin = pinStore.pinTemp;
-          appStore.setEmail(pinStore
-              .email); // Tem que deixar antes pois é utilizado quando salva o pin
+          controller.pin = controller.pinTemp.value;
+          AppStore.to.setEmail(controller.email
+              .value); // Tem que deixar antes pois é utilizado quando salva o pin
 
-          await pinStore.saveNewPin(appStore);
+          await controller.saveNewPin(AppStore.to);
 
-          appStore.setIsPinRegistered(true);
-          appStore.switchSecretPhotos();
-          galleryStore.checkIsLibraryUpdated();
-          pinStore.setPinTemp('');
-          pinStore.setConfirmPinTemp('');
-          appStore.setWaitingAccessCode(false);
+          AppStore.to.setIsPinRegistered(true);
+          AppStore.to.switchSecretPhotos();
+          GalleryStore.to.checkIsLibraryUpdated();
+          controller.setPinTemp('');
+          controller.setConfirmPinTemp('');
+          AppStore.to.setWaitingAccessCode(false);
           carouselController.animateToPage(0);
 
-          Navigator.pop(context);
+          Get.back();
         } else {
-          _shakeKeyConfirm.currentState.forward();
+          controller.shakeKeyConfirm.currentState.forward();
           Future.delayed(Duration(seconds: 1, milliseconds: 300), () {
             carouselPage = 1;
-            pinStore.setPinTemp('');
-            pinStore.setConfirmPinTemp('');
+            controller.setPinTemp('');
+            controller.setConfirmPinTemp('');
             carouselController.animateToPage(1);
           });
         }
@@ -416,62 +241,63 @@ class _PinScreenState extends State<PinScreen> {
       return;
     }
 
-    if (appStore.isPinRegistered == true) {
+    if (AppStore.to.isPinRegistered == true) {
       if (value == '\u0008') {
-        pinStore.setPinTemp(Helpers.removeLastCharacter(pinStore.pinTemp));
+        controller
+            .setPinTemp(Helpers.removeLastCharacter(controller.pinTemp.value));
         return;
       }
-      pinStore.setPinTemp('${pinStore.pinTemp}${value}');
+      controller.setPinTemp('${controller.pinTemp}${value}');
 
-      if (pinStore.pinTemp.length == 6) {
+      if (controller.pinTemp.value.length == 6) {
         // set true
-        bool valid = await pinStore.isPinValid(appStore);
+        bool valid = await controller.isPinValid(AppStore.to);
 
         if (valid) {
-          if (appStore.wantsToActivateBiometric) {
-            await pinStore.activateBiometric(appStore);
-            await appStore.setIsBiometricActivated(true);
+          if (AppStore.to.wantsToActivateBiometric) {
+            await controller.activateBiometric(AppStore.to);
+            await AppStore.to.setIsBiometricActivated(true);
 
-            pinStore.setPinTemp('');
-            pinStore.setConfirmPinTemp('');
-            Navigator.pop(context);
+            controller.setPinTemp('');
+            controller.setConfirmPinTemp('');
+            Get.back();
             return;
           }
 
-          appStore.switchSecretPhotos();
-          galleryStore.checkIsLibraryUpdated();
+          AppStore.to.switchSecretPhotos();
+          GalleryStore.to.checkIsLibraryUpdated();
 
-          pinStore.setPinTemp('');
-          pinStore.setConfirmPinTemp('');
-          Navigator.pop(context);
+          controller.setPinTemp('');
+          controller.setConfirmPinTemp('');
+          Get.back();
           return;
         }
 
-        _shakeKey.currentState.forward();
-        pinStore.setPinTemp('');
-        pinStore.setConfirmPinTemp('');
+        controller.shakeKey.currentState.forward();
+        controller.setPinTemp('');
+        controller.setConfirmPinTemp('');
       }
       return;
     }
 
-    if (appStore.waitingAccessCode == true) {
+    if (AppStore.to.waitingAccessCode == true) {
       if (value == '\u0008') {
-        pinStore
-            .setAccessCode(Helpers.removeLastCharacter(pinStore.accessCode));
+        controller.setAccessCode(
+            Helpers.removeLastCharacter(controller.accessCode.value));
         return;
       }
-      pinStore.setAccessCode('${pinStore.accessCode}${value}');
+      controller.setAccessCode('${controller.accessCode}${value}');
 
-      if (pinStore.accessCode.length == 6) {
-        await validateAccessCode();
+      if (controller.accessCode.value.length == 6) {
+        await controller.validateAccessCode();
       }
       return;
     }
 
     if (carouselPage == 0) {
-      pinStore.setPinTemp('${pinStore.pinTemp}${value}');
+      controller.setPinTemp('${controller.pinTemp}${value}');
 
-      if (pinStore.pinTemp.length == 6) {
+      if (controller.pinTemp.value.length == 6) {
         carouselPage = 1;
         carouselController.nextPage();
       }
@@ -479,26 +305,26 @@ class _PinScreenState extends State<PinScreen> {
     }
 
     if (value == '\u0008') {
-      pinStore.setConfirmPinTemp(
-          Helpers.removeLastCharacter(pinStore.confirmPinTemp));
+      controller.setConfirmPinTemp(
+          Helpers.removeLastCharacter(controller.confirmPinTemp.value));
       return;
     }
-    pinStore.setConfirmPinTemp('${pinStore.confirmPinTemp}${value}');
+    controller.setConfirmPinTemp('${controller.confirmPinTemp}${value}');
 
-    if (pinStore.confirmPinTemp.length == 6) {
-      if (pinStore.pinTemp == pinStore.confirmPinTemp) {
+    if (controller.confirmPinTemp.value.length == 6) {
+      if (controller.pinTemp == controller.confirmPinTemp) {
         carouselPage = 0;
-        pinStore.pin = pinStore.pinTemp;
-        pinStore.setPinTemp('');
-        pinStore.setConfirmPinTemp('');
+        controller.pin = controller.pinTemp.value;
+        controller.setPinTemp('');
+        controller.setConfirmPinTemp('');
         carouselController.animateToPage(0);
-        Navigator.pushNamed(context, EmailScreen.id);
+        Get.toNamed(EmailScreen.id);
       } else {
-        _shakeKeyConfirm.currentState.forward();
+        controller.shakeKeyConfirm.currentState.forward();
         Future.delayed(Duration(seconds: 1, milliseconds: 300), () {
           carouselPage = 0;
-          pinStore.setPinTemp('');
-          pinStore.setConfirmPinTemp('');
+          controller.setPinTemp('');
+          controller.setConfirmPinTemp('');
           carouselController.animateToPage(0);
         });
       }
@@ -527,37 +353,37 @@ class _PinScreenState extends State<PinScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5.0, vertical: 10.0),
                         onPressed: () {
-                          if (pinStore.isWaitingRecoveryKey == true) {
-                            pinStore.setIsWaitingRecoveryKey(false);
+                          if (controller.isWaitingRecoveryKey == true) {
+                            controller.setIsWaitingRecoveryKey(false);
                           }
-                          Navigator.pop(context);
+                          Get.back();
                         },
                         child: Image.asset(
                             'lib/images/backarrowwithdropshadow.png'),
                       ),
-//                          CupertinoButton(
-//                            onPressed: () {
-////                              restorePurchase();
-//                            },
-//                            child: Text(
-//                              S.of(context).restore_purchase,
-//                              textScaleFactor: 1.0,
-//                              style: const TextStyle(
-//                                fontWeight: FontWeight.w700,
-//                                color: Color(0xff979a9b),
-//                                decoration: TextDecoration.underline,
-//                                fontFamily: "Lato",
-//                                fontStyle: FontStyle.normal,
-//                                fontSize: 14.0,
-//                                letterSpacing: -0.4099999964237213,
-//                              ),
-//                            ),
-//                          ),
+                      /*  CupertinoButton(
+                          onPressed: () {
+                              restorePurchase();
+                          },
+                          child: Text(
+                            S.current.restore_purchase,
+                            textScaleFactor: 1.0,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xff979a9b),
+                              decoration: TextDecoration.underline,
+                              fontFamily: "Lato",
+                              fontStyle: FontStyle.normal,
+                              fontSize: 14.0,
+                              letterSpacing: -0.4099999964237213,
+                            ),
+                          ),
+                        ), */
                     ],
                   ),
                   Expanded(
                     child: Observer(builder: (_) {
-                      if (pinStore.isWaitingRecoveryKey == true) {
+                      if (controller.isWaitingRecoveryKey == true) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 3,
@@ -589,11 +415,11 @@ class _PinScreenState extends State<PinScreen> {
                         //     ),
                         //     Spacer(),
                         //     Shake(
-                        //       key: _shakeRecovery,
+                        //       key: controller.shakeRecovery,
                         //       preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
                         //       child: Observer(builder: (_) {
                         //         return PinPlaceholder(
-                        //           filledPositions: pinStore.recoveryCode.length,
+                        //           filledPositions: controller.recoveryCode.length,
                         //           totalPositions: 6,
                         //         );
                         //       }),
@@ -607,17 +433,17 @@ class _PinScreenState extends State<PinScreen> {
                         // );
                       }
 
-                      if (appStore.isPinRegistered == true) {
+                      if (AppStore.to.isPinRegistered == true) {
                         String assetImage;
 
-                        if (appStore.isBiometricActivated == true) {
-                          if (appStore.availableBiometrics
+                        if (AppStore.to.isBiometricActivated == true) {
+                          if (AppStore.to.availableBiometrics
                               .contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (appStore.availableBiometrics
+                          } else if (AppStore.to.availableBiometrics
                               .contains(BiometricType.iris)) {
                             assetImage = 'lib/images/irisscannerwhiteico.png';
-                          } else if (appStore.availableBiometrics
+                          } else if (AppStore.to.availableBiometrics
                               .contains(BiometricType.fingerprint)) {
                             assetImage = 'lib/images/fingerprintwhiteico.png';
                           }
@@ -627,7 +453,7 @@ class _PinScreenState extends State<PinScreen> {
                           children: [
                             Spacer(),
                             Text(
-                              S.of(context).your_secret_key,
+                              S.current.your_secret_key,
                               style: TextStyle(
                                 fontFamily: 'Lato',
                                 color: kSecondaryColor,
@@ -641,12 +467,13 @@ class _PinScreenState extends State<PinScreen> {
                               flex: 2,
                             ),
                             Shake(
-                              key: _shakeKey,
+                              key: controller.shakeKey,
                               preferences: AnimationPreferences(
                                   autoPlay: AnimationPlayStates.None),
                               child: Observer(builder: (_) {
                                 return PinPlaceholder(
-                                  filledPositions: pinStore.pinTemp.length,
+                                  filledPositions:
+                                      controller.pinTemp.value.length,
                                   totalPositions: 6,
                                 );
                               }),
@@ -659,17 +486,17 @@ class _PinScreenState extends State<PinScreen> {
                             if (assetImage != null)
                               CupertinoButton(
                                 onPressed: () {
-                                  _authenticate();
+                                  controller.authenticate();
                                 },
                                 child: Image.asset(assetImage),
                               ),
-                            if (appStore.wantsToActivateBiometric != true)
+                            if (AppStore.to.wantsToActivateBiometric != true)
                               CupertinoButton(
                                 onPressed: () {
-                                  recoverPin();
+                                  controller.recoverPin();
                                 },
                                 child: Text(
-                                  S.of(context).forgot_secret_key,
+                                  S.current.forgot_secret_key,
                                   style: TextStyle(
                                     fontFamily: 'Lato',
                                     color: kWhiteColor,
@@ -686,7 +513,7 @@ class _PinScreenState extends State<PinScreen> {
                         );
                       }
 
-                      if (appStore.waitingAccessCode == false) {
+                      if (AppStore.to.waitingAccessCode == false) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 2,
@@ -706,9 +533,9 @@ class _PinScreenState extends State<PinScreen> {
                         children: [
                           Spacer(),
                           Text(
-                            pinStore.invalidAccessCode
+                            controller.invalidAccessCode.value
                                 ? 'Invalid Access Code'
-                                : S.of(context).access_code,
+                                : S.current.access_code,
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kSecondaryColor,
@@ -721,8 +548,8 @@ class _PinScreenState extends State<PinScreen> {
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
                             child: Text(
-                              S.of(context).access_code_sent(
-                                  '${pinStore.email ?? 'user@email.com'}'),
+                              S.current.access_code_sent(
+                                  '${controller.email ?? 'user@email.com'}'),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',
@@ -735,13 +562,14 @@ class _PinScreenState extends State<PinScreen> {
                           ),
                           Spacer(),
                           Shake(
-                            key: _shakeKey,
+                            key: controller.shakeKey,
                             preferences: AnimationPreferences(
                                 autoPlay: AnimationPlayStates.None),
                             child: Observer(
                               builder: (_) {
                                 return PinPlaceholder(
-                                  filledPositions: pinStore.accessCode.length,
+                                  filledPositions:
+                                      controller.accessCode.value.length,
                                   totalPositions: 6,
                                 );
                               },

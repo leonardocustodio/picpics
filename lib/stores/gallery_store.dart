@@ -2,7 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:date_utils/date_utils.dart';
 import 'package:flutter/services.dart';
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
@@ -16,7 +16,6 @@ import 'package:picPics/stores/tagged_date_pics_store.dart';
 import 'package:picPics/stores/tagged_grid_pic_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/stores/tags_store.dart';
-import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/stores/untagged_grid_pic_store.dart';
 import 'package:picPics/stores/untagged_pics_store.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -26,6 +25,7 @@ import 'package:mime/mime.dart';
 
 class GalleryStore extends GetxController {
   AppStore appStore = AppStore.to;
+  static GalleryStore get to => Get.find();
   final database = AppDatabase();
 
   final swipeIndex = 0.obs;
@@ -40,15 +40,16 @@ class GalleryStore extends GetxController {
   final searchTagsResults = <TagsStore>[].obs;
 
   final showSearchTagsResults = false.obs;
+  final isLoaded = false.obs;
+  final isFiltered = false.obs;
+  final deviceHasPics = false.obs;
+  final isSearching = false.obs;
 
   final searchingTags = <TagsStore>[].obs;
 
-  final isSearching = false.obs;
   final selectedSwipe = 0.obs;
   final selectedThumbnail = 0.obs;
   final totalTaggedPics = 0.obs;
-
-  final isLoaded = false;
 
   final assetsPath = <AssetPathEntity>[].obs;
   final allPics = <String, PicStore>{}.obs;
@@ -61,12 +62,13 @@ class GalleryStore extends GetxController {
   final taggedGridPics = <TaggedGridPicStore>[].obs;
   final taggedPics = <TaggedPicsStore>[].obs;
   final filteredPics = <PicStore>[].obs;
-  final filteredPicsKeys = <String>[].obs;
-
   final swipePics = <PicStore>[].obs;
   final thumbnailsPics = <PicStore>[].obs;
   final selectedPics = <PicStore>[].obs;
   final privatePics = <PicStore>[].obs;
+  final searchingTagsKeys = <String>[].obs;
+  final filteredPicsKeys = <String>[].obs;
+  final taggedKeys = <String>[].obs;
 
 /*   GalleryStore({this.appStore}) {
     tagsSuggestionsCalculate();
@@ -81,6 +83,14 @@ class GalleryStore extends GetxController {
   void onInit() {
     ever(taggedPics, runTotalTaggedPicsComputation);
     ever(filteredPics, runFilteredPicsKeysComputation);
+    ever(searchingTags, runFilteredPicsKeysComputation);
+    ever(trashedPic, (_) {
+      if (trashedPic.value) {
+        setSwipeIndex(swipeIndex.value);
+        setTrashedPic(false);
+      }
+    });
+
     super.onInit();
   }
 
@@ -101,10 +111,64 @@ class GalleryStore extends GetxController {
         .reduce((value, element) => value + element);
   }
 
+  void runTaggedKeysComputation(_) {
+    var tags = <String, String>{};
+    taggedPics.forEach((element) {
+      tags[element.tag.id] = '';
+    });
+    taggedKeys.value = tags.keys.toList();
+  }
+
+  /*  @computed
+  List<String> get taggedKeys {
+    Set<String> tags = Set();
+    taggedPics.forEach((element) {
+      tags.add(element.tag.id);
+    });
+    // //print('Tagged Keys: ${tags}');
+    return tags.toList();
+  } */
+
+  void runDeviceHasPics(_) {
+    deviceHasPics.value = allPics.length != 0;
+  }
+
+/*   @computed
+  bool get deviceHasPics {
+    if (allPics.length == 0) {
+      return false;
+    } else {
+      return true;
+    }
+  } */
+
   void runFilteredPicsKeysComputation(_) {
     filteredPicsKeys.value = List<String>.from(
         filteredPics.map((element) => element.photoId).toList());
   }
+
+  void runSearchingTagsKeysComputation(_) {
+    searchingTagsKeys.value =
+        searchingTags.map((element) => element.id).toList();
+  }
+
+  void runIsFilteredComputation(_) {
+    isFiltered.value = searchingTags.length > 0;
+  }
+
+  /*  @computed
+  bool get isFiltered {
+    if (searchingTags.length > 0) {
+      return true;
+    }
+    return false;
+  } */
+
+  /*  @computed
+  List<String> get searchingTagsKeys {
+    //print('${count++} :searchingTagsKeys');
+    return searchingTags.map((element) => element.id).toList();
+  } */
 
   PicStore currentPic;
 
@@ -184,20 +248,6 @@ class GalleryStore extends GetxController {
     filteredPics.clear();
   }
 
-  @computed
-  List<String> get searchingTagsKeys {
-    //print('${count++} :searchingTagsKeys');
-    return searchingTags.map((element) => element.id).toList();
-  }
-
-  @computed
-  bool get isFiltered {
-    if (searchingTags.length > 0) {
-      return true;
-    }
-    return false;
-  }
-
   //@action
   void setShowSearchTagsResults(bool value) =>
       showSearchTagsResults.value = value;
@@ -245,7 +295,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void setSearchText(String value) {
-    searchText = value;
+    searchText.value = value;
     tagsSuggestionsCalculate();
   }
 
@@ -265,7 +315,7 @@ class GalleryStore extends GetxController {
 
     //List<String> multiPicTags = multiPicTagKeys.toList();
     List<String> suggestionTags = [];
-    searchText = searchText.trim();
+    searchText.value = searchText.trim();
 
     if (searchText == '') {
       for (var recent in getUser.recentTags) {
@@ -336,27 +386,8 @@ class GalleryStore extends GetxController {
       }
     });
     // //print('Suggestions Tag Store: $suggestions');
-    tagsSuggestions = suggestions;
+    tagsSuggestions.value = suggestions;
     return suggestions;
-  }
-
-  @computed
-  List<String> get taggedKeys {
-    Set<String> tags = Set();
-    taggedPics.forEach((element) {
-      tags.add(element.tag.id);
-    });
-    // //print('Tagged Keys: ${tags}');
-    return tags.toList();
-  }
-
-  @computed
-  bool get deviceHasPics {
-    if (allPics.length == 0) {
-      return false;
-    } else {
-      return true;
-    }
   }
 
   //@action
@@ -692,7 +723,7 @@ class GalleryStore extends GetxController {
         untaggedGridPicsByMonth[dateTime][entity.id] = null;
       }
     });
-    isLoaded = true;
+    isLoaded.value = true;
 
     //DateTime currentDate = DateTime(1000);
     // //print(entity.id);
@@ -796,7 +827,7 @@ class GalleryStore extends GetxController {
     );
     assetsPath.addAll(assets);
     // //print('#@#@#@# Total galleries: ${assetsPath.length}');
-    isLoaded = true;
+    isLoaded.value = true;
     await loadEntities();
     await loadPrivateAssets();
 
@@ -846,7 +877,7 @@ class GalleryStore extends GetxController {
   }
 
   //@action
-  void setTrashedPic(bool value) => trashedPic = value;
+  void setTrashedPic(bool value) => trashedPic.value = value;
 
   //@action
   Future<void> trashMultiplePics(Set<PicStore> selectedPics) async {
@@ -937,7 +968,7 @@ class GalleryStore extends GetxController {
   }
 
   //@action
-  void setSharedPic(bool value) => sharedPic = value;
+  void setSharedPic(bool value) => sharedPic.value = value;
 
   //@action
   Future<void> sharePics({List<PicStore> picsStores}) async {
@@ -1369,7 +1400,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void setShouldRefreshTaggedGallery(bool value) =>
-      shouldRefreshTaggedGallery = value;
+      shouldRefreshTaggedGallery.value = value;
 
   //@action
   Future<void> removeTagFromPic({PicStore picStore, String tagKey}) async {

@@ -1,21 +1,15 @@
+import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/secret.dart';
 import 'package:picPics/model/tag.dart';
 
-class MigrationStore {
-  MigrationStore() {
-    // autorun((_) {
-    // //print('autorun');
-    // });
-  }
-
-  @observable
-  bool isMigrating = true;
+class MigrationStore extends GetxController {
+  final isMigrating = true.obs;
 
   //@action
-  void setIsMigrating(bool value) => isMigrating = value;
+  void setIsMigrating(bool value) => isMigrating.value = value;
 
   //@action
   Future<void> startMigration() async {

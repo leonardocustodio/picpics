@@ -12,13 +12,12 @@ class PremiumBackground extends StatefulWidget {
 
 class _PremiumBackgroundState extends State<PremiumBackground>
     with AnimationMixin {
-  ScrollController scrollController =
-      ScrollController(initialScrollOffset: 100);
-
+  var scrollController = ScrollController(initialScrollOffset: 100);
+/* 
   @override
   void initState() {
     super.initState();
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {

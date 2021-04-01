@@ -764,7 +764,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = AppStore.to;
   }
 
   @override

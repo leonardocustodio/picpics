@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
 
-class PicTab extends StatefulWidget {
+/* class PicTab extends StatefulWidget {
   static const id = 'pic_tab';
 
   final Function showDeleteSecretModal;
@@ -22,44 +24,35 @@ class PicTab extends StatefulWidget {
 
   @override
   _PicTabState createState() => _PicTabState();
-}
+} */
 
-class _PicTabState extends State<PicTab> {
-  AppStore appStore;
-  GalleryStore galleryStore;
+class PicTab extends GetView<GalleryStore> {
+  PicTab({Key key}) : super(key: key);
+
   CarouselController carouselController = CarouselController();
   ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
 
-  ReactionDisposer disposer;
-
-  Widget _buildPhotoSlider(BuildContext context, int index) {
+  Widget _buildPhotoSlider(int index) {
     //print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
-        picStore: galleryStore.swipePics[index],
+        picStore: controller.swipePics.value[index],
         picsInThumbnails: PicSource.SWIPE,
         picsInThumbnailIndex: index,
-        showEditTagModal: widget.showEditTagModal,
+        showEditTagModal: () => showEditTagModal(Get.context),
         showDeleteSecretModal: widget.showDeleteSecretModal,
       ),
-      
     );
   }
 
-  @override
+/*   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     appStore = Provider.of<AppStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
+    controller = Provider.of<controller>(context);
 
-    disposer = reaction((_) => galleryStore.trashedPic, (trashedPic) {
-      if (trashedPic) {
-        galleryStore.setSwipeIndex(galleryStore.swipeIndex.value);
-        galleryStore.setTrashedPic(false);
-      }
-    });
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -93,8 +86,8 @@ class _PicTabState extends State<PicTab> {
                 ],
               ),
             ),
-            Observer(builder: (_) {
-              if (!galleryStore.isLoaded) {
+            Obx(() {
+              if (!controller.isLoaded.value) {
                 return Expanded(
                   child: Center(
                     child: CircularProgressIndicator(
@@ -103,13 +96,13 @@ class _PicTabState extends State<PicTab> {
                     ),
                   ),
                 );
-              } else if (!galleryStore.deviceHasPics) {
+              } else if (!controller.deviceHasPics.value) {
                 return Expanded(
                   child: DeviceHasNoPics(
                     message: S.of(context).device_has_no_pics,
                   ),
                 );
-              } else if (galleryStore.swipePics.isEmpty) {
+              } else if (controller.swipePics.isEmpty) {
                 return Expanded(
                   child: DeviceHasNoPics(
                     message: S.of(context).all_photos_were_tagged,
@@ -119,22 +112,22 @@ class _PicTabState extends State<PicTab> {
               return Expanded(
                 child: Stack(
                   children: <Widget>[
-                    Observer(builder: (_) {
-                      galleryStore.clearPicThumbnails();
-                      galleryStore.addPicsToThumbnails(galleryStore.swipePics);
+                    Obx(() {
+                      controller.clearPicThumbnails();
+                      controller.addPicsToThumbnails(controller.swipePics);
 
                       return CarouselSlider.builder(
-                        itemCount: galleryStore.swipePics.length,
+                        itemCount: controller.swipePics.length,
                         carouselController: carouselController,
                         itemBuilder: (BuildContext context, int index) {
-                          if (index < galleryStore.swipeCutOff) {
+                          if (index < controller.swipeCutOff) {
                             return Container();
                           }
                           //print('calling index $index');
-                          return _buildPhotoSlider(context, index);
+                          return _buildPhotoSlider(index);
                         },
                         options: CarouselOptions(
-                          initialPage: galleryStore.swipeIndex,
+                          initialPage: controller.swipeIndex.value,
                           enableInfiniteScroll: false,
                           height: double.maxFinite,
                           viewportFraction: 1.0,
@@ -142,10 +135,10 @@ class _PicTabState extends State<PicTab> {
                           autoPlayCurve: Curves.fastOutSlowIn,
                           scrollPhysics: scrollPhysics,
                           onPageChanged: (index, reason) {
-                            galleryStore.setSwipeIndex(index);
+                            controller.setSwipeIndex(index);
                           },
                           onScrolled: (double) {
-//                              if (galleryStore.swipeIndex <= galleryStore.swipeCutOff && galleryStore.swipeIndex != 0) {
+//                              if (controller.swipeIndex <= controller.swipeCutOff && controller.swipeIndex != 0) {
                             //print('changing scroll physics');
 //                                setState(() {
 //                                  scrollPhysics = NeverScrollableScrollPhysics();

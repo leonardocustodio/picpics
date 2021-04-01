@@ -177,8 +177,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
+    appStore = AppStore.to;
+    galleryStore = GalleryStore.to;
     findInitialCamera();
   }
 
@@ -312,7 +312,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 child: SearchMapPlaceWidget(
                   apiKey: kGoogleApiKey,
                   placeholder: S.of(context).search,
-                  language: appStore.appLanguage.split('_')[0], // arrumar isso
+                  language:
+                      appStore.appLanguage.value.split('_')[0], // arrumar isso
                   onSelected: (place) async {
                     final geolocation = await place.geolocation;
                     selectedGeolocation = geolocation;

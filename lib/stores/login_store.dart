@@ -1,20 +1,16 @@
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/generated/l10n.dart';
 
-class LoginStore {
-  LoginStore() {
-    // autorun((_) {
-    // //print('autorun');
-    // });
-  }
+class LoginStore extends GetxController {
+  static LoginStore get to => Get.find();
 
-  @observable
-  int slideIndex = 0;
+  final slideIndex = 0.obs;
 
   int totalSlides = Board.values.length;
 
   //@action
-  void setSlideIndex(int value) => slideIndex = value;
+  void setSlideIndex(int value) => slideIndex.value = value;
 
   String getDescription(BuildContext context, int value) {
     return Board.values[value].displayDescription(context);
@@ -37,15 +33,15 @@ extension SelectedBoard on Board {
   String displayDescription(BuildContext context) {
     switch (this) {
       case Board.introduction:
-        return S.of(context).welcome;
+        return S.current.welcome;
       case Board.createTags:
-        return S.of(context).tutorial_however_you_want;
+        return S.current.tutorial_however_you_want;
       case Board.swipeRight:
-        return S.of(context).tutorial_just_swipe;
+        return S.current.tutorial_just_swipe;
       case Board.keepSecret:
-        return S.of(context).tutorial_secret;
+        return S.current.tutorial_secret;
       case Board.multiSelect:
-        return S.of(context).tutorial_multiselect;
+        return S.current.tutorial_multiselect;
       default:
         return null;
     }

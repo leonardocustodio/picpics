@@ -5,7 +5,7 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import '../constants.dart';
 
-Future<void> showEditTagModal(BuildContext context, GalleryStore galleryStore,
+Future<void> showEditTagModal(BuildContext context,
     [bool checkSecret = true]) async {
   if (DatabaseManager.instance.selectedTagKey != '' &&
       (!checkSecret ||
@@ -28,15 +28,15 @@ Future<void> showEditTagModal(BuildContext context, GalleryStore galleryStore,
           destructiveButtonTitle: S.of(context).delete,
           onPressedDestructive: () {
             //print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
-            galleryStore.deleteTag(
-                tagKey: DatabaseManager.instance.selectedTagKey);
+            GalleryStore.to
+                .deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
             Navigator.of(context).pop();
           },
           defaultButtonTitle: S.of(context).ok,
           onPressedDefault: () {
 /* //print(Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}'); */
             if (tagName != alertInputController.text) {
-              galleryStore.editTag(
+              GalleryStore.to.editTag(
                 oldTagKey: DatabaseManager.instance.selectedTagKey,
                 newName: alertInputController.text,
               );
