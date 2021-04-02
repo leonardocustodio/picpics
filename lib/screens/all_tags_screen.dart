@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
@@ -12,58 +12,26 @@ import 'package:picPics/widgets/customised_tags_list.dart';
 import 'package:picPics/widgets/show_watch_ad_modal.dart';
 import '../constants.dart';
 
-class AllTagsScreen extends StatefulWidget {
-  static const id = 'all_tags_screen';
-  final PicStore picStore;
-  AllTagsScreen({@required this.picStore, Key key}) : super(key: key);
+// ignore_for_file: invalid_use_of_protected_member
+class AllTagsStore extends GetxController {
+  final selectedTags = <String, TagsStore>{}.obs;
+  final allTagsAvailable = <String, TagsStore>{}.obs;
+  final searchedTags = <String, TagsStore>{}.obs;
 
-  @override
-  _AllTagsScreenState createState() => _AllTagsScreenState();
-}
-
-class _AllTagsScreenState extends State<AllTagsScreen> {
-  AppStore appStore;
-  TabsStore tabsStore;
-  GalleryStore galleryStore;
-  FocusNode focusNode = FocusNode();
-  String searchedText = '';
-  bool doFullSearching = true;
-  var searchEditingController = TextEditingController();
-  var selectedTags = <String, TagsStore>{},
-      allTagsAvailable = <String, TagsStore>{},
-      searchedTags = <String, TagsStore>{};
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    appStore.loadTags();
-    tabsStore = Provider.of<TabsStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
-
-    galleryStore
-        .tagsFromPic(picStore: widget.picStore)
-        .forEach((TagsStore tag_element) {
-      selectedTags[tag_element.id] = tag_element;
-    });
-  }
+  final searchedText = ''.obs;
+  final doFullSearching = true.obs;
 
   void doSearching() {
-    searchedText = searchedText.trim();
-    if (searchedText == '') return;
+    searchedText.value = searchedText.trim();
+    if (searchedText.value == '') return;
     var tempTags;
-    if (!doFullSearching) {
+    if (!doFullSearching.value) {
       // copy the already searched tags into temporary variable
-      tempTags = Map<String, TagsStore>.from(searchedTags);
+      tempTags = Map<String, TagsStore>.from(searchedTags.value);
     }
-    searchedTags.clear();
-    var listOfLetters = searchedText.toLowerCase().split('');
-    (!doFullSearching ? tempTags : appStore.tags).forEach(
+    searchedTags.value.clear();
+    var listOfLetters = searchedText.value.toLowerCase().split('');
+    (!doFullSearching.value ? tempTags : AppStore.to.tags).forEach(
       (key, value) => doCustomisedSearching(
         value,
         listOfLetters,
@@ -73,6 +41,47 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
       ),
     );
   }
+}
+
+class AllTagsScreen extends GetView<AllTagsStore> {
+  static const id = 'all_tags_screen';
+  final PicStore picStore;
+  AllTagsScreen({@required this.picStore, Key key}) : super(key: key);
+
+  /* 
+  AllTagsScreen({@required this.picStore, Key key}) : super(key: key);
+
+  @override
+  _AllTagsScreenState createState() => _AllTagsScreenState();
+}
+
+class _AllTagsScreenState extends State<AllTagsScreen> { */
+/*   AppStore AppStore.to;
+  TabsStore tabsStore;
+  GalleryStore GalleryStore.to; */
+  FocusNode focusNode = FocusNode();
+  var searchEditingController = TextEditingController();
+
+/* 
+  @override
+  void initState() {
+    super.initState();
+  }
+ */
+/*   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    AppStore.to = Provider.of<AppStore>(context);
+    AppStore.to.loadTags();
+    tabsStore = Provider.of<TabsStore>(context);
+    GalleryStore.to = Provider.of<GalleryStore>(context);
+
+    GalleryStore.to
+        .tagsFromPic(picStore: picStore)
+        .forEach((TagsStore tag_element) {
+      selectedTags[tag_element.id] = tag_element;
+    });
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -108,43 +117,6 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                         Image.asset('lib/images/searchico.png'),
                         //),
                         const SizedBox(width: 10),
-                        /*  Expanded(
-                          child: TextField(
-                            // controller: _textEditingController,
-                            // onSubmitted: (_) => _selectPlace(),
-                            // onEditingComplete: _selectPlace,
-                            autofocus: false,
-                            // focusNode: _fn,
-                            textAlignVertical: TextAlignVertical.center,
-                            maxLines: 1,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: Color(0xff606566),
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
-                            ),
-                            decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.all(0),
-                              border:
-                                  OutlineInputBorder(borderSide: BorderSide.none),
-                              enabledBorder:
-                                  OutlineInputBorder(borderSide: BorderSide.none),
-                              focusedBorder:
-                                  OutlineInputBorder(borderSide: BorderSide.none),
-                              hintText: 'Search...',
-                              hintStyle: TextStyle(
-                                fontFamily: 'Lato',
-                                color: kGrayColor,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
-                            ),
-                          ),
-                        ), */
                         Expanded(
                           child: Container(
                             height: 50,
@@ -155,50 +127,61 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                 Expanded(
                                   child: Container(
                                     child: TextFormField(
-                                      key: widget.key,
+                                      key: key,
                                       controller: searchEditingController,
                                       focusNode: focusNode,
                                       onChanged: (t) {
                                         var text = t.trim();
-                                        if (searchedText == '') {
+                                        if (controller.searchedText.value ==
+                                            '') {
                                           if (text != '') {
                                             // New letter came
-                                            searchedText = text;
-                                            doFullSearching = true;
-                                            doSearching();
+                                            controller.searchedText.value =
+                                                text;
+                                            controller.doFullSearching.value =
+                                                true;
+                                            controller.doSearching();
                                           }
                                         } else {
                                           // searchedText already has some data
                                           if (text == '') {
-                                            searchedText = '';
-                                            doFullSearching = true;
-                                            searchedTags.clear();
-                                          } else if (searchedText.length <
+                                            controller.searchedText.value = '';
+                                            controller.doFullSearching.value =
+                                                true;
+                                            controller.searchedTags.clear();
+                                          } else if (controller
+                                                  .searchedText.value.length <
                                               text.length) {
                                             // more new letters added
-                                            searchedText = text;
-                                            doFullSearching = false;
-                                            doSearching();
-                                          } else if (searchedText.length >
+                                            controller.searchedText.value =
+                                                text;
+                                            controller.doFullSearching.value =
+                                                false;
+                                            controller.doSearching();
+                                          } else if (controller
+                                                  .searchedText.value.length >
                                               text.length) {
                                             // letters deleted
-                                            searchedText = text;
-                                            doFullSearching = true;
-                                            doSearching();
+                                            controller.searchedText.value =
+                                                text;
+                                            controller.doFullSearching.value =
+                                                true;
+                                            controller.doSearching();
                                           } else {
                                             // New letter came
-                                            searchedText = text;
-                                            doFullSearching = true;
-                                            doSearching();
+                                            controller.searchedText.value =
+                                                text;
+                                            controller.doFullSearching.value =
+                                                true;
+                                            controller.doSearching();
                                           }
                                         }
-                                        setState(() {});
                                       },
                                       onFieldSubmitted: (text) {
                                         /* 
                                         searchedText = text.trim();
                                         if (searchedText != '') {
-                                          appStore.tags.forEach((key, value) {
+                                          AppStore.to.tags.forEach((key, value) {
                                             if (value.name
                                                 .toLowerCase()
                                                 .startsWith(searchedText
@@ -209,15 +192,15 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                         } else {
                                           searchedTags.clear();
                                         }
-                                        setState(() {}); */
+                                        // */
                                       },
-                                      /* suggestions: appStore.tags.values
+                                      /* suggestions: AppStore.to.tags.values
                                           .map((e) => e.name)
                                           .toList(),
                                       clearOnSubmit: false,
                                       textSubmitted: (text) {
                                         if (text.trim() != '') {
-                                          setState(() {});
+                                          //
                                         }
                                       }, */
 
@@ -250,16 +233,17 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                                     ),
                                   ),
                                 ),
-                                if (searchedText != '')
+                                if (controller.searchedText.value != '')
                                   GestureDetector(
                                       onTap: () {
-                                        if (searchedText != '') {
-                                          searchedText = '';
-                                          doFullSearching = true;
-                                          searchedTags.clear();
+                                        if (controller.searchedText.value !=
+                                            '') {
+                                          controller.searchedText.value = '';
+                                          controller.doFullSearching.value =
+                                              true;
+                                          controller.searchedTags.clear();
                                           focusNode.unfocus();
                                           searchEditingController.clear();
-                                          setState(() {});
                                         }
                                       },
                                       child: Container(
@@ -286,7 +270,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                     ),
                   ),
                 ),
-                if (searchedText != '')
+                if (controller.searchedText.value != '')
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -305,43 +289,41 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                         ),
                       ),
                       CustomisedTagsList(
-                        tags: searchedTags.values.toList(),
-                        selectedTags: selectedTags,
+                        tags: controller.searchedTags.value.values.toList(),
+                        selectedTags: controller.selectedTags.value,
                         onTap: (String tagId, String tagName, int count,
                             DateTime time) async {
                           //print('do nothing');
-                          if (!appStore.canTagToday) {
+                          if (!AppStore.to.canTagToday.value) {
                             showWatchAdModal(context);
                             return;
                           }
-                          if (selectedTags[tagId] != null) {
-                            selectedTags.remove(tagId);
-                            setState(() {});
-                            await galleryStore.removeTagFromPic(
-                                picStore: widget.picStore, tagKey: tagId);
+                          if (controller.selectedTags.value[tagId] != null) {
+                            controller.selectedTags.value.remove(tagId);
+
+                            await GalleryStore.to.removeTagFromPic(
+                                picStore: picStore, tagKey: tagId);
                           } else {
-                            selectedTags[tagId] = TagsStore(
+                            controller.selectedTags.value[tagId] = TagsStore(
                                 id: tagId,
                                 name: tagName,
                                 count: count,
                                 time: time);
-                            setState(() {});
-                            await galleryStore.addTagToPic(
-                                picStore: widget.picStore, tagName: tagName);
+                            await GalleryStore.to.addTagToPic(
+                                picStore: picStore, tagName: tagName);
                           }
-                          appStore.loadTags();
+                          AppStore.to.loadTags();
                         },
                         onDoubleTap: () {
                           //print('do nothing');
                         },
-                        showEditTagModal: () =>
-                            showEditTagModal(context, galleryStore),
+                        showEditTagModal: () => showEditTagModal(context),
                       ),
                     ],
                   ),
-                if (searchedText == '')
-                  Observer(
-                    builder: (_) {
+                if (controller.searchedText.value == '')
+                  Obx(
+                    () {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -360,48 +342,50 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: appStore.mostUsedTags,
-                            selectedTags: selectedTags,
+                            tags: AppStore.to.mostUsedTags,
+                            selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!appStore.canTagToday) {
+                              /* if (!AppStore.to.canTagToday) {
                             showWatchAdModal(context);
                             return;
                           } */
-                              if (selectedTags[tagId] != null) {
-                                selectedTags.remove(tagId);
-                                setState(() {});
-                                await galleryStore.removeTagFromPic(
-                                    picStore: widget.picStore, tagKey: tagId);
+                              if (controller.selectedTags.value[tagId] !=
+                                  null) {
+                                controller.selectedTags.value.remove(tagId);
+
+                                await GalleryStore.to.removeTagFromPic(
+                                    picStore: picStore, tagKey: tagId);
                               } else {
-                                selectedTags[tagId] = TagsStore(
-                                    id: tagId,
-                                    name: tagName,
-                                    count: count,
-                                    time: time);
-                                setState(() {});
-                                await galleryStore.addTagToPic(
-                                    picStore: widget.picStore,
-                                    tagName: tagName);
+                                controller.selectedTags.value[tagId] =
+                                    TagsStore(
+                                        id: tagId,
+                                        name: tagName,
+                                        count: count,
+                                        time: time);
+
+                                await GalleryStore.to.addTagToPic(
+                                    picStore: picStore, tagName: tagName);
                               }
-                              appStore.loadTags();
+                              AppStore.to.loadTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
                             },
-                            showEditTagModal: () =>
-                                showEditTagModal(context, galleryStore),
+                            showEditTagModal: () => showEditTagModal(context),
                           ),
                         ],
                       );
                     },
                   ),
-                if (appStore.lastWeekUsedTags.isNotEmpty && searchedText == '')
+                if (AppStore.to.lastWeekUsedTags.isNotEmpty &&
+                    controller.searchedText.value == '')
                   const SizedBox(height: 20),
-                if (appStore.lastWeekUsedTags.isNotEmpty && searchedText == '')
-                  Observer(
-                    builder: (_) {
+                if (AppStore.to.lastWeekUsedTags.isNotEmpty &&
+                    controller.searchedText.value == '')
+                  Obx(
+                    () {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -420,48 +404,50 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: appStore.lastWeekUsedTags,
-                            selectedTags: selectedTags,
+                            tags: AppStore.to.lastWeekUsedTags,
+                            selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!appStore.canTagToday) {
+                              /* if (!AppStore.to.canTagToday) {
                             showWatchAdModal(context);
                             return;
                           } */
-                              if (selectedTags[tagId] != null) {
-                                selectedTags.remove(tagId);
-                                setState(() {});
-                                await galleryStore.removeTagFromPic(
-                                    picStore: widget.picStore, tagKey: tagId);
+                              if (controller.selectedTags.value[tagId] !=
+                                  null) {
+                                controller.selectedTags.remove(tagId);
+
+                                await GalleryStore.to.removeTagFromPic(
+                                    picStore: picStore, tagKey: tagId);
                               } else {
-                                selectedTags[tagId] = TagsStore(
-                                    id: tagId,
-                                    name: tagName,
-                                    count: count,
-                                    time: time);
-                                setState(() {});
-                                await galleryStore.addTagToPic(
-                                    picStore: widget.picStore,
-                                    tagName: tagName);
+                                controller.selectedTags.value[tagId] =
+                                    TagsStore(
+                                        id: tagId,
+                                        name: tagName,
+                                        count: count,
+                                        time: time);
+
+                                await GalleryStore.to.addTagToPic(
+                                    picStore: picStore, tagName: tagName);
                               }
-                              appStore.loadTags();
+                              AppStore.to.loadTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
                             },
-                            showEditTagModal: () =>
-                                showEditTagModal(context, galleryStore),
+                            showEditTagModal: () => showEditTagModal(context),
                           ),
                         ],
                       );
                     },
                   ),
-                if (appStore.lastMonthUsedTags.isNotEmpty && searchedText == '')
+                if (AppStore.to.lastMonthUsedTags.isNotEmpty &&
+                    controller.searchedText.value == '')
                   const SizedBox(height: 20),
-                if (appStore.lastMonthUsedTags.isNotEmpty && searchedText == '')
-                  Observer(
-                    builder: (_) {
+                if (AppStore.to.lastMonthUsedTags.isNotEmpty &&
+                    controller.searchedText.value == '')
+                  Obx(
+                    () {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -480,47 +466,48 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: appStore.lastWeekUsedTags,
-                            selectedTags: selectedTags,
+                            tags: AppStore.to.lastWeekUsedTags,
+                            selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!appStore.canTagToday) {
+                              /* if (!AppStore.to.canTagToday) {
                             showWatchAdModal(context);
                             return;
                           } */
-                              if (selectedTags[tagId] != null) {
-                                selectedTags.remove(tagId);
-                                setState(() {});
-                                await galleryStore.removeTagFromPic(
-                                    picStore: widget.picStore, tagKey: tagId);
+                              if (controller.selectedTags.value[tagId] !=
+                                  null) {
+                                controller.selectedTags.value.remove(tagId);
+                                //
+                                await GalleryStore.to.removeTagFromPic(
+                                    picStore: picStore, tagKey: tagId);
                               } else {
-                                selectedTags[tagId] = TagsStore(
-                                    id: tagId,
-                                    name: tagName,
-                                    count: count,
-                                    time: time);
-                                setState(() {});
-                                await galleryStore.addTagToPic(
-                                    picStore: widget.picStore,
-                                    tagName: tagName);
+                                controller.selectedTags.value[tagId] =
+                                    TagsStore(
+                                        id: tagId,
+                                        name: tagName,
+                                        count: count,
+                                        time: time);
+                                //
+                                await GalleryStore.to.addTagToPic(
+                                    picStore: picStore, tagName: tagName);
                               }
-                              appStore.loadTags();
+                              AppStore.to.loadTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
                             },
-                            showEditTagModal: () =>
-                                showEditTagModal(context, galleryStore),
+                            showEditTagModal: () => showEditTagModal(context),
                           ),
                         ],
                       );
                     },
                   ),
-                if (searchedText == '') const SizedBox(height: 20),
-                if (searchedText == '')
-                  Observer(
-                    builder: (_) {
+                if (controller.searchedText.value == '')
+                  const SizedBox(height: 20),
+                if (controller.searchedText.value == '')
+                  Obx(
+                    () {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -539,38 +526,38 @@ class _AllTagsScreenState extends State<AllTagsScreen> {
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: appStore.tags.values.toList(),
-                            selectedTags: selectedTags,
+                            tags: AppStore.to.tags.values.toList(),
+                            selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!appStore.canTagToday) {
+                              /* if (!AppStore.to.canTagToday) {
                             showWatchAdModal(context);
                             return;
                           } */
-                              if (selectedTags[tagId] != null) {
-                                selectedTags.remove(tagId);
-                                setState(() {});
-                                await galleryStore.removeTagFromPic(
-                                    picStore: widget.picStore, tagKey: tagId);
+                              if (controller.selectedTags.value[tagId] !=
+                                  null) {
+                                controller.selectedTags.value.remove(tagId);
+                                //
+                                await GalleryStore.to.removeTagFromPic(
+                                    picStore: picStore, tagKey: tagId);
                               } else {
-                                selectedTags[tagId] = TagsStore(
-                                    id: tagId,
-                                    name: tagName,
-                                    count: count,
-                                    time: time);
-                                setState(() {});
-                                await galleryStore.addTagToPic(
-                                    picStore: widget.picStore,
-                                    tagName: tagName);
+                                controller.selectedTags.value[tagId] =
+                                    TagsStore(
+                                        id: tagId,
+                                        name: tagName,
+                                        count: count,
+                                        time: time);
+                                //
+                                await GalleryStore.to.addTagToPic(
+                                    picStore: picStore, tagName: tagName);
                               }
-                              appStore.loadTags();
+                              AppStore.to.loadTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
                             },
-                            showEditTagModal: () =>
-                                showEditTagModal(context, galleryStore),
+                            showEditTagModal: () => showEditTagModal(context),
                           ),
                         ],
                       );
