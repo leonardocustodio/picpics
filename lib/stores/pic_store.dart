@@ -1,27 +1,27 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
+import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:googleapis/translate/v3.dart';
+import 'package:googleapis_auth/auth_io.dart';
+import 'package:metadata/metadata.dart' as md;
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:share_extend/share_extend.dart';
+import 'package:strings/strings.dart';
+import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/constants.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/labels.dart';
-import 'package:share_extend/share_extend.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:googleapis/translate/v3.dart';
-import 'package:googleapis_auth/auth_io.dart';
-import 'package:strings/strings.dart';
-import 'package:path/path.dart' as p;
-import 'package:metadata/metadata.dart' as md;
-import 'dart:convert';
 
 class PicStore extends GetxController {
   final DateTime createdAt;
@@ -33,7 +33,7 @@ class PicStore extends GetxController {
   //ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
   final tags = <String, TagsStore>{}.obs;
 
-  var aiSuggestions = <TagsStore>[];
+  //var aiSuggestions = <TagsStore>[];
 
   // @observable
   final aiTags = false.obs;
@@ -766,11 +766,11 @@ class PicStore extends GetxController {
   void setAiTags(bool value) => aiTags.value = value;
 
   //@action
-  void switchAiTags(BuildContext context) {
+  void switchAiTags() {
     aiTags.value = !aiTags.value;
 
     if (aiTags == true) {
-      getAiSuggestions(context);
+      //getAiSuggestions(context);
     }
   }
 
@@ -779,10 +779,8 @@ class PicStore extends GetxController {
 
   Future<List<String>> translateTags(
       List<String> tagsText, BuildContext context) async {
-    if (AppStore.to.appLanguage.split('_')[0] == 'pt' ||
-        AppStore.to.appLanguage.split('_')[0] == 'es' ||
-        AppStore.to.appLanguage.split('_')[0] == 'de' ||
-        AppStore.to.appLanguage.split('_')[0] == 'ja') {
+    var lang = AppStore.to.appLanguage.split('_')[0];
+    if (lang == 'pt' || lang == 'es' || lang == 'de' || lang == 'ja') {
       //print('Offline translating it...');
       return tagsText
           .map((e) => PredefinedLabels.labelTranslation(e, context))
@@ -906,7 +904,7 @@ class PicStore extends GetxController {
 //   }
 
   //@action
-  Future<void> getAiSuggestions(BuildContext context) async {
+  /* Future<void> getAiSuggestions(BuildContext context) async {
     if (aiTagsLoaded == true) {
       return;
     }
@@ -964,5 +962,5 @@ class PicStore extends GetxController {
     }
     aiTagsLoaded.value = true;
     labeler.close();
-  }
+  } */
 }

@@ -23,6 +23,7 @@ import 'package:share/share.dart';
 import 'package:collection/collection.dart';
 import 'package:mime/mime.dart';
 
+// ignore_for_file: invalid_use_of_protected_member
 class GalleryStore extends GetxController {
   AppStore appStore = AppStore.to;
   static GalleryStore get to => Get.find();
@@ -130,12 +131,12 @@ class GalleryStore extends GetxController {
   } */
 
   void runDeviceHasPics(_) {
-    deviceHasPics.value = allPics.length != 0;
+    deviceHasPics.value = allPics.value.length != 0;
   }
 
 /*   @computed
   bool get deviceHasPics {
-    if (allPics.length == 0) {
+    if (allPics.value.length == 0) {
       return false;
     } else {
       return true;
@@ -502,37 +503,37 @@ class GalleryStore extends GetxController {
   void deleteEntity(String entityId) {
     // //print('Deleting entity...');
 
-    if (allPics[entityId] == null) {
+    if (allPics.value[entityId] == null) {
       // //print('This pic is not on picPics!!!');
       return;
     }
 
-    PicStore picStore = allPics[entityId];
+    PicStore picStore = allPics.value[entityId];
     removePicFromTaggedPics(picStore: picStore, forceDelete: true);
     removePicFromUntaggedPics(picStore: picStore);
     filteredPics.remove(picStore);
     swipePics.remove(picStore);
-    allPics.remove(picStore);
+    allPics.value.remove(picStore);
 
-    // //print('#@#@#@# Total photos: ${allPics.length}');
+    // //print('#@#@#@# Total photos: ${allPics.value.length}');
   }
 
   //@action
   Future<void> addEntity(AssetEntity entity) async {
     // //print('Adding new entity....');
 
-    if (allPics[entity.id] != null) {
+    if (allPics.value[entity.id] != null) {
       // //print('This pic is already in picPics!!!');
       return;
     }
 
     PicStore pic = PicStore(
-      appStore: appStore,
-      entity: entity,
-      photoId: entity.id,
+      entityValue: entity,
+      photoIdValue: entity.id,
       createdAt: entity.createDateTime,
       originalLatitude: entity.latitude,
       originalLongitude: entity.longitude,
+      isStarredValue: null,
     );
     await pic.tagsSuggestionsCalculate();
     await pic.loadPicInfo();
@@ -542,7 +543,7 @@ class GalleryStore extends GetxController {
       return;
     }
 
-    allPics[pic.photoId] = pic;
+    allPics.value[pic.photoId.value] = pic;
     if (pic.tags.length > 0) {
       //print('has pic info! and this pic has tags in it!!!!');
       addPicToTaggedPics(picStore: pic, toInitialIndex: true);
@@ -552,7 +553,7 @@ class GalleryStore extends GetxController {
       addPicToUntaggedPics(picStore: pic);
     }
 
-    // //print('#@#@#@# Total photos: ${allPics.length}');
+    // //print('#@#@#@# Total photos: ${allPics.value.length}');
   }
 
   //@action
@@ -591,7 +592,7 @@ class GalleryStore extends GetxController {
     if (untaggedGridPicsByMonth[dateTime] == null) {
       untaggedGridPicsByMonth[dateTime] = Map<String, PicStore>();
     }
-    untaggedGridPicsByMonth[dateTime][newPicStore.picStore.photoId] =
+    untaggedGridPicsByMonth[dateTime][newPicStore.picStore.photoId.value] =
         newPicStore.picStore;
 
     var gridPicIndex =
@@ -734,9 +735,9 @@ class GalleryStore extends GetxController {
           //print('This pic is not private loading it!');
 
           PicStore pic = PicStore(
-            appStore: appStore,
-            entity: entity,
-            photoId: entity.id,
+            isStarredValue: null,
+            entityValue: entity,
+            photoIdValue: entity.id,
             createdAt: entity.createDateTime,
             originalLatitude: entity.latitude,
             originalLongitude: entity.longitude,
@@ -744,7 +745,7 @@ class GalleryStore extends GetxController {
           await pic.tagsSuggestionsCalculate();
           await pic.loadPicInfo();
 
-          allPics[pic.photoId] = pic;
+          allPics.value[pic.photoId.value] = pic;
 
           if (pic.tags.length > 0) {
             // //print('has pic info! and this pic has tags in it!!!!');
@@ -755,9 +756,9 @@ class GalleryStore extends GetxController {
 
             swipePics.add(pic);
           }
-          if (allPics.length > 0 && allPics.length < 2)
+          if (allPics.value.length > 0 && allPics.value.length < 2)
             appStore.setDefaultWidgetImage(
-                allPics[allPics.keys.toList()[0]].entity);
+                allPics.value[allPics.value.keys.toList()[0]].entity.value);
         }
       }).then((_) {
         sortUntaggedPhotos();
@@ -767,7 +768,7 @@ class GalleryStore extends GetxController {
 /* 
     
  */
-    // //print('#@#@#@# Total photos: ${allPics.length}');
+    // //print('#@#@#@# Total photos: ${allPics.value.length}');
   }
 
   //@action
@@ -846,9 +847,10 @@ class GalleryStore extends GetxController {
 
     for (Private secretPic in secretBox) {
       PicStore pic = PicStore(
-        appStore: appStore,
-        entity: null,
-        photoId: secretPic.id,
+        
+        entityValue: null,
+        isStarredValue: null,
+        photoIdValue: secretPic.id,
         createdAt: secretPic.createDateTime,
         originalLatitude: secretPic.originalLatitude,
         originalLongitude: secretPic.originalLongitude,
@@ -856,7 +858,7 @@ class GalleryStore extends GetxController {
       await pic.tagsSuggestionsCalculate();
       await pic.loadPicInfo();
 
-      allPics[pic.photoId] = pic;
+      allPics.value[pic.photoId.value] = pic;
 
       if (pic.tags.length > 0) {
         // //print('has pic info! and this pic has tags in it!!!!');
@@ -873,7 +875,7 @@ class GalleryStore extends GetxController {
       }
     }
 
-    // //print('#@#@#@# Total photos with private photos: ${allPics.length}');
+    // //print('#@#@#@# Total photos with private photos: ${allPics.value.length}');
   }
 
   //@action
@@ -881,7 +883,7 @@ class GalleryStore extends GetxController {
 
   //@action
   Future<void> trashMultiplePics(Set<PicStore> selectedPics) async {
-    List<String> selectedPicsIds = selectedPics.map((e) => e.photoId).toList();
+    List<String> selectedPicsIds = selectedPics.map((e) => e.photoId.value).toList();
 
     bool deleted = false;
 
@@ -897,7 +899,7 @@ class GalleryStore extends GetxController {
 
       Future.wait([
         Future.forEach(selectedPics, (PicStore picStore) async {
-          Photo pic = await database.getPhotoByPhotoId(picStore.photoId);
+          Photo pic = await database.getPhotoByPhotoId(picStore.photoId.value);
 
           if (pic != null) {
             // //print('pic is in db... removing it from db!');
@@ -918,7 +920,7 @@ class GalleryStore extends GetxController {
             ]);
 
             //picsBox.delete(picStore.photoId);
-            await database.deletePhotoByPhotoId(picStore.photoId);
+            await database.deletePhotoByPhotoId(picStore.photoId.value);
             // //print('removed ${picStore.photoId} from database');
           }
 
@@ -926,8 +928,8 @@ class GalleryStore extends GetxController {
           removePicFromTaggedPics(picStore: picStore, forceDelete: true);
           swipePics.remove(picStore);
           removePicFromUntaggedPics(picStore: picStore);
-          allPics.remove(picStore);
-          appStore.setDefaultWidgetImage(allPics[0].entity);
+          allPics.value.remove(picStore);
+          appStore.setDefaultWidgetImage(allPics.value[0].entity.value);
         })
       ]);
 
@@ -949,8 +951,8 @@ class GalleryStore extends GetxController {
       removePicFromTaggedPics(picStore: picStore, forceDelete: true);
       swipePics.remove(picStore);
       removePicFromUntaggedPics(picStore: picStore);
-      allPics.remove(picStore);
-      appStore.setDefaultWidgetImage(allPics[0].entity);
+      allPics.value.remove(picStore);
+      appStore.setDefaultWidgetImage(allPics.value[0].entity.value);
     }
 
     Analytics.sendEvent(Event.deleted_photo);
@@ -975,7 +977,7 @@ class GalleryStore extends GetxController {
     var imageList = <String>[], mimeList = <String>[];
 
     for (PicStore pic in picsStores) {
-      AssetEntity data = pic.entity;
+      AssetEntity data = pic.entity.value;
 
       if (data == null) {
         var bytes = await pic.assetOriginBytes;
@@ -1166,10 +1168,10 @@ class GalleryStore extends GetxController {
     );
 
     // //print('Temp photos ids: $tempPhotosIds');
-    // //print('All Pics: ${allPicsKeys}');
+    // //print('All Pics: ${allPics.valueKeys}');
     filteredPics.addAll(tempPhotosIds
-        .where((photoId) => allPics[photoId] != null)
-        .map((e) => allPics[e])
+        .where((photoId) => allPics.value[photoId] != null)
+        .map((e) => allPics.value[e])
         .toList()); // Verificar essa classe para otimizar
     // //print('Search Photos: $filteredPics');
     // //print('Searcing Tags Keys: $searchingTags');
@@ -1267,13 +1269,13 @@ class GalleryStore extends GetxController {
 
             //Tag getTag = tagsBox.get(tagKey);
             Label getTag = await database.getLabelByLabelKey(tagKey);
-            getTag.photoId.add(picStore.photoId);
+            getTag.photoId.add(picStore.photoId.value);
             await database.updateLabel(getTag);
             //tagsBox.put(tagKey, getTag);
 
             await picStore.addTagToPic(
               tagKey: tagKey,
-              photoId: picStore.photoId,
+              photoId: picStore.photoId.value,
             );
 
             // //print('update pictures in tag');
@@ -1349,7 +1351,7 @@ class GalleryStore extends GetxController {
       selectedPics.remove(private);
       swipePics.remove(private);
       removePicFromUntaggedPics(picStore: private);
-      allPics.remove(private);
+      allPics.value.remove(private);
     }
     privatePics.clear();
   }
@@ -1369,18 +1371,18 @@ class GalleryStore extends GetxController {
         start: 0, end: assetPathEntity.assetCount);
     final Set<String> entitiesIds = assetList.map((e) => e.id).toSet();
     final bool isEqual =
-        SetEquality().equals(entitiesIds, allPics.keys.toSet());
+        SetEquality().equals(entitiesIds, allPics.value.keys.toSet());
 
     if (isEqual) {
       // //print('Library is updated!!!!!!');
-      // //print('#@#@#@# Total photos: ${allPics.length}');
+      // //print('#@#@#@# Total photos: ${allPics.value.length}');
     } else {
       // //print('Library not updated!!!');
 
       final Set<String> createdPics =
-          entitiesIds.difference(allPics.keys.toSet());
+          entitiesIds.difference(allPics.value.keys.toSet());
       final Set<String> deletedPics =
-          allPics.keys.toSet().difference(entitiesIds);
+          allPics.value.keys.toSet().difference(entitiesIds);
 
       // //print('Created: $createdPics');
       // //print('Deleted: $deletedPics');
