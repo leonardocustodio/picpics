@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
@@ -22,85 +23,97 @@ import 'package:path/path.dart' as p;
 import 'package:metadata/metadata.dart' as md;
 import 'dart:convert';
 
-class PicStore {
-  final AppStore appStore;
+class PicStore extends GetxController {
   final DateTime createdAt;
   final double originalLatitude;
   final double originalLongitude;
 
   final AppDatabase database = AppDatabase();
 
-  ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
-
-  @observable
-  bool aiTags = false;
+  //ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
+  final tags = <String, TagsStore>{}.obs;
 
   var aiSuggestions = <TagsStore>[];
 
-  @observable
-  bool aiTagsLoaded = false;
+  // @observable
+  final aiTags = false.obs;
 
-  @observable
-  String searchText = '';
+  // @observable
+  final aiTagsLoaded = false.obs;
 
-  @observable
-  double latitude;
+  // @observable
+  final searchText = ''.obs;
 
-  @observable
-  double longitude;
+  // @observable
+  final latitude = RxDouble(null);
 
-  @observable
-  String specificLocation;
+  // @observable
+  final longitude = RxDouble(null);
 
-  @observable
-  String generalLocation;
+  // @observable
+  final specificLocation = RxString(null);
+
+  // @observable
+  final generalLocation = RxString(null);
 
   String nonce;
 
-  @observable
-  bool isPrivate = false;
+  // @observable
+  final isPrivate = false.obs;
+
+  // @observable
+  final isStarred = RxBool(null);
+
+  // @observable
+  final photoId = RxString(null);
+
+  // @observable
+  final entity = Rx<AssetEntity>(null);
+
+  // @observable
+  final tagsSuggestions = <TagsStore>[].obs;
 
   PicStore({
-    this.appStore,
-    this.entity,
+    @required AssetEntity entityValue,
     this.photoPath,
     this.thumbPath,
-    this.photoId,
+    @required String photoIdValue,
     this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
     this.deletedFromCameraRoll,
-    this.isStarred,
-  });
+    @required bool isStarredValue,
+  }) {
+    isStarred.value = isStarredValue;
+    photoId.value = photoIdValue;
+    entity.value = entityValue;
+  }
   /*  {
     //print('loading pic info......');
     tagsSuggestionsCalculate();
     loadPicInfo();
   } */
 
-  @observable
-  bool isStarred;
-
   //@action
   Future<void> switchIsStarred() async {
-    bool value = isStarred == null ? true : !isStarred;
+    bool value = isStarred.value == null ? true : !isStarred.value;
     //print('Setting starred photo $photoId to $value');
 
     //var picsBox = Hive.box('pics');
-    Photo pic = await database.getPhotoByPhotoId(photoId);
+    Photo pic = await database.getPhotoByPhotoId(photoId.value);
     //pic.isStarred = value;
     String base64encoded;
     //print('teste');
     if (value == true) {
-      var bytes = await entity.thumbDataWithSize(300, 300);
+      var bytes = await entity.value.thumbDataWithSize(300, 300);
       String encoded = base64.encode(bytes);
       base64encoded = encoded;
-      appStore.addToStarredPhotos(photoId);
+      AppStore.to.addToStarredPhotos(photoId.value);
     } else {
-      appStore.removeFromStarredPhotos(photoId);
+      AppStore.to.removeFromStarredPhotos(photoId.value);
     }
 
-    isStarred = value;
+    isStarred.value = value;
     await database.updatePhoto(
       pic.copyWith(
         base64encoded: base64encoded,
@@ -109,9 +122,6 @@ class PicStore {
     );
     //print('isStarred value: $isStarred');
   }
-
-  @observable
-  String photoId;
 
   //@action
   Future<void> setChangePhotoId(String value) async {
@@ -127,11 +137,8 @@ class PicStore {
       await database.updateLabel(getTag);
     });
 
-    photoId = value;
+    photoId.value = value;
   }
-
-  @observable
-  AssetEntity entity;
 
   //@action
   Future<void> changeAssetEntity(AssetEntity picEntity) async {
@@ -139,7 +146,7 @@ class PicStore {
 
     //var picsBox = Hive.box('pics');
     //Pic picOld = picsBox.get(photoId);
-    Photo picOld = await database.getPhotoByPhotoId(photoId);
+    Photo picOld = await database.getPhotoByPhotoId(photoId.value);
 
     if (picOld != null) {
       Photo createPic = Photo(
@@ -162,28 +169,28 @@ class PicStore {
       await database.deletePhoto(picOld);
     }
 
-    entity = picEntity;
+    entity.value = picEntity;
     setChangePhotoId(picEntity.id);
     //print('Changed asset entity');
   }
 
   Future<Uint8List> get assetOriginBytes async {
     if (isPrivate == false && entity != null) {
-      return await entity.originBytes;
+      return await entity.value.originBytes;
     }
     //print('Returning decrypt image in privatePath: $photoPath');
     return await Crypto.decryptImage(
-        photoPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+        photoPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
   Future<Uint8List> get assetThumbBytes async {
     if (isPrivate == false && entity != null) {
-      return await entity.thumbDataWithSize(
+      return await entity.value.thumbDataWithSize(
           kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
     }
     //print('Returning decrypt image in privatePath: $thumbPath');
     return await Crypto.decryptImage(
-        thumbPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+        thumbPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
   String photoPath;
@@ -196,7 +203,7 @@ class PicStore {
 
     //var picsBox = Hive.box('pics');
     //Pic pic = picsBox.get(photoId);
-    Photo pic = await database.getPhotoByPhotoId(photoId);
+    Photo pic = await database.getPhotoByPhotoId(photoId.value);
     //pic.deletedFromCameraRoll = value;
     //pic.save();
     await database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
@@ -207,7 +214,7 @@ class PicStore {
       String picPath, String thumbnailPath, String picNonce) async {
     //var secretBox = Hive.box('secrets');
     Private secret = Private(
-      id: photoId,
+      id: photoId.value,
       path: picPath,
       thumbPath: thumbnailPath,
       originalLatitude: originalLatitude,
@@ -221,19 +228,19 @@ class PicStore {
     thumbPath = thumbnailPath;
     nonce = picNonce;
 
-    if (appStore.shouldDeleteOnPrivate == true) {
+    if (AppStore.to.shouldDeleteOnPrivate == true) {
       //print('**** Deleted original pic!!!');
       if (Platform.isAndroid) {
-        PhotoManager.editor.deleteWithIds([entity.id]);
+        PhotoManager.editor.deleteWithIds([entity.value.id]);
       } else {
         final List<String> result =
-            await PhotoManager.editor.deleteWithIds([entity.id]);
+            await PhotoManager.editor.deleteWithIds([entity.value.id]);
         if (result.isEmpty) {
           return false;
         }
       }
       setDeletedFromCameraRoll(true);
-      entity = null;
+      entity.value = null;
       return;
     }
     setDeletedFromCameraRoll(false);
@@ -245,7 +252,7 @@ class PicStore {
 
     //var secretBox = Hive.box('secrets');
     //Secret secretPic = secretBox.get(photoId);
-    Private secretPic = await database.getPrivateByPhotoId(photoId);
+    Private secretPic = await database.getPrivateByPhotoId(photoId.value);
 
     if (secretPic != null) {
       //secretPic.delete();
@@ -279,7 +286,7 @@ class PicStore {
   }
 
   Future<void> loadExifData() async {
-    File originFile = await entity.originFile;
+    File originFile = await entity.value.originFile;
     var originBytes = originFile.readAsBytesSync();
 
     var mapResult = md.MetaData.extractXMP(originBytes, raw: true);
@@ -292,22 +299,22 @@ class PicStore {
 
     //var picsBox = Hive.box('pics');
     //var secretBox = Hive.box('secrets');
-    Photo pic = await database.getPhotoByPhotoId(photoId);
+    Photo pic = await database.getPhotoByPhotoId(photoId.value);
     if (pic != null) {
       //print('pic $photoId exists, loading data....');
       //Pic pic = picsBox.get(photoId);
 
-      latitude = pic.latitude;
-      longitude = pic.longitude;
-      specificLocation = pic.specificLocation;
-      generalLocation = pic.generalLocation;
-      isPrivate = pic.isPrivate ?? false;
+      latitude.value = pic.latitude;
+      longitude.value = pic.longitude;
+      specificLocation.value = pic.specificLocation;
+      generalLocation.value = pic.generalLocation;
+      isPrivate.value = pic.isPrivate ?? false;
       deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
-      isStarred = pic.isStarred ?? false;
+      isStarred.value = pic.isStarred ?? false;
 
       //print('Is private: $isPrivate');
       if (isPrivate == true) {
-        Private secretPic = await database.getPrivateByPhotoId(photoId);
+        Private secretPic = await database.getPrivateByPhotoId(photoId.value);
 
         if (secretPic != null) {
           photoPath = secretPic.path;
@@ -318,7 +325,7 @@ class PicStore {
       }
 
       for (String tagKey in pic.tags) {
-        TagsStore tagsStore = appStore.tags[tagKey];
+        TagsStore tagsStore = AppStore.to.tags[tagKey];
         if (tagsStore == null) {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
@@ -339,13 +346,13 @@ class PicStore {
       await deleteEncryptedPic(copyToCameraRoll: true);
     }
 
-    isPrivate = value;
+    isPrivate.value = value;
     //print('Pic isPrivate: $value');
     //print('Pic Entity Exists: ${entity == null ? false : true}');
     //print('Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
 
     //var picsBox = Hive.box('pics');
-    Photo getPic = await database.getPhotoByPhotoId(photoId);
+    Photo getPic = await database.getPhotoByPhotoId(photoId.value);
     //getPic.isPrivate = value;
     //picsBox.put(photoId, getPic);
     await database.updatePhoto(getPic.copyWith(isPrivate: value));
@@ -361,13 +368,13 @@ class PicStore {
       return;
     }
 
-    getTag.photoId.add(photoId);
+    getTag.photoId.add(photoId.value);
     //tagsBox.put(kSecretTagKey, getTag);
     await database.updateLabel(getTag);
 
     await addTagToPic(
       tagKey: kSecretTagKey,
-      photoId: photoId,
+      photoId: photoId.value,
     );
     await tagsSuggestionsCalculate();
     //print('Added secret tag to pic!');
@@ -381,27 +388,24 @@ class PicStore {
 
   //@action
   void setSearchText(String value) {
-    searchText = value;
+    searchText.value = value;
     setAiTags(false);
     tagsSuggestionsCalculate();
   }
-
-  @observable
-  List<TagsStore> tagsSuggestions = <TagsStore>[];
 
   Future<List<TagsStore>> tagsSuggestionsCalculate() async {
     //var tagsBox = Hive.box('tags');
     var tagsBox = await database.getAllLabel();
     var tagsBoxKeys = tagsBox.map((e) => e.key);
     tagsSuggestions.clear();
-    searchText = searchText.trim();
+    searchText.value = searchText.trim();
 
     if (searchText == '') {
       var suggestions = <TagsStore>[];
       var suggestionTags = <String>[];
       var tagsKeys = tags.keys.toList();
 
-      for (var recent in appStore.recentTags) {
+      for (var recent in AppStore.to.recentTags) {
         if (tagsKeys.contains(recent)) continue;
         suggestionTags.add(recent);
       }
@@ -427,10 +431,10 @@ class PicStore {
       }
 
       for (String tagId in suggestionTags) {
-        suggestions.add(appStore.tags[tagId]);
+        suggestions.add(AppStore.to.tags[tagId]);
       }
 
-      tagsSuggestions = suggestions;
+      tagsSuggestions.value = suggestions;
 //      }
     } else {
       var listOfLetters = searchText.toLowerCase().split('');
@@ -441,8 +445,8 @@ class PicStore {
           tagName,
           listOfLetters,
           (matched) {
-            if (matched && appStore.tags[tagKey] != null)
-              tagsSuggestions.add(appStore.tags[tagKey]);
+            if (matched && AppStore.to.tags[tagKey] != null)
+              tagsSuggestions.add(AppStore.to.tags[tagKey]);
           },
         );
         /* if (tagName.startsWith(Helpers.stripTag(searchText))) {
@@ -474,7 +478,7 @@ class PicStore {
         return;
       }
 
-      getTag.photoId.add(photoId);
+      getTag.photoId.add(photoId.value);
 
       /// Updating the last used time and also incrementing the counter.
       var count = getTag.counter + 1;
@@ -485,10 +489,10 @@ class PicStore {
       await database.updateLabel(updatedTag);
       await addTagToPic(
         tagKey: tagKey,
-        photoId: photoId,
+        photoId: photoId.value,
       );
 
-      await appStore.addTagToRecent(tagKey: tagKey);
+      await AppStore.to.addTagToRecent(tagKey: tagKey);
       //print('updated pictures in tag');
       //print('Tag photos ids: ${getTag.photoId}');
     }
@@ -500,20 +504,20 @@ class PicStore {
     //print('adding tag to database...');
     TagsStore tagsStore =
         TagsStore(id: tagKey, name: tagName, count: 1, time: DateTime.now());
-    appStore.addTag(tagsStore);
+    AppStore.to.addTag(tagsStore);
 
     //tagsBox.put(tagKey, Tag(tagName, [photoId]));
     await database.createLabel(Label(
         key: tagKey,
         title: tagName,
-        photoId: [photoId],
+        photoId: [photoId.value],
         counter: 1,
         lastUsedAt: DateTime.now()));
     await addTagToPic(
       tagKey: tagKey,
-      photoId: photoId,
+      photoId: photoId.value,
     );
-    await appStore.addTagToRecent(tagKey: tagKey);
+    await AppStore.to.addTagToRecent(tagKey: tagKey);
   }
 
   //@action
@@ -542,7 +546,7 @@ class PicStore {
       await database.updatePhoto(getPic);
       //print('updated picture');
 
-      TagsStore tagsStore = appStore.tags[tagKey];
+      TagsStore tagsStore = AppStore.to.tags[tagKey];
 
       tags[tagKey] = tagsStore;
 
@@ -558,7 +562,7 @@ class PicStore {
     //print('this picture is not in db, adding it...');
     //print('Photo Id: $photoId');
 
-    TagsStore tagsStore = appStore.tags[tagKey];
+    TagsStore tagsStore = AppStore.to.tags[tagKey];
     tags[tagKey] = tagsStore;
 
     Photo pic = Photo(
@@ -581,7 +585,7 @@ class PicStore {
     //print('@@@@@@@@ tagsKey: ${tagKey}');
 
     // Increase today tagged pics everytime it adds a new pic to database.
-    appStore.increaseTodayTaggedPics();
+    AppStore.to.increaseTodayTaggedPics();
 
     await tagsSuggestionsCalculate();
     Analytics.sendEvent(
@@ -604,16 +608,17 @@ class PicStore {
     String path = '';
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(
-          entity == null ? await assetOriginBytes : await entity.originBytes);
+      path = await _writeByteToImageFile(entity == null
+          ? await assetOriginBytes
+          : await entity.value.originBytes);
     } else {
       if (entity == null) {
         var bytes = await assetOriginBytes;
         path = await _writeByteToImageFile(bytes);
       } else {
-        var bytes = await entity.thumbDataWithSize(
-          entity.size.width.toInt(),
-          entity.size.height.toInt(),
+        var bytes = await entity.value.thumbDataWithSize(
+          entity.value.size.width.toInt(),
+          entity.value.size.height.toInt(),
           format: ThumbFormat.jpeg,
         );
         path = await _writeByteToImageFile(bytes);
@@ -633,10 +638,10 @@ class PicStore {
     //print('Before photo manager delete: ${entity.id}');
 
     if (Platform.isAndroid) {
-      PhotoManager.editor.deleteWithIds([entity.id]);
+      PhotoManager.editor.deleteWithIds([entity.value.id]);
     } else {
       final List<String> result =
-          await PhotoManager.editor.deleteWithIds([entity.id]);
+          await PhotoManager.editor.deleteWithIds([entity.value.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -644,7 +649,7 @@ class PicStore {
 
     //var picsBox = Hive.box('pics');
     //Pic pic = picsBox.get(photoId);
-    Photo pic = await database.getPhotoByPhotoId(photoId);
+    Photo pic = await database.getPhotoByPhotoId(photoId.value);
 
     if (pic != null) {
       //print('pic is in db... removing it from db!');
@@ -657,7 +662,7 @@ class PicStore {
         }
       }
       //picsBox.delete(photoId);
-      await database.deletePhotoByPhotoId(photoId);
+      await database.deletePhotoByPhotoId(photoId.value);
       //print('removed ${photoId} from database');
     }
 
@@ -674,7 +679,7 @@ class PicStore {
     Label getTag = await database.getLabelByLabelKey(tagKey);
 
     //print('Tag photos ids: ${getTag.photoId}');
-    int indexOfPicInTag = getTag.photoId.indexOf(photoId);
+    int indexOfPicInTag = getTag.photoId.indexOf(photoId.value);
     //print('Tag index to remove: $indexOfPicInTag');
     if (indexOfPicInTag != null && indexOfPicInTag != -1) {
       getTag.photoId.removeAt(indexOfPicInTag);
@@ -684,7 +689,7 @@ class PicStore {
     }
 
     //Pic getPic = picsBox.get(photoId);
-    Photo getPic = await database.getPhotoByPhotoId(photoId);
+    Photo getPic = await database.getPhotoByPhotoId(photoId.value);
     int indexOfTagInPic = getPic.tags.indexOf(tagKey);
 
     if (indexOfTagInPic != null) {
@@ -713,7 +718,7 @@ class PicStore {
     //var picsBox = Hive.box('pics');
 
     //Pic getPic = picsBox.get(photoId);
-    Photo getPic = await database.getPhotoByPhotoId(photoId);
+    Photo getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
       //print('found pic');
@@ -733,14 +738,14 @@ class PicStore {
     } else {
       //print('Did not found pic!');
       Photo createPic = Photo(
-        id: photoId,
+        id: photoId.value,
         createdAt: createdAt,
         originalLatitude: originalLatitude,
         originalLongitude: originalLongitude,
-        latitude: latitude,
-        longitude: longitude,
-        specificLocation: specificLocation,
-        generalLocation: generalLocation,
+        latitude: latitude.value,
+        longitude: longitude.value,
+        specificLocation: specificLocation.value,
+        generalLocation: generalLocation.value,
         tags: [],
         isStarred: false,
         isPrivate: false,
@@ -751,18 +756,18 @@ class PicStore {
       //print('Saved pic to database!');
     }
 
-    latitude = lat;
-    longitude = long;
-    specificLocation = specific;
-    generalLocation = general;
+    latitude.value = lat;
+    longitude.value = long;
+    specificLocation.value = specific;
+    generalLocation.value = general;
   }
 
   //@action
-  void setAiTags(bool value) => aiTags = value;
+  void setAiTags(bool value) => aiTags.value = value;
 
   //@action
   void switchAiTags(BuildContext context) {
-    aiTags = !aiTags;
+    aiTags.value = !aiTags.value;
 
     if (aiTags == true) {
       getAiSuggestions(context);
@@ -770,14 +775,14 @@ class PicStore {
   }
 
   //@action
-  void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
+  void setAiTagsLoaded(bool value) => aiTagsLoaded.value = value;
 
   Future<List<String>> translateTags(
       List<String> tagsText, BuildContext context) async {
-    if (appStore.appLanguage.split('_')[0] == 'pt' ||
-        appStore.appLanguage.split('_')[0] == 'es' ||
-        appStore.appLanguage.split('_')[0] == 'de' ||
-        appStore.appLanguage.split('_')[0] == 'ja') {
+    if (AppStore.to.appLanguage.split('_')[0] == 'pt' ||
+        AppStore.to.appLanguage.split('_')[0] == 'es' ||
+        AppStore.to.appLanguage.split('_')[0] == 'de' ||
+        AppStore.to.appLanguage.split('_')[0] == 'ja') {
       //print('Offline translating it...');
       return tagsText
           .map((e) => PredefinedLabels.labelTranslation(e, context))
@@ -809,7 +814,7 @@ class PicStore {
       request.contents = tagsText;
       request.mimeType = 'text/plain';
       request.sourceLanguageCode = 'en-US';
-      request.targetLanguageCode = appStore.appLanguage.replaceAll('_', '-');
+      request.targetLanguageCode = AppStore.to.appLanguage.replaceAll('_', '-');
       request.model = 'projects/picpics/locations/global/models/general/nmt';
 
       var response =
@@ -929,7 +934,7 @@ class PicStore {
     /* //print('doSomething() executed in ${stopwatch.elapsed}'); */
 
     final FirebaseVisionImage visionImage =
-        FirebaseVisionImage.fromFile(await entity.file);
+        FirebaseVisionImage.fromFile(await entity.value.file);
     final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
     final List<ImageLabel> labels = await labeler.processImage(visionImage);
 
@@ -942,13 +947,13 @@ class PicStore {
       tags.add(labelText);
     }
 
-    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en'
+    List<String> translatedTags = AppStore.to.appLanguage.split('_')[0] != 'en'
         ? await translateTags(tags, context)
         : tags;
 
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);
-      TagsStore tagStore = appStore.tags[tagKey];
+      TagsStore tagStore = AppStore.to.tags[tagKey];
       if (tagStore == null) {
         tagStore = TagsStore(
           id: tagKey,
@@ -957,7 +962,7 @@ class PicStore {
       }
       aiSuggestions.add(tagStore);
     }
-    aiTagsLoaded = true;
+    aiTagsLoaded.value = true;
     labeler.close();
   }
 }

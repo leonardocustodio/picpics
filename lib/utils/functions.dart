@@ -25,7 +25,7 @@ void showDeleteSecretModalForMultiPic(
     builder: (BuildContext buildContext) {
       return DeleteSecretModal(
         onPressedClose: () {
-          Navigator.of(context).pop();
+          Get.back();
         },
         onPressedDelete: () {
           AppStore.to.setShouldDeleteOnPrivate(false);
@@ -76,27 +76,27 @@ Future<void> showDeleteSecretModal(
       if (picStore.isPrivate == true) {
         return UnhideSecretModal(
           onPressedDelete: () {
-            Navigator.of(context).pop();
+            Get.back();
           },
           onPressedOk: () {
             GalleryStore.to.setPrivatePic(picStore: picStore, private: false);
-            Navigator.of(context).pop();
+            Get.back();
           },
         );
       }
       return DeleteSecretModal(
         onPressedClose: () {
-          Navigator.of(context).pop();
+          Get.back();
         },
         onPressedDelete: () {
           GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
           AppStore.to.setShouldDeleteOnPrivate(false);
-          Navigator.of(context).pop();
+          Get.back();
         },
         onPressedOk: () {
           GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
           AppStore.to.setShouldDeleteOnPrivate(true);
-          Navigator.of(context).pop();
+          Get.back();
         },
       );
     },
