@@ -17,7 +17,7 @@ import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
 
-class PinScreen extends GetView<PinStore> {
+class PinScreen extends GetWidget<PinStore> {
   static const String id = 'pin_screen';
 
   bool isLoading = false;
@@ -99,7 +99,7 @@ class PinScreen extends GetView<PinStore> {
             key: key,
             preferences:
                 AnimationPreferences(autoPlay: AnimationPlayStates.None),
-            child: Observer(builder: (_) {
+            child: Obx(() {
               int filledPositions;
 
               if (controller.isWaitingRecoveryKey.value == true) {
@@ -382,8 +382,8 @@ class PinScreen extends GetView<PinStore> {
                     ],
                   ),
                   Expanded(
-                    child: Observer(builder: (_) {
-                      if (controller.isWaitingRecoveryKey == true) {
+                    child: Obx(() {
+                      if (controller.isWaitingRecoveryKey.value == true) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 3,
@@ -470,7 +470,7 @@ class PinScreen extends GetView<PinStore> {
                               key: controller.shakeKey,
                               preferences: AnimationPreferences(
                                   autoPlay: AnimationPlayStates.None),
-                              child: Observer(builder: (_) {
+                              child: Obx(() {
                                 return PinPlaceholder(
                                   filledPositions:
                                       controller.pinTemp.value.length,
@@ -565,8 +565,8 @@ class PinScreen extends GetView<PinStore> {
                             key: controller.shakeKey,
                             preferences: AnimationPreferences(
                                 autoPlay: AnimationPlayStates.None),
-                            child: Observer(
-                              builder: (_) {
+                            child: Obx(
+                              () {
                                 return PinPlaceholder(
                                   filledPositions:
                                       controller.accessCode.value.length,

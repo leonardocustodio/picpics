@@ -3,14 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
-import 'package:picPics/widgets/general_modal.dart';
-import 'package:email_validator/email_validator.dart';
+
+class EmailStore extends GetxController {
+  final isLoading = false.obs;
+
+}
 
 class EmailScreen extends StatefulWidget {
   static const String id = 'email_screen';
@@ -23,73 +25,12 @@ class EmailScreen extends StatefulWidget {
 }
 
 class _EmailScreenState extends State<EmailScreen> {
-  AppStore appStore;
-  PinStore pinStore;
-
   bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
 //    Analytics.sendCurrentScreen(Screen.login_screen);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    pinStore = Provider.of<PinStore>(context);
-  }
-
-  void showErrorModal(String message) {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return GeneralModal(
-          message: message,
-          onPressedDelete: () {
-            Navigator.pop(context);
-          },
-          onPressedOk: () {
-            Navigator.pop(context);
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> startRegistration() async {
-    bool isValid = EmailValidator.validate(pinStore.email);
-
-    if (!isValid) {
-      showErrorModal('Please type a valid e-mail address to proceed.');
-      return;
-    }
-
-    setState(() {
-      isLoading = true;
-    });
-
-    Map<String, dynamic> result = await pinStore.register();
-
-    setState(() {
-      isLoading = false;
-    });
-
-    if (result['success'] == true) {
-      appStore.setWaitingAccessCode(true);
-      Navigator.pushNamed(context, PinScreen.id);
-    } else {
-      //print('Result: $result');
-      if (result['errorCode'] == 'email-already-in-use') {
-        showErrorModal('This e-mail is already in use by another account.');
-        //print('Error !!!');
-      } else {
-        showErrorModal('An error has occured. Please try again!');
-        //print('Error !!!');
-      }
-    }
   }
 
   @override

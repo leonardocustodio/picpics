@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:cryptography_flutter/cryptography.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/translate/v3.dart';

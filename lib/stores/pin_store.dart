@@ -256,7 +256,7 @@ class PinStore extends GetxController {
       //print('Is valid: $valid');
       showCreatedKeyModal();
     } else {
-      _shakeKey.currentState.forward();
+      shakeKey.currentState.forward();
       setInvalidAccessCode(true);
       // showErrorModal('The access code you typed is invalid!');
     }
@@ -377,13 +377,13 @@ class PinStore extends GetxController {
           return;
         }
 
-        _shakeKey.currentState.forward();
+        shakeKey.currentState.forward();
         setPinTemp('');
         setConfirmPinTemp('');
       }
     } on PlatformException catch (e) {
       //print(e);
-      _shakeKey.currentState.forward();
+      shakeKey.currentState.forward();
       setPinTemp('');
       setConfirmPinTemp('');
     }
