@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:get/get.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -15,14 +16,10 @@ import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pin_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
-
 import 'package:flutter/services.dart';
-import 'package:picPics/managers/database_manager.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/managers/admob_manager.dart';
@@ -183,11 +180,10 @@ void main() async {
   if (Platform.isIOS) {
     initiatedWithProduct = await checkForAppStoreInitiatedProducts();
   }
-  AppStore appStore = AppStore(
-    appVersion: appVersion,
-    deviceLocale: deviceLocale,
-    initiatedWithProduct: initiatedWithProduct,
-  );
+  AppStore appStore = AppStore()
+    ..appVersion = appVersion
+    ..deviceLocale = deviceLocale
+    ..initiatedWithProduct = initiatedWithProduct;
   await appStore.initialize();
 
   Analytics.sendAppOpen();
@@ -238,11 +234,9 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    galleryStore = GalleryStore(
-      appStore: widget.appStore,
-    );
+    galleryStore = GalleryStore()..appStore = widget.appStore;
     if (initialRoute != MigrationScreen.id &&
-        widget.appStore.tutorialCompleted) {
+        widget.appStore.tutorialCompleted.value) {
       initialRoute = TabsScreen.id;
       //TODO: uncomment
       //Hive.deleteFromDisk();
@@ -283,54 +277,32 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     //print('Main Build!!!');
-    return MultiProvider(
-      providers: [
-        Provider<AppStore>.value(
-          value: widget.appStore,
-        ),
-        Provider<GalleryStore>.value(
-          value: galleryStore,
-        ),
-        Provider<TabsStore>.value(
-          value: TabsStore(
-            appStore: widget.appStore,
-            galleryStore: galleryStore,
-          ),
-        ),
-        Provider<PinStore>.value(
-          value: PinStore(),
-        ),
-        ChangeNotifierProvider<DatabaseManager>(
-          create: (_) => DatabaseManager.instance,
-        ),
-      ],
-      child: Center(
-        child: MaterialApp(
-          localizationsDelegates: [
-            S.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          locale: widget.appStore.appLocale,
-          supportedLocales: S.delegate.supportedLocales,
-          debugShowCheckedModeBanner: kDebugMode,
-          initialRoute: initialRoute,
-          navigatorObservers: [Analytics.observer],
-          routes: {
-            AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
-            LoginScreen.id: (context) => LoginScreen(),
-            TabsScreen.id: (context) => TabsScreen(),
-            PhotoScreen.id: (context) => PhotoScreen(),
-            SettingsScreen.id: (context) => SettingsScreen(),
-            AddLocationScreen.id: (context) => AddLocationScreen(),
-            PremiumScreen.id: (context) => PremiumScreen(),
-            PinScreen.id: (context) => PinScreen(),
-            EmailScreen.id: (context) => EmailScreen(),
-            //TagsScreen.id: (context) => TagsScreen(),
-            MigrationScreen.id: (context) => MigrationScreen(),
-          },
-        ),
+    return Center(
+      child: GetMaterialApp(
+        localizationsDelegates: [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        locale: widget.appStore.appLocale.value,
+        supportedLocales: S.delegate.supportedLocales,
+        debugShowCheckedModeBanner: kDebugMode,
+        initialRoute: initialRoute,
+        navigatorObservers: [Analytics.observer],
+        routes: {
+          AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
+          LoginScreen.id: (context) => LoginScreen(),
+          TabsScreen.id: (context) => TabsScreen(),
+          PhotoScreen.id: (context) => PhotoScreen(),
+          SettingsScreen.id: (context) => SettingsScreen(),
+          AddLocationScreen.id: (context) => AddLocationScreen(),
+          PremiumScreen.id: (context) => PremiumScreen(),
+          PinScreen.id: (context) => PinScreen(),
+          EmailScreen.id: (context) => EmailScreen(),
+          //TagsScreen.id: (context) => TagsScreen(),
+          MigrationScreen.id: (context) => MigrationScreen(),
+        },
       ),
     );
   }

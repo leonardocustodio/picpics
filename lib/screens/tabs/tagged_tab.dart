@@ -220,7 +220,7 @@ class TaggedTab extends GetWidget<TabsStore> {
         children: <Widget>[
           Text(
             taggedPicsStore != null
-                ? taggedPicsStore.tag.name
+                ? taggedPicsStore.tag.value.name
                 : S.current.all_search_tags,
             textScaleFactor: 1.0,
             style: TextStyle(

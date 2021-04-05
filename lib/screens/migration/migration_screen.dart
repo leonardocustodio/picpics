@@ -12,13 +12,13 @@ import 'package:moor_db_viewer/moor_db_viewer.dart';
 
 /* 
 class MigrationScreen extends StatefulWidget {
-  static const id = 'migration_screen';
 
   @override
   _MigrationScreenState createState() => _MigrationScreenState();
 }
  */
 class MigrationScreen extends GetView<MigrationStore> {
+  static const id = 'migration_screen';
   MigrationScreen({Key key}) : super(key: key);
 
   void seeDb() {

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
@@ -83,12 +84,13 @@ class _SettingsScreenState extends State<SettingsScreen>
 
   void showRequirePinPicker(BuildContext context) async {
     FixedExtentScrollController extentScrollController =
-        FixedExtentScrollController(initialItem: appStore.requireSecret);
+        FixedExtentScrollController(
+            initialItem: AppStore.to.requireSecret.value);
 
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        int temporaryOption = appStore.requireSecret;
+        int temporaryOption = AppStore.to.requireSecret.value;
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -117,7 +119,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      appStore.setRequireSecret(temporaryOption);
+                      AppStore.to.setRequireSecret(temporaryOption);
                       Get.back();
                     },
                     child: Container(
@@ -165,7 +167,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     var supportedLocales = S.delegate.supportedLocales;
     List<String> supportedLanguages =
         supportedLocales.map((e) => e.languageCode).toList();
-    List<String> appSplit = appStore.appLanguage.split('_');
+    List<String> appSplit = AppStore.to.appLanguage.split('_');
     int languageIndex = supportedLanguages.indexOf(appSplit[0]);
 
     FixedExtentScrollController extentScrollController =
@@ -219,7 +221,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   ),
                                 ),
                               ));
-                      appStore
+                      AppStore.to
                           .changeUserLanguage(
                               supportedLocales[temporaryLanguage].toString())
                           .then((_) {
@@ -354,7 +356,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       builder: (BuildContext builder) {
         DateTime now = DateTime.now();
         DateTime time = DateTime(now.year, now.month, now.day,
-            appStore.hourOfDay, appStore.minutesOfDay);
+            AppStore.to.hourOfDay.value, AppStore.to.minutesOfDay.value);
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -383,7 +385,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      appStore.changeUserTimeOfDay(time.hour, time.minute);
+                      AppStore.to.changeUserTimeOfDay(time.hour, time.minute);
                       Get.back();
                     },
                     child: Container(
@@ -470,15 +472,8 @@ class _SettingsScreenState extends State<SettingsScreen>
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      appStore.checkNotificationPermission();
+      AppStore.to.checkNotificationPermission();
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   @override
@@ -542,12 +537,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       padding: const EdgeInsets.all(0),
                                       pressedOpacity: 1.0,
                                       onPressed: () {
-                                        if (appStore.secretPhotos == true) {
-                                          appStore.switchSecretPhotos();
+                                        if (AppStore.to.secretPhotos == true) {
+                                          AppStore.to.switchSecretPhotos();
                                           galleryStore.removeAllPrivatePics();
                                           return;
                                         }
-                                        appStore.popPinScreen =
+                                        AppStore.to.popPinScreen =
                                             PopPinScreenTo.SettingsScreen;
                                         Get.toNamed(PinScreen.id);
                                       },
@@ -560,22 +555,24 @@ class _SettingsScreenState extends State<SettingsScreen>
                                             textScaleFactor: 1.0,
                                             style: kGraySettingsFieldTextStyle,
                                           ),
-                                          Observer(
-                                            builder: (_) {
+                                          Obx(
+                                            () {
                                               return SecretSwitch(
-                                                value: appStore.secretPhotos,
+                                                value: AppStore
+                                                    .to.secretPhotos.value,
                                                 onChanged: (value) {
                                                   if (value == false) {
-                                                    appStore
+                                                    AppStore.to
                                                         .switchSecretPhotos();
                                                     galleryStore
                                                         .removeAllPrivatePics();
                                                     return;
                                                   }
 
-                                                  appStore.wantsToActivateBiometric =
+                                                  AppStore.to
+                                                          .wantsToActivateBiometric =
                                                       false;
-                                                  appStore.popPinScreen =
+                                                  AppStore.to.popPinScreen =
                                                       PopPinScreenTo
                                                           .SettingsScreen;
                                                   Get.toNamed(PinScreen.id);
@@ -592,24 +589,24 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   color: kLightGrayColor,
                                   thickness: 1.0,
                                 ),
-                                Observer(builder: (_) {
-                                  if (appStore.secretPhotos == true &&
-                                      // TODO: throwing error at appStore.availableBiometrics.isNotEmpty :
+                                Obx(() {
+                                  if (AppStore.to.secretPhotos == true &&
+                                      // TODO: throwing error at AppStore.to.availableBiometrics.isNotEmpty :
                                       // error: The getter 'isNotEmpty' was called on null.
-                                      (appStore.availableBiometrics
+                                      (AppStore.to.availableBiometrics
                                               ?.isNotEmpty ??
                                           false)) {
                                     String enableBiometric;
 
-                                    if (appStore.availableBiometrics
+                                    if (AppStore.to.availableBiometrics
                                         .contains(BiometricType.face)) {
                                       enableBiometric =
                                           S.of(context).enable_faceid;
-                                    } else if (appStore.availableBiometrics
+                                    } else if (AppStore.to.availableBiometrics
                                         .contains(BiometricType.iris)) {
                                       enableBiometric =
                                           S.of(context).enable_irisscanner;
-                                    } else if (appStore.availableBiometrics
+                                    } else if (AppStore.to.availableBiometrics
                                         .contains(BiometricType.fingerprint)) {
                                       enableBiometric = Platform.isIOS
                                           ? S.of(context).enable_touchid
@@ -637,19 +634,21 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                           const EdgeInsets.all(
                                                               0),
                                                       onPressed: () {
-                                                        if (appStore
+                                                        if (AppStore.to
                                                                 .isBiometricActivated !=
                                                             true) {
-                                                          appStore.wantsToActivateBiometric =
+                                                          AppStore.to
+                                                                  .wantsToActivateBiometric =
                                                               true;
-                                                          appStore.popPinScreen =
+                                                          AppStore.to
+                                                                  .popPinScreen =
                                                               PopPinScreenTo
                                                                   .SettingsScreen;
                                                           Get.toNamed(
                                                               PinScreen.id);
                                                           return;
                                                         }
-                                                        appStore
+                                                        AppStore.to
                                                             .setIsBiometricActivated(
                                                                 false);
                                                       },
@@ -665,20 +664,23 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                             style:
                                                                 kGraySettingsFieldTextStyle,
                                                           ),
-                                                          Observer(
-                                                              builder: (_) {
+                                                          Obx(() {
                                                             return CupertinoSwitch(
-                                                              value: appStore
-                                                                  .isBiometricActivated,
+                                                              value: AppStore
+                                                                  .to
+                                                                  .isBiometricActivated
+                                                                  .value,
                                                               activeColor:
                                                                   kSecondaryColor,
                                                               onChanged:
                                                                   (value) async {
                                                                 if (value ==
                                                                     true) {
-                                                                  appStore.wantsToActivateBiometric =
+                                                                  AppStore.to
+                                                                          .wantsToActivateBiometric =
                                                                       true;
-                                                                  appStore.popPinScreen =
+                                                                  AppStore.to
+                                                                          .popPinScreen =
                                                                       PopPinScreenTo
                                                                           .SettingsScreen;
                                                                   Get.toNamed(
@@ -687,7 +689,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                   return;
                                                                 }
 
-                                                                await appStore
+                                                                await AppStore
+                                                                    .to
                                                                     .setIsBiometricActivated(
                                                                         value);
                                                               },
@@ -715,8 +718,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //   color: kLightGrayColor,
                                 //   thickness: 1.0,
                                 // ),
-                                // Observer(builder: (_) {
-                                //   if (appStore.secretPhotos == true) {
+                                // Obx( () {
+                                //   if (AppStore.to.secretPhotos == true) {
                                 //     return FadeIn(
                                 //       delay: 0,
                                 //       child: LayoutBuilder(
@@ -742,9 +745,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //                             textScaleFactor: 1.0,
                                 //                             style: kGraySettingsFieldTextStyle,
                                 //                           ),
-                                //                           Observer(builder: (_) {
+                                //                           Obx( () {
                                 //                             return Text(
-                                //                               kRequireOptions[appStore.requireSecret],
+                                //                               kRequireOptions[AppStore.to.requireSecret],
                                 //                               textScaleFactor: 1.0,
                                 //                               style: kGraySettingsValueTextStyle,
                                 //                             );
@@ -775,7 +778,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //       padding: const EdgeInsets.all(0),
                                 //       pressedOpacity: 1.0,
                                 //       onPressed: () {
-                                //         appStore.switchDailyChallenges(
+                                //         AppStore.to.switchDailyChallenges(
                                 //           notificationTitle: S.of(context).daily_notification_title,
                                 //           notificationDescription: S.of(context).daily_notification_description,
                                 //         );
@@ -788,13 +791,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //             textScaleFactor: 1.0,
                                 //             style: kGraySettingsFieldTextStyle,
                                 //           ),
-                                //           Observer(
-                                //             builder: (_) {
+                                //           Obx(
+                                //              () {
                                 //               return CupertinoSwitch(
-                                //                 value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                //                 value: AppStore.to.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
                                 //                 activeColor: kSecondaryColor,
                                 //                 onChanged: (value) {
-                                //                   appStore.switchDailyChallenges(
+                                //                   AppStore.to.switchDailyChallenges(
                                 //                     notificationTitle: S.of(context).daily_notification_title,
                                 //                     notificationDescription: S.of(context).daily_notification_description,
                                 //                   );
@@ -826,10 +829,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //             textScaleFactor: 1.0,
                                 //             style: kGraySettingsFieldTextStyle,
                                 //           ),
-                                //           Observer(
-                                //             builder: (_) {
+                                //           Obx(
+                                //              () {
                                 //               return Text(
-                                //                 '${'${appStore.hourOfDay}'.padLeft(2, '0')}: ${'${appStore.minutesOfDay}'.padLeft(2, '0')}',
+                                //                 '${'${AppStore.to.hourOfDay}'.padLeft(2, '0')}: ${'${AppStore.to.minutesOfDay}'.padLeft(2, '0')}',
                                 //                 textScaleFactor: 1.0,
                                 //                 style: kGraySettingsValueTextStyle,
                                 //               );
@@ -887,10 +890,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                                             textScaleFactor: 1.0,
                                             style: kGraySettingsFieldTextStyle,
                                           ),
-                                          Observer(
-                                            builder: (_) {
+                                          Obx(
+                                            () {
                                               return Text(
-                                                appStore.currentLanguage,
+                                                AppStore
+                                                    .to.currentLanguage.value,
                                                 textScaleFactor: 1.0,
                                                 style:
                                                     kGraySettingsValueTextStyle,
@@ -973,7 +977,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   bottom: 10.0),
                               child: CupertinoButton(
                                 onPressed: () {
-                                  if (appStore.isPremium) {
+                                  if (AppStore.to.isPremium.value) {
                                     return;
                                   }
                                   Get.toNamed(PremiumScreen.id);
@@ -991,10 +995,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         width: 16.0,
                                       ),
                                       Flexible(
-                                        child: Observer(
-                                          builder: (_) {
+                                        child: Obx(
+                                          () {
                                             return Text(
-                                              appStore.isPremium
+                                              AppStore.to.isPremium.value
                                                   ? S
                                                       .of(context)
                                                       .you_are_premium
@@ -1133,7 +1137,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Center(
                                     child: Text(
-                                      'VERSION: ${appStore.appVersion}',
+                                      'VERSION: ${AppStore.to.appVersion}',
                                       textScaleFactor: 1.0,
                                       style: kGraySettingsFieldTextStyle,
                                     ),

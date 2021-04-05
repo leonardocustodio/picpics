@@ -6,7 +6,6 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
 class TabsStore extends GetxController {
-
   final currentTab = 0.obs;
   final toggleIndexUntagged = 0.obs;
   final toggleIndexTagged = 1.obs;

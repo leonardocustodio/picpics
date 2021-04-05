@@ -7,7 +7,7 @@ class ImageLruCache {
   static LRUMap<_ImageCacheEntity, Uint8List> _map = LRUMap(500);
 
   static Uint8List getData(PicStore picStore, [int size = 64]) {
-    return _map.get(_ImageCacheEntity(picStore.entity, size));
+    return _map.get(_ImageCacheEntity(picStore.entity.value, size));
   }
 
   static void setData(AssetEntity entity, int size, Uint8List list) {

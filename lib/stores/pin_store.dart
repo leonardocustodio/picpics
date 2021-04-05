@@ -40,6 +40,14 @@ class PinStore extends GetxController {
       GlobalKey<AnimatorWidgetState>();
   GlobalKey<AnimatorWidgetState> shakeRecovery =
       GlobalKey<AnimatorWidgetState>();
+  @override
+  void onInit() {
+    super.onInit();
+    if (AppStore.to.isPinRegistered.value == true &&
+        AppStore.to.isBiometricActivated.value == true) {
+      authenticate();
+    }
+  }
 
   //@action
   void setEmail(String value) => email.value = value;

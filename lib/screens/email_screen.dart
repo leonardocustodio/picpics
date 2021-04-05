@@ -56,7 +56,7 @@ class _EmailScreenState extends State<EmailScreen> {
 
     if (result['success'] == true) {
       AppStore.to.setWaitingAccessCode(true);
-      Get.toNamed( PinScreen.id);
+      Get.toNamed(PinScreen.id);
     } else {
       //print('Result: $result');
       if (result['errorCode'] == 'email-already-in-use') {

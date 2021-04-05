@@ -113,7 +113,7 @@ class GalleryStore extends GetxController {
 
   void refreshItems() {
     //print('Calling refresh items!!!');
-    if (isTitleWidget.isEmpty || shouldRefreshTaggedGallery == true) {
+    if (isTitleWidget.isEmpty || shouldRefreshTaggedGallery.value == true) {
       taggedItems.value = [];
       isTitleWidget.value = <bool>[];
 
@@ -137,13 +137,13 @@ class GalleryStore extends GetxController {
           List<TaggedPicsStore> taggedPicsStores = [];
           for (String tagKey in searchingTagsKeys) {
             TaggedPicsStore findTaggedPicStore = taggedPics.firstWhere(
-                (element) => element.tag.id == tagKey,
+                (element) => element.tag.value.id == tagKey,
                 orElse: () => null);
             if (findTaggedPicStore != null) {
               taggedPicsStores.add(findTaggedPicStore);
             } else {
               TaggedPicsStore createTaggedPicStore =
-                  TaggedPicsStore(tag: AppStore.to.tags[tagKey]);
+                  TaggedPicsStore(tagValue: AppStore.to.tags[tagKey]);
               taggedPicsStores.add(createTaggedPicStore);
             }
           }
@@ -184,7 +184,7 @@ class GalleryStore extends GetxController {
   //@action
   void loadTaggedPicsStore() {
     for (TagsStore tagsStore in appStore.tags.values.toList()) {
-      TaggedPicsStore taggedPicsStore = TaggedPicsStore(tag: tagsStore);
+      TaggedPicsStore taggedPicsStore = TaggedPicsStore(tagValue: tagsStore);
       taggedPics.add(taggedPicsStore);
     }
 
@@ -201,7 +201,7 @@ class GalleryStore extends GetxController {
   void runTaggedKeysComputation(_) {
     var tags = <String, String>{};
     taggedPics.forEach((element) {
-      tags[element.tag.id] = '';
+      tags[element.tag.value.id] = '';
     });
     taggedKeys.value = tags.keys.toList();
   }
@@ -484,7 +484,7 @@ class GalleryStore extends GetxController {
           .firstWhere((element) => element.tag == tag, orElse: () => null);
 
       if (taggedPicsStore == null) {
-        taggedPicsStore = TaggedPicsStore(tag: tag);
+        taggedPicsStore = TaggedPicsStore(tagValue: tag);
         taggedPics.add(taggedPicsStore);
       }
 
@@ -562,7 +562,7 @@ class GalleryStore extends GetxController {
     List<TaggedPicsStore> toDelete = [];
 
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
-      if (picStore.tags[taggedPicsStore.tag.id] != null &&
+      if (picStore.tags[taggedPicsStore.tag.value.id] != null &&
           forceDelete == false) {
         // //print('this tag should not be removed');
         continue;

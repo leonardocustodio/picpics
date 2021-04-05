@@ -1,13 +1,13 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -18,43 +18,43 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:extended_image/extended_image.dart';
 
-class PhotoScreen extends StatefulWidget {
-  static const id = 'photo_screen';
-
+class PhotoScreenController extends GetxController {
+  final overlay = true.obs;
+  final showSlideshow = false.obs;
   @override
-  _PhotoScreenState createState() => _PhotoScreenState();
-}
+  void onReady() {
+    super.onReady();
 
-class _PhotoScreenState extends State<PhotoScreen> {
-  PageController galleryPageController;
-  GalleryStore galleryStore;
-  TabsStore tabsStore;
-
-  bool overlay = true;
-  bool showSlideshow = false;
-
-  @override
-  void initState() {
-    super.initState();
     Analytics.sendCurrentScreen(Screen.photo_screen);
   }
+}
+
+class PhotoScreen extends GetWidget<PhotoScreenController> {
+  static const id = 'photo_screen';
+  PageController galleryPageController =
+      PageController(initialPage: GalleryStore.to.selectedThumbnail.value);
+
+  /*  @override
+  void initState() {
+    super.initState();
+  } */
 
   void changeOverlay() {
-    if (!overlay) {
-      setState(() {
-        overlay = true;
-      });
+    if (!controller.overlay.value) {
+      controller.overlay.value = true;
+      /* setState(() {
+      }); */
       SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     } else {
-      if (!showSlideshow) {
-        setState(() {
-          showSlideshow = true;
-        });
+      if (!controller.showSlideshow.value) {
+        controller.showSlideshow.value = true;
+        /* setState(() {
+        }); */
       } else {
-        showSlideshow = false;
-        setState(() {
-          overlay = false;
-        });
+        controller.showSlideshow.value = false;
+        controller.overlay.value = false;
+        /* setState(() {
+        }); */
         SystemChrome.setEnabledSystemUIOverlays([]);
       }
     }
@@ -66,7 +66,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    PicStore picStore = galleryStore.thumbnailsPics[index];
+    PicStore picStore = GalleryStore.to.thumbnailsPics[index];
     final AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: true);
 
@@ -126,13 +126,13 @@ class _PhotoScreenState extends State<PhotoScreen> {
 
   Widget _buildThumbnails(BuildContext context, int index) {
     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
-        galleryStore.thumbnailsPics[index],
+        GalleryStore.to.thumbnailsPics[index],
         isOriginal: false);
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
       onPressed: () {
-        galleryStore.setSelectedThumbnail(index);
+        GalleryStore.to.setSelectedThumbnail(index);
         galleryPageController.jumpToPage(index);
       },
       child: Container(
@@ -166,22 +166,13 @@ class _PhotoScreenState extends State<PhotoScreen> {
         ),
 
         // ImageItem(
-        //   picStore: galleryStore.thumbnailsPics[index],
+        //   picStore: GalleryStore.to.thumbnailsPics[index],
         //   size: 98,
         //   fit: BoxFit.cover,
         //   backgroundColor: Colors.black,
         // ),
       ),
     );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    galleryStore = Provider.of<GalleryStore>(context);
-    tabsStore = Provider.of<TabsStore>(context);
-    galleryPageController =
-        PageController(initialPage: galleryStore.selectedThumbnail);
   }
 
   @override
@@ -197,7 +188,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: _buildItem,
-                itemCount: galleryStore.thumbnailsPics.length,
+                itemCount: GalleryStore.to.thumbnailsPics.length,
                 loadingBuilder: (context, event) => Center(
                   child: Container(
                     width: 20.0,
@@ -215,12 +206,12 @@ class _PhotoScreenState extends State<PhotoScreen> {
                 ),
                 pageController: galleryPageController,
                 onPageChanged: (index) {
-                  galleryStore.setSelectedThumbnail(index);
+                  GalleryStore.to.setSelectedThumbnail(index);
                 },
                 scrollDirection: Axis.horizontal,
               ),
             ),
-            if (overlay)
+            if (controller.overlay.value)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -266,7 +257,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-                                  galleryStore.currentThumbnailPic.sharePic();
+                                  GalleryStore.to.currentThumbnailPic.value
+                                      .sharePic();
                                 },
                                 child: Image.asset(
                                     'lib/images/sharebuttonwithdropshadow.png'),
@@ -278,7 +270,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                     ),
                   ),
                   Spacer(),
-                  if (!showSlideshow)
+                  if (!controller.showSlideshow.value)
                     ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
@@ -313,7 +305,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
-                                  Observer(builder: (_) {
+                                  Obx(() {
                                     return Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
@@ -323,8 +315,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                  text: galleryStore
+                                                  text: GalleryStore
+                                                          .to
                                                           .currentThumbnailPic
+                                                          .value
                                                           .specificLocation ??
                                                       S
                                                           .of(context)
@@ -340,7 +334,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                                   )),
                                               TextSpan(
                                                 text:
-                                                    '  ${galleryStore.currentThumbnailPic.generalLocation ?? S.of(context).country}',
+                                                    '  ${GalleryStore.to.currentThumbnailPic.value.generalLocation ?? S.of(context).country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,
@@ -355,8 +349,11 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                           ),
                                         ),
                                         Text(
-                                          dateFormat(galleryStore
-                                              .currentThumbnailPic.createdAt),
+                                          dateFormat(GalleryStore
+                                              .to
+                                              .currentThumbnailPic
+                                              .value
+                                              .createdAt),
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
@@ -370,21 +367,26 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                       ],
                                     );
                                   }),
-                                  Observer(builder: (_) {
+                                  Obx(() {
                                     return Padding(
                                       padding: const EdgeInsets.only(top: 16.0),
                                       child: TagsList(
-                                        tags: galleryStore
-                                            .currentThumbnailPic.tags.values
+                                        tags: GalleryStore
+                                            .to
+                                            .currentThumbnailPic
+                                            .value
+                                            .tags
+                                            .values
                                             .toList(),
                                         tagStyle: TagStyle.MultiColored,
                                         addTagButton: () {
-                                          galleryStore.setCurrentPic(
-                                              galleryStore.currentThumbnailPic);
+                                          GalleryStore.to.setCurrentPic(
+                                              GalleryStore.to
+                                                  .currentThumbnailPic.value);
 
-                                          if (!tabsStore.modalCard) {
-                                            tabsStore.setModalCard(true);
-                                          }
+                                          /* if (!controller.modalCard.value) {
+                                            controller.setModalCard(true);
+                                          } */
                                           Navigator.pop(
                                               context, 'show_keyboard');
                                         },
@@ -392,15 +394,14 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                           //print('ignore click');
                                         },
                                         onDoubleTap: () {
-//                                        galleryStore.currentThumbnailPic
-//                                        galleryStore.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+//                                        GalleryStore.to.currentThumbnailPic
+//                                        GalleryStore.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                                         },
                                         onPanEnd: () {
                                           //print('teste');
                                         },
                                         showEditTagModal: () =>
-                                            showEditTagModal(
-                                                context, galleryStore, false),
+                                            showEditTagModal(context, false),
                                       ),
                                     );
                                   }),
@@ -411,7 +412,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         ),
                       ),
                     ),
-                  if (showSlideshow)
+                  if (controller.showSlideshow.value)
                     ClipRect(
                       child: Container(
                         decoration: BoxDecoration(
@@ -444,7 +445,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: _buildThumbnails,
                                     itemCount:
-                                        galleryStore.thumbnailsPics.length,
+                                        GalleryStore.to.thumbnailsPics.length,
                                     padding: const EdgeInsets.only(left: 8.0),
                                   ),
                                 ),

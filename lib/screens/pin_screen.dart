@@ -31,19 +31,6 @@ class PinScreen extends GetWidget<PinStore> {
 //    Analytics.sendCurrentScreen(Screen.login_screen);
   } */
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    AppStore.to = Provider.of<AppStore>(context);
-    GalleryStore.to = Provider.of<GalleryStore>(context);
-    pinStore = Provider.of<PinStore>(context);
-
-    if (AppStore.to.isPinRegistered == true &&
-        AppStore.to.isBiometricActivated == true) {
-      controller.authenticate();
-    }
-  }
-
   Widget _buildPinPad(BuildContext context, int index) {
     //print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
