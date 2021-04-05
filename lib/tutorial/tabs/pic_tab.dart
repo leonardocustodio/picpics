@@ -86,7 +86,7 @@ class _TutsPicTabState extends State<TutsPicTab> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     onPressed: () {
-                      Navigator.pushNamed(context, SettingsScreen.id);
+                      Get.toNamed( SettingsScreen.id);
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),

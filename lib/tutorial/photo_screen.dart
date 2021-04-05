@@ -258,7 +258,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Get.back();
                                 },
                                 child: Image.asset(
                                     'lib/images/backarrowwithdropshadow.png'),

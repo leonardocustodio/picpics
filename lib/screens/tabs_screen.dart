@@ -300,7 +300,7 @@ class TabsScreen extends GetView<TabsStore> {
     // Added for the case of buying premium from appstore
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (appStore.tryBuyId != null) {
-        Navigator.pushNamed(context, PremiumScreen.id);
+        Get.toNamed( PremiumScreen.id);
       }
     });
   }
@@ -400,8 +400,7 @@ class TabsScreen extends GetView<TabsStore> {
                                     CupertinoButton(
                                       onPressed: () {
                                         // if (!appStore.isPremium) {
-                                        //   Navigator.pushNamed(
-                                        //       context, PremiumScreen.id);
+                                        //   Get.toNamed(  PremiumScreen.id);
                                         //   return;
                                         // }
 
@@ -457,16 +456,14 @@ class TabsScreen extends GetView<TabsStore> {
                                                 context, galleryStore),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           galleryStore.removeFromMultiPicTags(
@@ -475,8 +472,7 @@ class TabsScreen extends GetView<TabsStore> {
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
@@ -486,8 +482,7 @@ class TabsScreen extends GetView<TabsStore> {
                                         },
                                         onSubmitted: (text) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           if (text != '') {
@@ -522,8 +517,7 @@ class TabsScreen extends GetView<TabsStore> {
                                                 context, galleryStore),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
 
@@ -533,16 +527,14 @@ class TabsScreen extends GetView<TabsStore> {
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
@@ -762,8 +754,7 @@ class TabsScreen extends GetView<TabsStore> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8.0),
                                     onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, SettingsScreen.id);
+                                      Get.toNamed(  SettingsScreen.id);
                                     },
                                     child:
                                         Image.asset('lib/images/settings.png'),

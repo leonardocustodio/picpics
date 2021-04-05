@@ -119,7 +119,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       appStore.setIsPremium(true);
       Navigator.pushNamedAndRemoveUntil(
           context, TabsScreen.id, (route) => false);
-      // Navigator.pop(context);
+      // Get.back();
       //return;
     } else {
       setState(() {
@@ -145,7 +145,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               price: package.product.price,
             );
             appStore.setIsPremium(true);
-            // Navigator.pop(context);
+            // Get.back();
             Navigator.pushNamedAndRemoveUntil(
                 context, TabsScreen.id, (route) => false);
             return;
@@ -181,7 +181,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           // Unlock that great "pro" content
           //print('know you are fucking pro!');
           appStore.setIsPremium(true);
-          // Navigator.pop(context);
+          // Get.back();
           Navigator.pushNamedAndRemoveUntil(
               context, TabsScreen.id, (route) => false);
           return;
@@ -784,7 +784,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Navigator.pop(context);
+                          Get.back();
                         },
                         child: Image.asset('lib/images/backarrowgray.png'),
                       ),

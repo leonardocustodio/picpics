@@ -15,6 +15,7 @@ import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:picPics/widgets/general_modal.dart';
 
 class PinStore extends GetxController {
+  static PinStore get to => Get.find();
   //@observable
   final email = ''.obs;
   String pin = '';

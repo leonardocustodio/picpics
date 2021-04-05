@@ -99,7 +99,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 children: <Widget>[
                   CupertinoButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
@@ -118,7 +118,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   CupertinoButton(
                     onPressed: () {
                       appStore.setRequireSecret(temporaryOption);
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
@@ -185,7 +185,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 children: <Widget>[
                   CupertinoButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
@@ -225,7 +225,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                           .then((_) {
                         setState(
                             () => S.load(supportedLocales[temporaryLanguage]));
-                        Navigator.pop(context);
+                        Get.back();
                       });
                     },
                     child: Container(
@@ -287,7 +287,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                children: <Widget>[
 //                  CupertinoButton(
 //                    onPressed: () {
-//                      Navigator.pop(context);
+//                      Get.back();
 //                    },
 //                    child: Container(
 //                      width: 80.0,
@@ -306,7 +306,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                  CupertinoButton(
 //                    onPressed: () {
 //                      DatabaseManager.instance.changeUserGoal(temporaryGoal);
-//                      Navigator.pop(context);
+//                      Get.back();
 //                    },
 //                    child: Container(
 //                      width: 80.0,
@@ -365,7 +365,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                 children: <Widget>[
                   CupertinoButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
@@ -384,7 +384,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   CupertinoButton(
                     onPressed: () {
                       appStore.changeUserTimeOfDay(time.hour, time.minute);
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
@@ -498,7 +498,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 5.0, vertical: 10.0),
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => Get.back(),
                     child: Image.asset('lib/images/backarrowgray.png'),
                   ),
                   Text(
@@ -549,8 +549,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         }
                                         appStore.popPinScreen =
                                             PopPinScreenTo.SettingsScreen;
-                                        Navigator.pushNamed(
-                                            context, PinScreen.id);
+                                        Get.toNamed(PinScreen.id);
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -579,8 +578,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                   appStore.popPinScreen =
                                                       PopPinScreenTo
                                                           .SettingsScreen;
-                                                  Navigator.pushNamed(
-                                                      context, PinScreen.id);
+                                                  Get.toNamed(PinScreen.id);
                                                 },
                                               );
                                             },
@@ -647,8 +645,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                           appStore.popPinScreen =
                                                               PopPinScreenTo
                                                                   .SettingsScreen;
-                                                          Navigator.pushNamed(
-                                                              context,
+                                                          Get.toNamed(
                                                               PinScreen.id);
                                                           return;
                                                         }
@@ -684,8 +681,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                   appStore.popPinScreen =
                                                                       PopPinScreenTo
                                                                           .SettingsScreen;
-                                                                  Navigator.pushNamed(
-                                                                      context,
+                                                                  Get.toNamed(
                                                                       PinScreen
                                                                           .id);
                                                                   return;
@@ -980,8 +976,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   if (appStore.isPremium) {
                                     return;
                                   }
-                                  Navigator.pushNamed(
-                                      context, PremiumScreen.id);
+                                  Get.toNamed(PremiumScreen.id);
                                 },
                                 padding: const EdgeInsets.all(0),
                                 child: OutlineGradientButton(

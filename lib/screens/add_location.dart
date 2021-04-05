@@ -97,7 +97,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       }
     }
 
-    Navigator.pop(context);
+    Get.back();
   }
 
   void getUserPosition() async {
@@ -134,7 +134,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     LatLng latLng;
 
     if (picStore.latitude != null && picStore.longitude != null) {
-      latLng = LatLng(picStore.latitude, picStore.longitude);
+      latLng = LatLng(picStore.latitude.value, picStore.longitude.value);
     } else if (picStore.originalLatitude != null &&
         picStore.originalLongitude != null) {
       latLng = LatLng(picStore.originalLatitude, picStore.originalLongitude);
@@ -220,7 +220,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Get.back();
                           },
                           child: Container(
                             width: height * 0.17,

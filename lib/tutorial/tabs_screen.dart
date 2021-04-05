@@ -104,7 +104,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
   Future<void> showDeleteSecretModal(PicStore picStore) async {
     if (appStore.secretPhotos != true) {
       appStore.popPinScreen = PopPinScreenTo.TabsScreen;
-      Navigator.pushNamed(context, PinScreen.id);
+      Get.toNamed( PinScreen.id);
       return;
     }
 
@@ -112,7 +112,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
       int freePrivatePics = await appStore.freePrivatePics;
       if (appStore.totalPrivatePics >= freePrivatePics &&
           picStore.isPrivate == false) {
-        Navigator.pushNamed(context, PremiumScreen.id);
+        Get.toNamed( PremiumScreen.id);
         return;
       }
     }
@@ -290,7 +290,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
     // Added for the case of buying premium from appstore
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (appStore.tryBuyId != null) {
-        Navigator.pushNamed(context, PremiumScreen.id);
+        Get.toNamed( PremiumScreen.id);
       }
     });
   }
@@ -386,8 +386,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                     CupertinoButton(
                                       onPressed: () {
                                         // if (!appStore.isPremium) {
-                                        //   Navigator.pushNamed(
-                                        //       context, PremiumScreen.id);
+                                        //   Get.toNamed(  PremiumScreen.id);
                                         //   return;
                                         // }
 
@@ -443,16 +442,14 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                                 context, galleryStore, true),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           galleryStore.removeFromMultiPicTags(
@@ -461,8 +458,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //  Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
@@ -472,8 +468,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         },
                                         onSubmitted: (text) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           if (text != '') {
@@ -508,8 +503,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                                 context, galleryStore, true),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //  Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
 
@@ -519,16 +513,14 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
@@ -746,8 +738,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8.0),
                                     onPressed: () {
-                                      Navigator.pushNamed(
-                                          context, SettingsScreen.id);
+                                      Get.toNamed(  SettingsScreen.id);
                                     },
                                     child:
                                         Image.asset('lib/images/settings.png'),

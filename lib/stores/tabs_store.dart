@@ -1,14 +1,11 @@
 import 'package:expandable/expandable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
 class TabsStore extends GetxController {
-/*   final AppStore appStore;
-  final GalleryStore GalleryStore.to;
-
-  TabsStore({this.appStore, this.GalleryStore.to}) {} */
 
   final currentTab = 0.obs;
   final toggleIndexUntagged = 0.obs;
@@ -24,6 +21,8 @@ class TabsStore extends GetxController {
   final isLoading = false.obs;
   final modalCard = false.obs;
 
+  ScrollController scrollControllerThirdTab;
+
   final expandableController =
       Rx<ExpandableController>(ExpandableController(initialExpanded: false));
   final expandablePaddingController =
@@ -36,7 +35,31 @@ class TabsStore extends GetxController {
         expandablePaddingController.value.expanded = visible;
       }
     });
+
+    scrollControllerThirdTab =
+        ScrollController(initialScrollOffset: offsetThirdTab);
+    scrollControllerThirdTab.addListener(() {
+      refreshGridPositionThirdTab();
+    });
+    refreshGridPositionThirdTab();
+
     super.onInit();
+  }
+
+  void refreshGridPositionThirdTab() {
+    var offset = scrollControllerThirdTab.hasClients
+        ? scrollControllerThirdTab.offset
+        : scrollControllerThirdTab.initialScrollOffset;
+
+    if (offset >= 40) {
+      setHideTitleThirdTab(true);
+    } else if (offset <= 0) {
+      setHideTitleThirdTab(false);
+    }
+
+    if (scrollControllerThirdTab.hasClients) {
+      offsetThirdTab = scrollControllerThirdTab.offset;
+    }
   }
 
   //@action

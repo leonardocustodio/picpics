@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:get/get.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/constants.dart';
@@ -283,7 +284,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           iconSize: 19.2,
                           onTap: () {
                             galleryStore.setInitialSelectedThumbnail(picStore);
-                            Navigator.pushNamed(context, PhotoScreen.id);
+                            Get.toNamed(PhotoScreen.id);
                           },
                         ),
                       ],
@@ -306,7 +307,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        Navigator.pushNamed(context, AddLocationScreen.id);
+                        Get.toNamed(AddLocationScreen.id);
                       },
                       child: Observer(builder: (_) {
                         return RichText(
@@ -366,11 +367,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     shouldChangeToSwipeMode: true,
                     aiButtonTitle: 'All Tags',
                     onAiButtonTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  AllTagsScreen(picStore: picStore)));
+                      Get.to(AllTagsScreen(picStore: picStore));
                       //print('ai button tapped');
                       // picStore.switchAiTags(context);
                     },

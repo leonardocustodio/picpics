@@ -101,7 +101,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         GestureDetector(
-                          onTap: () => Navigator.pop(context),
+                          onTap: () => Get.back(),
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5, right: 10),
                             child: Image.asset('lib/images/backarrowgray.png'),

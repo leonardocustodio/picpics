@@ -12,7 +12,7 @@ showWatchAdModal(BuildContext context) {
     builder: (BuildContext buildContext) {
       return WatchAdModal(
         onPressedWatchAdd: () {
-          Navigator.pop(context);
+          Get.back();
           Ads.showRewarded();
           Analytics.sendAdImpression();
         },

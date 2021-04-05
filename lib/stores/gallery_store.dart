@@ -92,7 +92,93 @@ class GalleryStore extends GetxController {
       }
     });
 
+    ever(isLoaded, (_) {
+      if (isLoaded.value == true) {
+        refreshPicThumbnails();
+      }
+    });
+
+    ever(shouldRefreshTaggedGallery, (_) {
+      if (shouldRefreshTaggedGallery.value) {
+        refreshItems();
+        //print('##### Rebuild everything!');
+      }
+    });
+
     super.onInit();
+  }
+
+  final taggedItems = [].obs;
+  final isTitleWidget = <bool>[].obs;
+
+  void refreshItems() {
+    //print('Calling refresh items!!!');
+    if (isTitleWidget.isEmpty || shouldRefreshTaggedGallery == true) {
+      taggedItems.value = [];
+      isTitleWidget.value = <bool>[];
+
+      //print('Refreshing tagged library!!!!!');
+      clearPicThumbnails();
+
+      if (searchingTagsKeys.isNotEmpty) {
+        if (filteredPics.isEmpty) {
+          //print('Filtered Pics is empty');
+          isTitleWidget.addAll([true, true]);
+          taggedItems.addAll([null, null]);
+        } else {
+          isTitleWidget.add(true);
+          taggedItems.add(null);
+          isTitleWidget.addAll(List.filled(filteredPics.length, false));
+          taggedItems.addAll(filteredPics);
+          addPicsToThumbnails(filteredPics);
+        }
+
+        if (searchingTagsKeys.length > 1) {
+          List<TaggedPicsStore> taggedPicsStores = [];
+          for (String tagKey in searchingTagsKeys) {
+            TaggedPicsStore findTaggedPicStore = taggedPics.firstWhere(
+                (element) => element.tag.id == tagKey,
+                orElse: () => null);
+            if (findTaggedPicStore != null) {
+              taggedPicsStores.add(findTaggedPicStore);
+            } else {
+              TaggedPicsStore createTaggedPicStore =
+                  TaggedPicsStore(tag: AppStore.to.tags[tagKey]);
+              taggedPicsStores.add(createTaggedPicStore);
+            }
+          }
+
+          for (TaggedPicsStore taggedPicsStore in taggedPicsStores) {
+            if (taggedPicsStore.pics.isEmpty) {
+              //print('&&&& IS EMPTY &&&&');
+              isTitleWidget.add(true);
+              taggedItems.add(taggedPicsStore);
+              isTitleWidget.add(true);
+              taggedItems.add(null);
+              continue;
+            }
+
+            isTitleWidget.add(true);
+            taggedItems.add(taggedPicsStore);
+            isTitleWidget
+                .addAll(List.filled(taggedPicsStore.pics.length, false));
+            taggedItems.addAll(taggedPicsStore.pics);
+            addPicsToThumbnails(taggedPicsStore.pics);
+          }
+        }
+      } else {
+        for (TaggedPicsStore taggedPicsStore in taggedPics) {
+          isTitleWidget.add(true);
+          taggedItems.add(taggedPicsStore);
+          isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
+          taggedItems.addAll(taggedPicsStore.pics);
+          addPicsToThumbnails(taggedPicsStore.pics);
+        }
+      }
+
+      //print('@@@@@ Tagged Items Length: ${taggedItems.length}');
+      setShouldRefreshTaggedGallery(false);
+    }
   }
 
   //@action
@@ -847,7 +933,6 @@ class GalleryStore extends GetxController {
 
     for (Private secretPic in secretBox) {
       PicStore pic = PicStore(
-        
         entityValue: null,
         isStarredValue: null,
         photoIdValue: secretPic.id,
@@ -883,7 +968,8 @@ class GalleryStore extends GetxController {
 
   //@action
   Future<void> trashMultiplePics(Set<PicStore> selectedPics) async {
-    List<String> selectedPicsIds = selectedPics.map((e) => e.photoId.value).toList();
+    List<String> selectedPicsIds =
+        selectedPics.map((e) => e.photoId.value).toList();
 
     bool deleted = false;
 

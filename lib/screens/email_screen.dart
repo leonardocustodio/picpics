@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -6,12 +7,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/screens/pin_screen.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 
 class EmailStore extends GetxController {
   final isLoading = false.obs;
-
 }
 
 class EmailScreen extends StatefulWidget {
@@ -31,6 +33,41 @@ class _EmailScreenState extends State<EmailScreen> {
   void initState() {
     super.initState();
 //    Analytics.sendCurrentScreen(Screen.login_screen);
+  }
+
+  Future<void> startRegistration() async {
+    bool isValid = EmailValidator.validate(widget.pinStore.email.value);
+
+    if (!isValid) {
+      PinStore.to
+          .showErrorModal('Please type a valid e-mail address to proceed.');
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    Map<String, dynamic> result = await widget.pinStore.register();
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (result['success'] == true) {
+      AppStore.to.setWaitingAccessCode(true);
+      Get.toNamed( PinScreen.id);
+    } else {
+      //print('Result: $result');
+      if (result['errorCode'] == 'email-already-in-use') {
+        PinStore.to.showErrorModal(
+            'This e-mail is already in use by another account.');
+        //print('Error !!!');
+      } else {
+        PinStore.to.showErrorModal('An error has occured. Please try again!');
+        //print('Error !!!');
+      }
+    }
   }
 
   @override
@@ -59,8 +96,8 @@ class _EmailScreenState extends State<EmailScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5.0, vertical: 10.0),
                         onPressed: () {
-                          appStore.setWaitingAccessCode(false);
-                          Navigator.pop(context);
+                          AppStore.to.setWaitingAccessCode(false);
+                          Get.back();
                         },
                         child: Image.asset(
                             'lib/images/backarrowwithdropshadow.png'),
@@ -113,7 +150,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                   margin: const EdgeInsets.only(top: 6.0),
                                   child: TextField(
                                     maxLines: 1,
-                                    onChanged: pinStore.setEmail,
+                                    onChanged: widget.pinStore.setEmail,
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
                                           left: 10.0, right: 5.0),

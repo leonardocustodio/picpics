@@ -181,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             if (loginStore.slideIndex ==
                                 loginStore.totalSlides - 1) {
-                              Navigator.pushNamed(context, PremiumScreen.id);
+                              Get.toNamed(PremiumScreen.id);
                               return;
                             }
                             //print('next');

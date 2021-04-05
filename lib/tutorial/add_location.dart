@@ -97,7 +97,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
       }
     }
 
-    Navigator.pop(context);
+    Get.back();
   }
 
   void getUserPosition() async {
@@ -220,7 +220,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                         CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Get.back();
                           },
                           child: Container(
                             width: height * 0.17,

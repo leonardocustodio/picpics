@@ -6,20 +6,18 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
 
 /* class PicTab extends StatefulWidget {
-  static const id = 'pic_tab';
 
   final Function showDeleteSecretModal;
-  final Function showEditTagModal;
 
   PicTab({
     @required this.showEditTagModal,
-    @required this.showDeleteSecretModal,
   });
 
   @override
@@ -27,7 +25,9 @@ import 'package:picPics/widgets/photo_card.dart';
 } */
 
 class PicTab extends GetView<GalleryStore> {
-  PicTab({Key key}) : super(key: key);
+  static const id = 'pic_tab';
+  final Function showDeleteSecretModal;
+  PicTab({@required this.showDeleteSecretModal, Key key}) : super(key: key);
 
   CarouselController carouselController = CarouselController();
   ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
@@ -41,7 +41,7 @@ class PicTab extends GetView<GalleryStore> {
         picsInThumbnails: PicSource.SWIPE,
         picsInThumbnailIndex: index,
         showEditTagModal: () => showEditTagModal(Get.context),
-        showDeleteSecretModal: widget.showDeleteSecretModal,
+        showDeleteSecretModal: showDeleteSecretModal,
       ),
     );
   }
@@ -79,7 +79,7 @@ class PicTab extends GetView<GalleryStore> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     onPressed: () {
-                      Navigator.pushNamed(context, SettingsScreen.id);
+                      Get.toNamed(SettingsScreen.id);
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),

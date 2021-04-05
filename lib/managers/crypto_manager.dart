@@ -252,13 +252,13 @@ class Crypto {
       PicStore picStore, SecretKey secretKey) async {
     //print('Going to encrypt image with encryption key');
 
-    Uint8List assetData = await picStore.entity.originBytes;
-    Uint8List thumbData = await picStore.entity
+    Uint8List assetData = await picStore.entity.value.originBytes;
+    Uint8List thumbData = await picStore.entity.value
         .thumbDataWithSize(150, 150, format: ThumbFormat.jpeg, quality: 90);
 
     String title = Platform.isAndroid
-        ? picStore.entity.title
-        : await picStore.entity.titleAsync;
+        ? picStore.entity.value.title
+        : await picStore.entity.value.titleAsync;
 
     //print('Asset Name: ${picStore.entity.id}');
     //print('Origin file: $title');

@@ -132,7 +132,7 @@ class WatchAdModal extends StatelessWidget {
             right: 0,
             child: CupertinoButton(
               onPressed: () {
-                Navigator.pop(context);
+                Get.back();
               },
               child: Image.asset('lib/images/closegrayico.png'),
             ),

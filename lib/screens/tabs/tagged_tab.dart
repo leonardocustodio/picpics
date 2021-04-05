@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
@@ -15,12 +16,12 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
+import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:picPics/widgets/top_bar.dart';
-import 'package:picPics/widgets/tags_list.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class TaggedTab extends StatefulWidget {
+class TaggedTab extends GetWidget<TabsStore> {
   static const id = 'tagged_tab';
 
   final Function showEditTagModal;
@@ -29,120 +30,18 @@ class TaggedTab extends StatefulWidget {
     @required this.showEditTagModal,
   });
 
-  @override
-  _TaggedTabState createState() => _TaggedTabState();
-}
-
-class _TaggedTabState extends State<TaggedTab> {
-  AppStore appStore;
-  GalleryStore galleryStore;
-  TabsStore tabsStore;
-  ReactionDisposer disposer;
-
-  ScrollController scrollControllerThirdTab;
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
-  var taggedItems = [];
-  var isTitleWidget = <bool>[];
-
   TextEditingController tagsEditingController = TextEditingController();
-
-  void refreshGridPositionThirdTab() {
-    var offset = scrollControllerThirdTab.hasClients
-        ? scrollControllerThirdTab.offset
-        : scrollControllerThirdTab.initialScrollOffset;
-
-    if (offset >= 40) {
-      tabsStore.setHideTitleThirdTab(true);
-    } else if (offset <= 0) {
-      tabsStore.setHideTitleThirdTab(false);
-    }
-
-    if (scrollControllerThirdTab.hasClients) {
-      tabsStore.offsetThirdTab = scrollControllerThirdTab.offset;
-    }
-  }
-
-  void refreshItems(bool filtered) {
-    //print('Calling refresh items!!!');
-    if (isTitleWidget.isEmpty ||
-        galleryStore.shouldRefreshTaggedGallery == true) {
-      taggedItems = [];
-      isTitleWidget = [];
-
-      //print('Refreshing tagged library!!!!!');
-      galleryStore.clearPicThumbnails();
-
-      if (filtered) {
-        if (galleryStore.filteredPics.isEmpty) {
-          //print('Filtered Pics is empty');
-          isTitleWidget.addAll([true, true]);
-          taggedItems.addAll([null, null]);
-        } else {
-          isTitleWidget.add(true);
-          taggedItems.add(null);
-          isTitleWidget
-              .addAll(List.filled(galleryStore.filteredPics.length, false));
-          taggedItems.addAll(galleryStore.filteredPics);
-          galleryStore.addPicsToThumbnails(galleryStore.filteredPics);
-        }
-
-        if (galleryStore.searchingTagsKeys.length > 1) {
-          List<TaggedPicsStore> taggedPicsStores = [];
-          for (String tagKey in galleryStore.searchingTagsKeys) {
-            TaggedPicsStore findTaggedPicStore = galleryStore.taggedPics
-                .firstWhere((element) => element.tag.id == tagKey,
-                    orElse: () => null);
-            if (findTaggedPicStore != null) {
-              taggedPicsStores.add(findTaggedPicStore);
-            } else {
-              TaggedPicsStore createTaggedPicStore =
-                  TaggedPicsStore(tag: appStore.tags[tagKey]);
-              taggedPicsStores.add(createTaggedPicStore);
-            }
-          }
-
-          for (TaggedPicsStore taggedPicsStore in taggedPicsStores) {
-            if (taggedPicsStore.pics.isEmpty) {
-              //print('&&&& IS EMPTY &&&&');
-              isTitleWidget.add(true);
-              taggedItems.add(taggedPicsStore);
-              isTitleWidget.add(true);
-              taggedItems.add(null);
-              continue;
-            }
-
-            isTitleWidget.add(true);
-            taggedItems.add(taggedPicsStore);
-            isTitleWidget
-                .addAll(List.filled(taggedPicsStore.pics.length, false));
-            taggedItems.addAll(taggedPicsStore.pics);
-            galleryStore.addPicsToThumbnails(taggedPicsStore.pics);
-          }
-        }
-      } else {
-        for (TaggedPicsStore taggedPicsStore in galleryStore.taggedPics) {
-          isTitleWidget.add(true);
-          taggedItems.add(taggedPicsStore);
-          isTitleWidget.addAll(List.filled(taggedPicsStore.pics.length, false));
-          taggedItems.addAll(taggedPicsStore.pics);
-          galleryStore.addPicsToThumbnails(taggedPicsStore.pics);
-        }
-      }
-
-      //print('@@@@@ Tagged Items Length: ${taggedItems.length}');
-      galleryStore.setShouldRefreshTaggedGallery(false);
-    }
-  }
 
   Widget _buildTaggedGridView(BuildContext context) {
     //print('Rebuilding tagged gridview');
     //print('&&&&&&&&&&&&&&&&& Build grid items!!!');
 
     double newPadding = 0.0;
-    if (galleryStore.isSearching) {
-      newPadding = 86 - tabsStore.offsetThirdTab;
+    if (GalleryStore.to.isSearching.value) {
+      newPadding = 86 - controller.offsetThirdTab;
       if (newPadding > 86) {
         newPadding = 86.0;
       } else if (newPadding < 0) {
@@ -154,35 +53,35 @@ class _TaggedTabState extends State<TaggedTab> {
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollStartNotification) {
           //print('Start scrolling');
-          tabsStore.setIsScrolling(true);
+          controller.setIsScrolling(true);
         } else if (scrollNotification is ScrollEndNotification) {
           //print('End scrolling');
-          tabsStore.setIsScrolling(false);
+          controller.setIsScrolling(false);
         }
         return;
       },
-      child: Observer(
-        builder: (_) {
-          if (tabsStore.toggleIndexTagged == 0) {
+      child: Obx(
+        () {
+          if (controller.toggleIndexTagged == 0) {
             return StaggeredGridView.countBuilder(
               key: Key('date'),
-              controller: scrollControllerThirdTab,
+              controller: controller.scrollControllerThirdTab,
               physics: const CustomScrollPhysics(),
               padding: EdgeInsets.only(top: 86 - newPadding),
               crossAxisCount: 3,
               mainAxisSpacing: 2.0,
               crossAxisSpacing: 2.0,
-              itemCount: galleryStore.taggedGridPics.length,
+              itemCount: GalleryStore.to.taggedGridPics.length,
               itemBuilder: (BuildContext context, int index) {
-                var picStore = galleryStore.taggedGridPics[index].picStore;
+                var picStore = GalleryStore.to.taggedGridPics[index].picStore;
                 if (picStore == null) {
                   return _buildDateItem(
-                      galleryStore.taggedGridPics[index].date);
+                      GalleryStore.to.taggedGridPics[index].date);
                 }
                 return _buildPicItem(picStore);
               },
               staggeredTileBuilder: (int index) {
-                return galleryStore.taggedGridPics[index].picStore == null
+                return GalleryStore.to.taggedGridPics[index].picStore == null
                     ? StaggeredTile.fit(3)
                     : StaggeredTile.count(1, 1);
               },
@@ -191,16 +90,16 @@ class _TaggedTabState extends State<TaggedTab> {
 
           return StaggeredGridView.countBuilder(
             key: Key('tag'),
-            controller: scrollControllerThirdTab,
+            controller: controller.scrollControllerThirdTab,
             // padding: EdgeInsets.only(top: 86.0),
             padding: EdgeInsets.only(top: 86 - newPadding),
             physics: const CustomScrollPhysics(),
             crossAxisCount: 3,
             mainAxisSpacing: 2.0,
             crossAxisSpacing: 2.0,
-            itemCount: isTitleWidget.length,
+            itemCount: GalleryStore.to.isTitleWidget.value.length,
             itemBuilder: (BuildContext context, int index) {
-              var item = taggedItems[index];
+              var item = GalleryStore.to.taggedItems.value[index];
 
               if (item is TaggedPicsStore) {
                 return _buildTagItem(item);
@@ -215,7 +114,7 @@ class _TaggedTabState extends State<TaggedTab> {
                         left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
                     child: Text(
                       index == 1
-                          ? S.of(context).search_all_tags_not_found
+                          ? S.current.search_all_tags_not_found
                           : 'No photos found with this tag',
                       textScaleFactor: 1.0,
                       style: TextStyle(
@@ -231,7 +130,7 @@ class _TaggedTabState extends State<TaggedTab> {
               }
             },
             staggeredTileBuilder: (int index) {
-              if (isTitleWidget[index]) {
+              if (GalleryStore.to.isTitleWidget.value[index]) {
                 return StaggeredTile.fit(3);
               }
               return StaggeredTile.count(1, 1);
@@ -295,16 +194,16 @@ class _TaggedTabState extends State<TaggedTab> {
     //       ),
     //       // CupertinoButton(
     //       //   onPressed: () async {
-    //       //     tabsStore.setIsLoading(true);
+    //       //     controller.setIsLoading(true);
     //       //
     //       //     // if (taggedPicsStore != null) {
-    //       //     //   await galleryStore.sharePics(picsStores: taggedPicsStore.pics);
+    //       //     //   await GalleryStore.to.sharePics(picsStores: taggedPicsStore.pics);
     //       //     // } else {
-    //       //     //   await galleryStore.sharePics(
-    //       //     //       picsStores: galleryStore.filteredPics);
+    //       //     //   await GalleryStore.to.sharePics(
+    //       //     //       picsStores: GalleryStore.to.filteredPics);
     //       //     // }
     //       //
-    //       //     tabsStore.setIsLoading(false);
+    //       //     controller.setIsLoading(false);
     //       //   },
     //       //   child: Image.asset('lib/images/sharepicsico.png'),
     //       // ),
@@ -322,7 +221,7 @@ class _TaggedTabState extends State<TaggedTab> {
           Text(
             taggedPicsStore != null
                 ? taggedPicsStore.tag.name
-                : S.of(context).all_search_tags,
+                : S.current.all_search_tags,
             textScaleFactor: 1.0,
             style: TextStyle(
               fontFamily: 'Lato',
@@ -335,15 +234,16 @@ class _TaggedTabState extends State<TaggedTab> {
           ),
           CupertinoButton(
             onPressed: () {
-              tabsStore.setIsLoading(true);
+              controller.setIsLoading(true);
 
               if (taggedPicsStore != null) {
-                galleryStore.sharePics(picsStores: taggedPicsStore.pics);
+                GalleryStore.to.sharePics(picsStores: taggedPicsStore.pics);
               } else {
-                galleryStore.sharePics(picsStores: galleryStore.filteredPics);
+                GalleryStore.to
+                    .sharePics(picsStores: GalleryStore.to.filteredPics);
               }
 
-              tabsStore.setIsLoading(false);
+              controller.setIsLoading(false);
             },
             child: Image.asset('lib/images/sharepicsico.png'),
           ),
@@ -372,32 +272,32 @@ class _TaggedTabState extends State<TaggedTab> {
                   return GestureDetector(
                     onLongPress: () {
                       //print('LongPress');
-                      if (tabsStore.multiPicBar == false) {
-                        galleryStore.setSelectedPics(
+                      if (controller.multiPicBar == false) {
+                        GalleryStore.to.setSelectedPics(
                           picStore: picStore,
                           picIsTagged: true,
                         );
-                        tabsStore.setMultiPicBar(true);
+                        controller.setMultiPicBar(true);
                       }
                     },
                     child: CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        if (tabsStore.multiPicBar) {
-                          galleryStore.setSelectedPics(
+                        if (controller.multiPicBar.value) {
+                          GalleryStore.to.setSelectedPics(
                             picStore: picStore,
                             picIsTagged: true,
                           );
-                          //print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          //print('Pics Selected Length: ${GalleryStore.to.selectedPics.length}');
                           return;
                         }
 
                         //print('Selected photo: ${picStore.photoId}');
-                        galleryStore.setCurrentPic(picStore);
-                        galleryStore.setInitialSelectedThumbnail(picStore);
-                        Navigator.pushNamed(context, PhotoScreen.id);
+                        GalleryStore.to.setCurrentPic(picStore);
+                        GalleryStore.to.setInitialSelectedThumbnail(picStore);
+                        Get.toNamed(PhotoScreen.id);
                       },
-                      child: Observer(builder: (_) {
+                      child: Obx(() {
                         Widget image = Positioned.fill(
                           child: RepaintBoundary(
                             child: state.completedWidget,
@@ -406,8 +306,8 @@ class _TaggedTabState extends State<TaggedTab> {
 
                         List<Widget> items = [image];
 
-                        if (tabsStore.multiPicBar) {
-                          if (galleryStore.selectedPics.contains(picStore)) {
+                        if (controller.multiPicBar.value) {
+                          if (GalleryStore.to.selectedPics.contains(picStore)) {
                             items.add(
                               Container(
                                 constraints: BoxConstraints.expand(),
@@ -488,7 +388,7 @@ class _TaggedTabState extends State<TaggedTab> {
                         }
 
                         if (picStore.isStarred == true &&
-                            !tabsStore.multiPicBar) {
+                            !controller.multiPicBar.value) {
                           //print('Adding starred yellow ico');
                           items.add(
                             Positioned(
@@ -518,43 +418,6 @@ class _TaggedTabState extends State<TaggedTab> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    tabsStore = Provider.of<TabsStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
-    refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
-
-    scrollControllerThirdTab =
-        ScrollController(initialScrollOffset: tabsStore.offsetThirdTab);
-    scrollControllerThirdTab.addListener(() {
-      refreshGridPositionThirdTab();
-    });
-    refreshGridPositionThirdTab();
-
-    disposer =
-        reaction((_) => galleryStore.shouldRefreshTaggedGallery, (refresh) {
-      if (refresh) {
-        setState(() {
-          refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
-          //print('##### Rebuild everything!');
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    disposer();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
     return Container(
@@ -564,17 +427,17 @@ class _TaggedTabState extends State<TaggedTab> {
       child: SafeArea(
         child: Stack(
           children: <Widget>[
-            Observer(builder: (_) {
-              if (!galleryStore.deviceHasPics) {
+            Obx(() {
+              if (!GalleryStore.to.deviceHasPics.value) {
                 return DeviceHasNoPics(
-                  message: S.of(context).device_has_no_pics,
+                  message: S.current.device_has_no_pics,
                 );
-              } else if (galleryStore.taggedPics.length == 0 &&
-                  galleryStore.deviceHasPics) {
+              } else if (GalleryStore.to.taggedPics.length == 0 &&
+                  GalleryStore.to.deviceHasPics.value) {
                 return TopBar(
-                  appStore: appStore,
-                  galleryStore: galleryStore,
-                  showSecretSwitch: appStore.secretPhotos,
+                  appStore: AppStore.to,
+                  galleryStore: GalleryStore.to,
+                  showSecretSwitch: AppStore.to.secretPhotos.value,
                   children: <Widget>[
                     Expanded(
                       child: Center(
@@ -590,7 +453,7 @@ class _TaggedTabState extends State<TaggedTab> {
                               height: 21.0,
                             ),
                             Text(
-                              S.of(context).no_tagged_photos,
+                              S.current.no_tagged_photos,
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -606,7 +469,7 @@ class _TaggedTabState extends State<TaggedTab> {
                             ),
                             CupertinoButton(
                               padding: const EdgeInsets.all(0),
-                              onPressed: () => tabsStore.setCurrentTab(1),
+                              onPressed: () => controller.setCurrentTab(1),
                               child: Container(
                                 width: 201.0,
                                 height: 44.0,
@@ -616,7 +479,7 @@ class _TaggedTabState extends State<TaggedTab> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    S.of(context).start_tagging,
+                                    S.current.start_tagging,
                                     textScaleFactor: 1.0,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
@@ -636,58 +499,58 @@ class _TaggedTabState extends State<TaggedTab> {
                     ),
                   ],
                 );
-              } else if (galleryStore.taggedPics.length > 0 &&
-                  galleryStore.deviceHasPics) {
+              } else if (GalleryStore.to.taggedPics.length > 0 &&
+                  GalleryStore.to.deviceHasPics.value) {
                 return TopBar(
-                  appStore: appStore,
-                  galleryStore: galleryStore,
-                  showSecretSwitch: appStore.secretPhotos,
+                  appStore: AppStore.to,
+                  galleryStore: GalleryStore.to,
+                  showSecretSwitch: AppStore.to.secretPhotos.value,
                   searchEditingController: searchEditingController,
                   searchFocusNode: searchFocusNode,
                   children: <Widget>[
-                    Observer(builder: (_) {
-                      if (galleryStore.isSearching) {
+                    Obx(() {
+                      if (GalleryStore.to.isSearching.value) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            if (galleryStore.searchingTagsKeys.length > 0)
+                            if (GalleryStore.to.searchingTagsKeys.length > 0)
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
-                                  tags: galleryStore.searchingTags.toList(),
+                                  tags: GalleryStore.to.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (tagId, tagName) {
                                     //print('do nothing');
-                                    galleryStore.removeTagFromSearchFilter();
-                                    if (galleryStore
-                                            .searchingTagsKeys.isEmpty &&
+                                    GalleryStore.to.removeTagFromSearchFilter();
+                                    if (GalleryStore
+                                            .to.searchingTagsKeys.isEmpty &&
                                         searchFocusNode.hasFocus == false) {
-                                      galleryStore.setIsSearching(false);
+                                      GalleryStore.to.setIsSearching(false);
                                     }
                                   },
                                   onPanEnd: () {
-                                    galleryStore.removeTagFromSearchFilter();
-                                    if (galleryStore
-                                            .searchingTagsKeys.isEmpty &&
+                                    GalleryStore.to.removeTagFromSearchFilter();
+                                    if (GalleryStore
+                                            .to.searchingTagsKeys.isEmpty &&
                                         searchFocusNode.hasFocus == false) {
-                                      galleryStore.setIsSearching(false);
+                                      GalleryStore.to.setIsSearching(false);
                                     }
                                   },
                                   onDoubleTap: () {
                                     //print('do nothing');
                                   },
-                                  showEditTagModal: widget.showEditTagModal,
+                                  showEditTagModal: showEditTagModal,
                                 ),
                               ),
-//                            if (galleryStore.showSearchTagsResults) ...[
+//                            if (GalleryStore.to.showSearchTagsResults) ...[
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
-                                galleryStore.showSearchTagsResults
-                                    ? S.of(context).search_results
-                                    : S.of(context).recent_tags,
+                                GalleryStore.to.showSearchTagsResults.value
+                                    ? S.current.search_results
+                                    : S.current.recent_tags,
                                 textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -699,10 +562,11 @@ class _TaggedTabState extends State<TaggedTab> {
                                 ),
                               ),
                             ),
-                            Observer(
-                              builder: (_) {
-                                if (!galleryStore.showSearchTagsResults) {
-                                  //print('############ ${galleryStore.tagsSuggestions}');
+                            Obx(
+                              () {
+                                if (!GalleryStore
+                                    .to.showSearchTagsResults.value) {
+                                  //print('############ ${GalleryStore.to.tagsSuggestions}');
                                   return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 16.0,
@@ -710,17 +574,17 @@ class _TaggedTabState extends State<TaggedTab> {
                                         top: 8.0,
                                         bottom: 16.0),
                                     child: TagsList(
-                                      tags: galleryStore.tagsSuggestions,
+                                      tags: GalleryStore.to.tagsSuggestions,
                                       tagStyle: TagStyle.GrayOutlined,
-                                      showEditTagModal: widget.showEditTagModal,
+                                      showEditTagModal: showEditTagModal,
                                       onTap: (tagId, tagName) {
-                                        if (tabsStore.toggleIndexTagged == 0) {
-                                          tabsStore.setToggleIndexTagged(1);
+                                        if (controller.toggleIndexTagged == 0) {
+                                          controller.setToggleIndexTagged(1);
                                         }
 
-                                        galleryStore.addTagToSearchFilter();
+                                        GalleryStore.to.addTagToSearchFilter();
                                         searchEditingController.clear();
-                                        galleryStore.searchResultsTags(
+                                        GalleryStore.to.searchResultsTags(
                                             searchEditingController.text);
                                       },
                                       onDoubleTap: () {
@@ -733,12 +597,12 @@ class _TaggedTabState extends State<TaggedTab> {
                                   );
                                 }
 
-                                if (galleryStore.searchTagsResults.isEmpty) {
+                                if (GalleryStore.to.searchTagsResults.isEmpty) {
                                   return Container(
                                     padding: const EdgeInsets.only(
                                         top: 10.0, left: 26.0, bottom: 10.0),
                                     child: Text(
-                                      S.of(context).no_tags_found,
+                                      S.current.no_tags_found,
                                       textScaleFactor: 1.0,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -759,18 +623,18 @@ class _TaggedTabState extends State<TaggedTab> {
                                       top: 8.0,
                                       bottom: 16.0),
                                   child: TagsList(
-                                    tags:
-                                        galleryStore.searchTagsResults.toList(),
+                                    tags: GalleryStore.to.searchTagsResults
+                                        .toList(),
                                     tagStyle: TagStyle.GrayOutlined,
-                                    showEditTagModal: widget.showEditTagModal,
+                                    showEditTagModal: showEditTagModal,
                                     onTap: (tagId, tagName) {
-                                      if (tabsStore.toggleIndexTagged == 0) {
-                                        tabsStore.setToggleIndexTagged(1);
+                                      if (controller.toggleIndexTagged == 0) {
+                                        controller.setToggleIndexTagged(1);
                                       }
 
-                                      galleryStore.addTagToSearchFilter();
+                                      GalleryStore.to.addTagToSearchFilter();
                                       searchEditingController.clear();
-                                      galleryStore.searchResultsTags(
+                                      GalleryStore.to.searchResultsTags(
                                           searchEditingController.text);
                                     },
                                     onDoubleTap: () {
@@ -802,11 +666,11 @@ class _TaggedTabState extends State<TaggedTab> {
               }
               return Container();
             }),
-            Observer(builder: (_) {
-              if (galleryStore.taggedPics.length > 0 &&
-                  !tabsStore.hideTitleThirdTab &&
-                  !galleryStore.isSearching &&
-                  galleryStore.deviceHasPics) {
+            Obx(() {
+              if (GalleryStore.to.taggedPics.length > 0 &&
+                  !controller.hideTitleThirdTab.value &&
+                  !GalleryStore.to.isSearching.value &&
+                  GalleryStore.to.deviceHasPics.value) {
                 return Positioned(
                   left: 19.0,
                   top: 64.0,
@@ -814,10 +678,10 @@ class _TaggedTabState extends State<TaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar
-                            ? S.of(context).photo_gallery_count(
-                                galleryStore.selectedPics.length)
-                            : S.of(context).organized_photos_title,
+                        controller.multiPicBar.value
+                            ? S.current.photo_gallery_count(
+                                GalleryStore.to.selectedPics.length)
+                            : S.current.organized_photos_title,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -833,44 +697,42 @@ class _TaggedTabState extends State<TaggedTab> {
               }
               return Container();
             }),
-            Observer(builder: (_) {
+            Obx(() {
               return AnimatedOpacity(
-                opacity: tabsStore.isScrolling
+                opacity: controller.isScrolling.value
                     ? 0.0
                     : (searchFocusNode.hasFocus ||
-                            galleryStore.taggedPics.length == 0)
+                            GalleryStore.to.taggedPics.length == 0)
                         ? 0.0
                         : 1.0,
                 curve: Curves.linear,
                 duration:
                     Duration(milliseconds: searchFocusNode.hasFocus ? 0 : 300),
                 onEnd: () {
-                  tabsStore.setIsToggleBarVisible(
-                      tabsStore.isScrolling ? false : true);
+                  controller.setIsToggleBarVisible(
+                      controller.isScrolling.value ? false : true);
                 },
                 child: Visibility(
-                  visible: tabsStore.isScrolling
-                      ? tabsStore.isToggleBarVisible
+                  visible: controller.isScrolling.value
+                      ? controller.isToggleBarVisible
                       : true,
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: ToggleBar(
-                        titleLeft: S.of(context).toggle_date,
-                        titleRight: S.of(context).toggle_tags,
-                        activeToggle: tabsStore.toggleIndexTagged,
+                        titleLeft: S.current.toggle_date,
+                        titleRight: S.current.toggle_tags,
+                        activeToggle: controller.toggleIndexTagged.value,
                         onToggle: (index) {
-                          if (galleryStore.isSearching && index == 0) {
-                            galleryStore.clearSearchTags();
-                            galleryStore.setShouldRefreshTaggedGallery(true);
-                            setState(() {
-                              refreshItems(
-                                  galleryStore.searchingTagsKeys.isNotEmpty);
-                              //print('##### Rebuild everything!');
-                            });
+                          if (GalleryStore.to.isSearching.value && index == 0) {
+                            GalleryStore.to.clearSearchTags();
+                            GalleryStore.to.setShouldRefreshTaggedGallery(true);
+                            GalleryStore.to.refreshItems();
+                            //print('##### Rebuild everything!');
+
                           }
-                          tabsStore.setToggleIndexTagged(index);
+                          controller.setToggleIndexTagged(index);
                         },
                       ),
                     ),

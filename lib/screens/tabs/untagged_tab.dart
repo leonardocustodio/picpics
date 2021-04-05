@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
@@ -16,13 +17,13 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 
-class UntaggedTab extends StatefulWidget {
-  static const id = 'untagged_tab';
+class UntaggedTab extends GetWidget<TabsStore> {
+/*   static const id = 'untagged_tab';
 
   @override
   _UntaggedTabState createState() => _UntaggedTabState();
-}
-
+} */
+/* 
 class MyDynamicHeader extends SliverPersistentHeaderDelegate {
   final String headerTitle;
 
@@ -122,20 +123,17 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
-}
+} */
 
-class _UntaggedTabState extends State<UntaggedTab> {
-  TabsStore tabsStore;
-  GalleryStore galleryStore;
+  static const id = 'untagged_tab';
 
   //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
-  ReactionDisposer disposer;
 
   // List<Widget> _buildSlivers(BuildContext context) {
   //   List<Widget> slivers = [];
   //
-  //   for (var untaggedPic in galleryStore.untaggedPics) {
+  //   for (var untaggedPic in GalleryStore.to.untaggedPics) {
   //     slivers.add();
   //   }
   //
@@ -148,18 +146,18 @@ class _UntaggedTabState extends State<UntaggedTab> {
         : scrollControllerFirstTab.initialScrollOffset;
 
     if (offset >= 86) {
-      tabsStore.setTopOffsetFirstTab(10.0);
+      controller.setTopOffsetFirstTab(10.0);
     } else if (offset >= 32) {
-      tabsStore.setTopOffsetFirstTab(64.0 - (offset - 32.0));
+      controller.setTopOffsetFirstTab(64.0 - (offset - 32.0));
     } else if (offset <= 0) {
-      tabsStore.setTopOffsetFirstTab(64.0);
+      controller.setTopOffsetFirstTab(64.0);
     }
 
     if (scrollControllerFirstTab.hasClients) {
-      tabsStore.offsetFirstTab = scrollControllerFirstTab.offset;
+      controller.offsetFirstTab = scrollControllerFirstTab.offset;
     }
   } */
-
+/* 
   Widget _buildSliverGridItem(BuildContext context, PicStore picStore) {
     if (picStore == null) {
       return Container();
@@ -183,39 +181,39 @@ class _UntaggedTabState extends State<UntaggedTab> {
                   return GestureDetector(
                     onLongPress: () {
                       //print('LongPress');
-                      if (tabsStore.multiPicBar == false) {
-                        galleryStore.setSelectedPics(
+                      if (controller.multiPicBar == false) {
+                        GalleryStore.to.setSelectedPics(
                           picStore: picStore,
                           picIsTagged: false,
                         );
-                        tabsStore.setMultiPicBar(true);
+                        controller.setMultiPicBar(true);
                       }
                     },
                     child: CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        if (tabsStore.multiPicBar) {
-                          galleryStore.setSelectedPics(
+                        if (controller.multiPicBar) {
+                          GalleryStore.to.setSelectedPics(
                             picStore: picStore,
                             picIsTagged: false,
                           );
                           //print('Pics Selected Length: ');
-                          //print('${galleryStore.selectedPics.length}');
+                          //print('${GalleryStore.to.selectedPics.length}');
                           return;
                         }
 
                         tagsEditingController.text = '';
-                        galleryStore.setCurrentPic(picStore);
-                        tabsStore.setModalCard(true);
+                        GalleryStore.to.setCurrentPic(picStore);
+                        controller.setModalCard(true);
                       },
-                      child: Observer(builder: (_) {
+                      child: Obx(() {
                         Widget image = Positioned.fill(
                           child: RepaintBoundary(
                             child: state.completedWidget,
                           ),
                         );
-                        if (tabsStore.multiPicBar) {
-                          if (galleryStore.selectedPics.contains(picStore)) {
+                        if (controller.multiPicBar) {
+                          if (GalleryStore.to.selectedPics.contains(picStore)) {
                             return Stack(
                               children: [
                                 image,
@@ -287,14 +285,14 @@ class _UntaggedTabState extends State<UntaggedTab> {
       ),
     );
   }
-
+ */
 //   Widget _buildNewItem(BuildContext context, int index, double size) {
 //
 //     List<Widget> childs = [];
 //     int endIndex = (index + 1) * 3;
 //
 //     for (int currentIndex = index * 3; currentIndex < endIndex; currentIndex++) {
-//       PicStore picStore = galleryStore.untaggedPics[currentIndex].picStore;
+//       PicStore picStore = GalleryStore.to.untaggedPics[currentIndex].picStore;
 //       if (picStore == null) {
 //         childs.add(
 //           Container(
@@ -302,7 +300,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
 //             width: double.infinity,
 //             child: Text(
-//               '${dateFormat(galleryStore.untaggedPics[currentIndex].date)}',
+//               '${dateFormat(GalleryStore.to.untaggedPics[currentIndex].date)}',
 //               textScaleFactor: 1.0,
 //               style: TextStyle(
 //                 fontFamily: 'Lato',
@@ -317,15 +315,15 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //         );
 //         continue;
 //
-//         // if (tabsStore.toggleIndexSelected == null || tabsStore.toggleIndexSelected == 0) {
-//         //   if (!galleryStore.untaggedPics[index].didChangeMonth) {
+//         // if (controller.toggleIndexSelected == null || controller.toggleIndexSelected == 0) {
+//         //   if (!GalleryStore.to.untaggedPics[index].didChangeMonth) {
 //         //     return Container();
 //         //   }
 //         // }
 //         // return Container(
 //         //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
 //         //   child: Text(
-//         //     '${dateFormat(galleryStore.untaggedPics[index].date)}',
+//         //     '${dateFormat(GalleryStore.to.untaggedPics[index].date)}',
 //         //     textScaleFactor: 1.0,
 //         //     style: TextStyle(
 //         //       fontFamily: 'Lato',
@@ -361,38 +359,38 @@ class _UntaggedTabState extends State<UntaggedTab> {
 //                     child: () {
 //                       return GestureDetector(
 //                         onLongPress: () {
-//                           if (tabsStore.multiPicBar == false) {
-//                             galleryStore.setSelectedPics(
+//                           if (controller.multiPicBar == false) {
+//                             GalleryStore.to.setSelectedPics(
 //                               picStore: picStore,
 //                               picIsTagged: false,
 //                             );
-//                             tabsStore.setMultiPicBar(true);
+//                             controller.setMultiPicBar(true);
 //                           }
 //                         },
 //                         child: CupertinoButton(
 //                           padding: const EdgeInsets.all(0),
 //                           onPressed: () {
-//                             if (tabsStore.multiPicBar) {
-//                               galleryStore.setSelectedPics(
+//                             if (controller.multiPicBar) {
+//                               GalleryStore.to.setSelectedPics(
 //                                 picStore: picStore,
 //                                 picIsTagged: false,
 //                               );
-/* //print('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
+/* //print('Pics Selected Length: ${GalleryStore.to.selectedPics.length}'); */
 //                               return;
 //                             }
 //
 //                             tagsEditingController.text = '';
-//                             galleryStore.setCurrentPic(picStore);
-//                             tabsStore.setModalCard(true);
+//                             GalleryStore.to.setCurrentPic(picStore);
+//                             controller.setModalCard(true);
 //                           },
-//                           child: Observer(builder: (_) {
+//                           child: Obx(() {
 //                             Widget image = Positioned.fill(
 //                               child: RepaintBoundary(
 //                                 child: state.completedWidget,
 //                               ),
 //                             );
-//                             if (tabsStore.multiPicBar) {
-//                               if (galleryStore.selectedPics.contains(picStore)) {
+//                             if (controller.multiPicBar) {
+//                               if (GalleryStore.to.selectedPics.contains(picStore)) {
 //                                 return Stack(
 //                                   children: [
 //                                     image,
@@ -475,7 +473,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
     //print('&&&&& Building grid view');
     // List<Widget> sliverGrids = [];
     //
-    // for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
+    // for (UntaggedPicsStore untaggedPicsStore in GalleryStore.to.untaggedPics) {
     //   sliverGrids.add(SliverPersistentHeader(
     //     delegate: MyDynamicHeader(
     //       headerTitle: dateFormat(untaggedPicsStore.date),
@@ -502,10 +500,10 @@ class _UntaggedTabState extends State<UntaggedTab> {
         /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
           //print('Start scrolling');
-          tabsStore.setIsScrolling(true);
+          controller.setIsScrolling(true);
         } else if (scrollNotification is ScrollEndNotification) {
           //print('End scrolling');
-          tabsStore.setIsScrolling(false);
+          controller.setIsScrolling(false);
         }
         return;
       },
@@ -521,7 +519,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
           //         centerTitle: false,
           //         titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
           //         title: Text(
-          //           tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+          //           controller.multiPicBar ? S.of(context).photo_gallery_count(GalleryStore.to.selectedPics.length) : S.of(context).photo_gallery_description,
           //           textScaleFactor: 1.0,
           //           style: TextStyle(
           //             fontFamily: 'Lato',
@@ -541,7 +539,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
           //     ...sliverGrids,
           //
           //     // SliverAnimatedList(
-          //     //   initialItemCount: (galleryStore.untaggedPics.length / 3).floor() + 1,
+          //     //   initialItemCount: (GalleryStore.to.untaggedPics.length / 3).floor() + 1,
           //     //   itemBuilder: (context, index, animation) {
           //     //     double size = MediaQuery.of(context).size.width / 3;
           //     //     return _buildNewItem(context, index, size);
@@ -600,11 +598,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
           // ),
           //
 
-          Observer(
-        builder: (_) {
-          if (tabsStore.toggleIndexUntagged == 0) {
-            List<DateTime> keys = galleryStore.isLoaded
-                ? galleryStore.untaggedGridPicsByMonth.keys.toList()
+          Obx(
+        () {
+          if (controller.toggleIndexUntagged == 0) {
+            List<DateTime> keys = GalleryStore.to.isLoaded.value
+                ? GalleryStore.to.untaggedGridPicsByMonth.keys.toList()
                 : <DateTime>[];
             /* keys.sort((a, b) {
               var year = b.year.compareTo(a.year);
@@ -617,8 +615,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 physics: const CustomScrollPhysics(),
                 itemBuilder: (context, index) {
                   DateTime dateTime = keys[index];
-                  var innerMap = galleryStore.untaggedGridPicsByMonth[dateTime];
-                  return Observer(builder: (_) {
+                  var innerMap =
+                      GalleryStore.to.untaggedGridPicsByMonth[dateTime];
+                  return Obx(() {
                     return Container(
                         child: Column(
                       children: [
@@ -628,8 +627,8 @@ class _UntaggedTabState extends State<UntaggedTab> {
                           runSpacing: 3,
                           children: [
                             for (var key in innerMap.keys)
-                              Observer(builder: (_) {
-                                return galleryStore.allPics[key] == null
+                              Obx(() {
+                                return GalleryStore.to.allPics[key] == null
                                     ? Container(
                                         width: width,
                                         height: width,
@@ -641,7 +640,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                                           width: width,
                                           height: width,
                                           child: _buildItem(
-                                              galleryStore.allPics[key]),
+                                              GalleryStore.to.allPics[key]),
                                         ),
                                       );
                               }),
@@ -660,15 +659,15 @@ class _UntaggedTabState extends State<UntaggedTab> {
             crossAxisCount: 5,
             mainAxisSpacing: 2.0,
             crossAxisSpacing: 2.0,
-            itemCount: galleryStore.isLoaded
-                ? galleryStore.untaggedGridPicsByMonth.length
+            itemCount: GalleryStore.to.isLoaded
+                ? GalleryStore.to.untaggedGridPicsByMonth.length
                 : 0,
             itemBuilder: (BuildContext context, int index) {
               return _buildItem(context, index);
             },
             staggeredTileBuilder: (int index) {
               PicStore picStore =
-                  galleryStore.untaggedGridPicsByMonth[index].picStore;
+                  GalleryStore.to.untaggedGridPicsByMonth[index].picStore;
               if (picStore == null) {
                 return StaggeredTile.fit(5);
               }
@@ -688,21 +687,22 @@ class _UntaggedTabState extends State<UntaggedTab> {
               crossAxisSpacing: 2.0,
               staggeredTileBuilder: (int index) {
                 PicStore picStore =
-                    galleryStore.untaggedGridPics[index].picStore;
+                    GalleryStore.to.untaggedGridPics[index].picStore;
                 if (picStore == null) {
                   return StaggeredTile.fit(3);
                 }
                 return StaggeredTile.count(1, 1);
               },
             ),
-            itemCount: (galleryStore?.isLoaded ?? false)
-                ? (galleryStore?.untaggedGridPics?.length ?? 0)
+            itemCount: (GalleryStore.to?.isLoaded ?? false)
+                ? (GalleryStore.to?.untaggedGridPics?.length ?? 0)
                 : 0,
             itemBuilder: (BuildContext context, int index) {
-              PicStore picStore = galleryStore.untaggedGridPics[index].picStore;
+              PicStore picStore =
+                  GalleryStore.to.untaggedGridPics[index].picStore;
               if (picStore == null)
                 return buildDateHeader(
-                    galleryStore.untaggedGridPics[index].date);
+                    GalleryStore.to.untaggedGridPics[index].date);
               return _buildItem(picStore);
             },
           );
@@ -724,11 +724,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
     //print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
-      formatter = tabsStore.toggleIndexUntagged == 0
+      formatter = controller.toggleIndexUntagged == 0
           ? DateFormat.yMMMM()
           : DateFormat.MMMEd();
     } else {
-      formatter = tabsStore.toggleIndexUntagged == 0
+      formatter = controller.toggleIndexUntagged == 0
           ? DateFormat.yMMMM()
           : DateFormat.yMMMEd();
     }
@@ -780,42 +780,42 @@ class _UntaggedTabState extends State<UntaggedTab> {
                   return GestureDetector(
                     onLongPress: () {
                       //print('LongPress');
-                      if (tabsStore.multiPicBar == false) {
-                        galleryStore.setSelectedPics(
+                      if (controller.multiPicBar == false) {
+                        GalleryStore.to.setSelectedPics(
                           picStore: picStore,
                           picIsTagged: false,
                         );
-                        tabsStore.setMultiPicBar(true);
+                        controller.setMultiPicBar(true);
                       }
                     },
                     child: CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        if (tabsStore.multiPicBar) {
-                          galleryStore.setSelectedPics(
+                        if (controller.multiPicBar.value) {
+                          GalleryStore.to.setSelectedPics(
                             picStore: picStore,
                             picIsTagged: false,
                           );
                           //print('Pics Selected Length: ');
-                          //print('${galleryStore.selectedPics.length}');
+                          //print('${GalleryStore.to.selectedPics.length}');
                           return;
                         }
 
                         tagsEditingController.text = '';
-                        galleryStore.setCurrentPic(picStore);
+                        GalleryStore.to.setCurrentPic(picStore);
                         int indexOfSwipePic =
-                            galleryStore.swipePics.indexOf(picStore);
-                        galleryStore.setSelectedSwipe(indexOfSwipePic);
-                        tabsStore.setModalCard(true);
+                            GalleryStore.to.swipePics.indexOf(picStore);
+                        GalleryStore.to.setSelectedSwipe(indexOfSwipePic);
+                        controller.setModalCard(true);
                       },
-                      child: Observer(builder: (_) {
+                      child: Obx(() {
                         Widget image = Positioned.fill(
                           child: RepaintBoundary(
                             child: state.completedWidget,
                           ),
                         );
-                        if (tabsStore.multiPicBar) {
-                          if (galleryStore.selectedPics.contains(picStore)) {
+                        if (controller.multiPicBar.value) {
+                          if (GalleryStore.to.selectedPics.contains(picStore)) {
                             return Stack(
                               children: [
                                 image,
@@ -889,43 +889,16 @@ class _UntaggedTabState extends State<UntaggedTab> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    tabsStore = Provider.of<TabsStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
-
-    /* scrollControllerFirstTab =
-        ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
-    scrollControllerFirstTab.addListener(() {
-      refreshGridPositionFirstTab();
-    });
-    refreshGridPositionFirstTab(); */
-
-    disposer = reaction((_) => galleryStore.isLoaded, (isLoaded) {
-      if (isLoaded == true) {
-        galleryStore.refreshPicThumbnails();
-      }
-    });
-
-    if (galleryStore.isLoaded == false) {
-      return;
-    }
-    galleryStore.refreshPicThumbnails();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    tabsStore = Provider.of<TabsStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
-    var hasPics = galleryStore.untaggedGridPics.isEmpty ||
-        galleryStore.untaggedGridPicsByMonth.isEmpty;
+    var hasPics = GalleryStore.to.untaggedGridPics.isEmpty ||
+        GalleryStore.to.untaggedGridPicsByMonth.isEmpty;
 
     return Container(
       constraints: BoxConstraints.expand(),
       color: kWhiteColor,
       child: SafeArea(
-        child: Observer(builder: (_) {
-          if (!galleryStore.isLoaded) {
+        child: Obx(() {
+          if (!GalleryStore.to.isLoaded.value) {
             return Center(
               child: CircularProgressIndicator(
                   // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
@@ -942,7 +915,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.toNamed(SettingsScreen.id);
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -954,7 +927,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 ),
               ],
             );
-          } else if (galleryStore.isLoaded && !hasPics) {
+          } else if (GalleryStore.to.isLoaded.value && !hasPics) {
             return Stack(
               children: <Widget>[
                 Container(
@@ -966,7 +939,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.toNamed(SettingsScreen.id);
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -978,7 +951,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 ),
               ],
             );
-          } else if (galleryStore.isLoaded && hasPics) {
+          } else if (GalleryStore.to.isLoaded.value && hasPics) {
             return Stack(
               children: <Widget>[
                 Padding(
@@ -999,7 +972,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.toNamed(SettingsScreen.id);
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -1013,9 +986,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar
+                        controller.multiPicBar.value
                             ? S.of(context).photo_gallery_count(
-                                galleryStore.selectedPics.length)
+                                GalleryStore.to.selectedPics.length)
                             : S.of(context).photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
@@ -1030,16 +1003,16 @@ class _UntaggedTabState extends State<UntaggedTab> {
                   ),
                 ),
                 AnimatedOpacity(
-                  opacity: tabsStore.isScrolling ? 0.0 : 1.0,
+                  opacity: controller.isScrolling.value ? 0.0 : 1.0,
                   curve: Curves.linear,
                   duration: Duration(milliseconds: 300),
                   onEnd: () {
-                    tabsStore.setIsToggleBarVisible(
-                        tabsStore.isScrolling ? false : true);
+                    controller.setIsToggleBarVisible(
+                        controller.isScrolling.value ? false : true);
                   },
                   child: Visibility(
-                    visible: tabsStore.isScrolling
-                        ? tabsStore.isToggleBarVisible
+                    visible: controller.isScrolling.value
+                        ? controller.isToggleBarVisible
                         : true,
                     child: Align(
                       alignment: Alignment.bottomCenter,
@@ -1048,9 +1021,9 @@ class _UntaggedTabState extends State<UntaggedTab> {
                         child: ToggleBar(
                           titleLeft: S.of(context).toggle_months,
                           titleRight: S.of(context).toggle_days,
-                          activeToggle: tabsStore.toggleIndexUntagged,
+                          activeToggle: controller.toggleIndexUntagged.value,
                           onToggle: (index) {
-                            tabsStore.setToggleIndexUntagged(index);
+                            controller.setToggleIndexUntagged(index);
                           },
                         ),
                       ),
