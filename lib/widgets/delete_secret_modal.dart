@@ -20,15 +20,7 @@ class DeleteSecretModal extends StatefulWidget {
 }
 
 class _DeleteSecretModalState extends State<DeleteSecretModal> {
-  AppStore appStore;
   bool keepAsking = true;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-  }
-
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -219,7 +211,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            appStore.setKeepAskingToDelete(false);
+                            AppStore.to.setKeepAskingToDelete(false);
                           }
                           widget.onPressedDelete();
                         },
@@ -254,7 +246,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            appStore.setKeepAskingToDelete(false);
+                            AppStore.to.setKeepAskingToDelete(false);
                           }
                           widget.onPressedOk();
                         },

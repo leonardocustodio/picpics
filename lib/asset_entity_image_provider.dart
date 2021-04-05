@@ -70,17 +70,17 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
     if (isOriginal ?? false) {
       //print('Loading original...');
-      data = picStore.isPrivate
+      data = picStore.isPrivate.value
           ? await key.picStore.assetOriginBytes
-          : await key.picStore.entity.originBytes;
+          : await key.picStore.entity.value.originBytes;
     } else {
       //print('Loading thumbnail...');
       if (picStore.entity == null) {
         //print('Entity is null & isPrivate: ${picStore.isPrivate}');
       }
-      data = picStore.isPrivate
+      data = picStore.isPrivate.value
           ? await key.picStore.assetThumbBytes
-          : await key.picStore.entity
+          : await key.picStore.entity.value
               .thumbDataWithSize(thumbSize[0], thumbSize[1]);
     }
 
@@ -112,7 +112,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     ImageFileType type;
     final String extension = picStore.entity == null
         ? picStore.photoPath?.split('.')?.last
-        : picStore.entity.title?.split('.')?.last;
+        : picStore.entity.value.title?.split('.')?.last;
     //print('Extension: $extension');
     if (extension != null) {
       switch (extension.toLowerCase()) {

@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:get/get.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,21 +20,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  AppStore appStore;
   SwiperController swiperController = SwiperController();
-
-  @override
-  void initState() {
-    super.initState();
-    Analytics.sendCurrentScreen(Screen.login_screen);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    appStore.createDefaultTags(context);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
               blurFilter: false,
             ),
             SafeArea(
-              child: Observer(builder: (_) {
+              child: Obx(() {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),

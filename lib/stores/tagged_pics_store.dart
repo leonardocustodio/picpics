@@ -1,12 +1,15 @@
+import 'package:get/get.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 
-class TaggedPicsStore {
-  TaggedPicsStore({this.tag}) {}
+class TaggedPicsStore extends GetxController {
+  TaggedPicsStore({TagsStore tagValue}) {
+    tag.value = tagValue;
+  }
 
-  @observable
-  TagsStore tag;
+  /* @observable */
+  final tag = Rx<TagsStore>(null);
 
-  @observable
-  ObservableList<PicStore> pics = ObservableList<PicStore>();
+  /*  @observable */
+  final pics = <PicStore>[].obs;
 }

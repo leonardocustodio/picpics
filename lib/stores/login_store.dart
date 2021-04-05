@@ -2,12 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/generated/l10n.dart';
 
+import 'app_store.dart';
+
 class LoginStore extends GetxController {
   static LoginStore get to => Get.find();
 
   final slideIndex = 0.obs;
 
   int totalSlides = Board.values.length;
+
+  @override
+  void onInit() {
+    super.onInit();
+    AppStore.to.createDefaultTags(Get.context);
+  }
 
   //@action
   void setSlideIndex(int value) => slideIndex.value = value;

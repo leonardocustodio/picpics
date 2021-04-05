@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 class TagsStore {
   TagsStore({this.id, this.name, @required this.count, @required this.time});
 
-  @observable
+  //@observable
   String id;
 
-  @observable
+  //@observable
   String name;
 
-  @observable
+  //@observable
   int count;
 
-  @observable
+  //@observable
   DateTime time;
 
   //@action

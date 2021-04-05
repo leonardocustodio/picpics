@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
@@ -16,8 +17,6 @@ class WatchAdModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppStore appStore = Provider.of<AppStore>(context);
-
     return Dialog(
       backgroundColor: Colors.transparent,
       child: Stack(
@@ -39,7 +38,7 @@ class WatchAdModal extends StatelessWidget {
                   child: Text(
                     S
                         .of(context)
-                        .premium_modal_description(appStore.dailyPicsForAds),
+                        .premium_modal_description(AppStore.to.dailyPicsForAds),
                     textScaleFactor: 1.0,
                     style: TextStyle(
                       color: kSecondaryColor,

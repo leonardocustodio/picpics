@@ -50,9 +50,7 @@ class PhotoCard extends StatefulWidget {
 class _PhotoCardState extends State<PhotoCard> {
   final GlobalKey _photoSpaceKey = GlobalKey();
 
-  AppStore appStore;
   TabsStore tabsStore;
-  GalleryStore galleryStore;
   PicStore get picStore => widget.picStore;
 
   List<int> photoSize;
@@ -69,7 +67,7 @@ class _PhotoCardState extends State<PhotoCard> {
 
   Future<List<String>> reverseGeocoding(BuildContext context) async {
     if (picStore.specificLocation != null && picStore.generalLocation != null) {
-      return [picStore.specificLocation, '  ${picStore.generalLocation}'];
+      return [picStore.specificLocation.value, '  ${picStore.generalLocation}'];
     }
 
     if ((picStore.originalLatitude == null ||
@@ -105,7 +103,7 @@ class _PhotoCardState extends State<PhotoCard> {
   void getSizeAndPosition() {
     RenderBox _cardBox = _photoSpaceKey.currentContext.findRenderObject();
     //print('Card Box Size: ${_cardBox.size.height}');
-    appStore.setPhotoHeightInCardWidget(_cardBox.size.height);
+    AppStore.to.setPhotoHeightInCardWidget(_cardBox.size.height);
   }
 
   @override
@@ -125,19 +123,19 @@ class _PhotoCardState extends State<PhotoCard> {
     super.dispose();
   }
 
-  @override
+/*   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    AppStore.to = Provider.of<AppStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
-    // galleryStore.setCurrentPic(widget.picStore);
+    GalleryStore.to = Provider.of<GalleryStore>(context);
+    // GalleryStore.to.setCurrentPic(widget.picStore);
 
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
     photoSize = <int>[height, height];
 
     //print('Did Change Dep!!!');
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -149,7 +147,7 @@ class _PhotoCardState extends State<PhotoCard> {
     /* //print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
 
     AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore,
-        thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
+        thumbSize: kDefaultPhotoSize, isOriginal: false);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
@@ -225,18 +223,19 @@ class _PhotoCardState extends State<PhotoCard> {
                     ),
                   ),
                 ),
-                Observer(
-                  builder: (_) {
-                    //print('Photo Height: ${appStore.photoHeightInCardWidget}');
+                Obx(
+                  () {
+                    //print('Photo Height: ${AppStore.to.photoHeightInCardWidget}');
                     return CircularMenu(
-                      // appStore: appStore,
-                      isExpanded: appStore.isMenuExpanded,
-                      useInHorizontal:
-                          appStore.photoHeightInCardWidget < 280 ? true : false,
+                      // AppStore.to: AppStore.to,
+                      isExpanded: AppStore.to.isMenuExpanded.value,
+                      useInHorizontal: AppStore.to.photoHeightInCardWidget < 280
+                          ? true
+                          : false,
                       alignment: Alignment.bottomRight,
                       radius: 52,
                       toggleButtonOnPressed: () {
-                        appStore.switchIsMenuExpanded();
+                        AppStore.to.switchIsMenuExpanded();
                       },
                       toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
                       toggleButtonBoxShadow: [
@@ -255,7 +254,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           color: kWarningColor,
                           iconSize: 19.2,
                           onTap: () {
-                            galleryStore.trashPic(picStore);
+                            GalleryStore.to.trashPic(picStore);
                           },
                         ),
                         CircularMenuItem(
@@ -283,7 +282,8 @@ class _PhotoCardState extends State<PhotoCard> {
                           color: kSecondaryColor,
                           iconSize: 19.2,
                           onTap: () {
-                            galleryStore.setInitialSelectedThumbnail(picStore);
+                            GalleryStore.to
+                                .setInitialSelectedThumbnail(picStore);
                             Get.toNamed(PhotoScreen.id);
                           },
                         ),
@@ -309,7 +309,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       onPressed: () {
                         Get.toNamed(AddLocationScreen.id);
                       },
-                      child: Observer(builder: (_) {
+                      child: Obx(() {
                         return RichText(
                           textScaleFactor: 1.0,
                           text: TextSpan(
@@ -357,9 +357,9 @@ class _PhotoCardState extends State<PhotoCard> {
                     ),
                   ],
                 ),
-                Observer(builder: (_) {
+                Obx(() {
                   return TagsList(
-                    tags: galleryStore.tagsFromPic(picStore: picStore),
+                    tags: GalleryStore.to.tagsFromPic(picStore: picStore),
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
@@ -378,12 +378,12 @@ class _PhotoCardState extends State<PhotoCard> {
                       //print('do nothing');
                     },
                     onPanEnd: () async {
-                      if (!appStore.canTagToday) {
+                      if (!AppStore.to.canTagToday.value) {
                         showWatchAdModal(context);
                         return;
                       }
 
-                      await galleryStore.removeTagFromPic(
+                      await GalleryStore.to.removeTagFromPic(
                           picStore: picStore,
                           tagKey: DatabaseManager.instance.selectedTagKey);
 
@@ -396,14 +396,14 @@ class _PhotoCardState extends State<PhotoCard> {
                       //print('return');
 
                       if (text != '') {
-                        if (!appStore.canTagToday) {
+                        if (!AppStore.to.canTagToday.value) {
                           tagsEditingController.clear();
                           picStore.setSearchText('');
                           showWatchAdModal(context);
                           return;
                         }
 
-                        await galleryStore.addTagToPic(
+                        await GalleryStore.to.addTagToPic(
                           picStore: picStore,
                           tagName: text,
                         );
@@ -418,10 +418,10 @@ class _PhotoCardState extends State<PhotoCard> {
                 }),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Observer(builder: (_) {
+                  child: Obx(() {
                     String suggestionsTitle;
 
-                    if (picStore.aiTags) {
+                    if (picStore.aiTags.value) {
                       if (picStore.aiTagsLoaded == false) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -461,21 +461,23 @@ class _PhotoCardState extends State<PhotoCard> {
 
                     //print('${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');
 
-                    return Observer(
-                      builder: (_) => TagsList(
+                    return Obx(
+                      () => TagsList(
                         title: suggestionsTitle,
-                        tags: picStore.aiTags
-                            ? picStore.aiSuggestions
-                            : picStore.tagsSuggestions,
+                        tags:
+                            /* picStore.aiTags.value
+                            ? picStore.aiSuggestions.value
+                            : */
+                            picStore.tagsSuggestions,
                         tagStyle: TagStyle.GrayOutlined,
                         showEditTagModal: widget.showEditTagModal,
                         onTap: (tagId, tagName) async {
-                          if (!appStore.canTagToday) {
+                          if (!AppStore.to.canTagToday.value) {
                             showWatchAdModal(context);
                             return;
                           }
 
-                          await galleryStore.addTagToPic(
+                          await GalleryStore.to.addTagToPic(
                               picStore: picStore, tagName: tagName);
                           tagsEditingController.clear();
                           picStore.setSearchText('');

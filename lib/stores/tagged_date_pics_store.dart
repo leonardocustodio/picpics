@@ -1,17 +1,18 @@
+import 'package:get/get.dart';
 import 'package:picPics/stores/pic_store.dart';
 
-class TaggedDatePicsStore {
+class TaggedDatePicsStore extends GetxController {
   DateTime date;
 
   TaggedDatePicsStore({
     this.date,
   });
 
-  ObservableMap<String, PicStore> picStores = ObservableMap<String, PicStore>();
+  final picStores = <String, PicStore>{}.obs;
 
   //@action
   void addPicStore(PicStore picStore) {
-    picStores[picStore.photoId] = picStore;
+    picStores.value[picStore.photoId.value] = picStore;
   }
 
   //@action
