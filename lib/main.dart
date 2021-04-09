@@ -199,13 +199,12 @@ void main() async {
       //print('Custom string: ${data["custom_string"]}');
     }
   }, onError: (error) {
-    PlatformException platformException = error as PlatformException;
+    //PlatformException platformException = error as PlatformException;
     //print('InitSession error: ${platformException.code}');
     //print(' - ${platformException.message}');
   });
 
-  bool setAppGroup =
-      await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
+  //bool setAppGroup = await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
   //print('Has setted app group: $setAppGroup');
 
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
