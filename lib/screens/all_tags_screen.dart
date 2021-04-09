@@ -43,7 +43,7 @@ class AllTagsStore extends GetxController {
   }
 }
 
-class AllTagsScreen extends GetView<AllTagsStore> {
+class AllTagsScreen extends GetWidget<AllTagsStore> {
   static const id = 'all_tags_screen';
   final PicStore picStore;
   AllTagsScreen({@required this.picStore, Key key}) : super(key: key);

@@ -36,6 +36,10 @@ import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
 import 'screens/all_tags_screen.dart';
+import 'stores/login_store.dart';
+import 'stores/pic_store.dart';
+import 'stores/pin_store.dart';
+import 'stores/tabs_store.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
   //print('Checking if appstore initiated products');
@@ -60,6 +64,10 @@ void main() async {
 
   Get.lazyPut(() => AppStore());
   Get.lazyPut(() => GalleryStore());
+  Get.lazyPut(() => PinStore());
+  Get.lazyPut(() => LoginStore());
+  Get.lazyPut(() => TabsStore());
+  Get.lazyPut(() => PinStore());
 
   await Hive.initFlutter();
 /*   Hive.registerAdapter(UserAdapter());

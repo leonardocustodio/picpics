@@ -37,7 +37,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:background_fetch/background_fetch.dart';
 
-class TabsScreen extends GetView<TabsStore> {
+class TabsScreen extends GetWidget<TabsStore> {
   static const id = 'tabs_screen';
 
   // Swiper do Tutorial

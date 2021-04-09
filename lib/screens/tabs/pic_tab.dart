@@ -24,7 +24,7 @@ import 'package:picPics/widgets/photo_card.dart';
   _PicTabState createState() => _PicTabState();
 } */
 
-class PicTab extends GetView<GalleryStore> {
+class PicTab extends GetWidget<GalleryStore> {
   static const id = 'pic_tab';
   final Function showDeleteSecretModal;
   PicTab({@required this.showDeleteSecretModal, Key key}) : super(key: key);

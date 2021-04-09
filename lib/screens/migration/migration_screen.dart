@@ -17,7 +17,7 @@ class MigrationScreen extends StatefulWidget {
   _MigrationScreenState createState() => _MigrationScreenState();
 }
  */
-class MigrationScreen extends GetView<MigrationStore> {
+class MigrationScreen extends GetWidget<MigrationStore> {
   static const id = 'migration_screen';
   MigrationScreen({Key key}) : super(key: key);
 
