@@ -18,6 +18,7 @@ import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
 import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
@@ -39,11 +40,6 @@ import 'package:background_fetch/background_fetch.dart';
 class TabsScreen extends GetView<TabsStore> {
   static const id = 'tabs_screen';
 
-  ReactionDisposer disposer;
-  ReactionDisposer disposer2;
-  ReactionDisposer disposer3;
-  ReactionDisposer disposer4;
-
   // Swiper do Tutorial
   SwiperController tutorialSwiperController = SwiperController();
   TextEditingController tagsEditingController = TextEditingController();
@@ -52,7 +48,7 @@ class TabsScreen extends GetView<TabsStore> {
   Throttle _changeThrottle;
   AppLifecycleState _appCycleState;
 
- /*  @override
+  /*  @override
   void initState() {
     super.initState();
     KeyboardVisibilityController().onChange.listen((bool visible) {
@@ -60,11 +56,11 @@ class TabsScreen extends GetView<TabsStore> {
 
       if (visible && controller.multiTagSheet) {
         setState(() {
-          expandablePaddingController.expanded = true;
+         controller. expandablePaddingController.value.expanded = true;
         });
       } else if (!visible && controller.multiTagSheet) {
         setState(() {
-          expandablePaddingController.expanded = false;
+         controller. expandablePaddingController.value.expanded = false;
         });
       }
     }); */
@@ -72,30 +68,30 @@ class TabsScreen extends GetView<TabsStore> {
 //    _changeThrottle = Throttle(onCall: _onAssetChange);
 //    PhotoManager.addChangeCallback(_changeThrottle.call);
 
-    // RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-    //   if (event == RewardedVideoAdEvent.loaded) {
-    //print('@@@ loaded');
-    //   }
-    //
-    //   if (event == RewardedVideoAdEvent.rewarded) {
-    //print('@@@ rewarded');
-    //     appStore.setCanTagToday(true);
-    //   }
-    //
-    //   if (event == RewardedVideoAdEvent.closed) {
-    //print('@@@@ closed');
-    //     DatabaseManager.instance.adsIsLoaded = false;
-    //     Ads.loadRewarded();
-    //   }
-    //
-    //   if (event == RewardedVideoAdEvent.failedToLoad) {
-    //print('@@@ failed');
-    //     DatabaseManager.instance.adsIsLoaded = false;
-    //   }
-    // };
+  // RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+  //   if (event == RewardedVideoAdEvent.loaded) {
+  //print('@@@ loaded');
+  //   }
+  //
+  //   if (event == RewardedVideoAdEvent.rewarded) {
+  //print('@@@ rewarded');
+  //     AppStore.to.setCanTagToday(true);
+  //   }
+  //
+  //   if (event == RewardedVideoAdEvent.closed) {
+  //print('@@@@ closed');
+  //     DatabaseManager.instance.adsIsLoaded = false;
+  //     Ads.loadRewarded();
+  //   }
+  //
+  //   if (event == RewardedVideoAdEvent.failedToLoad) {
+  //print('@@@ failed');
+  //     DatabaseManager.instance.adsIsLoaded = false;
+  //   }
+  // };
 
-    initPlatformState();
-  }
+  //initPlatformState();
+  //}
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
@@ -133,98 +129,7 @@ class TabsScreen extends GetView<TabsStore> {
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
-    if (!mounted) return;
-  }
-
-  @override
-  void dispose() {
-//    PhotoManager.removeChangeCallback(_changeThrottle.call);
-//    PhotoManager.stopChangeNotify();
-//    _changeThrottle.dispose();
-    disposer();
-    disposer2();
-    disposer3();
-    disposer4();
-
-    if (appStore.hasObserver) {
-      WidgetsBinding.instance.removeObserver(this);
-    }
-    super.dispose();
-  }
-
-  void returnAction() {
-    galleryStore.clearSelectedPics();
-    controller.setMultiPicBar(false);
-  }
-
-  Future<void> starredAction() async {
-    await WidgetManager.saveData(
-        picsStores: galleryStore.selectedPics.toList());
-    galleryStore.clearSelectedPics();
-    controller.setMultiPicBar(false);
-  }
-
-  void tagAction() {
-    controller.setMultiTagSheet(true);
-    Future.delayed(Duration(milliseconds: 200), () {
-      setState(() {
-        expandableController.expanded = true;
-      });
-    });
-  }
-
-  Future<void> shareAction() async {
-    if (galleryStore.selectedPics.isEmpty) {
-      return;
-    }
-    //print('sharing selected pics....');
-    controller.setIsLoading(true);
-    await galleryStore.sharePics(
-        picsStores: galleryStore.selectedPics.toList());
-    controller.setIsLoading(false);
-  }
-
-  void trashAction() {
-    if (galleryStore.selectedPics.isEmpty) {
-      return;
-    }
-    galleryStore.trashMultiplePics(galleryStore.selectedPics);
-  }
-
-  setTabIndex(int index) {
-    if (!galleryStore.deviceHasPics) {
-      controller.setCurrentTab(index);
-      return;
-    }
-
-    if (controller.multiPicBar) {
-      if (index == 0) {
-        returnAction();
-      } else if (index == 1) {
-        if (controller.currentTab == 0) {
-          tagAction();
-        } else {
-          starredAction();
-        }
-      } else if (index == 2) {
-        if (controller.currentTab == 0) {
-          shareAction();
-        } else {
-          tagAction();
-        }
-      } else if (index == 3) {
-        if (controller.currentTab == 0) {
-          trashAction();
-        } else {
-          shareAction();
-        }
-      } else if (index == 4) {
-        trashAction();
-      }
-      return;
-    }
-
-    controller.setCurrentTab(index);
+    //if (!mounted) return;
   }
 
   Widget _buildLoading() {
@@ -238,11 +143,11 @@ class TabsScreen extends GetView<TabsStore> {
       ),
     );
   }
-
-  @override
+/* 
+   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    AppStore to.= Provider.of<AppStore>(context);
     controller = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
@@ -337,7 +242,7 @@ class TabsScreen extends GetView<TabsStore> {
     setState(() {
       _appCycleState = state;
     });
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -354,8 +259,8 @@ class TabsScreen extends GetView<TabsStore> {
     return Stack(
       children: <Widget>[
         Scaffold(
-          bottomNavigationBar: Observer(builder: (_) {
-            return controller.multiTagSheet
+          bottomNavigationBar: Obx(() {
+            return controller.multiTagSheet.value
                 ? ExpandableNotifier(
                     child: Container(
                       color: Color(0xF1F3F5),
@@ -365,13 +270,13 @@ class TabsScreen extends GetView<TabsStore> {
                           CupertinoButton(
                             padding: const EdgeInsets.all(0),
                             onPressed: () {
-                              setState(() {
-                                expandableController.expanded =
-                                    !expandableController.expanded;
-                              });
+                              controller.expandableController.value.expanded =
+                                  !controller
+                                      .expandableController.value.expanded;
                             },
                             child: SafeArea(
-                              bottom: !expandableController.expanded,
+                              bottom: !controller
+                                  .expandableController.value.expanded,
                               child: Container(
                                 color: Color(0xFFF1F3F5),
                                 child: Row(
@@ -399,21 +304,22 @@ class TabsScreen extends GetView<TabsStore> {
                                     Spacer(),
                                     CupertinoButton(
                                       onPressed: () {
-                                        // if (!appStore.isPremium) {
+                                        // if (!AppStore.to.isPremium) {
                                         //   Get.toNamed(  PremiumScreen.id);
                                         //   return;
                                         // }
 
-                                        if (galleryStore
-                                                .multiPicTags[kSecretTagKey] !=
+                                        if (GalleryStore.to.multiPicTags
+                                                .value[kSecretTagKey] !=
                                             null) {
-                                          showDeleteSecretModalForMultiPic();
+                                          showDeleteSecretModalForMultiPic(
+                                              context, controller);
                                           return;
                                         }
 
                                         controller.setMultiTagSheet(false);
                                         controller.setMultiPicBar(false);
-                                        galleryStore.addTagsToSelectedPics();
+                                        GalleryStore.to.addTagsToSelectedPics();
                                       },
                                       child: Container(
                                         width: 80.0,
@@ -436,7 +342,7 @@ class TabsScreen extends GetView<TabsStore> {
                             ),
                           ),
                           Expandable(
-                            controller: expandableController,
+                            controller: controller.expandableController.value,
                             expanded: Container(
                               padding: const EdgeInsets.all(24.0),
                               color: Color(0xFFEFEFF4).withOpacity(0.94),
@@ -446,60 +352,62 @@ class TabsScreen extends GetView<TabsStore> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tags: galleryStore.multiPicTags.values
+                                        tags: GalleryStore
+                                            .to.multiPicTags.values
                                             .toList(),
                                         addTagField: true,
                                         textEditingController:
                                             bottomTagsEditingController,
                                         showEditTagModal: () =>
-                                            showEditTagModal(
-                                                context, galleryStore),
+                                            showEditTagModal(context),
                                         onTap: (tagId, tagName) {
-                                          // if (!appStore.isPremium) {
+                                          // if (!AppStore.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          // if (!appStore.isPremium) {
+                                          // if (!AppStore.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
-                                          galleryStore.removeFromMultiPicTags(
-                                              DatabaseManager
-                                                  .instance.selectedTagKey);
+                                          GalleryStore.to
+                                              .removeFromMultiPicTags(
+                                                  DatabaseManager
+                                                      .instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
-                                          // if (!appStore.isPremium) {
+                                          // if (!AppStore.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onChanged: (text) {
-                                          galleryStore.setSearchText(text);
+                                          GalleryStore.to.setSearchText(text);
                                         },
                                         onSubmitted: (text) {
-                                          // if (!appStore.isPremium) {
+                                          // if (!AppStore.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
-                                            galleryStore.setSearchText('');
+                                            GalleryStore.to.setSearchText('');
                                             String tagKey =
                                                 Helpers.encryptTag(text);
 
-                                            if (galleryStore
-                                                    .multiPicTags[tagKey] ==
+                                            if (GalleryStore
+                                                    .to.multiPicTags[tagKey] ==
                                                 null) {
-                                              if (appStore.tags[tagKey] ==
+                                              if (AppStore
+                                                      .to.tags.value[tagKey] ==
                                                   null) {
                                                 //print('tag does not exist! creating it!');
-                                                galleryStore.createTag(text);
+                                                GalleryStore.to.createTag(text);
                                               }
-                                              galleryStore
+                                              GalleryStore.to
                                                   .addToMultiPicTags(tagKey);
                                             }
                                           }
@@ -507,33 +415,33 @@ class TabsScreen extends GetView<TabsStore> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
-                                        title: galleryStore.searchText != ''
+                                        title: GalleryStore.to.searchText != ''
                                             ? S.of(context).search_results
                                             : S.of(context).recent_tags,
-                                        tags: galleryStore.tagsSuggestions,
+                                        tags: GalleryStore.to.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: () =>
-                                            showEditTagModal(
-                                                context, galleryStore),
+                                            showEditTagModal(context),
                                         onTap: (tagId, tagName) {
-                                          // if (!appStore.isPremium) {
+                                          // if (!AppStore.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
 
                                           bottomTagsEditingController.clear();
-                                          galleryStore.setSearchText('');
-                                          galleryStore.addToMultiPicTags(tagId);
+                                          GalleryStore.to.setSearchText('');
+                                          GalleryStore.to
+                                              .addToMultiPicTags(tagId);
                                         },
                                         onDoubleTap: () {
-                                          // if (!appStore.isPremium) {
+                                          // if (!AppStore.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          // if (!appStore.isPremium) {
+                                          // if (!AppStore.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
@@ -547,7 +455,8 @@ class TabsScreen extends GetView<TabsStore> {
                             ),
                           ),
                           Expandable(
-                            controller: expandablePaddingController,
+                            controller:
+                                controller.expandablePaddingController.value,
                             expanded: Container(
                               height: MediaQuery.of(context).viewInsets.bottom,
                             ),
@@ -557,12 +466,12 @@ class TabsScreen extends GetView<TabsStore> {
                     ),
                   )
                 : Obx(() {
-                    if (!controller.multiPicBar) {
+                    if (!controller.multiPicBar.value) {
                       return Platform.isIOS
                           ? CupertinoTabBar(
-                              currentIndex: controller.currentTab,
+                              currentIndex: controller.currentTab.value,
                               onTap: (index) {
-                                setTabIndex(index);
+                                controller.setTabIndex(index);
                               },
                               iconSize: 32.0,
                               border: Border(
@@ -595,9 +504,9 @@ class TabsScreen extends GetView<TabsStore> {
                           : SizedBox(
                               height: 64.0,
                               child: BottomNavigationBar(
-                                currentIndex: controller.currentTab,
+                                currentIndex: controller.currentTab.value,
                                 onTap: (index) {
-                                  setTabIndex(index);
+                                  controller.setTabIndex(index);
                                 },
                                 type: BottomNavigationBarType.fixed,
                                 showSelectedLabels: false,
@@ -632,7 +541,7 @@ class TabsScreen extends GetView<TabsStore> {
                     return Platform.isIOS
                         ? CupertinoTabBar(
                             onTap: (index) {
-                              setTabIndex(index);
+                              controller.setTabIndex(index);
                             },
                             iconSize: 24.0,
                             border: Border(
@@ -656,7 +565,7 @@ class TabsScreen extends GetView<TabsStore> {
                               ),
                               BottomNavigationBarItem(
                                 //title: Container(),
-                                icon: galleryStore.selectedPics.isEmpty
+                                icon: GalleryStore.to.selectedPics.isEmpty
                                     ? Opacity(
                                         opacity: 0.2,
                                         child: Image.asset(
@@ -667,7 +576,7 @@ class TabsScreen extends GetView<TabsStore> {
                               ),
                               BottomNavigationBarItem(
                                 //title: Container(),
-                                icon: galleryStore.selectedPics.isEmpty
+                                icon: GalleryStore.to.selectedPics.isEmpty
                                     ? Opacity(
                                         opacity: 0.3,
                                         child: Image.asset(
@@ -682,7 +591,7 @@ class TabsScreen extends GetView<TabsStore> {
                             height: 64.0,
                             child: BottomNavigationBar(
                               onTap: (index) {
-                                setTabIndex(index);
+                                controller.setTabIndex(index);
                               },
                               type: BottomNavigationBarType.fixed,
                               showSelectedLabels: false,
@@ -705,7 +614,7 @@ class TabsScreen extends GetView<TabsStore> {
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Share',
-                                  icon: galleryStore.selectedPics.isEmpty
+                                  icon: GalleryStore.to.selectedPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
                                           child: Image.asset(
@@ -716,7 +625,7 @@ class TabsScreen extends GetView<TabsStore> {
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Trash',
-                                  icon: galleryStore.selectedPics.isEmpty
+                                  icon: GalleryStore.to.selectedPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
                                           child: Image.asset(
@@ -734,10 +643,10 @@ class TabsScreen extends GetView<TabsStore> {
             value: SystemUiOverlayStyle.dark,
             child: Stack(
               children: <Widget>[
-                Observer(builder: (_) {
+                Obx(() {
                   Widget wgt;
-                  if (appStore.hasGalleryPermission == null ||
-                      appStore.hasGalleryPermission == false) {
+                  if (AppStore.to.hasGalleryPermission == null ||
+                      AppStore.to.hasGalleryPermission == false) {
                     wgt = Container(
                       constraints: BoxConstraints.expand(),
                       color: kWhiteColor,
@@ -754,7 +663,7 @@ class TabsScreen extends GetView<TabsStore> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8.0),
                                     onPressed: () {
-                                      Get.toNamed(  SettingsScreen.id);
+                                      Get.toNamed(SettingsScreen.id);
                                     },
                                     child:
                                         Image.asset('lib/images/settings.png'),
@@ -798,18 +707,19 @@ class TabsScreen extends GetView<TabsStore> {
                                   CupertinoButton(
                                     padding: const EdgeInsets.all(0),
                                     onPressed: () {
-                                      appStore
+                                      AppStore.to
                                           .requestGalleryPermission()
                                           .then((hasPermission) async {
                                         if (hasPermission) {
-                                          await appStore
+                                          await AppStore.to
                                               .requestNotificationPermission();
-                                          await appStore
+                                          await AppStore.to
                                               .checkNotificationPermission(
                                                   firstPermissionCheck: true);
-                                          await appStore
+                                          await AppStore.to
                                               .setTutorialCompleted(true);
-                                          await galleryStore.loadAssetsPath();
+                                          await GalleryStore.to
+                                              .loadAssetsPath();
                                         }
                                       });
                                     },
@@ -846,28 +756,25 @@ class TabsScreen extends GetView<TabsStore> {
                       ),
                     );
                   } else if (controller.currentTab == 0 &&
-                      appStore.hasGalleryPermission)
+                      AppStore.to.hasGalleryPermission.value)
                     wgt = UntaggedTab();
                   else if (controller.currentTab == 1 &&
-                      appStore.hasGalleryPermission)
+                      AppStore.to.hasGalleryPermission.value)
                     wgt = PicTab(
-                      showEditTagModal: () =>
-                          showEditTagModal(context, galleryStore),
                       showDeleteSecretModal: showDeleteSecretModal,
                     );
                   else if (controller.currentTab == 2 &&
-                      appStore.hasGalleryPermission)
+                      AppStore.to.hasGalleryPermission.value)
                     wgt = TaggedTab(
-                        showEditTagModal: () =>
-                            showEditTagModal(context, galleryStore));
+                        showEditTagModal: () => showEditTagModal(context));
                   return wgt ?? Container();
                 }),
               ],
             ),
           ),
         ),
-        Observer(builder: (_) {
-          if (controller.modalCard) {
+        Obx(() {
+          if (controller.modalCard.value) {
             return Material(
               color: Colors.transparent,
               child: Center(
@@ -880,8 +787,8 @@ class TabsScreen extends GetView<TabsStore> {
                     child: SafeArea(
                       child: CarouselSlider.builder(
                         itemCount: controller.currentTab == 0
-                            ? galleryStore.swipePics.length
-                            : galleryStore.thumbnailsPics.length,
+                            ? GalleryStore.to.swipePics.length
+                            : GalleryStore.to.thumbnailsPics.length,
                         // carouselController: carouselController,
                         itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
@@ -898,20 +805,20 @@ class TabsScreen extends GetView<TabsStore> {
                               ),
                               child: PhotoCard(
                                 picStore: controller.currentTab == 0
-                                    ? galleryStore.swipePics[index]
-                                    : galleryStore.thumbnailsPics[index],
+                                    ? GalleryStore.to.swipePics[index]
+                                    : GalleryStore.to.thumbnailsPics[index],
                                 picsInThumbnails: PicSource.UNTAGGED,
                                 showEditTagModal: () =>
-                                    showEditTagModal(context, galleryStore),
+                                    showEditTagModal(context),
                                 showDeleteSecretModal: showDeleteSecretModal,
                               ),
                             ),
                           );
                         },
                         options: CarouselOptions(
-                          initialPage: controller.currentTab == 0
-                              ? galleryStore.selectedSwipe
-                              : galleryStore.selectedThumbnail,
+                          initialPage: controller.currentTab.value == 0
+                              ? GalleryStore.to.selectedSwipe.value
+                              : GalleryStore.to.selectedThumbnail.value,
                           enableInfiniteScroll: false,
                           height: double.maxFinite,
                           viewportFraction: 1.0,
@@ -919,7 +826,7 @@ class TabsScreen extends GetView<TabsStore> {
                           autoPlayCurve: Curves.fastOutSlowIn,
                           // scrollPhysics: scrollPhysics,
                           // onPageChanged: (index, reason) {
-                          //   galleryStore.setSwipeIndex(index);
+                          //   GalleryStore.to.setSwipeIndex(index);
                           // },
                         ),
                       ),
@@ -931,8 +838,8 @@ class TabsScreen extends GetView<TabsStore> {
           }
           return Container();
         }),
-        Observer(builder: (_) {
-          if (controller.isLoading) {
+        Obx(() {
+          if (controller.isLoading.value) {
             return Material(
               color: Colors.black.withOpacity(0.7),
               child: Center(

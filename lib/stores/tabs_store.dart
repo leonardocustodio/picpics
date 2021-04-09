@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/managers/widget_manager.dart';
+import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
 class TabsStore extends GetxController {
@@ -40,6 +42,49 @@ class TabsStore extends GetxController {
     scrollControllerThirdTab.addListener(() {
       refreshGridPositionThirdTab();
     });
+
+     ever(GalleryStore.to.trashedPic, (_) {
+      if (trashedPic) {
+        if (modalCard.value) {
+          controller.setModalCard(false);
+        }
+        if (controller.currentTab != 1) {
+          GalleryStore.to.setTrashedPic(false);
+        }
+      }
+    });
+
+    ever(GalleryStore.to.sharedPic, (_) {
+      if (GalleryStore.to.sharedPic.value) {
+        if (multiPicBar.value) {
+          GalleryStore.to.clearSelectedPics();
+          setMultiPicBar(false);
+        }
+      }
+    });
+
+ /*    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
+      if (showModal) {
+        //print('show delete secret modal!!!');
+//        setState(() {
+//          showEditTagModal();
+//        });
+//        showDeleteSecretModal(context);
+      }
+    }); */
+
+
+    if (AppStore.to.tutorialCompleted == true && AppStore.to.notifications == true) {
+      PushNotificationsManager push = PushNotificationsManager();
+      push.init();
+    }
+
+    // Added for the case of buying premium from appstore
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (AppStore.to.tryBuyId != null) {
+        Get.toNamed( PremiumScreen.id);
+      }
+    });
     refreshGridPositionThirdTab();
 
     super.onInit();
@@ -63,53 +108,16 @@ class TabsStore extends GetxController {
 
   //@action
   void setCurrentTab(int value) {
-    if (currentTab != value) {
-      if (currentTab == 1) {
+    if (currentTab.value != value) {
+      if (currentTab.value == 1) {
         GalleryStore.to.setSwipeIndex(GalleryStore.to.swipeIndex.value);
-      } else if (currentTab == 2) {
+      } else if (currentTab.value == 2) {
         GalleryStore.to.clearSearchTags();
       }
 
       Analytics.sendCurrentTab(value);
       currentTab.value = value;
     }
-  }
-
-  setTabIndex(int index) async {
-    if (!GalleryStore.to.deviceHasPics.value) {
-      setCurrentTab(index);
-      return;
-    }
-
-    if (multiPicBar.value) {
-      if (index == 0) {
-        GalleryStore.to.clearSelectedPics();
-        setMultiPicBar(false);
-      } else if (index == 1) {
-        setMultiTagSheet(true);
-        Future.delayed(Duration(milliseconds: 200), () {
-          expandableController.value.expanded = true;
-        });
-      } else if (index == 2) {
-        if (GalleryStore.to.selectedPics.isEmpty) {
-          return;
-        }
-        //print('sharing selected pics....');
-        setIsLoading(true);
-        await GalleryStore.to
-            .sharePics(picsStores: GalleryStore.to.selectedPics.toList());
-        setIsLoading(false);
-      } else if (index == 3) {
-        if (GalleryStore.to.selectedPics.isEmpty) {
-          return;
-        }
-        GalleryStore.to
-            .trashMultiplePics(GalleryStore.to.selectedPics.value.toSet());
-      }
-      return;
-    }
-
-    setCurrentTab(index);
   }
 
   //@action
@@ -174,4 +182,115 @@ class TabsStore extends GetxController {
 
   //@action
   void setToggleIndexTagged(int value) => toggleIndexTagged.value = value;
+
+  void returnAction() {
+    GalleryStore.to.clearSelectedPics();
+    setMultiPicBar(false);
+  }
+
+  Future<void> starredAction() async {
+    await WidgetManager.saveData(
+        picsStores: GalleryStore.to.selectedPics.toList());
+    GalleryStore.to.clearSelectedPics();
+    setMultiPicBar(false);
+  }
+
+  void tagAction() {
+    setMultiTagSheet(true);
+    Future.delayed(Duration(milliseconds: 200), () {
+      expandableController.value.expanded = true;
+    });
+  }
+
+  Future<void> shareAction() async {
+    if (GalleryStore.to.selectedPics.isEmpty) {
+      return;
+    }
+    //print('sharing selected pics....');
+    setIsLoading(true);
+    await GalleryStore.to
+        .sharePics(picsStores: GalleryStore.to.selectedPics.toList());
+    setIsLoading(false);
+  }
+
+  void trashAction() {
+    if (GalleryStore.to.selectedPics.isEmpty) {
+      return;
+    }
+    GalleryStore.to
+        .trashMultiplePics(GalleryStore.to.selectedPics.value.toSet());
+  }
+
+  setTabIndex(int index) async {
+    if (!GalleryStore.to.deviceHasPics.value) {
+      setCurrentTab(index);
+      return;
+    }
+
+    if (multiPicBar.value) {
+      if (index == 0) {
+        GalleryStore.to.clearSelectedPics();
+        setMultiPicBar(false);
+      } else if (index == 1) {
+        setMultiTagSheet(true);
+        Future.delayed(Duration(milliseconds: 200), () {
+          expandableController.value.expanded = true;
+        });
+      } else if (index == 2) {
+        if (GalleryStore.to.selectedPics.isEmpty) {
+          return;
+        }
+        //print('sharing selected pics....');
+        setIsLoading(true);
+        await GalleryStore.to
+            .sharePics(picsStores: GalleryStore.to.selectedPics.toList());
+        setIsLoading(false);
+      } else if (index == 3) {
+        if (GalleryStore.to.selectedPics.isEmpty) {
+          return;
+        }
+        GalleryStore.to
+            .trashMultiplePics(GalleryStore.to.selectedPics.value.toSet());
+      }
+      return;
+    }
+
+    setCurrentTab(index);
+  }
+/* 
+  setTabIndex(int index) {
+    if (!GalleryStore.to.deviceHasPics.value) {
+      setCurrentTab(index);
+      return;
+    }
+
+    if (multiPicBar.value) {
+      if (index == 0) {
+        returnAction();
+      } else if (index == 1) {
+        if (currentTab.value == 0) {
+          tagAction();
+        } else {
+          starredAction();
+        }
+      } else if (index == 2) {
+        if (currentTab.value == 0) {
+          shareAction();
+        } else {
+          tagAction();
+        }
+      } else if (index == 3) {
+        if (currentTab.value == 0) {
+          trashAction();
+        } else {
+          shareAction();
+        }
+      } else if (index == 4) {
+        trashAction();
+      }
+      return;
+    }
+
+    setCurrentTab(index);
+  } */
 }
