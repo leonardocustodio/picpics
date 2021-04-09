@@ -600,7 +600,7 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
 
           Obx(
         () {
-          if (controller.toggleIndexUntagged == 0) {
+          if (controller.toggleIndexUntagged.value == 0) {
             List<DateTime> keys = GalleryStore.to.isLoaded.value
                 ? GalleryStore.to.untaggedGridPicsByMonth.keys.toList()
                 : <DateTime>[];
@@ -694,9 +694,7 @@ class MySliverAppBar extends SliverPersistentHeaderDelegate {
                 return StaggeredTile.count(1, 1);
               },
             ),
-            itemCount: (GalleryStore.to?.isLoaded ?? false)
-                ? (GalleryStore.to?.untaggedGridPics?.length ?? 0)
-                : 0,
+            itemCount: GalleryStore.to?.untaggedGridPics?.length ?? 0,
             itemBuilder: (BuildContext context, int index) {
               PicStore picStore =
                   GalleryStore.to.untaggedGridPics[index].picStore;
