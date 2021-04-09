@@ -156,7 +156,7 @@ class DatabaseManager extends ChangeNotifier {
       await remoteConfig.activateFetched();
       //print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
       //print('free_private_pics: ${remoteConfig.getInt('free_private_pics')}');
-    } on FetchThrottledException catch (exception) {
+    } on FetchThrottledException catch (_) {
       // Fetch throttled.
       //print(exception);
     } catch (exception) {
