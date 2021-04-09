@@ -1,9 +1,12 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
+import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
@@ -31,6 +34,8 @@ class TabsStore extends GetxController {
 
   @override
   void onInit() {
+    initPlatformState();
+
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (multiTagSheet.value) {
         expandablePaddingController.value.expanded = visible;
@@ -43,12 +48,12 @@ class TabsStore extends GetxController {
       refreshGridPositionThirdTab();
     });
 
-     ever(GalleryStore.to.trashedPic, (_) {
-      if (trashedPic) {
+    ever(GalleryStore.to.trashedPic, (_) {
+      if (GalleryStore.to.trashedPic.value) {
         if (modalCard.value) {
-          controller.setModalCard(false);
+          setModalCard(false);
         }
-        if (controller.currentTab != 1) {
+        if (currentTab != 1) {
           GalleryStore.to.setTrashedPic(false);
         }
       }
@@ -63,7 +68,7 @@ class TabsStore extends GetxController {
       }
     });
 
- /*    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
+    /*    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
       if (showModal) {
         //print('show delete secret modal!!!');
 //        setState(() {
@@ -73,8 +78,8 @@ class TabsStore extends GetxController {
       }
     }); */
 
-
-    if (AppStore.to.tutorialCompleted == true && AppStore.to.notifications == true) {
+    if (AppStore.to.tutorialCompleted == true &&
+        AppStore.to.notifications == true) {
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
     }
@@ -82,12 +87,51 @@ class TabsStore extends GetxController {
     // Added for the case of buying premium from appstore
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (AppStore.to.tryBuyId != null) {
-        Get.toNamed( PremiumScreen.id);
+        Get.toNamed(PremiumScreen.id);
       }
     });
     refreshGridPositionThirdTab();
 
     super.onInit();
+  }
+
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    // Configure BackgroundFetch.
+    BackgroundFetch.configure(
+        BackgroundFetchConfig(
+            minimumFetchInterval: 15,
+            stopOnTerminate: false,
+            enableHeadless: false,
+            requiresBatteryNotLow: false,
+            requiresCharging: false,
+            requiresStorageNotLow: false,
+            requiresDeviceIdle: false,
+            requiredNetworkType: NetworkType.NONE), (String taskId) async {
+      // This is the fetch-event callback.
+      //print("[BackgroundFetch] Event received $taskId");
+
+      await WidgetManager.sendAndUpdate();
+
+      // IMPORTANT:  You must signal completion of your task or the OS can punish your app
+      // for taking too long in the background.
+      BackgroundFetch.finish(taskId);
+    }).then((int status) {
+      //print('[BackgroundFetch] configure success: $status');
+    }).catchError((e) {
+      //print('[BackgroundFetch] configure ERROR: $e');
+    });
+
+    // Optionally query the current BackgroundFetch status.
+    // int status = await BackgroundFetch.status;
+    // setState(() {
+    //   _status = status;
+    // });
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    //if (!mounted) return;
   }
 
   void refreshGridPositionThirdTab() {

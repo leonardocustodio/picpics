@@ -93,45 +93,6 @@ class TabsScreen extends GetView<TabsStore> {
   //initPlatformState();
   //}
 
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    // Configure BackgroundFetch.
-    BackgroundFetch.configure(
-        BackgroundFetchConfig(
-            minimumFetchInterval: 15,
-            stopOnTerminate: false,
-            enableHeadless: false,
-            requiresBatteryNotLow: false,
-            requiresCharging: false,
-            requiresStorageNotLow: false,
-            requiresDeviceIdle: false,
-            requiredNetworkType: NetworkType.NONE), (String taskId) async {
-      // This is the fetch-event callback.
-      //print("[BackgroundFetch] Event received $taskId");
-
-      await WidgetManager.sendAndUpdate();
-
-      // IMPORTANT:  You must signal completion of your task or the OS can punish your app
-      // for taking too long in the background.
-      BackgroundFetch.finish(taskId);
-    }).then((int status) {
-      //print('[BackgroundFetch] configure success: $status');
-    }).catchError((e) {
-      //print('[BackgroundFetch] configure ERROR: $e');
-    });
-
-    // Optionally query the current BackgroundFetch status.
-    // int status = await BackgroundFetch.status;
-    // setState(() {
-    //   _status = status;
-    // });
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    //if (!mounted) return;
-  }
-
   Widget _buildLoading() {
     return Padding(
       padding: const EdgeInsets.all(5.0),
