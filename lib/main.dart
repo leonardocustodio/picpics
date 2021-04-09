@@ -1,38 +1,40 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
+
+import 'package:background_fetch/background_fetch.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
+import 'package:flutter_device_locale/flutter_device_locale.dart';
+import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
-import 'package:home_widget/home_widget.dart';
-import 'package:picPics/screens/add_location.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:package_info/package_info.dart';
+
+import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/managers/admob_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/managers/widget_manager.dart';
+import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/login_screen.dart';
+import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:flutter/services.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:hive/hive.dart';
-import 'package:picPics/managers/admob_manager.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:picPics/generated/l10n.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flutter_device_locale/flutter_device_locale.dart';
-import 'package:package_info/package_info.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-import 'dart:io';
-import 'package:picPics/screens/migration/migration_screen.dart';
-import 'package:background_fetch/background_fetch.dart';
-import 'package:picPics/managers/widget_manager.dart';
+import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/gallery_store.dart';
+
 import 'screens/all_tags_screen.dart';
 
 Future<String> checkForAppStoreInitiatedProducts() async {
@@ -55,6 +57,9 @@ String initialRoute = LoginScreen.id;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  Get.lazyPut(() => AppStore());
+  Get.lazyPut(() => GalleryStore());
 
   await Hive.initFlutter();
 /*   Hive.registerAdapter(UserAdapter());
