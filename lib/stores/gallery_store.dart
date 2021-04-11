@@ -816,7 +816,7 @@ class GalleryStore extends GetxController {
     //DateTime currentDate = DateTime(1000);
     // //print(entity.id);
     // debug//print('Created At: ${entity.modifiedDateTime}');
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(Duration(milliseconds: 20), () {
       Future.forEach(list, (entity) async {
         if (privatePhotoIdMap[entity.id] == null) {
           //print('This pic is not private loading it!');
