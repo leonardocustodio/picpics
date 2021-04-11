@@ -165,7 +165,7 @@ void main() async {
     initialRoute = MigrationScreen.id;
   }
 
-  GestureBinding.instance.resamplingEnabled = true;
+  // GestureBinding.instance.resamplingEnabled = true;
 
   // CloudFunctions.instance.useFunctionsEmulator(origin: Platform.isAndroid ? 'http://10.0.2.2:5001' : 'http://localhost:5001');
 
@@ -232,10 +232,7 @@ void main() async {
 
 class PicPicsApp extends StatefulWidget {
   final AppStore appStore;
-
-  PicPicsApp({
-    @required this.appStore,
-  });
+  const PicPicsApp({@required this.appStore});
 
   @override
   _PicPicsAppState createState() => _PicPicsAppState();

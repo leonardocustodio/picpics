@@ -82,6 +82,7 @@ class GalleryStore extends GetxController {
 
   @override
   void onInit() {
+    loadAssetsPath();
     ever(taggedPics, runTotalTaggedPicsComputation);
     ever(filteredPics, runFilteredPicsKeysComputation);
     ever(searchingTags, runFilteredPicsKeysComputation);

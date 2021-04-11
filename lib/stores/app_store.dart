@@ -233,28 +233,13 @@ class AppStore extends GetxController {
       {bool firstPermissionCheck = false}) async {
     return NotificationPermissions.getNotificationPermissionStatus()
         .then((status) async {
-      /* var userBox = Hive.box('user');
-      User currentUser = userBox.getAt(0); */
       MoorUser currentUser = await database.getSingleMoorUser();
 
       if (status == PermissionStatus.denied) {
-        //print('user has no notification permission');
-/*         currentUser.notifications = false;
-        //        if (firstPermissionCheck) {
-        currentUser.dailyChallenges = false;
-        //        }
-        currentUser.save(); */
-
         await database.updateMoorUser(currentUser.copyWith(
           notification: false,
         ));
       } else {
-        //print('user has notification permission');
-/*         currentUser.notifications = true;
-        if (firstPermissionCheck) {
-          currentUser.dailyChallenges = false;
-        }
-        currentUser.save(); */
         var tempDailyChallenges = currentUser.dailyChallenges;
         if (firstPermissionCheck) {
           tempDailyChallenges = false;

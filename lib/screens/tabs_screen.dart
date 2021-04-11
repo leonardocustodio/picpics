@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,13 +5,9 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
@@ -21,21 +16,16 @@ import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
-import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
-import 'package:picPics/widgets/unhide_secret_modal.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/throttle.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/generated/l10n.dart';
 // import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:background_fetch/background_fetch.dart';
 
 class TabsScreen extends GetWidget<TabsStore> {
   static const id = 'tabs_screen';
@@ -376,9 +366,11 @@ class TabsScreen extends GetWidget<TabsStore> {
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
-                                        title: GalleryStore.to.searchText != ''
-                                            ? S.of(context).search_results
-                                            : S.of(context).recent_tags,
+                                        title:
+                                            GalleryStore.to.searchText.value !=
+                                                    ''
+                                                ? S.of(context).search_results
+                                                : S.of(context).recent_tags,
                                         tags: GalleryStore.to.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: () =>
@@ -514,7 +506,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                 icon: Image.asset(
                                     'lib/images/returntabbutton.png'),
                               ),
-                              if (controller.currentTab == 2)
+                              if (controller.currentTab.value == 2)
                                 BottomNavigationBarItem(
                                   //title: Container(),
                                   icon: Image.asset('lib/images/starico.png'),
@@ -563,7 +555,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                   icon: Image.asset(
                                       'lib/images/returntabbutton.png'),
                                 ),
-                                if (controller.currentTab == 2)
+                                if (controller.currentTab.value == 2)
                                   BottomNavigationBarItem(
                                     label: 'Feature',
                                     icon: Image.asset('lib/images/starico.png'),
@@ -606,8 +598,8 @@ class TabsScreen extends GetWidget<TabsStore> {
               children: <Widget>[
                 Obx(() {
                   Widget wgt;
-                  if (AppStore.to.hasGalleryPermission == null ||
-                      AppStore.to.hasGalleryPermission == false) {
+                  if (AppStore.to.hasGalleryPermission.value == null ||
+                      AppStore.to.hasGalleryPermission.value == false) {
                     wgt = Container(
                       constraints: BoxConstraints.expand(),
                       color: kWhiteColor,
@@ -716,15 +708,15 @@ class TabsScreen extends GetWidget<TabsStore> {
                         ),
                       ),
                     );
-                  } else if (controller.currentTab == 0 &&
+                  } else if (controller.currentTab.value == 0 &&
                       AppStore.to.hasGalleryPermission.value)
                     wgt = UntaggedTab();
-                  else if (controller.currentTab == 1 &&
+                  else if (controller.currentTab.value == 1 &&
                       AppStore.to.hasGalleryPermission.value)
                     wgt = PicTab(
                       showDeleteSecretModal: showDeleteSecretModal,
                     );
-                  else if (controller.currentTab == 2 &&
+                  else if (controller.currentTab.value == 2 &&
                       AppStore.to.hasGalleryPermission.value)
                     wgt = TaggedTab(
                         showEditTagModal: () => showEditTagModal(context));
@@ -747,7 +739,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                     color: Colors.black.withOpacity(0.4),
                     child: SafeArea(
                       child: CarouselSlider.builder(
-                        itemCount: controller.currentTab == 0
+                        itemCount: controller.currentTab.value == 0
                             ? GalleryStore.to.swipePics.length
                             : GalleryStore.to.thumbnailsPics.length,
                         // carouselController: carouselController,
@@ -765,7 +757,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                 right: 2.0,
                               ),
                               child: PhotoCard(
-                                picStore: controller.currentTab == 0
+                                picStore: controller.currentTab.value == 0
                                     ? GalleryStore.to.swipePics[index]
                                     : GalleryStore.to.thumbnailsPics[index],
                                 picsInThumbnails: PicSource.UNTAGGED,

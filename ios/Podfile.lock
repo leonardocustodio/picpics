@@ -465,8 +465,8 @@ SPEC CHECKSUMS:
   FirebaseInstallations: 6e4e77396559bc2ae0504823837ed737b1c7e47f
   FirebaseInstanceID: cf243611700eddc916b093353adbd4da822cfa63
   FirebaseMessaging: 68d1bcb14880189558a8ae57167abe0b7e417232
-  FirebaseMLCommon: 6d7ee249c9945f2a7b47fa22090c3a1611c08d58
-  FirebaseMLVision: 8fb6dced9cc214c61d2b22026e3456c8e0e08a75
+  FirebaseMLCommon: cbab07a0cfa19b982819fc9e030e6f3d569c23a6
+  FirebaseMLVision: f6611d6c1e1895604f9033809f8e3d328ccf697a
   FirebaseRemoteConfig: 826fad8bec5ce1912ef97a124d6ec0ce4dcf6ec1
   Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
   flutter_branch_sdk: ecbe8c173d747c9f8d18a74e72de96cc9159375f
