@@ -87,23 +87,26 @@ dependencies:
     git:
       url: git://github.com/leonardocustodio/home_widget.git
       ref: fix-build-ios
-  hive_flutter:
-    git:
-      url: git://github.com/hivedb/hive.git
-      path: hive_flutter
 
 dependency_overrides:
   intl: ^0.17.0
   extended_image: 1.5.0-dev
+  hive_flutter:
+    git:
+      url: git://github.com/justkawal/hive.git
+      path: hive_flutter
+      ref: 59ad5403593283233d922f62f76832c64fa33a3b
   sqflite:
     git:
-      url: https://www.github.com/davidmartos96/sqflite_sqlcipher.git
-      path: sqflite
-      ref: fmdb_override
+      url: https://www.github.com/justkawal/sqflite_sqlcipher.git
+      path: sqflite 
+      ref: bb2b0a
+      #ref: fmdb_override
   moor_ffi:
     git:
-      url: https://github.com/simolus3/moor.git
-      ref: beta
+      url: https://github.com/justkawal/moor.git
+      #ref: beta 
+      ref: 85206d
       path: moor_ffi
 
 dev_dependencies:
