@@ -7,7 +7,6 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
@@ -37,7 +36,6 @@ import 'package:picPics/stores/gallery_store.dart';
 
 import 'screens/all_tags_screen.dart';
 import 'stores/login_store.dart';
-import 'stores/pic_store.dart';
 import 'stores/pin_store.dart';
 import 'stores/tabs_store.dart';
 
