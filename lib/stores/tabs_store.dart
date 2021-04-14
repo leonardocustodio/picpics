@@ -1,14 +1,24 @@
 import 'package:background_fetch/background_fetch.dart';
+import 'package:convert/convert.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
+import 'package:moor/moor.dart';
+import 'package:cryptography_flutter/cryptography.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/utils/enum.dart';
+
+import '../constants.dart';
 
 class TabsStore extends GetxController {
   final currentTab = 0.obs;
@@ -24,6 +34,21 @@ class TabsStore extends GetxController {
   final isToggleBarVisible = true.obs;
   final isLoading = false.obs;
   final modalCard = false.obs;
+  final status = Status.Loading.obs;
+
+  var privatePhotoIdMap = <String, String>{};
+  final secretPicIds = <String, bool>{}.obs;
+  final selectedPics = <String, bool>{}.obs;
+  final photoPathMap = <String, String>{}.obs;
+
+  AppDatabase database = AppDatabase();
+  final allUnTaggedPics = <DateTime, RxList<String>>{}.obs;
+
+  // picId: assetPathEntity
+  final assetMap = <String, AssetEntity>{}.obs;
+  final picAssetOriginBytesMap = <String, Future<Uint8List>>{}.obs;
+  final picAssetThumbBytesMap = <String, Future<Uint8List>>{}.obs;
+  final starredPicMap = <String, bool>{}.obs;
 
   ScrollController scrollControllerThirdTab;
 
@@ -35,6 +60,7 @@ class TabsStore extends GetxController {
   @override
   void onInit() {
     initPlatformState();
+    loadAssetPath();
 
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (multiTagSheet.value) {
@@ -93,6 +119,143 @@ class TabsStore extends GetxController {
     refreshGridPositionThirdTab();
 
     super.onInit();
+  }
+
+  Future<void> getDataForPic(String picId) async {}
+
+  //@action
+  Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
+    if (assetsPath.isEmpty) {
+      status.value = Status.DeviceHasNoPics;
+      return;
+    }
+
+    AssetPathEntity assetPathEntity = assetsPath[0];
+
+    final List<AssetEntity> list = await assetPathEntity.getAssetListRange(
+        start: 0, end: assetPathEntity.assetCount);
+
+    list.sort((a, b) {
+      var year = b.createDateTime.year.compareTo(a.createDateTime.year);
+      if (year == 0) {
+        var month = b.createDateTime.month.compareTo(a.createDateTime.month);
+        if (month == 0) {
+          var day = b.createDateTime.day.compareTo(a.createDateTime.day);
+          return day;
+        }
+        return month;
+      }
+      return year;
+    });
+
+    database.getPrivatePhotoIdList().then((val) async {
+      val.forEach((photo) {
+        privatePhotoIdMap[photo.id] = '';
+      });
+      list.forEach((entity) async {
+        if (privatePhotoIdMap[entity.id] == null) {
+          var dateTime = DateTime.utc(
+              entity.createDateTime.year, entity.createDateTime.month);
+          if (allUnTaggedPics[dateTime] == null) {
+            allUnTaggedPics[dateTime] = RxList<String>();
+          }
+          assetMap[entity.id] = entity;
+          allUnTaggedPics[dateTime].add(entity.id);
+        }
+      });
+      status.value = Status.Loaded;
+    });
+  }
+
+  Future<void> explorePic(String picId) async {
+    var entity = assetMap[picId];
+    Photo pic = await database.getPhotoByPhotoId(entity.id);
+    if (pic != null) {
+      //print('pic $photoId exists, loading data....');
+      //Pic pic = picsBox.get(photoId);
+
+      /* latitude.value = pic.latitude;
+      longitude.value = pic.longitude;
+      specificLocation.value = pic.specificLocation;
+      generalLocation.value = pic.generalLocation;
+      isPrivate.value = pic.isPrivate ?? false;
+      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
+      isStarred.value = pic.isStarred ?? false; */
+
+      //print('Is private: $isPrivate');
+      for (String tagKey in pic.tags) {
+        TagsStore tagsStore = AppStore.to.tags[tagKey];
+        if (tagsStore == null) {
+          //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
+          continue;
+        }
+
+        /// TODO: tags[tagKey] = tagsStore;
+      }
+      if (pic.isPrivate == true) {
+        Private secretPic = await database.getPrivateByPhotoId(entity.id);
+
+        if (secretPic != null) {
+          var photoPath = secretPic.path;
+          var thumbPath = secretPic.thumbPath;
+          var nonce = secretPic.nonce;
+          secretPicIds[entity.id] = true;
+          photoPathMap[entity.id] = photoPath;
+          //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
+          picAssetOriginBytesMap[entity.id] =
+              assetOriginBytes(true, entity, nonce, photoPath);
+          //await Crypto.decryptImage(photoPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+          picAssetThumbBytesMap[entity.id] =
+              assetThumbBytes(true, entity, nonce, thumbPath);
+          //await Crypto.decryptImage(thumbPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+        }
+      }
+      return;
+    }
+    picAssetOriginBytesMap[entity.id] = assetOriginBytes(false, entity);
+    //await entity.originBytes;
+    picAssetThumbBytesMap[entity.id] = assetThumbBytes(false, entity);
+    //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+  }
+
+  Future<Uint8List> assetOriginBytes(bool isPrivate, AssetEntity entity,
+      [String nonce, String photoPath]) async {
+    if (isPrivate == false && entity != null) {
+      return await entity.originBytes;
+    }
+    //print('Returning decrypt image in privatePath: $photoPath');
+    return await Crypto.decryptImage(
+        photoPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+  }
+
+  Future<Uint8List> assetThumbBytes(bool isPrivate, AssetEntity entity,
+      [String nonce, String thumbPath]) async {
+    if (isPrivate == false && entity != null) {
+      return await entity.thumbDataWithSize(
+          kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+    }
+    //print('Returning decrypt image in privatePath: $thumbPath');
+    return await Crypto.decryptImage(
+        thumbPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+  }
+
+  Future<void> loadAssetPath() async {
+    FilterOptionGroup filterOptionGroup = FilterOptionGroup();
+    filterOptionGroup.addOrderOption(
+      OrderOption(
+        type: OrderOptionType.updateDate,
+        asc: false,
+      ),
+    );
+
+    final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
+      hasAll: true,
+      type: RequestType.image,
+      onlyAll: true,
+      filterOption: filterOptionGroup,
+    );
+
+    await loadEntities(assets);
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.

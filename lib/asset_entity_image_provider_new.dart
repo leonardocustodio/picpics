@@ -2,12 +2,13 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/pic_store.dart';
 
 @immutable
-class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
-  final PicStore picStore;
+class AssetEntityImageProviderKawal extends ImageProvider<AssetEntityImageProviderKawal> {
+  final AssetEntity entity;
 
   /// Scale for image provider.
   /// 缩放
@@ -16,12 +17,19 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// Size for thumb data.
   /// 缩略图的大小
   final List<int> thumbSize;
+  final String photoPath;
+
+  final Future<Uint8List> originBytes;
+  final Future<Uint8List> thumbBytes;
 
   /// Choose if original data or thumb data should be loaded.
   /// 选择载入原数据还是缩略图数据
   final bool isOriginal;
-  AssetEntityImageProvider(
-    this.picStore, {
+  AssetEntityImageProviderKawal(
+    this.entity, {
+    @required this.originBytes,
+    @required this.thumbBytes,
+    this.photoPath,
     this.scale = 1.0,
     this.thumbSize = kDefaultPreviewThumbSize,
     this.isOriginal = true,
@@ -38,30 +46,30 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   /// File type for the image asset, use it for some special type detection.
   /// 图片资源的类型，用于某些特殊类型的判断
-  ImageFileType get imageFileType => _getType();
+  //ImageFileType get imageFileType => _getType();
 
   @override
   ImageStreamCompleter load(
-      AssetEntityImageProvider key, DecoderCallback decode) {
+      AssetEntityImageProviderKawal key, DecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
       informationCollector: () {
         return <DiagnosticsNode>[
           DiagnosticsProperty<ImageProvider>('Image provider', this),
-          DiagnosticsProperty<AssetEntityImageProvider>('Image key', key),
+          DiagnosticsProperty<AssetEntityImageProviderKawal>('Image key', key),
         ];
       },
     );
   }
 
   @override
-  Future<AssetEntityImageProvider> obtainKey(ImageConfiguration configuration) {
-    return SynchronousFuture<AssetEntityImageProvider>(this);
+  Future<AssetEntityImageProviderKawal> obtainKey(ImageConfiguration configuration) {
+    return SynchronousFuture<AssetEntityImageProviderKawal>(this);
   }
 
   Future<ui.Codec> _loadAsync(
-    AssetEntityImageProvider key,
+    AssetEntityImageProviderKawal key,
     DecoderCallback decode,
   ) async {
     assert(key == this);
@@ -69,34 +77,37 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
     if (isOriginal ?? false) {
       //print('Loading original...');
-      data = picStore.isPrivate.value
-          ? await key.picStore.assetOriginBytes
-          : await key.picStore.entity.value.originBytes;
+      data = await originBytes;
+
+      /* isPrivate.value
+          ? await key.assetOriginBytes
+          : await key.entity.value.originBytes; */
     } else {
       //print('Loading thumbnail...');
-      if (picStore.entity == null) {
-        //print('Entity is null & isPrivate: ${picStore.isPrivate}');
-      }
-      data = picStore.isPrivate.value
-          ? await key.picStore.assetThumbBytes
-          : await key.picStore.entity.value
-              .thumbDataWithSize(thumbSize[0], thumbSize[1]);
+      /* if (entity == null) {
+        //print('Entity is null & isPrivate: ${isPrivate}');
+      } */
+      data = await thumbBytes;
+      /* isPrivate.value
+          ? await key.assetThumbBytes
+          : await key.entity.value
+              .thumbDataWithSize(thumbSize[0], thumbSize[1]); */
     }
 
-    // if (picStore.isPrivate == true) {
+    // if (isPrivate == true) {
     //print('entity is null!!!');
-    //   data = await key.picStore.assetOriginBytes;
+    //   data = await key.assetOriginBytes;
     //   return decode(data);
     // }
     //
     // if (isOriginal ?? false) {
     //   if (imageFileType == ImageFileType.heic) {
-    //     data = await (await key.picStore.entity.file).readAsBytes();
+    //     data = await (await key.entity.file).readAsBytes();
     //   } else {
-    //     data = await key.picStore.entity.originBytes;
+    //     data = await key.entity.originBytes;
     //   }
     // } else {
-    //   data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
+    //   data = await key.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     // }
     return decode(data);
   }
@@ -107,11 +118,11 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// ⚠ Not all the system version support read file name from the entity,
   /// so this method might not work sometime.
   /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的type。
-  ImageFileType _getType() {
+  /* ImageFileType _getType() {
     ImageFileType type;
-    final String extension = picStore.entity == null
-        ? picStore.photoPath?.split('.')?.last
-        : picStore.entity.value.title?.split('.')?.last;
+    final String extension = entity == null
+        ? photoPath?.split('.')?.last
+        : entity.value.title?.split('.')?.last;
     //print('Extension: $extension');
     if (extension != null) {
       switch (extension.toLowerCase()) {
@@ -137,29 +148,29 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       }
     }
     return type;
-  }
+  } */
 
   @override
   bool operator ==(dynamic other) {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    final AssetEntityImageProvider typedOther =
+    final AssetEntityImageProviderKawal typedOther =
         // ignore: test_types_in_equals
-        other as AssetEntityImageProvider;
+        other as AssetEntityImageProviderKawal;
 
-    if (picStore.entity == null) {
-      return picStore.photoPath == typedOther.picStore.photoPath;
+    if (entity == null) {
+      return photoPath == typedOther.photoPath;
     }
 
-    return picStore.entity == typedOther.picStore.entity &&
+    return entity == typedOther.entity &&
         scale == typedOther.scale &&
         thumbSize == typedOther.thumbSize &&
         isOriginal == typedOther.isOriginal;
   }
 
   @override
-  int get hashCode => hashValues(picStore.entity, scale, isOriginal);
+  int get hashCode => hashValues(entity, scale, isOriginal);
 }
 
 enum ImageFileType { jpg, png, gif, tiff, heic, other }
