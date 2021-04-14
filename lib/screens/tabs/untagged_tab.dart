@@ -41,81 +41,59 @@ class UntaggedTab extends GetWidget<TabsStore> {
       },
       child: Obx(
         () {
-          if (controller.toggleIndexUntagged.value == 0) {
-            if (controller.allUnTaggedPics.isEmpty) {
-              return Center(child: CircularProgressIndicator());
-            }
-            var keys = controller.allUnTaggedPics.entries;
+          if (controller.allUnTaggedPics.isEmpty) {
+            return Center(child: CircularProgressIndicator());
+          }
+          var isDay = controller.toggleIndexUntagged.value != 0;
 
-            //var width = (MediaQuery.of(context).size.width / 5) - 3;
-            return ListView.builder(
-              itemCount: controller.allUnTaggedPics.length,
-              physics: const CustomScrollPhysics(),
-              itemBuilder: (context, i) {
-                DateTime dateTime = keys.elementAt(i).key;
+          List<DateTime> keys = controller.allUnTaggedPics.keys.toList();
 
-                return StaggeredGridView.builder(
-                  //controller: scrollControllerFirstTab,
-                  physics: const CustomScrollPhysics(),
-                  padding: EdgeInsets.only(top: 82.0),
-                  gridDelegate:
-                      SliverStaggeredGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 5,
-                    mainAxisSpacing: 2.0,
-                    crossAxisSpacing: 2.0,
-                    staggeredTileBuilder: (int index) {
-                      if (index == 0) {
-                        return StaggeredTile.extent(5, 40.0);
-                      }
-                      return StaggeredTile.count(1, 1);
-                    },
-                  ),
-                  itemCount: controller.allUnTaggedPics[dateTime].length +
-                      (controller.allUnTaggedPics[dateTime].isNotEmpty ? 1 : 0),
-                  itemBuilder: (_, int index) {
-                    var picId = controller.allUnTaggedPics[dateTime][index + 1];
-                    return Obx(() {
-                      if (controller.picAssetThumbBytesMap[picId] == null) {
-                        return Container(
-                          //width: width,
-                          //height: width,
-                          padding: const EdgeInsets.all(10),
-                          color: kGreyPlaceholder,
-                          /* child: Center(
+          var width = (MediaQuery.of(context).size.width / (isDay ? 3 : 5)) - 3;
+          return ListView.builder(
+            itemCount: keys.length,
+            physics: const CustomScrollPhysics(),
+            itemBuilder: (context, index) {
+              DateTime dateTime = keys[index];
+
+              return Container(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildDateHeader(dateTime),
+                  Wrap(
+                    spacing: 3,
+                    runSpacing: 3,
+                    children: [
+                      for (var picId in controller.allUnTaggedPics[dateTime])
+                        Obx(() {
+                          if (controller.picAssetThumbBytesMap[picId] == null) {
+                            controller.explorePic(picId);
+                            return Container(
+                              width: width,
+                              height: width,
+                              padding: const EdgeInsets.all(10),
+                              color: kGreyPlaceholder,
+                              /* child: Center(
                                   child: CircularProgressIndicator(),
                                 ), */
-                        );
-                      }
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: Container(
-                          //width: width,
-                          //height: width,
-                          child: _buildItem2(picId),
-                        ),
-                      );
-                    });
-                  },
-                );
-                /* 
-                return Container(
-                    child: Column(
-                  children: [
-                    buildDateHeader(dateTime),
-                    Wrap(
-                      spacing: 3,
-                      runSpacing: 3,
-                      children: [
-                        for (var picId in controller.allUnTaggedPics[dateTime])
-                          
-                      ],
-                    ),
-                    const SizedBox(height: 20)
-                  ],
-                )); */
-              },
-            );
-          }
+                            );
+                          }
+                          return ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: Container(
+                              width: width,
+                              height: width,
+                              child: _buildItem2(picId),
+                            ),
+                          );
+                        }),
+                    ],
+                  ),
+                  const SizedBox(height: 20)
+                ],
+              ));
+            },
+          );
 
           return StaggeredGridView.builder(
             key: Key('day'),

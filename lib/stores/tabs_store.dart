@@ -154,8 +154,8 @@ class TabsStore extends GetxController {
       });
       list.forEach((entity) async {
         if (privatePhotoIdMap[entity.id] == null) {
-          var dateTime = DateTime.utc(
-              entity.createDateTime.year, entity.createDateTime.month);
+          var dateTime = DateTime.utc(entity.createDateTime.year,
+              entity.createDateTime.month, entity.createDateTime.day);
           if (allUnTaggedPics[dateTime] == null) {
             allUnTaggedPics[dateTime] = RxList<String>();
           }
