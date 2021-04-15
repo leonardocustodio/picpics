@@ -46,14 +46,13 @@ class UntaggedTab extends GetWidget<TabsStore> {
 
           List<DateTime> keys = controller.allUnTaggedPics.keys.toList();
 
-          var width =
-              (MediaQuery.of(context).size.width / (isMonth ? 5 : 3)) - 3;
+          var width = (Get.width / 5) - 2;
           return ListView.builder(
             itemCount: keys.length,
             physics: const CustomScrollPhysics(),
             itemBuilder: (context, index) {
               DateTime headerDateTime = keys[index];
-              if (isMonth) {
+              if (true) {
                 if (controller.allUnTaggedPics[headerDateTime]['extras'] ==
                     null) {
                   return Container();
@@ -64,37 +63,69 @@ class UntaggedTab extends GetWidget<TabsStore> {
                   children: [
                     buildDateHeader(headerDateTime),
                     Wrap(
-                      spacing: 3,
-                      runSpacing: 3,
+                      spacing: 0,
+                      runSpacing: 0,
                       children: [
                         for (var dateTime in controller
                             .allUnTaggedPics[headerDateTime]['extras']) ...[
-                          for (var picId in controller.allUnTaggedPics[dateTime]
-                              ['pics'])
-                            Obx(() {
-                              if (controller.picAssetThumbBytesMap[picId] ==
-                                  null) {
-                                controller.explorePic(picId);
-                                return Container(
-                                  width: width,
-                                  height: width,
-                                  padding: const EdgeInsets.all(10),
-                                  color: kGreyPlaceholder,
-                                  /* child: Center(
-                                  child: CircularProgressIndicator(),
-                                ), */
-                                );
-                              }
-                              return ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Container(
-                                  width: width,
-                                  height: width,
-                                  child: _buildItem2(picId),
-                                ),
-                              );
-                            }),
-                        ],
+                          if (!isMonth && headerDateTime != dateTime)
+                            AnimatedContainer(
+                                duration: Duration(milliseconds: 400),
+                                height: !isMonth ? 45 : 0,
+                                child: buildDateHeader(dateTime)),
+                          ...[
+                            for (var i = 0;
+                                i <
+                                    getLength(controller
+                                        .allUnTaggedPics[dateTime]['pics']
+                                        .length);
+                                i++)
+                              Obx(() {
+                                if (i >=
+                                    controller.allUnTaggedPics[dateTime]['pics']
+                                        .length) {
+                                  return AnimatedContainer(
+                                    duration: Duration(milliseconds: 190),
+                                    width: isMonth ? 0 : width,
+                                    height: isMonth ? 0 : width,
+                                  );
+                                }
+                                var picId = controller.allUnTaggedPics[dateTime]
+                                    ['pics'][i];
+                                if (controller.picAssetThumbBytesMap[picId] ==
+                                    null) {
+                                  controller.explorePic(picId);
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2, horizontal: 1),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(6),
+                                      child: Container(
+                                        width: width,
+                                        height: width,
+                                        padding: const EdgeInsets.all(10),
+                                        color: kGreyPlaceholder,
+                                        /* child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ), */
+                                      ),
+                                    ),
+                                  );
+                                }
+                                return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2, horizontal: 1),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(6),
+                                      child: Container(
+                                        width: width,
+                                        height: width,
+                                        child: _buildItem2(picId),
+                                      ),
+                                    ));
+                              }),
+                          ],
+                        ]
                       ],
                     ),
                     const SizedBox(height: 20)
@@ -751,5 +782,13 @@ class UntaggedTab extends GetWidget<TabsStore> {
         }),
       ),
     );
+  }
+}
+
+int getLength(int len) {
+  if ((len % 5) == 0) {
+    return len;
+  } else {
+    return (5 * (1 + (len ~/ 5)));
   }
 }
