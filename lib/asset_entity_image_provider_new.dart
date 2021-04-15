@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/stores/pic_store.dart';
 
 @immutable
 class AssetEntityImageProviderKawal extends ImageProvider<AssetEntityImageProviderKawal> {
