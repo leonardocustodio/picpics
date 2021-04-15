@@ -44,27 +44,77 @@ class UntaggedTab extends GetWidget<TabsStore> {
           if (controller.allUnTaggedPics.isEmpty) {
             return Center(child: CircularProgressIndicator());
           }
-          var isDay = controller.toggleIndexUntagged.value != 0;
+          var isMonth = controller.toggleIndexUntagged.value == 0;
 
           List<DateTime> keys = controller.allUnTaggedPics.keys.toList();
 
-          var width = (MediaQuery.of(context).size.width / (isDay ? 3 : 5)) - 3;
+          var width =
+              (MediaQuery.of(context).size.width / (isMonth ? 5 : 3)) - 3;
           return ListView.builder(
             itemCount: keys.length,
             physics: const CustomScrollPhysics(),
             itemBuilder: (context, index) {
-              DateTime dateTime = keys[index];
+              DateTime headerDateTime = keys[index];
+              if (isMonth) {
+                if (controller.allUnTaggedPics[headerDateTime]['extras'] ==
+                    null) {
+                  return Container();
+                }
+                return Container(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildDateHeader(headerDateTime),
+                    Wrap(
+                      spacing: 3,
+                      runSpacing: 3,
+                      children: [
+                        for (var dateTime in controller
+                            .allUnTaggedPics[headerDateTime]['extras']) ...[
+                          for (var picId in controller.allUnTaggedPics[dateTime]
+                              ['pics'])
+                            Obx(() {
+                              if (controller.picAssetThumbBytesMap[picId] ==
+                                  null) {
+                                controller.explorePic(picId);
+                                return Container(
+                                  width: width,
+                                  height: width,
+                                  padding: const EdgeInsets.all(10),
+                                  color: kGreyPlaceholder,
+                                  /* child: Center(
+                                  child: CircularProgressIndicator(),
+                                ), */
+                                );
+                              }
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Container(
+                                  width: width,
+                                  height: width,
+                                  child: _buildItem2(picId),
+                                ),
+                              );
+                            }),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 20)
+                  ],
+                ));
+              }
 
               return Container(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  buildDateHeader(dateTime),
+                  buildDateHeader(headerDateTime),
                   Wrap(
                     spacing: 3,
                     runSpacing: 3,
                     children: [
-                      for (var picId in controller.allUnTaggedPics[dateTime])
+                      for (var picId
+                          in controller.allUnTaggedPics[headerDateTime]['pics'])
                         Obx(() {
                           if (controller.picAssetThumbBytesMap[picId] == null) {
                             controller.explorePic(picId);

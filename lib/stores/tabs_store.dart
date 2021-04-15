@@ -42,7 +42,7 @@ class TabsStore extends GetxController {
   final photoPathMap = <String, String>{}.obs;
 
   AppDatabase database = AppDatabase();
-  final allUnTaggedPics = <DateTime, RxList<String>>{}.obs;
+  final allUnTaggedPics = <DateTime, RxMap<String, RxList<dynamic>>>{}.obs;
 
   // picId: assetPathEntity
   final assetMap = <String, AssetEntity>{}.obs;
@@ -152,15 +152,35 @@ class TabsStore extends GetxController {
       val.forEach((photo) {
         privatePhotoIdMap[photo.id] = '';
       });
-      list.forEach((entity) async {
+      DateTime mainDate;
+      DateTime previousDay;
+      list.forEach((entity) {
+        var add = false;
         if (privatePhotoIdMap[entity.id] == null) {
           var dateTime = DateTime.utc(entity.createDateTime.year,
               entity.createDateTime.month, entity.createDateTime.day);
           if (allUnTaggedPics[dateTime] == null) {
-            allUnTaggedPics[dateTime] = RxList<String>();
+            allUnTaggedPics[dateTime] = RxMap<String, RxList<dynamic>>();
+            add = true;
           }
+          if (allUnTaggedPics[dateTime]['pics'] == null) {
+            allUnTaggedPics[dateTime]['pics'] = RxList<dynamic>();
+          }
+
+          allUnTaggedPics[dateTime]['pics'].add(entity.id);
+          if (mainDate == null || mainDate.month != dateTime.month) {
+            mainDate = dateTime;
+            if (allUnTaggedPics[dateTime]['extras'] == null) {
+              allUnTaggedPics[dateTime]['extras'] = RxList<dynamic>();
+            }
+            allUnTaggedPics[mainDate]['extras'].add(dateTime);
+          } else {
+            if (add) {
+              allUnTaggedPics[mainDate]['extras'].add(dateTime);
+            }
+          }
+
           assetMap[entity.id] = entity;
-          allUnTaggedPics[dateTime].add(entity.id);
         }
       });
       status.value = Status.Loaded;
@@ -168,8 +188,7 @@ class TabsStore extends GetxController {
   }
 
   Future<void> explorePic(String picId) async {
-    var entity = assetMap[picId];
-    Photo pic = await database.getPhotoByPhotoId(entity.id);
+    Photo pic = await database.getPhotoByPhotoId(assetMap[picId].id);
     if (pic != null) {
       //print('pic $photoId exists, loading data....');
       //Pic pic = picsBox.get(photoId);
@@ -193,28 +212,31 @@ class TabsStore extends GetxController {
         /// TODO: tags[tagKey] = tagsStore;
       }
       if (pic.isPrivate == true) {
-        Private secretPic = await database.getPrivateByPhotoId(entity.id);
+        Private secretPic =
+            await database.getPrivateByPhotoId(assetMap[picId].id);
 
         if (secretPic != null) {
           var photoPath = secretPic.path;
           var thumbPath = secretPic.thumbPath;
           var nonce = secretPic.nonce;
-          secretPicIds[entity.id] = true;
-          photoPathMap[entity.id] = photoPath;
+          secretPicIds[assetMap[picId].id] = true;
+          photoPathMap[assetMap[picId].id] = photoPath;
           //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
-          picAssetOriginBytesMap[entity.id] =
-              assetOriginBytes(true, entity, nonce, photoPath);
+          picAssetOriginBytesMap[assetMap[picId].id] =
+              assetOriginBytes(true, assetMap[picId], nonce, photoPath);
           //await Crypto.decryptImage(photoPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
-          picAssetThumbBytesMap[entity.id] =
-              assetThumbBytes(true, entity, nonce, thumbPath);
+          picAssetThumbBytesMap[assetMap[picId].id] =
+              assetThumbBytes(true, assetMap[picId], nonce, thumbPath);
           //await Crypto.decryptImage(thumbPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
         }
       }
       return;
     }
-    picAssetOriginBytesMap[entity.id] = assetOriginBytes(false, entity);
+    picAssetOriginBytesMap[assetMap[picId].id] =
+        assetOriginBytes(false, assetMap[picId]);
     //await entity.originBytes;
-    picAssetThumbBytesMap[entity.id] = assetThumbBytes(false, entity);
+    picAssetThumbBytesMap[assetMap[picId].id] =
+        assetThumbBytes(false, assetMap[picId]);
     //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
   }
 
