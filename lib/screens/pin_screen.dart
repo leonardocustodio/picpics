@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/email_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -119,7 +119,7 @@ class PinScreen extends GetWidget<PinStore> {
           if (controller.isWaitingRecoveryKey != true) ...[
             CupertinoButton(
               onPressed: () {
-                if (AppStore.to.email == null) {
+                if (UserController.to.email == null) {
                   controller.askEmail();
                   return;
                 }
@@ -158,7 +158,7 @@ class PinScreen extends GetWidget<PinStore> {
 
         if (controller.recoveryCode.value.length == 6) {
           // set true
-          bool valid = await controller.isRecoveryCodeValid(AppStore.to);
+          bool valid = await controller.isRecoveryCodeValid(UserController.to);
 
           if (valid) {
             carouselController.nextPage();
@@ -200,17 +200,17 @@ class PinScreen extends GetWidget<PinStore> {
           //print('Setting new pin!!!!!');
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
-          AppStore.to.setEmail(controller.email
+          UserController.to.setEmail(controller.email
               .value); // Tem que deixar antes pois é utilizado quando salva o pin
 
-          await controller.saveNewPin(AppStore.to);
+          await controller.saveNewPin(UserController.to);
 
-          AppStore.to.setIsPinRegistered(true);
-          AppStore.to.switchSecretPhotos();
+          UserController.to.setIsPinRegistered(true);
+          UserController.to.switchSecretPhotos();
           GalleryStore.to.checkIsLibraryUpdated();
           controller.setPinTemp('');
           controller.setConfirmPinTemp('');
-          AppStore.to.setWaitingAccessCode(false);
+          UserController.to.setWaitingAccessCode(false);
           carouselController.animateToPage(0);
 
           Get.back();
@@ -228,7 +228,7 @@ class PinScreen extends GetWidget<PinStore> {
       return;
     }
 
-    if (AppStore.to.isPinRegistered == true) {
+    if (UserController.to.isPinRegistered == true) {
       if (value == '\u0008') {
         controller
             .setPinTemp(Helpers.removeLastCharacter(controller.pinTemp.value));
@@ -238,12 +238,12 @@ class PinScreen extends GetWidget<PinStore> {
 
       if (controller.pinTemp.value.length == 6) {
         // set true
-        bool valid = await controller.isPinValid(AppStore.to);
+        bool valid = await controller.isPinValid(UserController.to);
 
         if (valid) {
-          if (AppStore.to.wantsToActivateBiometric) {
-            await controller.activateBiometric(AppStore.to);
-            await AppStore.to.setIsBiometricActivated(true);
+          if (UserController.to.wantsToActivateBiometric) {
+            await controller.activateBiometric(UserController.to);
+            await UserController.to.setIsBiometricActivated(true);
 
             controller.setPinTemp('');
             controller.setConfirmPinTemp('');
@@ -251,7 +251,7 @@ class PinScreen extends GetWidget<PinStore> {
             return;
           }
 
-          AppStore.to.switchSecretPhotos();
+          UserController.to.switchSecretPhotos();
           GalleryStore.to.checkIsLibraryUpdated();
 
           controller.setPinTemp('');
@@ -267,7 +267,7 @@ class PinScreen extends GetWidget<PinStore> {
       return;
     }
 
-    if (AppStore.to.waitingAccessCode == true) {
+    if (UserController.to.waitingAccessCode == true) {
       if (value == '\u0008') {
         controller.setAccessCode(
             Helpers.removeLastCharacter(controller.accessCode.value));
@@ -420,17 +420,17 @@ class PinScreen extends GetWidget<PinStore> {
                         // );
                       }
 
-                      if (AppStore.to.isPinRegistered == true) {
+                      if (UserController.to.isPinRegistered == true) {
                         String assetImage;
 
-                        if (AppStore.to.isBiometricActivated == true) {
-                          if (AppStore.to.availableBiometrics
+                        if (UserController.to.isBiometricActivated == true) {
+                          if (UserController.to.availableBiometrics
                               .contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (AppStore.to.availableBiometrics
+                          } else if (UserController.to.availableBiometrics
                               .contains(BiometricType.iris)) {
                             assetImage = 'lib/images/irisscannerwhiteico.png';
-                          } else if (AppStore.to.availableBiometrics
+                          } else if (UserController.to.availableBiometrics
                               .contains(BiometricType.fingerprint)) {
                             assetImage = 'lib/images/fingerprintwhiteico.png';
                           }
@@ -477,7 +477,8 @@ class PinScreen extends GetWidget<PinStore> {
                                 },
                                 child: Image.asset(assetImage),
                               ),
-                            if (AppStore.to.wantsToActivateBiometric != true)
+                            if (UserController.to.wantsToActivateBiometric !=
+                                true)
                               CupertinoButton(
                                 onPressed: () {
                                   controller.recoverPin();
@@ -500,7 +501,7 @@ class PinScreen extends GetWidget<PinStore> {
                         );
                       }
 
-                      if (AppStore.to.waitingAccessCode == false) {
+                      if (UserController.to.waitingAccessCode == false) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 2,

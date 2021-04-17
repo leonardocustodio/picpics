@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tags_store.dart';
@@ -31,7 +31,7 @@ class AllTagsStore extends GetxController {
     }
     searchedTags.value.clear();
     var listOfLetters = searchedText.value.toLowerCase().split('');
-    (!doFullSearching.value ? tempTags : AppStore.to.tags).forEach(
+    (!doFullSearching.value ? tempTags : UserController.to.tags).forEach(
       (key, value) => doCustomisedSearching(
         value,
         listOfLetters,
@@ -56,7 +56,7 @@ class AllTagsScreen extends GetWidget<AllTagsStore> {
 }
 
 class _AllTagsScreenState extends State<AllTagsScreen> { */
-/*   AppStore AppStore.to;
+/*   UserController UserController.to;
   TabsStore tabsStore;
   GalleryStore GalleryStore.to; */
   FocusNode focusNode = FocusNode();
@@ -71,8 +71,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
 /*   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    AppStore.to = Provider.of<AppStore>(context);
-    AppStore.to.loadTags();
+    UserController.to = Provider.of<UserController>(context);
+    UserController.to.loadTags();
     tabsStore = Provider.of<TabsStore>(context);
     GalleryStore.to = Provider.of<GalleryStore>(context);
 
@@ -181,7 +181,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                         /* 
                                         searchedText = text.trim();
                                         if (searchedText != '') {
-                                          AppStore.to.tags.forEach((key, value) {
+                                          UserController.to.tags.forEach((key, value) {
                                             if (value.name
                                                 .toLowerCase()
                                                 .startsWith(searchedText
@@ -194,7 +194,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                         }
                                         // */
                                       },
-                                      /* suggestions: AppStore.to.tags.values
+                                      /* suggestions: UserController.to.tags.values
                                           .map((e) => e.name)
                                           .toList(),
                                       clearOnSubmit: false,
@@ -294,7 +294,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                         onTap: (String tagId, String tagName, int count,
                             DateTime time) async {
                           //print('do nothing');
-                          if (!AppStore.to.canTagToday.value) {
+                          if (!UserController.to.canTagToday.value) {
                             showWatchAdModal(context);
                             return;
                           }
@@ -312,7 +312,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             await GalleryStore.to.addTagToPic(
                                 picStore: picStore, tagName: tagName);
                           }
-                          AppStore.to.loadTags();
+                          UserController.to.loadTags();
                         },
                         onDoubleTap: () {
                           //print('do nothing');
@@ -342,12 +342,12 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: AppStore.to.mostUsedTags,
+                            tags: UserController.to.mostUsedTags,
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!AppStore.to.canTagToday) {
+                              /* if (!UserController.to.canTagToday) {
                             showWatchAdModal(context);
                             return;
                           } */
@@ -368,7 +368,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 await GalleryStore.to.addTagToPic(
                                     picStore: picStore, tagName: tagName);
                               }
-                              AppStore.to.loadTags();
+                              UserController.to.loadTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
@@ -379,10 +379,10 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                       );
                     },
                   ),
-                if (AppStore.to.lastWeekUsedTags.isNotEmpty &&
+                if (UserController.to.lastWeekUsedTags.isNotEmpty &&
                     controller.searchedText.value == '')
                   const SizedBox(height: 20),
-                if (AppStore.to.lastWeekUsedTags.isNotEmpty &&
+                if (UserController.to.lastWeekUsedTags.isNotEmpty &&
                     controller.searchedText.value == '')
                   Obx(
                     () {
@@ -404,12 +404,12 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: AppStore.to.lastWeekUsedTags,
+                            tags: UserController.to.lastWeekUsedTags,
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!AppStore.to.canTagToday) {
+                              /* if (!UserController.to.canTagToday) {
                             showWatchAdModal(context);
                             return;
                           } */
@@ -430,7 +430,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 await GalleryStore.to.addTagToPic(
                                     picStore: picStore, tagName: tagName);
                               }
-                              AppStore.to.loadTags();
+                              UserController.to.loadTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
@@ -441,10 +441,10 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                       );
                     },
                   ),
-                if (AppStore.to.lastMonthUsedTags.isNotEmpty &&
+                if (UserController.to.lastMonthUsedTags.isNotEmpty &&
                     controller.searchedText.value == '')
                   const SizedBox(height: 20),
-                if (AppStore.to.lastMonthUsedTags.isNotEmpty &&
+                if (UserController.to.lastMonthUsedTags.isNotEmpty &&
                     controller.searchedText.value == '')
                   Obx(
                     () {
@@ -466,12 +466,12 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: AppStore.to.lastWeekUsedTags,
+                            tags: UserController.to.lastWeekUsedTags,
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!AppStore.to.canTagToday) {
+                              /* if (!UserController.to.canTagToday) {
                             showWatchAdModal(context);
                             return;
                           } */
@@ -492,7 +492,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 await GalleryStore.to.addTagToPic(
                                     picStore: picStore, tagName: tagName);
                               }
-                              AppStore.to.loadTags();
+                              UserController.to.loadTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
@@ -526,12 +526,12 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: AppStore.to.tags.values.toList(),
+                            tags: UserController.to.tags.values.toList(),
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!AppStore.to.canTagToday) {
+                              /* if (!UserController.to.canTagToday) {
                             showWatchAdModal(context);
                             return;
                           } */
@@ -552,7 +552,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 await GalleryStore.to.addTagToPic(
                                     picStore: picStore, tagName: tagName);
                               }
-                              AppStore.to.loadTags();
+                              UserController.to.loadTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');

@@ -17,7 +17,9 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
+import 'package:shimmer/shimmer.dart';
 
+// ignore: must_be_immutable
 class UntaggedTab extends GetWidget<TabsStore> {
   static const id = 'untagged_tab';
 
@@ -39,13 +41,98 @@ class UntaggedTab extends GetWidget<TabsStore> {
       },
       child: Obx(
         () {
-          if (controller.allUnTaggedPics.isEmpty) {
+          if (controller.allUnTaggedPicsMonth.isEmpty) {
             return Center(child: CircularProgressIndicator());
           }
           var isMonth = controller.toggleIndexUntagged.value == 0;
+          var monthKeys = controller.allUnTaggedPicsMonth.entries.toList();
+          var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
+          if (isMonth) {
+            return StaggeredGridView.builder(
+                key: Key('Month'),
+                //controller: scrollControllerFirstTab,
+                physics: const CustomScrollPhysics(),
+                padding: EdgeInsets.only(top: 2),
+                addAutomaticKeepAlives: true,
+                itemCount: controller.allUnTaggedPicsMonth.length,
+                gridDelegate:
+                    SliverStaggeredGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5,
+                  mainAxisSpacing: 0,
+                  crossAxisSpacing: 0,
+                  staggeredTileBuilder: (int index) {
+                    if (index == 0 || monthKeys[index].key is DateTime) {
+                      return StaggeredTile.extent(5, 40);
+                    }
+                    return StaggeredTile.count(1, 1);
+                  },
+                ),
+                itemBuilder: (_, int index) {
+                  if (index == 0 || monthKeys[index].key is DateTime) {
+                    return buildDateHeader(monthKeys[index].key);
+                  }
+                  return Obx(() {
+                    if (controller
+                            .picAssetThumbBytesMap[monthKeys[index].key] ==
+                        null) {
+                      controller.exploreThumbPic(monthKeys[index].key);
+                      return greyWidget;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          child: _buildItem2(monthKeys[index].key),
+                        ),
+                      ),
+                    );
+                  });
+                });
+          } else {
+            return StaggeredGridView.builder(
+                key: Key('Day'),
+                //controller: scrollControllerFirstTab,
+                physics: const CustomScrollPhysics(),
+                padding: EdgeInsets.only(top: 2),
+                itemCount: controller.allUnTaggedPicsDay.length,
+                addAutomaticKeepAlives: true,
+                gridDelegate:
+                    SliverStaggeredGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 5,
+                  mainAxisSpacing: 0,
+                  crossAxisSpacing: 0,
+                  staggeredTileBuilder: (int index) {
+                    if (index == 0 || dayKeys[index].key is DateTime) {
+                      return StaggeredTile.extent(5, 40);
+                    }
+                    return StaggeredTile.count(1, 1);
+                  },
+                ),
+                itemBuilder: (_, int index) {
+                  if (index == 0 || dayKeys[index].key is DateTime) {
+                    return buildDateHeader(dayKeys[index].key);
+                  }
+                  return Obx(() {
+                    if (controller.picAssetThumbBytesMap[dayKeys[index].key] ==
+                        null) {
+                      controller.exploreThumbPic(dayKeys[index].key);
+                      return greyWidget;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          child: _buildItem2(dayKeys[index].key),
+                        ),
+                      ),
+                    );
+                  });
+                });
+          }
 
-          List<DateTime> keys = controller.allUnTaggedPics.keys.toList();
-
+          /* 
           var width = (Get.width / 5) - 2;
           return ListView.builder(
             itemCount: keys.length,
@@ -53,7 +140,7 @@ class UntaggedTab extends GetWidget<TabsStore> {
             itemBuilder: (context, index) {
               DateTime headerDateTime = keys[index];
               if (true) {
-                if (controller.allUnTaggedPics[headerDateTime]['extras'] ==
+                if (controller.allUnTaggedPicsMonth[headerDateTime]['extras'] ==
                     null) {
                   return Container();
                 }
@@ -67,7 +154,7 @@ class UntaggedTab extends GetWidget<TabsStore> {
                       runSpacing: 0,
                       children: [
                         for (var dateTime in controller
-                            .allUnTaggedPics[headerDateTime]['extras']) ...[
+                            .allUnTaggedPicsMonth[headerDateTime]['extras']) ...[
                           if (!isMonth && headerDateTime != dateTime)
                             AnimatedContainer(
                                 duration: Duration(milliseconds: 400),
@@ -77,12 +164,12 @@ class UntaggedTab extends GetWidget<TabsStore> {
                             for (var i = 0;
                                 i <
                                     getLength(controller
-                                        .allUnTaggedPics[dateTime]['pics']
+                                        .allUnTaggedPicsMonth[dateTime]['pics']
                                         .length);
                                 i++)
                               Obx(() {
                                 if (i >=
-                                    controller.allUnTaggedPics[dateTime]['pics']
+                                    controller.allUnTaggedPicsMonth[dateTime]['pics']
                                         .length) {
                                   return AnimatedContainer(
                                     duration: Duration(milliseconds: 190),
@@ -90,7 +177,7 @@ class UntaggedTab extends GetWidget<TabsStore> {
                                     height: isMonth ? 0 : width,
                                   );
                                 }
-                                var picId = controller.allUnTaggedPics[dateTime]
+                                var picId = controller.allUnTaggedPicsMonth[dateTime]
                                     ['pics'][i];
                                 if (controller.picAssetThumbBytesMap[picId] ==
                                     null) {
@@ -143,7 +230,7 @@ class UntaggedTab extends GetWidget<TabsStore> {
                     runSpacing: 3,
                     children: [
                       for (var picId
-                          in controller.allUnTaggedPics[headerDateTime]['pics'])
+                          in controller.allUnTaggedPicsMonth[headerDateTime]['pics'])
                         Obx(() {
                           if (controller.picAssetThumbBytesMap[picId] == null) {
                             controller.explorePic(picId);
@@ -172,37 +259,7 @@ class UntaggedTab extends GetWidget<TabsStore> {
                 ],
               ));
             },
-          );
-
-          return StaggeredGridView.builder(
-            key: Key('day'),
-            //controller: scrollControllerFirstTab,
-            //physics: const CustomScrollPhysics(),
-            padding: EdgeInsets.only(top: 82.0),
-            gridDelegate: SliverStaggeredGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 2.0,
-              crossAxisSpacing: 2.0,
-              staggeredTileBuilder: (int index) {
-                PicStore picStore =
-                    GalleryStore.to.untaggedGridPics[index].picStore;
-                if (picStore == null) {
-                  return StaggeredTile.fit(3);
-                }
-                return StaggeredTile.count(1, 1);
-              },
-            ),
-            itemCount: GalleryStore.to?.untaggedGridPics?.length ?? 0,
-            itemBuilder: (BuildContext context, int index) {
-              PicStore picStore =
-                  GalleryStore.to.untaggedGridPics[index].picStore;
-              if (picStore == null)
-                return buildDateHeader(
-                    GalleryStore.to.untaggedGridPics[index].date);
-              return Container() //_buildItem(picStore)
-                  ;
-            },
-          );
+          ); */
         },
       ),
     );
@@ -254,7 +311,7 @@ class UntaggedTab extends GetWidget<TabsStore> {
       ),
     );
   }
-
+/* 
   Widget _buildItem(String picId) {
     var image = FutureBuilder<Uint8List>(
       future: controller.assetMap[picId].thumbData,
@@ -365,10 +422,9 @@ class UntaggedTab extends GetWidget<TabsStore> {
         );
       }(),
     );
-  }
+  } */
 
   Widget _buildItem2(String picId) {
-//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
     final AssetEntityImageProviderKawal imageProvider =
         AssetEntityImageProviderKawal(controller.assetMap[picId],
@@ -379,18 +435,25 @@ class UntaggedTab extends GetWidget<TabsStore> {
 
     return RepaintBoundary(
       child: ExtendedImage(
+        clearMemoryCacheWhenDispose: true,
+        //handleLoadingProgress: true,
         image: imageProvider,
         fit: BoxFit.cover,
         loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = const ColoredBox(color: kGreyPlaceholder);
-              break;
-            case LoadState.completed:
-              loader = FadeImageBuilder(
-                child: () {
-                  return GestureDetector(
+          return () {
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey,
+                  highlightColor: Colors.grey[100],
+                  period: const Duration(milliseconds: 600),
+                  loop: 50,
+                  enabled: true,
+                  child: greyWidget,
+                );
+              case LoadState.completed:
+                return FadeImageBuilder(
+                  child: GestureDetector(
                     onLongPress: () {
                       //print('LongPress');
                       if (controller.multiPicBar.value == false) {
@@ -489,15 +552,15 @@ class UntaggedTab extends GetWidget<TabsStore> {
                         );
                       }),
                     ),
-                  );
-                }(),
-              );
-              break;
-            case LoadState.failed:
-              loader = _failedItem;
-              break;
-          }
-          return loader;
+                  ),
+                );
+                break;
+              case LoadState.failed:
+                return _failedItem;
+              default:
+                return _failedItem;
+            }
+          }();
         },
       ),
     );

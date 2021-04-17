@@ -26,7 +26,7 @@ class TutsPicTab extends StatefulWidget {
 }
 
 class _TutsPicTabState extends State<TutsPicTab> {
-  AppStore appStore;
+  UserController appStore;
   GalleryStore galleryStore;
   CarouselController carouselController = CarouselController();
   ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
@@ -50,7 +50,7 @@ class _TutsPicTabState extends State<TutsPicTab> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = Provider.of<UserController>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
     disposer = reaction((_) => galleryStore.trashedPic, (trashedPic) {

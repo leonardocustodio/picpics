@@ -27,7 +27,7 @@ class TutsAddLocationScreen extends StatefulWidget {
 }
 
 class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
-  AppStore appStore;
+  UserController appStore;
   GalleryStore galleryStore;
   PicStore get picStore => galleryStore.currentPic;
 
@@ -177,7 +177,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = Provider.of<UserController>(context);
     galleryStore = Provider.of<GalleryStore>(context);
     findInitialCamera();
   }

@@ -31,7 +31,7 @@ import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
 import 'screens/all_tags_screen.dart';
@@ -39,7 +39,7 @@ import 'stores/login_store.dart';
 import 'stores/pin_store.dart';
 import 'stores/tabs_store.dart';
 
-Future<String> checkForAppStoreInitiatedProducts() async {
+Future<String> checkForUserControllerInitiatedProducts() async {
   //print('Checking if appstore initiated products');
   List<IAPItem> appStoreProducts =
       await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
@@ -60,7 +60,7 @@ String initialRoute = LoginScreen.id;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Get.lazyPut(() => AppStore());
+  Get.lazyPut(() => UserController());
   Get.lazyPut(() => GalleryStore());
   Get.lazyPut(() => PinStore());
   Get.lazyPut(() => LoginStore());
@@ -189,9 +189,9 @@ void main() async {
 
   String initiatedWithProduct;
   if (Platform.isIOS) {
-    initiatedWithProduct = await checkForAppStoreInitiatedProducts();
+    initiatedWithProduct = await checkForUserControllerInitiatedProducts();
   }
-  AppStore appStore = AppStore()
+  UserController appStore = UserController()
     ..appVersion = appVersion
     ..deviceLocale = deviceLocale
     ..initiatedWithProduct = initiatedWithProduct;
@@ -229,7 +229,7 @@ void main() async {
 }
 
 class PicPicsApp extends StatefulWidget {
-  final AppStore appStore;
+  final UserController appStore;
   const PicPicsApp({@required this.appStore});
 
   @override

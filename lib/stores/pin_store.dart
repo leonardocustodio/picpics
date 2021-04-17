@@ -9,7 +9,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:picPics/widgets/general_modal.dart';
@@ -43,8 +43,8 @@ class PinStore extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    if (AppStore.to.isPinRegistered.value == true &&
-        AppStore.to.isBiometricActivated.value == true) {
+    if (UserController.to.isPinRegistered.value == true &&
+        UserController.to.isBiometricActivated.value == true) {
       authenticate();
     }
   }
@@ -125,7 +125,7 @@ class PinStore extends GetxController {
   }
 
   //@action
-  Future<bool> isRecoveryCodeValid(AppStore appStore) async {
+  Future<bool> isRecoveryCodeValid(UserController appStore) async {
     //print('Typed Recovery Code: $recoveryCode');
 
     bool valid = await Crypto.checkRecoveryKey(
@@ -137,7 +137,7 @@ class PinStore extends GetxController {
   }
 
   //@action
-  Future<void> saveNewPin(AppStore appStore) async {
+  Future<void> saveNewPin(UserController appStore) async {
     await Crypto.reSaveSpKey(pin, appStore);
     appStore.setTempEncryptionKey(null);
     pin = null;
@@ -179,7 +179,7 @@ class PinStore extends GetxController {
   }
 
   //@action
-  Future<bool> _validateAccessCode(AppStore appStore) async {
+  Future<bool> _validateAccessCode(UserController appStore) async {
     final HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('validateAccessCode');
     //. = const Duration(seconds: 30);
@@ -222,18 +222,18 @@ class PinStore extends GetxController {
   }
 
   //@action
-  Future<bool> isPinValid(AppStore appStore) async {
+  Future<bool> isPinValid(UserController appStore) async {
     bool valid = await Crypto.checkIsPinValid(pinTemp.value, appStore);
     return valid;
   }
 
   //@action
-  Future<void> activateBiometric(AppStore appStore) async {
+  Future<void> activateBiometric(UserController appStore) async {
     await Crypto.saveEncryptedPin(pinTemp.value, appStore);
   }
 
   //@action
-  Future<bool> isBiometricValidated(AppStore appStore) async {
+  Future<bool> isBiometricValidated(UserController appStore) async {
     String pin = await Crypto.getEncryptedPin(appStore);
     if (pin == null) {
       return false;
@@ -249,13 +249,13 @@ class PinStore extends GetxController {
   }
 
   void cancelAuthentication() {
-    AppStore.to.biometricAuth.stopAuthentication();
+    UserController.to.biometricAuth.stopAuthentication();
   }
 
   Future<void> validateAccessCode() async {
     isLoading.value = true;
 
-    bool valid = await _validateAccessCode(AppStore.to);
+    bool valid = await _validateAccessCode(UserController.to);
 
     setAccessCode('');
 
@@ -302,7 +302,8 @@ class PinStore extends GetxController {
   Future<void> recoverPin() async {
     isLoading.value = true;
 
-    bool request = await requestRecoveryKey(AppStore.to.email ?? email.value);
+    bool request =
+        await requestRecoveryKey(UserController.to.email ?? email.value);
 
     isLoading.value = false;
 
@@ -315,12 +316,12 @@ class PinStore extends GetxController {
   }
 
   void setPinAndPop() {
-    AppStore.to.setEmail(email.value);
-    AppStore.to.setIsPinRegistered(true);
-    AppStore.to.switchSecretPhotos();
-    AppStore.to.setWaitingAccessCode(false);
+    UserController.to.setEmail(email.value);
+    UserController.to.setIsPinRegistered(true);
+    UserController.to.switchSecretPhotos();
+    UserController.to.setWaitingAccessCode(false);
 
-    if (AppStore.to.popPinScreen == PopPinScreenTo.SettingsScreen) {
+    if (UserController.to.popPinScreen == PopPinScreenTo.SettingsScreen) {
       Navigator.popUntil(Get.context, ModalRoute.withName(SettingsScreen.id));
     } else {
       Navigator.popUntil(Get.context, ModalRoute.withName(TabsScreen.id));
@@ -368,17 +369,17 @@ class PinStore extends GetxController {
   Future<void> authenticate() async {
     try {
       bool authenticated =
-          await AppStore.to.biometricAuth.authenticateWithBiometrics(
+          await UserController.to.biometricAuth.authenticateWithBiometrics(
         localizedReason: 'Scan your fingerprint to authenticate',
         useErrorDialogs: true,
         stickyAuth: true,
       );
 
       if (authenticated == true) {
-        bool valid = await isBiometricValidated(AppStore.to);
+        bool valid = await isBiometricValidated(UserController.to);
 
         if (valid == true) {
-          AppStore.to.switchSecretPhotos();
+          UserController.to.switchSecretPhotos();
           GalleryStore.to.checkIsLibraryUpdated();
           setPinTemp('');
           setConfirmPinTemp('');

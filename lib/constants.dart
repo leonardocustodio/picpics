@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 
 const List<int> kDefaultPhotoSize = <int>[600, 600];
-const List<int> kDefaultPreviewThumbSize = <int>[150, 150];
+const List<int> kDefaultPreviewThumbSize = <int>[100, 100];
+
+final greyWidget = Padding(
+  padding: const EdgeInsets.all(2),
+  child: Container(
+    padding: const EdgeInsets.all(10),
+    color: Colors.grey[300],
+  ),
+);
 
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;

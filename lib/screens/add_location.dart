@@ -12,7 +12,7 @@ import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 
@@ -28,7 +28,7 @@ class AddLocationScreen extends StatefulWidget {
 }
 
 class _AddLocationScreenState extends State<AddLocationScreen> {
-  AppStore appStore;
+  UserController appStore;
   GalleryStore galleryStore;
   PicStore get picStore => galleryStore.currentPic;
 
@@ -178,7 +178,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = AppStore.to;
+    appStore = UserController.to;
     galleryStore = GalleryStore.to;
     findInitialCamera();
   }

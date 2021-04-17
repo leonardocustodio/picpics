@@ -17,7 +17,7 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/labels.dart';
@@ -107,9 +107,9 @@ class PicStore extends GetxController {
       var bytes = await entity.value.thumbDataWithSize(300, 300);
       String encoded = base64.encode(bytes);
       base64encoded = encoded;
-      AppStore.to.addToStarredPhotos(photoId.value);
+      UserController.to.addToStarredPhotos(photoId.value);
     } else {
-      AppStore.to.removeFromStarredPhotos(photoId.value);
+      UserController.to.removeFromStarredPhotos(photoId.value);
     }
 
     isStarred.value = value;
@@ -179,7 +179,7 @@ class PicStore extends GetxController {
     }
     //print('Returning decrypt image in privatePath: $photoPath');
     return await Crypto.decryptImage(
-        photoPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+        photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
   Future<Uint8List> get assetThumbBytes async {
@@ -189,7 +189,7 @@ class PicStore extends GetxController {
     }
     //print('Returning decrypt image in privatePath: $thumbPath');
     return await Crypto.decryptImage(
-        thumbPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+        thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
   String photoPath;
@@ -227,7 +227,7 @@ class PicStore extends GetxController {
     thumbPath = thumbnailPath;
     nonce = picNonce;
 
-    if (AppStore.to.shouldDeleteOnPrivate == true) {
+    if (UserController.to.shouldDeleteOnPrivate == true) {
       //print('**** Deleted original pic!!!');
       if (Platform.isAndroid) {
         PhotoManager.editor.deleteWithIds([entity.value.id]);
@@ -324,7 +324,7 @@ class PicStore extends GetxController {
       }
 
       for (String tagKey in pic.tags) {
-        TagsStore tagsStore = AppStore.to.tags[tagKey];
+        TagsStore tagsStore = UserController.to.tags[tagKey];
         if (tagsStore == null) {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
@@ -404,7 +404,7 @@ class PicStore extends GetxController {
       var suggestionTags = <String>[];
       var tagsKeys = tags.keys.toList();
 
-      for (var recent in AppStore.to.recentTags) {
+      for (var recent in UserController.to.recentTags) {
         if (tagsKeys.contains(recent)) continue;
         suggestionTags.add(recent);
       }
@@ -430,7 +430,7 @@ class PicStore extends GetxController {
       }
 
       for (String tagId in suggestionTags) {
-        suggestions.add(AppStore.to.tags[tagId]);
+        suggestions.add(UserController.to.tags[tagId]);
       }
 
       tagsSuggestions.value = suggestions;
@@ -444,8 +444,8 @@ class PicStore extends GetxController {
           tagName,
           listOfLetters,
           (matched) {
-            if (matched && AppStore.to.tags[tagKey] != null)
-              tagsSuggestions.add(AppStore.to.tags[tagKey]);
+            if (matched && UserController.to.tags[tagKey] != null)
+              tagsSuggestions.add(UserController.to.tags[tagKey]);
           },
         );
         /* if (tagName.startsWith(Helpers.stripTag(searchText))) {
@@ -491,7 +491,7 @@ class PicStore extends GetxController {
         photoId: photoId.value,
       );
 
-      await AppStore.to.addTagToRecent(tagKey: tagKey);
+      await UserController.to.addTagToRecent(tagKey: tagKey);
       //print('updated pictures in tag');
       //print('Tag photos ids: ${getTag.photoId}');
     }
@@ -503,7 +503,7 @@ class PicStore extends GetxController {
     //print('adding tag to database...');
     TagsStore tagsStore =
         TagsStore(id: tagKey, name: tagName, count: 1, time: DateTime.now());
-    AppStore.to.addTag(tagsStore);
+    UserController.to.addTag(tagsStore);
 
     //tagsBox.put(tagKey, Tag(tagName, [photoId]));
     await database.createLabel(Label(
@@ -516,7 +516,7 @@ class PicStore extends GetxController {
       tagKey: tagKey,
       photoId: photoId.value,
     );
-    await AppStore.to.addTagToRecent(tagKey: tagKey);
+    await UserController.to.addTagToRecent(tagKey: tagKey);
   }
 
   //@action
@@ -545,7 +545,7 @@ class PicStore extends GetxController {
       await database.updatePhoto(getPic);
       //print('updated picture');
 
-      TagsStore tagsStore = AppStore.to.tags[tagKey];
+      TagsStore tagsStore = UserController.to.tags[tagKey];
 
       tags[tagKey] = tagsStore;
 
@@ -561,7 +561,7 @@ class PicStore extends GetxController {
     //print('this picture is not in db, adding it...');
     //print('Photo Id: $photoId');
 
-    TagsStore tagsStore = AppStore.to.tags[tagKey];
+    TagsStore tagsStore = UserController.to.tags[tagKey];
     tags[tagKey] = tagsStore;
 
     Photo pic = Photo(
@@ -584,7 +584,7 @@ class PicStore extends GetxController {
     //print('@@@@@@@@ tagsKey: ${tagKey}');
 
     // Increase today tagged pics everytime it adds a new pic to database.
-    AppStore.to.increaseTodayTaggedPics();
+    UserController.to.increaseTodayTaggedPics();
 
     await tagsSuggestionsCalculate();
     Analytics.sendEvent(
@@ -778,7 +778,7 @@ class PicStore extends GetxController {
 
   Future<List<String>> translateTags(
       List<String> tagsText, BuildContext context) async {
-    var lang = AppStore.to.appLanguage.split('_')[0];
+    var lang = UserController.to.appLanguage.split('_')[0];
     if (lang == 'pt' || lang == 'es' || lang == 'de' || lang == 'ja') {
       //print('Offline translating it...');
       return tagsText
@@ -811,7 +811,8 @@ class PicStore extends GetxController {
       request.contents = tagsText;
       request.mimeType = 'text/plain';
       request.sourceLanguageCode = 'en-US';
-      request.targetLanguageCode = AppStore.to.appLanguage.replaceAll('_', '-');
+      request.targetLanguageCode =
+          UserController.to.appLanguage.replaceAll('_', '-');
       request.model = 'projects/picpics/locations/global/models/general/nmt';
 
       var response =
@@ -944,13 +945,13 @@ class PicStore extends GetxController {
       tags.add(labelText);
     }
 
-    List<String> translatedTags = AppStore.to.appLanguage.split('_')[0] != 'en'
+    List<String> translatedTags = UserController.to.appLanguage.split('_')[0] != 'en'
         ? await translateTags(tags, context)
         : tags;
 
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);
-      TagsStore tagStore = AppStore.to.tags[tagKey];
+      TagsStore tagStore = UserController.to.tags[tagKey];
       if (tagStore == null) {
         tagStore = TagsStore(
           id: tagKey,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 
 class DeleteSecretModal extends StatefulWidget {
   final Function onPressedClose;
@@ -211,7 +211,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            AppStore.to.setKeepAskingToDelete(false);
+                            UserController.to.setKeepAskingToDelete(false);
                           }
                           widget.onPressedDelete();
                         },
@@ -246,7 +246,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                         padding: const EdgeInsets.all(0),
                         onPressed: () {
                           if (keepAsking == false) {
-                            AppStore.to.setKeepAskingToDelete(false);
+                            UserController.to.setKeepAskingToDelete(false);
                           }
                           widget.onPressedOk();
                         },

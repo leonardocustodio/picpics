@@ -1,4 +1,5 @@
 import 'package:background_fetch/background_fetch.dart';
+import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +14,27 @@ import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/enum.dart';
 
 import '../constants.dart';
+import 'dart:async';
+import 'package:flutter/foundation.dart';
+
+class Debouncer {
+  final int milliseconds;
+  VoidCallback action;
+  Timer _timer;
+  Debouncer({this.milliseconds});
+  run(VoidCallback action) {
+    if (_timer != null) {
+      _timer.cancel();
+    }
+    _timer = Timer(Duration(milliseconds: milliseconds), action);
+  }
+}
 
 class TabsStore extends GetxController {
   final currentTab = 0.obs;
@@ -38,16 +54,18 @@ class TabsStore extends GetxController {
 
   var privatePhotoIdMap = <String, String>{};
   final secretPicIds = <String, bool>{}.obs;
+  final secretPicData = <String, Private>{}.obs;
   final selectedPics = <String, bool>{}.obs;
   final photoPathMap = <String, String>{}.obs;
 
   AppDatabase database = AppDatabase();
-  final allUnTaggedPics = <DateTime, RxMap<String, RxList<dynamic>>>{}.obs;
+  final allUnTaggedPicsMonth = <dynamic, String>{}.obs;
+  final allUnTaggedPicsDay = <dynamic, String>{}.obs;
 
   // picId: assetPathEntity
   final assetMap = <String, AssetEntity>{}.obs;
   final picAssetOriginBytesMap = <String, Future<Uint8List>>{}.obs;
-  final picAssetThumbBytesMap = <String, Future<Uint8List>>{}.obs;
+
   final starredPicMap = <String, bool>{}.obs;
 
   ScrollController scrollControllerThirdTab;
@@ -104,15 +122,15 @@ class TabsStore extends GetxController {
       }
     }); */
 
-    if (AppStore.to.tutorialCompleted == true &&
-        AppStore.to.notifications == true) {
+    if (UserController.to.tutorialCompleted == true &&
+        UserController.to.notifications == true) {
       PushNotificationsManager push = PushNotificationsManager();
       push.init();
     }
 
     // Added for the case of buying premium from appstore
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (AppStore.to.tryBuyId != null) {
+      if (UserController.to.tryBuyId != null) {
         Get.toNamed(PremiumScreen.id);
       }
     });
@@ -132,7 +150,7 @@ class TabsStore extends GetxController {
 
     AssetPathEntity assetPathEntity = assetsPath[0];
 
-    final List<AssetEntity> list = await assetPathEntity.getAssetListRange(
+    final list = await assetPathEntity.getAssetListRange(
         start: 0, end: assetPathEntity.assetCount);
 
     list.sort((a, b) {
@@ -148,46 +166,76 @@ class TabsStore extends GetxController {
       return year;
     });
 
-    database.getPrivatePhotoIdList().then((val) async {
-      val.forEach((photo) {
-        privatePhotoIdMap[photo.id] = '';
-      });
-      DateTime mainDate;
-      DateTime previousDay;
-      list.forEach((entity) {
-        var add = false;
-        if (privatePhotoIdMap[entity.id] == null) {
-          var dateTime = DateTime.utc(entity.createDateTime.year,
-              entity.createDateTime.month, entity.createDateTime.day);
-          if (allUnTaggedPics[dateTime] == null) {
-            allUnTaggedPics[dateTime] = RxMap<String, RxList<dynamic>>();
-            add = true;
-          }
-          if (allUnTaggedPics[dateTime]['pics'] == null) {
-            allUnTaggedPics[dateTime]['pics'] = RxList<dynamic>();
-          }
-
-          allUnTaggedPics[dateTime]['pics'].add(entity.id);
-          if (mainDate == null || mainDate.month != dateTime.month) {
-            mainDate = dateTime;
-            if (allUnTaggedPics[dateTime]['extras'] == null) {
-              allUnTaggedPics[dateTime]['extras'] = RxList<dynamic>();
-            }
-            allUnTaggedPics[mainDate]['extras'].add(dateTime);
-          } else {
-            if (add) {
-              allUnTaggedPics[mainDate]['extras'].add(dateTime);
-            }
-          }
-
-          assetMap[entity.id] = entity;
+    var val = await database.getPrivatePhotoIdList();
+    await Future.forEach(
+        val, (photo) async => privatePhotoIdMap[photo.id] = '');
+    DateTime previousDay;
+    await Future.forEach(list, (entity) async {
+      if (privatePhotoIdMap[entity.id] == null) {
+        var dateTime = DateTime.utc(entity.createDateTime.year,
+            entity.createDateTime.month, entity.createDateTime.day);
+        if (previousDay == null) {
+          previousDay = dateTime;
+          allUnTaggedPicsDay[dateTime] = '';
+          allUnTaggedPicsMonth[dateTime] = '';
         }
-      });
-      status.value = Status.Loaded;
+        if (previousDay.year != dateTime.year ||
+            previousDay.month != dateTime.month ||
+            previousDay.day != dateTime.day) {
+          if (previousDay.day != dateTime.day) {
+            allUnTaggedPicsDay[dateTime] = '';
+          } else {
+            allUnTaggedPicsMonth[dateTime] = '';
+          }
+          previousDay = dateTime;
+        }
+        assetMap[entity.id] = entity;
+        allUnTaggedPicsMonth[entity.id] = '';
+        allUnTaggedPicsDay[entity.id] = '';
+      }
+      status.value = await Status.Loaded;
     });
   }
 
-  Future<void> explorePic(String picId) async {
+  final picAssetThumbBytesMap = <String, Future<Uint8List>>{}.obs;
+
+  void addThumbBytesMap(String picId, Future<Uint8List> uint8List) {
+    if (picAssetThumbBytesMap[picId] == null) {
+      picAssetThumbBytesMap[picId] = uint8List;
+      /* if (picAssetThumbBytesMap.length > 500) {
+        print('removing pics');
+        picAssetThumbBytesMap.remove(picAssetThumbBytesMap.keys.first);
+      } */
+    }
+  }
+
+  void deletePic(String picId, bool removeFromGallery) {
+    allUnTaggedPicsDay.remove(picId);
+    allUnTaggedPicsMonth.remove(picId);
+    secretPicIds.remove(picId);
+    secretPicData.remove(picId);
+    picAssetThumbBytesMap.remove(picId);
+    if (removeFromGallery) {}
+  }
+
+  Future<void> exploreThumbPic(String picId) async {
+    /// if it is not secret pic
+    if (secretPicIds[picId] != null) {
+      if (!secretPicIds[picId]) {
+        // not a secret pic
+        addThumbBytesMap(picId, assetThumbBytes(false, assetMap[picId]));
+        return;
+      } else if (secretPicData[picId] != null) {
+        // it is a secret pic if we successfully found the related data related to it
+
+        addThumbBytesMap(
+            picId,
+            assetThumbBytes(true, assetMap[picId], secretPicData[picId].nonce,
+                secretPicData[picId].thumbPath));
+        return;
+      }
+    }
+
     Photo pic = await database.getPhotoByPhotoId(assetMap[picId].id);
     if (pic != null) {
       //print('pic $photoId exists, loading data....');
@@ -202,41 +250,38 @@ class TabsStore extends GetxController {
       isStarred.value = pic.isStarred ?? false; */
 
       //print('Is private: $isPrivate');
-      for (String tagKey in pic.tags) {
-        TagsStore tagsStore = AppStore.to.tags[tagKey];
+      /* for (String tagKey in pic.tags) {
+        TagsStore tagsStore = UserController.to.tags[tagKey];
         if (tagsStore == null) {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
         }
 
         /// TODO: tags[tagKey] = tagsStore;
-      }
+      } */
       if (pic.isPrivate == true) {
         Private secretPic =
             await database.getPrivateByPhotoId(assetMap[picId].id);
 
         if (secretPic != null) {
-          var photoPath = secretPic.path;
           var thumbPath = secretPic.thumbPath;
           var nonce = secretPic.nonce;
           secretPicIds[assetMap[picId].id] = true;
-          photoPathMap[assetMap[picId].id] = photoPath;
+          secretPicData[assetMap[picId].id] = secretPic;
           //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
-          picAssetOriginBytesMap[assetMap[picId].id] =
-              assetOriginBytes(true, assetMap[picId], nonce, photoPath);
-          //await Crypto.decryptImage(photoPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
-          picAssetThumbBytesMap[assetMap[picId].id] =
-              assetThumbBytes(true, assetMap[picId], nonce, thumbPath);
-          //await Crypto.decryptImage(thumbPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+          /* picAssetOriginBytesMap[assetMap[picId].id] =
+              assetOriginBytes(true, assetMap[picId], nonce, photoPath); */
+          //await Crypto.decryptImage(photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
+          addThumbBytesMap(
+              picId, assetThumbBytes(true, assetMap[picId], nonce, thumbPath));
+          //await Crypto.decryptImage(thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
         }
       }
-      return;
     }
-    picAssetOriginBytesMap[assetMap[picId].id] =
-        assetOriginBytes(false, assetMap[picId]);
+    /* picAssetOriginBytesMap[assetMap[picId].id] =
+        assetOriginBytes(false, assetMap[picId]); */
     //await entity.originBytes;
-    picAssetThumbBytesMap[assetMap[picId].id] =
-        assetThumbBytes(false, assetMap[picId]);
+    addThumbBytesMap(picId, assetThumbBytes(false, assetMap[picId]));
     //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
   }
 
@@ -247,7 +292,7 @@ class TabsStore extends GetxController {
     }
     //print('Returning decrypt image in privatePath: $photoPath');
     return await Crypto.decryptImage(
-        photoPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+        photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
   Future<Uint8List> assetThumbBytes(bool isPrivate, AssetEntity entity,
@@ -258,17 +303,17 @@ class TabsStore extends GetxController {
     }
     //print('Returning decrypt image in privatePath: $thumbPath');
     return await Crypto.decryptImage(
-        thumbPath, AppStore.to.encryptionKey, Nonce(hex.decode(nonce)));
+        thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
   }
 
   Future<void> loadAssetPath() async {
-    FilterOptionGroup filterOptionGroup = FilterOptionGroup();
-    filterOptionGroup.addOrderOption(
-      OrderOption(
-        type: OrderOptionType.updateDate,
-        asc: false,
-      ),
-    );
+    FilterOptionGroup filterOptionGroup = FilterOptionGroup()
+      ..addOrderOption(
+        OrderOption(
+          type: OrderOptionType.createDate,
+          asc: false,
+        ),
+      );
 
     final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
       hasAll: true,

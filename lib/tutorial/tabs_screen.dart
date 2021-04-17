@@ -43,7 +43,7 @@ class TutsTabsScreen extends StatefulWidget {
 
 class _TutsTabsScreenState extends State<TutsTabsScreen>
     with WidgetsBindingObserver {
-  AppStore appStore;
+  UserController appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
 
@@ -232,7 +232,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = Provider.of<UserController>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 

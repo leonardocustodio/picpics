@@ -6,7 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cryptography_flutter/cryptography.dart';
@@ -30,7 +30,8 @@ class Crypto {
     return hexData;
   }
 
-  static Future<void> reSaveSpKey(String userPin, AppStore appStore) async {
+  static Future<void> reSaveSpKey(
+      String userPin, UserController appStore) async {
     final storage = FlutterSecureStorage();
     String ppkey = await storage.read(key: 'ppkey');
     Codec<String, String> stringToBase64 = utf8.fuse(base64);
@@ -58,7 +59,7 @@ class Crypto {
   }
 
   static Future<bool> checkRecoveryKey(String encryptedRecoveryKey,
-      String recoveryCode, String randomIv, AppStore appStore) async {
+      String recoveryCode, String randomIv, UserController appStore) async {
     final storage = FlutterSecureStorage();
     String hpkey = await storage.read(key: 'hpkey');
 
@@ -112,7 +113,8 @@ class Crypto {
     }
   }
 
-  static Future<bool> checkIsPinValid(String userPin, AppStore appStore) async {
+  static Future<bool> checkIsPinValid(
+      String userPin, UserController appStore) async {
     final storage = FlutterSecureStorage();
     String ppkey = await storage.read(key: 'ppkey');
     String hpkey = await storage.read(key: 'hpkey');
@@ -151,7 +153,7 @@ class Crypto {
     }
   }
 
-  static Future<String> getEncryptedPin(AppStore appStore) async {
+  static Future<String> getEncryptedPin(UserController appStore) async {
     final storage = FlutterSecureStorage();
 
     String secretString = appStore.getSecretKey();
@@ -179,7 +181,7 @@ class Crypto {
   }
 
   static Future<bool> saveEncryptedPin(
-      String userPin, AppStore appStore) async {
+      String userPin, UserController appStore) async {
     final storage = FlutterSecureStorage();
 
     final SecretKey picKey = aesCtr.newSecretKeySync();
@@ -206,7 +208,7 @@ class Crypto {
   }
 
   static Future<void> saveSpKey(String accessKey, String spKey, String userPin,
-      String userEmail, AppStore appStore) async {
+      String userEmail, UserController appStore) async {
     final storage = FlutterSecureStorage();
     String ppkey = await storage.read(key: 'ppkey');
     Codec<String, String> stringToBase64 = utf8.fuse(base64);

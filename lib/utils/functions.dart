@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
@@ -11,7 +11,7 @@ import 'package:picPics/widgets/unhide_secret_modal.dart';
 
 void showDeleteSecretModalForMultiPic(
     BuildContext context, TabsStore controller) {
-  if (AppStore.to.keepAskingToDelete == false) {
+  if (UserController.to.keepAskingToDelete.value == false) {
     controller.setMultiTagSheet(false);
     controller.setMultiPicBar(false);
     GalleryStore.to.addTagsToSelectedPics();
@@ -28,14 +28,14 @@ void showDeleteSecretModalForMultiPic(
           Get.back();
         },
         onPressedDelete: () {
-          AppStore.to.setShouldDeleteOnPrivate(false);
+          UserController.to.setShouldDeleteOnPrivate(false);
           controller.setMultiTagSheet(false);
           controller.setMultiPicBar(false);
           GalleryStore.to.addTagsToSelectedPics();
           Get.back();
         },
         onPressedOk: () {
-          AppStore.to.setShouldDeleteOnPrivate(true);
+          UserController.to.setShouldDeleteOnPrivate(true);
           controller.setMultiTagSheet(false);
           controller.setMultiPicBar(false);
           GalleryStore.to.addTagsToSelectedPics();
@@ -48,22 +48,23 @@ void showDeleteSecretModalForMultiPic(
 
 Future<void> showDeleteSecretModal(
     BuildContext context, PicStore picStore) async {
-  if (AppStore.to.secretPhotos != true) {
-    AppStore.to.popPinScreen = PopPinScreenTo.TabsScreen;
+  if (UserController.to.secretPhotos != true) {
+    UserController.to.popPinScreen = PopPinScreenTo.TabsScreen;
     Get.toNamed(PinScreen.id);
     return;
   }
 
-  if (AppStore.to.isPremium == false) {
-    int freePrivatePics = await AppStore.to.freePrivatePics;
-    if (AppStore.to.totalPrivatePics >= freePrivatePics &&
+  if (UserController.to.isPremium == false) {
+    int freePrivatePics = await UserController.to.freePrivatePics;
+    if (UserController.to.totalPrivatePics >= freePrivatePics &&
         picStore.isPrivate == false) {
       Get.toNamed(PremiumScreen.id);
       return;
     }
   }
 
-  if (AppStore.to.keepAskingToDelete == false && picStore.isPrivate == false) {
+  if (UserController.to.keepAskingToDelete == false &&
+      picStore.isPrivate == false) {
     GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
     return;
   }
@@ -90,12 +91,12 @@ Future<void> showDeleteSecretModal(
         },
         onPressedDelete: () {
           GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
-          AppStore.to.setShouldDeleteOnPrivate(false);
+          UserController.to.setShouldDeleteOnPrivate(false);
           Get.back();
         },
         onPressedOk: () {
           GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
-          AppStore.to.setShouldDeleteOnPrivate(true);
+          UserController.to.setShouldDeleteOnPrivate(true);
           Get.back();
         },
       );

@@ -47,7 +47,7 @@ class PicTab extends GetWidget<GalleryStore> {
 /*   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = Provider.of<UserController>(context);
     controller = Provider.of<controller>(context);
 
   } */

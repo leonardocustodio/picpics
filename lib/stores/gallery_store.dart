@@ -10,7 +10,7 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tagged_date_pics_store.dart';
 import 'package:picPics/stores/tagged_grid_pic_store.dart';
@@ -25,7 +25,7 @@ import 'package:mime/mime.dart';
 
 // ignore_for_file: invalid_use_of_protected_member
 class GalleryStore extends GetxController {
-  AppStore appStore = AppStore.to;
+  UserController appStore = UserController.to;
   static GalleryStore get to => Get.find();
   final database = AppDatabase();
 
@@ -144,7 +144,7 @@ class GalleryStore extends GetxController {
               taggedPicsStores.add(findTaggedPicStore);
             } else {
               TaggedPicsStore createTaggedPicStore =
-                  TaggedPicsStore(tagValue: AppStore.to.tags[tagKey]);
+                  TaggedPicsStore(tagValue: UserController.to.tags[tagKey]);
               taggedPicsStores.add(createTaggedPicStore);
             }
           }
@@ -463,7 +463,7 @@ class GalleryStore extends GetxController {
 
     // //print('find suggestions: $searchText - exclude tags: $multiPicTags');
     // //print(suggestionTags);
-    // //print('AppStore Tags: ${appStore.tags}');
+    // //print('UserController Tags: ${appStore.tags}');
     /* List<TagsStore> suggestions = appStore.tags
         .where((element) => suggestionTags.contains(element.id))
         .toList(); */

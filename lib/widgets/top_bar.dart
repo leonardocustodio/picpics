@@ -4,12 +4,12 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/secret_switch.dart';
 
 class TopBar extends StatelessWidget {
-  final AppStore appStore;
+  final UserController appStore;
   final GalleryStore galleryStore;
   final FocusNode searchFocusNode;
   final TextEditingController searchEditingController;

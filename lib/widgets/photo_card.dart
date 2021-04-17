@@ -11,7 +11,7 @@ import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/all_tags_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
@@ -103,7 +103,7 @@ class _PhotoCardState extends State<PhotoCard> {
   void getSizeAndPosition() {
     RenderBox _cardBox = _photoSpaceKey.currentContext.findRenderObject();
     //print('Card Box Size: ${_cardBox.size.height}');
-    AppStore.to.setPhotoHeightInCardWidget(_cardBox.size.height);
+    UserController.to.setPhotoHeightInCardWidget(_cardBox.size.height);
   }
 
   @override
@@ -126,7 +126,7 @@ class _PhotoCardState extends State<PhotoCard> {
 /*   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    AppStore.to = Provider.of<AppStore>(context);
+    UserController.to = Provider.of<UserController>(context);
     tabsStore = Provider.of<TabsStore>(context);
     GalleryStore.to = Provider.of<GalleryStore>(context);
     // GalleryStore.to.setCurrentPic(widget.picStore);
@@ -225,17 +225,18 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Obx(
                   () {
-                    //print('Photo Height: ${AppStore.to.photoHeightInCardWidget}');
+                    //print('Photo Height: ${UserController.to.photoHeightInCardWidget}');
                     return CircularMenu(
-                      // AppStore.to: AppStore.to,
-                      isExpanded: AppStore.to.isMenuExpanded.value,
-                      useInHorizontal: AppStore.to.photoHeightInCardWidget < 280
-                          ? true
-                          : false,
+                      // UserController.to: UserController.to,
+                      isExpanded: UserController.to.isMenuExpanded.value,
+                      useInHorizontal:
+                          UserController.to.photoHeightInCardWidget < 280
+                              ? true
+                              : false,
                       alignment: Alignment.bottomRight,
                       radius: 52,
                       toggleButtonOnPressed: () {
-                        AppStore.to.switchIsMenuExpanded();
+                        UserController.to.switchIsMenuExpanded();
                       },
                       toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
                       toggleButtonBoxShadow: [
@@ -378,7 +379,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       //print('do nothing');
                     },
                     onPanEnd: () async {
-                      if (!AppStore.to.canTagToday.value) {
+                      if (!UserController.to.canTagToday.value) {
                         showWatchAdModal(context);
                         return;
                       }
@@ -396,7 +397,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       //print('return');
 
                       if (text != '') {
-                        if (!AppStore.to.canTagToday.value) {
+                        if (!UserController.to.canTagToday.value) {
                           tagsEditingController.clear();
                           picStore.setSearchText('');
                           showWatchAdModal(context);
@@ -472,7 +473,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         tagStyle: TagStyle.GrayOutlined,
                         showEditTagModal: widget.showEditTagModal,
                         onTap: (tagId, tagName) async {
-                          if (!AppStore.to.canTagToday.value) {
+                          if (!UserController.to.canTagToday.value) {
                             showWatchAdModal(context);
                             return;
                           }

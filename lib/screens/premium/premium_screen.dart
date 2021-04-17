@@ -7,7 +7,7 @@ import 'package:picPics/components/arrow_painter.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/screens/premium/premium_background.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -23,7 +23,7 @@ class PremiumScreen extends StatefulWidget {
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
-  AppStore appStore;
+  UserController appStore;
 
   List<Package> _items = [];
   bool isLoading = false;
@@ -765,7 +765,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = AppStore.to;
+    appStore = UserController.to;
   }
 
   @override

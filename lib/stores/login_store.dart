@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/generated/l10n.dart';
 
-import 'app_store.dart';
+import 'user_controller.dart';
 
 class LoginStore extends GetxController {
   static LoginStore get to => Get.find();
@@ -14,7 +14,7 @@ class LoginStore extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    AppStore.to.createDefaultTags(Get.context);
+    UserController.to.createDefaultTags(Get.context);
   }
 
   //@action

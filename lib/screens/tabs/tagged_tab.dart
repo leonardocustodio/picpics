@@ -9,7 +9,7 @@ import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
@@ -435,9 +435,9 @@ class TaggedTab extends GetWidget<TabsStore> {
               } else if (GalleryStore.to.taggedPics.length == 0 &&
                   GalleryStore.to.deviceHasPics.value) {
                 return TopBar(
-                  appStore: AppStore.to,
+                  appStore: UserController.to,
                   galleryStore: GalleryStore.to,
-                  showSecretSwitch: AppStore.to.secretPhotos.value,
+                  showSecretSwitch: UserController.to.secretPhotos.value,
                   children: <Widget>[
                     Expanded(
                       child: Center(
@@ -502,9 +502,9 @@ class TaggedTab extends GetWidget<TabsStore> {
               } else if (GalleryStore.to.taggedPics.length > 0 &&
                   GalleryStore.to.deviceHasPics.value) {
                 return TopBar(
-                  appStore: AppStore.to,
+                  appStore: UserController.to,
                   galleryStore: GalleryStore.to,
-                  showSecretSwitch: AppStore.to.secretPhotos.value,
+                  showSecretSwitch: UserController.to.secretPhotos.value,
                   searchEditingController: searchEditingController,
                   searchFocusNode: searchFocusNode,
                   children: <Widget>[

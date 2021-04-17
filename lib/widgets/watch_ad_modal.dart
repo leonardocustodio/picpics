@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 
 class WatchAdModal extends StatelessWidget {
   final Function onPressedWatchAdd;
@@ -36,9 +36,8 @@ class WatchAdModal extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 52.0, vertical: 32.0),
                   child: Text(
-                    S
-                        .of(context)
-                        .premium_modal_description(AppStore.to.dailyPicsForAds),
+                    S.of(context).premium_modal_description(
+                        UserController.to.dailyPicsForAds),
                     textScaleFactor: 1.0,
                     style: TextStyle(
                       color: kSecondaryColor,

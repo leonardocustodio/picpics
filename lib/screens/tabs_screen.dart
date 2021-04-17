@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
@@ -65,7 +65,7 @@ class TabsScreen extends GetWidget<TabsStore> {
   //
   //   if (event == RewardedVideoAdEvent.rewarded) {
   //print('@@@ rewarded');
-  //     AppStore.to.setCanTagToday(true);
+  //     UserController.to.setCanTagToday(true);
   //   }
   //
   //   if (event == RewardedVideoAdEvent.closed) {
@@ -98,7 +98,7 @@ class TabsScreen extends GetWidget<TabsStore> {
    @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    AppStore to.= Provider.of<AppStore>(context);
+    UserController to.= Provider.of<UserController>(context);
     controller = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
@@ -255,7 +255,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                     Spacer(),
                                     CupertinoButton(
                                       onPressed: () {
-                                        // if (!AppStore.to.isPremium) {
+                                        // if (!UserController.to.isPremium) {
                                         //   Get.toNamed(  PremiumScreen.id);
                                         //   return;
                                         // }
@@ -312,14 +312,14 @@ class TabsScreen extends GetWidget<TabsStore> {
                                         showEditTagModal: () =>
                                             showEditTagModal(context),
                                         onTap: (tagId, tagName) {
-                                          // if (!AppStore.to.isPremium) {
+                                          // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          // if (!AppStore.to.isPremium) {
+                                          // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
@@ -329,7 +329,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                                       .instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
-                                          // if (!AppStore.to.isPremium) {
+                                          // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
@@ -339,7 +339,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                           GalleryStore.to.setSearchText(text);
                                         },
                                         onSubmitted: (text) {
-                                          // if (!AppStore.to.isPremium) {
+                                          // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
@@ -352,7 +352,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                             if (GalleryStore
                                                     .to.multiPicTags[tagKey] ==
                                                 null) {
-                                              if (AppStore
+                                              if (UserController
                                                       .to.tags.value[tagKey] ==
                                                   null) {
                                                 //print('tag does not exist! creating it!');
@@ -376,7 +376,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                         showEditTagModal: () =>
                                             showEditTagModal(context),
                                         onTap: (tagId, tagName) {
-                                          // if (!AppStore.to.isPremium) {
+                                          // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
@@ -387,14 +387,14 @@ class TabsScreen extends GetWidget<TabsStore> {
                                               .addToMultiPicTags(tagId);
                                         },
                                         onDoubleTap: () {
-                                          // if (!AppStore.to.isPremium) {
+                                          // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
                                           //print('do nothing');
                                         },
                                         onPanEnd: () {
-                                          // if (!AppStore.to.isPremium) {
+                                          // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
@@ -598,8 +598,8 @@ class TabsScreen extends GetWidget<TabsStore> {
               children: <Widget>[
                 Obx(() {
                   Widget wgt;
-                  if (AppStore.to.hasGalleryPermission.value == null ||
-                      AppStore.to.hasGalleryPermission.value == false) {
+                  if (UserController.to.hasGalleryPermission.value == null ||
+                      UserController.to.hasGalleryPermission.value == false) {
                     wgt = Container(
                       constraints: BoxConstraints.expand(),
                       color: kWhiteColor,
@@ -660,16 +660,16 @@ class TabsScreen extends GetWidget<TabsStore> {
                                   CupertinoButton(
                                     padding: const EdgeInsets.all(0),
                                     onPressed: () {
-                                      AppStore.to
+                                      UserController.to
                                           .requestGalleryPermission()
                                           .then((hasPermission) async {
                                         if (hasPermission) {
-                                          await AppStore.to
+                                          await UserController.to
                                               .requestNotificationPermission();
-                                          await AppStore.to
+                                          await UserController.to
                                               .checkNotificationPermission(
                                                   firstPermissionCheck: true);
-                                          await AppStore.to
+                                          await UserController.to
                                               .setTutorialCompleted(true);
                                           await GalleryStore.to
                                               .loadAssetsPath();
@@ -709,15 +709,15 @@ class TabsScreen extends GetWidget<TabsStore> {
                       ),
                     );
                   } else if (controller.currentTab.value == 0 &&
-                      AppStore.to.hasGalleryPermission.value)
+                      UserController.to.hasGalleryPermission.value)
                     wgt = UntaggedTab();
                   else if (controller.currentTab.value == 1 &&
-                      AppStore.to.hasGalleryPermission.value)
+                      UserController.to.hasGalleryPermission.value)
                     wgt = PicTab(
                       showDeleteSecretModal: showDeleteSecretModal,
                     );
                   else if (controller.currentTab.value == 2 &&
-                      AppStore.to.hasGalleryPermission.value)
+                      UserController.to.hasGalleryPermission.value)
                     wgt = TaggedTab(
                         showEditTagModal: () => showEditTagModal(context));
                   return wgt ?? Container();

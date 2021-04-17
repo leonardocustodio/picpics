@@ -8,7 +8,7 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/stores/app_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 
@@ -55,7 +55,7 @@ class _EmailScreenState extends State<EmailScreen> {
     });
 
     if (result['success'] == true) {
-      AppStore.to.setWaitingAccessCode(true);
+      UserController.to.setWaitingAccessCode(true);
       Get.toNamed(PinScreen.id);
     } else {
       //print('Result: $result');
@@ -96,7 +96,7 @@ class _EmailScreenState extends State<EmailScreen> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5.0, vertical: 10.0),
                         onPressed: () {
-                          AppStore.to.setWaitingAccessCode(false);
+                          UserController.to.setWaitingAccessCode(false);
                           Get.back();
                         },
                         child: Image.asset(

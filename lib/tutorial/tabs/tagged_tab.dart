@@ -35,7 +35,7 @@ class TutsTaggedTab extends StatefulWidget {
 }
 
 class _TutsTaggedTabState extends State<TutsTaggedTab> {
-  AppStore appStore;
+  UserController appStore;
   GalleryStore galleryStore;
   TabsStore tabsStore;
   ReactionDisposer disposer;
@@ -514,7 +514,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = Provider.of<UserController>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
     refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);

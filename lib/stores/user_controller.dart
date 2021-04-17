@@ -13,6 +13,7 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
+import 'package:picPics/stores/database_controller.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
@@ -20,20 +21,14 @@ import 'package:uuid/uuid.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 
-class AppStore extends GetxController {
-  static AppStore get to => Get.find();
+class UserController extends GetxController {
+  static UserController get to => Get.find();
   String appVersion;
   String deviceLocale;
   String initiatedWithProduct;
   final LocalAuthentication biometricAuth = LocalAuthentication();
   AppDatabase database = AppDatabase();
 
-  /* AppStore({
-    this.appVersion,
-    this.deviceLocale,
-    this.initiatedWithProduct,
-  }); */
-  // observable bool
   final notifications = false.obs;
   final dailyChallenges = false.obs;
   final isPinRegistered = false.obs;
@@ -55,45 +50,30 @@ class AppStore extends GetxController {
   // observable strings
   final appLanguage = 'en'.obs;
   final currentLanguage = ''.obs;
-  // observable maps
-  final tags = <String, TagsStore>{}.obs;
   // observable lists
-  final mostUsedTags = <TagsStore>[].obs;
-  final lastWeekUsedTags = <TagsStore>[].obs;
-  final lastMonthUsedTags = <TagsStore>[].obs;
   final recentTags = <String>[].obs;
   final availableBiometrics = <BiometricType>[].obs;
   final appLocale = Rx<Locale>(null);
 
   @override
   void onInit() {
+    ever(appLanguage, _settingCurrentLanguage);
     initialize();
     _settingCurrentLanguage(null);
-    ever(appLanguage, _settingCurrentLanguage);
     super.onInit();
   }
 
   void _settingCurrentLanguage(_) {
-    appLocale.value = Locale(appLanguage.split('_')[0]);
-
     String lang = appLanguage.split('_')[0];
+    appLocale.value = Locale(lang);
+
     var local = LanguageLocal();
     currentLanguage.value = '${local.getDisplayLanguage(lang)['nativeName']}';
   }
 
   Future initialize() async {
-    MoorUser user = await database.getSingleMoorUser(createIfNotExist: false);
-
-    if (user == null) {
-//      Locale locale = await DeviceLocale.getCurrentLocale();
-      user = getDefaultMoorUser(deviceLocale: deviceLocale);
-      await database.createMoorUser(user);
-      Analytics.setUserId(user.id);
-      Analytics.sendEvent(Event.created_user);
-    } else {
-      Analytics.setUserId(user.id);
-      Analytics.sendEvent(Event.user_returned);
-    }
+    MoorUser user =
+        await DatabaseController.to.getUser(deviceLocale: deviceLocale);
 
     notifications.value = user.notification;
     dailyChallenges.value = user.dailyChallenges;
@@ -399,51 +379,6 @@ class AppStore extends GetxController {
     }
   }
 
-  //@action
-  void loadMostUsedTags({int maxTagsLength = 12}) {
-    mostUsedTags.clear();
-    var tempTags = List<TagsStore>.from(tags.values);
-    tempTags.sort((a, b) {
-      var count = b.count.compareTo(a.count);
-      if (count == 0)
-        return b.name.toLowerCase().compareTo(a.name.toLowerCase());
-      return count;
-    });
-    mostUsedTags.value = List<TagsStore>.from(tempTags);
-    if (mostUsedTags.length > maxTagsLength)
-      mostUsedTags.value = mostUsedTags.sublist(0, maxTagsLength);
-  }
-
-  //@action
-  void loadLastWeekUsedTags({int maxTagsLength = 12}) {
-    lastWeekUsedTags.clear();
-    var now = DateTime.now();
-    var sevenDaysBack =
-        DateTime(now.year, now.month, (now.day - now.weekday - 1));
-    doSortingOfWeeksAndMonth(lastMonthUsedTags, sevenDaysBack, maxTagsLength);
-  }
-
-  //@action
-  void loadLastMonthUsedTags({int maxTagsLength = 12}) {
-    lastMonthUsedTags.clear();
-    var now = DateTime.now();
-    var monthBack = DateTime(now.year, now.month, 1);
-    doSortingOfWeeksAndMonth(lastMonthUsedTags, monthBack, maxTagsLength);
-  }
-
-  void doSortingOfWeeksAndMonth(
-      RxList<TagsStore> list, DateTime back, int maxTagsLength) {
-    tags.values.forEach((element) {
-      if (element.time.isBefore(back)) {
-        list.add(element);
-      }
-    });
-    if (list.isNotEmpty) {
-      list.sort((TagsStore a, TagsStore b) => b.time.day.compareTo(a.time.day));
-      if (list.length > maxTagsLength)
-        list.value = List<TagsStore>.from(list.sublist(0, maxTagsLength));
-    }
-  }
 
   //@action
   Future<void> loadTags() async {
@@ -496,7 +431,7 @@ class AppStore extends GetxController {
     if (tags[tagsStore.id] != null) {
       return;
     }
-    //print('Adding tag to AppStore: $tagsStore');
+    //print('Adding tag to UserController: $tagsStore');
     tags[tagsStore.id] = tagsStore;
   }
 
@@ -907,37 +842,6 @@ class AppStore extends GetxController {
 
   //@action
   void switchIsMenuExpanded() => isMenuExpanded.value = !isMenuExpanded.value;
-}
-
-MoorUser getDefaultMoorUser({String deviceLocale}) {
-  return MoorUser(
-    customPrimaryKey: 0,
-    id: Uuid().v4(),
-    email: null,
-    password: null,
-    notification: false,
-    dailyChallenges: false,
-    goal: 20,
-    hourOfDay: 20,
-    minuteOfDay: 00,
-    isPremium: false,
-    recentTags: [],
-    tutorialCompleted: false,
-    picsTaggedToday: 0,
-    lastTaggedPicDate: DateTime.now(),
-    canTagToday: true,
-    appLanguage: deviceLocale ?? '',
-    hasGalleryPermission: null,
-    loggedIn: false,
-    secretPhotos: false,
-    isPinRegistered: false,
-    keepAskingToDelete: true,
-    tourCompleted: false,
-    isBiometricActivated: false,
-    shouldDeleteOnPrivate: false,
-    starredPhotos: [],
-    defaultWidgetImage: null,
-  );
 }
 
 enum PopPinScreenTo {
