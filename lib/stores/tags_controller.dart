@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:picPics/database/app_database.dart';
+
+import '../constants.dart';
 
 class TagModel extends GetxController {
   RxMap _map;
@@ -41,6 +44,8 @@ class TagsController extends GetxController {
   final mostUsedTags = <String, String>{}.obs;
   final lastWeekUsedTags = <String, String>{}.obs;
   final lastMonthUsedTags = <String, String>{}.obs;
+
+  final _database = AppDatabase();
   @override
   void onInit() {
     super.onInit();
@@ -48,7 +53,6 @@ class TagsController extends GetxController {
   }
 
   void loadMostUsedTags({int maxTagsLength = 12}) {
-    mostUsedTags.clear();
     var tempTags = <TagModel>[];
     allTags.forEach((_, value) {
       tempTags.add(value.value);
@@ -61,13 +65,16 @@ class TagsController extends GetxController {
       return count;
     });
 
-    tempTags = tempTags.sublist(0, maxTagsLength);
-    if (mostUsedTags.length > maxTagsLength)
-      mostUsedTags.value = mostUsedTags.sublist(0, maxTagsLength);
+    if (tempTags.length > maxTagsLength) {
+      tempTags = tempTags.sublist(0, maxTagsLength);
+    }
+    mostUsedTags.clear();
+    tempTags.forEach((TagModel tag) {
+      mostUsedTags[tag.key] = tag.title;
+    });
   }
 
   void loadLastWeekUsedTags({int maxTagsLength = 12}) {
-    lastWeekUsedTags.clear();
     var now = DateTime.now();
     var sevenDaysBack =
         DateTime(now.year, now.month, (now.day - now.weekday - 1));
@@ -75,25 +82,93 @@ class TagsController extends GetxController {
   }
 
   void loadLastMonthUsedTags({int maxTagsLength = 12}) {
-    lastMonthUsedTags.clear();
     var now = DateTime.now();
     var monthBack = DateTime(now.year, now.month, 1);
     doSortingOfWeeksAndMonth(lastMonthUsedTags, monthBack, maxTagsLength);
   }
 
   void doSortingOfWeeksAndMonth(
-      RxList<TagsStore> list, DateTime back, int maxTagsLength) {
-    tags.values.forEach((element) {
-      if (element.time.isBefore(back)) {
-        list.add(element);
+      RxMap<String, String> map, DateTime back, int maxTagsLength) {
+    var tempTags = <TagModel>[];
+    allTags.values.forEach((tag) {
+      if (tag.value.time.isBefore(back)) {
+        tempTags.add(tag.value);
       }
     });
-    if (list.isNotEmpty) {
-      list.sort((TagsStore a, TagsStore b) => b.time.day.compareTo(a.time.day));
-      if (list.length > maxTagsLength)
-        list.value = List<TagsStore>.from(list.sublist(0, maxTagsLength));
+    if (tempTags.isNotEmpty) {
+      tempTags
+          .sort((TagModel a, TagModel b) => b.time.day.compareTo(a.time.day));
+      if (tempTags.length > maxTagsLength) {
+        tempTags = tempTags.sublist(0, maxTagsLength);
+      }
+    }
+    map.clear();
+    tempTags.forEach((TagModel tag) {
+      map[tag.key] = tag.title;
+    });
+  }
+
+  Future<void> loadAllTags() async {
+    var tagsBox = await _database.getAllLabel();
+
+    for (Label tag in tagsBox) {
+      TagModel tagModel = TagModel(
+        key: tag.key,
+        title: tag.title,
+        count: tag.counter,
+        time: tag.lastUsedAt,
+      );
+      allTags[tag.key] = Rx<TagModel>(tagModel);
+    }
+
+    if (allTags[kSecretTagKey] == null) {
+      //print('Creating secret tag in db!');
+      Label createSecretLabel = Label(
+        key: kSecretTagKey,
+        title: 'Secret Pics',
+        photoId: [],
+        counter: 1,
+        lastUsedAt: DateTime.now(),
+      );
+      await _database.createLabel(createSecretLabel);
+
+      TagModel tagModel = TagModel(
+        key: kSecretTagKey,
+        title: 'Secret Pics',
+        count: 1,
+        time: DateTime.now(),
+      );
+      allTags[tagModel.key] = Rx<TagModel>(tagModel);
+    }
+    loadMostUsedTags();
+    loadLastWeekUsedTags();
+    loadLastMonthUsedTags();
+  }
+
+  //@action
+  void addTag(TagModel tagModel) {
+    if (allTags[tagModel.key] == null) {
+      allTags[tagModel.key] = Rx<TagModel>(tagModel);
     }
   }
 
-  Future<void> loadAllTags() async {}
+  //@action
+  void editTag({String oldTagKey, String newTagKey, String newName}) {
+    TagModel tagModel = allTags[oldTagKey].value;
+
+    tagModel
+      ..key = newTagKey
+      ..title = newName
+      ..time = DateTime.now();
+
+    allTags[newTagKey] = Rx<TagModel>(tagModel);
+    allTags.remove(oldTagKey);
+  }
+
+  //@action
+  void removeTag({TagModel tagModel}) {
+    if (tagModel != null) {
+      allTags.remove(tagModel.key);
+    }
+  }
 }

@@ -427,33 +427,6 @@ class UserController extends GetxController {
   }
 
   //@action
-  void addTag(TagsStore tagsStore) {
-    if (tags[tagsStore.id] != null) {
-      return;
-    }
-    //print('Adding tag to UserController: $tagsStore');
-    tags[tagsStore.id] = tagsStore;
-  }
-
-  //@action
-  void editTag({String oldTagKey, String newTagKey, String newName}) {
-    TagsStore tagsStore =
-        tags[oldTagKey]; //.firstWhere((element) => element.id == oldTagKey);
-    tagsStore.setTagInfo(
-        tagId: newTagKey,
-        tagName: newName,
-        count: tagsStore.count,
-        time: DateTime.now());
-    tags[newTagKey] = tagsStore;
-    tags.remove(oldTagKey);
-  }
-
-  //@action
-  void removeTag({TagsStore tagsStore}) {
-    tags.remove(tagsStore);
-  }
-
-  //@action
   void addRecentTags(String tagKey) {
     recentTags.add(tagKey);
   }
