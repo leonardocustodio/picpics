@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
+import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/utils/helpers.dart';
 
 import '../constants.dart';
 
 class TagModel extends GetxController {
-  RxMap _map;
+  RxMap _map = <String, dynamic>{}.obs;
   TagModel(
       {@required String key,
       @required String title,
@@ -40,18 +42,24 @@ class TagsController extends GetxController {
   ///           date: DateTime(),
   ///          }
 
+  static TagsController get to => Get.find();
+
   final allTags = <String, Rx<TagModel>>{}.obs;
   final mostUsedTags = <String, String>{}.obs;
   final lastWeekUsedTags = <String, String>{}.obs;
   final lastMonthUsedTags = <String, String>{}.obs;
 
+  final multiPicTags = <String, String>{}.obs;
+
   final _database = AppDatabase();
+
   @override
   void onInit() {
     super.onInit();
     loadAllTags();
   }
 
+  /// load most used tags into `mostUsedTags`
   void loadMostUsedTags({int maxTagsLength = 12}) {
     var tempTags = <TagModel>[];
     allTags.forEach((_, value) {
@@ -74,20 +82,22 @@ class TagsController extends GetxController {
     });
   }
 
+  /// load last week used tags into `lastWeekUsedTags`
   void loadLastWeekUsedTags({int maxTagsLength = 12}) {
     var now = DateTime.now();
     var sevenDaysBack =
         DateTime(now.year, now.month, (now.day - now.weekday - 1));
-    doSortingOfWeeksAndMonth(lastMonthUsedTags, sevenDaysBack, maxTagsLength);
+    _doSortingOfWeeksAndMonth(lastMonthUsedTags, sevenDaysBack, maxTagsLength);
   }
 
+  /// load last month used tags into `lastMonthUsedTags`
   void loadLastMonthUsedTags({int maxTagsLength = 12}) {
     var now = DateTime.now();
     var monthBack = DateTime(now.year, now.month, 1);
-    doSortingOfWeeksAndMonth(lastMonthUsedTags, monthBack, maxTagsLength);
+    _doSortingOfWeeksAndMonth(lastMonthUsedTags, monthBack, maxTagsLength);
   }
 
-  void doSortingOfWeeksAndMonth(
+  void _doSortingOfWeeksAndMonth(
       RxMap<String, String> map, DateTime back, int maxTagsLength) {
     var tempTags = <TagModel>[];
     allTags.values.forEach((tag) {
@@ -108,6 +118,7 @@ class TagsController extends GetxController {
     });
   }
 
+  /// load all the tags async
   Future<void> loadAllTags() async {
     var tagsBox = await _database.getAllLabel();
 
@@ -130,7 +141,6 @@ class TagsController extends GetxController {
         counter: 1,
         lastUsedAt: DateTime.now(),
       );
-      await _database.createLabel(createSecretLabel);
 
       TagModel tagModel = TagModel(
         key: kSecretTagKey,
@@ -139,21 +149,32 @@ class TagsController extends GetxController {
         time: DateTime.now(),
       );
       allTags[tagModel.key] = Rx<TagModel>(tagModel);
+
+      await _database.createLabel(createSecretLabel);
     }
+
+    /// load most used tags
     loadMostUsedTags();
+
+    /// load last recent week used tags
     loadLastWeekUsedTags();
+
+    /// load last recent month used tags
     loadLastMonthUsedTags();
   }
 
-  //@action
+  /// add the tag
   void addTag(TagModel tagModel) {
     if (allTags[tagModel.key] == null) {
       allTags[tagModel.key] = Rx<TagModel>(tagModel);
     }
   }
 
-  //@action
-  void editTag({String oldTagKey, String newTagKey, String newName}) {
+  /// edit the tags name in all tags
+  void _editTagInternalFunction(
+      {@required String oldTagKey,
+      @required String newTagKey,
+      @required String newName}) {
     TagModel tagModel = allTags[oldTagKey].value;
 
     tagModel
@@ -165,10 +186,89 @@ class TagsController extends GetxController {
     allTags.remove(oldTagKey);
   }
 
-  //@action
-  void removeTag({TagModel tagModel}) {
+  /// remove Tag from all tags
+  void removeTag(TagModel tagModel) {
     if (tagModel != null) {
       allTags.remove(tagModel.key);
+    }
+  }
+
+  Future<void> editTagName(
+      {@required String oldTagKey, @required String newName}) async {
+
+    /// create a new tagKey
+    String newTagKey = Helpers.encryptTag(newName);
+
+    /// use that new tagKey to make the ui changes fastly
+    _editTagInternalFunction(oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
+
+    /// fetch the `Label` from the `oldTagKey`
+    Label oldTag = await _database.getLabelByLabelKey(oldTagKey);
+
+    /// Creating new label
+    Label createTag = Label(
+        key: newTagKey,
+        title: newName,
+        photoId: oldTag.photoId,
+        counter: oldTag.counter < 1 ? 1 : oldTag.counter,
+        lastUsedAt: DateTime.now());
+
+    await _database.createLabel(createTag);
+
+    await Future.wait(
+      [
+        Future.forEach(createTag.photoId, (photoId) async {
+          Photo pic = await _database.getPhotoByPhotoId(photoId);
+          //Pic pic = picsBox.get(photoId);
+          int indexOfOldTag = pic.tags.indexOf(oldTagKey);
+          // //print('Tags in this picture: ${pic.tags}');
+          if (indexOfOldTag > -1) {
+            pic.tags[indexOfOldTag] = newTagKey;
+          }
+          await _database.updatePhoto(pic);
+          //picsBox.put(photoId, pic);
+          // //print('updated tag in pic ${pic.id}');
+        })
+      ],
+    );
+
+    // Altera a tag
+    //appStore.editRecentTags(oldTagKey, newTagKey);
+    await _database.deleteLabelByLabelId(oldTagKey);
+    //tagsBox.delete(oldTagKey);
+
+    // //print('finished updating all tags');
+    Analytics.sendEvent(Event.edited_tag);
+  }
+
+  /// untag the pic with tags as `tagKey`
+  Future<void> deleteTagFromPic({String tagKey}) async {
+    //var tagsBox = Hive.box('tags');
+
+    var label = await _database.getLabelByLabelKey(tagKey);
+
+    if (label != null) {
+      // //print('found tag going to delete it');
+      // Remove a tag das fotos já taggeadas
+      TagsStore tagsStore = appStore.tags[tagKey];
+      // //print('TagsStore Tag: ${tagsStore.name}');
+      TaggedPicsStore taggedPicsStore =
+          taggedPics.firstWhere((element) => element.tag == tagsStore);
+      for (PicStore picTagged in taggedPicsStore.pics) {
+        // //print('Tagged Pic Store Pics: ${picTagged.photoId}');
+        await picTagged.removeTagFromPic(tagKey: tagsStore.id);
+        if (picTagged.tags.length == 0 && picTagged != currentPic) {
+          // //print('this pic is not tagged anymore!');
+          addPicToUntaggedPics(picStore: picTagged);
+        }
+      }
+      taggedPics.remove(taggedPicsStore);
+      appStore.removeTagFromRecent(tagKey: tagKey);
+      appStore.removeTag(tagsStore: tagsStore);
+      await _database.deleteLabelByLabelId(tagKey);
+      //tagsBox.delete(tagKey);
+      // //print('deleted from tags db');
+      Analytics.sendEvent(Event.deleted_tag);
     }
   }
 }

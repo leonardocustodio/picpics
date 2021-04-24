@@ -38,7 +38,7 @@ class PicTab extends GetWidget<GalleryStore> {
         picStore: controller.swipePics.value[index],
         picsInThumbnails: PicSource.SWIPE,
         picsInThumbnailIndex: index,
-        showEditTagModal: () => showEditTagModal(Get.context),
+        showEditTagModal: () => showEditTagModal(),
         showDeleteSecretModal: showDeleteSecretModal,
       ),
     );

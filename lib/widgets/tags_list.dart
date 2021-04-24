@@ -5,15 +5,18 @@ import 'package:picPics/managers/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
 
+typedef OnString = Function(String);
+typedef OnEmptyTap = Function();
+
 class TagsList extends StatefulWidget {
-  final List<TagsStore> tags;
+  final List<String> tagsKeyList;
   final TextEditingController textEditingController;
   final FocusNode textFocusNode;
   final bool addTagField;
@@ -21,18 +24,18 @@ class TagsList extends StatefulWidget {
   final bool addButtonVisible;
   final String title;
   final TagStyle tagStyle;
-  final Function onTap;
-  final Function onDoubleTap;
-  final Function onPanEnd;
-  final Function onSubmitted;
-  final Function onChanged;
-  final Function showEditTagModal;
+  final OnString onTap; // Function(String)
+  final OnString onDoubleTap; // Function()
+  final OnString onPanEnd; // Function()
+  final OnString onSubmitted; // Function(String)
+  final OnString onChanged; // Function(String)
+  final OnString showEditTagModal; // Function()
   final String aiButtonTitle;
   final Function onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
   const TagsList({
-    @required this.tags,
+    @required this.tagsKeyList,
     this.tagStyle = TagStyle.MultiColored,
     this.textEditingController,
     this.textFocusNode,
@@ -60,7 +63,7 @@ class _TagsListState extends State<TagsList> {
   String tagBeingPanned;
   bool swipedRightDirection = false;
 
-  Widget _buildTagsWidget(BuildContext context, List<TagsStore> tags) {
+  Widget _buildTagsWidget(BuildContext context, List<String> tags) {
     List<Widget> tagsWidgets = [];
     //print('Tags in TagsList: ${tags}');
 
@@ -84,8 +87,10 @@ class _TagsListState extends State<TagsList> {
     }
 
     for (int i = 0; i < tags.length; i++) {
-      TagsStore tag = tags[i];
-      var mod = i % 4;
+      String tagKey = tags[i];
+      if (TagsController.to.allTags[tagKey]?.value?.title == null) {
+        continue;
+      }
 
       tagsWidgets.add(
         GestureDetector(
@@ -94,31 +99,31 @@ class _TagsListState extends State<TagsList> {
               setState(() {
                 if (showSwiperInIndex == null) {
                   showSwiperInIndex =
-                      tags.indexWhere((element) => element.id == tag.id);
+                      tags.indexWhere((element) => element == tagKey);
                 } else {
                   showSwiperInIndex = null;
                 }
               });
             }
             Vibrate.feedback(FeedbackType.success);
-            DatabaseManager.instance.selectedTagKey = tag.id;
-            if (widget.onTap != null) widget.onTap(tag.id, tag.name);
+            //DatabaseManager.instance.selectedTagKey = tag.key;
+            widget.onTap?.call(tagKey);
           },
           onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
-            DatabaseManager.instance.selectedTagKey = tag.id;
-            if (widget.onDoubleTap != null) widget.onDoubleTap();
+            //DatabaseManager.instance.selectedTagKey = tag.key;
+            widget.onDoubleTap?.call(tagKey);
           },
           onLongPress: () {
-            DatabaseManager.instance.selectedTagKey = tag.id;
-            if (widget.showEditTagModal != null) widget.showEditTagModal();
+            //DatabaseManager.instance.selectedTagKey = tag.key;
+            widget.showEditTagModal?.call(tagKey);
           },
           onPanStart: (details) {
-            //print('Started pan on tag: ${tag.id}');
-            tagBeingPanned = tag.id;
+            //print('Started pan on tag: ${tag.key}');
+            tagBeingPanned = tagKey;
           },
           onPanUpdate: (details) {
-            if (tagBeingPanned != tag.id) {
+            if (tagBeingPanned != tagKey) {
               return;
             }
 
@@ -132,8 +137,8 @@ class _TagsListState extends State<TagsList> {
             if (swipedRightDirection) {
               showSwiperInIndex = null;
               Vibrate.feedback(FeedbackType.success);
-              DatabaseManager.instance.selectedTagKey = tag.id;
-              widget.onPanEnd();
+              //DatabaseManager.instance.selectedTagKey = tag.key;
+              widget.onPanEnd(tagKey);
               swipedRightDirection = false;
             }
           },
@@ -147,7 +152,7 @@ class _TagsListState extends State<TagsList> {
                 setState(() {
                   if (showSwiperInIndex == null) {
                     showSwiperInIndex =
-                        tags.indexWhere((element) => element.id == tag.id);
+                        tags.indexWhere((element) => element.key == tag.key);
                   } else {
                     showSwiperInIndex = null;
                   }
@@ -155,23 +160,23 @@ class _TagsListState extends State<TagsList> {
               }
 
               Vibrate.feedback(FeedbackType.success);
-              DatabaseManager.instance.selectedTagKey = tag.id;
-              widget.onTap(tag.id, tag.name); 
+              //DatabaseManager.instance.selectedTagKey = tag.key;
+              widget.onTap(tag.key, tag.title); 
             },
             child: */
               Container(
             decoration: widget.tagStyle == TagStyle.MultiColored
                 ? BoxDecoration(
-                    gradient: getGradient(mod),
+                    gradient: getGradient(i % 4),
                     borderRadius: BorderRadius.circular(19.0))
                 : kGrayBoxDecoration,
             child: showSwiperInIndex != i
-                ? tag?.id != kSecretTagKey
+                ? tagKey != kSecretTagKey
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
                         child: Text(
-                          tag.name,
+                          TagsController.to.allTags[tagKey].value.title,
                           textScaleFactor: 1.0,
                           style: widget.tagStyle == TagStyle.MultiColored
                               ? kWhiteTextStyle
@@ -240,7 +245,7 @@ class _TagsListState extends State<TagsList> {
                               padding: EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16.0),
                               child: Text(
-                                tag.name,
+                                TagsController.to.allTags[tagKey].value.title,
                                 textScaleFactor: 1.0,
                                 style: widget.tagStyle == TagStyle.MultiColored
                                     ? kWhiteTextStyle
@@ -448,6 +453,6 @@ class _TagsListState extends State<TagsList> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildTagsWidget(context, widget.tags);
+    return _buildTagsWidget(context, widget.tagsKeyList);
   }
 }

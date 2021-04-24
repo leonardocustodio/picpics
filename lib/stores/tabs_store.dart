@@ -1,5 +1,4 @@
 import 'package:background_fetch/background_fetch.dart';
-import 'package:collection/collection.dart';
 import 'package:convert/convert.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +15,6 @@ import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/enum.dart';
 
 import '../constants.dart';

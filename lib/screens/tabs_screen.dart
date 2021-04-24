@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/screens/settings_screen.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
@@ -38,169 +39,8 @@ class TabsScreen extends GetWidget<TabsStore> {
   Throttle _changeThrottle;
   AppLifecycleState _appCycleState;
 
-  /*  @override
-  void initState() {
-    super.initState();
-    KeyboardVisibilityController().onChange.listen((bool visible) {
-      //print('keyboard: $visible');
-
-      if (visible && controller.multiTagSheet) {
-        setState(() {
-         controller. expandablePaddingController.value.expanded = true;
-        });
-      } else if (!visible && controller.multiTagSheet) {
-        setState(() {
-         controller. expandablePaddingController.value.expanded = false;
-        });
-      }
-    }); */
-
-//    _changeThrottle = Throttle(onCall: _onAssetChange);
-//    PhotoManager.addChangeCallback(_changeThrottle.call);
-
-  // RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-  //   if (event == RewardedVideoAdEvent.loaded) {
-  //print('@@@ loaded');
-  //   }
-  //
-  //   if (event == RewardedVideoAdEvent.rewarded) {
-  //print('@@@ rewarded');
-  //     UserController.to.setCanTagToday(true);
-  //   }
-  //
-  //   if (event == RewardedVideoAdEvent.closed) {
-  //print('@@@@ closed');
-  //     DatabaseManager.instance.adsIsLoaded = false;
-  //     Ads.loadRewarded();
-  //   }
-  //
-  //   if (event == RewardedVideoAdEvent.failedToLoad) {
-  //print('@@@ failed');
-  //     DatabaseManager.instance.adsIsLoaded = false;
-  //   }
-  // };
-
-  //initPlatformState();
-  //}
-
-  Widget _buildLoading() {
-    return Padding(
-      padding: const EdgeInsets.all(5.0),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.0),
-          color: Colors.grey[400],
-        ),
-      ),
-    );
-  }
-/* 
-   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    UserController to.= Provider.of<UserController>(context);
-    controller = Provider.of<TabsStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
-
-    disposer = reaction((_) => galleryStore.trashedPic, (trashedPic) {
-      if (trashedPic) {
-        if (controller.modalCard) {
-          controller.setModalCard(false);
-        }
-        if (controller.currentTab != 1) {
-          galleryStore.setTrashedPic(false);
-        }
-      }
-    });
-
-    disposer2 = reaction((_) => galleryStore.sharedPic, (sharedPic) {
-      if (sharedPic) {
-        if (controller.multiPicBar) {
-          galleryStore.clearSelectedPics();
-          controller.setMultiPicBar(false);
-        }
-      }
-    });
-
-    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
-      if (showModal) {
-        //print('show delete secret modal!!!');
-//        setState(() {
-//          showEditTagModal();
-//        });
-//        showDeleteSecretModal(context);
-      }
-    });
-
-    disposer4 = reaction((_) => appStore.secretPhotos, (secretPhotos) {
-      if (secretPhotos) {
-        if (appStore.hasObserver == false) {
-          //print('adding observer to change screen!');
-          WidgetsBinding.instance.addObserver(this);
-          appStore.hasObserver = true;
-        }
-      } else {
-        if (appStore.hasObserver == true) {
-          //print('removing observer of changing screen');
-          WidgetsBinding.instance.removeObserver(this);
-          appStore.hasObserver = false;
-        }
-      }
-    });
-
-    if (appStore.tutorialCompleted == true && appStore.notifications == true) {
-      PushNotificationsManager push = PushNotificationsManager();
-      push.init();
-    }
-
-    // Added for the case of buying premium from appstore
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      if (appStore.tryBuyId != null) {
-        Get.toNamed( PremiumScreen.id);
-      }
-    });
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    /* switch (state) {
-      case AppLifecycleState.paused:
-        //print("&&&& Paused");
-         setState(() {
-          _appCycleState = state;
-        }); 
-        break;
-      case AppLifecycleState.inactive:
-        setState(() {
-          _appCycleState = state;
-        });
-        //print("&&& inactive");
-        break;
-      case AppLifecycleState.detached:
-        setState(() {
-          _appCycleState = state;
-        });
-        //print("&&&& detached");
-        break;
-      case AppLifecycleState.resumed:
-        setState(() {
-          _appCycleState = state;
-        });
-        //print("&&&& resumed");
-        break;
-    } */
-
-    setState(() {
-      _appCycleState = state;
-    });
-  } */
-
   @override
   Widget build(BuildContext context) {
-    // if (_appCycleState == AppLifecycleState.inactive) {
-    //   return Scaffold();
-    // }
-
     Locale myLocale = Localizations.localeOf(context);
     //print('Language Code: ${myLocale.languageCode}');
 
@@ -264,7 +104,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                                 .value[kSecretTagKey] !=
                                             null) {
                                           showDeleteSecretModalForMultiPic(
-                                              context, controller);
+                                              controller);
                                           return;
                                         }
 
@@ -303,22 +143,23 @@ class TabsScreen extends GetWidget<TabsStore> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tags: GalleryStore
-                                            .to.multiPicTags.values
+                                        tagsKeyList: TagsController
+                                            .to.multiPicTags.keys
                                             .toList(),
                                         addTagField: true,
                                         textEditingController:
                                             bottomTagsEditingController,
-                                        showEditTagModal: () =>
-                                            showEditTagModal(context),
-                                        onTap: (tagId, tagName) {
-                                          // if (!UserController.to.isPremium) {
-                                          //   Get.toNamed(  PremiumScreen.id);
-                                          //   return;
-                                          // }
-                                          //print('do nothing');
+                                        showEditTagModal: (String tagKey) {
+                                          showEditTagModal();
                                         },
-                                        onPanEnd: () {
+                                        onTap: (tagKey) {
+                                          ///  if (!UserController.to.isPremium) {
+                                          ///    Get.toNamed(  PremiumScreen.id);
+                                          ///    return;
+                                          ///  }
+                                          /// print('do nothing');
+                                        },
+                                        onPanEnd: (String tagKey) {
                                           // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
@@ -328,7 +169,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                                   DatabaseManager
                                                       .instance.selectedTagKey);
                                         },
-                                        onDoubleTap: () {
+                                        onDoubleTap: (String tagKey) {
                                           // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;

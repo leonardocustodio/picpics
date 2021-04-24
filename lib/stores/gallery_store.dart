@@ -1159,38 +1159,6 @@ class GalleryStore extends GetxController {
   }
 
   //@action
-  Future<void> deleteTag({String tagKey}) async {
-    //var tagsBox = Hive.box('tags');
-
-    var label = await database.getLabelByLabelKey(tagKey);
-
-    if (label != null) {
-      // //print('found tag going to delete it');
-
-      // Remove a tag das fotos já taggeadas
-      TagsStore tagsStore = appStore.tags[tagKey];
-      // //print('TagsStore Tag: ${tagsStore.name}');
-      TaggedPicsStore taggedPicsStore =
-          taggedPics.firstWhere((element) => element.tag == tagsStore);
-      for (PicStore picTagged in taggedPicsStore.pics) {
-        // //print('Tagged Pic Store Pics: ${picTagged.photoId}');
-        await picTagged.removeTagFromPic(tagKey: tagsStore.id);
-        if (picTagged.tags.length == 0 && picTagged != currentPic) {
-          // //print('this pic is not tagged anymore!');
-          addPicToUntaggedPics(picStore: picTagged);
-        }
-      }
-      taggedPics.remove(taggedPicsStore);
-      appStore.removeTagFromRecent(tagKey: tagKey);
-      appStore.removeTag(tagsStore: tagsStore);
-      await database.deleteLabelByLabelId(tagKey);
-      //tagsBox.delete(tagKey);
-      // //print('deleted from tags db');
-      Analytics.sendEvent(Event.deleted_tag);
-    }
-  }
-
-  //@action
   void addTagToSearchFilter() {
     if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
       return;

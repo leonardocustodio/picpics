@@ -9,8 +9,7 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
 
-void showDeleteSecretModalForMultiPic(
-    BuildContext context, TabsStore controller) {
+void showDeleteSecretModalForMultiPic(TabsStore controller) {
   if (UserController.to.keepAskingToDelete.value == false) {
     controller.setMultiTagSheet(false);
     controller.setMultiPicBar(false);
@@ -20,7 +19,7 @@ void showDeleteSecretModalForMultiPic(
 
   //print('showModal');
   showDialog<void>(
-    context: context,
+    context: Get.context,
     barrierDismissible: true,
     builder: (BuildContext buildContext) {
       return DeleteSecretModal(

@@ -29,7 +29,7 @@ class DatabaseManager extends ChangeNotifier {
 
   double scale = 1.0;
 
-  String selectedTagKey;
+  //String selectedTagKey;
   MoorUser userSettings;
 
   double adOffset = 48.0;

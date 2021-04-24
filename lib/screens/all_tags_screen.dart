@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -31,7 +32,7 @@ class AllTagsStore extends GetxController {
     }
     searchedTags.value.clear();
     var listOfLetters = searchedText.value.toLowerCase().split('');
-    (!doFullSearching.value ? tempTags : UserController.to.tags).forEach(
+    (!doFullSearching.value ? tempTags : TagsController.to.tags).forEach(
       (key, value) => doCustomisedSearching(
         value,
         listOfLetters,
