@@ -23,12 +23,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class TaggedTab extends GetWidget<TabsController> {
   static const id = 'tagged_tab';
-
-  final Function showEditTagModal;
-
-  TaggedTab({
-    @required this.showEditTagModal,
-  });
+  TaggedTab();
 
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
@@ -220,7 +215,7 @@ class TaggedTab extends GetWidget<TabsController> {
         children: <Widget>[
           Text(
             taggedPicsStore != null
-                ? taggedPicsStore.tag.value.name
+                ? taggedPicsStore.tag.value.title
                 : S.current.all_search_tags,
             textScaleFactor: 1.0,
             style: TextStyle(
@@ -518,11 +513,15 @@ class TaggedTab extends GetWidget<TabsController> {
                                 padding: const EdgeInsets.only(
                                     left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
-                                  tagsKeyList: GalleryStore.to.searchingTags.value.toList(),
+                                  tagsKeyList: GalleryStore
+                                      .to.searchingTags.value
+                                      .map((e) => e.key)
+                                      .toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (String tagKey) {
                                     //print('do nothing');
-                                    GalleryStore.to.removeTagFromSearchFilter();
+                                    GalleryStore.to
+                                        .removeTagFromSearchFilter(tagKey);
                                     if (GalleryStore
                                             .to.searchingTagsKeys.isEmpty &&
                                         searchFocusNode.hasFocus == false) {
@@ -530,7 +529,8 @@ class TaggedTab extends GetWidget<TabsController> {
                                     }
                                   },
                                   onPanEnd: (String tagKey) {
-                                    GalleryStore.to.removeTagFromSearchFilter();
+                                    GalleryStore.to
+                                        .removeTagFromSearchFilter(tagKey);
                                     if (GalleryStore
                                             .to.searchingTagsKeys.isEmpty &&
                                         searchFocusNode.hasFocus == false) {
@@ -540,7 +540,7 @@ class TaggedTab extends GetWidget<TabsController> {
                                   onDoubleTap: (String tagKey) {
                                     //print('do nothing');
                                   },
-                                 // showEditTagModal: showEditTagModal,
+                                  // showEditTagModal: showEditTagModal,
                                 ),
                               ),
 //                            if (GalleryStore.to.showSearchTagsResults) ...[
@@ -574,23 +574,27 @@ class TaggedTab extends GetWidget<TabsController> {
                                         top: 8.0,
                                         bottom: 16.0),
                                     child: TagsList(
-                                      tagsKeyList: GalleryStore.to.tagsSuggestions.value.toList(),
+                                      tagsKeyList: GalleryStore
+                                          .to.tagsSuggestions.value
+                                          .map((e) => e.key)
+                                          .toList(),
                                       tagStyle: TagStyle.GrayOutlined,
-                                      showEditTagModal: showEditTagModal,
-                                      onTap: (tagId, tagName) {
+                                      /* showEditTagModal: showEditTagModal, */
+                                      onTap: (tagKey) {
                                         if (controller.toggleIndexTagged == 0) {
                                           controller.setToggleIndexTagged(1);
                                         }
 
-                                        GalleryStore.to.addTagToSearchFilter();
+                                        GalleryStore.to
+                                            .addTagToSearchFilter(tagKey);
                                         searchEditingController.clear();
                                         GalleryStore.to.searchResultsTags(
                                             searchEditingController.text);
                                       },
-                                      onDoubleTap: () {
+                                      onDoubleTap: (String tagKey) {
                                         //print('do nothing');
                                       },
-                                      onPanEnd: () {
+                                      onPanEnd: (String tagKey) {
                                         //print('do nothing');
                                       },
                                     ),
@@ -623,24 +627,27 @@ class TaggedTab extends GetWidget<TabsController> {
                                       top: 8.0,
                                       bottom: 16.0),
                                   child: TagsList(
-                                    tags: GalleryStore.to.searchTagsResults
+                                    tagsKeyList: GalleryStore
+                                        .to.searchTagsResults.value
+                                        .map((e) => e.key)
                                         .toList(),
                                     tagStyle: TagStyle.GrayOutlined,
-                                    showEditTagModal: showEditTagModal,
-                                    onTap: (tagId, tagName) {
+                                    /* showEditTagModal: showEditTagModal, */
+                                    onTap: (String tagKey) {
                                       if (controller.toggleIndexTagged == 0) {
                                         controller.setToggleIndexTagged(1);
                                       }
 
-                                      GalleryStore.to.addTagToSearchFilter();
+                                      GalleryStore.to
+                                          .addTagToSearchFilter(tagKey);
                                       searchEditingController.clear();
                                       GalleryStore.to.searchResultsTags(
                                           searchEditingController.text);
                                     },
-                                    onDoubleTap: () {
+                                    onDoubleTap: (String tagKey) {
                                       //print('do nothing');
                                     },
-                                    onPanEnd: () {
+                                    onPanEnd: (String tagKey) {
                                       //print('do nothing');
                                     },
                                   ),

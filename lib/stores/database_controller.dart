@@ -12,10 +12,11 @@ class DatabaseController extends GetxController {
 
     if (user == null) {
 //      Locale locale = await DeviceLocale.getCurrentLocale();
-      user = getDefaultMoorUser(deviceLocale: deviceLocale);
-      await _database.createMoorUser(user);
-      Analytics.setUserId(user.id);
+      MoorUser user2 = getDefaultMoorUser(deviceLocale: deviceLocale);
+      await _database.createMoorUser(user2);
+      Analytics.setUserId(user2.id);
       Analytics.sendEvent(Event.created_user);
+      return user2;
     } else {
       Analytics.setUserId(user.id);
       Analytics.sendEvent(Event.user_returned);

@@ -371,12 +371,8 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     return Padding(
                                       padding: const EdgeInsets.only(top: 16.0),
                                       child: TagsList(
-                                        tags: GalleryStore
-                                            .to
-                                            .currentThumbnailPic
-                                            .value
-                                            .tags
-                                            .values
+                                        tagsKeyList: GalleryStore.to
+                                            .currentThumbnailPic.value.tags.keys
                                             .toList(),
                                         tagStyle: TagStyle.MultiColored,
                                         addTagButton: () {
@@ -390,18 +386,18 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                           Navigator.pop(
                                               context, 'show_keyboard');
                                         },
-                                        onTap: (tagName) {
+                                        onTap: (String tagKey) {
                                           //print('ignore click');
                                         },
-                                        onDoubleTap: () {
+                                        onDoubleTap: (String tagKey) {
 //                                        GalleryStore.to.currentThumbnailPic
 //                                        GalleryStore.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                                         },
-                                        onPanEnd: () {
+                                        onPanEnd: (String tagKey) {
                                           //print('teste');
                                         },
-                                        showEditTagModal: () =>
-                                            showEditTagModal(context, false),
+                                        /* showEditTagModal: () =>
+                                            showEditTagModal(context, false), */
                                       ),
                                     );
                                   }),

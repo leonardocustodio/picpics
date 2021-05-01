@@ -6,6 +6,7 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/utils/helpers.dart';
 
 import '../constants.dart';
+import 'tagged_pics_store.dart';
 
 class TagModel {
   RxMap _map = <String, dynamic>{}.obs;
@@ -330,7 +331,7 @@ class TagsController extends GetxController {
       // Remove a tag das fotos já taggeadas
       TagModel tagsStore = allTags[tagKey].value;
       // //print('TagsStore Tag: ${tagsStore.name}');
-      TaggedPicsStore taggedPicsStore =
+      /*  TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);
       for (PicStore picTagged in taggedPicsStore.pics) {
         // //print('Tagged Pic Store Pics: ${picTagged.photoId}');
@@ -344,7 +345,7 @@ class TagsController extends GetxController {
       recentTagKeyList.removeWhere((element) => element == tagKey);
       //appStore.removeTagFromRecent(tagKey: tagKey);
       removeTag(tagModel: tagsStore);
-      await _database.deleteLabelByLabelId(tagKey);
+      await _database.deleteLabelByLabelId(tagKey); */
       //tagsBox.delete(tagKey);
       // //print('deleted from tags db');
       Analytics.sendEvent(Event.deleted_tag);

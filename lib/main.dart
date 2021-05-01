@@ -35,9 +35,11 @@ import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 
 import 'screens/all_tags_screen.dart';
+import 'stores/database_controller.dart';
 import 'stores/login_store.dart';
 import 'stores/pin_store.dart';
 import 'stores/tabs_store.dart';
+import 'stores/tags_controller.dart';
 
 Future<String> checkForUserControllerInitiatedProducts() async {
   //print('Checking if appstore initiated products');
@@ -60,12 +62,14 @@ String initialRoute = LoginScreen.id;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  Get.lazyPut(() => UserController());
-  Get.lazyPut(() => GalleryStore());
-  Get.lazyPut(() => PinStore());
-  Get.lazyPut(() => LoginStore());
-  Get.lazyPut(() => TabsStore());
-  Get.lazyPut(() => PinStore());
+  await Get.lazyPut(() => UserController());
+  await Get.lazyPut(() => GalleryStore());
+  await Get.lazyPut(() => DatabaseController());
+  await Get.put(TabsController());
+  await Get.lazyPut(() => TagsController());
+  await Get.lazyPut(() => PinStore());
+  await Get.lazyPut(() => LoginStore());
+  await Get.lazyPut(() => PinStore());
 
   await Hive.initFlutter();
 /*   Hive.registerAdapter(UserAdapter());
@@ -191,11 +195,11 @@ void main() async {
   if (Platform.isIOS) {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
   }
-  UserController appStore = UserController()
+  UserController user = UserController()
     ..appVersion = appVersion
     ..deviceLocale = deviceLocale
     ..initiatedWithProduct = initiatedWithProduct;
-  await appStore.initialize();
+  await user.initialize();
 
   Analytics.sendAppOpen();
   Ads.initialize();
@@ -222,15 +226,15 @@ void main() async {
   runZonedGuarded<void>(() {
     runApp(
       PicPicsApp(
-        appStore: appStore,
+        user: user,
       ),
     );
   }, FirebaseCrashlytics.instance.recordError);
 }
 
 class PicPicsApp extends StatefulWidget {
-  final UserController appStore;
-  const PicPicsApp({@required this.appStore});
+  final UserController user;
+  const PicPicsApp({@required this.user});
 
   @override
   _PicPicsAppState createState() => _PicPicsAppState();
@@ -241,9 +245,9 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
 
   @override
   void initState() {
-    galleryStore = GalleryStore()..appStore = widget.appStore;
+    galleryStore = GalleryStore()..user = widget.user;
     if (initialRoute != MigrationScreen.id &&
-        widget.appStore.tutorialCompleted.value) {
+        widget.user.tutorialCompleted.value) {
       initialRoute = TabsScreen.id;
       //TODO: uncomment
       //Hive.deleteFromDisk();
@@ -253,9 +257,9 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
-    if (widget.appStore.encryptionKey == null) {
-      if (widget.appStore.secretPhotos == true) {
-        widget.appStore.switchSecretPhotos();
+    if (widget.user.encryptionKey == null) {
+      if (widget.user.secretPhotos == true) {
+        widget.user.switchSecretPhotos();
         galleryStore.removeAllPrivatePics();
       }
     }
@@ -292,7 +296,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
         ],
-        locale: widget.appStore.appLocale.value,
+        locale: Locale(widget.user.appLocale.value ?? 'en'),
         supportedLocales: S.delegate.supportedLocales,
         debugShowCheckedModeBanner: kDebugMode,
         initialRoute: initialRoute,

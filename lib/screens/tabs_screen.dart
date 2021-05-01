@@ -28,7 +28,9 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-class TabsScreen extends GetWidget<TabsStore> {
+import 'premium/premium_screen.dart';
+
+class TabsScreen extends GetWidget<TabsController> {
   static const id = 'tabs_screen';
 
   // Swiper do Tutorial
@@ -149,10 +151,10 @@ class TabsScreen extends GetWidget<TabsStore> {
                                         addTagField: true,
                                         textEditingController:
                                             bottomTagsEditingController,
-                                        showEditTagModal: (String tagKey) {
+                                        /*  showEditTagModal: (String tagKey) {
                                           showEditTagModal();
-                                        },
-                                        onTap: (tagKey) {
+                                        }, */
+                                        onTap: (String tagKey) {
                                           ///  if (!UserController.to.isPremium) {
                                           ///    Get.toNamed(  PremiumScreen.id);
                                           ///    return;
@@ -165,9 +167,7 @@ class TabsScreen extends GetWidget<TabsStore> {
                                           //   return;
                                           // }
                                           GalleryStore.to
-                                              .removeFromMultiPicTags(
-                                                  DatabaseManager
-                                                      .instance.selectedTagKey);
+                                              .removeFromMultiPicTags(tagKey);
                                         },
                                         onDoubleTap: (String tagKey) {
                                           // if (!UserController.to.isPremium) {
@@ -193,8 +193,8 @@ class TabsScreen extends GetWidget<TabsStore> {
                                             if (GalleryStore
                                                     .to.multiPicTags[tagKey] ==
                                                 null) {
-                                              if (UserController
-                                                      .to.tags.value[tagKey] ==
+                                              if (TagsController.to.allTags
+                                                      .value[tagKey] ==
                                                   null) {
                                                 //print('tag does not exist! creating it!');
                                                 GalleryStore.to.createTag(text);
@@ -212,33 +212,39 @@ class TabsScreen extends GetWidget<TabsStore> {
                                                     ''
                                                 ? S.of(context).search_results
                                                 : S.of(context).recent_tags,
-                                        tags: GalleryStore.to.tagsSuggestions,
+                                        tagsKeyList: GalleryStore
+                                            .to.tagsSuggestions.value
+                                            .map((e) => e.key)
+                                            .toList(),
                                         tagStyle: TagStyle.GrayOutlined,
-                                        showEditTagModal: () =>
-                                            showEditTagModal(context),
-                                        onTap: (tagId, tagName) {
-                                          // if (!UserController.to.isPremium) {
-                                          //   Get.toNamed(  PremiumScreen.id);
-                                          //   return;
-                                          // }
+                                        /* showEditTagModal: () =>
+                                            showEditTagModal(context), */
+                                        onTap: (String tagKey) {
+                                          /* if (!UserController
+                                              .to.isPremium.value) {
+                                            Get.toNamed(PremiumScreen.id);
+                                            return;
+                                          } */
 
                                           bottomTagsEditingController.clear();
                                           GalleryStore.to.setSearchText('');
                                           GalleryStore.to
-                                              .addToMultiPicTags(tagId);
+                                              .addToMultiPicTags(tagKey);
                                         },
-                                        onDoubleTap: () {
-                                          // if (!UserController.to.isPremium) {
-                                          //   Get.toNamed(  PremiumScreen.id);
-                                          //   return;
-                                          // }
+                                        onDoubleTap: (String tagKey) {
+                                          /* if (!UserController
+                                              .to.isPremium.value) {
+                                            Get.toNamed(PremiumScreen.id);
+                                            return;
+                                          } */
                                           //print('do nothing');
                                         },
-                                        onPanEnd: () {
-                                          // if (!UserController.to.isPremium) {
-                                          //   Get.toNamed(  PremiumScreen.id);
-                                          //   return;
-                                          // }
+                                        onPanEnd: (String tagKey) {
+                                          /* if (!UserController
+                                              .to.isPremium.value) {
+                                            Get.toNamed(PremiumScreen.id);
+                                            return;
+                                          } */
                                           //print('do nothing');
                                         },
                                       ),
@@ -437,11 +443,10 @@ class TabsScreen extends GetWidget<TabsStore> {
             value: SystemUiOverlayStyle.dark,
             child: Stack(
               children: <Widget>[
-                Obx(() {
-                  Widget wgt;
-                  if (UserController.to.hasGalleryPermission.value == null ||
-                      UserController.to.hasGalleryPermission.value == false) {
-                    wgt = Container(
+                GetX<UserController>(builder: (userController) {
+                  if (userController.hasGalleryPermission.value == null ||
+                      userController.hasGalleryPermission.value == false) {
+                    return Container(
                       constraints: BoxConstraints.expand(),
                       color: kWhiteColor,
                       child: SafeArea(
@@ -501,16 +506,16 @@ class TabsScreen extends GetWidget<TabsStore> {
                                   CupertinoButton(
                                     padding: const EdgeInsets.all(0),
                                     onPressed: () {
-                                      UserController.to
+                                      userController
                                           .requestGalleryPermission()
                                           .then((hasPermission) async {
                                         if (hasPermission) {
-                                          await UserController.to
+                                          await userController
                                               .requestNotificationPermission();
-                                          await UserController.to
+                                          await userController
                                               .checkNotificationPermission(
                                                   firstPermissionCheck: true);
-                                          await UserController.to
+                                          await userController
                                               .setTutorialCompleted(true);
                                           await GalleryStore.to
                                               .loadAssetsPath();
@@ -550,18 +555,19 @@ class TabsScreen extends GetWidget<TabsStore> {
                       ),
                     );
                   } else if (controller.currentTab.value == 0 &&
-                      UserController.to.hasGalleryPermission.value)
-                    wgt = UntaggedTab();
+                      userController.hasGalleryPermission.value)
+                    return UntaggedTab();
                   else if (controller.currentTab.value == 1 &&
-                      UserController.to.hasGalleryPermission.value)
-                    wgt = PicTab(
+                      userController.hasGalleryPermission.value) {
+                    return PicTab(
                       showDeleteSecretModal: showDeleteSecretModal,
                     );
-                  else if (controller.currentTab.value == 2 &&
-                      UserController.to.hasGalleryPermission.value)
-                    wgt = TaggedTab(
-                        showEditTagModal: () => showEditTagModal(context));
-                  return wgt ?? Container();
+                  } else if (controller.currentTab.value == 2 &&
+                      userController.hasGalleryPermission.value) {
+                    return TaggedTab();
+                  } else {
+                    return Container();
+                  }
                 }),
               ],
             ),
@@ -602,9 +608,9 @@ class TabsScreen extends GetWidget<TabsStore> {
                                     ? GalleryStore.to.swipePics[index]
                                     : GalleryStore.to.thumbnailsPics[index],
                                 picsInThumbnails: PicSource.UNTAGGED,
-                                showEditTagModal: () =>
+                                /*  showEditTagModal: () =>
                                     showEditTagModal(context),
-                                showDeleteSecretModal: showDeleteSecretModal,
+                                showDeleteSecretModal: showDeleteSecretModal, */
                               ),
                             ),
                           );

@@ -6,7 +6,8 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 
 @immutable
-class AssetEntityImageProviderKawal extends ImageProvider<AssetEntityImageProviderKawal> {
+class AssetEntityImageProviderKawal
+    extends ImageProvider<AssetEntityImageProviderKawal> {
   final AssetEntity entity;
 
   /// Scale for image provider.
@@ -63,7 +64,8 @@ class AssetEntityImageProviderKawal extends ImageProvider<AssetEntityImageProvid
   }
 
   @override
-  Future<AssetEntityImageProviderKawal> obtainKey(ImageConfiguration configuration) {
+  Future<AssetEntityImageProviderKawal> obtainKey(
+      ImageConfiguration configuration) {
     return SynchronousFuture<AssetEntityImageProviderKawal>(this);
   }
 

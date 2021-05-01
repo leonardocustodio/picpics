@@ -11,6 +11,7 @@ import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/all_tags_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/managers/database_manager.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -363,8 +364,9 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Obx(() {
                   return TagsList(
-                    tagsKeyList:
-                        GalleryStore.to.tagsFromPic(picStore: picStore),
+                    tagsKeyList: GalleryStore.to
+                        .tagsFromPic(picStore: picStore)
+                        .map((e) => e.key),
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
@@ -384,7 +386,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     },
                     onPanEnd: (String selectedTagKey) async {
                       if (!UserController.to.canTagToday.value) {
-                        showWatchAdModal(context);
+                        showWatchAdModal();
                         return;
                       }
 
@@ -403,7 +405,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         if (!UserController.to.canTagToday.value) {
                           tagsEditingController.clear();
                           picStore.setSearchText('');
-                          showWatchAdModal(context);
+                          showWatchAdModal();
                           return;
                         }
 
@@ -472,17 +474,21 @@ class _PhotoCardState extends State<PhotoCard> {
                             /* picStore.aiTags.value
                             ? picStore.aiSuggestions.value
                             : */
-                            picStore.tagsSuggestions.value.toList(),
+                            picStore.tagsSuggestions.value
+                                .map((e) => e.key)
+                                .toList(),
                         tagStyle: TagStyle.GrayOutlined,
                         //showEditTagModal: widget.showEditTagModal,
-                        onTap: (tagId) async {
+                        onTap: (tagKey) async {
                           if (!UserController.to.canTagToday.value) {
-                            showWatchAdModal(context);
+                            showWatchAdModal();
                             return;
                           }
 
                           await GalleryStore.to.addTagToPic(
-                              picStore: picStore, tagName: tagName);
+                              picStore: picStore,
+                              tagName: TagsController
+                                  .to.allTags[tagKey].value.title);
                           tagsEditingController.clear();
                           picStore.setSearchText('');
                         },

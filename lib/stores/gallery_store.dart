@@ -27,7 +27,7 @@ import 'tags_controller.dart';
 
 // ignore_for_file: invalid_use_of_protected_member
 class GalleryStore extends GetxController {
-  UserController appStore = UserController.to;
+  UserController user = UserController.to;
   static GalleryStore get to => Get.find();
   final database = AppDatabase();
 
@@ -73,11 +73,11 @@ class GalleryStore extends GetxController {
   final filteredPicsKeys = <String>[].obs;
   final taggedKeys = <String>[].obs;
 
-/*   GalleryStore({this.appStore}) {
+/*   GalleryStore({this.user}) {
     tagsSuggestionsCalculate();
     loadTaggedPicsStore();
 
-    if (appStore?.tutorialCompleted ?? false) {
+    if (user?.tutorialCompleted ?? false) {
       loadAssetsPath();
     }
   } */
@@ -145,8 +145,8 @@ class GalleryStore extends GetxController {
             if (findTaggedPicStore != null) {
               taggedPicsStores.add(findTaggedPicStore);
             } else {
-              TaggedPicsStore createTaggedPicStore =
-                  TaggedPicsStore(tagValue: TagsController.to.allTags[tagKey].value);
+              TaggedPicsStore createTaggedPicStore = TaggedPicsStore(
+                  tagValue: TagsController.to.allTags[tagKey].value);
               taggedPicsStores.add(createTaggedPicStore);
             }
           }
@@ -186,7 +186,8 @@ class GalleryStore extends GetxController {
 
   //@action
   void loadTaggedPicsStore() {
-    for (TagModel tagsStore in TagsController.to.allTags.values.map((e) => e.value).toList()) {
+    for (TagModel tagsStore
+        in TagsController.to.allTags.values.map((e) => e.value).toList()) {
       TaggedPicsStore taggedPicsStore = TaggedPicsStore(tagValue: tagsStore);
       taggedPics.add(taggedPicsStore);
     }
@@ -204,7 +205,7 @@ class GalleryStore extends GetxController {
   void runTaggedKeysComputation(_) {
     var tags = <String, String>{};
     taggedPics.forEach((element) {
-      tags[element.tag.value.id] = '';
+      tags[element.tag.value.key] = '';
     });
     taggedKeys.value = tags.keys.toList();
   }
@@ -239,7 +240,7 @@ class GalleryStore extends GetxController {
 
   void runSearchingTagsKeysComputation(_) {
     searchingTagsKeys.value =
-        searchingTags.map((element) => element.id).toList();
+        searchingTags.map((element) => element.key).toList();
   }
 
   void runIsFilteredComputation(_) {
@@ -362,18 +363,19 @@ class GalleryStore extends GetxController {
 
   //@action
   void addToMultiPicTags(String tagKey) {
-    if (multiPicTags[tagKey] == null && appStore.tags[tagKey] != null) {
+    if (multiPicTags[tagKey] == null &&
+        TagsController.to.allTags[tagKey] != null) {
       /* TagsStore tagsStore =
-          appStore.tags.firstWhere((element) => element.id == tagKey);
+          TagsController.to.allTags.firstWhere((element) => element.id == tagKey);
       multiPicTags[tagKey] = tagsStore; */
-      multiPicTags[tagKey] = appStore.tags[tagKey];
+      multiPicTags[tagKey] = TagsController.to.allTags[tagKey].value;
     }
   }
 
   //@action
   void removeFromMultiPicTags(String tagKey) {
     if (multiPicTags[tagKey] != null) {
-      //TagsStore tagsStore = appStore.tags.firstWhere((element) => element.id == tagKey);
+      //TagsStore tagsStore = TagsController.to.allTags.firstWhere((element) => element.id == tagKey);
       multiPicTags.remove(tagKey);
     }
   }
@@ -397,7 +399,7 @@ class GalleryStore extends GetxController {
     return await database.getSingleMoorUser();
   } */
 
-  Future<List<TagsStore>> tagsSuggestionsCalculate() async {
+  Future<List<TagModel>> tagsSuggestionsCalculate() async {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
     var tagsList = await database.getAllLabel();
@@ -444,7 +446,7 @@ class GalleryStore extends GetxController {
         var tagKey = tag.key;
         if (tagKey == kSecretTagKey) continue;
 
-        var tagsStoreValue = appStore.tags[tagKey];
+        var tagsStoreValue = TagsController.to.allTags[tagKey].value;
         doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
           suggestionTags.add(tagKey);
         });
@@ -458,21 +460,21 @@ class GalleryStore extends GetxController {
     // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
     if (multiPicTags[kSecretTagKey] == null &&
         !searchingTagsKeys.contains(kSecretTagKey) &&
-        appStore.secretPhotos == true &&
+        user.secretPhotos == true &&
         searchText == '') {
       suggestionTags.add(kSecretTagKey);
     }
 
     // //print('find suggestions: $searchText - exclude tags: $multiPicTags');
     // //print(suggestionTags);
-    // //print('UserController Tags: ${appStore.tags}');
-    /* List<TagsStore> suggestions = appStore.tags
+    // //print('UserController Tags: ${TagsController.to.allTags}');
+    /* List<TagsStore> suggestions = TagsController.to.allTags
         .where((element) => suggestionTags.contains(element.id))
         .toList(); */
-    var suggestions = <TagsStore>[];
+    var suggestions = <TagModel>[];
     suggestionTags.forEach((suggestedTag) {
-      if (appStore.tags[suggestedTag] != null) {
-        suggestions.add(appStore.tags[suggestedTag]);
+      if (TagsController.to.allTags[suggestedTag] != null) {
+        suggestions.add(TagsController.to.allTags[suggestedTag].value);
       }
     });
     // //print('Suggestions Tag Store: $suggestions');
@@ -482,7 +484,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
-    for (TagsStore tag in picStore.tags.values.toList()) {
+    for (TagModel tag in picStore.tags.values.toList()) {
       TaggedPicsStore taggedPicsStore = taggedPics
           .firstWhere((element) => element.tag == tag, orElse: () => null);
 
@@ -565,7 +567,7 @@ class GalleryStore extends GetxController {
     List<TaggedPicsStore> toDelete = [];
 
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
-      if (picStore.tags[taggedPicsStore.tag.value.id] != null &&
+      if (picStore.tags[taggedPicsStore.tag.value.key] != null &&
           forceDelete == false) {
         // //print('this tag should not be removed');
         continue;
@@ -846,7 +848,7 @@ class GalleryStore extends GetxController {
             swipePics.add(pic);
           }
           if (allPics.value.length > 0 && allPics.value.length < 2)
-            appStore.setDefaultWidgetImage(
+            user.setDefaultWidgetImage(
                 allPics.value[allPics.value.keys.toList()[0]].entity.value);
         }
       }).then((_) {
@@ -926,7 +928,7 @@ class GalleryStore extends GetxController {
 
   //@action
   Future<void> loadPrivateAssets() async {
-    if (appStore.secretPhotos != true) {
+    if (user.secretPhotos != true) {
       // //print('Secret photos is off - not loading private pics');
       return;
     }
@@ -1018,7 +1020,7 @@ class GalleryStore extends GetxController {
           swipePics.remove(picStore);
           removePicFromUntaggedPics(picStore: picStore);
           allPics.value.remove(picStore);
-          appStore.setDefaultWidgetImage(allPics.value[0].entity.value);
+          user.setDefaultWidgetImage(allPics.value[0].entity.value);
         })
       ]);
 
@@ -1041,7 +1043,7 @@ class GalleryStore extends GetxController {
       swipePics.remove(picStore);
       removePicFromUntaggedPics(picStore: picStore);
       allPics.value.remove(picStore);
-      appStore.setDefaultWidgetImage(allPics.value[0].entity.value);
+      user.setDefaultWidgetImage(allPics.value[0].entity.value);
     }
 
     Analytics.sendEvent(Event.deleted_photo);
@@ -1150,9 +1152,12 @@ class GalleryStore extends GetxController {
     );
 
     // Altera a tag
-    appStore.editTag(
-        oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
-    appStore.editRecentTags(oldTagKey, newTagKey);
+    TagsController.to.editTagName(oldTagKey: oldTagKey, newName: newName);
+
+    /// we don't need this as we are lready having a master area
+    /// where the tags are updated for the app overall
+    ///
+    /* user.editRecentTags(oldTagKey, newTagKey); */
     await database.deleteLabelByLabelId(oldTagKey);
     //tagsBox.delete(oldTagKey);
 
@@ -1161,22 +1166,20 @@ class GalleryStore extends GetxController {
   }
 
   //@action
-  void addTagToSearchFilter() {
-    if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
+  void addTagToSearchFilter(String tagKey) {
+    if (searchingTagsKeys.contains(tagKey)) {
       return;
     }
 
-    TagsStore tagsStore =
-        appStore.tags[DatabaseManager.instance.selectedTagKey];
+    TagModel tagsStore = TagsController.to.allTags[tagKey].value;
     searchingTags.add(tagsStore);
     // //print('searching tags: $searchingTags');
     searchPicsWithTags();
   }
 
-  void removeTagFromSearchFilter() {
-    if (searchingTagsKeys.contains(DatabaseManager.instance.selectedTagKey)) {
-      TagsStore tagsStore =
-          appStore.tags[DatabaseManager.instance.selectedTagKey];
+  void removeTagFromSearchFilter(String tagKey) {
+    if (searchingTagsKeys.contains(tagKey)) {
+      TagModel tagsStore = TagsController.to.allTags[tagKey].value;
       searchingTags.remove(tagsStore);
       // //print('searching tags: $searchingTags');
       searchPicsWithTags();
@@ -1249,9 +1252,10 @@ class GalleryStore extends GetxController {
 
     setShowSearchTagsResults(true);
 
-    for (MapEntry<String, TagsStore> map in appStore.tags.entries) {
-      TagsStore tagStore = map.value;
-      if (tagStore.id == kSecretTagKey) {
+    for (MapEntry<String, Rx<TagModel>> map
+        in TagsController.to.allTags.entries) {
+      TagModel tagStore = map.value.value;
+      if (tagStore.key == kSecretTagKey) {
         continue;
       }
 
@@ -1288,10 +1292,10 @@ class GalleryStore extends GetxController {
         lastUsedAt: DateTime.now()));
     //tagsBox.put(tagKey, Tag(tagName, []));
 
-    TagsStore tagsStore =
-        TagsStore(id: tagKey, name: tagName, count: 1, time: DateTime.now());
-    appStore.addTag(tagsStore);
-    appStore.addTagToRecent(tagKey: tagKey);
+    TagModel tagModel =
+        TagModel(key: tagKey, title: tagName, count: 1, time: DateTime.now());
+    TagsController.to.addTag(tagModel);
+    TagsController.to.addRecentTag(tagKey);
 
     Analytics.sendEvent(
       Event.created_tag,
@@ -1315,7 +1319,7 @@ class GalleryStore extends GetxController {
               // //print('Should add secret tag in the end!!!');
               if (!privatePics.contains(picStore)) {
                 await picStore.setIsPrivate(true);
-                await Crypto.encryptImage(picStore, appStore.encryptionKey);
+                await Crypto.encryptImage(picStore, user.encryptionKey);
                 // //print('this pic now is private');
                 privatePics.add(picStore);
               } else {
@@ -1493,7 +1497,7 @@ class GalleryStore extends GetxController {
 
     if (currentPic.isPrivate == true) {
       if (!privatePics.contains(currentPic)) {
-        await Crypto.encryptImage(picStore, appStore.encryptionKey);
+        await Crypto.encryptImage(picStore, user.encryptionKey);
 
         // //print('this pic now is private');
         privatePics.add(currentPic);
@@ -1544,10 +1548,10 @@ class GalleryStore extends GetxController {
     }
   }
 
-  List<TagsStore> tagsFromPic({PicStore picStore}) {
+  List<TagModel> tagsFromPic({PicStore picStore}) {
     var tagsList = picStore.tags.values.toList();
     if (picStore.isPrivate == true) {
-      tagsList.removeWhere((element) => element.id == kSecretTagKey);
+      tagsList.removeWhere((element) => element.key == kSecretTagKey);
     }
     return tagsList;
   }

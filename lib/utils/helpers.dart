@@ -1,6 +1,7 @@
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/tags_store.dart';
 
 import '../constants.dart';
@@ -62,7 +63,7 @@ void doCustomisedSearching(
   if (tag == null) callback(false);
 
   var matched = true;
-  var title = (tag is TagsStore ? tag?.name : tag)?.toLowerCase();
+  var title = (tag is TagModel ? tag?.title : tag)?.toLowerCase();
   var i = 0;
   for (var index = 0; index < listOfLetters.length; index++) {
     var found = false;

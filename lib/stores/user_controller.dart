@@ -55,7 +55,7 @@ class UserController extends GetxController {
   // observable lists
   final recentTags = <String>[].obs;
   final availableBiometrics = <BiometricType>[].obs;
-  final appLocale = Rx<Locale>(null);
+  final appLocale = RxString('en');
 
   @override
   void onInit() {
@@ -67,7 +67,7 @@ class UserController extends GetxController {
 
   void _settingCurrentLanguage(_) {
     String lang = appLanguage.split('_')[0];
-    appLocale.value = Locale(lang);
+    appLocale.value = lang;
 
     var local = LanguageLocal();
     currentLanguage.value = '${local.getDisplayLanguage(lang)['nativeName']}';
@@ -105,7 +105,7 @@ class UserController extends GetxController {
     TagsController.to.loadAllTags();
 
     for (String tagKey in user.recentTags) {
-       TagsController.to.addRecentTag(tagKey);
+      TagsController.to.addRecentTag(tagKey);
     }
 
     /*    if (user.hasGalleryPermission != null || user.tutorialCompleted) {
@@ -275,7 +275,7 @@ class UserController extends GetxController {
       //print('Cleared encryption key in memory!!!');
       setEncryptionKey(null);
     }
-    
+
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
         .updateMoorUser(currentUser.copyWith(secretPhotos: secretPhotos.value));
@@ -431,7 +431,7 @@ class UserController extends GetxController {
     currentUser.save(); */
     MoorUser currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser.copyWith(
-      hasGalleryPermission: hasGalleryPermission.value,
+      hasGalleryPermission: result,
     ));
 
     return result;

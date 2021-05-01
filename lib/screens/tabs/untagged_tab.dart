@@ -17,7 +17,6 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 // ignore: must_be_immutable
@@ -42,7 +41,7 @@ class UntaggedTab extends GetWidget<TabsController> {
       },
       child: Obx(
         () {
-          if (controller.allUnTaggedPicsMonth.isEmpty) {
+          if (controller.allUnTaggedPicsMonth.value.isEmpty) {
             return Center(child: CircularProgressIndicator());
           }
           var isMonth = controller.toggleIndexUntagged.value == 0;
@@ -73,20 +72,39 @@ class UntaggedTab extends GetWidget<TabsController> {
                     return buildDateHeader(monthKeys[index].key);
                   }
                   return Obx(() {
-                    if (controller
+                    /* if (controller
                             .picAssetThumbBytesMap[monthKeys[index].key] ==
                         null) {
-                      controller.exploreThumbPic(monthKeys[index].key);
                       return greyWidget;
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: Container(
-                          child: _buildItem2(monthKeys[index].key),
-                        ),
-                      ),
+                    } */
+                    return VisibilityDetector(
+                      key: Key('${monthKeys[index].key}'),
+                      onVisibilityChanged: (visibilityInfo) {
+                        var visiblePercentage =
+                            visibilityInfo.visibleFraction * 100;
+                        /* debugPrint(
+                            'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
+                        if (visiblePercentage > 3) {
+                          controller.exploreThumbPic(monthKeys[index].key);
+                        } else {
+                          controller
+                                  .picAssetThumbBytesMap[monthKeys[index].key] =
+                              null;
+                        }
+                      },
+                      child: controller.picAssetThumbBytesMap[
+                                  monthKeys[index].key] ==
+                              null
+                          ? greyWidget
+                          : Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Container(
+                                  child: _buildItem2(monthKeys[index].key),
+                                ),
+                              ),
+                            ),
                     );
                   });
                 });
@@ -115,30 +133,37 @@ class UntaggedTab extends GetWidget<TabsController> {
                     return buildDateHeader(dayKeys[index].key);
                   }
                   return Obx(() {
-                    if (controller.picAssetThumbBytesMap[dayKeys[index].key] ==
+                    /* if (controller.picAssetThumbBytesMap[dayKeys[index].key] ==
                         null) {
                       return greyWidget;
-                    }
+                    } */
                     return VisibilityDetector(
                       key: Key('${dayKeys[index].key}'),
                       onVisibilityChanged: (visibilityInfo) {
                         var visiblePercentage =
                             visibilityInfo.visibleFraction * 100;
-                        if (visiblePercentage >= 99) {
+                        if (visiblePercentage > 3) {
                           controller.exploreThumbPic(dayKeys[index].key);
+                          /* debugPrint(
+                              'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
+                        } else {
+                          controller.picAssetThumbBytesMap[dayKeys[index].key] =
+                              null;
                         }
-                        debugPrint(
-                            'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            child: _buildItem2(dayKeys[index].key),
-                          ),
-                        ),
-                      ),
+                      child: controller
+                                  .picAssetThumbBytesMap[dayKeys[index].key] ==
+                              null
+                          ? greyWidget
+                          : Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Container(
+                                  child: _buildItem2(dayKeys[index].key),
+                                ),
+                              ),
+                            ),
                     );
                   });
                 });
@@ -454,14 +479,15 @@ class UntaggedTab extends GetWidget<TabsController> {
           return () {
             switch (state.extendedImageLoadState) {
               case LoadState.loading:
-                return Shimmer.fromColors(
-                  baseColor: Colors.grey,
+                return /* Shimmer.fromColors(
+                  baseColor: Colors.grey[300],
                   highlightColor: Colors.grey[100],
                   period: const Duration(milliseconds: 600),
                   loop: 50,
                   enabled: true,
-                  child: greyWidget,
-                );
+                  child: */
+                    greyWidget;
+              //);
               case LoadState.completed:
                 return FadeImageBuilder(
                   child: GestureDetector(
