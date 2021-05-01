@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/managers/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/show_edit_label_dialog.dart';
 
 typedef OnTap = Function(
     String tagId, String tagName, int counter, DateTime lastUsedAt);
 
 // ignore: must_be_immutable
 class CustomisedTagsList extends StatelessWidget {
-  final List<TagsStore> tags;
-  final Map<String, TagsStore> selectedTags;
+  final List<String> tagsKeyList;
+  final Map<String, TagModel> selectedTags;
   int maxLength;
   final String title;
   final OnTap onTap;
   final Function onDoubleTap;
-  final Function showEditTagModal;
 
   CustomisedTagsList({
-    @required this.tags,
+    @required this.tagsKeyList,
     @required this.selectedTags,
     this.maxLength,
     @required this.onTap,
     @required this.onDoubleTap,
     this.title,
-    @required this.showEditTagModal,
   });
 
   @override
@@ -56,7 +55,7 @@ class CustomisedTagsList extends StatelessWidget {
           spacing: 5.0,
           runSpacing: 5.0,
           runAlignment: WrapAlignment.start,
-          children: (tags.isEmpty)
+          children: (tagsKeyList.isEmpty)
               ? [
                   Container(
                     padding: const EdgeInsets.all(10),
@@ -75,8 +74,8 @@ class CustomisedTagsList extends StatelessWidget {
                 ]
               : List.generate(
                   maxLength != null
-                      ? tags.length.clamp(0, maxLength)
-                      : tags.length,
+                      ? tagsKeyList.length.clamp(0, maxLength)
+                      : tagsKeyList.length,
                   (index) => _buildItem(index),
                 ),
         ),
@@ -85,22 +84,22 @@ class CustomisedTagsList extends StatelessWidget {
   }
 
   Widget _buildItem(int index) {
-    TagsStore tag = tags[index];
-    var isColorFull = selectedTags[tag.id] != null;
+    TagModel tag = TagsController.to.allTags[tagsKeyList[index]].value;
+    var isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
       onTap: () {
         Vibrate.feedback(FeedbackType.success);
-        DatabaseManager.instance.selectedTagKey = tag.id;
-        if (onTap != null) onTap(tag.id, tag.name, tag.count, tag.time);
+        /* DatabaseManager.instance.selectedTagKey = tag.key; */
+        if (onTap != null) onTap(tag.key, tag.title, tag.count, tag.time);
       },
       onDoubleTap: () {
         Vibrate.feedback(FeedbackType.success);
-        DatabaseManager.instance.selectedTagKey = tag.id;
+        /* DatabaseManager.instance.selectedTagKey = tag.key; */
         if (onDoubleTap != null) onDoubleTap();
       },
       onLongPress: () {
-        DatabaseManager.instance.selectedTagKey = tag.id;
-        if (showEditTagModal != null) showEditTagModal();
+        /* DatabaseManager.instance.selectedTagKey = tag.key; */
+        showEditTagModal(tag.key);
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 300),
@@ -111,7 +110,7 @@ class CustomisedTagsList extends StatelessWidget {
                 borderRadius: BorderRadius.circular(19))
             : kGrayBoxDecoration,
         child: Text(
-          tag.name,
+          tag.title,
           textScaleFactor: 1.0,
           style: (isColorFull ? kWhiteTextStyle : kGrayTextStyle)
               .copyWith(fontSize: 14),

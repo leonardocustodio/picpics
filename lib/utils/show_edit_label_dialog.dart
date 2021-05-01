@@ -3,14 +3,16 @@ import 'package:get/get.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import '../constants.dart';
 
-Future<void> showEditTagModal(String tagKey,
-    [bool checkSecret = true]) async {
-  if (tagKey/* DatabaseManager.instance.selectedTagKey */ != '' &&
-      (!checkSecret || tagKey
-          /* DatabaseManager.instance.selectedTagKey */ != kSecretTagKey)) {
+Future<void> showEditTagModal(String tagKey, [bool checkSecret = true]) async {
+  if (tagKey /* DatabaseManager.instance.selectedTagKey */ != '' &&
+      (!checkSecret ||
+          tagKey
+              /* DatabaseManager.instance.selectedTagKey */ !=
+              kSecretTagKey)) {
     TextEditingController alertInputController = TextEditingController();
 //      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
     String tagName = await DatabaseManager.instance
@@ -29,18 +31,21 @@ Future<void> showEditTagModal(String tagKey,
           destructiveButtonTitle: S.of(Get.context).delete,
           onPressedDestructive: () {
             //print('Deleting tag: ${/* DatabaseManager.instance.selectedTagKey */}');
-            GalleryStore.to
-                .deleteTag(tagKey: /* DatabaseManager.instance.selectedTagKey */);
+            TagsController.to.deleteTagFromPic(tagKey: tagKey);
+            /* GalleryStore.to
+                .deleteTag(tagKey: /* DatabaseManager.instance.selectedTagKey */); */
             Get.back();
           },
           defaultButtonTitle: S.of(Get.context).ok,
           onPressedDefault: () {
 //print(Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
             if (tagName != alertInputController.text) {
-              GalleryStore.to.editTag(
+              TagsController.to.editTagName(
+                  oldTagKey: tagKey, newName: alertInputController.text);
+              /*  GalleryStore.to.editTag(
                 oldTagKey: /* DatabaseManager.instance.selectedTagKey */,
-                newName: alertInputController.text,
-              );
+                newName: ,
+              ); */
             }
             Get.back();
           },

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/utils/helpers.dart';
 
 import '../constants.dart';
 
-class TagModel extends GetxController {
+class TagModel {
   RxMap _map = <String, dynamic>{}.obs;
   TagModel(
       {@required String key,
@@ -48,6 +49,8 @@ class TagsController extends GetxController {
   final mostUsedTags = <String, String>{}.obs;
   final lastWeekUsedTags = <String, String>{}.obs;
   final lastMonthUsedTags = <String, String>{}.obs;
+
+  final recentTagKeyList = <String>[].obs;
 
   final multiPicTags = <String, String>{}.obs;
 
@@ -118,6 +121,77 @@ class TagsController extends GetxController {
     });
   }
 
+/*   //@action
+  Future<void> loadTags() async {
+    var tagsBox = await database.getAllLabel();
+    tags.clear();
+
+    for (Label tag in tagsBox) {
+      TagsStore tagsStore = TagsStore(
+        id: tag.key,
+        name: tag.title,
+        count: tag.counter,
+        time: tag.lastUsedAt,
+      );
+      addTag(tagsStore);
+    }
+
+    /* Label secretTag = tagsBox.firstWhere(
+      (Label element) => element.key == kSecretTagKey,
+      orElse: () => null,
+    ); */
+    if (tags[kSecretTagKey] == null) {
+      //print('Creating secret tag in db!');
+      Label createSecretLabel = Label(
+        key: kSecretTagKey,
+        title: 'Secret Pics',
+        photoId: [],
+        counter: 1,
+        lastUsedAt: DateTime.now(),
+      );
+      await database.createLabel(createSecretLabel);
+      //tagsBox.put(kSecretTagKey, createSecretTag);
+
+      TagsStore tagsStore = TagsStore(
+        id: kSecretTagKey,
+        name: 'Secret Pics',
+        count: 1,
+        time: DateTime.now(),
+      );
+      addTag(tagsStore);
+    }
+    loadMostUsedTags();
+    loadLastWeekUsedTags();
+    loadLastMonthUsedTags();
+
+    //print('******************* loaded tags **********');
+  } */
+
+  //@action
+/*   void addRecentTags(String tagKey) {
+    recentTags.add(tagKey);
+  } */
+
+  //@action
+/*   Future<void> editRecentTags(String oldTagKey, String newTagKey) async {
+    if (recentTags.contains(oldTagKey)) {
+      //print('updating tag name in recent tags');
+      int indexOfTag = recentTags.indexOf(oldTagKey);
+      recentTags[indexOfTag] = newTagKey;
+      /* var userBox = Hive.box('user');
+      User getUser = userBox.getAt(0); */
+      MoorUser currentUser = await database.getSingleMoorUser();
+      int indexOfRecentTag = currentUser.recentTags.indexOf(oldTagKey);
+      var tempTags = List<String>.from(currentUser.recentTags);
+      tempTags[indexOfRecentTag] = newTagKey;
+      await database.updateMoorUser(currentUser.copyWith(recentTags: tempTags));
+
+/* 
+      getUser.recentTags[indexOfRecentTag] = newTagKey;
+      userBox.putAt(0, getUser); */
+    }
+  } */
+
   /// load all the tags async
   Future<void> loadAllTags() async {
     var tagsBox = await _database.getAllLabel();
@@ -165,8 +239,12 @@ class TagsController extends GetxController {
 
   /// add the tag
   void addTag(TagModel tagModel) {
-    if (allTags[tagModel.key] == null) {
-      allTags[tagModel.key] = Rx<TagModel>(tagModel);
+    allTags[tagModel.key] = Rx<TagModel>(tagModel);
+  }
+
+  void addRecentTag(String tagKey) {
+    if (recentTagKeyList.contains(tagKey) == false) {
+      recentTagKeyList.add(tagKey);
     }
   }
 
@@ -177,13 +255,16 @@ class TagsController extends GetxController {
       @required String newName}) {
     TagModel tagModel = allTags[oldTagKey].value;
 
+    /// remove the oldTagKey because it will help us to make is un-listenable
+    /// as it might be used somewhere else
+    allTags.remove(oldTagKey);
+
     tagModel
       ..key = newTagKey
       ..title = newName
       ..time = DateTime.now();
 
     allTags[newTagKey] = Rx<TagModel>(tagModel);
-    allTags.remove(oldTagKey);
   }
 
   /// remove Tag from all tags
@@ -195,12 +276,14 @@ class TagsController extends GetxController {
 
   Future<void> editTagName(
       {@required String oldTagKey, @required String newName}) async {
-
     /// create a new tagKey
     String newTagKey = Helpers.encryptTag(newName);
 
     /// use that new tagKey to make the ui changes fastly
-    _editTagInternalFunction(oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
+    _editTagInternalFunction(
+        oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
+
+    /// as soon as the `ui` changes are done - now secretly do the background changes in async manner
 
     /// fetch the `Label` from the `oldTagKey`
     Label oldTag = await _database.getLabelByLabelKey(oldTagKey);
@@ -232,12 +315,7 @@ class TagsController extends GetxController {
       ],
     );
 
-    // Altera a tag
-    //appStore.editRecentTags(oldTagKey, newTagKey);
     await _database.deleteLabelByLabelId(oldTagKey);
-    //tagsBox.delete(oldTagKey);
-
-    // //print('finished updating all tags');
     Analytics.sendEvent(Event.edited_tag);
   }
 
@@ -250,7 +328,7 @@ class TagsController extends GetxController {
     if (label != null) {
       // //print('found tag going to delete it');
       // Remove a tag das fotos já taggeadas
-      TagsStore tagsStore = appStore.tags[tagKey];
+      TagModel tagsStore = allTags[tagKey].value;
       // //print('TagsStore Tag: ${tagsStore.name}');
       TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);
@@ -263,8 +341,9 @@ class TagsController extends GetxController {
         }
       }
       taggedPics.remove(taggedPicsStore);
-      appStore.removeTagFromRecent(tagKey: tagKey);
-      appStore.removeTag(tagsStore: tagsStore);
+      recentTagKeyList.removeWhere((element) => element == tagKey);
+      //appStore.removeTagFromRecent(tagKey: tagKey);
+      removeTag(tagModel: tagsStore);
       await _database.deleteLabelByLabelId(tagKey);
       //tagsBox.delete(tagKey);
       // //print('deleted from tags db');

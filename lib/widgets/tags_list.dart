@@ -8,6 +8,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
@@ -29,7 +30,7 @@ class TagsList extends StatefulWidget {
   final OnString onPanEnd; // Function()
   final OnString onSubmitted; // Function(String)
   final OnString onChanged; // Function(String)
-  final OnString showEditTagModal; // Function()
+  //final OnString showEditTagModal; // Function()
   final String aiButtonTitle;
   final Function onAiButtonTap;
   final bool shouldChangeToSwipeMode;
@@ -50,7 +51,7 @@ class TagsList extends StatefulWidget {
     this.title,
     this.aiButtonTitle,
     this.onAiButtonTap,
-    @required this.showEditTagModal,
+    //@required this.showEditTagModal,
     this.shouldChangeToSwipeMode = false,
   });
 
@@ -116,7 +117,7 @@ class _TagsListState extends State<TagsList> {
           },
           onLongPress: () {
             //DatabaseManager.instance.selectedTagKey = tag.key;
-            widget.showEditTagModal?.call(tagKey);
+            showEditTagModal(tagKey);
           },
           onPanStart: (details) {
             //print('Started pan on tag: ${tag.key}');

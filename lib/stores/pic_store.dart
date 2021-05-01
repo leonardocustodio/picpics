@@ -22,6 +22,8 @@ import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/labels.dart';
 
+import 'tags_controller.dart';
+
 class PicStore extends GetxController {
   final DateTime createdAt;
   final double originalLatitude;
@@ -30,7 +32,7 @@ class PicStore extends GetxController {
   final AppDatabase database = AppDatabase();
 
   //ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
-  final tags = <String, TagsStore>{}.obs;
+  final tags = <String, TagModel>{}.obs;
 
   //var aiSuggestions = <TagsStore>[];
 
@@ -70,7 +72,7 @@ class PicStore extends GetxController {
   final entity = Rx<AssetEntity>(null);
 
   // @observable
-  final tagsSuggestions = <TagsStore>[].obs;
+  final tagsSuggestions = <TagModel>[].obs;
 
   PicStore({
     @required AssetEntity entityValue,
@@ -324,7 +326,7 @@ class PicStore extends GetxController {
       }
 
       for (String tagKey in pic.tags) {
-        TagsStore tagsStore = UserController.to.tags[tagKey];
+        TagModel tagsStore = TagsController.to.allTags[tagKey].value;
         if (tagsStore == null) {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
@@ -392,7 +394,7 @@ class PicStore extends GetxController {
     tagsSuggestionsCalculate();
   }
 
-  Future<List<TagsStore>> tagsSuggestionsCalculate() async {
+  Future<List<TagModel>> tagsSuggestionsCalculate() async {
     //var tagsBox = Hive.box('tags');
     var tagsBox = await database.getAllLabel();
     var tagsBoxKeys = tagsBox.map((e) => e.key);
@@ -400,7 +402,7 @@ class PicStore extends GetxController {
     searchText.value = searchText.trim();
 
     if (searchText == '') {
-      var suggestions = <TagsStore>[];
+      var suggestions = <TagModel>[];
       var suggestionTags = <String>[];
       var tagsKeys = tags.keys.toList();
 
@@ -430,7 +432,7 @@ class PicStore extends GetxController {
       }
 
       for (String tagId in suggestionTags) {
-        suggestions.add(UserController.to.tags[tagId]);
+        suggestions.add(TagsController.to.allTags[tagId].value);
       }
 
       tagsSuggestions.value = suggestions;
@@ -444,8 +446,8 @@ class PicStore extends GetxController {
           tagName,
           listOfLetters,
           (matched) {
-            if (matched && UserController.to.tags[tagKey] != null)
-              tagsSuggestions.add(UserController.to.tags[tagKey]);
+            if (matched && TagsController.to.allTags[tagKey].value != null)
+              tagsSuggestions.add(TagsController.to.allTags[tagKey].value);
           },
         );
         /* if (tagName.startsWith(Helpers.stripTag(searchText))) {
@@ -455,7 +457,7 @@ class PicStore extends GetxController {
     }
     //print('find suggestions: $searchText');
 
-    return <TagsStore>[];
+    return <TagModel>[];
   }
 
   //@action
@@ -501,9 +503,9 @@ class PicStore extends GetxController {
       params: {'tagName': tagName},
     );
     //print('adding tag to database...');
-    TagsStore tagsStore =
-        TagsStore(id: tagKey, name: tagName, count: 1, time: DateTime.now());
-    UserController.to.addTag(tagsStore);
+    TagModel tagModel =
+        TagModel(key: tagKey, title: tagName, count: 1, time: DateTime.now());
+    TagsController.to.addTag(tagModel);
 
     //tagsBox.put(tagKey, Tag(tagName, [photoId]));
     await database.createLabel(Label(
@@ -545,15 +547,15 @@ class PicStore extends GetxController {
       await database.updatePhoto(getPic);
       //print('updated picture');
 
-      TagsStore tagsStore = UserController.to.tags[tagKey];
+      TagModel tagModel = TagsController.to.allTags[tagKey].value;
 
-      tags[tagKey] = tagsStore;
+      tags[tagKey] = tagModel;
 
       await tagsSuggestionsCalculate();
 
       Analytics.sendEvent(
         Event.added_tag,
-        params: {'tagName': tagsStore.name},
+        params: {'tagName': tagModel.title},
       );
       return;
     }
@@ -561,7 +563,7 @@ class PicStore extends GetxController {
     //print('this picture is not in db, adding it...');
     //print('Photo Id: $photoId');
 
-    TagsStore tagsStore = UserController.to.tags[tagKey];
+    TagModel tagsStore = TagsController.to.allTags[tagKey].value;
     tags[tagKey] = tagsStore;
 
     Photo pic = Photo(
@@ -589,7 +591,7 @@ class PicStore extends GetxController {
     await tagsSuggestionsCalculate();
     Analytics.sendEvent(
       Event.added_tag,
-      params: {'tagName': tagsStore.name},
+      params: {'tagName': tagsStore.title},
     );
   }
 

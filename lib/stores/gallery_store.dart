@@ -23,6 +23,8 @@ import 'package:share/share.dart';
 import 'package:collection/collection.dart';
 import 'package:mime/mime.dart';
 
+import 'tags_controller.dart';
+
 // ignore_for_file: invalid_use_of_protected_member
 class GalleryStore extends GetxController {
   UserController appStore = UserController.to;
@@ -33,12 +35,12 @@ class GalleryStore extends GetxController {
   final shouldRefreshTaggedGallery = false.obs;
   final sharedPic = false.obs;
   final trashedPic = false.obs;
-  final tagsSuggestions = <TagsStore>[].obs;
+  final tagsSuggestions = <TagModel>[].obs;
   final searchText = ''.obs;
-  final multiPicTags = <String, TagsStore>{}.obs;
+  final multiPicTags = <String, TagModel>{}.obs;
   final currentThumbnailPic = Rx<PicStore>(null);
 
-  final searchTagsResults = <TagsStore>[].obs;
+  final searchTagsResults = <TagModel>[].obs;
 
   final showSearchTagsResults = false.obs;
   final isLoaded = false.obs;
@@ -46,7 +48,7 @@ class GalleryStore extends GetxController {
   final deviceHasPics = false.obs;
   final isSearching = false.obs;
 
-  final searchingTags = <TagsStore>[].obs;
+  final searchingTags = <TagModel>[].obs;
 
   final selectedSwipe = 0.obs;
   final selectedThumbnail = 0.obs;
@@ -138,13 +140,13 @@ class GalleryStore extends GetxController {
           List<TaggedPicsStore> taggedPicsStores = [];
           for (String tagKey in searchingTagsKeys) {
             TaggedPicsStore findTaggedPicStore = taggedPics.firstWhere(
-                (element) => element.tag.value.id == tagKey,
+                (element) => element.tag.value.key == tagKey,
                 orElse: () => null);
             if (findTaggedPicStore != null) {
               taggedPicsStores.add(findTaggedPicStore);
             } else {
               TaggedPicsStore createTaggedPicStore =
-                  TaggedPicsStore(tagValue: UserController.to.tags[tagKey]);
+                  TaggedPicsStore(tagValue: TagsController.to.allTags[tagKey].value);
               taggedPicsStores.add(createTaggedPicStore);
             }
           }
@@ -184,7 +186,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void loadTaggedPicsStore() {
-    for (TagsStore tagsStore in appStore.tags.values.toList()) {
+    for (TagModel tagsStore in TagsController.to.allTags.values.map((e) => e.value).toList()) {
       TaggedPicsStore taggedPicsStore = TaggedPicsStore(tagValue: tagsStore);
       taggedPics.add(taggedPicsStore);
     }

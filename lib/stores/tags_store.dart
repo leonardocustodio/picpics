@@ -1,18 +1,15 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 
 class TagsStore {
-  TagsStore({this.id, this.name, @required this.count, @required this.time});
-
-  //@observable
+  TagsStore(
+      {@required this.id,
+      @required this.name,
+      @required this.count,
+      @required this.time});
+  
   String id;
-
-  //@observable
   String name;
-
-  //@observable
   int count;
-
-  //@observable
   DateTime time;
 
   //@action
@@ -36,3 +33,4 @@ class TagsStore {
         this.time.hashCode;
   }
 }
+ */

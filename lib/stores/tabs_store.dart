@@ -34,7 +34,7 @@ class Debouncer {
   }
 }
 
-class TabsStore extends GetxController {
+class TabsController extends GetxController {
   final currentTab = 0.obs;
   final toggleIndexUntagged = 0.obs;
   final toggleIndexTagged = 1.obs;
@@ -53,7 +53,7 @@ class TabsStore extends GetxController {
   var privatePhotoIdMap = <String, String>{};
   final secretPicIds = <String, bool>{}.obs;
   final secretPicData = <String, Private>{}.obs;
-  final selectedPics = <String, bool>{}.obs;
+  final selectedUntaggedPics = <String, bool>{}.obs;
   final photoPathMap = <String, String>{}.obs;
 
   AppDatabase database = AppDatabase();
@@ -224,8 +224,7 @@ class TabsStore extends GetxController {
         addThumbBytesMap(picId, assetThumbBytes(false, assetMap[picId]));
         return;
       } else if (secretPicData[picId] != null) {
-        // it is a secret pic if we successfully found the related data related to it
-
+        // it is a secret pic as we had successfully found the data related to it
         addThumbBytesMap(
             picId,
             assetThumbBytes(true, assetMap[picId], secretPicData[picId].nonce,

@@ -5,12 +5,12 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/widgets/watch_ad_modal.dart';
 
-showWatchAdModal(BuildContext context) {
+void showWatchAdModal() {
   Analytics.sendEvent(Event.watch_ads_modal);
   showDialog<void>(
-    context: context,
+    context: Get.context,
     barrierDismissible: true,
-    builder: (BuildContext buildContext) {
+    builder: (_) {
       return WatchAdModal(
         onPressedWatchAdd: () {
           Get.back();
@@ -18,7 +18,7 @@ showWatchAdModal(BuildContext context) {
           Analytics.sendAdImpression();
         },
         onPressedGetPremium: () {
-          Navigator.popAndPushNamed(context, PremiumScreen.id);
+          Get.offNamed(PremiumScreen.id);
         },
       );
     },

@@ -16,6 +16,7 @@ import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/functions.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
@@ -27,18 +28,20 @@ import 'package:flutter_vibrate/flutter_vibrate.dart';
 
 import 'show_watch_ad_modal.dart';
 
+//typedef EditTagModalTypeDef = dynamic Function(String tagKey);
+
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
 
-  final Function showEditTagModal;
-  final Function showDeleteSecretModal;
+  //final EditTagModalTypeDef showEditTagModal;
+  //final Function showDeleteSecretModal;
   final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
   PhotoCard({
     this.picStore,
-    this.showEditTagModal,
-    this.showDeleteSecretModal,
+    //this.showEditTagModal,
+    //this.showDeleteSecretModal,
     this.picsInThumbnails,
     this.picsInThumbnailIndex,
   });
@@ -50,7 +53,7 @@ class PhotoCard extends StatefulWidget {
 class _PhotoCardState extends State<PhotoCard> {
   final GlobalKey _photoSpaceKey = GlobalKey();
 
-  TabsStore tabsStore;
+  TabsController tabsStore;
   PicStore get picStore => widget.picStore;
 
   List<int> photoSize;
@@ -267,7 +270,7 @@ class _PhotoCardState extends State<PhotoCard> {
                               : kYellowColor,
                           iconSize: 19.2,
                           onTap: () {
-                            widget.showDeleteSecretModal(picStore);
+                            showDeleteSecretModal(picStore);
                           },
                         ),
                         CircularMenuItem(
@@ -360,11 +363,12 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Obx(() {
                   return TagsList(
-                    tags: GalleryStore.to.tagsFromPic(picStore: picStore),
+                    tagsKeyList:
+                        GalleryStore.to.tagsFromPic(picStore: picStore),
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
-                    showEditTagModal: widget.showEditTagModal,
+                    //showEditTagModal: widget.showEditTagModal,
                     shouldChangeToSwipeMode: true,
                     aiButtonTitle: 'All Tags',
                     onAiButtonTap: () {
@@ -372,21 +376,20 @@ class _PhotoCardState extends State<PhotoCard> {
                       //print('ai button tapped');
                       // picStore.switchAiTags(context);
                     },
-                    onTap: (id, tagName) {
+                    onTap: (String key) {
                       //print('do nothing');
                     },
-                    onDoubleTap: () {
+                    onDoubleTap: (String value) {
                       //print('do nothing');
                     },
-                    onPanEnd: () async {
+                    onPanEnd: (String selectedTagKey) async {
                       if (!UserController.to.canTagToday.value) {
                         showWatchAdModal(context);
                         return;
                       }
 
                       await GalleryStore.to.removeTagFromPic(
-                          picStore: picStore,
-                          tagKey: DatabaseManager.instance.selectedTagKey);
+                          picStore: picStore, tagKey: selectedTagKey);
 
                       await picStore.tagsSuggestionsCalculate();
                     },
@@ -465,14 +468,14 @@ class _PhotoCardState extends State<PhotoCard> {
                     return Obx(
                       () => TagsList(
                         title: suggestionsTitle,
-                        tags:
+                        tagsKeyList:
                             /* picStore.aiTags.value
                             ? picStore.aiSuggestions.value
                             : */
-                            picStore.tagsSuggestions,
+                            picStore.tagsSuggestions.value.toList(),
                         tagStyle: TagStyle.GrayOutlined,
-                        showEditTagModal: widget.showEditTagModal,
-                        onTap: (tagId, tagName) async {
+                        //showEditTagModal: widget.showEditTagModal,
+                        onTap: (tagId) async {
                           if (!UserController.to.canTagToday.value) {
                             showWatchAdModal(context);
                             return;
@@ -483,10 +486,10 @@ class _PhotoCardState extends State<PhotoCard> {
                           tagsEditingController.clear();
                           picStore.setSearchText('');
                         },
-                        onDoubleTap: () {
+                        onDoubleTap: (tagKey) {
                           //print('do nothing');
                         },
-                        onPanEnd: () {
+                        onPanEnd: (tagKey) {
                           //print('do nothing');
                         },
                       ),

@@ -18,9 +18,10 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 // ignore: must_be_immutable
-class UntaggedTab extends GetWidget<TabsStore> {
+class UntaggedTab extends GetWidget<TabsController> {
   static const id = 'untagged_tab';
 
   //ScrollController scrollControllerFirstTab;
@@ -116,15 +117,26 @@ class UntaggedTab extends GetWidget<TabsStore> {
                   return Obx(() {
                     if (controller.picAssetThumbBytesMap[dayKeys[index].key] ==
                         null) {
-                      controller.exploreThumbPic(dayKeys[index].key);
                       return greyWidget;
                     }
-                    return Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: Container(
-                          child: _buildItem2(dayKeys[index].key),
+                    return VisibilityDetector(
+                      key: Key('${dayKeys[index].key}'),
+                      onVisibilityChanged: (visibilityInfo) {
+                        var visiblePercentage =
+                            visibilityInfo.visibleFraction * 100;
+                        if (visiblePercentage >= 99) {
+                          controller.exploreThumbPic(dayKeys[index].key);
+                        }
+                        debugPrint(
+                            'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible');
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: Container(
+                            child: _buildItem2(dayKeys[index].key),
+                          ),
                         ),
                       ),
                     );
@@ -425,7 +437,6 @@ class UntaggedTab extends GetWidget<TabsStore> {
   } */
 
   Widget _buildItem2(String picId) {
-
     final AssetEntityImageProviderKawal imageProvider =
         AssetEntityImageProviderKawal(controller.assetMap[picId],
             originBytes: controller.picAssetOriginBytesMap[picId],
@@ -457,7 +468,7 @@ class UntaggedTab extends GetWidget<TabsStore> {
                     onLongPress: () {
                       //print('LongPress');
                       if (controller.multiPicBar.value == false) {
-                        controller.selectedPics[picId] = true;
+                        controller.selectedUntaggedPics[picId] = true;
                         controller.setMultiPicBar(true);
                       }
                     },
@@ -465,10 +476,11 @@ class UntaggedTab extends GetWidget<TabsStore> {
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
                         if (controller.multiPicBar.value) {
-                          if (!(controller.selectedPics[picId] ?? false)) {
-                            controller.selectedPics[picId] = true;
+                          if (!(controller.selectedUntaggedPics[picId] ??
+                              false)) {
+                            controller.selectedUntaggedPics[picId] = true;
                           } else {
-                            controller.selectedPics.remove(picId);
+                            controller.selectedUntaggedPics.remove(picId);
                           }
                           /* GalleryStore.to.setSelectedPics(
                   picStore: picStore,
@@ -492,7 +504,7 @@ class UntaggedTab extends GetWidget<TabsStore> {
                           ),
                         );
                         if (controller.multiPicBar.value) {
-                          if (controller.selectedPics[picId] ??
+                          if (controller.selectedUntaggedPics[picId] ??
                               false /* GalleryStore.to.selectedPics.contains(picStore) */) {
                             return Stack(
                               children: [

@@ -21,7 +21,7 @@ import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-class TaggedTab extends GetWidget<TabsStore> {
+class TaggedTab extends GetWidget<TabsController> {
   static const id = 'tagged_tab';
 
   final Function showEditTagModal;
@@ -518,9 +518,9 @@ class TaggedTab extends GetWidget<TabsStore> {
                                 padding: const EdgeInsets.only(
                                     left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
-                                  tags: GalleryStore.to.searchingTags.toList(),
+                                  tagsKeyList: GalleryStore.to.searchingTags.value.toList(),
                                   tagStyle: TagStyle.MultiColored,
-                                  onTap: (tagId, tagName) {
+                                  onTap: (String tagKey) {
                                     //print('do nothing');
                                     GalleryStore.to.removeTagFromSearchFilter();
                                     if (GalleryStore
@@ -529,7 +529,7 @@ class TaggedTab extends GetWidget<TabsStore> {
                                       GalleryStore.to.setIsSearching(false);
                                     }
                                   },
-                                  onPanEnd: () {
+                                  onPanEnd: (String tagKey) {
                                     GalleryStore.to.removeTagFromSearchFilter();
                                     if (GalleryStore
                                             .to.searchingTagsKeys.isEmpty &&
@@ -537,10 +537,10 @@ class TaggedTab extends GetWidget<TabsStore> {
                                       GalleryStore.to.setIsSearching(false);
                                     }
                                   },
-                                  onDoubleTap: () {
+                                  onDoubleTap: (String tagKey) {
                                     //print('do nothing');
                                   },
-                                  showEditTagModal: showEditTagModal,
+                                 // showEditTagModal: showEditTagModal,
                                 ),
                               ),
 //                            if (GalleryStore.to.showSearchTagsResults) ...[
@@ -574,7 +574,7 @@ class TaggedTab extends GetWidget<TabsStore> {
                                         top: 8.0,
                                         bottom: 16.0),
                                     child: TagsList(
-                                      tags: GalleryStore.to.tagsSuggestions,
+                                      tagsKeyList: GalleryStore.to.tagsSuggestions.value.toList(),
                                       tagStyle: TagStyle.GrayOutlined,
                                       showEditTagModal: showEditTagModal,
                                       onTap: (tagId, tagName) {

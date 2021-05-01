@@ -9,7 +9,7 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
 
-void showDeleteSecretModalForMultiPic(TabsStore controller) {
+void showDeleteSecretModalForMultiPic(TabsController controller) {
   if (UserController.to.keepAskingToDelete.value == false) {
     controller.setMultiTagSheet(false);
     controller.setMultiPicBar(false);
@@ -46,7 +46,7 @@ void showDeleteSecretModalForMultiPic(TabsStore controller) {
 }
 
 Future<void> showDeleteSecretModal(
-    BuildContext context, PicStore picStore) async {
+    /* BuildContext context, */ PicStore picStore) async {
   if (UserController.to.secretPhotos != true) {
     UserController.to.popPinScreen = PopPinScreenTo.TabsScreen;
     Get.toNamed(PinScreen.id);
@@ -70,7 +70,7 @@ Future<void> showDeleteSecretModal(
 
   //print('showModal');
   showDialog<void>(
-    context: context,
+    context: Get.context,
     barrierDismissible: true,
     builder: (BuildContext buildContext) {
       if (picStore.isPrivate == true) {

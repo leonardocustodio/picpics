@@ -21,6 +21,8 @@ import 'package:uuid/uuid.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 
+import 'tags_controller.dart';
+
 class UserController extends GetxController {
   static UserController get to => Get.find();
   String appVersion;
@@ -100,10 +102,10 @@ class UserController extends GetxController {
     //   isPinRegistered = secret.pin == null ? false : true;
     // }
 
-    loadTags();
+    TagsController.to.loadAllTags();
 
     for (String tagKey in user.recentTags) {
-      addRecentTags(tagKey);
+       TagsController.to.addRecentTag(tagKey);
     }
 
     /*    if (user.hasGalleryPermission != null || user.tutorialCompleted) {
@@ -140,11 +142,6 @@ class UserController extends GetxController {
     }
 
     starredPhotos.add(photoId);
-/* 
-    var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.starredPhotos = starredPhotos;
-    currentUser.save(); */
 
     MoorUser currentUser =
         await database.getSingleMoorUser(createIfNotExist: true);
@@ -158,11 +155,6 @@ class UserController extends GetxController {
     }
 
     starredPhotos.remove(photoId);
-
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.starredPhotos = starredPhotos;
-    currentUser.save(); */
     MoorUser currentUser =
         await database.getSingleMoorUser(createIfNotExist: true);
     await database
@@ -186,14 +178,10 @@ class UserController extends GetxController {
       len = secretBox.length;
     });
     return len;
-    /* var secretBox = Hive.box('secrets');
-    return secretBox.length; */
   }
 
-  //@action
   void setTryBuyId(String value) => tryBuyId = value;
 
-  //@action
   Future<void> requestNotificationPermission() async {
     PushNotificationsManager push = PushNotificationsManager();
     await push.init();
@@ -235,15 +223,10 @@ class UserController extends GetxController {
     });
   }
 
-  //@action
   Future<void> switchDailyChallenges(
       {String notificationTitle, String notificationDescription}) async {
     dailyChallenges.value = !dailyChallenges.value;
 
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.dailyChallenges = dailyChallenges;
-    currentUser.save(); */
     MoorUser currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(
         currentUser.copyWith(dailyChallenges: dailyChallenges.value));
@@ -263,46 +246,28 @@ class UserController extends GetxController {
     Analytics.sendEvent(Event.notification_switch);
   }
 
-  //@action
   Future<void> setIsPinRegistered(bool value) async {
     isPinRegistered.value = value;
-
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.isPinRegistered = value;
-    currentUser.save(); */
 
     MoorUser currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser.copyWith(isPinRegistered: value));
   }
 
-  //@action
   Future<void> setKeepAskingToDelete(bool value) async {
     keepAskingToDelete.value = value;
 
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.keepAskingToDelete = value;
-    currentUser.save(); */
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
         .updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
   }
 
-  //@action
   Future<void> setShouldDeleteOnPrivate(bool value) async {
     shouldDeleteOnPrivate.value = value;
-
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.shouldDeleteOnPrivate = value;
-    currentUser.save(); */
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
         .updateMoorUser(currentUser.copyWith(shouldDeleteOnPrivate: value));
   }
 
-  //@action
   Future<void> switchSecretPhotos() async {
     secretPhotos.value = !secretPhotos.value;
 
@@ -310,13 +275,7 @@ class UserController extends GetxController {
       //print('Cleared encryption key in memory!!!');
       setEncryptionKey(null);
     }
-
-    //print('After Switch Secret: $secretPhotos');
-
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.secretPhotos = secretPhotos;
-    currentUser.save(); */
+    
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
         .updateMoorUser(currentUser.copyWith(secretPhotos: secretPhotos.value));
@@ -329,16 +288,9 @@ class UserController extends GetxController {
 
   //  int goal;
 
-  // //@action
   Future<void> changeUserTimeOfDay(int hour, int minute) async {
     hourOfDay.value = hour;
     minutesOfDay.value = minute;
-
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.hourOfDay = hour;
-    currentUser.minutesOfDay = minute;
-    currentUser.save(); */
 
     MoorUser currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser.copyWith(
@@ -355,14 +307,9 @@ class UserController extends GetxController {
     }
   }
 
-  //@action
   Future<void> setIsPremium(bool value) async {
     isPremium.value = value;
 
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.isPremium = value;
-    currentUser.save(); */
     MoorUser currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser.copyWith(isPremium: value));
 
@@ -371,83 +318,10 @@ class UserController extends GetxController {
     }
   }
 
-  //@action
   Future<void> checkPremiumStatus() async {
     bool premium = await DatabaseManager.instance.checkPremiumStatus();
     if (premium == false) {
       setIsPremium(false);
-    }
-  }
-
-
-  //@action
-  Future<void> loadTags() async {
-    var tagsBox = await database.getAllLabel();
-    tags.clear();
-
-    for (Label tag in tagsBox) {
-      TagsStore tagsStore = TagsStore(
-        id: tag.key,
-        name: tag.title,
-        count: tag.counter,
-        time: tag.lastUsedAt,
-      );
-      addTag(tagsStore);
-    }
-
-    /* Label secretTag = tagsBox.firstWhere(
-      (Label element) => element.key == kSecretTagKey,
-      orElse: () => null,
-    ); */
-    if (tags[kSecretTagKey] == null) {
-      //print('Creating secret tag in db!');
-      Label createSecretLabel = Label(
-        key: kSecretTagKey,
-        title: 'Secret Pics',
-        photoId: [],
-        counter: 1,
-        lastUsedAt: DateTime.now(),
-      );
-      await database.createLabel(createSecretLabel);
-      //tagsBox.put(kSecretTagKey, createSecretTag);
-
-      TagsStore tagsStore = TagsStore(
-        id: kSecretTagKey,
-        name: 'Secret Pics',
-        count: 1,
-        time: DateTime.now(),
-      );
-      addTag(tagsStore);
-    }
-    loadMostUsedTags();
-    loadLastWeekUsedTags();
-    loadLastMonthUsedTags();
-
-    //print('******************* loaded tags **********');
-  }
-
-  //@action
-  void addRecentTags(String tagKey) {
-    recentTags.add(tagKey);
-  }
-
-  //@action
-  Future<void> editRecentTags(String oldTagKey, String newTagKey) async {
-    if (recentTags.contains(oldTagKey)) {
-      //print('updating tag name in recent tags');
-      int indexOfTag = recentTags.indexOf(oldTagKey);
-      recentTags[indexOfTag] = newTagKey;
-      /* var userBox = Hive.box('user');
-      User getUser = userBox.getAt(0); */
-      MoorUser currentUser = await database.getSingleMoorUser();
-      int indexOfRecentTag = currentUser.recentTags.indexOf(oldTagKey);
-      var tempTags = List<String>.from(currentUser.recentTags);
-      tempTags[indexOfRecentTag] = newTagKey;
-      await database.updateMoorUser(currentUser.copyWith(recentTags: tempTags));
-
-/* 
-      getUser.recentTags[indexOfRecentTag] = newTagKey;
-      userBox.putAt(0, getUser); */
     }
   }
 
@@ -665,7 +539,7 @@ class UserController extends GetxController {
       tag10,
     ];
     Future.forEach(entries, (newLabel) => database.createLabel(newLabel))
-        .then((_) => loadTags());
+        .then((_) => TagsController.to.loadAllTags());
   }
 
   //@action

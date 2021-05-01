@@ -6,38 +6,37 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/customised_tags_list.dart';
 import 'package:picPics/widgets/show_watch_ad_modal.dart';
 import '../constants.dart';
 
 // ignore_for_file: invalid_use_of_protected_member
 class AllTagsStore extends GetxController {
-  final selectedTags = <String, TagsStore>{}.obs;
-  final allTagsAvailable = <String, TagsStore>{}.obs;
-  final searchedTags = <String, TagsStore>{}.obs;
+  final selectedTags = <String, TagModel>{}.obs;
+  final allTagsAvailable = <String, TagModel>{}.obs;
+  final searchedTags = <String, TagModel>{}.obs;
 
   final searchedText = ''.obs;
-  final doFullSearching = true.obs;
+  //final doFullSearching = true.obs;
 
   void doSearching() {
     searchedText.value = searchedText.trim();
     if (searchedText.value == '') return;
-    var tempTags;
+    /* var tempTags;
     if (!doFullSearching.value) {
       // copy the already searched tags into temporary variable
-      tempTags = Map<String, TagsStore>.from(searchedTags.value);
-    }
+      tempTags = Map<String, TagModel>.from(searchedTags.value);
+    } */
     searchedTags.value.clear();
     var listOfLetters = searchedText.value.toLowerCase().split('');
-    (!doFullSearching.value ? tempTags : TagsController.to.tags).forEach(
+    (/* !doFullSearching.value ? tempTags : */ TagsController.to.allTags)
+        .forEach(
       (key, value) => doCustomisedSearching(
         value,
         listOfLetters,
         (matched) {
-          if (matched) searchedTags[key] = value;
+          if (matched) searchedTags[key] = value.value;
         },
       ),
     );
@@ -131,11 +130,11 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                       key: key,
                                       controller: searchEditingController,
                                       focusNode: focusNode,
-                                      onChanged: (t) {
-                                        var text = t.trim();
-                                        if (controller.searchedText.value ==
-                                            '') {
-                                          if (text != '') {
+                                      onChanged: (text) {
+                                        if (text.trim() != '') {
+                                          controller.searchedText.value = text;
+                                          controller.doSearching();
+                                          /* if (text != '') {
                                             // New letter came
                                             controller.searchedText.value =
                                                 text;
@@ -154,11 +153,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                                   .searchedText.value.length <
                                               text.length) {
                                             // more new letters added
-                                            controller.searchedText.value =
-                                                text;
                                             controller.doFullSearching.value =
                                                 false;
-                                            controller.doSearching();
                                           } else if (controller
                                                   .searchedText.value.length >
                                               text.length) {
@@ -175,7 +171,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                             controller.doFullSearching.value =
                                                 true;
                                             controller.doSearching();
-                                          }
+                                          } */
                                         }
                                       },
                                       onFieldSubmitted: (text) {
@@ -237,15 +233,15 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 if (controller.searchedText.value != '')
                                   GestureDetector(
                                       onTap: () {
-                                        if (controller.searchedText.value !=
-                                            '') {
-                                          controller.searchedText.value = '';
-                                          controller.doFullSearching.value =
-                                              true;
-                                          controller.searchedTags.clear();
-                                          focusNode.unfocus();
-                                          searchEditingController.clear();
-                                        }
+                                        /* if (controller.searchedText.value !=
+                                            '') { */
+                                        controller.searchedText.value = '';
+                                        /* controller.doFullSearching.value =
+                                              true; */
+                                        controller.searchedTags.clear();
+                                        focusNode.unfocus();
+                                        searchEditingController.clear();
+                                        /* } */
                                       },
                                       child: Container(
                                           width: 60, child: Icon(Icons.clear))),
@@ -290,13 +286,14 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                         ),
                       ),
                       CustomisedTagsList(
-                        tags: controller.searchedTags.value.values.toList(),
+                        tagsKeyList:
+                            controller.searchedTags.value.keys.toList(),
                         selectedTags: controller.selectedTags.value,
                         onTap: (String tagId, String tagName, int count,
                             DateTime time) async {
                           //print('do nothing');
                           if (!UserController.to.canTagToday.value) {
-                            showWatchAdModal(context);
+                            showWatchAdModal();
                             return;
                           }
                           if (controller.selectedTags.value[tagId] != null) {
@@ -305,20 +302,20 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             await GalleryStore.to.removeTagFromPic(
                                 picStore: picStore, tagKey: tagId);
                           } else {
-                            controller.selectedTags.value[tagId] = TagsStore(
-                                id: tagId,
-                                name: tagName,
+                            controller.selectedTags.value[tagId] = TagModel(
+                                key: tagId,
+                                title: tagName,
                                 count: count,
                                 time: time);
                             await GalleryStore.to.addTagToPic(
                                 picStore: picStore, tagName: tagName);
                           }
-                          UserController.to.loadTags();
+                          TagsController.to.loadAllTags();
                         },
                         onDoubleTap: () {
                           //print('do nothing');
                         },
-                        showEditTagModal: () => showEditTagModal(context),
+                        //showEditTagModal: () => showEditTagModal(context),
                       ),
                     ],
                   ),
@@ -343,15 +340,16 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: UserController.to.mostUsedTags,
+                            tagsKeyList:
+                                TagsController.to.mostUsedTags.keys.toList(),
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!UserController.to.canTagToday) {
-                            showWatchAdModal(context);
-                            return;
-                          } */
+                              if (!UserController.to.canTagToday.value) {
+                                showWatchAdModal();
+                                return;
+                              }
                               if (controller.selectedTags.value[tagId] !=
                                   null) {
                                 controller.selectedTags.value.remove(tagId);
@@ -359,31 +357,30 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 await GalleryStore.to.removeTagFromPic(
                                     picStore: picStore, tagKey: tagId);
                               } else {
-                                controller.selectedTags.value[tagId] =
-                                    TagsStore(
-                                        id: tagId,
-                                        name: tagName,
-                                        count: count,
-                                        time: time);
+                                controller.selectedTags.value[tagId] = TagModel(
+                                    key: tagId,
+                                    title: tagName,
+                                    count: count,
+                                    time: time);
 
                                 await GalleryStore.to.addTagToPic(
                                     picStore: picStore, tagName: tagName);
                               }
-                              UserController.to.loadTags();
+                              TagsController.to.loadAllTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
                             },
-                            showEditTagModal: () => showEditTagModal(context),
+                            // showEditTagModal: () => showEditTagModal(context),
                           ),
                         ],
                       );
                     },
                   ),
-                if (UserController.to.lastWeekUsedTags.isNotEmpty &&
+                if (TagsController.to.lastWeekUsedTags.isNotEmpty &&
                     controller.searchedText.value == '')
                   const SizedBox(height: 20),
-                if (UserController.to.lastWeekUsedTags.isNotEmpty &&
+                if (TagsController.to.lastWeekUsedTags.isNotEmpty &&
                     controller.searchedText.value == '')
                   Obx(
                     () {
@@ -405,15 +402,16 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: UserController.to.lastWeekUsedTags,
+                            tagsKeyList: TagsController.to.lastWeekUsedTags.keys
+                                .toList(),
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!UserController.to.canTagToday) {
-                            showWatchAdModal(context);
-                            return;
-                          } */
+                              if (!UserController.to.canTagToday.value) {
+                                showWatchAdModal();
+                                return;
+                              }
                               if (controller.selectedTags.value[tagId] !=
                                   null) {
                                 controller.selectedTags.remove(tagId);
@@ -421,31 +419,30 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 await GalleryStore.to.removeTagFromPic(
                                     picStore: picStore, tagKey: tagId);
                               } else {
-                                controller.selectedTags.value[tagId] =
-                                    TagsStore(
-                                        id: tagId,
-                                        name: tagName,
-                                        count: count,
-                                        time: time);
+                                controller.selectedTags.value[tagId] = TagModel(
+                                    key: tagId,
+                                    title: tagName,
+                                    count: count,
+                                    time: time);
 
                                 await GalleryStore.to.addTagToPic(
                                     picStore: picStore, tagName: tagName);
                               }
-                              UserController.to.loadTags();
+                              TagsController.to.loadAllTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
                             },
-                            showEditTagModal: () => showEditTagModal(context),
+                            //showEditTagModal: () => showEditTagModal(context),
                           ),
                         ],
                       );
                     },
                   ),
-                if (UserController.to.lastMonthUsedTags.isNotEmpty &&
+                if (TagsController.to.lastMonthUsedTags.isNotEmpty &&
                     controller.searchedText.value == '')
                   const SizedBox(height: 20),
-                if (UserController.to.lastMonthUsedTags.isNotEmpty &&
+                if (TagsController.to.lastMonthUsedTags.isNotEmpty &&
                     controller.searchedText.value == '')
                   Obx(
                     () {
@@ -467,15 +464,16 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: UserController.to.lastWeekUsedTags,
+                            tagsKeyList:
+                                TagsController.to.lastWeekUsedTags.value.keys,
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!UserController.to.canTagToday) {
-                            showWatchAdModal(context);
-                            return;
-                          } */
+                              if (!UserController.to.canTagToday.value) {
+                                showWatchAdModal();
+                                return;
+                              }
                               if (controller.selectedTags.value[tagId] !=
                                   null) {
                                 controller.selectedTags.value.remove(tagId);
@@ -483,22 +481,21 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 await GalleryStore.to.removeTagFromPic(
                                     picStore: picStore, tagKey: tagId);
                               } else {
-                                controller.selectedTags.value[tagId] =
-                                    TagsStore(
-                                        id: tagId,
-                                        name: tagName,
-                                        count: count,
-                                        time: time);
+                                controller.selectedTags.value[tagId] = TagModel(
+                                    key: tagId,
+                                    title: tagName,
+                                    count: count,
+                                    time: time);
                                 //
                                 await GalleryStore.to.addTagToPic(
                                     picStore: picStore, tagName: tagName);
                               }
-                              UserController.to.loadTags();
+                              TagsController.to.loadAllTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
                             },
-                            showEditTagModal: () => showEditTagModal(context),
+                            //showEditTagModal: () => showEditTagModal(context),
                           ),
                         ],
                       );
@@ -527,15 +524,16 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             ),
                           ),
                           CustomisedTagsList(
-                            tags: UserController.to.tags.values.toList(),
+                            tagsKeyList:
+                                TagsController.to.allTags.keys.toList(),
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
                                 DateTime time) async {
                               //print('do nothing');
-                              /* if (!UserController.to.canTagToday) {
-                            showWatchAdModal(context);
-                            return;
-                          } */
+                              if (!UserController.to.canTagToday.value) {
+                                showWatchAdModal();
+                                return;
+                              }
                               if (controller.selectedTags.value[tagId] !=
                                   null) {
                                 controller.selectedTags.value.remove(tagId);
@@ -543,22 +541,21 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 await GalleryStore.to.removeTagFromPic(
                                     picStore: picStore, tagKey: tagId);
                               } else {
-                                controller.selectedTags.value[tagId] =
-                                    TagsStore(
-                                        id: tagId,
-                                        name: tagName,
-                                        count: count,
-                                        time: time);
+                                controller.selectedTags.value[tagId] = TagModel(
+                                    key: tagId,
+                                    title: tagName,
+                                    count: count,
+                                    time: time);
                                 //
                                 await GalleryStore.to.addTagToPic(
                                     picStore: picStore, tagName: tagName);
                               }
-                              UserController.to.loadTags();
+                              TagsController.to.loadAllTags();
                             },
                             onDoubleTap: () {
                               //print('do nothing');
                             },
-                            showEditTagModal: () => showEditTagModal(context),
+                            //showEditTagModal: () => showEditTagModal(context),
                           ),
                         ],
                       );
