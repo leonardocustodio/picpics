@@ -9,10 +9,10 @@ import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/photo_screen.dart';
+import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
@@ -232,10 +232,10 @@ class TaggedTab extends GetWidget<TabsController> {
               controller.setIsLoading(true);
 
               if (taggedPicsStore != null) {
-                GalleryStore.to.sharePics(picsStores: taggedPicsStore.pics);
+                // GalleryStore.to.sharePics(picsStores: taggedPicsStore.pics);
               } else {
-                GalleryStore.to
-                    .sharePics(picsStores: GalleryStore.to.filteredPics);
+                /*  GalleryStore.to
+                    .sharePics(picsStores: GalleryStore.to.filteredPics); */
               }
 
               controller.setIsLoading(false);

@@ -1,16 +1,20 @@
 import 'dart:io';
 import 'dart:typed_data';
+
+import 'package:collection/collection.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:mime/mime.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:share/share.dart';
+
+import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/constants.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tagged_date_pics_store.dart';
 import 'package:picPics/stores/tagged_grid_pic_store.dart';
@@ -18,10 +22,8 @@ import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/stores/untagged_grid_pic_store.dart';
 import 'package:picPics/stores/untagged_pics_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
-import 'package:share/share.dart';
-import 'package:collection/collection.dart';
-import 'package:mime/mime.dart';
 
 import 'tags_controller.dart';
 
@@ -83,8 +85,8 @@ class GalleryStore extends GetxController {
   } */
 
   @override
-  void onInit() {
-    loadAssetsPath();
+  void onReady() {
+    //loadAssetsPath();
     ever(taggedPics, runTotalTaggedPicsComputation);
     ever(filteredPics, runFilteredPicsKeysComputation);
     ever(searchingTags, runFilteredPicsKeysComputation);
@@ -108,7 +110,7 @@ class GalleryStore extends GetxController {
       }
     });
 
-    super.onInit();
+    super.onReady();
   }
 
   final taggedItems = [].obs;
@@ -903,7 +905,7 @@ class GalleryStore extends GetxController {
 
   //@action
   Future<void> loadAssetsPath() async {
-    FilterOptionGroup filterOptionGroup = FilterOptionGroup();
+    /* FilterOptionGroup filterOptionGroup = FilterOptionGroup();
     filterOptionGroup.addOrderOption(
       OrderOption(
         type: OrderOptionType.updateDate,
@@ -923,7 +925,7 @@ class GalleryStore extends GetxController {
     await loadEntities();
     await loadPrivateAssets();
 
-    setSwipeIndex(0);
+    setSwipeIndex(0); */
   }
 
   //@action
@@ -1051,72 +1053,10 @@ class GalleryStore extends GetxController {
     setTrashedPic(true);
   }
 
-  Future<String> _writeByteToImageFile(Uint8List byteData) async {
-    Directory tempDir = await getTemporaryDirectory();
-    File imageFile = File(
-        '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
-    imageFile.createSync(recursive: true);
-    imageFile.writeAsBytesSync(byteData);
-    return imageFile.path;
-  }
-
   //@action
   void setSharedPic(bool value) => sharedPic.value = value;
 
   //@action
-  Future<void> sharePics({List<PicStore> picsStores}) async {
-    var imageList = <String>[], mimeList = <String>[];
-
-    for (PicStore pic in picsStores) {
-      AssetEntity data = pic.entity.value;
-
-      if (data == null) {
-        var bytes = await pic.assetOriginBytes;
-        String path = await _writeByteToImageFile(bytes);
-        imageList.add(path);
-        mimeList.add(lookupMimeType(path));
-      } else {
-        // var bytes = await data.thumbDataWithSize(
-        //   600,
-        //   800,
-        //   format: ThumbFormat.jpeg,
-        // );
-        // String path = await _writeByteToImageFile(bytes);
-
-        String path = (await data.file).path;
-        String mime = lookupMimeType(path);
-        imageList.add(path);
-        mimeList.add(mime);
-      }
-
-//      if (Platform.isAndroid) {
-//        var bytes = await data.originBytes;
-//        bytesPhotos['$x.jpg'] = bytes;
-//      } else {
-//        var bytes = await data.thumbDataWithSize(
-//          data.size.width.toInt(),
-//          data.size.height.toInt(),
-//          format: ThumbFormat.jpeg,
-//        );
-//        bytesPhotos['$x.jpg'] = bytes;
-//      }
-//      x++;
-    }
-
-    // //print('Image List: $imageList');
-    // //print('Mime List: $mimeList');
-
-    Analytics.sendEvent(Event.shared_photos);
-
-    Share.shareFiles(
-      imageList,
-      mimeTypes: mimeList,
-    );
-
-//    setSharedPic(true);
-
-    return;
-  }
 
   //@action
   Future<void> editTag({String oldTagKey, String newName}) async {
@@ -1420,6 +1360,7 @@ class GalleryStore extends GetxController {
   //@action
   Future<void> checkIsLibraryUpdated() async {
     // //print('Scanning library again....');
+    return;
 
     final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
       hasAll: true,

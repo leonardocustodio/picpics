@@ -1,11 +1,15 @@
-/* import 'package:background_fetch/background_fetch.dart';
+import 'dart:io';
+
+import 'package:background_fetch/background_fetch.dart';
 import 'package:convert/convert.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
+import 'package:mime/mime.dart';
 import 'package:moor/moor.dart';
 import 'package:cryptography_flutter/cryptography.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -16,6 +20,7 @@ import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/enum.dart';
+import 'package:share/share.dart';
 
 import '../constants.dart';
 import 'dart:async';
@@ -59,8 +64,8 @@ class TabsController extends GetxController {
   final photoPathMap = <String, String>{}.obs;
 
   AppDatabase database = AppDatabase();
-  final allUnTaggedPicsMonth = <dynamic, String>{}.obs;
-  final allUnTaggedPicsDay = <dynamic, String>{}.obs;
+  final allUnTaggedPicsMonth = <dynamic, dynamic>{}.obs;
+  final allUnTaggedPicsDay = <dynamic, dynamic>{}.obs;
 
   // picId: assetPathEntity
   final assetMap = <String, AssetEntity>{}.obs;
@@ -168,36 +173,66 @@ class TabsController extends GetxController {
     var val = await database.getPrivatePhotoIdList();
     await Future.forEach(
         val, (photo) async => privatePhotoIdMap[photo.id] = '');
-    DateTime previousDay;
-    await Future.forEach(list, (entity) async {
+    DateTime previousDay, previousMonth;
+    List<String> previousMonthPicIdList = <String>[];
+    List<String> previousDayPicIdList = <String>[];
+    list.forEach((entity) {
       if (privatePhotoIdMap[entity.id] == null) {
         var dateTime = DateTime.utc(entity.createDateTime.year,
             entity.createDateTime.month, entity.createDateTime.day);
-        if (previousDay == null) {
+        if (previousDay == null || previousMonth == null) {
           previousDay = dateTime;
-          allUnTaggedPicsDay[dateTime] = '';
-          allUnTaggedPicsMonth[dateTime] = '';
+          previousMonth = dateTime;
+          /* allUnTaggedPicsDay[dateTime] = '';
+          allUnTaggedPicsMonth[dateTime] = ''; */
+          allUnTaggedPicsMonth[dateTime] = <String>[];
+          allUnTaggedPicsDay[dateTime] = <String>[];
         }
+        
         if (previousDay.year != dateTime.year ||
             previousDay.month != dateTime.month ||
             previousDay.day != dateTime.day) {
           if (previousDay.day != dateTime.day) {
-            allUnTaggedPicsDay[dateTime] = '';
+            //allUnTaggedPicsDay[dateTime] = '';
+            allUnTaggedPicsDay[previousDay] =
+                List<String>.from(previousDayPicIdList);
+            previousDayPicIdList = <String>[];
+            allUnTaggedPicsDay[dateTime] = <String>[];
           } else {
-            allUnTaggedPicsMonth[dateTime] = '';
+            //allUnTaggedPicsMonth[dateTime] = '';
+            allUnTaggedPicsMonth[previousDay] =
+                List<String>.from(previousMonthPicIdList);
+            previousMonthPicIdList = <String>[];
+            allUnTaggedPicsMonth[dateTime] = <String>[];
           }
           previousDay = dateTime;
         }
         assetMap[entity.id] = entity;
         allUnTaggedPicsMonth[entity.id] = '';
         allUnTaggedPicsDay[entity.id] = '';
+        previousMonthPicIdList.add(entity.id);
+        previousDayPicIdList.add(entity.id);
       }
-      status.value = await Status.Loaded;
+      status.value = Status.Loaded;
       isUntaggedPicsLoaded.value = true;
     });
+
+    allUnTaggedPicsMonth[previousDay] =
+        List<String>.from(previousMonthPicIdList);
+    allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
   }
 
   final picAssetThumbBytesMap = <String, Future<Uint8List>>{}.obs;
+
+  void addOriginBytesMap(String picId, Future<Uint8List> uint8List) {
+    if (picAssetOriginBytesMap[picId] == null) {
+      picAssetOriginBytesMap[picId] = uint8List;
+      /* if (picAssetThumbBytesMap.length > 500) {
+        print('removing pics');
+        picAssetThumbBytesMap.remove(picAssetThumbBytesMap.keys.first);
+      } */
+    }
+  }
 
   void addThumbBytesMap(String picId, Future<Uint8List> uint8List) {
     if (picAssetThumbBytesMap[picId] == null) {
@@ -216,6 +251,72 @@ class TabsController extends GetxController {
     secretPicData.remove(picId);
     picAssetThumbBytesMap.remove(picId);
     if (removeFromGallery) {}
+  }
+
+  Future<void> exploreOriginPic(String picId) async {
+    /// if it is not secret pic
+    if (secretPicIds[picId] != null) {
+      if (!secretPicIds[picId]) {
+        // not a secret pic
+        addOriginBytesMap(picId, assetOriginBytes(false, assetMap[picId]));
+        return;
+      } else if (secretPicData[picId] != null) {
+        // it is a secret pic as we had successfully found the data related to it
+        addOriginBytesMap(
+            picId,
+            assetOriginBytes(true, assetMap[picId], secretPicData[picId].nonce,
+                secretPicData[picId].thumbPath));
+        return;
+      }
+    }
+
+    Photo pic = await database.getPhotoByPhotoId(assetMap[picId].id);
+    if (pic != null) {
+      //print('pic $photoId exists, loading data....');
+      //Pic pic = picsBox.get(photoId);
+
+      /* latitude.value = pic.latitude;
+      longitude.value = pic.longitude;
+      specificLocation.value = pic.specificLocation;
+      generalLocation.value = pic.generalLocation;
+      isPrivate.value = pic.isPrivate ?? false;
+      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
+      isStarred.value = pic.isStarred ?? false; */
+
+      //print('Is private: $isPrivate');
+      /* for (String tagKey in pic.tags) {
+        TagsStore tagsStore = UserController.to.tags[tagKey];
+        if (tagsStore == null) {
+          //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
+          continue;
+        }
+
+        /// TODO: tags[tagKey] = tagsStore;
+      } */
+      if (pic.isPrivate == true) {
+        Private secretPic =
+            await database.getPrivateByPhotoId(assetMap[picId].id);
+
+        if (secretPic != null) {
+          var thumbPath = secretPic.thumbPath;
+          var nonce = secretPic.nonce;
+          secretPicIds[assetMap[picId].id] = true;
+          secretPicData[assetMap[picId].id] = secretPic;
+          //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
+          /* picAssetOriginBytesMap[assetMap[picId].id] =
+              assetOriginBytes(true, assetMap[picId], nonce, photoPath); */
+          //await Crypto.decryptImage(photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
+          addOriginBytesMap(
+              picId, assetOriginBytes(true, assetMap[picId], nonce, thumbPath));
+          //await Crypto.decryptImage(thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
+        }
+      }
+    }
+    /* picAssetOriginBytesMap[assetMap[picId].id] =
+        assetOriginBytes(false, assetMap[picId]); */
+    //await entity.originBytes;
+    addOriginBytesMap(picId, assetOriginBytes(false, assetMap[picId]));
+    //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
   }
 
   Future<void> exploreThumbPic(String picId) async {
@@ -489,8 +590,8 @@ class TabsController extends GetxController {
     }
     //print('sharing selected pics....');
     setIsLoading(true);
-    await GalleryStore.to
-        .sharePics(picsStores: GalleryStore.to.selectedPics.toList());
+    await sharePics(picKeys: selectedUntaggedPics.keys.toList()
+        /* picsStores: GalleryStore.to.selectedPics.toList() */);
     setIsLoading(false);
   }
 
@@ -502,15 +603,20 @@ class TabsController extends GetxController {
         .trashMultiplePics(GalleryStore.to.selectedPics.value.toSet());
   }
 
+  bool get deviceHasPics {
+    return assetMap.isNotEmpty;
+  }
+
   setTabIndex(int index) async {
-    if (!GalleryStore.to.deviceHasPics.value) {
-      setCurrentTab(index);
+    if (! /* GalleryStore.to. */ deviceHasPics) {
+      setCurrentTab(0);
       return;
     }
 
     if (multiPicBar.value) {
       if (index == 0) {
-        GalleryStore.to.clearSelectedPics();
+        selectedUntaggedPics.clear();
+        //GalleryStore.to.clearSelectedPics();
         setMultiPicBar(false);
       } else if (index == 1) {
         setMultiTagSheet(true);
@@ -518,13 +624,13 @@ class TabsController extends GetxController {
           expandableController.value.expanded = true;
         });
       } else if (index == 2) {
-        if (GalleryStore.to.selectedPics.isEmpty) {
+        if (/* GalleryStore.to.selectedPics */ selectedUntaggedPics.isEmpty) {
           return;
         }
         //print('sharing selected pics....');
         setIsLoading(true);
-        await GalleryStore.to
-            .sharePics(picsStores: GalleryStore.to.selectedPics.toList());
+        await sharePics(picKeys: selectedUntaggedPics.keys.toList()
+            /* picsStores: GalleryStore.to.selectedPics.toList() */);
         setIsLoading(false);
       } else if (index == 3) {
         if (GalleryStore.to.selectedPics.isEmpty) {
@@ -575,4 +681,70 @@ class TabsController extends GetxController {
     setCurrentTab(index);
   } */
 }
- */
+
+Future<void> sharePics({@required List<String> picKeys}) async {
+  var imageList = <String>[], mimeList = <String>[];
+
+  for (String picKey in picKeys) {
+    if (TabsController.to.assetMap[picKey] == null) {
+      continue;
+    }
+    AssetEntity data = TabsController.to.assetMap[picKey]; //.entity.value;
+
+    if (data == null) {
+      var bytes = await TabsController
+          .to.picAssetOriginBytesMap[picKey] /* .assetOriginBytes */;
+      String path = await _writeByteToImageFile(bytes);
+      imageList.add(path);
+      mimeList.add(lookupMimeType(path));
+    } else {
+      // var bytes = await data.thumbDataWithSize(
+      //   600,
+      //   800,
+      //   format: ThumbFormat.jpeg,
+      // );
+      // String path = await _writeByteToImageFile(bytes);
+
+      String path = (await data.file).path;
+      String mime = lookupMimeType(path);
+      imageList.add(path);
+      mimeList.add(mime);
+    }
+
+//      if (Platform.isAndroid) {
+//        var bytes = await data.originBytes;
+//        bytesPhotos['$x.jpg'] = bytes;
+//      } else {
+//        var bytes = await data.thumbDataWithSize(
+//          data.size.width.toInt(),
+//          data.size.height.toInt(),
+//          format: ThumbFormat.jpeg,
+//        );
+//        bytesPhotos['$x.jpg'] = bytes;
+//      }
+//      x++;
+  }
+
+  // //print('Image List: $imageList');
+  // //print('Mime List: $mimeList');
+
+  Analytics.sendEvent(Event.shared_photos);
+
+  Share.shareFiles(
+    imageList,
+    mimeTypes: mimeList,
+  );
+
+//    setSharedPic(true);
+
+  return;
+}
+
+Future<String> _writeByteToImageFile(Uint8List byteData) async {
+  Directory tempDir = await getTemporaryDirectory();
+  File imageFile = File(
+      '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+  imageFile.createSync(recursive: true);
+  imageFile.writeAsBytesSync(byteData);
+  return imageFile.path;
+}

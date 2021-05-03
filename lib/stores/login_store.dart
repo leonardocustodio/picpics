@@ -12,8 +12,8 @@ class LoginStore extends GetxController {
   int totalSlides = Board.values.length;
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
     UserController.to.createDefaultTags(Get.context);
   }
 

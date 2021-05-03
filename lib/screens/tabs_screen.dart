@@ -6,10 +6,11 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/screens/settings_screen.dart';
+import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
@@ -49,11 +50,11 @@ class TabsScreen extends GetWidget<TabsController> {
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     var height = MediaQuery.of(context).size.height;
 
-    return Stack(
-      children: <Widget>[
-        Scaffold(
-          bottomNavigationBar: Obx(() {
-            return controller.multiTagSheet.value
+    return Obx(
+      () => Stack(
+        children: <Widget>[
+          Scaffold(
+            bottomNavigationBar: controller.multiTagSheet.value
                 ? ExpandableNotifier(
                     child: Container(
                       color: Color(0xF1F3F5),
@@ -437,222 +438,220 @@ class TabsScreen extends GetWidget<TabsController> {
                               ],
                             ),
                           );
-                  });
-          }),
-          body: AnnotatedRegion<SystemUiOverlayStyle>(
-            value: SystemUiOverlayStyle.dark,
-            child: Stack(
-              children: <Widget>[
-                GetX<UserController>(builder: (userController) {
-                  if (userController.hasGalleryPermission.value == null ||
-                      userController.hasGalleryPermission.value == false) {
-                    return Container(
-                      constraints: BoxConstraints.expand(),
-                      color: kWhiteColor,
-                      child: SafeArea(
-                        child: Stack(
-                          children: <Widget>[
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  CupertinoButton(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    onPressed: () {
-                                      Get.toNamed(SettingsScreen.id);
-                                    },
-                                    child:
-                                        Image.asset('lib/images/settings.png'),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 30.0),
-                                    child: Container(
-                                      constraints:
-                                          BoxConstraints(maxHeight: height / 2),
+                  }),
+            body: AnnotatedRegion<SystemUiOverlayStyle>(
+              value: SystemUiOverlayStyle.dark,
+              child: Stack(
+                children: <Widget>[
+                  GetX<UserController>(builder: (userController) {
+                    if (userController.hasGalleryPermission.value == null ||
+                        userController.hasGalleryPermission.value == false) {
+                      return Container(
+                        constraints: BoxConstraints.expand(),
+                        color: kWhiteColor,
+                        child: SafeArea(
+                          child: Stack(
+                            children: <Widget>[
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
+                                      onPressed: () {
+                                        Get.toNamed(SettingsScreen.id);
+                                      },
                                       child: Image.asset(
-                                          'lib/images/nogalleryauth.png'),
+                                          'lib/images/settings.png'),
                                     ),
-                                  ),
-                                  SizedBox(
-                                    height: 21.0,
-                                  ),
-                                  Text(
-                                    S
-                                        .of(context)
-                                        .gallery_access_permission_description,
-                                    textScaleFactor: 1.0,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: Color(0xff979a9b),
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 17.0,
-                                  ),
-                                  CupertinoButton(
-                                    padding: const EdgeInsets.all(0),
-                                    onPressed: () {
-                                      userController
-                                          .requestGalleryPermission()
-                                          .then((hasPermission) async {
-                                        if (hasPermission) {
-                                          await userController
-                                              .requestNotificationPermission();
-                                          await userController
-                                              .checkNotificationPermission(
-                                                  firstPermissionCheck: true);
-                                          await userController
-                                              .setTutorialCompleted(true);
-                                          await GalleryStore.to
-                                              .loadAssetsPath();
-                                        }
-                                      });
-                                    },
-                                    child: Container(
-                                      width: 201.0,
-                                      height: 44.0,
-                                      decoration: BoxDecoration(
-                                        gradient: kPrimaryGradient,
-                                        borderRadius: BorderRadius.circular(8),
+                                  ],
+                                ),
+                              ),
+                              Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 30.0),
+                                      child: Container(
+                                        constraints: BoxConstraints(
+                                            maxHeight: height / 2),
+                                        child: Image.asset(
+                                            'lib/images/nogalleryauth.png'),
                                       ),
-                                      child: Center(
-                                        child: Text(
-                                          S
-                                              .of(context)
-                                              .gallery_access_permission,
-                                          textScaleFactor: 1.0,
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: kWhiteColor,
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w700,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
+                                    ),
+                                    SizedBox(
+                                      height: 21.0,
+                                    ),
+                                    Text(
+                                      S
+                                          .of(context)
+                                          .gallery_access_permission_description,
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff979a9b),
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 17.0,
+                                    ),
+                                    CupertinoButton(
+                                      padding: const EdgeInsets.all(0),
+                                      onPressed: () {
+                                        userController
+                                            .requestGalleryPermission()
+                                            .then((hasPermission) async {
+                                          if (hasPermission) {
+                                            await userController
+                                                .requestNotificationPermission();
+                                            await userController
+                                                .checkNotificationPermission(
+                                                    firstPermissionCheck: true);
+                                            await userController
+                                                .setTutorialCompleted(true);
+                                            await TabsController.to
+                                                .loadAssetPath();
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        width: 201.0,
+                                        height: 44.0,
+                                        decoration: BoxDecoration(
+                                          gradient: kPrimaryGradient,
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            S
+                                                .of(context)
+                                                .gallery_access_permission,
+                                            textScaleFactor: 1.0,
+                                            style: TextStyle(
+                                              fontFamily: 'Lato',
+                                              color: kWhiteColor,
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w700,
+                                              fontStyle: FontStyle.normal,
+                                              letterSpacing:
+                                                  -0.4099999964237213,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    );
-                  } else if (controller.currentTab.value == 0 &&
-                      userController.hasGalleryPermission.value)
-                    return UntaggedTab();
-                  else if (controller.currentTab.value == 1 &&
-                      userController.hasGalleryPermission.value) {
-                    return PicTab(
-                      showDeleteSecretModal: showDeleteSecretModal,
-                    );
-                  } else if (controller.currentTab.value == 2 &&
-                      userController.hasGalleryPermission.value) {
-                    return TaggedTab();
-                  } else {
-                    return Container();
-                  }
-                }),
-              ],
+                      );
+                    } else if (controller.currentTab.value == 0 &&
+                        userController.hasGalleryPermission.value)
+                      return UntaggedTab();
+                    else if (controller.currentTab.value == 1 &&
+                        userController.hasGalleryPermission.value) {
+                      return PicTab(
+                        showDeleteSecretModal: showDeleteSecretModal,
+                      );
+                    } else if (controller.currentTab.value == 2 &&
+                        userController.hasGalleryPermission.value) {
+                      return TaggedTab();
+                    } else {
+                      return Container();
+                    }
+                  }),
+                ],
+              ),
             ),
           ),
-        ),
-        Obx(() {
-          if (controller.modalCard.value) {
-            return Material(
-              color: Colors.transparent,
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    controller.setModalCard(false);
-                  },
-                  child: Container(
-                    color: Colors.black.withOpacity(0.4),
-                    child: SafeArea(
-                      child: CarouselSlider.builder(
-                        itemCount: controller.currentTab.value == 0
-                            ? GalleryStore.to.swipePics.length
-                            : GalleryStore.to.thumbnailsPics.length,
-                        // carouselController: carouselController,
-                        itemBuilder: (BuildContext context, int index) {
-                          return GestureDetector(
-                            onTap: () {
-                              //print('ignore');
-                            },
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                bottom:
-                                    bottomInsets > 0 ? bottomInsets + 5 : 32.0,
-                                top: bottomInsets > 0 ? 5 : 26.0,
-                                left: 2.0,
-                                right: 2.0,
-                              ),
-                              child: PhotoCard(
-                                picStore: controller.currentTab.value == 0
-                                    ? GalleryStore.to.swipePics[index]
-                                    : GalleryStore.to.thumbnailsPics[index],
-                                picsInThumbnails: PicSource.UNTAGGED,
-                                /*  showEditTagModal: () =>
+          Obx(() => controller.modalCard.value
+              ? Material(
+                  color: Colors.transparent,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: () {
+                        controller.setModalCard(false);
+                      },
+                      child: Container(
+                        color: Colors.black.withOpacity(0.4),
+                        child: SafeArea(
+                          child: CarouselSlider.builder(
+                            itemCount: controller.currentTab.value == 0
+                                ? GalleryStore.to.swipePics.length
+                                : GalleryStore.to.thumbnailsPics.length,
+                            // carouselController: carouselController,
+                            itemBuilder: (BuildContext context, int index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  //print('ignore');
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    bottom: bottomInsets > 0
+                                        ? bottomInsets + 5
+                                        : 32.0,
+                                    top: bottomInsets > 0 ? 5 : 26.0,
+                                    left: 2.0,
+                                    right: 2.0,
+                                  ),
+                                  child: PhotoCard(
+                                    picStore: controller.currentTab.value == 0
+                                        ? GalleryStore.to.swipePics[index]
+                                        : GalleryStore.to.thumbnailsPics[index],
+                                    picsInThumbnails: PicSource.UNTAGGED,
+                                    /*  showEditTagModal: () =>
                                     showEditTagModal(context),
                                 showDeleteSecretModal: showDeleteSecretModal, */
-                              ),
+                                  ),
+                                ),
+                              );
+                            },
+                            options: CarouselOptions(
+                              initialPage: controller.currentTab.value == 0
+                                  ? GalleryStore.to.selectedSwipe.value
+                                  : GalleryStore.to.selectedThumbnail.value,
+                              enableInfiniteScroll: false,
+                              height: double.maxFinite,
+                              viewportFraction: 1.0,
+                              enlargeCenterPage: true,
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              // scrollPhysics: scrollPhysics,
+                              // onPageChanged: (index, reason) {
+                              //   GalleryStore.to.setSwipeIndex(index);
+                              // },
                             ),
-                          );
-                        },
-                        options: CarouselOptions(
-                          initialPage: controller.currentTab.value == 0
-                              ? GalleryStore.to.selectedSwipe.value
-                              : GalleryStore.to.selectedThumbnail.value,
-                          enableInfiniteScroll: false,
-                          height: double.maxFinite,
-                          viewportFraction: 1.0,
-                          enlargeCenterPage: true,
-                          autoPlayCurve: Curves.fastOutSlowIn,
-                          // scrollPhysics: scrollPhysics,
-                          // onPageChanged: (index, reason) {
-                          //   GalleryStore.to.setSwipeIndex(index);
-                          // },
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            );
-          }
-          return Container();
-        }),
-        Obx(() {
-          if (controller.isLoading.value) {
-            return Material(
-              color: Colors.black.withOpacity(0.7),
-              child: Center(
-                child: SpinKitChasingDots(
-                  color: kPrimaryColor,
-                  size: 80.0,
-                ),
-              ),
-            );
-          }
-          return Container();
-        }),
-      ],
+                )
+              : Container()),
+          Obx(() => controller.isLoading.value
+              ? Material(
+                  color: Colors.black.withOpacity(0.7),
+                  child: Center(
+                    child: SpinKitChasingDots(
+                      color: kPrimaryColor,
+                      size: 80.0,
+                    ),
+                  ),
+                )
+              : Container()),
+        ],
+      ),
     );
   }
 }

@@ -58,11 +58,11 @@ class UserController extends GetxController {
   final appLocale = RxString('en');
 
   @override
-  void onInit() {
+  void onReady() {
     ever(appLanguage, _settingCurrentLanguage);
     initialize();
     _settingCurrentLanguage(null);
-    super.onInit();
+    super.onReady();
   }
 
   void _settingCurrentLanguage(_) {
@@ -108,7 +108,7 @@ class UserController extends GetxController {
       TagsController.to.addRecentTag(tagKey);
     }
 
-    /*    if (user.hasGalleryPermission != null || user.tutorialCompleted) {
+    /* if (user.hasGalleryPermission != null || user.tutorialCompleted) {
       requestGalleryPermission();
     } */
 
@@ -337,7 +337,7 @@ class UserController extends GetxController {
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
         .updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
-    //await requestGalleryPermission();
+    await requestGalleryPermission();
     Analytics.sendTutorialComplete();
   }
 

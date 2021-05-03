@@ -41,8 +41,8 @@ class PinStore extends GetxController {
   GlobalKey<AnimatorWidgetState> shakeRecovery =
       GlobalKey<AnimatorWidgetState>();
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
     if (UserController.to.isPinRegistered.value == true &&
         UserController.to.isBiometricActivated.value == true) {
       authenticate();
