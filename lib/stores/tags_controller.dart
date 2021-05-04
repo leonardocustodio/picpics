@@ -8,7 +8,7 @@ import 'package:picPics/utils/helpers.dart';
 import '../constants.dart';
 import 'tagged_pics_store.dart';
 
-class TagModel extends GetxController{
+class TagModel extends GetxController {
   RxMap _map = <String, dynamic>{}.obs;
   TagModel(
       {@required String key,

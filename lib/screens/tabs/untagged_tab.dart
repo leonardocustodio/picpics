@@ -20,6 +20,8 @@ import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import '../../asset_entity_image_provider.dart';
+
 // ignore: must_be_immutable
 class UntaggedTab extends GetWidget<TabsController> {
   static const id = 'untagged_tab';
@@ -34,11 +36,13 @@ class UntaggedTab extends GetWidget<TabsController> {
         if (scrollNotification is ScrollStartNotification) {
           //print('Start scrolling');
           controller.setIsScrolling(true);
+          return false;
         } else if (scrollNotification is ScrollEndNotification) {
           //print('End scrolling');
           controller.setIsScrolling(false);
+          return true;
         }
-        return;
+        return true;
       },
       child: Obx(
         () {
@@ -72,16 +76,19 @@ class UntaggedTab extends GetWidget<TabsController> {
                   if (index == 0 || monthKeys[index].key is DateTime) {
                     var isSelected = false;
                     if (controller.multiPicBar.value) {
-                      isSelected = monthKeys[index].value.every((picIds) =>
-                          controller.selectedUntaggedPics[picIds] != null &&
-                          controller.selectedUntaggedPics[picIds]);
+                      isSelected = monthKeys[index].value.every((picId) =>
+                          controller.selectedUntaggedPics[picId] != null &&
+                          controller.selectedUntaggedPics[picId]);
                     }
                     return GestureDetector(
                         onTap: () {
                           if (controller.multiPicBar.value) {
-                            monthKeys[index].value.forEach((picIds) {
-                              controller.selectedUntaggedPics[picIds] =
-                                  !isSelected;
+                            monthKeys[index].value.forEach((picId) {
+                              if (isSelected) {
+                                controller.selectedUntaggedPics.remove(picId);
+                              } else {
+                                controller.selectedUntaggedPics[picId] = true;
+                              }
                             });
                           }
                         },
@@ -101,30 +108,40 @@ class UntaggedTab extends GetWidget<TabsController> {
                       onVisibilityChanged: (visibilityInfo) {
                         var visiblePercentage =
                             visibilityInfo.visibleFraction * 100;
-                        if (visiblePercentage > 3) {
-                          controller.exploreThumbPic(monthKeys[index].key);
+                        if (visiblePercentage > 10 &&
+                            controller.picStoreMap[monthKeys[index].key] ==
+                                null) {
+                          controller.explorPicStore(monthKeys[index].key);
                           /* debugPrint(
                             'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
                         }
                         /* else {
-                           controller
-                                  .picAssetThumbBytesMap[monthKeys[index].key] =
-                              null; 
-                        }*/
+                          if (controller.picAssetThumbBytesMap[
+                                  monthKeys[index].key] !=
+                              null) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              controller.picAssetThumbBytesMap[
+                                  monthKeys[index].key] = null;
+                            });
+                          }
+                        } */
                       },
-                      child: controller.picAssetThumbBytesMap[
-                                  monthKeys[index].key] ==
-                              null
-                          ? greyWidget
-                          : Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Container(
-                                  child: _buildItem2(monthKeys[index].key),
+                      child:
+                          controller.picStoreMap[monthKeys[index].key] == null
+                              ? greyWidget
+                              : Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: Container(
+                                      child: _buildItemOneMoreTrial(
+                                          controller
+                                              .picStoreMap[monthKeys[index].key]
+                                              .value,
+                                          monthKeys[index].key),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
                     );
                   });
                 });
@@ -160,8 +177,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                         onTap: () {
                           if (controller.multiPicBar.value) {
                             dayKeys[index].value.forEach((picId) {
-                              controller.selectedUntaggedPics[picId] =
-                                  !isSelected;
+                              if (isSelected) {
+                                controller.selectedUntaggedPics.remove(picId);
+                              } else {
+                                controller.selectedUntaggedPics[picId] = true;
+                              }
                             });
                           }
                         },
@@ -180,26 +200,35 @@ class UntaggedTab extends GetWidget<TabsController> {
                       onVisibilityChanged: (visibilityInfo) {
                         var visiblePercentage =
                             visibilityInfo.visibleFraction * 100;
-                        if (visiblePercentage > 3) {
-                          controller.exploreThumbPic(dayKeys[index].key);
+                        if (visiblePercentage > 10 &&
+                            controller.picStoreMap[dayKeys[index].key] ==
+                                null) {
+                          controller.explorPicStore(dayKeys[index].key);
                           /* debugPrint(
                               'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
                         }
                         /*  else {
-                          controller.picAssetThumbBytesMap[dayKeys[index].key] =
-                              null;
+                          if (controller
+                                  .picAssetThumbBytesMap[dayKeys[index].key] !=
+                              null) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              controller.picAssetThumbBytesMap[
+                                  dayKeys[index].key] = null;
+                            });
+                          }
                         } */
                       },
-                      child: controller
-                                  .picAssetThumbBytesMap[dayKeys[index].key] ==
-                              null
+                      child: controller.picStoreMap[dayKeys[index].key] == null
                           ? greyWidget
                           : Padding(
                               padding: const EdgeInsets.all(2),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
                                 child: Container(
-                                  child: _buildItem2(dayKeys[index].key),
+                                  child: _buildItemOneMoreTrial(
+                                      controller.picStoreMap[dayKeys[index].key]
+                                          .value,
+                                      dayKeys[index].key),
                                 ),
                               ),
                             ),
@@ -418,6 +447,7 @@ class UntaggedTab extends GetWidget<TabsController> {
       ),
     );
   }
+
 /* 
   Widget _buildItem(String picId) {
     var image = FutureBuilder<Uint8List>(
@@ -530,7 +560,7 @@ class UntaggedTab extends GetWidget<TabsController> {
       }(),
     );
   } */
-
+/* 
   Widget _buildItem2(String picId) {
     final AssetEntityImageProviderKawal imageProvider =
         AssetEntityImageProviderKawal(controller.assetMap[picId],
@@ -572,8 +602,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
                         if (controller.multiPicBar.value) {
-                          if (!(controller.selectedUntaggedPics[picId] ??
-                              false)) {
+                          if (controller.selectedUntaggedPics[picId] == null) {
                             controller.selectedUntaggedPics[picId] = true;
                           } else {
                             controller.selectedUntaggedPics.remove(picId);
@@ -600,8 +629,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                           ),
                         );
                         if (controller.multiPicBar.value) {
-                          if (controller.selectedUntaggedPics[picId] ??
-                              false /* GalleryStore.to.selectedPics.contains(picStore) */) {
+                          if (controller.selectedUntaggedPics[picId] != null) {
                             return Stack(
                               children: [
                                 image,
@@ -673,6 +701,138 @@ class UntaggedTab extends GetWidget<TabsController> {
       ),
     );
   }
+ */
+  Widget _buildItemOneMoreTrial(PicStore picStore, String picId) {
+//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
+
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: false);
+
+    return RepaintBoundary(
+      child: ExtendedImage(
+        image: imageProvider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = const ColoredBox(color: kGreyPlaceholder);
+              break;
+            case LoadState.completed:
+              loader = FadeImageBuilder(
+                child: () {
+                  return GestureDetector(
+                    onLongPress: () {
+                      //print('LongPress');
+                      if (controller.multiPicBar.value == false) {
+                        controller.selectedUntaggedPics[picId] = true;
+                        controller.setMultiPicBar(true);
+                      }
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        if (controller.multiPicBar.value) {
+                          if (controller.selectedUntaggedPics[picId] == null) {
+                            controller.selectedUntaggedPics[picId] = true;
+                          } else {
+                            controller.selectedUntaggedPics.remove(picId);
+                          }
+                          /* GalleryStore.to.setSelectedPics(
+                  picStore: picStore,
+                  picIsTagged: false,
+                ); */
+                          //print('Pics Selected Length: ');
+                          //print('${GalleryStore.to.selectedPics.length}');
+                          return;
+                        }
+/* 
+              tagsEditingController.text = '';
+              GalleryStore.to.setCurrentPic(picStore);
+              int indexOfSwipePic = GalleryStore.to.swipePics.indexOf(picStore);
+              GalleryStore.to.setSelectedSwipe(indexOfSwipePic);
+              controller.setModalCard(true); */
+                      },
+                      child: Obx(() {
+                        Widget image = Positioned.fill(
+                          child: RepaintBoundary(
+                            child: state.completedWidget,
+                          ),
+                        );
+                        if (controller.multiPicBar.value) {
+                          if (controller.selectedUntaggedPics[picId] != null) {
+                            return Stack(
+                              children: [
+                                image,
+                                Container(
+                                  constraints: BoxConstraints.expand(),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryColor.withOpacity(0.3),
+                                    border: Border.all(
+                                      color: kSecondaryColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 8.0,
+                                  top: 6.0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      gradient: kSecondaryGradient,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Image.asset(
+                                        'lib/images/checkwhiteico.png'),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Stack(
+                            children: [
+                              image,
+                              Positioned(
+                                left: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: kGrayColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Stack(
+                          children: [
+                            image,
+                          ],
+                        );
+                      }),
+                    ),
+                  );
+                }(),
+              );
+              break;
+            case LoadState.failed:
+              loader = _failedItem;
+              break;
+          }
+          return loader;
+        },
+      ),
+    );
+  }
+
 /* 
   Widget _buildItem(PicStore picStore) {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;

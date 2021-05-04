@@ -63,7 +63,7 @@ class PicStore extends GetxController {
   final isPrivate = false.obs;
 
   // @observable
-  final isStarred = RxBool(null);
+  final isStarred = false.obs;
 
   // @observable
   final photoId = RxString(null);
@@ -85,7 +85,7 @@ class PicStore extends GetxController {
     this.deletedFromCameraRoll,
     @required bool isStarredValue,
   }) {
-    isStarred.value = isStarredValue;
+    isStarred.value = isStarredValue ?? false;
     photoId.value = photoIdValue;
     entity.value = entityValue;
   }
@@ -97,7 +97,7 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> switchIsStarred() async {
-    bool value = isStarred.value == null ? true : !isStarred.value;
+    isStarred.value = !isStarred.value;
     //print('Setting starred photo $photoId to $value');
 
     //var picsBox = Hive.box('pics');
@@ -105,7 +105,7 @@ class PicStore extends GetxController {
     //pic.isStarred = value;
     String base64encoded;
     //print('teste');
-    if (value == true) {
+    if (isStarred.value) {
       var bytes = await entity.value.thumbDataWithSize(300, 300);
       String encoded = base64.encode(bytes);
       base64encoded = encoded;
@@ -114,11 +114,11 @@ class PicStore extends GetxController {
       UserController.to.removeFromStarredPhotos(photoId.value);
     }
 
-    isStarred.value = value;
+    /// Do the database writting
     await database.updatePhoto(
       pic.copyWith(
         base64encoded: base64encoded,
-        isStarred: value,
+        isStarred: isStarred.value,
       ),
     );
     //print('isStarred value: $isStarred');

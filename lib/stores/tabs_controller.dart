@@ -17,6 +17,7 @@ import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/enum.dart';
@@ -69,7 +70,7 @@ class TabsController extends GetxController {
 
   // picId: assetPathEntity
   final assetMap = <String, AssetEntity>{}.obs;
-  final picAssetOriginBytesMap = <String, Future<Uint8List>>{}.obs;
+  //final picAssetOriginBytesMap = <String, Future<Uint8List>>{}.obs;
 
   final starredPicMap = <String, bool>{}.obs;
 
@@ -135,7 +136,7 @@ class TabsController extends GetxController {
     }
 
     // Added for the case of buying premium from appstore
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       if (UserController.to.tryBuyId != null) {
         Get.toNamed(PremiumScreen.id);
       }
@@ -188,7 +189,7 @@ class TabsController extends GetxController {
           allUnTaggedPicsMonth[dateTime] = <String>[];
           allUnTaggedPicsDay[dateTime] = <String>[];
         }
-        
+
         if (previousDay.year != dateTime.year ||
             previousDay.month != dateTime.month ||
             previousDay.day != dateTime.day) {
@@ -198,12 +199,14 @@ class TabsController extends GetxController {
                 List<String>.from(previousDayPicIdList);
             previousDayPicIdList = <String>[];
             allUnTaggedPicsDay[dateTime] = <String>[];
-          } else {
+          }
+          if (previousDay.month != dateTime.month) {
             //allUnTaggedPicsMonth[dateTime] = '';
-            allUnTaggedPicsMonth[previousDay] =
+            allUnTaggedPicsMonth[previousMonth] =
                 List<String>.from(previousMonthPicIdList);
             previousMonthPicIdList = <String>[];
             allUnTaggedPicsMonth[dateTime] = <String>[];
+            previousMonth = dateTime;
           }
           previousDay = dateTime;
         }
@@ -213,17 +216,17 @@ class TabsController extends GetxController {
         previousMonthPicIdList.add(entity.id);
         previousDayPicIdList.add(entity.id);
       }
-      status.value = Status.Loaded;
+      //status.value = Status.Loaded;
       isUntaggedPicsLoaded.value = true;
     });
 
-    allUnTaggedPicsMonth[previousDay] =
+    allUnTaggedPicsMonth[previousMonth] =
         List<String>.from(previousMonthPicIdList);
     allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
   }
 
-  final picAssetThumbBytesMap = <String, Future<Uint8List>>{}.obs;
-
+  //final picAssetThumbBytesMap = <String, Future<Uint8List>>{}.obs;
+/* 
   void addOriginBytesMap(String picId, Future<Uint8List> uint8List) {
     if (picAssetOriginBytesMap[picId] == null) {
       picAssetOriginBytesMap[picId] = uint8List;
@@ -242,18 +245,18 @@ class TabsController extends GetxController {
         picAssetThumbBytesMap.remove(picAssetThumbBytesMap.keys.first);
       } */
     }
-  }
+  } */
 
   void deletePic(String picId, bool removeFromGallery) {
     allUnTaggedPicsDay.remove(picId);
     allUnTaggedPicsMonth.remove(picId);
     secretPicIds.remove(picId);
     secretPicData.remove(picId);
-    picAssetThumbBytesMap.remove(picId);
+    //picAssetThumbBytesMap.remove(picId);
     if (removeFromGallery) {}
   }
 
-  Future<void> exploreOriginPic(String picId) async {
+  /* Future<void> exploreOriginPic(String picId) async {
     /// if it is not secret pic
     if (secretPicIds[picId] != null) {
       if (!secretPicIds[picId]) {
@@ -317,9 +320,28 @@ class TabsController extends GetxController {
     //await entity.originBytes;
     addOriginBytesMap(picId, assetOriginBytes(false, assetMap[picId]));
     //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+  } */
+
+  final picStoreMap = <String, Rx<PicStore>>{}.obs;
+
+  /// Here only those picId will come who are untagged.
+  Future<void> explorPicStore(String picId) async {
+    if (picStoreMap[picId] == null) {
+      AssetEntity entity = assetMap[picId];
+
+      PicStore pic = PicStore(
+        isStarredValue: null,
+        entityValue: entity,
+        photoIdValue: entity.id,
+        createdAt: entity.createDateTime,
+        originalLatitude: entity.latitude,
+        originalLongitude: entity.longitude,
+      );
+      picStoreMap[picId] = Rx<PicStore>(pic);
+    }
   }
 
-  Future<void> exploreThumbPic(String picId) async {
+  /* Future<void> exploreThumbPic_(String picId) async {
     /// if it is not secret pic
     if (secretPicIds[picId] != null) {
       if (!secretPicIds[picId]) {
@@ -383,9 +405,9 @@ class TabsController extends GetxController {
     //await entity.originBytes;
     addThumbBytesMap(picId, assetThumbBytes(false, assetMap[picId]));
     //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
-  }
+  } */
 
-  Future<Uint8List> assetOriginBytes(bool isPrivate, AssetEntity entity,
+  /* Future<Uint8List> assetOriginBytes(bool isPrivate, AssetEntity entity,
       [String nonce, String photoPath]) async {
     if (isPrivate == false && entity != null) {
       return await entity.originBytes;
@@ -404,7 +426,7 @@ class TabsController extends GetxController {
     //print('Returning decrypt image in privatePath: $thumbPath');
     return await Crypto.decryptImage(
         thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
-  }
+  } */
 
   Future<void> loadAssetPath() async {
     /// we are asking permission here because the PhotoManager will surely ask for permission
@@ -608,8 +630,10 @@ class TabsController extends GetxController {
   }
 
   setTabIndex(int index) async {
-    if (! /* GalleryStore.to. */ deviceHasPics) {
-      setCurrentTab(0);
+    if (!deviceHasPics || selectedUntaggedPics.isEmpty) {
+      if (index == 0) {
+        setMultiPicBar(false);
+      }
       return;
     }
 
@@ -619,9 +643,10 @@ class TabsController extends GetxController {
         //GalleryStore.to.clearSelectedPics();
         setMultiPicBar(false);
       } else if (index == 1) {
-        setMultiTagSheet(true);
-        Future.delayed(Duration(milliseconds: 200), () {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          setMultiTagSheet(true);
           expandableController.value.expanded = true;
+          expandablePaddingController.value.expanded = true;
         });
       } else if (index == 2) {
         if (/* GalleryStore.to.selectedPics */ selectedUntaggedPics.isEmpty) {
@@ -692,11 +717,11 @@ Future<void> sharePics({@required List<String> picKeys}) async {
     AssetEntity data = TabsController.to.assetMap[picKey]; //.entity.value;
 
     if (data == null) {
-      var bytes = await TabsController
+      /*  var bytes = await TabsController
           .to.picAssetOriginBytesMap[picKey] /* .assetOriginBytes */;
       String path = await _writeByteToImageFile(bytes);
       imageList.add(path);
-      mimeList.add(lookupMimeType(path));
+      mimeList.add(lookupMimeType(path)); */
     } else {
       // var bytes = await data.thumbDataWithSize(
       //   600,

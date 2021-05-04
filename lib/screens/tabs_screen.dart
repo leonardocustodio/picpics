@@ -31,16 +31,23 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 import 'premium/premium_screen.dart';
 
-class TabsScreen extends GetWidget<TabsController> {
+class TabsScreen extends StatefulWidget {
   static const id = 'tabs_screen';
 
-  // Swiper do Tutorial
+  @override
+  _TabsScreenState createState() => _TabsScreenState();
+}
+
+class _TabsScreenState extends State<TabsScreen> {
   SwiperController tutorialSwiperController = SwiperController();
+
   TextEditingController tagsEditingController = TextEditingController();
+
   TextEditingController bottomTagsEditingController = TextEditingController();
 
-  Throttle _changeThrottle;
-  AppLifecycleState _appCycleState;
+  //Throttle _changeThrottle;
+
+  //AppLifecycleState _appCycleState;
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +57,13 @@ class TabsScreen extends GetWidget<TabsController> {
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     var height = MediaQuery.of(context).size.height;
 
-    return Obx(
-      () => Stack(
+    return GetX<TabsController>(builder: (controller) {
+      return Stack(
         children: <Widget>[
           Scaffold(
             bottomNavigationBar: controller.multiTagSheet.value
                 ? ExpandableNotifier(
+                    controller: controller.expandableController.value,
                     child: Container(
                       color: Color(0xF1F3F5),
                       child: Column(
@@ -153,8 +161,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                         textEditingController:
                                             bottomTagsEditingController,
                                         /*  showEditTagModal: (String tagKey) {
-                                          showEditTagModal();
-                                        }, */
+                                              showEditTagModal();
+                                            }, */
                                         onTap: (String tagKey) {
                                           ///  if (!UserController.to.isPremium) {
                                           ///    Get.toNamed(  PremiumScreen.id);
@@ -191,7 +199,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                             String tagKey =
                                                 Helpers.encryptTag(text);
 
-                                            if (GalleryStore
+                                            if (TagsController
                                                     .to.multiPicTags[tagKey] ==
                                                 null) {
                                               if (TagsController.to.allTags
@@ -219,13 +227,13 @@ class TabsScreen extends GetWidget<TabsController> {
                                             .toList(),
                                         tagStyle: TagStyle.GrayOutlined,
                                         /* showEditTagModal: () =>
-                                            showEditTagModal(context), */
+                                                showEditTagModal(context), */
                                         onTap: (String tagKey) {
                                           /* if (!UserController
-                                              .to.isPremium.value) {
-                                            Get.toNamed(PremiumScreen.id);
-                                            return;
-                                          } */
+                                                  .to.isPremium.value) {
+                                                Get.toNamed(PremiumScreen.id);
+                                                return;
+                                              } */
 
                                           bottomTagsEditingController.clear();
                                           GalleryStore.to.setSearchText('');
@@ -234,18 +242,18 @@ class TabsScreen extends GetWidget<TabsController> {
                                         },
                                         onDoubleTap: (String tagKey) {
                                           /* if (!UserController
-                                              .to.isPremium.value) {
-                                            Get.toNamed(PremiumScreen.id);
-                                            return;
-                                          } */
+                                                  .to.isPremium.value) {
+                                                Get.toNamed(PremiumScreen.id);
+                                                return;
+                                              } */
                                           //print('do nothing');
                                         },
                                         onPanEnd: (String tagKey) {
                                           /* if (!UserController
-                                              .to.isPremium.value) {
-                                            Get.toNamed(PremiumScreen.id);
-                                            return;
-                                          } */
+                                                  .to.isPremium.value) {
+                                                Get.toNamed(PremiumScreen.id);
+                                                return;
+                                              } */
                                           //print('do nothing');
                                         },
                                       ),
@@ -410,12 +418,20 @@ class TabsScreen extends GetWidget<TabsController> {
                                   ),
                                 BottomNavigationBarItem(
                                   label: 'Tag',
-                                  icon: Image.asset(
-                                      'lib/images/tagtabbutton.png'),
+                                  icon: TabsController
+                                          .to.selectedUntaggedPics.isEmpty
+                                      ? Opacity(
+                                          opacity: 0.3,
+                                          child: Image.asset(
+                                              'lib/images/tagtabbutton.png'),
+                                        )
+                                      : Image.asset(
+                                          'lib/images/tagtabbutton.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Share',
-                                  icon: GalleryStore.to.selectedPics.isEmpty
+                                  icon: TabsController
+                                          .to.selectedUntaggedPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
                                           child: Image.asset(
@@ -426,7 +442,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Trash',
-                                  icon: GalleryStore.to.selectedPics.isEmpty
+                                  icon: TabsController
+                                          .to.selectedUntaggedPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
                                           child: Image.asset(
@@ -612,8 +629,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                         : GalleryStore.to.thumbnailsPics[index],
                                     picsInThumbnails: PicSource.UNTAGGED,
                                     /*  showEditTagModal: () =>
-                                    showEditTagModal(context),
-                                showDeleteSecretModal: showDeleteSecretModal, */
+                                        showEditTagModal(context),
+                                    showDeleteSecretModal: showDeleteSecretModal, */
                                   ),
                                 ),
                               );
@@ -651,7 +668,7 @@ class TabsScreen extends GetWidget<TabsController> {
                 )
               : Container()),
         ],
-      ),
-    );
+      );
+    });
   }
 }
