@@ -1,11 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:picPics/asset_entity_image_provider_new.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
@@ -14,7 +11,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/generated/l10n.dart';
 /* import 'package:picPics/stores/gallery_store.dart'; */
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';

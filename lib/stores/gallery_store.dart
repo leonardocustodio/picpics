@@ -1,25 +1,16 @@
-import 'dart:io';
-import 'dart:typed_data';
-
 import 'package:collection/collection.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:mime/mime.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:share/share.dart';
-
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tagged_date_pics_store.dart';
 import 'package:picPics/stores/tagged_grid_pic_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
-import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/stores/untagged_grid_pic_store.dart';
 import 'package:picPics/stores/untagged_pics_store.dart';
 import 'package:picPics/stores/user_controller.dart';

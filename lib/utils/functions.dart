@@ -6,7 +6,6 @@ import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
 

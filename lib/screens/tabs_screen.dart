@@ -10,35 +10,24 @@ import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/throttle.dart';
 import 'package:picPics/generated/l10n.dart';
 // import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
-import 'premium/premium_screen.dart';
-
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends GetWidget<TabsController> {
   static const id = 'tabs_screen';
 
-  @override
-  _TabsScreenState createState() => _TabsScreenState();
-}
-
-class _TabsScreenState extends State<TabsScreen> {
   SwiperController tutorialSwiperController = SwiperController();
 
   TextEditingController tagsEditingController = TextEditingController();
@@ -57,8 +46,8 @@ class _TabsScreenState extends State<TabsScreen> {
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     var height = MediaQuery.of(context).size.height;
 
-    return GetX<TabsController>(builder: (controller) {
-      return Stack(
+    return Obx(
+      () => Stack(
         children: <Widget>[
           Scaffold(
             bottomNavigationBar: controller.multiTagSheet.value
@@ -147,6 +136,8 @@ class _TabsScreenState extends State<TabsScreen> {
                             controller: controller.expandableController.value,
                             expanded: Container(
                               padding: const EdgeInsets.all(24.0),
+
+                              /// TODO: Tags List Not Showing
                               color: Color(0xFFEFEFF4).withOpacity(0.94),
                               child: SafeArea(
                                 bottom: true,
@@ -161,32 +152,37 @@ class _TabsScreenState extends State<TabsScreen> {
                                         textEditingController:
                                             bottomTagsEditingController,
                                         /*  showEditTagModal: (String tagKey) {
-                                              showEditTagModal();
-                                            }, */
+                                                showEditTagModal();
+                                              }, */
                                         onTap: (String tagKey) {
                                           ///  if (!UserController.to.isPremium) {
                                           ///    Get.toNamed(  PremiumScreen.id);
                                           ///    return;
                                           ///  }
-                                          /// print('do nothing');
+                                          print('do nothing');
                                         },
                                         onPanEnd: (String tagKey) {
                                           // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
-                                          GalleryStore.to
-                                              .removeFromMultiPicTags(tagKey);
+                                          TagsController.to.multiPicTags
+                                              .remove(tagKey);
+                                          TagsController.to.loadRecentTags();
+                                          //GalleryStore.to.removeFromMultiPicTags(tagKey);
                                         },
                                         onDoubleTap: (String tagKey) {
                                           // if (!UserController.to.isPremium) {
                                           //   Get.toNamed(  PremiumScreen.id);
                                           //   return;
                                           // }
-                                          //print('do nothing');
+                                          print('do nothing');
                                         },
                                         onChanged: (text) {
-                                          GalleryStore.to.setSearchText(text);
+                                          TagsController.to.searchText.value =
+                                              text ?? '';
+                                          TagsController.to.loadRecentTags();
+                                          //GalleryStore.to.setSearchText(text);
                                         },
                                         onSubmitted: (text) {
                                           // if (!UserController.to.isPremium) {
@@ -195,66 +191,79 @@ class _TabsScreenState extends State<TabsScreen> {
                                           // }
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
-                                            GalleryStore.to.setSearchText('');
+                                            TagsController.to.searchText.value =
+                                                text ?? '';
+                                            TagsController.to.loadRecentTags();
                                             String tagKey =
                                                 Helpers.encryptTag(text);
 
                                             if (TagsController
                                                     .to.multiPicTags[tagKey] ==
                                                 null) {
-                                              if (TagsController.to.allTags
-                                                      .value[tagKey] ==
+                                              if (TagsController
+                                                      .to.allTags[tagKey] ==
                                                   null) {
-                                                //print('tag does not exist! creating it!');
-                                                GalleryStore.to.createTag(text);
+                                                print(
+                                                    'tag does not exist! creating it!');
+                                                TagsController.to
+                                                    .createTag(text);
                                               }
-                                              GalleryStore.to
-                                                  .addToMultiPicTags(tagKey);
+                                              TagsController
+                                                  .to.multiPicTags[tagKey] = '';
+                                              TagsController
+                                                  .to.searchText.value = '';
                                             }
                                           }
                                         }),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
-                                        title:
-                                            GalleryStore.to.searchText.value !=
-                                                    ''
-                                                ? S.of(context).search_results
-                                                : S.of(context).recent_tags,
-                                        tagsKeyList: GalleryStore
-                                            .to.tagsSuggestions.value
-                                            .map((e) => e.key)
+                                        title: TagsController
+                                                    .to.searchText.value !=
+                                                ''
+                                            ? S.of(context).search_results
+                                            : S.of(context).recent_tags,
+                                        tagsKeyList: TagsController
+                                            .to.recentTagKeyList.value.keys
+                                            .where((tag) =>
+                                                TagsController
+                                                    .to.multiPicTags[tag] ==
+                                                null)
                                             .toList(),
                                         tagStyle: TagStyle.GrayOutlined,
                                         /* showEditTagModal: () =>
-                                                showEditTagModal(context), */
+                                                  showEditTagModal(context), */
                                         onTap: (String tagKey) {
                                           /* if (!UserController
-                                                  .to.isPremium.value) {
-                                                Get.toNamed(PremiumScreen.id);
-                                                return;
-                                              } */
+                                                    .to.isPremium.value) {
+                                                  Get.toNamed(PremiumScreen.id);
+                                                  return;
+                                                } */
 
                                           bottomTagsEditingController.clear();
-                                          GalleryStore.to.setSearchText('');
-                                          GalleryStore.to
-                                              .addToMultiPicTags(tagKey);
+                                          TagsController.to.searchText.value =
+                                              '';
+                                          //GalleryStore.to.setSearchText('');
+                                          TagsController
+                                              .to.multiPicTags[tagKey] = '';
+                                          TagsController.to.loadRecentTags();
+                                          //GalleryStore.to.addToMultiPicTags(tagKey);
                                         },
                                         onDoubleTap: (String tagKey) {
                                           /* if (!UserController
-                                                  .to.isPremium.value) {
-                                                Get.toNamed(PremiumScreen.id);
-                                                return;
-                                              } */
-                                          //print('do nothing');
+                                                    .to.isPremium.value) {
+                                                  Get.toNamed(PremiumScreen.id);
+                                                  return;
+                                                } */
+                                          print('do nothing');
                                         },
                                         onPanEnd: (String tagKey) {
                                           /* if (!UserController
-                                                  .to.isPremium.value) {
-                                                Get.toNamed(PremiumScreen.id);
-                                                return;
-                                              } */
-                                          //print('do nothing');
+                                                    .to.isPremium.value) {
+                                                  Get.toNamed(PremiumScreen.id);
+                                                  return;
+                                                } */
+                                          print('do nothing');
                                         },
                                       ),
                                     ),
@@ -629,8 +638,8 @@ class _TabsScreenState extends State<TabsScreen> {
                                         : GalleryStore.to.thumbnailsPics[index],
                                     picsInThumbnails: PicSource.UNTAGGED,
                                     /*  showEditTagModal: () =>
-                                        showEditTagModal(context),
-                                    showDeleteSecretModal: showDeleteSecretModal, */
+                                          showEditTagModal(context),
+                                      showDeleteSecretModal: showDeleteSecretModal, */
                                   ),
                                 ),
                               );
@@ -668,7 +677,7 @@ class _TabsScreenState extends State<TabsScreen> {
                 )
               : Container()),
         ],
-      );
-    });
+      ),
+    );
   }
 }

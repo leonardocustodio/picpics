@@ -9,7 +9,6 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';

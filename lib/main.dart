@@ -39,7 +39,6 @@ import 'stores/database_controller.dart';
 import 'stores/login_store.dart';
 import 'stores/pin_store.dart';
 import 'stores/tabs_controller.dart';
-import 'stores/tabs_controller.dart';
 import 'stores/tags_controller.dart';
 
 Future<String> checkForUserControllerInitiatedProducts() async {

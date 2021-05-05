@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
-
 import '../constants.dart';
-import 'tagged_pics_store.dart';
+import 'database_controller.dart';
 
 class TagModel extends GetxController {
   RxMap _map = <String, dynamic>{}.obs;
@@ -51,16 +50,18 @@ class TagsController extends GetxController {
   final lastWeekUsedTags = <String, String>{}.obs;
   final lastMonthUsedTags = <String, String>{}.obs;
 
-  final recentTagKeyList = <String>[].obs;
+  final recentTagKeyList = <String, String>{}.obs;
 
   final multiPicTags = <String, String>{}.obs;
 
-  final _database = AppDatabase();
+  AppDatabase _database = AppDatabase();
 
   @override
   void onReady() {
     super.onReady();
+    UserController.to.createDefaultTags(Get.context);
     loadAllTags();
+    TagsController.to.loadRecentTags();
   }
 
   /// load most used tags into `mostUsedTags`
@@ -193,6 +194,129 @@ class TagsController extends GetxController {
     }
   } */
 
+  Future<void> createTag(String tagName) async {
+    //var tagsBox = Hive.box('tags');
+    /*// //print(tagsBox.keys); */
+
+    String tagKey = Helpers.encryptTag(tagName);
+    // //print('Adding tag: $tagName');
+
+    Label lab = await _database.getLabelByLabelKey(tagKey);
+
+    if (lab != null) {
+      // //print('user already has this tag');
+      return;
+    }
+
+    // //print('adding tag to database...');
+    await _database.createLabel(Label(
+        key: tagKey,
+        title: tagName,
+        photoId: <String>[],
+        counter: 1,
+        lastUsedAt: DateTime.now()));
+    //tagsBox.put(tagKey, Tag(tagName, []));
+
+    TagModel tagModel =
+        TagModel(key: tagKey, title: tagName, count: 1, time: DateTime.now());
+    addTag(tagModel);
+    addRecentTag(tagKey);
+
+    Analytics.sendEvent(
+      Event.created_tag,
+      params: {'tagName': tagName},
+    );
+  }
+
+  final searchText = ''.obs;
+
+  Future<Map<String, String>> loadRecentTags() async {
+    //var userBox = Hive.box('user');
+    //var tagsBox = Hive.box('tags');
+    var tagsList = await _database.getAllLabel();
+
+    MoorUser getUser = await DatabaseController.to.getUser();
+
+    //List<String> multiPicTags = multiPicTagKeys.toList();
+    List<String> suggestionTags = [];
+    /* searchText.value = searchText.trim(); */
+
+    if (searchText.trim() == '') {
+      for (var recent in getUser.recentTags) {
+        // //print('Recent Tag: $recent');
+        if (multiPicTags[recent] != null || recent == kSecretTagKey) {
+          continue;
+        }
+        suggestionTags.add(recent);
+      }
+
+      // //print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+
+//      while (suggestions.length < maxNumOfSuggestions) {
+//          if (excludeTags.contains('Hey}')) {
+//            continue;
+//          }
+      if (suggestionTags.length < kMaxNumOfSuggestions) {
+        for (Label tag in tagsList) {
+          var tagKey = tag.key;
+          if (suggestionTags.length == kMaxNumOfSuggestions) {
+            break;
+          }
+          if (multiPicTags[tagKey] != null ||
+              suggestionTags.contains(tagKey) ||
+              tagKey == kSecretTagKey) {
+            continue;
+          }
+          // //print('Adding tag key: $tagKey');
+          suggestionTags.add(tagKey);
+        }
+      }
+//      }
+    } else {
+      var listOfLetters = searchText.toLowerCase().split('');
+      for (Label tag in tagsList) {
+        var tagKey = tag.key;
+        if (tagKey == kSecretTagKey) continue;
+        if (allTags[tagKey] != null && multiPicTags[tagKey] == null) {
+          var tagsStoreValue = /* TagsController.to. */ allTags[tagKey].value;
+          doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
+            suggestionTags.add(tagKey);
+          });
+        }
+        /* String tagName = Helpers.decryptTag(tagKey);
+        if (tagName.startsWith(Helpers.stripTag(searchText))) {
+          suggestionTags.add(tagKey);
+        } */
+      }
+    }
+
+    // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
+    if (multiPicTags[kSecretTagKey] == null &&
+        /* !searchingTagsKeys.contains(kSecretTagKey) && */
+        UserController.to.secretPhotos == true &&
+        searchText == '') {
+      suggestionTags.add(kSecretTagKey);
+    }
+
+    // //print('find suggestions: $searchText - exclude tags: $multiPicTags');
+    // //print(suggestionTags);
+    // //print('UserController Tags: ${TagsController.to.allTags}');
+    /* List<TagsStore> suggestions = TagsController.to.allTags
+        .where((element) => suggestionTags.contains(element.id))
+        .toList(); */
+    //var suggestionsTags = <String, String>{};
+    recentTagKeyList.clear();
+    suggestionTags.forEach((suggestedTag) {
+      if (allTags[suggestedTag] != null) {
+        recentTagKeyList[suggestedTag] = '';
+        //suggestions.add(TagsController.to.allTags[suggestedTag].value);
+      }
+    });
+    // //print('Suggestions Tag Store: $suggestions');
+    //tagsSuggestions.value = suggestions;
+    return recentTagKeyList.value;
+  }
+
   /// load all the tags async
   Future<void> loadAllTags() async {
     var tagsBox = await _database.getAllLabel();
@@ -244,8 +368,8 @@ class TagsController extends GetxController {
   }
 
   void addRecentTag(String tagKey) {
-    if (recentTagKeyList.contains(tagKey) == false) {
-      recentTagKeyList.add(tagKey);
+    if (recentTagKeyList[tagKey] == null) {
+      recentTagKeyList[tagKey] = '';
     }
   }
 
@@ -266,6 +390,37 @@ class TagsController extends GetxController {
       ..time = DateTime.now();
 
     allTags[newTagKey] = Rx<TagModel>(tagModel);
+    addNewTagReferences(newTagKey);
+    removeOldTagReferences(oldTagKey);
+  }
+
+  ///
+  /// This function will help in making the related changes on all the places of oldTagKey as
+  void removeOldTagReferences(String oldTagKey) {
+    /// multi pic Tags
+    multiPicTags.remove(oldTagKey);
+
+    /// recent tags list
+    recentTagKeyList.remove(oldTagKey);
+
+    /// most used tag list
+    mostUsedTags.remove(oldTagKey);
+
+    /// last used tag list
+    lastWeekUsedTags.remove(oldTagKey);
+
+    /// last month used tag list
+    lastMonthUsedTags.remove(oldTagKey);
+  }
+
+  /// when the name of oldTagKey is renamed then the newTagKey should be placed on those places. right!!
+  ///
+  void addNewTagReferences(String newTagKey) {
+    multiPicTags[newTagKey] = '';
+    recentTagKeyList[newTagKey] = '';
+    mostUsedTags[newTagKey] = '';
+    lastWeekUsedTags[newTagKey] = '';
+    lastMonthUsedTags[newTagKey] = '';
   }
 
   /// remove Tag from all tags
@@ -349,6 +504,7 @@ class TagsController extends GetxController {
       //tagsBox.delete(tagKey);
       // //print('deleted from tags db');
       Analytics.sendEvent(Event.deleted_tag);
+      removeOldTagReferences(tagKey);
     }
   }
 }

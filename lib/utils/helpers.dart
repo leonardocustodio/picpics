@@ -2,8 +2,6 @@ import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/stores/tags_store.dart';
-
 import '../constants.dart';
 
 class Helpers {

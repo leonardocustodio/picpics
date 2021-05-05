@@ -1,19 +1,15 @@
 import 'dart:io';
-
 import 'package:background_fetch/background_fetch.dart';
-import 'package:convert/convert.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
 import 'package:moor/moor.dart';
-import 'package:cryptography_flutter/cryptography.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
@@ -22,8 +18,6 @@ import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:share/share.dart';
-
-import '../constants.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 

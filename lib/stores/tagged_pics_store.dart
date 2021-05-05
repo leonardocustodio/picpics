@@ -1,7 +1,5 @@
 import 'package:get/get.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tags_store.dart';
-
 import 'tags_controller.dart';
 
 class TaggedPicsStore extends GetxController {

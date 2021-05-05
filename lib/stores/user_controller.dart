@@ -14,10 +14,8 @@ import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/stores/database_controller.dart';
-import 'package:picPics/stores/tags_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
-import 'package:uuid/uuid.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 
@@ -101,8 +99,9 @@ class UserController extends GetxController {
     //   Secret secret = secretBox.getAt(0);
     //   isPinRegistered = secret.pin == null ? false : true;
     // }
+    //createDefaultTags(Get.context);
 
-    TagsController.to.loadAllTags();
+    //TagsController.to.loadAllTags();
 
     for (String tagKey in user.recentTags) {
       TagsController.to.addRecentTag(tagKey);
@@ -538,7 +537,7 @@ class UserController extends GetxController {
       tag9,
       tag10,
     ];
-    Future.forEach(entries, (newLabel) => database.createLabel(newLabel))
+    await Future.forEach(entries, (newLabel) => database.createLabel(newLabel))
         .then((_) => TagsController.to.loadAllTags());
   }
 
