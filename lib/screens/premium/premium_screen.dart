@@ -118,8 +118,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
     // TODO: remove true
     if (true || kDebugMode) {
       appStore.setIsPremium(true);
-      Navigator.pushNamedAndRemoveUntil(
-          context, TabsScreen.id, (route) => false);
+      await UserController.to.setTutorialCompleted(true);
+      Get.offNamedUntil(TabsScreen.id, (route) => false);
+      //Navigator.pushNamedAndRemoveUntil(context, TabsScreen.id, (route) => false);
       // Get.back();
       //return;
     } else {

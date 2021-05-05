@@ -247,8 +247,8 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   void initState() {
     galleryStore = GalleryStore()..user = widget.user;
-    if (initialRoute != MigrationScreen.id &&
-        widget.user.tutorialCompleted.value) {
+    var tutorial = widget.user.tutorialCompleted.value;
+    if (initialRoute != MigrationScreen.id && tutorial) {
       initialRoute = TabsScreen.id;
       //TODO: uncomment
       //Hive.deleteFromDisk();
