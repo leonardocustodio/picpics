@@ -14,6 +14,8 @@ import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/tagged_controller.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/enum.dart';
@@ -41,6 +43,7 @@ class TabsController extends GetxController {
   final toggleIndexTagged = 1.obs;
   final topOffsetFirstTab = 64.0.obs;
   final tutorialIndex = 0.obs;
+  final showPrivatePics = false.obs;
   final multiPicBar = false.obs;
   final multiTagSheet = false.obs;
   final hideTitleThirdTab = false.obs;
@@ -64,6 +67,7 @@ class TabsController extends GetxController {
 
   // picId: assetPathEntity
   final assetMap = <String, AssetEntity>{}.obs;
+  List<AssetEntity> assetEntityList = <AssetEntity>[];
   //final picAssetOriginBytesMap = <String, Future<Uint8List>>{}.obs;
 
   final starredPicMap = <String, bool>{}.obs;
@@ -80,6 +84,10 @@ class TabsController extends GetxController {
     super.onReady();
     initPlatformState();
     loadAssetPath();
+
+    ever(showPrivatePics, (_) {
+      refreshUntaggedList();
+    });
 
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (multiTagSheet.value) {
@@ -149,10 +157,19 @@ class TabsController extends GetxController {
 
     AssetPathEntity assetPathEntity = assetsPath[0];
 
-    final list = await assetPathEntity.getAssetListRange(
-        start: 0, end: assetPathEntity.assetCount);
+    assetPathEntity
+        .getAssetListRange(start: 0, end: assetPathEntity.assetCount)
+        .then((list) async {
+      assetEntityList = await List<AssetEntity>.from(list);
+      await refreshUntaggedList();
+    });
+  }
 
-    list.sort((a, b) {
+  Future<void> refreshUntaggedList() async {
+    isUntaggedPicsLoaded.value = false;
+    allUnTaggedPicsMonth.clear();
+    allUnTaggedPicsDay.clear();
+    assetEntityList.sort((a, b) {
       var year = b.createDateTime.year.compareTo(a.createDateTime.year);
       if (year == 0) {
         var month = b.createDateTime.month.compareTo(a.createDateTime.month);
@@ -168,11 +185,22 @@ class TabsController extends GetxController {
     var val = await database.getPrivatePhotoIdList();
     await Future.forEach(
         val, (photo) async => privatePhotoIdMap[photo.id] = '');
+
+    /// refreshing the taggedPhotos so that we can filter out the untagged photos from the below section.
+    await TaggedController.to.refreshTaggedPhotos();
+
     DateTime previousDay, previousMonth;
     List<String> previousMonthPicIdList = <String>[];
     List<String> previousDayPicIdList = <String>[];
-    list.forEach((entity) {
-      if (privatePhotoIdMap[entity.id] == null) {
+
+    /// clear the map as this function will be used to refresh from the tagging done via expandable or the swiper tags
+
+    assetEntityList.forEach((entity) {
+      if (TaggedController.to.allTaggedPicIdList[entity.id] != null) {
+        print('${entity.id}');
+      }
+      if (TaggedController.to.allTaggedPicIdList[entity.id] == null &&
+          (privatePhotoIdMap[entity.id] == null || showPrivatePics.value)) {
         var dateTime = DateTime.utc(entity.createDateTime.year,
             entity.createDateTime.month, entity.createDateTime.day);
         if (previousDay == null || previousMonth == null) {
@@ -319,7 +347,7 @@ class TabsController extends GetxController {
   final picStoreMap = <String, Rx<PicStore>>{}.obs;
 
   /// Here only those picId will come who are untagged.
-  Future<void> explorPicStore(String picId) async {
+  Future<Rx<PicStore>> explorPicStore(String picId) async {
     if (picStoreMap[picId] == null) {
       AssetEntity entity = assetMap[picId];
 
@@ -333,6 +361,7 @@ class TabsController extends GetxController {
       );
       picStoreMap[picId] = Rx<PicStore>(pic);
     }
+    return picStoreMap[picId];
   }
 
   /* Future<void> exploreThumbPic_(String picId) async {
@@ -623,17 +652,24 @@ class TabsController extends GetxController {
     return assetMap.isNotEmpty;
   }
 
+  void clearSelectedUntaggedPics() {
+    selectedUntaggedPics.clear();
+  }
+
   setTabIndex(int index) async {
     if (!deviceHasPics || selectedUntaggedPics.isEmpty) {
       if (index == 0) {
         setMultiPicBar(false);
+        clearSelectedUntaggedPics();
+        TagsController.to.clearMultiPicTags();
+        setCurrentTab(0);
+        return;
       }
-      return;
     }
 
     if (multiPicBar.value) {
       if (index == 0) {
-        selectedUntaggedPics.clear();
+        clearSelectedUntaggedPics();
         //GalleryStore.to.clearSelectedPics();
         setMultiPicBar(false);
       } else if (index == 1) {

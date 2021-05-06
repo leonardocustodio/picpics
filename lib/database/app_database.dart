@@ -278,6 +278,19 @@ class AppDatabase extends _$AppDatabase {
   Future<Photo> getPhotoByPhotoId(String photoId) => (select(photos)
         ..where((pri) => pri?.id?.equals(photoId) ?? const Constant(false)))
       .getSingle();
+
+  Future<List<Photo>> getAllTaggedPhotoIdList() {
+    var convertor = ListStringConvertor();
+    return (select(photos)
+          ..where((tbl) {
+            return Constant(convertor
+                    .mapToDart(tbl.tags.moorValue.toString())
+                    ?.isNotEmpty ??
+                false);
+          }))
+        .get();
+  }
+
   Future<List<Photo>> getPrivatePhotoIdList() =>
       (select(photos)..where((tbl) => tbl.isPrivate.equals(true))).get();
 

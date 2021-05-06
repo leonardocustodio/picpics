@@ -1234,59 +1234,6 @@ class GalleryStore extends GetxController {
     );
   }
 
-  //@action
-  Future<void> addTagsToSelectedPics() async {
-    //var tagsBox = Hive.box('tags');
-
-    Future.wait(
-      [
-        Future.forEach(selectedPics, (PicStore picStore) async {
-          for (String tagKey in multiPicTags.keys.toList()) {
-            if (picStore.tags[tagKey] != null) {
-              // //print('this tag is already in this picture');
-              continue;
-            }
-            if (tagKey == kSecretTagKey) {
-              // //print('Should add secret tag in the end!!!');
-              if (!privatePics.contains(picStore)) {
-                await picStore.setIsPrivate(true);
-                await Crypto.encryptImage(picStore, user.encryptionKey);
-                // //print('this pic now is private');
-                privatePics.add(picStore);
-              } else {
-                // //print('this pic is already private');
-              }
-              continue;
-            }
-
-            //Tag getTag = tagsBox.get(tagKey);
-            Label getTag = await database.getLabelByLabelKey(tagKey);
-            getTag.photoId.add(picStore.photoId.value);
-            await database.updateLabel(getTag);
-            //tagsBox.put(tagKey, getTag);
-
-            await picStore.addTagToPic(
-              tagKey: tagKey,
-              photoId: picStore.photoId.value,
-            );
-
-            // //print('update pictures in tag');
-          }
-
-          if (selectedPicsAreTagged != true) {
-            // //print('Adding pic to tagged pics!');
-            addPicToTaggedPics(picStore: picStore);
-            removePicFromUntaggedPics(picStore: picStore);
-            swipePics.remove(picStore);
-          }
-        }),
-      ],
-    );
-
-    clearSelectedPics();
-    clearMultiPicTags();
-  }
-
 //  void registerObserve() {
 //    try {
 /*// //print('%%%%%% Registered change notifier'); */

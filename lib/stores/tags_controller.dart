@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import '../constants.dart';
 import 'database_controller.dart';
+import 'swiper_tab_controller.dart';
 
 class TagModel extends GetxController {
   RxMap _map = <String, dynamic>{}.obs;
@@ -368,21 +372,126 @@ class TagsController extends GetxController {
     allTags[tagModel.key] = Rx<TagModel>(tagModel);
   }
 
+  Future<void> addTagsToSelectedPics() async {
+    //var tagsBox = Hive.box('tags');
+
+    var selectedPicIds = TabsController.to.selectedUntaggedPics.keys.toList();
+    var multiTags = multiPicTags.keys.toList();
+
+    await Future.wait(
+      [
+        Future.forEach(selectedPicIds, (String picId) async {
+          var picStore = TabsController.to.picStoreMap[picId]?.value;
+          if (picStore == null) {
+            picStore = (await TabsController.to.explorPicStore(picId)).value;
+          }
+          for (String tagKey in multiTags) {
+            /// add the picId to the Tagged tab list for showing this picture there
+            //addPicIdToTaggedList(tagKey, picId);
+
+            /// remove this pic from the untaggedPicIdList list for hiding it from the untagged tab
+            /* TabsController.to.allUnTaggedPicsDay.remove(tagKey);
+            TabsController.to.allUnTaggedPicsMonth.remove(tagKey); */
+
+            /// TODO: check this is working or not, when swipe implementation is done !!
+            SwiperTabController.to.swiperPicIdList.remove(picStore);
+
+            if (picStore.tags[tagKey] != null) {
+              // //print('this tag is already in this picture');
+              continue;
+            }
+            if (tagKey == kSecretTagKey) {
+              // //print('Should add secret tag in the end!!!');
+              if (TabsController.to.secretPicIds[picId] == null ||
+                  TabsController.to.secretPicIds[picId] ==
+                      false /* !privatePics.contains(picStore) */) {
+                await picStore.setIsPrivate(true);
+                await Crypto.encryptImage(
+                    picStore, UserController.to.encryptionKey);
+                // //print('this pic now is private');
+                TabsController.to.secretPicIds[picId] = true;
+                //privatePics.add(picStore);
+              }
+              /* else {
+                // //print('this pic is already private');
+              } */
+              continue;
+            }
+
+            //Tag getTag = tagsBox.get(tagKey);
+            Label getTag = await _database.getLabelByLabelKey(tagKey);
+            getTag.photoId.add(picStore.photoId.value);
+            await _database.updateLabel(getTag);
+            //tagsBox.put(tagKey, getTag);
+
+            await picStore.addTagToPic(
+              tagKey: tagKey,
+              photoId: picStore.photoId.value,
+            );
+
+            // //print('update pictures in tag');
+          }
+
+          /*  if (selectedPicsAreTagged != true) {
+            // //print('Adding pic to tagged pics!');
+
+            addPicToTaggedPics(picStore: picStore);
+            removePicFromUntaggedPics(picStore: picStore);
+          } */
+        }),
+      ],
+    ).then((_) {
+      /// Clear the selectedUntaggedPics as now the processing is done
+      TabsController.to.clearSelectedUntaggedPics();
+
+      /// Also clear the multiPicTags as we have iterated and processed through it and
+      /// now we have to make it empty for the next time
+      clearMultiPicTags();
+
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
+        await TabsController.to.refreshUntaggedList();
+      });
+    });
+  }
+
+  void clearMultiPicTags() {
+    multiPicTags.clear();
+  }
+
+  /// Add the picId to the taggedMap in the 3rdTab (Tagged Tab)
+  ///
+  /// TagKey : {
+  ///           picId: '',
+  ///           picId2: '',
+  ///         },
+  /// OtherTagKey: {
+  ///             picId56: '',
+  ///             picId5: '',
+  ///           }
+  void addPicIdToTaggedList(String tagKey, String taggedPicId) {
+    if (TaggedController.to.taggedPicId[tagKey] == null) {
+      TaggedController.to.taggedPicId[tagKey] = <String, String>{}.obs;
+    }
+    TaggedController.to.taggedPicId[tagKey][taggedPicId] = '';
+  }
+
+  /// add the tagKey to the recentTagKeyList
   void addRecentTag(String tagKey) {
     if (recentTagKeyList[tagKey] == null) {
       recentTagKeyList[tagKey] = '';
     }
   }
 
-  /// edit the tags name in all tags
+  /// edit the tags name
   void _editTagInternalFunction(
       {@required String oldTagKey,
       @required String newTagKey,
       @required String newName}) {
     TagModel tagModel = allTags[oldTagKey].value;
 
-    /// remove the oldTagKey because it will help us to make is un-listenable
-    /// as it might be used somewhere else
+    /// remove the oldTagKey because it will help us to make it un-listenable
+    /// as it might be used somewhere else and we don't need un necessary frame updates
     allTags.remove(oldTagKey);
 
     tagModel
@@ -395,27 +504,18 @@ class TagsController extends GetxController {
     removeOldTagReferences(oldTagKey);
   }
 
-  ///
-  /// This function will help in making the related changes on all the places of oldTagKey as
+  /// when the tag is renamed into new one or if the tag is deleted then
+  /// this function will help to remove it's occurences from everywhere
   void removeOldTagReferences(String oldTagKey) {
-    /// multi pic Tags
     multiPicTags.remove(oldTagKey);
-
-    /// recent tags list
     recentTagKeyList.remove(oldTagKey);
-
-    /// most used tag list
     mostUsedTags.remove(oldTagKey);
-
-    /// last used tag list
     lastWeekUsedTags.remove(oldTagKey);
-
-    /// last month used tag list
     lastMonthUsedTags.remove(oldTagKey);
   }
 
-  /// when the name of oldTagKey is renamed then the newTagKey should be placed on those places. right!!
-  ///
+  /// when the name of oldTagKey is renamed or a new tag is created then the
+  /// newTagKey should be placed on those places. right!!
   void addNewTagReferences(String newTagKey) {
     multiPicTags[newTagKey] = '';
     recentTagKeyList[newTagKey] = '';

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -13,7 +14,7 @@ void showDeleteSecretModalForMultiPic(TabsController controller) {
   if (UserController.to.keepAskingToDelete.value == false) {
     controller.setMultiTagSheet(false);
     controller.setMultiPicBar(false);
-    GalleryStore.to.addTagsToSelectedPics();
+    TagsController.to.addTagsToSelectedPics();
     return;
   }
 
@@ -30,14 +31,14 @@ void showDeleteSecretModalForMultiPic(TabsController controller) {
           UserController.to.setShouldDeleteOnPrivate(false);
           controller.setMultiTagSheet(false);
           controller.setMultiPicBar(false);
-          GalleryStore.to.addTagsToSelectedPics();
+          TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
         onPressedOk: () {
           UserController.to.setShouldDeleteOnPrivate(true);
           controller.setMultiTagSheet(false);
           controller.setMultiPicBar(false);
-          GalleryStore.to.addTagsToSelectedPics();
+          TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
       );

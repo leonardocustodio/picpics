@@ -38,7 +38,9 @@ import 'screens/all_tags_screen.dart';
 import 'stores/database_controller.dart';
 import 'stores/login_store.dart';
 import 'stores/pin_store.dart';
+import 'stores/swiper_tab_controller.dart';
 import 'stores/tabs_controller.dart';
+import 'stores/tagged_controller.dart';
 import 'stores/tags_controller.dart';
 
 Future<String> checkForUserControllerInitiatedProducts() async {
@@ -63,6 +65,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Get.lazyPut(() => UserController());
+  await Get.lazyPut(() => TaggedController());
+  await Get.lazyPut(() => SwiperTabController());
   await Get.lazyPut(() => GalleryStore());
   await Get.lazyPut(() => DatabaseController());
   await Get.lazyPut(() => TabsController());

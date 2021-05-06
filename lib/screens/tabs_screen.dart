@@ -100,7 +100,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         //   return;
                                         // }
 
-                                        if (GalleryStore.to.multiPicTags
+                                        if (TagsController.to.multiPicTags
                                                 .value[kSecretTagKey] !=
                                             null) {
                                           showDeleteSecretModalForMultiPic(
@@ -110,7 +110,8 @@ class TabsScreen extends GetWidget<TabsController> {
 
                                         controller.setMultiTagSheet(false);
                                         controller.setMultiPicBar(false);
-                                        GalleryStore.to.addTagsToSelectedPics();
+                                        TagsController.to
+                                            .addTagsToSelectedPics();
                                       },
                                       child: Container(
                                         width: 80.0,
