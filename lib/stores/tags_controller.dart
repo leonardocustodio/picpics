@@ -59,9 +59,10 @@ class TagsController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    UserController.to.createDefaultTags(Get.context);
-    loadAllTags();
-    TagsController.to.loadRecentTags();
+    UserController.to.createDefaultTags(Get.context).then((_) async {
+      await loadAllTags();
+      await TagsController.to.loadRecentTags();
+    });
   }
 
   /// load most used tags into `mostUsedTags`
