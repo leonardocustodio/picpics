@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 
@@ -5,16 +6,60 @@ class TaggedController extends GetxController {
   static TaggedController get to => Get.find();
 
   /// tagKey: {picId: ''}
-  final taggedPicId = <String, RxMap<String, String>>{};
+  final taggedPicId = <String, RxMap<String, String>>{}.obs;
   final allTaggedPicIdList = <String, String>{}.obs;
 
+  final toggleIndexTagged = 1.obs;
+
+  ScrollController scrollControllerThirdTab;
+
+  double offsetThirdTab = 0.0;
+
+  final isScrolling = false.obs;
   final database = AppDatabase();
+
+  @override
+  void onInit() {
+    super.onInit();
+    scrollControllerThirdTab =
+        ScrollController(initialScrollOffset: offsetThirdTab);
+    scrollControllerThirdTab.addListener(() {
+      refreshGridPositionThirdTab();
+    });
+  }
+
+  final hideTitleThirdTab = false.obs;
+  void setHideTitleThirdTab(bool value) {
+    if (value == hideTitleThirdTab) {
+      return;
+    }
+    hideTitleThirdTab.value = value;
+  }
+
+  void refreshGridPositionThirdTab() {
+    var offset = scrollControllerThirdTab.hasClients
+        ? scrollControllerThirdTab.offset
+        : scrollControllerThirdTab.initialScrollOffset;
+
+    if (offset >= 40) {
+      setHideTitleThirdTab(true);
+    } else if (offset <= 0) {
+      setHideTitleThirdTab(false);
+    }
+
+    if (scrollControllerThirdTab.hasClients) {
+      offsetThirdTab = scrollControllerThirdTab.offset;
+    }
+  }
 
   @override
   void onReady() {
     super.onReady();
     refreshTaggedPhotos();
+    refreshGridPositionThirdTab();
   }
+
+  void setIsScrolling(bool value) => isScrolling.value = value;
 
   Future<void> refreshTaggedPhotos() async {
     var taggedPhotoIdList = await database.getAllPhoto();

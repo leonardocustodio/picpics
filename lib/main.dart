@@ -74,6 +74,7 @@ void main() async {
   await Get.lazyPut(() => PinStore());
   await Get.lazyPut(() => LoginStore());
   await Get.lazyPut(() => PinStore());
+  await Get.lazyPut(() => PhotoScreenController());
 
   await Hive.initFlutter();
 /*   Hive.registerAdapter(UserAdapter());
@@ -309,7 +310,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
           LoginScreen.id: (context) => LoginScreen(),
           TabsScreen.id: (context) => TabsScreen(),
-          PhotoScreen.id: (context) => PhotoScreen(),
+          PhotoScreen.id: (context) => PhotoScreen(picId: null),
           SettingsScreen.id: (context) => SettingsScreen(),
           AddLocationScreen.id: (context) => AddLocationScreen(),
           PremiumScreen.id: (context) => PremiumScreen(),

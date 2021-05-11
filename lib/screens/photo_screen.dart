@@ -8,6 +8,7 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
@@ -30,6 +31,9 @@ class PhotoScreenController extends GetxController {
 
 class PhotoScreen extends GetWidget<PhotoScreenController> {
   static const id = 'photo_screen';
+
+  final String picId;
+  PhotoScreen({this.picId, Key key}) : super(key: key);
   PageController galleryPageController =
       PageController(initialPage: GalleryStore.to.selectedThumbnail.value);
 
@@ -165,7 +169,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
         ),
 
         // ImageItem(
-        //   picStore: GalleryStore.to.thumbnailsPics[index],
+        //   picStore: TabsController.to.thumbnailsPics[index],
         //   size: 98,
         //   fit: BoxFit.cover,
         //   backgroundColor: Colors.black,
@@ -256,7 +260,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-                                  GalleryStore.to.currentThumbnailPic.value
+                                  TabsController.to.picStoreMap[picId].value
                                       .sharePic();
                                 },
                                 child: Image.asset(
@@ -314,11 +318,12 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
-                                                  text: GalleryStore
+                                                  text: TabsController
                                                           .to
-                                                          .currentThumbnailPic
-                                                          .value
-                                                          .specificLocation ??
+                                                          ?.picStoreMap[picId]
+                                                          ?.value
+                                                          ?.specificLocation
+                                                          ?.value ??
                                                       S
                                                           .of(context)
                                                           .photo_location,
@@ -333,7 +338,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   )),
                                               TextSpan(
                                                 text:
-                                                    '  ${GalleryStore.to.currentThumbnailPic.value.generalLocation ?? S.of(context).country}',
+                                                    '  ${TabsController.to.picStoreMap[picId]?.value?.generalLocation?.value ?? S.of(context).country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,
@@ -348,11 +353,12 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                           ),
                                         ),
                                         Text(
-                                          dateFormat(GalleryStore
-                                              .to
-                                              .currentThumbnailPic
-                                              .value
-                                              .createdAt),
+                                          dateFormat(TabsController
+                                                  .to
+                                                  ?.picStoreMap[picId]
+                                                  ?.value
+                                                  ?.createdAt ??
+                                              DateTime.now()),
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
@@ -370,14 +376,14 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     return Padding(
                                       padding: const EdgeInsets.only(top: 16.0),
                                       child: TagsList(
-                                        tagsKeyList: GalleryStore.to
-                                            .currentThumbnailPic.value.tags.keys
+                                        tagsKeyList: TabsController.to
+                                            .picStoreMap[picId].value.tags.keys
                                             .toList(),
                                         tagStyle: TagStyle.MultiColored,
                                         addTagButton: () {
                                           GalleryStore.to.setCurrentPic(
-                                              GalleryStore.to
-                                                  .currentThumbnailPic.value);
+                                              TabsController
+                                                  .to.picStoreMap[picId].value);
 
                                           /* if (!controller.modalCard.value) {
                                             controller.setModalCard(true);
@@ -389,8 +395,8 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                           //print('ignore click');
                                         },
                                         onDoubleTap: (String tagKey) {
-//                                        GalleryStore.to.currentThumbnailPic
-//                                        GalleryStore.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+//                                        TabsController.to.picStoreMap[picId]
+//                                        TabsController.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                                         },
                                         onPanEnd: (String tagKey) {
                                           //print('teste');

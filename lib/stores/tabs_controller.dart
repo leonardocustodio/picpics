@@ -46,7 +46,6 @@ class TabsController extends GetxController {
   final showPrivatePics = false.obs;
   final multiPicBar = false.obs;
   final multiTagSheet = false.obs;
-  final hideTitleThirdTab = false.obs;
   final showDeleteSecretModal = false.obs;
   final isScrolling = false.obs;
   final isToggleBarVisible = true.obs;
@@ -70,9 +69,8 @@ class TabsController extends GetxController {
   List<AssetEntity> assetEntityList = <AssetEntity>[];
   //final picAssetOriginBytesMap = <String, Future<Uint8List>>{}.obs;
 
+  //@action
   final starredPicMap = <String, bool>{}.obs;
-
-  ScrollController scrollControllerThirdTab;
 
   final expandableController =
       Rx<ExpandableController>(ExpandableController(initialExpanded: false));
@@ -81,9 +79,13 @@ class TabsController extends GetxController {
 
   @override
   void onReady() {
+    initialization();
     super.onReady();
-    initPlatformState();
-    loadAssetPath();
+  }
+
+  Future<void> initialization() async {
+    await initPlatformState();
+    await loadAssetPath();
 
     ever(showPrivatePics, (_) {
       refreshUntaggedList();
@@ -93,12 +95,6 @@ class TabsController extends GetxController {
       if (multiTagSheet.value) {
         expandablePaddingController.value.expanded = visible;
       }
-    });
-
-    scrollControllerThirdTab =
-        ScrollController(initialScrollOffset: offsetThirdTab);
-    scrollControllerThirdTab.addListener(() {
-      refreshGridPositionThirdTab();
     });
 
     ever(GalleryStore.to.trashedPic, (_) {
@@ -143,7 +139,6 @@ class TabsController extends GetxController {
         Get.toNamed(PremiumScreen.id);
       }
     });
-    refreshGridPositionThirdTab();
   }
 
   Future<void> getDataForPic(String picId) async {}
@@ -196,6 +191,7 @@ class TabsController extends GetxController {
     /// clear the map as this function will be used to refresh from the tagging done via expandable or the swiper tags
 
     assetEntityList.forEach((entity) {
+      assetMap[entity.id] = entity;
       if (TaggedController.to.allTaggedPicIdList[entity.id] != null) {
         print('${entity.id}');
       }
@@ -232,7 +228,6 @@ class TabsController extends GetxController {
           }
           previousDay = dateTime;
         }
-        assetMap[entity.id] = entity;
         allUnTaggedPicsMonth[entity.id] = '';
         allUnTaggedPicsDay[entity.id] = '';
         previousMonthPicIdList.add(entity.id);
@@ -347,7 +342,7 @@ class TabsController extends GetxController {
   final picStoreMap = <String, Rx<PicStore>>{}.obs;
 
   /// Here only those picId will come who are untagged.
-  Future<Rx<PicStore>> explorPicStore(String picId) async {
+  Rx<PicStore> explorPicStore(String picId) {
     if (picStoreMap[picId] == null) {
       AssetEntity entity = assetMap[picId];
 
@@ -517,22 +512,6 @@ class TabsController extends GetxController {
     //if (!mounted) return;
   }
 
-  void refreshGridPositionThirdTab() {
-    var offset = scrollControllerThirdTab.hasClients
-        ? scrollControllerThirdTab.offset
-        : scrollControllerThirdTab.initialScrollOffset;
-
-    if (offset >= 40) {
-      setHideTitleThirdTab(true);
-    } else if (offset <= 0) {
-      setHideTitleThirdTab(false);
-    }
-
-    if (scrollControllerThirdTab.hasClients) {
-      offsetThirdTab = scrollControllerThirdTab.offset;
-    }
-  }
-
   //@action
   void setCurrentTab(int value) {
     if (currentTab.value != value) {
@@ -582,16 +561,6 @@ class TabsController extends GetxController {
       return;
     }
     topOffsetFirstTab.value = value;
-  }
-
-  double offsetThirdTab = 0.0;
-
-  //@action
-  void setHideTitleThirdTab(bool value) {
-    if (value == hideTitleThirdTab) {
-      return;
-    }
-    hideTitleThirdTab.value = value;
   }
 
   //@action

@@ -10,38 +10,40 @@ import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tagged_controller.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tagged_pics_store.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
-class TaggedTab extends GetWidget<TabsController> {
+class TaggedTab extends GetWidget<TaggedController> {
   static const id = 'tagged_tab';
-  TaggedTab();
+  TaggedTab({Key key}) : super(key: key);
 
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
   TextEditingController tagsEditingController = TextEditingController();
 
-  Widget _buildTaggedGridView(BuildContext context) {
+  Widget _buildTaggedGridView() {
     //print('Rebuilding tagged gridview');
     //print('&&&&&&&&&&&&&&&&& Build grid items!!!');
 
     double newPadding = 0.0;
     if (GalleryStore.to.isSearching.value) {
-      newPadding = 86 - controller.offsetThirdTab;
-      if (newPadding > 86) {
+      newPadding = (86 - controller.offsetThirdTab).clamp(0.0, 86.0);
+      /*  if (newPadding > 86) {
         newPadding = 86.0;
       } else if (newPadding < 0) {
         newPadding = 0.0;
-      }
+      } */
     }
 
     return NotificationListener<ScrollNotification>(
@@ -57,12 +59,12 @@ class TaggedTab extends GetWidget<TabsController> {
       },
       child: Obx(
         () {
-          if (controller.toggleIndexTagged == 0) {
+          /* if (controller.toggleIndexTagged == 0) {
             return StaggeredGridView.countBuilder(
               key: Key('date'),
               controller: controller.scrollControllerThirdTab,
               physics: const CustomScrollPhysics(),
-              padding: EdgeInsets.only(top: 86 - newPadding),
+              padding: EdgeInsets.only(top: /* 86 - */ newPadding),
               crossAxisCount: 3,
               mainAxisSpacing: 2.0,
               crossAxisSpacing: 2.0,
@@ -81,22 +83,52 @@ class TaggedTab extends GetWidget<TabsController> {
                     : StaggeredTile.count(1, 1);
               },
             );
-          }
+          } */
+          var taggedKeys = controller.taggedPicId.keys.toList();
+
+          var height = (Get.width / 3) - 20;
 
           return StaggeredGridView.countBuilder(
             key: Key('tag'),
             controller: controller.scrollControllerThirdTab,
             // padding: EdgeInsets.only(top: 86.0),
-            padding: EdgeInsets.only(top: 86 - newPadding),
+            padding: EdgeInsets.only(top: /* 86 - */ newPadding),
             physics: const CustomScrollPhysics(),
             crossAxisCount: 3,
             mainAxisSpacing: 2.0,
             crossAxisSpacing: 2.0,
-            itemCount: GalleryStore.to.isTitleWidget.value.length,
+            itemCount: taggedKeys.length,
             itemBuilder: (BuildContext context, int index) {
-              var item = GalleryStore.to.taggedItems.value[index];
+              var tagKey = taggedKeys[index];
+              var showingPicId =
+                  controller.taggedPicId[taggedKeys[index]].keys.last;
 
-              if (item is TaggedPicsStore) {
+              return Container(
+                margin: const EdgeInsets.all(4),
+                child: GetX<TabsController>(builder: (tabsController) {
+                  return VisibilityDetector(
+                    key: Key('${tagKey}'),
+                    onVisibilityChanged: (visibilityInfo) {
+                      var visiblePercentage =
+                          visibilityInfo.visibleFraction * 100;
+                      if (visiblePercentage > 10 &&
+                          tabsController.picStoreMap[showingPicId]?.value ==
+                              null) {
+                        tabsController.explorPicStore(showingPicId);
+                      }
+                    },
+                    child:
+                        tabsController.picStoreMap[showingPicId]?.value == null
+                            ? greyWidget
+                            : _buildPicItem(
+                                tabsController.picStoreMap[showingPicId]?.value,
+                                showingPicId,
+                                tagKey),
+                  );
+                }),
+              );
+
+              /* if (item is TaggedPicsStore) {
                 return _buildTagItem(item);
               } else if (item is PicStore) {
                 return _buildPicItem(item);
@@ -122,13 +154,10 @@ class TaggedTab extends GetWidget<TabsController> {
                     ),
                   );
                 }
-              }
+              } */
             },
-            staggeredTileBuilder: (int index) {
-              if (GalleryStore.to.isTitleWidget.value[index]) {
-                return StaggeredTile.fit(3);
-              }
-              return StaggeredTile.count(1, 1);
+            staggeredTileBuilder: (_) {
+              return StaggeredTile.extent(1, height + 50);
             },
           );
         },
@@ -136,7 +165,7 @@ class TaggedTab extends GetWidget<TabsController> {
     );
   }
 
-  String dateFormat(DateTime dateTime) {
+  /* String dateFormat(DateTime dateTime) {
     DateFormat formatter;
     //print('Date Time Formatting: $dateTime');
 
@@ -146,9 +175,9 @@ class TaggedTab extends GetWidget<TabsController> {
       formatter = DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
-  }
+  } */
 
-  Widget _buildDateItem(DateTime date) {
+  /* Widget _buildDateItem(DateTime date) {
     return Container(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       height: 40.0,
@@ -206,8 +235,8 @@ class TaggedTab extends GetWidget<TabsController> {
     //   ),
     // );
   }
-
-  Widget _buildTagItem(TaggedPicsStore taggedPicsStore) {
+ */
+  /* Widget _buildTagItem(TaggedPicsStore taggedPicsStore) {
     return Container(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       child: Row(
@@ -246,14 +275,16 @@ class TaggedTab extends GetWidget<TabsController> {
       ),
     );
   }
+ */
 
-  Widget _buildPicItem(PicStore picStore) {
+  Widget _buildPicItem(PicStore picStore, String picId, String tagKey) {
     final AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: false);
 
     return RepaintBoundary(
       child: ExtendedImage(
         image: imageProvider,
+        shape: BoxShape.rectangle,
         fit: BoxFit.cover,
         loadStateChanged: (ExtendedImageState state) {
           Widget loader;
@@ -267,41 +298,41 @@ class TaggedTab extends GetWidget<TabsController> {
                   return GestureDetector(
                     onLongPress: () {
                       //print('LongPress');
-                      if (controller.multiPicBar == false) {
+                      /* if (controller.multiPicBar == false) {
                         GalleryStore.to.setSelectedPics(
                           picStore: picStore,
                           picIsTagged: true,
                         );
                         controller.setMultiPicBar(true);
-                      }
+                      } */
                     },
                     child: CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        if (controller.multiPicBar.value) {
+                        /* if (controller.multiPicBar.value) {
                           GalleryStore.to.setSelectedPics(
                             picStore: picStore,
                             picIsTagged: true,
                           );
                           //print('Pics Selected Length: ${GalleryStore.to.selectedPics.length}');
                           return;
-                        }
+                        } */
 
                         //print('Selected photo: ${picStore.photoId}');
-                        GalleryStore.to.setCurrentPic(picStore);
-                        GalleryStore.to.setInitialSelectedThumbnail(picStore);
-                        Get.toNamed(PhotoScreen.id);
+                        /* GalleryStore.to.setCurrentPic(picStore);
+                        GalleryStore.to.setInitialSelectedThumbnail(picStore); */
+                        Get.to(PhotoScreen(picId: picId));
                       },
                       child: Obx(() {
                         Widget image = Positioned.fill(
-                          child: RepaintBoundary(
-                            child: state.completedWidget,
-                          ),
+                          child: ClipRRect(
+                              borderRadius: BorderRadius.circular(9),
+                              child: state.completedWidget),
                         );
 
                         List<Widget> items = [image];
 
-                        if (controller.multiPicBar.value) {
+                        /* if (controller.multiPicBar.value) {
                           if (GalleryStore.to.selectedPics.contains(picStore)) {
                             items.add(
                               Container(
@@ -351,6 +382,7 @@ class TaggedTab extends GetWidget<TabsController> {
                             );
                           }
                         }
+ */
 
                         if (picStore.isPrivate == true) {
                           items.add(
@@ -382,8 +414,7 @@ class TaggedTab extends GetWidget<TabsController> {
                           );
                         }
 
-                        if (picStore.isStarred == true &&
-                            !controller.multiPicBar.value) {
+                        if (picStore.isStarred == true) {
                           //print('Adding starred yellow ico');
                           items.add(
                             Positioned(
@@ -395,7 +426,34 @@ class TaggedTab extends GetWidget<TabsController> {
                           );
                         }
 
-                        return Stack(children: items);
+                        return Container(
+                            child: Column(
+                          children: [
+                            Expanded(
+                              child: Stack(children: items),
+                            ),
+                            Container(
+                              // color: Colors.brown.withOpacity(.9),
+                              child: RichText(
+                                text: TextSpan(
+                                    text:
+                                        '${TagsController.to.allTags[tagKey]?.value?.title ?? ''}',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 19,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                        text:
+                                            ' (${controller.taggedPicId[tagKey].keys.length})',
+                                        style: TextStyle(fontSize: 17),
+                                      )
+                                    ]),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          ],
+                        ));
                       }),
                     ),
                   );
@@ -423,12 +481,12 @@ class TaggedTab extends GetWidget<TabsController> {
         child: Stack(
           children: <Widget>[
             Obx(() {
-              if (!GalleryStore.to.deviceHasPics.value) {
+              if (!TabsController.to.deviceHasPics) {
                 return DeviceHasNoPics(
                   message: S.current.device_has_no_pics,
                 );
-              } else if (GalleryStore.to.taggedPics.length == 0 &&
-                  GalleryStore.to.deviceHasPics.value) {
+              } else if (controller.allTaggedPicIdList.length == 0 &&
+                  TabsController.to.deviceHasPics) {
                 return TopBar(
                   appStore: UserController.to,
                   galleryStore: GalleryStore.to,
@@ -464,7 +522,8 @@ class TaggedTab extends GetWidget<TabsController> {
                             ),
                             CupertinoButton(
                               padding: const EdgeInsets.all(0),
-                              onPressed: () => controller.setCurrentTab(1),
+                              onPressed: () =>
+                                  TabsController.to.setCurrentTab(1),
                               child: Container(
                                 width: 201.0,
                                 height: 44.0,
@@ -494,8 +553,8 @@ class TaggedTab extends GetWidget<TabsController> {
                     ),
                   ],
                 );
-              } else if (GalleryStore.to.taggedPics.length > 0 &&
-                  GalleryStore.to.deviceHasPics.value) {
+              } else if (controller.allTaggedPicIdList.length > 0 &&
+                  TabsController.to.deviceHasPics) {
                 return TopBar(
                   appStore: UserController.to,
                   galleryStore: GalleryStore.to,
@@ -582,7 +641,8 @@ class TaggedTab extends GetWidget<TabsController> {
                                       /* showEditTagModal: showEditTagModal, */
                                       onTap: (tagKey) {
                                         if (controller.toggleIndexTagged == 0) {
-                                          controller.setToggleIndexTagged(1);
+                                          TabsController.to
+                                              .setToggleIndexTagged(1);
                                         }
 
                                         GalleryStore.to
@@ -635,7 +695,8 @@ class TaggedTab extends GetWidget<TabsController> {
                                     /* showEditTagModal: showEditTagModal, */
                                     onTap: (String tagKey) {
                                       if (controller.toggleIndexTagged == 0) {
-                                        controller.setToggleIndexTagged(1);
+                                        TabsController.to
+                                            .setToggleIndexTagged(1);
                                       }
 
                                       GalleryStore.to
@@ -666,14 +727,14 @@ class TaggedTab extends GetWidget<TabsController> {
                       return Container();
                     }),
                     Expanded(
-                      child: _buildTaggedGridView(context),
+                      child: _buildTaggedGridView(),
                     ),
                   ],
                 );
               }
               return Container();
             }),
-            Obx(() {
+            /* Obx(() {
               if (GalleryStore.to.taggedPics.length > 0 &&
                   !controller.hideTitleThirdTab.value &&
                   !GalleryStore.to.isSearching.value &&
@@ -703,7 +764,7 @@ class TaggedTab extends GetWidget<TabsController> {
                 );
               }
               return Container();
-            }),
+            }),*/
             Obx(() {
               return AnimatedOpacity(
                 opacity: controller.isScrolling.value
@@ -716,12 +777,12 @@ class TaggedTab extends GetWidget<TabsController> {
                 duration:
                     Duration(milliseconds: searchFocusNode.hasFocus ? 0 : 300),
                 onEnd: () {
-                  controller.setIsToggleBarVisible(
+                  TabsController.to.setIsToggleBarVisible(
                       controller.isScrolling.value ? false : true);
                 },
                 child: Visibility(
                   visible: controller.isScrolling.value
-                      ? controller.isToggleBarVisible
+                      ? TabsController.to.isToggleBarVisible.value
                       : true,
                   child: Align(
                     alignment: Alignment.bottomCenter,
@@ -739,7 +800,7 @@ class TaggedTab extends GetWidget<TabsController> {
                             //print('##### Rebuild everything!');
 
                           }
-                          controller.setToggleIndexTagged(index);
+                          TabsController.to.setToggleIndexTagged(index);
                         },
                       ),
                     ),
