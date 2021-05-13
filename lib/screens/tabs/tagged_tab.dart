@@ -9,6 +9,7 @@ import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/photo_screen.dart';
+import 'package:picPics/screens/tabs/tagged_tab_gridview.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -92,11 +93,12 @@ class TaggedTab extends GetWidget<TaggedController> {
             key: Key('tag'),
             controller: controller.scrollControllerThirdTab,
             // padding: EdgeInsets.only(top: 86.0),
-            padding: EdgeInsets.only(top: /* 86 - */ newPadding),
+            padding:
+                EdgeInsets.only(top: /* 86 - */ newPadding, left: 7, right: 7),
             physics: const CustomScrollPhysics(),
             crossAxisCount: 3,
-            mainAxisSpacing: 2.0,
-            crossAxisSpacing: 2.0,
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 4,
             itemCount: taggedKeys.length,
             itemBuilder: (BuildContext context, int index) {
               var tagKey = taggedKeys[index];
@@ -106,24 +108,27 @@ class TaggedTab extends GetWidget<TaggedController> {
               return Container(
                 margin: const EdgeInsets.all(4),
                 child: GetX<TabsController>(builder: (tabsController) {
-                  return VisibilityDetector(
-                    key: Key('${tagKey}'),
-                    onVisibilityChanged: (visibilityInfo) {
-                      var visiblePercentage =
-                          visibilityInfo.visibleFraction * 100;
-                      if (visiblePercentage > 10 &&
-                          tabsController.picStoreMap[showingPicId]?.value ==
-                              null) {
-                        tabsController.explorPicStore(showingPicId);
-                      }
-                    },
-                    child:
-                        tabsController.picStoreMap[showingPicId]?.value == null
-                            ? greyWidget
-                            : _buildPicItem(
-                                tabsController.picStoreMap[showingPicId]?.value,
-                                showingPicId,
-                                tagKey),
+                  return Hero(
+                    tag: showingPicId.toString(),
+                    child: VisibilityDetector(
+                      key: Key('${tagKey}'),
+                      onVisibilityChanged: (visibilityInfo) {
+                        var visiblePercentage =
+                            visibilityInfo.visibleFraction * 100;
+                        if (visiblePercentage > 10 &&
+                            tabsController.picStoreMap[showingPicId]?.value ==
+                                null) {
+                          tabsController.explorPicStore(showingPicId);
+                        }
+                      },
+                      child: tabsController.picStoreMap[showingPicId]?.value ==
+                              null
+                          ? greyWidget
+                          : _buildPicItem(
+                              tabsController.picStoreMap[showingPicId]?.value,
+                              showingPicId,
+                              tagKey),
+                    ),
                   );
                 }),
               );
@@ -157,7 +162,7 @@ class TaggedTab extends GetWidget<TaggedController> {
               } */
             },
             staggeredTileBuilder: (_) {
-              return StaggeredTile.extent(1, height + 50);
+              return StaggeredTile.extent(1, height + 45);
             },
           );
         },
@@ -295,167 +300,155 @@ class TaggedTab extends GetWidget<TaggedController> {
             case LoadState.completed:
               loader = FadeImageBuilder(
                 child: () {
-                  return GestureDetector(
-                    onLongPress: () {
-                      //print('LongPress');
-                      /* if (controller.multiPicBar == false) {
+                  return CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      /* if (controller.multiPicBar.value) {
                         GalleryStore.to.setSelectedPics(
                           picStore: picStore,
                           picIsTagged: true,
                         );
-                        controller.setMultiPicBar(true);
+                        //print('Pics Selected Length: ${GalleryStore.to.selectedPics.length}');
+                        return;
                       } */
+
+                      //print('Selected photo: ${picStore.photoId}');
+                      /* GalleryStore.to.setCurrentPic(picStore);
+                      GalleryStore.to.setInitialSelectedThumbnail(picStore); */
+                      Get.to(() => TaggedTabGridView(tagKey));
                     },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        /* if (controller.multiPicBar.value) {
-                          GalleryStore.to.setSelectedPics(
-                            picStore: picStore,
-                            picIsTagged: true,
+                    child: Obx(() {
+                      Widget image = Positioned.fill(
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(9),
+                            child: state.completedWidget),
+                      );
+
+                      List<Widget> items = [image];
+
+                      /* if (controller.multiPicBar.value) {
+                        if (GalleryStore.to.selectedPics.contains(picStore)) {
+                          items.add(
+                            Container(
+                              constraints: BoxConstraints.expand(),
+                              decoration: BoxDecoration(
+                                color: kSecondaryColor.withOpacity(0.3),
+                                border: Border.all(
+                                  color: kSecondaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
                           );
-                          //print('Pics Selected Length: ${GalleryStore.to.selectedPics.length}');
-                          return;
-                        } */
-
-                        //print('Selected photo: ${picStore.photoId}');
-                        /* GalleryStore.to.setCurrentPic(picStore);
-                        GalleryStore.to.setInitialSelectedThumbnail(picStore); */
-                        Get.to(PhotoScreen(picId: picId));
-                      },
-                      child: Obx(() {
-                        Widget image = Positioned.fill(
-                          child: ClipRRect(
-                              borderRadius: BorderRadius.circular(9),
-                              child: state.completedWidget),
-                        );
-
-                        List<Widget> items = [image];
-
-                        /* if (controller.multiPicBar.value) {
-                          if (GalleryStore.to.selectedPics.contains(picStore)) {
-                            items.add(
-                              Container(
-                                constraints: BoxConstraints.expand(),
-                                decoration: BoxDecoration(
-                                  color: kSecondaryColor.withOpacity(0.3),
-                                  border: Border.all(
-                                    color: kSecondaryColor,
-                                    width: 2.0,
-                                  ),
-                                ),
-                              ),
-                            );
-                            items.add(
-                              Positioned(
-                                left: 8.0,
-                                top: 6.0,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    gradient: kSecondaryGradient,
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Image.asset(
-                                      'lib/images/checkwhiteico.png'),
-                                ),
-                              ),
-                            );
-                          } else {
-                            items.add(
-                              Positioned(
-                                left: 8.0,
-                                top: 6.0,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: kGrayColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                        }
- */
-
-                        if (picStore.isPrivate == true) {
                           items.add(
                             Positioned(
-                              right: 8.0,
+                              left: 8.0,
                               top: 6.0,
                               child: Container(
                                 height: 20,
                                 width: 20,
-                                padding: const EdgeInsets.only(bottom: 2.0),
                                 decoration: BoxDecoration(
+                                  gradient: kSecondaryGradient,
                                   borderRadius: BorderRadius.circular(10.0),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xffffcc00),
-                                      Color(0xffffe98f)
-                                    ],
-                                    stops: [0.2291666716337204, 1],
-                                    begin: Alignment(-1.00, 0.00),
-                                    end: Alignment(1.00, -0.00),
-                                    // angle: 0,
-                                    // scale: undefined,
-                                  ),
                                 ),
                                 child: Image.asset(
-                                    'lib/images/smallwhitelock.png'),
+                                    'lib/images/checkwhiteico.png'),
                               ),
                             ),
                           );
-                        }
-
-                        if (picStore.isStarred == true) {
-                          //print('Adding starred yellow ico');
+                        } else {
                           items.add(
                             Positioned(
-                              left: 6.0,
+                              left: 8.0,
                               top: 6.0,
-                              child:
-                                  Image.asset('lib/images/staryellowico.png'),
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  border: Border.all(
+                                    color: kGrayColor,
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         }
+                      }
+ */
 
-                        return Container(
-                            child: Column(
-                          children: [
-                            Expanded(
-                              child: Stack(children: items),
-                            ),
-                            Container(
-                              // color: Colors.brown.withOpacity(.9),
-                              child: RichText(
-                                text: TextSpan(
-                                    text:
-                                        '${TagsController.to.allTags[tagKey]?.value?.title ?? ''}',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 19,
-                                    ),
-                                    children: [
-                                      TextSpan(
-                                        text:
-                                            ' (${controller.taggedPicId[tagKey].keys.length})',
-                                        style: TextStyle(fontSize: 17),
-                                      )
-                                    ]),
-                                textAlign: TextAlign.center,
+                      if (picStore.isPrivate == true) {
+                        items.add(
+                          Positioned(
+                            right: 8.0,
+                            top: 6.0,
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              padding: const EdgeInsets.only(bottom: 2.0),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xffffcc00),
+                                    Color(0xffffe98f)
+                                  ],
+                                  stops: [0.2291666716337204, 1],
+                                  begin: Alignment(-1.00, 0.00),
+                                  end: Alignment(1.00, -0.00),
+                                  // angle: 0,
+                                  // scale: undefined,
+                                ),
                               ),
+                              child:
+                                  Image.asset('lib/images/smallwhitelock.png'),
                             ),
-                          ],
-                        ));
-                      }),
-                    ),
+                          ),
+                        );
+                      }
+
+                      if (picStore.isStarred == true) {
+                        //print('Adding starred yellow ico');
+                        items.add(
+                          Positioned(
+                            left: 6.0,
+                            top: 6.0,
+                            child: Image.asset('lib/images/staryellowico.png'),
+                          ),
+                        );
+                      }
+
+                      return Container(
+                          child: Column(
+                        children: [
+                          Expanded(
+                            child: Stack(children: items),
+                          ),
+                          Container(
+                            // color: Colors.brown.withOpacity(.9),
+                            margin: const EdgeInsets.only(top: 5),
+                            child: RichText(
+                              text: TextSpan(
+                                  text:
+                                      '${TagsController.to.allTags[tagKey]?.value?.title ?? ''}',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 19,
+                                  ),
+                                  children: [
+                                    TextSpan(
+                                      text:
+                                          ' (${controller.taggedPicId[tagKey].keys.length})',
+                                      style: TextStyle(fontSize: 17),
+                                    )
+                                  ]),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ));
+                    }),
                   );
                 }(),
               );
