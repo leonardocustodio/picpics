@@ -359,7 +359,7 @@ class TabsController extends GetxController {
         originalLatitude: entity.latitude,
         originalLongitude: entity.longitude,
       ));
-      SchedulerBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         picStoreMap[picId] = picStoreValue;
       });
     }

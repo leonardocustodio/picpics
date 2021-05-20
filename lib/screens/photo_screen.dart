@@ -10,6 +10,7 @@ import 'package:picPics/constants.dart';
 /* import 'package:picPics/stores/gallery_store.dart'; */
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+/* import 'package:picPics/stores/tabs_controller.dart'; */
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/tags_list.dart';
@@ -82,8 +83,11 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    String picId = TabsController.to.assetMap.keys.toList()[index];
-    PicStore picStore = TabsController.to.explorPicStore(picId).value;
+    String picIdValue = TabsController.to.assetMap.keys.toList()[index];
+    PicStore picStore = TabsController.to.picStoreMap[picIdValue].value;
+    if (TabsController.to.picStoreMap[picIdValue] == null) {
+      picStore = TabsController.to.explorPicStore(picIdValue).value;
+    }
     AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: true);
 
@@ -139,16 +143,18 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 //      maxScale: PhotoViewComputedScale.covered * 1.1,
       minScale: 0.7,
       maxScale: 3.0,
-      heroAttributes: PhotoViewHeroAttributes(tag: picId),
+      heroAttributes: PhotoViewHeroAttributes(tag: picIdValue),
     );
   }
 
   Widget _buildThumbnails(BuildContext context, int index) {
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
-        TabsController.to
-            .explorPicStore(TabsController.to.assetMap.keys.toList()[index])
-            .value,
-        isOriginal: false);
+    String picIdValue = TabsController.to.assetMap.keys.toList()[index];
+    PicStore picStore = TabsController.to.picStoreMap[picIdValue].value;
+    if (TabsController.to.picStoreMap[picIdValue] == null) {
+      picStore = TabsController.to.explorPicStore(picIdValue).value;
+    }
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: true);
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
@@ -281,8 +287,17 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-                                  TabsController.to.picStoreMap[picId].value
-                                      .sharePic();
+                                  var picIdValue = TabsController
+                                      .to.assetMap.keys
+                                      .toList()[controller.selectedIndex.value];
+                                  var shareAblePicStore = TabsController
+                                      .to.picStoreMap[picIdValue].value;
+                                  if (shareAblePicStore == null) {
+                                    shareAblePicStore = TabsController.to
+                                        .explorPicStore(picIdValue)
+                                        .value;
+                                  }
+                                  shareAblePicStore.sharePic();
                                 },
                                 child: Image.asset(
                                     'lib/images/sharebuttonwithdropshadow.png'),
@@ -341,7 +356,13 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                               TextSpan(
                                                   text: TabsController
                                                           .to
-                                                          ?.picStoreMap[picId]
+                                                          ?.picStoreMap[
+                                                              TabsController.to
+                                                                      .assetMap.keys
+                                                                      .toList()[
+                                                                  controller
+                                                                      .selectedIndex
+                                                                      .value]]
                                                           ?.value
                                                           ?.specificLocation
                                                           ?.value ??
@@ -359,7 +380,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   )),
                                               TextSpan(
                                                 text:
-                                                    '  ${TabsController.to.picStoreMap[picId]?.value?.generalLocation?.value ?? S.of(context).country}',
+                                                    '  ${TabsController.to.picStoreMap[TabsController.to.assetMap.keys.toList()[controller.selectedIndex.value]]?.value?.generalLocation?.value ?? S.of(context).country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,
@@ -376,7 +397,11 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                         Text(
                                           dateFormat(TabsController
                                                   .to
-                                                  ?.picStoreMap[picId]
+                                                  ?.picStoreMap[TabsController
+                                                          .to.assetMap.keys
+                                                          .toList()[
+                                                      controller
+                                                          .selectedIndex.value]]
                                                   ?.value
                                                   ?.createdAt ??
                                               DateTime.now()),
@@ -398,14 +423,15 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     child: GetX<TaggedController>(
                                         builder: (controllerTagged) {
                                       return (controllerTagged
-                                              .picWiseTags[TabsController
-                                                      .to.assetMap.keys
-                                                      .toList()[
-                                                  controller
-                                                      .selectedIndex.value]]
-                                              ?.keys
-                                              ?.toList()
-                                              ?.isEmpty ?? true)
+                                                  .picWiseTags[TabsController
+                                                          .to.assetMap.keys
+                                                          .toList()[
+                                                      controller
+                                                          .selectedIndex.value]]
+                                                  ?.keys
+                                                  ?.toList()
+                                                  ?.isEmpty ??
+                                              true)
                                           ? TagsList(
                                               tagsKeyList: <String>[],
                                               tagStyle: TagStyle.MultiColored,
