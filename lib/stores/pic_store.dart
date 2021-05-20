@@ -11,6 +11,7 @@ import 'package:metadata/metadata.dart' as md;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/stores/tabs_controller.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:strings/strings.dart';
 import 'package:picPics/constants.dart';
@@ -30,10 +31,10 @@ class PicStore extends GetxController {
 
   final AppDatabase database = AppDatabase();
 
-  //ObservableMap<String, TagsStore> tags = ObservableMap<String, TagsStore>();
-  final tags = <String, TagModel>{}.obs;
+  //ObservableMap<String, tagModel> tags = ObservableMap<String, tagModel>();
+  final tags = <String, Rx<TagModel>>{}.obs;
 
-  //var aiSuggestions = <TagsStore>[];
+  //var aiSuggestions = <tagModel>[];
 
   // @observable
   final aiTags = false.obs;
@@ -325,12 +326,12 @@ class PicStore extends GetxController {
       }
 
       for (String tagKey in pic.tags) {
-        TagModel tagsStore = TagsController.to.allTags[tagKey].value;
-        if (tagsStore == null) {
+        var tagModel = TagsController.to.allTags[tagKey];
+        if (tagModel == null) {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
         }
-        tags[tagKey] = tagsStore;
+        tags[tagKey] = tagModel;
       }
     } else {
       //print('pic $photoId doesnt exists in database');
@@ -546,7 +547,7 @@ class PicStore extends GetxController {
       await database.updatePhoto(getPic);
       //print('updated picture');
 
-      TagModel tagModel = TagsController.to.allTags[tagKey].value;
+      var tagModel = TagsController.to.allTags[tagKey];
 
       tags[tagKey] = tagModel;
 
@@ -554,7 +555,7 @@ class PicStore extends GetxController {
 
       Analytics.sendEvent(
         Event.added_tag,
-        params: {'tagName': tagModel.title},
+        params: {'tagName': tagModel.value.title},
       );
       return;
     }
@@ -562,8 +563,8 @@ class PicStore extends GetxController {
     //print('this picture is not in db, adding it...');
     //print('Photo Id: $photoId');
 
-    TagModel tagsStore = TagsController.to.allTags[tagKey].value;
-    tags[tagKey] = tagsStore;
+    var tagModel = TagsController.to.allTags[tagKey];
+    tags[tagKey] = tagModel;
 
     Photo pic = Photo(
       id: photoId,
@@ -590,7 +591,7 @@ class PicStore extends GetxController {
     await tagsSuggestionsCalculate();
     Analytics.sendEvent(
       Event.added_tag,
-      params: {'tagName': tagsStore.title},
+      params: {'tagName': tagModel.value.title},
     );
   }
 
@@ -952,9 +953,9 @@ class PicStore extends GetxController {
 
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);
-      TagsStore tagStore = UserController.to.tags[tagKey];
+      tagModel tagStore = UserController.to.tags[tagKey];
       if (tagStore == null) {
-        tagStore = TagsStore(
+        tagStore = tagModel(
           id: tagKey,
           name: translated,
         );

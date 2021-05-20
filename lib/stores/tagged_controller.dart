@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
+import 'package:picPics/stores/tags_controller.dart';
 
 class TaggedController extends GetxController {
   static TaggedController get to => Get.find();
@@ -8,6 +9,7 @@ class TaggedController extends GetxController {
   /// tagKey: {picId: ''}
   final taggedPicId = <String, RxMap<String, String>>{}.obs;
   final allTaggedPicIdList = <String, String>{}.obs;
+  final picWiseTags = <String, RxMap<String, String>>{}.obs;
 
   final toggleIndexTagged = 1.obs;
 
@@ -26,6 +28,8 @@ class TaggedController extends GetxController {
     scrollControllerThirdTab.addListener(() {
       refreshGridPositionThirdTab();
     });
+    refreshTaggedPhotos();
+    refreshGridPositionThirdTab();
   }
 
   final hideTitleThirdTab = false.obs;
@@ -52,13 +56,6 @@ class TaggedController extends GetxController {
     }
   }
 
-  @override
-  void onReady() {
-    super.onReady();
-    refreshTaggedPhotos();
-    refreshGridPositionThirdTab();
-  }
-
   void setIsScrolling(bool value) => isScrolling.value = value;
 
   Future<void> refreshTaggedPhotos() async {
@@ -66,6 +63,7 @@ class TaggedController extends GetxController {
 
     allTaggedPicIdList.clear();
     taggedPicId.clear();
+    await TagsController.to.loadAllTags();
     await Future.forEach(taggedPhotoIdList, (Photo photo) async {
       if (photo?.tags?.isNotEmpty ?? false) {
         photo?.tags?.forEach((tagKey) {
@@ -73,10 +71,22 @@ class TaggedController extends GetxController {
             taggedPicId[tagKey] = <String, String>{}.obs;
           }
           taggedPicId[tagKey][photo.id] = '';
+
+          if (picWiseTags[photo.id] == null) {
+            picWiseTags[photo.id] = <String, String>{}.obs;
+          }
+          picWiseTags[photo.id][tagKey] = '';
         });
         allTaggedPicIdList[photo.id] = '';
       }
     });
     print('${allTaggedPicIdList.keys.toList()}');
+  }
+
+  void addPicIdToTaggedList(String tagKey, String taggedPicId) {
+    if (TaggedController.to.taggedPicId[tagKey] == null) {
+      TaggedController.to.taggedPicId[tagKey] = <String, String>{}.obs;
+    }
+    TaggedController.to.taggedPicId[tagKey][taggedPicId] = '';
   }
 }

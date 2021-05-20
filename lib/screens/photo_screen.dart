@@ -1,14 +1,16 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/stores/gallery_store.dart';
+/* import 'package:picPics/stores/gallery_store.dart'; */
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
@@ -21,6 +23,8 @@ import 'package:extended_image/extended_image.dart';
 class PhotoScreenController extends GetxController {
   final overlay = true.obs;
   final showSlideshow = false.obs;
+  final selectedIndex = 0.obs;
+  static PhotoScreenController get to => Get.find();
   @override
   void onReady() {
     super.onReady();
@@ -33,10 +37,18 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   static const id = 'photo_screen';
 
   final String picId;
-  PhotoScreen({this.picId, Key key}) : super(key: key);
+  PageController galleryPageController;
+  //List<String> photoScreenSwiper = TabsController_.to.picStoreMap.keys.toList();
   var _ = Get.put(PhotoScreenController());
-  PageController galleryPageController =
-      PageController(initialPage: GalleryStore.to.selectedThumbnail.value);
+  PhotoScreen({@required this.picId}) {
+    var index = TabsController.to.assetMap.keys.toList().indexOf(picId);
+    if (index != -1) {
+      PhotoScreenController.to.selectedIndex.value = index;
+    }
+    galleryPageController = PageController(
+        initialPage: PhotoScreenController.to.selectedIndex
+            .value /* GalleryStore.to.selectedThumbnail.value */);
+  }
 
   /*  @override
   void initState() {
@@ -70,48 +82,52 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    PicStore picStore = GalleryStore.to.thumbnailsPics[index];
-    final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: true);
+    PicStore picStore;
+    AssetEntityImageProvider imageProvider;
+    String picId = TabsController.to.assetMap.keys.toList()[index];
+    picStore = TabsController.to.explorPicStore(picId).value;
+    imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
 
     return PhotoViewGalleryPageOptions.customChild(
-      child: Container(
-        color: Colors.black,
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: ExtendedImage(
-          image: imageProvider,
-          fit: BoxFit.contain,
-          loadStateChanged: (ExtendedImageState state) {
-            Widget loader;
-            switch (state.extendedImageLoadState) {
-              case LoadState.loading:
-                loader = const ColoredBox(color: kGreyPlaceholder);
-                break;
-              case LoadState.completed:
-                loader = FadeImageBuilder(
-                  child: () {
-                    return RepaintBoundary(
-                      child: state.completedWidget,
-                    );
-                  }(),
-                );
-                break;
-              case LoadState.failed:
-                loader = Container();
-                break;
-            }
-            return loader;
-          },
-        ),
+      child: imageProvider == null
+          ? const ColoredBox(color: kGreyPlaceholder)
+          : Container(
+              color: Colors.black,
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child: ExtendedImage(
+                image: imageProvider,
+                fit: BoxFit.contain,
+                loadStateChanged: (ExtendedImageState state) {
+                  Widget loader;
+                  switch (state.extendedImageLoadState) {
+                    case LoadState.loading:
+                      loader = const ColoredBox(color: kGreyPlaceholder);
+                      break;
+                    case LoadState.completed:
+                      loader = FadeImageBuilder(
+                        child: () {
+                          return RepaintBoundary(
+                            child: state.completedWidget,
+                          );
+                        }(),
+                      );
+                      break;
+                    case LoadState.failed:
+                      loader = Container();
+                      break;
+                  }
+                  return loader;
+                },
+              ),
 
-        // FullImageItem(
-        //   picStore: picStore,
-        //   size: MediaQuery.of(context).size.height.toInt(),
-        //   fit: BoxFit.contain,
-        //   backgroundColor: Colors.black,
-        // ),
-      ),
+              // FullImageItem(
+              //   picStore: picStore,
+              //   size: MediaQuery.of(context).size.height.toInt(),
+              //   fit: BoxFit.contain,
+              //   backgroundColor: Colors.black,
+              // ),
+            ),
       childSize: Size(
         MediaQuery.of(context).size.width,
         MediaQuery.of(context).size.height,
@@ -124,19 +140,21 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 //      maxScale: PhotoViewComputedScale.covered * 1.1,
       minScale: 0.7,
       maxScale: 3.0,
-      heroAttributes: PhotoViewHeroAttributes(tag: picStore.photoId),
+      heroAttributes: PhotoViewHeroAttributes(tag: picId),
     );
   }
 
   Widget _buildThumbnails(BuildContext context, int index) {
     final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
-        GalleryStore.to.thumbnailsPics[index],
+        TabsController.to
+            .explorPicStore(TabsController.to.assetMap.keys.toList()[index])
+            .value,
         isOriginal: false);
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
       onPressed: () {
-        GalleryStore.to.setSelectedThumbnail(index);
+        controller.selectedIndex.value = index;
         galleryPageController.jumpToPage(index);
       },
       child: Container(
@@ -170,7 +188,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
         ),
 
         // ImageItem(
-        //   picStore: TabsController.to.thumbnailsPics[index],
+        //   picStore: TabsController_.to.thumbnailsPics[index],
         //   size: 98,
         //   fit: BoxFit.cover,
         //   backgroundColor: Colors.black,
@@ -192,7 +210,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
               child: PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
                 builder: _buildItem,
-                itemCount: GalleryStore.to.thumbnailsPics.length,
+                itemCount: TabsController.to.assetMap.keys.toList().length,
                 loadingBuilder: (context, event) => Center(
                   child: Container(
                     width: 20.0,
@@ -210,7 +228,8 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                 ),
                 pageController: galleryPageController,
                 onPageChanged: (index) {
-                  GalleryStore.to.setSelectedThumbnail(index);
+                  controller.selectedIndex.value = index;
+                  //GalleryStore.to.setSelectedThumbnail(index);
                 },
                 scrollDirection: Axis.horizontal,
               ),
@@ -373,40 +392,55 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                       ],
                                     );
                                   }),
-                                  Obx(() {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(top: 16.0),
-                                      child: TagsList(
-                                        tagsKeyList: TabsController.to
-                                            .picStoreMap[picId].value.tags.keys
-                                            .toList(),
-                                        tagStyle: TagStyle.MultiColored,
-                                        addTagButton: () {
-                                          GalleryStore.to.setCurrentPic(
-                                              TabsController
-                                                  .to.picStoreMap[picId].value);
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 16.0),
+                                    child: GetX<TaggedController>(
+                                        builder: (controllerTagged) {
+                                      return Obx(
+                                        () => TagsList(
+                                          tagsKeyList: controllerTagged
+                                                  .picWiseTags[TabsController
+                                                          .to.assetMap.keys
+                                                          .toList()[
+                                                      controller
+                                                          .selectedIndex.value]]
+                                                  ?.keys
+                                                  ?.toList() ??
+                                              List<String>.generate(
+                                                  controller.selectedIndex
+                                                              .value ==
+                                                          null
+                                                      ? 0
+                                                      : 0,
+                                                  (_) => null),
+                                          tagStyle: TagStyle.MultiColored,
+                                          addTagButton: () {
+                                            /* GalleryStore.to.setCurrentPic(
+                                                    TabsController_
+                                                        .to.picStoreMap[picId].value); */
 
-                                          /* if (!controller.modalCard.value) {
-                                            controller.setModalCard(true);
-                                          } */
-                                          Navigator.pop(
-                                              context, 'show_keyboard');
-                                        },
-                                        onTap: (String tagKey) {
-                                          //print('ignore click');
-                                        },
-                                        onDoubleTap: (String tagKey) {
-//                                        TabsController.to.picStoreMap[picId]
-//                                        TabsController.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                                        },
-                                        onPanEnd: (String tagKey) {
-                                          //print('teste');
-                                        },
-                                        /* showEditTagModal: () =>
-                                            showEditTagModal(context, false), */
-                                      ),
-                                    );
-                                  }),
+                                            /* if (!controller.modalCard.value) {
+                                                  controller.setModalCard(true);
+                                                } */
+                                            Navigator.pop(
+                                                context, 'show_keyboard');
+                                          },
+                                          onTap: (String tagKey) {
+                                            //print('ignore click');
+                                          },
+                                          onDoubleTap: (String tagKey) {
+//                                        TabsController_.to.picStoreMap[picId]
+//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+                                          },
+                                          onPanEnd: (String tagKey) {
+                                            //print('teste');
+                                          },
+                                          /* showEditTagModal: () =>
+                                                  showEditTagModal(context, false), */
+                                        ),
+                                      );
+                                    }),
+                                  ),
                                 ],
                               ),
                             ),
@@ -446,8 +480,10 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: _buildThumbnails,
-                                    itemCount:
-                                        GalleryStore.to.thumbnailsPics.length,
+                                    itemCount: TabsController
+                                        .to.picStoreMap.keys
+                                        .toList()
+                                        .length,
                                     padding: const EdgeInsets.only(left: 8.0),
                                   ),
                                 ),

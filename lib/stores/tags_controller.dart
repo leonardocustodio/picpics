@@ -4,7 +4,7 @@ import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
+/* import 'package:picPics/stores/tagged_controller.dart'; */
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import '../constants.dart';
@@ -61,8 +61,8 @@ class TagsController extends GetxController {
   AppDatabase _database = AppDatabase();
 
   @override
-  void onReady() {
-    super.onReady();
+  void onInit() {
+    super.onInit();
     UserController.to.createDefaultTags(Get.context).then((_) async {
       await loadAllTags();
       await TagsController.to.loadRecentTags();
@@ -469,12 +469,6 @@ class TagsController extends GetxController {
   ///             picId56: '',
   ///             picId5: '',
   ///           }
-  void addPicIdToTaggedList(String tagKey, String taggedPicId) {
-    if (TaggedController.to.taggedPicId[tagKey] == null) {
-      TaggedController.to.taggedPicId[tagKey] = <String, String>{}.obs;
-    }
-    TaggedController.to.taggedPicId[tagKey][taggedPicId] = '';
-  }
 
   /// add the tagKey to the recentTagKeyList
   void addRecentTag(String tagKey) {

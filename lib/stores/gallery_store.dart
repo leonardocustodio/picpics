@@ -477,7 +477,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
-    for (TagModel tag in picStore.tags.values.toList()) {
+    for (TagModel tag in picStore.tags.values.map((e) => e.value) .toList()) {
       TaggedPicsStore taggedPicsStore = taggedPics
           .firstWhere((element) => element.tag == tag, orElse: () => null);
 
@@ -1427,10 +1427,10 @@ class GalleryStore extends GetxController {
     }
   }
 
-  List<TagModel> tagsFromPic({PicStore picStore}) {
+  List<Rx<TagModel>> tagsFromPic({PicStore picStore}) {
     var tagsList = picStore.tags.values.toList();
     if (picStore.isPrivate == true) {
-      tagsList.removeWhere((element) => element.key == kSecretTagKey);
+      tagsList.removeWhere((element) => element.value.key == kSecretTagKey);
     }
     return tagsList;
   }

@@ -365,7 +365,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   return TagsList(
                     tagsKeyList: GalleryStore.to
                         .tagsFromPic(picStore: picStore)
-                        .map((e) => e.key),
+                        .map((e) => e.value.key),
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,

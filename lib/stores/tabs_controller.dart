@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
@@ -60,6 +61,8 @@ class TabsController extends GetxController {
   final selectedUntaggedPics = <String, bool>{}.obs;
   final photoPathMap = <String, String>{}.obs;
 
+  final picStoreMap = <String, Rx<PicStore>>{}.obs;
+
   AppDatabase database = AppDatabase();
   final allUnTaggedPicsMonth = <dynamic, dynamic>{}.obs;
   final allUnTaggedPicsDay = <dynamic, dynamic>{}.obs;
@@ -79,6 +82,9 @@ class TabsController extends GetxController {
 
   @override
   void onReady() {
+    /// I knwo below line is redundant but it is used to kickstart initialization of the tags list.
+    var _ = TagsController.to.allTags.value;
+    var __ = TaggedController.to.taggedPicId.value;
     initialization();
     super.onReady();
   }
@@ -339,24 +345,25 @@ class TabsController extends GetxController {
     //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
   } */
 
-  final picStoreMap = <String, Rx<PicStore>>{}.obs;
-
   /// Here only those picId will come who are untagged.
   Rx<PicStore> explorPicStore(String picId) {
+    var picStoreValue = picStoreMap[picId];
     if (picStoreMap[picId] == null) {
       AssetEntity entity = assetMap[picId];
 
-      PicStore pic = PicStore(
+      picStoreValue = Rx<PicStore>(PicStore(
         isStarredValue: null,
         entityValue: entity,
         photoIdValue: entity.id,
         createdAt: entity.createDateTime,
         originalLatitude: entity.latitude,
         originalLongitude: entity.longitude,
-      );
-      picStoreMap[picId] = Rx<PicStore>(pic);
+      ));
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        picStoreMap[picId] = picStoreValue;
+      });
     }
-    return picStoreMap[picId];
+    return picStoreValue;
   }
 
   /* Future<void> exploreThumbPic_(String picId) async {
