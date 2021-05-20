@@ -551,7 +551,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         }
                                         UserController.to.popPinScreen =
                                             PopPinScreenTo.SettingsScreen;
-                                        Get.toNamed(PinScreen.id);
+                                        Get.to(() => PinScreen());
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -583,7 +583,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                           .to.popPinScreen =
                                                       PopPinScreenTo
                                                           .SettingsScreen;
-                                                  Get.toNamed(PinScreen.id);
+                                                  Get.to(() => PinScreen);
                                                 },
                                               );
                                             },
@@ -654,8 +654,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                   .popPinScreen =
                                                               PopPinScreenTo
                                                                   .SettingsScreen;
-                                                          Get.toNamed(
-                                                              PinScreen.id);
+                                                          Get.to(
+                                                              () => PinScreen);
                                                           return;
                                                         }
                                                         UserController.to
@@ -695,9 +695,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                           .popPinScreen =
                                                                       PopPinScreenTo
                                                                           .SettingsScreen;
-                                                                  Get.toNamed(
-                                                                      PinScreen
-                                                                          .id);
+                                                                  Get.to(() =>
+                                                                      PinScreen);
                                                                   return;
                                                                 }
 
@@ -992,7 +991,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   if (UserController.to.isPremium.value) {
                                     return;
                                   }
-                                  Get.toNamed(PremiumScreen.id);
+                                  Get.to(() => PremiumScreen);
                                 },
                                 padding: const EdgeInsets.all(0),
                                 child: OutlineGradientButton(

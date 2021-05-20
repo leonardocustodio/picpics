@@ -26,7 +26,7 @@ class MigrationScreen extends GetWidget<MigrationStore> {
     /* 
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => MoorDbViewer(db))); */
-    Get.to(MoorDbViewer(db));
+    Get.to(() => MoorDbViewer(db));
   }
 
 /*   @override

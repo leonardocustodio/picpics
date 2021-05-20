@@ -288,7 +288,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           onTap: () {
                             GalleryStore.to
                                 .setInitialSelectedThumbnail(picStore);
-                            Get.toNamed(PhotoScreen.id);
+                            Get.to(() => PhotoScreen());
                           },
                         ),
                       ],
@@ -311,7 +311,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        Get.toNamed(AddLocationScreen.id);
+                        Get.to(() => AddLocationScreen());
                       },
                       child: Obx(() {
                         return RichText(
@@ -373,7 +373,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     shouldChangeToSwipeMode: true,
                     aiButtonTitle: 'All Tags',
                     onAiButtonTap: () {
-                      Get.to(AllTagsScreen(picStore: picStore));
+                      Get.to(() => AllTagsScreen(picStore: picStore));
                       //print('ai button tapped');
                       // picStore.switchAiTags(context);
                     },

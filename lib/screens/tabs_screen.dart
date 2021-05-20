@@ -96,7 +96,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                     CupertinoButton(
                                       onPressed: () {
                                         // if (!UserController.to.isPremium) {
-                                        //   Get.toNamed(  PremiumScreen.id);
+                                        //   Get.to(() =>   PremiumScreen());
                                         //   return;
                                         // }
 
@@ -157,14 +157,14 @@ class TabsScreen extends GetWidget<TabsController> {
                                               }, */
                                         onTap: (String tagKey) {
                                           ///  if (!UserController.to.isPremium) {
-                                          ///    Get.toNamed(  PremiumScreen.id);
+                                          ///    Get.to(() =>   PremiumScreen);
                                           ///    return;
                                           ///  }
                                           print('do nothing');
                                         },
                                         onPanEnd: (String tagKey) {
                                           // if (!UserController.to.isPremium) {
-                                          //   Get.toNamed(  PremiumScreen.id);
+                                          //   Get.to(() =>   PremiumScreen);
                                           //   return;
                                           // }
                                           TagsController.to.multiPicTags
@@ -174,7 +174,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         },
                                         onDoubleTap: (String tagKey) {
                                           // if (!UserController.to.isPremium) {
-                                          //   Get.toNamed(  PremiumScreen.id);
+                                          //   Get.to(() =>   PremiumScreen);
                                           //   return;
                                           // }
                                           print('do nothing');
@@ -187,7 +187,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         },
                                         onSubmitted: (text) {
                                           // if (!UserController.to.isPremium) {
-                                          //   Get.toNamed(  PremiumScreen.id);
+                                          //   Get.to(() =>   PremiumScreen);
                                           //   return;
                                           // }
                                           if (text != '') {
@@ -237,7 +237,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         onTap: (String tagKey) {
                                           /* if (!UserController
                                                     .to.isPremium.value) {
-                                                  Get.toNamed(PremiumScreen.id);
+                                                  Get.to(() => PremiumScreen);
                                                   return;
                                                 } */
 
@@ -253,7 +253,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         onDoubleTap: (String tagKey) {
                                           /* if (!UserController
                                                     .to.isPremium.value) {
-                                                  Get.toNamed(PremiumScreen.id);
+                                                  Get.to(() => PremiumScreen);
                                                   return;
                                                 } */
                                           print('do nothing');
@@ -261,7 +261,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         onPanEnd: (String tagKey) {
                                           /* if (!UserController
                                                     .to.isPremium.value) {
-                                                  Get.toNamed(PremiumScreen.id);
+                                                  Get.to(() => PremiumScreen);
                                                   return;
                                                 } */
                                           print('do nothing');
@@ -489,7 +489,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 8.0),
                                       onPressed: () {
-                                        Get.toNamed(SettingsScreen.id);
+                                        Get.to(() => SettingsScreen);
                                       },
                                       child: Image.asset(
                                           'lib/images/settings.png'),

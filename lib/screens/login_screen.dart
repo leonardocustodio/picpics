@@ -166,7 +166,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () {
                             if (loginStore.slideIndex ==
                                 loginStore.totalSlides - 1) {
-                              Get.toNamed(PremiumScreen.id);
+                              Get.to(() => PremiumScreen());
                               return;
                             }
                             //print('next');
@@ -214,7 +214,7 @@ class _LoginScreenState extends State<LoginScreen> {
 }
 
 // appStore.setLoggedIn(true);
-// Navigator.pushReplacementNamed(context, TabsScreen.id);
+// Navigator.pushReplacementNamed(context, TabsScreen());
 // await appStore.requestNotificationPermission();
 // await appStore.checkNotificationPermission(
 //     firstPermissionCheck: true);

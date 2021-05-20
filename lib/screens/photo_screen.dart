@@ -34,6 +34,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
   final String picId;
   PhotoScreen({this.picId, Key key}) : super(key: key);
+  var _ = Get.put(PhotoScreenController());
   PageController galleryPageController =
       PageController(initialPage: GalleryStore.to.selectedThumbnail.value);
 

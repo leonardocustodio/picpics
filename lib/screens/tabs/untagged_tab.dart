@@ -980,7 +980,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Get.toNamed(SettingsScreen.id);
+                          Get.to(() => SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -1004,7 +1004,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Get.toNamed(SettingsScreen.id);
+                          Get.to(() => SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -1037,7 +1037,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Get.toNamed(SettingsScreen.id);
+                          Get.to(() => SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),

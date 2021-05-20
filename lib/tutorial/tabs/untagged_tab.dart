@@ -806,7 +806,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Get.toNamed( SettingsScreen.id);
+                          Get.to(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -831,7 +831,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Get.toNamed( SettingsScreen.id);
+                          Get.to(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -865,7 +865,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Get.toNamed( SettingsScreen.id);
+                          Get.to(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),

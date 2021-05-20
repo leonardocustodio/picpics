@@ -18,7 +18,7 @@ void showWatchAdModal() {
           Analytics.sendAdImpression();
         },
         onPressedGetPremium: () {
-          Get.offNamed(PremiumScreen.id);
+          Get.off(() => PremiumScreen());
         },
       );
     },

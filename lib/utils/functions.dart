@@ -50,7 +50,7 @@ Future<void> showDeleteSecretModal(
     /* BuildContext context, */ PicStore picStore) async {
   if (UserController.to.secretPhotos != true) {
     UserController.to.popPinScreen = PopPinScreenTo.TabsScreen;
-    Get.toNamed(PinScreen.id);
+    Get.to(() => PinScreen());
     return;
   }
 
@@ -58,7 +58,7 @@ Future<void> showDeleteSecretModal(
     int freePrivatePics = await UserController.to.freePrivatePics;
     if (UserController.to.totalPrivatePics >= freePrivatePics &&
         picStore.isPrivate == false) {
-      Get.toNamed(PremiumScreen.id);
+      Get.to(() => PremiumScreen());
       return;
     }
   }

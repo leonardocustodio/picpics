@@ -76,7 +76,7 @@ class PicTab extends GetWidget<GalleryStore> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     onPressed: () {
-                      Get.toNamed(SettingsScreen.id);
+                      Get.to(() => SettingsScreen());
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),

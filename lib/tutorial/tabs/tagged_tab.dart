@@ -397,7 +397,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                         //print('Selected photo: ${picStore.photoId}');
                         galleryStore.setCurrentPic(picStore);
                         galleryStore.setInitialSelectedThumbnail(picStore);
-                        Get.toNamed( PhotoScreen.id);
+                        Get.to(() =>  PhotoScreen());
                       },
                       child: Observer(builder: (_) {
                         Widget image = Positioned.fill(

@@ -119,13 +119,13 @@ class TaggedTab extends GetWidget<TaggedController> {
                         tabsController.explorPicStore(showingPicId);
                       }
                     },
-                    child: tabsController.picStoreMap[showingPicId]?.value ==
-                            null
-                        ? greyWidget
-                        : _buildPicItem(
-                            tabsController.picStoreMap[showingPicId]?.value,
-                            showingPicId,
-                            tagKey),
+                    child:
+                        tabsController.picStoreMap[showingPicId]?.value == null
+                            ? greyWidget
+                            : _buildPicItem(
+                                tabsController.picStoreMap[showingPicId]?.value,
+                                showingPicId,
+                                tagKey),
                   );
                 }),
               );
