@@ -82,11 +82,10 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    PicStore picStore;
-    AssetEntityImageProvider imageProvider;
     String picId = TabsController.to.assetMap.keys.toList()[index];
-    picStore = TabsController.to.explorPicStore(picId).value;
-    imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    PicStore picStore = TabsController.to.explorPicStore(picId).value;
+    AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: true);
 
     return PhotoViewGalleryPageOptions.customChild(
       child: imageProvider == null
@@ -161,31 +160,33 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
         height: 98,
         width: 98,
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: ExtendedImage(
-          image: imageProvider,
-          fit: BoxFit.cover,
-          loadStateChanged: (ExtendedImageState state) {
-            Widget loader;
-            switch (state.extendedImageLoadState) {
-              case LoadState.loading:
-                loader = const ColoredBox(color: kGreyPlaceholder);
-                break;
-              case LoadState.completed:
-                loader = FadeImageBuilder(
-                  child: () {
-                    return RepaintBoundary(
-                      child: state.completedWidget,
-                    );
-                  }(),
-                );
-                break;
-              case LoadState.failed:
-                loader = Container();
-                break;
-            }
-            return loader;
-          },
-        ),
+        child: imageProvider == null
+            ? const ColoredBox(color: kGreyPlaceholder)
+            : ExtendedImage(
+                image: imageProvider,
+                fit: BoxFit.cover,
+                loadStateChanged: (ExtendedImageState state) {
+                  Widget loader;
+                  switch (state.extendedImageLoadState) {
+                    case LoadState.loading:
+                      loader = const ColoredBox(color: kGreyPlaceholder);
+                      break;
+                    case LoadState.completed:
+                      loader = FadeImageBuilder(
+                        child: () {
+                          return RepaintBoundary(
+                            child: state.completedWidget,
+                          );
+                        }(),
+                      );
+                      break;
+                    case LoadState.failed:
+                      loader = Container();
+                      break;
+                  }
+                  return loader;
+                },
+              ),
 
         // ImageItem(
         //   picStore: TabsController_.to.thumbnailsPics[index],
@@ -396,49 +397,78 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     padding: const EdgeInsets.only(top: 16.0),
                                     child: GetX<TaggedController>(
                                         builder: (controllerTagged) {
-                                      return Obx(
-                                        () => TagsList(
-                                          tagsKeyList: controllerTagged
-                                                  .picWiseTags[TabsController
-                                                          .to.assetMap.keys
-                                                          .toList()[
-                                                      controller
-                                                          .selectedIndex.value]]
-                                                  ?.keys
-                                                  ?.toList() ??
-                                              List<String>.generate(
-                                                  controller.selectedIndex
-                                                              .value ==
-                                                          null
-                                                      ? 0
-                                                      : 0,
-                                                  (_) => null),
-                                          tagStyle: TagStyle.MultiColored,
-                                          addTagButton: () {
-                                            /* GalleryStore.to.setCurrentPic(
+                                      return (controllerTagged
+                                              .picWiseTags[TabsController
+                                                      .to.assetMap.keys
+                                                      .toList()[
+                                                  controller
+                                                      .selectedIndex.value]]
+                                              ?.keys
+                                              ?.toList()
+                                              ?.isEmpty ?? true)
+                                          ? TagsList(
+                                              tagsKeyList: <String>[],
+                                              tagStyle: TagStyle.MultiColored,
+                                              addTagButton: () {
+                                                /* GalleryStore.to.setCurrentPic(
                                                     TabsController_
                                                         .to.picStoreMap[picId].value); */
 
-                                            /* if (!controller.modalCard.value) {
+                                                /* if (!controller.modalCard.value) {
                                                   controller.setModalCard(true);
                                                 } */
-                                            Navigator.pop(
-                                                context, 'show_keyboard');
-                                          },
-                                          onTap: (String tagKey) {
-                                            //print('ignore click');
-                                          },
-                                          onDoubleTap: (String tagKey) {
+                                                Navigator.pop(
+                                                    context, 'show_keyboard');
+                                              },
+                                              onTap: (String tagKey) {
+                                                //print('ignore click');
+                                              },
+                                              onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                                          },
-                                          onPanEnd: (String tagKey) {
-                                            //print('teste');
-                                          },
-                                          /* showEditTagModal: () =>
+                                              },
+                                              onPanEnd: (String tagKey) {
+                                                //print('teste');
+                                              },
+                                              /* showEditTagModal: () =>
                                                   showEditTagModal(context, false), */
-                                        ),
-                                      );
+                                            )
+                                          : Obx(
+                                              () => TagsList(
+                                                tagsKeyList: controllerTagged
+                                                    .picWiseTags[TabsController
+                                                            .to.assetMap.keys
+                                                            .toList()[
+                                                        controller.selectedIndex
+                                                            .value]]
+                                                    ?.keys
+                                                    ?.toList(),
+                                                tagStyle: TagStyle.MultiColored,
+                                                addTagButton: () {
+                                                  /* GalleryStore.to.setCurrentPic(
+                                                    TabsController_
+                                                        .to.picStoreMap[picId].value); */
+
+                                                  /* if (!controller.modalCard.value) {
+                                                  controller.setModalCard(true);
+                                                } */
+                                                  Navigator.pop(
+                                                      context, 'show_keyboard');
+                                                },
+                                                onTap: (String tagKey) {
+                                                  //print('ignore click');
+                                                },
+                                                onDoubleTap: (String tagKey) {
+//                                        TabsController_.to.picStoreMap[picId]
+//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+                                                },
+                                                onPanEnd: (String tagKey) {
+                                                  //print('teste');
+                                                },
+                                                /* showEditTagModal: () =>
+                                                  showEditTagModal(context, false), */
+                                              ),
+                                            );
                                     }),
                                   ),
                                 ],

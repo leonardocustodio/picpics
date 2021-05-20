@@ -477,7 +477,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
-    for (TagModel tag in picStore.tags.values.map((e) => e.value) .toList()) {
+    for (TagModel tag in picStore.tags.values.map((e) => e.value).toList()) {
       TaggedPicsStore taggedPicsStore = taggedPics
           .firstWhere((element) => element.tag == tag, orElse: () => null);
 

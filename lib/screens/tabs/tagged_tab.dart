@@ -116,7 +116,8 @@ class TaggedTab extends GetWidget<TaggedController> {
                       if (visiblePercentage > 10 &&
                           tabsController.picStoreMap[showingPicId]?.value ==
                               null) {
-                        tabsController.explorPicStore(showingPicId);
+                        TabsController.to.picStoreMap[showingPicId] =
+                            tabsController.explorPicStore(showingPicId);
                       }
                     },
                     child:

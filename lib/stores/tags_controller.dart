@@ -383,7 +383,10 @@ class TagsController extends GetxController {
         Future.forEach(selectedPicIds, (String picId) async {
           var picStore = TabsController.to.picStoreMap[picId]?.value;
           if (picStore == null) {
-            picStore = (await TabsController.to.explorPicStore(picId)).value;
+            var fetchedPicStore =
+                (await TabsController.to.explorPicStore(picId));
+            TabsController.to.picStoreMap[picId] = fetchedPicStore;
+            picStore = fetchedPicStore.value;
           }
           for (String tagKey in multiTags) {
             /// add the picId to the Tagged tab list for showing this picture there

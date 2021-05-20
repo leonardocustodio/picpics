@@ -104,7 +104,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                         if (visiblePercentage > 10 &&
                             controller.picStoreMap[monthKeys[index].key] ==
                                 null) {
-                          controller.explorPicStore(monthKeys[index].key);
+                          TabsController.to.picStoreMap[monthKeys[index].key] =
+                              controller.explorPicStore(monthKeys[index].key);
                           /* debugPrint(
                             'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
                         }
@@ -193,7 +194,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                         if (visiblePercentage > 10 &&
                             controller.picStoreMap[dayKeys[index].key] ==
                                 null) {
-                          controller.explorPicStore(dayKeys[index].key);
+                          TabsController.to.picStoreMap[dayKeys[index].key] =
+                              controller.explorPicStore(dayKeys[index].key);
                           /* debugPrint(
                               'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
                         }

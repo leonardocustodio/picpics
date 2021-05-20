@@ -78,7 +78,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                       print(visiblePercentage.toString() + 'visibility');
                       if (visiblePercentage > 10 &&
                           tabsController.picStoreMap[picId]?.value == null) {
-                        tabsController.explorPicStore(picId);
+                        TabsController.to.picStoreMap[picId] =
+                            tabsController.explorPicStore(picId);
                       }
                     },
                     child: tabsController.picStoreMap[picId]?.value == null
