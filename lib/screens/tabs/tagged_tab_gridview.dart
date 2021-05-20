@@ -90,10 +90,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                           ),
                   );
                   if (index == taggedPicIds.length - 1) {
-                    return Hero(
-                      tag: picId.toString(),
-                      child: widget,
-                    );
+                    return widget;
                   }
                   return widget;
                 }),
@@ -168,7 +165,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                       //print('Selected photo: ${picStore.photoId}');
                       /* GalleryStore.to.setCurrentPic(picStore);
                       GalleryStore.to.setInitialSelectedThumbnail(picStore); */
-                      Get.to(PhotoScreen(picId: picId));
+                      Get.to(() => PhotoScreen(picId: picId));
                     },
                     child: Obx(() {
                       Widget image = Positioned.fill(

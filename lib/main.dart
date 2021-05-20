@@ -295,6 +295,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     //print('Main Build!!!');
     return Center(
       child: GetMaterialApp(
+        
         localizationsDelegates: [
           S.delegate,
           GlobalMaterialLocalizations.delegate,

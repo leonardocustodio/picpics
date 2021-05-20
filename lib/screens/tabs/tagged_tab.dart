@@ -108,27 +108,24 @@ class TaggedTab extends GetWidget<TaggedController> {
               return Container(
                 margin: const EdgeInsets.all(4),
                 child: GetX<TabsController>(builder: (tabsController) {
-                  return Hero(
-                    tag: showingPicId.toString(),
-                    child: VisibilityDetector(
-                      key: Key('${tagKey}'),
-                      onVisibilityChanged: (visibilityInfo) {
-                        var visiblePercentage =
-                            visibilityInfo.visibleFraction * 100;
-                        if (visiblePercentage > 10 &&
-                            tabsController.picStoreMap[showingPicId]?.value ==
-                                null) {
-                          tabsController.explorPicStore(showingPicId);
-                        }
-                      },
-                      child: tabsController.picStoreMap[showingPicId]?.value ==
-                              null
-                          ? greyWidget
-                          : _buildPicItem(
-                              tabsController.picStoreMap[showingPicId]?.value,
-                              showingPicId,
-                              tagKey),
-                    ),
+                  return VisibilityDetector(
+                    key: Key('${tagKey}'),
+                    onVisibilityChanged: (visibilityInfo) {
+                      var visiblePercentage =
+                          visibilityInfo.visibleFraction * 100;
+                      if (visiblePercentage > 10 &&
+                          tabsController.picStoreMap[showingPicId]?.value ==
+                              null) {
+                        tabsController.explorPicStore(showingPicId);
+                      }
+                    },
+                    child: tabsController.picStoreMap[showingPicId]?.value ==
+                            null
+                        ? greyWidget
+                        : _buildPicItem(
+                            tabsController.picStoreMap[showingPicId]?.value,
+                            showingPicId,
+                            tagKey),
                   );
                 }),
               );
