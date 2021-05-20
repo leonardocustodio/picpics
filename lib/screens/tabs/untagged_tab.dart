@@ -49,25 +49,22 @@ class UntaggedTab extends GetWidget<TabsController> {
           var monthKeys = controller.allUnTaggedPicsMonth.entries.toList();
           var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
           if (isMonth) {
-            return StaggeredGridView.builder(
+            return StaggeredGridView.countBuilder(
                 key: Key('Month'),
                 //controller: scrollControllerFirstTab,
                 physics: const CustomScrollPhysics(),
                 padding: EdgeInsets.only(top: 2),
                 addAutomaticKeepAlives: true,
+                crossAxisCount: 5,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
                 itemCount: controller.allUnTaggedPicsMonth.length,
-                gridDelegate:
-                    SliverStaggeredGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  mainAxisSpacing: 0,
-                  crossAxisSpacing: 0,
-                  staggeredTileBuilder: (int index) {
-                    if (index == 0 || monthKeys[index].key is DateTime) {
-                      return StaggeredTile.extent(5, 40);
-                    }
-                    return StaggeredTile.count(1, 1);
-                  },
-                ),
+                staggeredTileBuilder: (int index) {
+                  if (index == 0 || monthKeys[index].key is DateTime) {
+                    return StaggeredTile.extent(5, 40);
+                  }
+                  return StaggeredTile.count(1, 1);
+                },
                 itemBuilder: (_, int index) {
                   if (index == 0 || monthKeys[index].key is DateTime) {
                     var isSelected = false;
@@ -142,25 +139,22 @@ class UntaggedTab extends GetWidget<TabsController> {
                   });
                 });
           } else {
-            return StaggeredGridView.builder(
+            return StaggeredGridView.countBuilder(
                 key: Key('Day'),
                 //controller: scrollControllerFirstTab,
                 physics: const CustomScrollPhysics(),
                 padding: EdgeInsets.only(top: 2),
                 itemCount: controller.allUnTaggedPicsDay.length,
                 addAutomaticKeepAlives: true,
-                gridDelegate:
-                    SliverStaggeredGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 5,
-                  mainAxisSpacing: 0,
-                  crossAxisSpacing: 0,
-                  staggeredTileBuilder: (int index) {
-                    if (index == 0 || dayKeys[index].key is DateTime) {
-                      return StaggeredTile.extent(5, 40);
-                    }
-                    return StaggeredTile.count(1, 1);
-                  },
-                ),
+                crossAxisCount: 5,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+                staggeredTileBuilder: (int index) {
+                  if (index == 0 || dayKeys[index].key is DateTime) {
+                    return StaggeredTile.extent(5, 40);
+                  }
+                  return StaggeredTile.count(1, 1);
+                },
                 itemBuilder: (_, int index) {
                   if (index == 0 || dayKeys[index].key is DateTime) {
                     var isSelected = false;
