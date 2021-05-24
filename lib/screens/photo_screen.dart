@@ -80,9 +80,9 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     String picIdValue = TabsController.to.assetMap.keys.toList()[index];
-    PicStore picStore = TabsController.to.picStoreMap[picIdValue].value;
-    if (TabsController.to.picStoreMap[picIdValue] == null) {
-      picStore = TabsController.to.explorPicStore(picIdValue).value;
+    PicStore picStore = TabsController.to.picStoreMap[picIdValue]?.value;
+    if (picStore == null) {
+      picStore = TabsController.to.explorPicStore(picIdValue)?.value;
     }
     AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: true);
@@ -145,9 +145,9 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
   Widget _buildThumbnails(BuildContext context, int index) {
     String picIdValue = TabsController.to.assetMap.keys.toList()[index];
-    PicStore picStore = TabsController.to.picStoreMap[picIdValue].value;
-    if (TabsController.to.picStoreMap[picIdValue] == null) {
-      picStore = TabsController.to.explorPicStore(picIdValue).value;
+    PicStore picStore = TabsController.to.picStoreMap[picIdValue]?.value;
+    if (picStore == null) {
+      picStore = TabsController.to.explorPicStore(picIdValue)?.value;
     }
     final AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: true);
