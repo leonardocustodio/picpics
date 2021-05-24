@@ -65,13 +65,9 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
     } else {
       if (!controller.showSlideshow.value) {
         controller.showSlideshow.value = true;
-        /* setState(() {
-        }); */
       } else {
         controller.showSlideshow.value = false;
         controller.overlay.value = false;
-        /* setState(() {
-        }); */
         SystemChrome.setEnabledSystemUIOverlays([]);
       }
     }
@@ -206,110 +202,46 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: Stack(
-          children: <Widget>[
-            Container(
-              constraints: BoxConstraints.expand(),
-              color: Color(0xff101010),
-              child: PhotoViewGallery.builder(
-                scrollPhysics: const BouncingScrollPhysics(),
-                builder: _buildItem,
-                itemCount: TabsController.to.assetMap.keys.toList().length,
-                loadingBuilder: (context, event) => Center(
-                  child: Container(
-                    width: 20.0,
-                    height: 20.0,
-                    child: CircularProgressIndicator(
-                      value: event == null
-                          ? 0
-                          : event.cumulativeBytesLoaded /
-                              event.expectedTotalBytes,
+    return Obx(
+      () => Scaffold(
+        body: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: Stack(
+            children: <Widget>[
+              Container(
+                constraints: BoxConstraints.expand(),
+                color: Color(0xff101010),
+                child: PhotoViewGallery.builder(
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  builder: _buildItem,
+                  itemCount: TabsController.to.assetMap.keys.toList().length,
+                  loadingBuilder: (context, event) => Center(
+                    child: Container(
+                      width: 20.0,
+                      height: 20.0,
+                      child: CircularProgressIndicator(
+                        value: event == null
+                            ? 0
+                            : event.cumulativeBytesLoaded /
+                                event.expectedTotalBytes,
+                      ),
                     ),
                   ),
+                  backgroundDecoration: const BoxDecoration(
+                    color: Colors.black,
+                  ),
+                  pageController: galleryPageController,
+                  onPageChanged: (index) {
+                    controller.selectedIndex.value = index;
+                    //GalleryStore.to.setSelectedThumbnail(index);
+                  },
+                  scrollDirection: Axis.horizontal,
                 ),
-                backgroundDecoration: const BoxDecoration(
-                  color: Colors.black,
-                ),
-                pageController: galleryPageController,
-                onPageChanged: (index) {
-                  controller.selectedIndex.value = index;
-                  //GalleryStore.to.setSelectedThumbnail(index);
-                },
-                scrollDirection: Axis.horizontal,
               ),
-            ),
-            if (controller.overlay.value)
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  ClipRect(
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(
-                        sigmaX: 2.0,
-                        sigmaY: 2.0,
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.black
-                                  .withOpacity(0.7)
-                                  .withOpacity(0.37)
-                                  .withOpacity(0.3),
-                              Colors.black
-                                  .withOpacity(1.0)
-                                  .withOpacity(0.37)
-                                  .withOpacity(0.3)
-                            ],
-                            stops: [0, 0.40625],
-                          ),
-                        ),
-                        child: SafeArea(
-                          bottom: false,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              CupertinoButton(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5.0, vertical: 10.0),
-                                onPressed: () {
-                                  Get.back();
-                                },
-                                child: Image.asset(
-                                    'lib/images/backarrowwithdropshadow.png'),
-                              ),
-                              CupertinoButton(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 5.0, vertical: 10.0),
-                                onPressed: () {
-                                  var picIdValue = TabsController
-                                      .to.assetMap.keys
-                                      .toList()[controller.selectedIndex.value];
-                                  var shareAblePicStore = TabsController
-                                      .to.picStoreMap[picIdValue].value;
-                                  if (shareAblePicStore == null) {
-                                    shareAblePicStore = TabsController.to
-                                        .explorPicStore(picIdValue)
-                                        .value;
-                                  }
-                                  shareAblePicStore.sharePic();
-                                },
-                                child: Image.asset(
-                                    'lib/images/sharebuttonwithdropshadow.png'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Spacer(),
-                  if (!controller.showSlideshow.value)
+              if (controller.overlay.value)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
                     ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
@@ -317,9 +249,270 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                           sigmaY: 2.0,
                         ),
                         child: Container(
-                          constraints: BoxConstraints(
-                            minHeight: 184.0,
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              colors: [
+                                Colors.black
+                                    .withOpacity(0.7)
+                                    .withOpacity(0.37)
+                                    .withOpacity(0.3),
+                                Colors.black
+                                    .withOpacity(1.0)
+                                    .withOpacity(0.37)
+                                    .withOpacity(0.3)
+                              ],
+                              stops: [0, 0.40625],
+                            ),
                           ),
+                          child: SafeArea(
+                            bottom: false,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                CupertinoButton(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0, vertical: 10.0),
+                                  onPressed: () {
+                                    Get.back();
+                                  },
+                                  child: Image.asset(
+                                      'lib/images/backarrowwithdropshadow.png'),
+                                ),
+                                CupertinoButton(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 5.0, vertical: 10.0),
+                                  onPressed: () {
+                                    var picIdValue = TabsController
+                                            .to.assetMap.keys
+                                            .toList()[
+                                        controller.selectedIndex.value];
+                                    var shareAblePicStore = TabsController
+                                        .to.picStoreMap[picIdValue].value;
+                                    if (shareAblePicStore == null) {
+                                      shareAblePicStore = TabsController.to
+                                          .explorPicStore(picIdValue)
+                                          .value;
+                                    }
+                                    shareAblePicStore.sharePic();
+                                  },
+                                  child: Image.asset(
+                                      'lib/images/sharebuttonwithdropshadow.png'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Spacer(),
+                    if (!controller.showSlideshow.value)
+                      ClipRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(
+                            sigmaX: 2.0,
+                            sigmaY: 2.0,
+                          ),
+                          child: Container(
+                            constraints: BoxConstraints(
+                              minHeight: 184.0,
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                                  Colors.black
+                                      .withOpacity(0.7)
+                                      .withOpacity(0.37)
+                                      .withOpacity(0.3),
+                                  Colors.black
+                                      .withOpacity(1.0)
+                                      .withOpacity(0.37)
+                                      .withOpacity(0.3)
+                                ],
+                                stops: [0, 0.40625],
+                              ),
+                            ),
+                            child: SafeArea(
+                              top: false,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: <Widget>[
+                                    Obx(() {
+                                      return Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          RichText(
+                                            textScaleFactor: 1.0,
+                                            text: TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                    text: TabsController
+                                                            .to
+                                                            ?.picStoreMap[
+                                                                TabsController
+                                                                        .to
+                                                                        .assetMap
+                                                                        .keys
+                                                                        .toList()[
+                                                                    controller
+                                                                        .selectedIndex
+                                                                        .value]]
+                                                            ?.value
+                                                            ?.specificLocation
+                                                            ?.value ??
+                                                        S
+                                                            .of(context)
+                                                            .photo_location,
+                                                    style: TextStyle(
+                                                      fontFamily: 'NotoSans',
+                                                      color: kWhiteColor,
+                                                      fontSize: 17,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      fontStyle:
+                                                          FontStyle.normal,
+                                                      letterSpacing:
+                                                          -0.4099999964237213,
+                                                    )),
+                                                TextSpan(
+                                                  text:
+                                                      '  ${TabsController.to.picStoreMap[TabsController.to.assetMap.keys.toList()[controller.selectedIndex.value]]?.value?.generalLocation?.value ?? S.of(context).country}',
+                                                  style: TextStyle(
+                                                    fontFamily: 'NotoSans',
+                                                    color: kWhiteColor,
+                                                    fontSize: 12,
+                                                    fontWeight: FontWeight.w300,
+                                                    fontStyle: FontStyle.normal,
+                                                    letterSpacing:
+                                                        -0.4099999964237213,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Text(
+                                            dateFormat(TabsController
+                                                    .to
+                                                    ?.picStoreMap[TabsController
+                                                            .to.assetMap.keys
+                                                            .toList()[
+                                                        controller.selectedIndex
+                                                            .value]]
+                                                    ?.value
+                                                    ?.createdAt ??
+                                                DateTime.now()),
+                                            textScaleFactor: 1.0,
+                                            style: TextStyle(
+                                              fontFamily: 'Lato',
+                                              color: kWhiteColor,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w300,
+                                              fontStyle: FontStyle.normal,
+                                              letterSpacing:
+                                                  -0.4099999964237213,
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 16.0),
+                                      child: GetX<TaggedController>(
+                                          builder: (controllerTagged) {
+                                        return (controllerTagged
+                                                    .picWiseTags[TabsController
+                                                            .to.assetMap.keys
+                                                            .toList()[
+                                                        controller.selectedIndex
+                                                            .value]]
+                                                    ?.keys
+                                                    ?.toList()
+                                                    ?.isEmpty ??
+                                                true)
+                                            ? TagsList(
+                                                tagsKeyList: <String>[],
+                                                tagStyle: TagStyle.MultiColored,
+                                                addTagButton: () {
+                                                  /* GalleryStore.to.setCurrentPic(
+                                                      TabsController_
+                                                          .to.picStoreMap[picId].value); */
+
+                                                  /* if (!controller.modalCard.value) {
+                                                    controller.setModalCard(true);
+                                                  } */
+                                                  Navigator.pop(
+                                                      context, 'show_keyboard');
+                                                },
+                                                onTap: (String tagKey) {
+                                                  //print('ignore click');
+                                                },
+                                                onDoubleTap: (String tagKey) {
+//                                        TabsController_.to.picStoreMap[picId]
+//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+                                                },
+                                                onPanEnd: (String tagKey) {
+                                                  //print('teste');
+                                                },
+                                                /* showEditTagModal: () =>
+                                                    showEditTagModal(context, false), */
+                                              )
+                                            : Obx(
+                                                () => TagsList(
+                                                  tagsKeyList: controllerTagged
+                                                      .picWiseTags[TabsController
+                                                              .to.assetMap.keys
+                                                              .toList()[
+                                                          controller
+                                                              .selectedIndex
+                                                              .value]]
+                                                      ?.keys
+                                                      ?.toList(),
+                                                  tagStyle:
+                                                      TagStyle.MultiColored,
+                                                  addTagButton: () {
+                                                    /* GalleryStore.to.setCurrentPic(
+                                                      TabsController_
+                                                          .to.picStoreMap[picId].value); */
+
+                                                    /* if (!controller.modalCard.value) {
+                                                    controller.setModalCard(true);
+                                                  } */
+                                                    Navigator.pop(context,
+                                                        'show_keyboard');
+                                                  },
+                                                  onTap: (String tagKey) {
+                                                    //print('ignore click');
+                                                  },
+                                                  onDoubleTap: (String tagKey) {
+//                                        TabsController_.to.picStoreMap[picId]
+//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+                                                  },
+                                                  onPanEnd: (String tagKey) {
+                                                    //print('teste');
+                                                  },
+                                                  /* showEditTagModal: () =>
+                                                    showEditTagModal(context, false), */
+                                                ),
+                                              );
+                                      }),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    if (controller.showSlideshow.value)
+                      ClipRect(
+                        child: Container(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
@@ -340,162 +533,20 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                           child: SafeArea(
                             top: false,
                             child: Padding(
-                              padding: const EdgeInsets.all(16.0),
+                              padding: const EdgeInsets.only(top: 8.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
-                                  Obx(() {
-                                    return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        RichText(
-                                          textScaleFactor: 1.0,
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                  text: TabsController
-                                                          .to
-                                                          ?.picStoreMap[
-                                                              TabsController.to
-                                                                      .assetMap.keys
-                                                                      .toList()[
-                                                                  controller
-                                                                      .selectedIndex
-                                                                      .value]]
-                                                          ?.value
-                                                          ?.specificLocation
-                                                          ?.value ??
-                                                      S
-                                                          .of(context)
-                                                          .photo_location,
-                                                  style: TextStyle(
-                                                    fontFamily: 'NotoSans',
-                                                    color: kWhiteColor,
-                                                    fontSize: 17,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontStyle: FontStyle.normal,
-                                                    letterSpacing:
-                                                        -0.4099999964237213,
-                                                  )),
-                                              TextSpan(
-                                                text:
-                                                    '  ${TabsController.to.picStoreMap[TabsController.to.assetMap.keys.toList()[controller.selectedIndex.value]]?.value?.generalLocation?.value ?? S.of(context).country}',
-                                                style: TextStyle(
-                                                  fontFamily: 'NotoSans',
-                                                  color: kWhiteColor,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w300,
-                                                  fontStyle: FontStyle.normal,
-                                                  letterSpacing:
-                                                      -0.4099999964237213,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Text(
-                                          dateFormat(TabsController
-                                                  .to
-                                                  ?.picStoreMap[TabsController
-                                                          .to.assetMap.keys
-                                                          .toList()[
-                                                      controller
-                                                          .selectedIndex.value]]
-                                                  ?.value
-                                                  ?.createdAt ??
-                                              DateTime.now()),
-                                          textScaleFactor: 1.0,
-                                          style: TextStyle(
-                                            fontFamily: 'Lato',
-                                            color: kWhiteColor,
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w300,
-                                            fontStyle: FontStyle.normal,
-                                            letterSpacing: -0.4099999964237213,
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 16.0),
-                                    child: GetX<TaggedController>(
-                                        builder: (controllerTagged) {
-                                      return (controllerTagged
-                                                  .picWiseTags[TabsController
-                                                          .to.assetMap.keys
-                                                          .toList()[
-                                                      controller
-                                                          .selectedIndex.value]]
-                                                  ?.keys
-                                                  ?.toList()
-                                                  ?.isEmpty ??
-                                              true)
-                                          ? TagsList(
-                                              tagsKeyList: <String>[],
-                                              tagStyle: TagStyle.MultiColored,
-                                              addTagButton: () {
-                                                /* GalleryStore.to.setCurrentPic(
-                                                    TabsController_
-                                                        .to.picStoreMap[picId].value); */
-
-                                                /* if (!controller.modalCard.value) {
-                                                  controller.setModalCard(true);
-                                                } */
-                                                Navigator.pop(
-                                                    context, 'show_keyboard');
-                                              },
-                                              onTap: (String tagKey) {
-                                                //print('ignore click');
-                                              },
-                                              onDoubleTap: (String tagKey) {
-//                                        TabsController_.to.picStoreMap[picId]
-//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                                              },
-                                              onPanEnd: (String tagKey) {
-                                                //print('teste');
-                                              },
-                                              /* showEditTagModal: () =>
-                                                  showEditTagModal(context, false), */
-                                            )
-                                          : Obx(
-                                              () => TagsList(
-                                                tagsKeyList: controllerTagged
-                                                    .picWiseTags[TabsController
-                                                            .to.assetMap.keys
-                                                            .toList()[
-                                                        controller.selectedIndex
-                                                            .value]]
-                                                    ?.keys
-                                                    ?.toList(),
-                                                tagStyle: TagStyle.MultiColored,
-                                                addTagButton: () {
-                                                  /* GalleryStore.to.setCurrentPic(
-                                                    TabsController_
-                                                        .to.picStoreMap[picId].value); */
-
-                                                  /* if (!controller.modalCard.value) {
-                                                  controller.setModalCard(true);
-                                                } */
-                                                  Navigator.pop(
-                                                      context, 'show_keyboard');
-                                                },
-                                                onTap: (String tagKey) {
-                                                  //print('ignore click');
-                                                },
-                                                onDoubleTap: (String tagKey) {
-//                                        TabsController_.to.picStoreMap[picId]
-//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                                                },
-                                                onPanEnd: (String tagKey) {
-                                                  //print('teste');
-                                                },
-                                                /* showEditTagModal: () =>
-                                                  showEditTagModal(context, false), */
-                                              ),
-                                            );
-                                    }),
+                                  Container(
+                                    height: 98,
+                                    child: ListView.builder(
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: _buildThumbnails,
+                                      itemCount: TabsController.to.assetMap.keys
+                                          .toList()
+                                          .length,
+                                      padding: const EdgeInsets.only(left: 8.0),
+                                    ),
                                   ),
                                 ],
                               ),
@@ -503,55 +554,10 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                           ),
                         ),
                       ),
-                    ),
-                  if (controller.showSlideshow.value)
-                    ClipRect(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.black
-                                  .withOpacity(0.7)
-                                  .withOpacity(0.37)
-                                  .withOpacity(0.3),
-                              Colors.black
-                                  .withOpacity(1.0)
-                                  .withOpacity(0.37)
-                                  .withOpacity(0.3)
-                            ],
-                            stops: [0, 0.40625],
-                          ),
-                        ),
-                        child: SafeArea(
-                          top: false,
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: <Widget>[
-                                Container(
-                                  height: 98,
-                                  child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: _buildThumbnails,
-                                    itemCount: TabsController
-                                        .to.picStoreMap.keys
-                                        .toList()
-                                        .length,
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-          ],
+                  ],
+                ),
+            ],
+          ),
         ),
       ),
     );

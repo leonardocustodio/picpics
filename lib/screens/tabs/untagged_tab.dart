@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
+import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/generated/l10n.dart';
@@ -738,6 +739,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                           //print('${GalleryStore.to.selectedPics.length}');
                           return;
                         }
+                        Get.to(() => PhotoScreen(picId: picId));
 /* 
               tagsEditingController.text = '';
               GalleryStore.to.setCurrentPic(picStore);
