@@ -65,6 +65,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Get.lazyPut(() => UserController());
+  await Get.lazyPut(() => AllTagsController());
   await Get.lazyPut(() => TaggedController());
   await Get.lazyPut(() => SwiperTabController());
   await Get.lazyPut(() => GalleryStore());

@@ -4,6 +4,7 @@ import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tagged_controller.dart';
 /* import 'package:picPics/stores/tagged_controller.dart'; */
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -381,6 +382,10 @@ class TagsController extends GetxController {
     await Future.wait(
       [
         Future.forEach(selectedPicIds, (String picId) async {
+          for (var tagKey in multiTags) {
+            await addTagToPic(picId: picId,tagKey: tagKey);
+          }
+          /* 
           var picStore = TabsController.to.picStoreMap[picId]?.value;
           if (picStore == null) {
             var fetchedPicStore =
@@ -440,7 +445,7 @@ class TagsController extends GetxController {
 
             addPicToTaggedPics(picStore: picStore);
             removePicFromUntaggedPics(picStore: picStore);
-          } */
+          } */ */
         }),
       ],
     ).then((_) {
@@ -456,6 +461,60 @@ class TagsController extends GetxController {
         await TabsController.to.refreshUntaggedList();
       });
     });
+  }
+
+  Future<void> removeTagFromPic({String picId, String tagKey}) async {
+    var picStore = TabsController.to.picStoreMap[picId]?.value;
+    if (picStore == null) {
+      picStore = TabsController.to.explorPicStore(picId)?.value;
+    }
+    await picStore.removeTagFromPic(tagKey: tagKey);
+
+    /// Refreshing the tagged pic map as a tag is removed from the picstore
+    await TaggedController.to.refreshTaggedPhotos();
+
+    if (picStore.tags.isEmpty) {
+      /// tags are empty now the untagged list should be refreshed so that this picStore will be visible there
+      await TabsController.to.refreshUntaggedList();
+    }
+  }
+
+  Future<void> addTagToPic({String picId, String tagKey}) async {
+    var picStore = TabsController.to.picStoreMap[picId]?.value;
+    if (picStore == null) {
+      var fetchedPicStore = (await TabsController.to.explorPicStore(picId));
+      TabsController.to.picStoreMap[picId] = fetchedPicStore;
+      picStore = fetchedPicStore.value;
+    }
+
+    /// TODO: check this is working or not, when swipe implementation is done !!
+    SwiperTabController.to.swiperPicIdList.remove(picStore);
+
+    if (picStore.tags[tagKey] != null) {
+      // //print('this tag is already in this picture');
+      return;
+    }
+    if (tagKey == kSecretTagKey) {
+      // //print('Should add secret tag in the end!!!');
+      if (TabsController.to.secretPicIds[picId] == null ||
+          TabsController.to.secretPicIds[picId] ==
+              false /* !privatePics.contains(picStore) */) {
+        await picStore.setIsPrivate(true);
+        await Crypto.encryptImage(picStore, UserController.to.encryptionKey);
+        // //print('this pic now is private');
+        TabsController.to.secretPicIds[picId] = true;
+        //privatePics.add(picStore);
+      }
+      return;
+    }
+    Label getTag = await _database.getLabelByLabelKey(tagKey);
+    getTag.photoId.add(picStore.photoId.value);
+    await _database.updateLabel(getTag);
+
+    await picStore.addTagToPic(
+      tagKey: tagKey,
+      photoId: picStore.photoId.value,
+    );
   }
 
   void clearMultiPicTags() {

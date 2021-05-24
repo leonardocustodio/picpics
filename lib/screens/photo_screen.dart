@@ -21,6 +21,8 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
 import 'package:extended_image/extended_image.dart';
 
+import 'all_tags_screen.dart';
+
 class PhotoScreenController extends GetxController {
   final overlay = true.obs;
   final showSlideshow = false.obs;
@@ -447,8 +449,41 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   /* if (!controller.modalCard.value) {
                                                     controller.setModalCard(true);
                                                   } */
-                                                  Navigator.pop(
-                                                      context, 'show_keyboard');
+                                                  if (controller
+                                                          .selectedIndex.value <
+                                                      TabsController.to.assetMap
+                                                          .keys.length) {
+                                                    if (TabsController
+                                                                .to.assetMap.keys
+                                                                .toList()[
+                                                            controller
+                                                                .selectedIndex
+                                                                .value] !=
+                                                        null) {
+                                                      var picId = TabsController
+                                                              .to.assetMap.keys
+                                                              .toList()[
+                                                          controller
+                                                              .selectedIndex
+                                                              .value];
+                                                      var picStore =
+                                                          TabsController
+                                                              .to
+                                                              .picStoreMap[
+                                                                  picId]
+                                                              ?.value;
+
+                                                      if (picStore != null) {
+                                                        Get.to(() =>
+                                                            AllTagsScreen(
+                                                                picStore:
+                                                                    picStore));
+                                                        return;
+                                                      }
+                                                    }
+                                                  }
+
+                                                  Get.back();
                                                 },
                                                 onTap: (String tagKey) {
                                                   //print('ignore click');

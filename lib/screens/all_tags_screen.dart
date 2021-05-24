@@ -2,17 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/customised_tags_list.dart';
-import 'package:picPics/widgets/show_watch_ad_modal.dart';
 import '../constants.dart';
 
 // ignore_for_file: invalid_use_of_protected_member
-class AllTagsStore extends GetxController {
+class AllTagsController extends GetxController {
   final selectedTags = <String, TagModel>{}.obs;
   final allTagsAvailable = <String, TagModel>{}.obs;
   final searchedTags = <String, TagModel>{}.obs;
@@ -43,7 +42,8 @@ class AllTagsStore extends GetxController {
   }
 }
 
-class AllTagsScreen extends GetWidget<AllTagsStore> {
+// ignore: must_be_immutable
+class AllTagsScreen extends GetWidget<AllTagsController> {
   static const id = 'all_tags_screen';
   final PicStore picStore;
   AllTagsScreen({@required this.picStore, Key key}) : super(key: key);
@@ -101,7 +101,11 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         GestureDetector(
-                          onTap: () => Get.back(),
+                          onTap: () {
+                            TabsController.to.refreshUntaggedList();
+                            TaggedController.to.refreshTaggedPhotos();
+                            Get.back();
+                          },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5, right: 10),
                             child: Image.asset('lib/images/backarrowgray.png'),
@@ -290,28 +294,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                             controller.searchedTags.value.keys.toList(),
                         selectedTags: controller.selectedTags.value,
                         onTap: (String tagId, String tagName, int count,
-                            DateTime time) async {
-                          //print('do nothing');
-                          if (!UserController.to.canTagToday.value) {
-                            showWatchAdModal();
-                            return;
-                          }
-                          if (controller.selectedTags.value[tagId] != null) {
-                            controller.selectedTags.value.remove(tagId);
-
-                            await GalleryStore.to.removeTagFromPic(
-                                picStore: picStore, tagKey: tagId);
-                          } else {
-                            controller.selectedTags.value[tagId] = TagModel(
-                                key: tagId,
-                                title: tagName,
-                                count: count,
-                                time: time);
-                            await GalleryStore.to.addTagToPic(
-                                picStore: picStore, tagName: tagName);
-                          }
-                          TagsController.to.loadAllTags();
-                        },
+                                DateTime time) async =>
+                            await doTagging(tagId, tagName, count, time),
                         onDoubleTap: () {
                           //print('do nothing');
                         },
@@ -344,30 +328,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 TagsController.to.mostUsedTags.keys.toList(),
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
-                                DateTime time) async {
-                              //print('do nothing');
-                              if (!UserController.to.canTagToday.value) {
-                                showWatchAdModal();
-                                return;
-                              }
-                              if (controller.selectedTags.value[tagId] !=
-                                  null) {
-                                controller.selectedTags.value.remove(tagId);
-
-                                await GalleryStore.to.removeTagFromPic(
-                                    picStore: picStore, tagKey: tagId);
-                              } else {
-                                controller.selectedTags.value[tagId] = TagModel(
-                                    key: tagId,
-                                    title: tagName,
-                                    count: count,
-                                    time: time);
-
-                                await GalleryStore.to.addTagToPic(
-                                    picStore: picStore, tagName: tagName);
-                              }
-                              TagsController.to.loadAllTags();
-                            },
+                                    DateTime time) async =>
+                                await doTagging(tagId, tagName, count, time),
                             onDoubleTap: () {
                               //print('do nothing');
                             },
@@ -406,30 +368,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 .toList(),
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
-                                DateTime time) async {
-                              //print('do nothing');
-                              if (!UserController.to.canTagToday.value) {
-                                showWatchAdModal();
-                                return;
-                              }
-                              if (controller.selectedTags.value[tagId] !=
-                                  null) {
-                                controller.selectedTags.remove(tagId);
-
-                                await GalleryStore.to.removeTagFromPic(
-                                    picStore: picStore, tagKey: tagId);
-                              } else {
-                                controller.selectedTags.value[tagId] = TagModel(
-                                    key: tagId,
-                                    title: tagName,
-                                    count: count,
-                                    time: time);
-
-                                await GalleryStore.to.addTagToPic(
-                                    picStore: picStore, tagName: tagName);
-                              }
-                              TagsController.to.loadAllTags();
-                            },
+                                    DateTime time) async =>
+                                await doTagging(tagId, tagName, count, time),
                             onDoubleTap: () {
                               //print('do nothing');
                             },
@@ -468,30 +408,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 TagsController.to.lastWeekUsedTags.value.keys,
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
-                                DateTime time) async {
-                              //print('do nothing');
-                              if (!UserController.to.canTagToday.value) {
-                                showWatchAdModal();
-                                return;
-                              }
-                              if (controller.selectedTags.value[tagId] !=
-                                  null) {
-                                controller.selectedTags.value.remove(tagId);
-                                //
-                                await GalleryStore.to.removeTagFromPic(
-                                    picStore: picStore, tagKey: tagId);
-                              } else {
-                                controller.selectedTags.value[tagId] = TagModel(
-                                    key: tagId,
-                                    title: tagName,
-                                    count: count,
-                                    time: time);
-                                //
-                                await GalleryStore.to.addTagToPic(
-                                    picStore: picStore, tagName: tagName);
-                              }
-                              TagsController.to.loadAllTags();
-                            },
+                                    DateTime time) async =>
+                                await doTagging(tagId, tagName, count, time),
                             onDoubleTap: () {
                               //print('do nothing');
                             },
@@ -528,30 +446,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                                 TagsController.to.allTags.keys.toList(),
                             selectedTags: controller.selectedTags.value,
                             onTap: (String tagId, String tagName, int count,
-                                DateTime time) async {
-                              //print('do nothing');
-                              if (!UserController.to.canTagToday.value) {
-                                showWatchAdModal();
-                                return;
-                              }
-                              if (controller.selectedTags.value[tagId] !=
-                                  null) {
-                                controller.selectedTags.value.remove(tagId);
-                                //
-                                await GalleryStore.to.removeTagFromPic(
-                                    picStore: picStore, tagKey: tagId);
-                              } else {
-                                controller.selectedTags.value[tagId] = TagModel(
-                                    key: tagId,
-                                    title: tagName,
-                                    count: count,
-                                    time: time);
-                                //
-                                await GalleryStore.to.addTagToPic(
-                                    picStore: picStore, tagName: tagName);
-                              }
-                              TagsController.to.loadAllTags();
-                            },
+                                    DateTime time) async =>
+                                await doTagging(tagId, tagName, count, time),
                             onDoubleTap: () {
                               //print('do nothing');
                             },
@@ -567,5 +463,27 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
         ),
       ),
     );
+  }
+
+  void doTagging(String tagId, String tagName, int count, DateTime time) async {
+    //print('do nothing');
+    // TODO: Enable it to show ads
+    //if (!UserController.to.canTagToday.value) {
+    //  showWatchAdModal();
+    //  return;
+    //}
+    if (controller.selectedTags.value[tagId] != null) {
+      controller.selectedTags.value.remove(tagId);
+      //
+      await TagsController.to.removeTagFromPic(
+          picId: picStore.photoId.value.toString(), tagKey: tagId);
+    } else {
+      controller.selectedTags.value[tagId] =
+          TagModel(key: tagId, title: tagName, count: count, time: time);
+      //
+      await TagsController.to
+          .addTagToPic(picId: picStore.photoId.value.toString(), tagKey: tagId);
+    }
+    TagsController.to.loadAllTags();
   }
 }
