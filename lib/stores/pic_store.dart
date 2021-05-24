@@ -32,7 +32,7 @@ class PicStore extends GetxController {
   final AppDatabase database = AppDatabase();
 
   //ObservableMap<String, tagModel> tags = ObservableMap<String, tagModel>();
-  final tags = <String, Rx<TagModel>>{}.obs;
+  var tags = <String, Rx<TagModel>>{}.obs;
 
   //var aiSuggestions = <tagModel>[];
 

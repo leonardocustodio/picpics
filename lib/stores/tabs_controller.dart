@@ -360,6 +360,13 @@ class TabsController extends GetxController {
         originalLongitude: entity.longitude,
       ));
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        var map = RxMap<String, Rx<TagModel>>();
+        TaggedController.to.picWiseTags.value[picStoreValue.value.photoId.value]?.keys
+            ?.toList()
+            ?.forEach((tagKey) {
+          map[tagKey] = TagsController.to.allTags[tagKey];
+        });
+        picStoreValue.value.tags = map;
         picStoreMap[picId] = picStoreValue;
       });
     }

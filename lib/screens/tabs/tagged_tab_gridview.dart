@@ -39,8 +39,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
         ),
         titleSpacing: -10,
         title: Text(
-          ('${TagsController.to.allTags[tagKey].value.title} (${controller.taggedPicId[tagKey].keys.length})') ??
-              'tagKey',
+          ('${TagsController.to.allTags[tagKey]?.value?.title ?? ''} (${controller.taggedPicId[tagKey]?.keys?.length ?? ''})'),
           style: TextStyle(color: Colors.black),
         ),
       ),
@@ -48,9 +47,77 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
         width: Get.width,
         height: Get.height,
         child: Obx(() {
-          var taggedPicIds = controller.taggedPicId[tagKey].keys.toList();
-          if (taggedPicIds.isEmpty) {
-            return emptyTaggedPics();
+          var taggedPicIds = controller.taggedPicId[tagKey]?.keys?.toList();
+          if (taggedPicIds?.isEmpty ?? true) {
+            return controller.taggedPicId[tagKey]?.keys?.toList()?.isEmpty ??
+                    true
+                ? TopBar(
+                    appStore: UserController.to,
+                    galleryStore: GalleryStore.to,
+                    showSecretSwitch: UserController.to.secretPhotos.value,
+                    children: <Widget>[
+                      Expanded(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(
+                                height: Get.height / 2,
+                                child: Image.asset(
+                                    'lib/images/notaggedphotos.png'),
+                              ),
+                              SizedBox(
+                                height: 21.0,
+                              ),
+                              Text(
+                                S.current.no_tagged_photos,
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff979a9b),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 17.0,
+                              ),
+                              CupertinoButton(
+                                padding: const EdgeInsets.all(0),
+                                onPressed: () =>
+                                    TabsController.to.setCurrentTab(1),
+                                child: Container(
+                                  width: 201.0,
+                                  height: 44.0,
+                                  decoration: BoxDecoration(
+                                    gradient: kPrimaryGradient,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      S.current.start_tagging,
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: kWhiteColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container();
           }
           var height = Get.width / 3 - 12;
 
@@ -280,73 +347,6 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
           return loader;
         },
       ),
-    );
-  }
-
-  Widget emptyTaggedPics() {
-    return TopBar(
-      appStore: UserController.to,
-      galleryStore: GalleryStore.to,
-      showSecretSwitch: UserController.to.secretPhotos.value,
-      children: <Widget>[
-        Expanded(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                SizedBox(
-                  height: Get.height / 2,
-                  child: Image.asset('lib/images/notaggedphotos.png'),
-                ),
-                SizedBox(
-                  height: 21.0,
-                ),
-                Text(
-                  S.current.no_tagged_photos,
-                  textScaleFactor: 1.0,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    color: Color(0xff979a9b),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                  ),
-                ),
-                SizedBox(
-                  height: 17.0,
-                ),
-                CupertinoButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () => TabsController.to.setCurrentTab(1),
-                  child: Container(
-                    width: 201.0,
-                    height: 44.0,
-                    decoration: BoxDecoration(
-                      gradient: kPrimaryGradient,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Center(
-                      child: Text(
-                        S.current.start_tagging,
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: kWhiteColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

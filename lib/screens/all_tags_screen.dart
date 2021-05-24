@@ -46,6 +46,7 @@ class AllTagsController extends GetxController {
 class AllTagsScreen extends GetWidget<AllTagsController> {
   static const id = 'all_tags_screen';
   final PicStore picStore;
+  var _ = Get.put(AllTagsController());
   AllTagsScreen({@required this.picStore, Key key}) : super(key: key);
 
   /* 
@@ -83,8 +84,17 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
     });
   } */
 
+  var loadTagsFromPicStore = true;
+
   @override
   Widget build(BuildContext context) {
+    if (loadTagsFromPicStore) {
+      //WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.selectedTags.value = Map<String, TagModel>.from(
+          picStore.tags.value.map((key, value) => MapEntry(key, value.value)));
+      loadTagsFromPicStore = false;
+      // });
+    }
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -102,8 +112,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                       children: <Widget>[
                         GestureDetector(
                           onTap: () {
-                            TabsController.to.refreshUntaggedList();
-                            TaggedController.to.refreshTaggedPhotos();
+                            //TabsController.to.refreshUntaggedList();
+                            //TaggedController.to.refreshTaggedPhotos();
                             Get.back();
                           },
                           child: Padding(

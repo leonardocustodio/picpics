@@ -488,7 +488,7 @@ class TagsController extends GetxController {
     }
 
     /// TODO: check this is working or not, when swipe implementation is done !!
-    SwiperTabController.to.swiperPicIdList.remove(picStore);
+    //SwiperTabController.to.swiperPicIdList.remove(picStore);
 
     if (picStore.tags[tagKey] != null) {
       // //print('this tag is already in this picture');

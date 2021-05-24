@@ -441,7 +441,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                             ? TagsList(
                                                 tagsKeyList: <String>[],
                                                 tagStyle: TagStyle.MultiColored,
-                                                addTagButton: () {
+                                                addTagButton: () async {
                                                   /* GalleryStore.to.setCurrentPic(
                                                       TabsController_
                                                           .to.picStoreMap[picId].value); */
@@ -474,10 +474,20 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                               ?.value;
 
                                                       if (picStore != null) {
-                                                        Get.to(() =>
-                                                            AllTagsScreen(
+                                                        var result = await Get.to(
+                                                            () => AllTagsScreen(
                                                                 picStore:
                                                                     picStore));
+                                                        if (result == null ||
+                                                            result is bool &&
+                                                                result) {
+                                                          await TabsController
+                                                              .to
+                                                              .refreshUntaggedList();
+                                                          await TaggedController
+                                                              .to
+                                                              .refreshTaggedPhotos();
+                                                        }
                                                         return;
                                                       }
                                                     }
@@ -511,7 +521,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                       ?.toList(),
                                                   tagStyle:
                                                       TagStyle.MultiColored,
-                                                  addTagButton: () {
+                                                  addTagButton: () async {
                                                     /* GalleryStore.to.setCurrentPic(
                                                       TabsController_
                                                           .to.picStoreMap[picId].value); */
@@ -519,8 +529,56 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                     /* if (!controller.modalCard.value) {
                                                     controller.setModalCard(true);
                                                   } */
-                                                    Navigator.pop(context,
-                                                        'show_keyboard');
+                                                    if (controller.selectedIndex
+                                                            .value <
+                                                        TabsController
+                                                            .to
+                                                            .assetMap
+                                                            .keys
+                                                            .length) {
+                                                      if (TabsController
+                                                                  .to.assetMap.keys
+                                                                  .toList()[
+                                                              controller
+                                                                  .selectedIndex
+                                                                  .value] !=
+                                                          null) {
+                                                        var picId = TabsController
+                                                                .to.assetMap.keys
+                                                                .toList()[
+                                                            controller
+                                                                .selectedIndex
+                                                                .value];
+                                                        var picStore =
+                                                            TabsController
+                                                                .to
+                                                                .picStoreMap[
+                                                                    picId]
+                                                                ?.value;
+
+                                                        if (picStore != null) {
+                                                          var result =
+                                                              await Get.to(() =>
+                                                                  AllTagsScreen(
+                                                                    picStore:
+                                                                        picStore,
+                                                                  ));
+                                                          if (result == null ||
+                                                              result is bool &&
+                                                                  result) {
+                                                            await TabsController
+                                                                .to
+                                                                .refreshUntaggedList();
+                                                            await TaggedController
+                                                                .to
+                                                                .refreshTaggedPhotos();
+                                                          }
+                                                          return;
+                                                        }
+                                                      }
+                                                    }
+
+                                                    Get.back();
                                                   },
                                                   onTap: (String tagKey) {
                                                     //print('ignore click');
