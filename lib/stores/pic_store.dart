@@ -11,7 +11,6 @@ import 'package:metadata/metadata.dart' as md;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/stores/tabs_controller.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:strings/strings.dart';
 import 'package:picPics/constants.dart';

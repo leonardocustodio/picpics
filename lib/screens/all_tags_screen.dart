@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/utils/helpers.dart';

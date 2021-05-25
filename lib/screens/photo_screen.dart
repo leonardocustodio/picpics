@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:get/get.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
@@ -43,8 +42,12 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   PageController galleryPageController;
   //List<String> photoScreenSwiper = TabsController_.to.picStoreMap.keys.toList();
   var _ = Get.put(PhotoScreenController());
-  PhotoScreen({@required this.picId}) {
-    var index = TabsController.to.assetMap.keys.toList().indexOf(picId);
+  List<String> idList;
+  PhotoScreen({@required this.picId,@required List<String> picIdList}) {
+    if (picIdList?.isNotEmpty ?? false) {
+      idList = List<String>.from(picIdList);
+    }
+    var index = getPicIdList().indexOf(picId);
     if (index != -1) {
       PhotoScreenController.to.selectedIndex.value = index;
     }
@@ -57,6 +60,21 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   void initState() {
     super.initState();
   } */
+
+  String getPicId(int index) {
+    try {
+      return getPicIdList()[index];
+    } catch (_) {
+      return null;
+    }
+  }
+
+  List<String> getPicIdList() {
+    if (idList?.isNotEmpty ?? false) {
+      return idList;
+    }
+    return TabsController.to.assetMap.keys.toList();
+  }
 
   void changeOverlay() {
     if (!controller.overlay.value) {
@@ -81,7 +99,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    String picIdValue = TabsController.to.assetMap.keys.toList()[index];
+    String picIdValue = getPicIdList()[index];
     PicStore picStore = TabsController.to.picStoreMap[picIdValue]?.value;
     if (picStore == null) {
       picStore = TabsController.to.explorPicStore(picIdValue)?.value;
@@ -146,7 +164,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   Widget _buildThumbnails(BuildContext context, int index) {
-    String picIdValue = TabsController.to.assetMap.keys.toList()[index];
+    String picIdValue = getPicIdList()[index];
     PicStore picStore = TabsController.to.picStoreMap[picIdValue]?.value;
     if (picStore == null) {
       picStore = TabsController.to.explorPicStore(picIdValue)?.value;
@@ -216,7 +234,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                 child: PhotoViewGallery.builder(
                   scrollPhysics: const BouncingScrollPhysics(),
                   builder: _buildItem,
-                  itemCount: TabsController.to.assetMap.keys.toList().length,
+                  itemCount: getPicIdList().length,
                   loadingBuilder: (context, event) => Center(
                     child: Container(
                       width: 20.0,
@@ -286,8 +304,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 5.0, vertical: 10.0),
                                   onPressed: () {
-                                    var picIdValue = TabsController
-                                            .to.assetMap.keys
+                                    var picIdValue = getPicIdList()
                                             .toList()[
                                         controller.selectedIndex.value];
                                     var shareAblePicStore = TabsController
@@ -358,10 +375,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                     text: TabsController
                                                             .to
                                                             ?.picStoreMap[
-                                                                TabsController
-                                                                        .to
-                                                                        .assetMap
-                                                                        .keys
+                                                                getPicIdList()
                                                                         .toList()[
                                                                     controller
                                                                         .selectedIndex
@@ -385,7 +399,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                     )),
                                                 TextSpan(
                                                   text:
-                                                      '  ${TabsController.to.picStoreMap[TabsController.to.assetMap.keys.toList()[controller.selectedIndex.value]]?.value?.generalLocation?.value ?? S.of(context).country}',
+                                                      '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value?.generalLocation?.value ?? S.of(context).country}',
                                                   style: TextStyle(
                                                     fontFamily: 'NotoSans',
                                                     color: kWhiteColor,
@@ -402,8 +416,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                           Text(
                                             dateFormat(TabsController
                                                     .to
-                                                    ?.picStoreMap[TabsController
-                                                            .to.assetMap.keys
+                                                    ?.picStoreMap[getPicIdList()
                                                             .toList()[
                                                         controller.selectedIndex
                                                             .value]]
@@ -429,8 +442,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                       child: GetX<TaggedController>(
                                           builder: (controllerTagged) {
                                         return (controllerTagged
-                                                    .picWiseTags[TabsController
-                                                            .to.assetMap.keys
+                                                    .picWiseTags[getPicIdList()
                                                             .toList()[
                                                         controller.selectedIndex
                                                             .value]]
@@ -451,17 +463,14 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   } */
                                                   if (controller
                                                           .selectedIndex.value <
-                                                      TabsController.to.assetMap
-                                                          .keys.length) {
-                                                    if (TabsController
-                                                                .to.assetMap.keys
+                                                      getPicIdList().length) {
+                                                    if (getPicIdList()
                                                                 .toList()[
                                                             controller
                                                                 .selectedIndex
                                                                 .value] !=
                                                         null) {
-                                                      var picId = TabsController
-                                                              .to.assetMap.keys
+                                                      var picId = getPicIdList()
                                                               .toList()[
                                                           controller
                                                               .selectedIndex
@@ -511,8 +520,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                             : Obx(
                                                 () => TagsList(
                                                   tagsKeyList: controllerTagged
-                                                      .picWiseTags[TabsController
-                                                              .to.assetMap.keys
+                                                      .picWiseTags[getPicIdList()
                                                               .toList()[
                                                           controller
                                                               .selectedIndex
@@ -531,24 +539,18 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   } */
                                                     if (controller.selectedIndex
                                                             .value <
-                                                        TabsController
-                                                            .to
-                                                            .assetMap
-                                                            .keys
+                                                        getPicIdList()
                                                             .length) {
-                                                      if (TabsController
-                                                                  .to.assetMap.keys
-                                                                  .toList()[
+                                                      if (getPicIdList()[
                                                               controller
                                                                   .selectedIndex
                                                                   .value] !=
                                                           null) {
-                                                        var picId = TabsController
-                                                                .to.assetMap.keys
-                                                                .toList()[
-                                                            controller
-                                                                .selectedIndex
-                                                                .value];
+                                                        var picId =
+                                                            getPicIdList()[
+                                                                controller
+                                                                    .selectedIndex
+                                                                    .value];
                                                         var picStore =
                                                             TabsController
                                                                 .to
@@ -635,9 +637,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: _buildThumbnails,
-                                      itemCount: TabsController.to.assetMap.keys
-                                          .toList()
-                                          .length,
+                                      itemCount: getPicIdList().length,
                                       padding: const EdgeInsets.only(left: 8.0),
                                     ),
                                   ),

@@ -311,7 +311,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
           AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
           LoginScreen.id: (context) => LoginScreen(),
           TabsScreen.id: (context) => TabsScreen(),
-          PhotoScreen.id: (context) => PhotoScreen(picId: null),
+          PhotoScreen.id: (context) => PhotoScreen(picId: null, picIdList: <String>[],),
           SettingsScreen.id: (context) => SettingsScreen(),
           AddLocationScreen.id: (context) => AddLocationScreen(),
           PremiumScreen.id: (context) => PremiumScreen(),

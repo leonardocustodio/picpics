@@ -10,7 +10,6 @@ import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import '../constants.dart';
 import 'database_controller.dart';
-import 'swiper_tab_controller.dart';
 
 class TagModel extends GetxController {
   RxMap _map = <String, dynamic>{}.obs;

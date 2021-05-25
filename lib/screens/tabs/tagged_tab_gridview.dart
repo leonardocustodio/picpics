@@ -233,7 +233,11 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                       //print('Selected photo: ${picStore.photoId}');
                       /* GalleryStore.to.setCurrentPic(picStore);
                       GalleryStore.to.setInitialSelectedThumbnail(picStore); */
-                      Get.to(() => PhotoScreen(picId: picId));
+                      Get.to(() => PhotoScreen(
+                            picId: picId,
+                            picIdList:
+                                controller.taggedPicId[tagKey]?.keys?.toList(),
+                          ));
                     },
                     child: Obx(() {
                       Widget image = Positioned.fill(

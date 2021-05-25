@@ -26,6 +26,9 @@ class UntaggedTab extends GetWidget<TabsController> {
   //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
 
+  List<String> monthPicKeys = <String>[];
+  List<String> dayPicKeys = <String>[];
+
   Widget _buildGridView(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
@@ -47,9 +50,10 @@ class UntaggedTab extends GetWidget<TabsController> {
             return Center(child: CircularProgressIndicator());
           }
           var isMonth = controller.toggleIndexUntagged.value == 0;
-          var monthKeys = controller.allUnTaggedPicsMonth.entries.toList();
-          var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
           if (isMonth) {
+            var monthKeys = controller.allUnTaggedPicsMonth.entries.toList();
+            monthPicKeys = List<String>.from(controller.allUnTaggedPicsMonth.keys
+                .where((element) => element is! DateTime).toList());
             return StaggeredGridView.countBuilder(
                 key: Key('Month'),
                 //controller: scrollControllerFirstTab,
@@ -141,6 +145,9 @@ class UntaggedTab extends GetWidget<TabsController> {
                   });
                 });
           } else {
+            var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
+            dayPicKeys = List<String>.from(controller.allUnTaggedPicsDay.keys
+                .where((element) => element is! DateTime).toList());
             return StaggeredGridView.countBuilder(
                 key: Key('Day'),
                 //controller: scrollControllerFirstTab,
@@ -739,7 +746,15 @@ class UntaggedTab extends GetWidget<TabsController> {
                           //print('${GalleryStore.to.selectedPics.length}');
                           return;
                         }
-                        Get.to(() => PhotoScreen(picId: picId));
+                        if (controller.toggleIndexTagged.value == 0) {
+                          // month
+                          Get.to(() => PhotoScreen(
+                              picId: picId, picIdList: monthPicKeys));
+                        } else {
+                          // day
+                          Get.to(() =>
+                              PhotoScreen(picId: picId, picIdList: dayPicKeys));
+                        }
 /* 
               tagsEditingController.text = '';
               GalleryStore.to.setCurrentPic(picStore);

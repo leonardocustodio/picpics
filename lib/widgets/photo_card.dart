@@ -288,7 +288,8 @@ class _PhotoCardState extends State<PhotoCard> {
                           onTap: () {
                             GalleryStore.to
                                 .setInitialSelectedThumbnail(picStore);
-                            Get.to(() => PhotoScreen());
+                            Get.to(
+                                () => PhotoScreen(picIdList: [], picId: ''));
                           },
                         ),
                       ],
