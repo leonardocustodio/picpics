@@ -361,7 +361,8 @@ class TabsController extends GetxController {
       ));
       WidgetsBinding.instance.addPostFrameCallback((_) {
         var map = RxMap<String, Rx<TagModel>>();
-        TaggedController.to.picWiseTags.value[picStoreValue.value.photoId.value]?.keys
+        TaggedController
+            .to.picWiseTags.value[picStoreValue.value.photoId.value]?.keys
             ?.toList()
             ?.forEach((tagKey) {
           map[tagKey] = TagsController.to.allTags[tagKey];

@@ -4,13 +4,14 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
+import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/secret_switch.dart';
 
 class TopBar extends StatelessWidget {
   final UserController appStore;
-  final GalleryStore galleryStore;
+  /* final GalleryStore galleryStore; */
+  final TagsController tagsController;
   final FocusNode searchFocusNode;
   final TextEditingController searchEditingController;
   final List<Widget> children;
@@ -18,7 +19,7 @@ class TopBar extends StatelessWidget {
 
   TopBar({
     @required this.appStore,
-    @required this.galleryStore,
+    @required this.tagsController,
     @required this.showSecretSwitch,
     this.searchEditingController,
     this.searchFocusNode,
@@ -41,11 +42,12 @@ class TopBar extends StatelessWidget {
                     child: Focus(
                       onFocusChange: (focus) {
                         //print('hasFocus: ${searchFocusNode.hasFocus}');
-                        if (searchFocusNode.hasFocus == true) {
-                          galleryStore.setIsSearching(true);
-                        } else if (searchFocusNode.hasFocus == false &&
-                            galleryStore.searchingTagsKeys.length == 0) {
-                          galleryStore.setIsSearching(false);
+                        if (focus) {
+                          tagsController.setIsSearching(true);
+                          tagsController.tagsSuggestionsCalculate(null);
+                        } else {
+                          tagsController.selectedFilteringTagsKeys.clear();
+                          tagsController.setIsSearching(false);
                         }
                       },
                       child: TextField(
@@ -53,12 +55,12 @@ class TopBar extends StatelessWidget {
                         focusNode: searchFocusNode,
                         onChanged: (text) {
                           //print('searching: $text');
-                          galleryStore.searchResultsTags(text);
+                          tagsController.searchText.value = text;
                         },
                         onSubmitted: (text) {
                           //print('return');
                           searchEditingController.clear();
-                          galleryStore.searchTagsResults.clear();
+                          tagsController.searchTagsResults.clear();
 //                          DatabaseManager.instance.searchResults = null;
                         },
                         keyboardType: TextInputType.text,
@@ -102,7 +104,9 @@ class TopBar extends StatelessWidget {
                       onChanged: (value) {
                         //print('turn off');
                         appStore.switchSecretPhotos();
-                        galleryStore.removeAllPrivatePics();
+
+                        /// TODO: implement this functionality
+                        // galleryStore.removeAllPrivatePics();
                       }),
                 ),
               CupertinoButton(

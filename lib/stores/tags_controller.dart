@@ -55,10 +55,15 @@ class TagsController extends GetxController {
   final lastMonthUsedTags = <String, String>{}.obs;
 
   final recentTagKeyList = <String, String>{}.obs;
-
   final multiPicTags = <String, String>{}.obs;
+  final searchTagsResults = <TagModel>[].obs;
+
+  final searchText = ''.obs;
+  final selectedFilteringTagsKeys = <String>[].obs;
 
   AppDatabase _database = AppDatabase();
+
+  final isSearching = false.obs;
 
   @override
   void onInit() {
@@ -67,6 +72,163 @@ class TagsController extends GetxController {
       await loadAllTags();
       await TagsController.to.loadRecentTags();
     });
+    ever(searchText, (_) => tagsSuggestionsCalculate(null));
+  }
+
+  void setIsSearching(bool val) {
+    isSearching.value = val;
+    if (isSearching.value == false) {
+      selectedFilteringTagsKeys.clear();
+    }
+  }
+
+  void selectTagKeyForFiltering(String tagKey) {
+    if (!selectedFilteringTagsKeys.contains(tagKey)) {
+      selectedFilteringTagsKeys.add(tagKey);
+    }
+    tagsSuggestionsCalculate(null);
+  }
+
+  Future<List<TagModel>> tagsSuggestionsCalculate(_) async {
+    //var userBox = Hive.box('user');
+    //var tagsBox = Hive.box('tags');
+    var tagsList = await _database.getAllLabel();
+    MoorUser getUser = await _database.getSingleMoorUser();
+
+    //List<String> multiPicTags = multiPicTagKeys.toList();
+    List<String> suggestionTags = [];
+    var text = searchText.trim();
+
+    if (text == '') {
+      for (var recent in getUser.recentTags) {
+        // //print('Recent Tag: $recent');
+        if (multiPicTags[recent] != null || recent == kSecretTagKey) {
+          continue;
+        }
+        suggestionTags.add(recent);
+      }
+
+      // //print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+
+//      while (suggestions.length < maxNumOfSuggestions) {
+//          if (excludeTags.contains('Hey}')) {
+//            continue;
+//          }
+      if (suggestionTags.length < kMaxNumOfSuggestions) {
+        for (Label tag in tagsList) {
+          var tagKey = tag.key;
+          if (suggestionTags.length == kMaxNumOfSuggestions) {
+            break;
+          }
+          if (multiPicTags[tagKey] != null ||
+              selectedFilteringTagsKeys.contains(tagKey) ||
+              suggestionTags.contains(tagKey) ||
+              tagKey == kSecretTagKey) {
+            continue;
+          }
+          // //print('Adding tag key: $tagKey');
+          suggestionTags.add(tagKey);
+        }
+      }
+//      }
+    } else {
+      var listOfLetters = text.toLowerCase().split('');
+      for (Label tag in tagsList) {
+        var tagKey = tag.key;
+        if (tagKey == kSecretTagKey) {
+          continue;
+        }
+        if (selectedFilteringTagsKeys.contains(tagKey)) {
+          continue;
+        }
+
+        var tagsStoreValue = TagsController.to.allTags[tagKey].value;
+        doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
+          if (matched) {
+            suggestionTags.add(tagKey);
+          }
+        });
+        /* String tagName = Helpers.decryptTag(tagKey);
+        if (tagName.startsWith(Helpers.stripTag(searchText))) {
+          suggestionTags.add(tagKey);
+        } */
+      }
+    }
+
+    // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
+    if (multiPicTags[kSecretTagKey] == null &&
+        !selectedFilteringTagsKeys.contains(kSecretTagKey) &&
+        UserController.to.secretPhotos == true &&
+        text == '') {
+      suggestionTags.add(kSecretTagKey);
+    }
+
+    // //print('find suggestions: $searchText - exclude tags: $multiPicTags');
+    // //print(suggestionTags);
+    // //print('UserController Tags: ${TagsController.to.allTags}');
+    /* List<TagsStore> suggestions = TagsController.to.allTags
+        .where((element) => suggestionTags.contains(element.id))
+        .toList(); */
+    var suggestions = <TagModel>[];
+    suggestionTags.forEach((suggestedTag) {
+      if (TagsController.to.allTags[suggestedTag] != null) {
+        suggestions.add(TagsController.to.allTags[suggestedTag].value);
+      }
+    });
+    // //print('Suggestions Tag Store: $suggestions');
+    searchTagsResults.value = List<TagModel>.from(suggestions);
+    return suggestions;
+  }
+
+  void removeTagKeyFromFiltering(String tagKey) {
+    if (selectedFilteringTagsKeys.contains(tagKey)) {
+      selectedFilteringTagsKeys.remove(tagKey);
+    }
+    tagsSuggestionsCalculate(null);
+  }
+
+/*   void searchForTagName(_) {
+    var text = searchText.value;
+    text = text.trim();
+    searchTagsResults.clear();
+    if (text == '') {
+      /* setShowSearchTagsResults(false); */
+      return;
+    }
+    var listOfLetters = text.toLowerCase().split('');
+
+    /* setShowSearchTagsResults(true); */
+
+    for (MapEntry<String, Rx<TagModel>> map in allTags.entries) {
+      TagModel tagStore = map.value.value;
+      if (tagStore.key == kSecretTagKey) {
+        continue;
+      }
+      if (selectedFilteringTagsKeys.contains(tagStore.key)) {
+        continue;
+      }
+
+      doCustomisedSearching(tagStore, listOfLetters, (matched) {
+        if (matched) searchTagsResults.add(tagStore);
+      });
+      /* if (Helpers.stripTag(tagStore.name).startsWith(Helpers.stripTag(text))) {
+        searchTagsResults.add(tagStore);
+      } */
+    }
+  } */
+
+  Future<void> removeAllPrivatePics() async {
+    /// TODO: implement the private pic section
+    /*  for (PicStore private in privatePics) {
+      removePicFromTaggedPics(picStore: private, forceDelete: true);
+      filteredPics.remove(private);
+      thumbnailsPics.remove(private);
+      selectedPics.remove(private);
+      swipePics.remove(private);
+      removePicFromUntaggedPics(picStore: private);
+      allPics.value.remove(private);
+    }
+    privatePics.clear(); */
   }
 
   /// load most used tags into `mostUsedTags`
@@ -233,8 +395,6 @@ class TagsController extends GetxController {
     );
   }
 
-  final searchText = ''.obs;
-
   Future<Map<String, String>> loadRecentTags() async {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
@@ -382,7 +542,7 @@ class TagsController extends GetxController {
       [
         Future.forEach(selectedPicIds, (String picId) async {
           for (var tagKey in multiTags) {
-            await addTagToPic(picId: picId,tagKey: tagKey);
+            await addTagToPic(picId: picId, tagKey: tagKey);
           }
           /* 
           var picStore = TabsController.to.picStoreMap[picId]?.value;

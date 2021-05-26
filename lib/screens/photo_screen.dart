@@ -43,7 +43,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   //List<String> photoScreenSwiper = TabsController_.to.picStoreMap.keys.toList();
   var _ = Get.put(PhotoScreenController());
   List<String> idList;
-  PhotoScreen({@required this.picId,@required List<String> picIdList}) {
+  PhotoScreen({@required this.picId, @required List<String> picIdList}) {
     if (picIdList?.isNotEmpty ?? false) {
       idList = List<String>.from(picIdList);
     }
@@ -304,8 +304,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 5.0, vertical: 10.0),
                                   onPressed: () {
-                                    var picIdValue = getPicIdList()
-                                            .toList()[
+                                    var picIdValue = getPicIdList().toList()[
                                         controller.selectedIndex.value];
                                     var shareAblePicStore = TabsController
                                         .to.picStoreMap[picIdValue].value;
@@ -416,10 +415,11 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                           Text(
                                             dateFormat(TabsController
                                                     .to
-                                                    ?.picStoreMap[getPicIdList()
-                                                            .toList()[
-                                                        controller.selectedIndex
-                                                            .value]]
+                                                    ?.picStoreMap[
+                                                        getPicIdList().toList()[
+                                                            controller
+                                                                .selectedIndex
+                                                                .value]]
                                                     ?.value
                                                     ?.createdAt ??
                                                 DateTime.now()),
@@ -442,10 +442,11 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                       child: GetX<TaggedController>(
                                           builder: (controllerTagged) {
                                         return (controllerTagged
-                                                    .picWiseTags[getPicIdList()
-                                                            .toList()[
-                                                        controller.selectedIndex
-                                                            .value]]
+                                                    .picWiseTags[
+                                                        getPicIdList().toList()[
+                                                            controller
+                                                                .selectedIndex
+                                                                .value]]
                                                     ?.keys
                                                     ?.toList()
                                                     ?.isEmpty ??
@@ -464,8 +465,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   if (controller
                                                           .selectedIndex.value <
                                                       getPicIdList().length) {
-                                                    if (getPicIdList()
-                                                                .toList()[
+                                                    if (getPicIdList().toList()[
                                                             controller
                                                                 .selectedIndex
                                                                 .value] !=
@@ -520,11 +520,12 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                             : Obx(
                                                 () => TagsList(
                                                   tagsKeyList: controllerTagged
-                                                      .picWiseTags[getPicIdList()
-                                                              .toList()[
-                                                          controller
-                                                              .selectedIndex
-                                                              .value]]
+                                                      .picWiseTags[
+                                                          getPicIdList()
+                                                                  .toList()[
+                                                              controller
+                                                                  .selectedIndex
+                                                                  .value]]
                                                       ?.keys
                                                       ?.toList(),
                                                   tagStyle:
@@ -539,8 +540,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   } */
                                                     if (controller.selectedIndex
                                                             .value <
-                                                        getPicIdList()
-                                                            .length) {
+                                                        getPicIdList().length) {
                                                       if (getPicIdList()[
                                                               controller
                                                                   .selectedIndex

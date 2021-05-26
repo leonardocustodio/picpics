@@ -37,7 +37,7 @@ class TaggedTab extends GetWidget<TaggedController> {
 
     double newPadding = 0.0;
     if (GalleryStore.to.isSearching.value) {
-      newPadding = (86 - controller.offsetThirdTab).clamp(0.0, 86.0);
+      newPadding = (controller.offsetThirdTab).clamp(0.0, 86.0);
       /*  if (newPadding > 86) {
         newPadding = 86.0;
       } else if (newPadding < 0) {
@@ -83,7 +83,12 @@ class TaggedTab extends GetWidget<TaggedController> {
               },
             );
           } */
-          var taggedKeys = controller.taggedPicId.keys.toList();
+          List<String> taggedKeys = controller.taggedPicId.keys.toList();
+
+          if (TagsController.to.selectedFilteringTagsKeys.isNotEmpty) {
+            taggedKeys.removeWhere((element) =>
+                !TagsController.to.selectedFilteringTagsKeys.contains(element));
+          }
 
           var height = (Get.width / 3) - 20;
 
@@ -471,14 +476,12 @@ class TaggedTab extends GetWidget<TaggedController> {
           children: <Widget>[
             Obx(() {
               if (!TabsController.to.deviceHasPics) {
-                return DeviceHasNoPics(
-                  message: S.current.device_has_no_pics,
-                );
+                return DeviceHasNoPics(message: S.current.device_has_no_pics);
               } else if (controller.allTaggedPicIdList.length == 0 &&
                   TabsController.to.deviceHasPics) {
                 return TopBar(
                   appStore: UserController.to,
-                  galleryStore: GalleryStore.to,
+                  tagsController: TagsController.to,
                   showSecretSwitch: UserController.to.secretPhotos.value,
                   children: <Widget>[
                     Expanded(
@@ -546,44 +549,49 @@ class TaggedTab extends GetWidget<TaggedController> {
                   TabsController.to.deviceHasPics) {
                 return TopBar(
                   appStore: UserController.to,
-                  galleryStore: GalleryStore.to,
+                  tagsController: TagsController.to,
                   showSecretSwitch: UserController.to.secretPhotos.value,
                   searchEditingController: searchEditingController,
                   searchFocusNode: searchFocusNode,
                   children: <Widget>[
+                    /// results bar for the searching
                     Obx(() {
-                      if (GalleryStore.to.isSearching.value) {
+                      if (TagsController.to.isSearching.value) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            if (GalleryStore.to.searchingTagsKeys.length > 0)
+                            if (TagsController
+                                .to.selectedFilteringTagsKeys.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(
                                     left: 16.0, right: 16.0, bottom: 8.0),
                                 child: TagsList(
-                                  tagsKeyList: GalleryStore
-                                      .to.searchingTags.value
-                                      .map((e) => e.key)
+                                  tagsKeyList: TagsController
+                                      .to.selectedFilteringTagsKeys.value
                                       .toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (String tagKey) {
+                                    TagsController.to
+                                        .removeTagKeyFromFiltering(tagKey);
                                     //print('do nothing');
-                                    GalleryStore.to
+                                    /*  GalleryStore.to
                                         .removeTagFromSearchFilter(tagKey);
                                     if (GalleryStore
                                             .to.searchingTagsKeys.isEmpty &&
                                         searchFocusNode.hasFocus == false) {
                                       GalleryStore.to.setIsSearching(false);
-                                    }
+                                    } */
                                   },
                                   onPanEnd: (String tagKey) {
-                                    GalleryStore.to
+                                    TagsController.to
+                                        .removeTagKeyFromFiltering(tagKey);
+                                    /*  GalleryStore.to
                                         .removeTagFromSearchFilter(tagKey);
                                     if (GalleryStore
                                             .to.searchingTagsKeys.isEmpty &&
                                         searchFocusNode.hasFocus == false) {
                                       GalleryStore.to.setIsSearching(false);
-                                    }
+                                    } */
                                   },
                                   onDoubleTap: (String tagKey) {
                                     //print('do nothing');
@@ -612,8 +620,8 @@ class TaggedTab extends GetWidget<TaggedController> {
                             ),
                             Obx(
                               () {
-                                if (!GalleryStore
-                                    .to.showSearchTagsResults.value) {
+                                if (TagsController
+                                    .to.searchTagsResults.isNotEmpty) {
                                   //print('############ ${GalleryStore.to.tagsSuggestions}');
                                   return Padding(
                                     padding: const EdgeInsets.only(
@@ -622,23 +630,23 @@ class TaggedTab extends GetWidget<TaggedController> {
                                         top: 8.0,
                                         bottom: 16.0),
                                     child: TagsList(
-                                      tagsKeyList: GalleryStore
-                                          .to.tagsSuggestions.value
+                                      tagsKeyList: TagsController
+                                          .to.searchTagsResults
                                           .map((e) => e.key)
                                           .toList(),
                                       tagStyle: TagStyle.GrayOutlined,
                                       /* showEditTagModal: showEditTagModal, */
                                       onTap: (tagKey) {
-                                        if (controller.toggleIndexTagged == 0) {
+                                        /* if (controller.toggleIndexTagged.value == 0) {
                                           TabsController.to
                                               .setToggleIndexTagged(1);
-                                        }
+                                        } */
 
-                                        GalleryStore.to
-                                            .addTagToSearchFilter(tagKey);
-                                        searchEditingController.clear();
-                                        GalleryStore.to.searchResultsTags(
-                                            searchEditingController.text);
+                                        TagsController.to
+                                            .selectTagKeyForFiltering(tagKey);
+                                        /* searchEditingController.clear(); */
+                                        /* GalleryStore.to.searchResultsTags(
+                                            searchEditingController.text); */
                                       },
                                       onDoubleTap: (String tagKey) {
                                         //print('do nothing');
@@ -648,9 +656,7 @@ class TaggedTab extends GetWidget<TaggedController> {
                                       },
                                     ),
                                   );
-                                }
-
-                                if (GalleryStore.to.searchTagsResults.isEmpty) {
+                                } else {
                                   return Container(
                                     padding: const EdgeInsets.only(
                                         top: 10.0, left: 26.0, bottom: 10.0),

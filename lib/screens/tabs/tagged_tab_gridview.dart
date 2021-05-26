@@ -53,7 +53,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                     true
                 ? TopBar(
                     appStore: UserController.to,
-                    galleryStore: GalleryStore.to,
+                    tagsController: TagsController.to,
                     showSecretSwitch: UserController.to.secretPhotos.value,
                     children: <Widget>[
                       Expanded(

@@ -52,8 +52,10 @@ class UntaggedTab extends GetWidget<TabsController> {
           var isMonth = controller.toggleIndexUntagged.value == 0;
           if (isMonth) {
             var monthKeys = controller.allUnTaggedPicsMonth.entries.toList();
-            monthPicKeys = List<String>.from(controller.allUnTaggedPicsMonth.keys
-                .where((element) => element is! DateTime).toList());
+            monthPicKeys = List<String>.from(controller
+                .allUnTaggedPicsMonth.keys
+                .where((element) => element is! DateTime)
+                .toList());
             return StaggeredGridView.countBuilder(
                 key: Key('Month'),
                 //controller: scrollControllerFirstTab,
@@ -147,7 +149,8 @@ class UntaggedTab extends GetWidget<TabsController> {
           } else {
             var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
             dayPicKeys = List<String>.from(controller.allUnTaggedPicsDay.keys
-                .where((element) => element is! DateTime).toList());
+                .where((element) => element is! DateTime)
+                .toList());
             return StaggeredGridView.countBuilder(
                 key: Key('Day'),
                 //controller: scrollControllerFirstTab,
