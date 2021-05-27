@@ -63,6 +63,7 @@ class TaggedController extends GetxController {
 
     allTaggedPicIdList.clear();
     taggedPicId.clear();
+    picWiseTags.clear();
     await TagsController.to.loadAllTags();
     await Future.forEach(taggedPhotoIdList, (Photo photo) async {
       if (photo?.tags?.isNotEmpty ?? false) {

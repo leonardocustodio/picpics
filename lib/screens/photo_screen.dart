@@ -43,7 +43,8 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   //List<String> photoScreenSwiper = TabsController_.to.picStoreMap.keys.toList();
   var _ = Get.put(PhotoScreenController());
   List<String> idList;
-  PhotoScreen({@required this.picId, @required List<String> picIdList}) {
+  final List<String> picIdList;
+  PhotoScreen({@required this.picId, @required this.picIdList}) {
     if (picIdList?.isNotEmpty ?? false) {
       idList = List<String>.from(picIdList);
     }
@@ -361,243 +362,80 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
                                   children: <Widget>[
-                                    Obx(() {
-                                      return Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          RichText(
-                                            textScaleFactor: 1.0,
-                                            text: TextSpan(
-                                              children: [
-                                                TextSpan(
-                                                    text: TabsController
-                                                            .to
-                                                            ?.picStoreMap[
-                                                                getPicIdList()
-                                                                        .toList()[
-                                                                    controller
-                                                                        .selectedIndex
-                                                                        .value]]
-                                                            ?.value
-                                                            ?.specificLocation
-                                                            ?.value ??
-                                                        S
-                                                            .of(context)
-                                                            .photo_location,
-                                                    style: TextStyle(
-                                                      fontFamily: 'NotoSans',
-                                                      color: kWhiteColor,
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      fontStyle:
-                                                          FontStyle.normal,
-                                                      letterSpacing:
-                                                          -0.4099999964237213,
-                                                    )),
-                                                TextSpan(
-                                                  text:
-                                                      '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value?.generalLocation?.value ?? S.of(context).country}',
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: <Widget>[
+                                        RichText(
+                                          textScaleFactor: 1.0,
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                  text: TabsController
+                                                          .to
+                                                          ?.picStoreMap[
+                                                              getPicIdList()
+                                                                      .toList()[
+                                                                  controller
+                                                                      .selectedIndex
+                                                                      .value]]
+                                                          ?.value
+                                                          ?.specificLocation
+                                                          ?.value ??
+                                                      S
+                                                          .of(context)
+                                                          .photo_location,
                                                   style: TextStyle(
                                                     fontFamily: 'NotoSans',
                                                     color: kWhiteColor,
-                                                    fontSize: 12,
-                                                    fontWeight: FontWeight.w300,
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w400,
                                                     fontStyle: FontStyle.normal,
                                                     letterSpacing:
                                                         -0.4099999964237213,
-                                                  ),
+                                                  )),
+                                              TextSpan(
+                                                text:
+                                                    '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value?.generalLocation?.value ?? S.of(context).country}',
+                                                style: TextStyle(
+                                                  fontFamily: 'NotoSans',
+                                                  color: kWhiteColor,
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w300,
+                                                  fontStyle: FontStyle.normal,
+                                                  letterSpacing:
+                                                      -0.4099999964237213,
                                                 ),
-                                              ],
-                                            ),
+                                              ),
+                                            ],
                                           ),
-                                          Text(
-                                            dateFormat(TabsController
-                                                    .to
-                                                    ?.picStoreMap[
-                                                        getPicIdList().toList()[
-                                                            controller
-                                                                .selectedIndex
-                                                                .value]]
-                                                    ?.value
-                                                    ?.createdAt ??
-                                                DateTime.now()),
-                                            textScaleFactor: 1.0,
-                                            style: TextStyle(
-                                              fontFamily: 'Lato',
-                                              color: kWhiteColor,
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w300,
-                                              fontStyle: FontStyle.normal,
-                                              letterSpacing:
-                                                  -0.4099999964237213,
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    }),
-                                    Padding(
-                                      padding: const EdgeInsets.only(top: 16.0),
-                                      child: GetX<TaggedController>(
-                                          builder: (controllerTagged) {
-                                        return (controllerTagged
-                                                    .picWiseTags[
-                                                        getPicIdList().toList()[
-                                                            controller
-                                                                .selectedIndex
-                                                                .value]]
-                                                    ?.keys
-                                                    ?.toList()
-                                                    ?.isEmpty ??
-                                                true)
-                                            ? TagsList(
-                                                tagsKeyList: <String>[],
-                                                tagStyle: TagStyle.MultiColored,
-                                                addTagButton: () async {
-                                                  /* GalleryStore.to.setCurrentPic(
-                                                      TabsController_
-                                                          .to.picStoreMap[picId].value); */
-
-                                                  /* if (!controller.modalCard.value) {
-                                                    controller.setModalCard(true);
-                                                  } */
-                                                  if (controller
-                                                          .selectedIndex.value <
-                                                      getPicIdList().length) {
-                                                    if (getPicIdList().toList()[
-                                                            controller
-                                                                .selectedIndex
-                                                                .value] !=
-                                                        null) {
-                                                      var picId = getPicIdList()
-                                                              .toList()[
+                                        ),
+                                        Text(
+                                          dateFormat(TabsController
+                                                  .to
+                                                  ?.picStoreMap[
+                                                      getPicIdList().toList()[
                                                           controller
                                                               .selectedIndex
-                                                              .value];
-                                                      var picStore =
-                                                          TabsController
-                                                              .to
-                                                              .picStoreMap[
-                                                                  picId]
-                                                              ?.value;
-
-                                                      if (picStore != null) {
-                                                        var result = await Get.to(
-                                                            () => AllTagsScreen(
-                                                                picStore:
-                                                                    picStore));
-                                                        if (result == null ||
-                                                            result is bool &&
-                                                                result) {
-                                                          await TabsController
-                                                              .to
-                                                              .refreshUntaggedList();
-                                                          await TaggedController
-                                                              .to
-                                                              .refreshTaggedPhotos();
-                                                        }
-                                                        return;
-                                                      }
-                                                    }
-                                                  }
-
-                                                  Get.back();
-                                                },
-                                                onTap: (String tagKey) {
-                                                  //print('ignore click');
-                                                },
-                                                onDoubleTap: (String tagKey) {
-//                                        TabsController_.to.picStoreMap[picId]
-//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                                                },
-                                                onPanEnd: (String tagKey) {
-                                                  //print('teste');
-                                                },
-                                                /* showEditTagModal: () =>
-                                                    showEditTagModal(context, false), */
-                                              )
-                                            : Obx(
-                                                () => TagsList(
-                                                  tagsKeyList: controllerTagged
-                                                      .picWiseTags[
-                                                          getPicIdList()
-                                                                  .toList()[
-                                                              controller
-                                                                  .selectedIndex
-                                                                  .value]]
-                                                      ?.keys
-                                                      ?.toList(),
-                                                  tagStyle:
-                                                      TagStyle.MultiColored,
-                                                  addTagButton: () async {
-                                                    /* GalleryStore.to.setCurrentPic(
-                                                      TabsController_
-                                                          .to.picStoreMap[picId].value); */
-
-                                                    /* if (!controller.modalCard.value) {
-                                                    controller.setModalCard(true);
-                                                  } */
-                                                    if (controller.selectedIndex
-                                                            .value <
-                                                        getPicIdList().length) {
-                                                      if (getPicIdList()[
-                                                              controller
-                                                                  .selectedIndex
-                                                                  .value] !=
-                                                          null) {
-                                                        var picId =
-                                                            getPicIdList()[
-                                                                controller
-                                                                    .selectedIndex
-                                                                    .value];
-                                                        var picStore =
-                                                            TabsController
-                                                                .to
-                                                                .picStoreMap[
-                                                                    picId]
-                                                                ?.value;
-
-                                                        if (picStore != null) {
-                                                          var result =
-                                                              await Get.to(() =>
-                                                                  AllTagsScreen(
-                                                                    picStore:
-                                                                        picStore,
-                                                                  ));
-                                                          if (result == null ||
-                                                              result is bool &&
-                                                                  result) {
-                                                            await TabsController
-                                                                .to
-                                                                .refreshUntaggedList();
-                                                            await TaggedController
-                                                                .to
-                                                                .refreshTaggedPhotos();
-                                                          }
-                                                          return;
-                                                        }
-                                                      }
-                                                    }
-
-                                                    Get.back();
-                                                  },
-                                                  onTap: (String tagKey) {
-                                                    //print('ignore click');
-                                                  },
-                                                  onDoubleTap: (String tagKey) {
-//                                        TabsController_.to.picStoreMap[picId]
-//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
-                                                  },
-                                                  onPanEnd: (String tagKey) {
-                                                    //print('teste');
-                                                  },
-                                                  /* showEditTagModal: () =>
-                                                    showEditTagModal(context, false), */
-                                                ),
-                                              );
-                                      }),
+                                                              .value]]
+                                                  ?.value
+                                                  ?.createdAt ??
+                                              DateTime.now()),
+                                          textScaleFactor: 1.0,
+                                          style: TextStyle(
+                                            fontFamily: 'Lato',
+                                            color: kWhiteColor,
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w300,
+                                            fontStyle: FontStyle.normal,
+                                            letterSpacing: -0.4099999964237213,
+                                          ),
+                                        ),
+                                      ],
                                     ),
+                                    BottomTabsListWidget(
+                                        picId: getPicIdList().toList()[
+                                            controller.selectedIndex.value]),
                                   ],
                                 ),
                               ),
@@ -652,6 +490,91 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class BottomTabsListWidget extends GetWidget<TaggedController> {
+  final String picId;
+  const BottomTabsListWidget({@required this.picId, Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 16.0),
+      child: Obx(
+        () => (controller.picWiseTags[picId]?.keys?.toList()?.isEmpty ?? true)
+            ? TagsList(
+                tagsKeyList: <String>[],
+                tagStyle: TagStyle.MultiColored,
+                addTagButton: () async {
+                  var picStore = TabsController.to.picStoreMap[picId]?.value;
+
+                  if (picStore != null) {
+                    var result =
+                        Get.to(() => AllTagsScreen(picStore: picStore));
+                    if (result == null) {
+                      await TaggedController.to.refreshTaggedPhotos();
+                      await TabsController.to.refreshUntaggedList();
+                    }
+                    return;
+                  }
+
+                  await Get.back();
+                },
+                onTap: (String tagKey) {
+                  //print('ignore click');
+                },
+                onDoubleTap: (String tagKey) {
+//                                        TabsController_.to.picStoreMap[picId]
+//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+                },
+                onPanEnd: (String tagKey) {
+                  //print('teste');
+                },
+                /* showEditTagModal: () =>
+                                                    showEditTagModal(context, false), */
+              )
+            : TagsList(
+                tagsKeyList: controller.picWiseTags[this.picId]?.keys?.toList(),
+                tagStyle: TagStyle.MultiColored,
+                addTagButton: () async {
+                  /* GalleryStore.to.setCurrentPic(
+                                                      TabsController_
+                                                          .to.picStoreMap[picId].value); */
+
+                  /* if (!controller.modalCard.value) {
+                                                    controller.setModalCard(true);
+                                                  } */
+
+                  var picStore = TabsController.to.picStoreMap[picId]?.value;
+
+                  if (picStore != null) {
+                    var result =
+                        Get.to(() => AllTagsScreen(picStore: picStore));
+                    if (result == null) {
+                      await TaggedController.to.refreshTaggedPhotos();
+                      await TabsController.to.refreshUntaggedList();
+                    }
+                    return;
+                  }
+
+                  await Get.back();
+                },
+                onTap: (String tagKey) {
+                  //print('ignore click');
+                },
+                onDoubleTap: (String tagKey) {
+//                                        TabsController_.to.picStoreMap[picId]
+//                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
+                },
+                onPanEnd: (String tagKey) {
+                  //print('teste');
+                },
+                /* showEditTagModal: () =>
+                                                    showEditTagModal(context, false), */
+              ),
       ),
     );
   }

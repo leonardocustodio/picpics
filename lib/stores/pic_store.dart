@@ -671,32 +671,21 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> removeTagFromPic({String tagKey}) async {
-    //print('removing tag: $tagKey from pic $photoId');
-    //var tagsBox = Hive.box('tags');
-    //var picsBox = Hive.box('pics');
-
-    //Tag getTag = tagsBox.get(tagKey);
     Label getTag = await database.getLabelByLabelKey(tagKey);
 
-    //print('Tag photos ids: ${getTag.photoId}');
     int indexOfPicInTag = getTag.photoId.indexOf(photoId.value);
-    //print('Tag index to remove: $indexOfPicInTag');
+
     if (indexOfPicInTag != null && indexOfPicInTag != -1) {
       getTag.photoId.removeAt(indexOfPicInTag);
-      //tagsBox.put(tagKey, getTag);
       await database.updateLabel(getTag);
-      //print('removed pic from tag');
     }
 
-    //Pic getPic = picsBox.get(photoId);
     Photo getPic = await database.getPhotoByPhotoId(photoId.value);
     int indexOfTagInPic = getPic.tags.indexOf(tagKey);
 
     if (indexOfTagInPic != null) {
       getPic.tags.removeAt(indexOfTagInPic);
-      //picsBox.put(photoId, getPic);
       await database.updatePhoto(getPic);
-      //print('removed tag from pic');
       tags.remove(tagKey);
     }
 

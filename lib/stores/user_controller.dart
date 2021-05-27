@@ -4,8 +4,10 @@ import 'package:cryptography_flutter/cryptography.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:get/get.dart';
 import 'package:notification_permissions/notification_permissions.dart';
+import 'package:package_info/package_info.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
@@ -57,6 +59,13 @@ class UserController extends GetxController {
 
   @override
   void onReady() {
+    DeviceLocale.getCurrentLocale().then((Locale locale) {
+      deviceLocale = locale.toString();
+    });
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      appVersion = packageInfo.version;
+    });
+
     ever(appLanguage, _settingCurrentLanguage);
     initialize();
     _settingCurrentLanguage(null);

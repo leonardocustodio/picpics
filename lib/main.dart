@@ -10,13 +10,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
-import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:package_info/package_info.dart';
 
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/admob_manager.dart';
@@ -191,10 +189,6 @@ void main() async {
     );
   }).sendPort);
 
-  String deviceLocale = await DeviceLocale.getCurrentLocale()
-      .then((Locale locale) => locale.toString());
-  String appVersion = await PackageInfo.fromPlatform()
-      .then((PackageInfo packageInfo) => packageInfo.version);
   //print('Device Locale: $deviceLocale');
 
   String initiatedWithProduct;
@@ -202,8 +196,6 @@ void main() async {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
   }
   UserController user = UserController()
-    ..appVersion = appVersion
-    ..deviceLocale = deviceLocale
     ..initiatedWithProduct = initiatedWithProduct;
   await user.initialize();
 
