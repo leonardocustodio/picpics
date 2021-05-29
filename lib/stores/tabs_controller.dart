@@ -66,6 +66,7 @@ class TabsController extends GetxController {
   AppDatabase database = AppDatabase();
   final allUnTaggedPicsMonth = <dynamic, dynamic>{}.obs;
   final allUnTaggedPicsDay = <dynamic, dynamic>{}.obs;
+  final allUnTaggedPics = <String, String>{}.obs;
 
   // picId: assetPathEntity
   final assetMap = <String, AssetEntity>{}.obs;
@@ -168,6 +169,7 @@ class TabsController extends GetxController {
 
   Future<void> refreshUntaggedList() async {
     isUntaggedPicsLoaded.value = false;
+    allUnTaggedPics.clear();
     allUnTaggedPicsMonth.clear();
     allUnTaggedPicsDay.clear();
     assetEntityList.sort((a, b) {
@@ -236,6 +238,7 @@ class TabsController extends GetxController {
         }
         allUnTaggedPicsMonth[entity.id] = '';
         allUnTaggedPicsDay[entity.id] = '';
+        allUnTaggedPics[entity.id] = '';
         previousMonthPicIdList.add(entity.id);
         previousDayPicIdList.add(entity.id);
       }

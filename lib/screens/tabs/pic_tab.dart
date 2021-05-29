@@ -5,6 +5,9 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/swiper_tab_controller.dart';
+import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
@@ -21,20 +24,25 @@ import 'package:picPics/widgets/photo_card.dart';
   _PicTabState createState() => _PicTabState();
 } */
 
-class PicTab extends GetWidget<GalleryStore> {
+class PicTab extends GetWidget<SwiperTabController> {
   static const id = 'pic_tab';
-  final Function showDeleteSecretModal;
-  PicTab({@required this.showDeleteSecretModal, Key key}) : super(key: key);
+  PicTab({Key key}) : super(key: key);
 
   CarouselController carouselController = CarouselController();
   ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
 
   Widget _buildPhotoSlider(int index) {
-    //print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
+    String picId = controller.swiperPicIdList[index];
+    PicStore picStore = TabsController.to.picStoreMap[picId].value;
+
+    if (picStore == null) {
+      picStore = TabsController.to.explorPicStore(picId).value;
+    }
+
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
-        picStore: controller.swipePics.value[index],
+        picStore: picStore,
         picsInThumbnails: PicSource.SWIPE,
         picsInThumbnailIndex: index,
         // showEditTagModal: (tagkey) => showEditTagModal(tagkey),
@@ -93,13 +101,13 @@ class PicTab extends GetWidget<GalleryStore> {
                     ),
                   ),
                 );
-              } else if (!controller.deviceHasPics.value) {
+              } else if (!TabsController.to.deviceHasPics) {
                 return Expanded(
                   child: DeviceHasNoPics(
                     message: S.of(context).device_has_no_pics,
                   ),
                 );
-              } else if (controller.swipePics.isEmpty) {
+              } else if (controller.swiperPicIdList.isEmpty) {
                 return Expanded(
                   child: DeviceHasNoPics(
                     message: S.of(context).all_photos_were_tagged,
@@ -110,16 +118,16 @@ class PicTab extends GetWidget<GalleryStore> {
                 child: Stack(
                   children: <Widget>[
                     Obx(() {
-                      controller.clearPicThumbnails();
-                      controller.addPicsToThumbnails(controller.swipePics);
+                      //controller.clearPicThumbnails();
+                      //controller.addPicsToThumbnails(controller.swipePics);
 
                       return CarouselSlider.builder(
-                        itemCount: controller.swipePics.length,
+                        itemCount: controller.swiperPicIdList.length,
                         carouselController: carouselController,
                         itemBuilder: (BuildContext context, int index) {
-                          if (index < controller.swipeCutOff) {
+                          /* if (index < controller.swipeCutOff) {
                             return Container();
-                          }
+                          } */
                           //print('calling index $index');
                           return _buildPhotoSlider(index);
                         },

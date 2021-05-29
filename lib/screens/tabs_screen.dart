@@ -589,9 +589,7 @@ class TabsScreen extends GetWidget<TabsController> {
                       return UntaggedTab();
                     else if (controller.currentTab.value == 1 &&
                         userController.hasGalleryPermission.value) {
-                      return PicTab(
-                        showDeleteSecretModal: showDeleteSecretModal,
-                      );
+                      return PicTab();
                     } else if (controller.currentTab.value == 2 &&
                         userController.hasGalleryPermission.value) {
                       return TaggedTab();

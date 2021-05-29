@@ -11,6 +11,7 @@ import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/all_tags_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
@@ -319,7 +320,8 @@ class _PhotoCardState extends State<PhotoCard> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: picStore.specificLocation ??
+                                text: picStore.specificLocation.value
+                                        .toString() ??
                                     S.of(context).photo_location,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -363,9 +365,12 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Obx(() {
                   return TagsList(
-                    tagsKeyList: GalleryStore.to
-                        .tagsFromPic(picStore: picStore)
-                        .map((e) => e.value.key),
+                    tagsKeyList: TaggedController
+                            .to
+                            .picWiseTags[picStore.photoId.value.toString()]
+                            ?.keys
+                            ?.toList() ??
+                        <String>[],
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
@@ -384,13 +389,17 @@ class _PhotoCardState extends State<PhotoCard> {
                       //print('do nothing');
                     },
                     onPanEnd: (String selectedTagKey) async {
-                      if (!UserController.to.canTagToday.value) {
+                      /* if (!UserController.to.canTagToday.value) {
                         showWatchAdModal();
                         return;
-                      }
+                      } */
 
-                      await GalleryStore.to.removeTagFromPic(
-                          picStore: picStore, tagKey: selectedTagKey);
+                      await TagsController.to.removeTagFromPic(
+                          picId: picStore.photoId.value.toString(),
+                          tagKey: selectedTagKey);
+
+                      /* await GalleryStore.to.removeTagFromPic(
+                          picStore: picStore, tagKey: selectedTagKey); */
 
                       await picStore.tagsSuggestionsCalculate();
                     },
@@ -401,12 +410,12 @@ class _PhotoCardState extends State<PhotoCard> {
                       //print('return');
 
                       if (text != '') {
-                        if (!UserController.to.canTagToday.value) {
+                        /* if (!UserController.to.canTagToday.value) {
                           tagsEditingController.clear();
                           picStore.setSearchText('');
                           showWatchAdModal();
                           return;
-                        }
+                        } */
 
                         await GalleryStore.to.addTagToPic(
                           picStore: picStore,
@@ -479,17 +488,21 @@ class _PhotoCardState extends State<PhotoCard> {
                         tagStyle: TagStyle.GrayOutlined,
                         //showEditTagModal: widget.showEditTagModal,
                         onTap: (tagKey) async {
-                          if (!UserController.to.canTagToday.value) {
+                          /* if (!UserController.to.canTagToday.value) {
                             showWatchAdModal();
                             return;
-                          }
+                          } */
 
+                          await TagsController.to.addTagToPic(
+                              picId: picStore.photoId.value.toString(),
+                              tagKey: tagKey);
+/* 
                           await GalleryStore.to.addTagToPic(
                               picStore: picStore,
                               tagName: TagsController
-                                  .to.allTags[tagKey].value.title);
-                          tagsEditingController.clear();
-                          picStore.setSearchText('');
+                                  .to.allTags[tagKey].value.title); */
+                          /* tagsEditingController.clear(); */
+                          /* picStore.setSearchText(''); */
                         },
                         onDoubleTap: (tagKey) {
                           //print('do nothing');
