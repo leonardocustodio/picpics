@@ -83,7 +83,7 @@ class TabsController extends GetxController {
 
   @override
   void onReady() {
-    /// I knwo below line is redundant but it is used to kickstart initialization of the tags list.
+    /// I know below line is redundant but it is used to kickstart initialization of the tags list.
     var _ = TagsController.to.allTags.value;
     var __ = TaggedController.to.taggedPicId.value;
     initialization();

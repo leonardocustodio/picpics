@@ -33,7 +33,7 @@ class PicTab extends GetWidget<SwiperTabController> {
 
   Widget _buildPhotoSlider(int index) {
     String picId = controller.swiperPicIdList[index];
-    PicStore picStore = TabsController.to.picStoreMap[picId].value;
+    PicStore picStore = TabsController.to.picStoreMap[picId]?.value;
 
     if (picStore == null) {
       picStore = TabsController.to.explorPicStore(picId).value;

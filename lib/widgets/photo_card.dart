@@ -320,8 +320,8 @@ class _PhotoCardState extends State<PhotoCard> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: picStore.specificLocation.value
-                                        .toString() ??
+                                text: picStore.specificLocation?.value
+                                        ?.toString() ??
                                     S.of(context).photo_location,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -334,7 +334,7 @@ class _PhotoCardState extends State<PhotoCard> {
                               ),
                               TextSpan(
                                 text:
-                                    '  ${picStore.generalLocation ?? S.of(context).country}',
+                                    '  ${picStore?.generalLocation?.value ?? S.of(context).country}',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -403,8 +403,9 @@ class _PhotoCardState extends State<PhotoCard> {
 
                       await picStore.tagsSuggestionsCalculate();
                     },
-                    onChanged: (text) {
-                      picStore.setSearchText(text);
+                    onChanged: (text) async {
+                      TagsController.to.searchText.value = text;
+                      await TagsController.to.tagsSuggestionsCalculate(null);
                     },
                     onSubmitted: (text) async {
                       //print('return');
@@ -417,15 +418,20 @@ class _PhotoCardState extends State<PhotoCard> {
                           return;
                         } */
 
-                        await GalleryStore.to.addTagToPic(
+                        /* await GalleryStore.to.addTagToPic(
                           picStore: picStore,
                           tagName: text,
-                        );
+                        ); */
+                        var tagKey = await TagsController.to.createTag(text);
+                        await TagsController.to.addTagToPic(
+                            picId: picStore.photoId.value.toString(),
+                            tagKey: tagKey);
 
-                        await picStore.tagsSuggestionsCalculate();
                         Vibrate.feedback(FeedbackType.success);
                         tagsEditingController.clear();
-                        picStore.setSearchText('');
+                        TagsController.to.searchText.value = '';
+                        await TagsController.to.tagsSuggestionsCalculate(null);
+                        await TaggedController.to.refreshTaggedPhotos();
                       }
                     },
                   );
@@ -474,7 +480,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     }
 
                     //print('${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');
-
+                    TagsController.to.tagsSuggestionsCalculate(null);
                     return Obx(
                       () => TagsList(
                         title: suggestionsTitle,
@@ -482,9 +488,22 @@ class _PhotoCardState extends State<PhotoCard> {
                             /* picStore.aiTags.value
                             ? picStore.aiSuggestions.value
                             : */
-                            picStore.tagsSuggestions.value
+                            TagsController.to.searchTagsResults.value
                                 .map((e) => e.key)
-                                .toList(),
+                                .toList()
+                                .where((tagKey) {
+                          if (TaggedController.to.picWiseTags[
+                                      picStore.photoId.value.toString()] !=
+                                  null &&
+                              TaggedController.to.picWiseTags[
+                                          picStore.photoId.value.toString()]
+                                      [tagKey] !=
+                                  null) {
+                            return false;
+                          }
+
+                          return true;
+                        }).toList(),
                         tagStyle: TagStyle.GrayOutlined,
                         //showEditTagModal: widget.showEditTagModal,
                         onTap: (tagKey) async {
@@ -496,13 +515,37 @@ class _PhotoCardState extends State<PhotoCard> {
                           await TagsController.to.addTagToPic(
                               picId: picStore.photoId.value.toString(),
                               tagKey: tagKey);
+                          await TagsController.to
+                              .tagsSuggestionsCalculate(null)
+                              .then((value) async {
+                            await TaggedController.to.refreshTaggedPhotos();
+                            var newList = value.where((element) {
+                              if (TaggedController.to.picWiseTags[
+                                          picStore.photoId.value.toString()] !=
+                                      null &&
+                                  TaggedController.to.picWiseTags[
+                                              picStore.photoId.value.toString()]
+                                          [element.key] ==
+                                      null) {
+                                return true;
+                              }
+                              return false;
+                            }).toList();
+                            if (TagsController.to.searchText.value != '' &&
+                                newList.isEmpty) {
+                              TagsController.to.searchText.value = '';
+                              await TagsController.to
+                                  .tagsSuggestionsCalculate(null);
+                            }
+                          });
+                          await TaggedController.to.refreshTaggedPhotos();
 /* 
                           await GalleryStore.to.addTagToPic(
                               picStore: picStore,
                               tagName: TagsController
                                   .to.allTags[tagKey].value.title); */
-                          /* tagsEditingController.clear(); */
-                          /* picStore.setSearchText(''); */
+                          /* tagsEditingController.clear();
+                          picStore.setSearchText(''); */
                         },
                         onDoubleTap: (tagKey) {
                           //print('do nothing');

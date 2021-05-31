@@ -675,7 +675,7 @@ class PicStore extends GetxController {
 
     int indexOfPicInTag = getTag.photoId.indexOf(photoId.value);
 
-    if (indexOfPicInTag != null && indexOfPicInTag != -1) {
+    if (indexOfPicInTag != -1) {
       getTag.photoId.removeAt(indexOfPicInTag);
       await database.updateLabel(getTag);
     }
@@ -683,7 +683,7 @@ class PicStore extends GetxController {
     Photo getPic = await database.getPhotoByPhotoId(photoId.value);
     int indexOfTagInPic = getPic.tags.indexOf(tagKey);
 
-    if (indexOfTagInPic != null) {
+    if (indexOfTagInPic != -1) {
       getPic.tags.removeAt(indexOfTagInPic);
       await database.updatePhoto(getPic);
       tags.remove(tagKey);

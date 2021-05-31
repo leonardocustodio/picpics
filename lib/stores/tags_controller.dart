@@ -361,7 +361,7 @@ class TagsController extends GetxController {
     }
   } */
 
-  Future<void> createTag(String tagName) async {
+  Future<String> createTag(String tagName) async {
     //var tagsBox = Hive.box('tags');
     /*// //print(tagsBox.keys); */
 
@@ -372,7 +372,7 @@ class TagsController extends GetxController {
 
     if (lab != null) {
       // //print('user already has this tag');
-      return;
+      return tagKey;
     }
 
     // //print('adding tag to database...');
@@ -393,6 +393,7 @@ class TagsController extends GetxController {
       Event.created_tag,
       params: {'tagName': tagName},
     );
+    return tagKey;
   }
 
   Future<Map<String, String>> loadRecentTags() async {
