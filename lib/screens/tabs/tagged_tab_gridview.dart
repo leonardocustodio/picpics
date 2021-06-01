@@ -31,14 +31,14 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
         leading: GestureDetector(
           onTap: () => Get.back(),
           child: Icon(
-            Icons.arrow_back_ios_outlined,
+            Icons.arrow_back_ios_rounded,
             color: Colors.black,
-            size: 22,
+            size: 24,
           ),
         ),
-        titleSpacing: -10,
+        titleSpacing: -8,
         title: Text(
-          ('${TagsController.to.allTags[tagKey]?.value?.title ?? ''} (${controller.taggedPicId[tagKey]?.keys?.length ?? ''})'),
+          ('${TagsController.to.allTags[tagKey]?.value?.title ?? ''} (${controller.taggedPicId[tagKey]?.keys?.length ?? 0})'),
           style: TextStyle(color: Colors.black),
         ),
       ),

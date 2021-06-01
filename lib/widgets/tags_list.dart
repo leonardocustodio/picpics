@@ -336,12 +336,12 @@ class _TagsListState extends State<TagsList> {
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  height: 30.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  height: 34,
                   decoration: BoxDecoration(
                     color: Color(0xFFF1F3F5),
-                    border: Border.all(color: kLightGrayColor, width: 1.0),
-                    borderRadius: BorderRadius.circular(12.0),
+                    border: Border.all(color: kLightGrayColor, width: 1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -392,8 +392,10 @@ class _TagsListState extends State<TagsList> {
                             widget
                                 .onSubmitted(widget.textEditingController.text);
                           },
-                          child: Container(
-                            child: Image.asset('lib/images/plusaddtagico.png'),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.grey,
+                            size: 28,
                           ),
                         ),
                     ],
@@ -402,16 +404,18 @@ class _TagsListState extends State<TagsList> {
               ),
               if (widget.onAiButtonTap != null)
                 CupertinoButton(
-                  padding: const EdgeInsets.only(left: 8.0),
+                  padding: const EdgeInsets.only(left: 8),
                   onPressed: widget.onAiButtonTap,
                   child: Row(
                     children: [
                       Text(
                         widget.aiButtonTitle,
                         textScaleFactor: 1.0,
-                        style: kGrayTextStyle,
+                        style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
-                      Image.asset('lib/images/arrowrightgray.png'),
+                      Icon(Icons.arrow_forward_ios_rounded,
+                          size: 18, color: Colors.grey),
+                      //Image.asset('lib/images/arrowrightgray.png'),
                     ],
                   ),
                 ),
@@ -426,14 +430,14 @@ class _TagsListState extends State<TagsList> {
       children: <Widget>[
         if (widget.title != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               widget.title,
               textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w300,
                 fontStyle: FontStyle.normal,
                 letterSpacing: -0.4099999964237213,
@@ -442,8 +446,8 @@ class _TagsListState extends State<TagsList> {
           ),
         Wrap(
           direction: Axis.horizontal,
-          spacing: 5.0,
-          runSpacing: 5.0,
+          spacing: 5,
+          runSpacing: 5,
           runAlignment: WrapAlignment.start,
           children: tagsWidgets,
         ),

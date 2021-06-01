@@ -355,7 +355,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       style: TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff606566),
-                        fontSize: 12,
+                        fontSize: 14.5,
                         fontWeight: FontWeight.w300,
                         fontStyle: FontStyle.normal,
                         letterSpacing: -0.4099999964237213,
@@ -402,6 +402,8 @@ class _PhotoCardState extends State<PhotoCard> {
                           picStore: picStore, tagKey: selectedTagKey); */
 
                       await picStore.tagsSuggestionsCalculate();
+                      await TaggedController.to.refreshTaggedPhotos();
+                      await TabsController.to.refreshUntaggedList();
                     },
                     onChanged: (text) async {
                       TagsController.to.searchText.value = text;
@@ -432,6 +434,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         TagsController.to.searchText.value = '';
                         await TagsController.to.tagsSuggestionsCalculate(null);
                         await TaggedController.to.refreshTaggedPhotos();
+                        await TabsController.to.refreshUntaggedList();
                       }
                     },
                   );
@@ -485,7 +488,8 @@ class _PhotoCardState extends State<PhotoCard> {
                       () => TagsList(
                         title: suggestionsTitle,
                         tagsKeyList:
-                            /* picStore.aiTags.value
+                            /* 
+                            picStore.aiTags.value
                             ? picStore.aiSuggestions.value
                             : */
                             TagsController.to.searchTagsResults.value
@@ -539,7 +543,8 @@ class _PhotoCardState extends State<PhotoCard> {
                             }
                           });
                           await TaggedController.to.refreshTaggedPhotos();
-/* 
+                          await TabsController.to.refreshUntaggedList();
+                          /* 
                           await GalleryStore.to.addTagToPic(
                               picStore: picStore,
                               tagName: TagsController
