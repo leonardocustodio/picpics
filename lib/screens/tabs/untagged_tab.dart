@@ -425,7 +425,7 @@ class UntaggedTab extends GetWidget<TabsController> {
               ),
             ), */
           Text(
-            '${dateFormat(date)}',
+            '${date != null ? dateFormat(date) : ''}',
             textScaleFactor: 1.0,
             style: TextStyle(
               fontFamily: 'Lato',
