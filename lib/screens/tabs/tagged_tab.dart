@@ -765,7 +765,7 @@ class TaggedTab extends GetWidget<TaggedController> {
                 opacity: controller.isScrolling.value
                     ? 0.0
                     : (searchFocusNode.hasFocus ||
-                            GalleryStore.to.taggedPics.length == 0)
+                            TaggedController.to.allTaggedPicIdList.isEmpty)
                         ? 0.0
                         : 1.0,
                 curve: Curves.linear,

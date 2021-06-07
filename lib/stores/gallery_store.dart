@@ -50,13 +50,13 @@ class GalleryStore extends GetxController {
   final assetsPath = <AssetPathEntity>[].obs;
   final allPics = <String, PicStore>{}.obs;
 
-  final untaggedPics = <UntaggedPicsStore>[].obs;
-  final untaggedGridPics = <UntaggedGridPicStore>[].obs;
+  /* final untaggedPics = <UntaggedPicsStore>[].obs;
+  final untaggedGridPics = <UntaggedGridPicStore>[].obs; */
   final untaggedGridPicsByMonth = <DateTime, Map<String, PicStore>>{}.obs;
 
-  final taggedDatePics = <TaggedDatePicsStore>[].obs;
-  final taggedGridPics = <TaggedGridPicStore>[].obs;
-  final taggedPics = <TaggedPicsStore>[].obs;
+  /* final taggedDatePics = <TaggedDatePicsStore>[].obs;
+  final taggedGridPics = <TaggedGridPicStore>[].obs; */
+  /* final taggedPics = <TaggedPicsStore>[].obs; */
   final filteredPics = <PicStore>[].obs;
   final swipePics = <PicStore>[].obs;
   final thumbnailsPics = <PicStore>[].obs;
@@ -78,7 +78,7 @@ class GalleryStore extends GetxController {
   @override
   void onReady() {
     //loadAssetsPath();
-    ever(taggedPics, runTotalTaggedPicsComputation);
+    //ever(taggedPics, runTotalTaggedPicsComputation);
     ever(filteredPics, runFilteredPicsKeysComputation);
     ever(searchingTags, runFilteredPicsKeysComputation);
     ever(trashedPic, (_) {
@@ -109,7 +109,7 @@ class GalleryStore extends GetxController {
 
   void refreshItems() {
     //print('Calling refresh items!!!');
-    if (isTitleWidget.isEmpty || shouldRefreshTaggedGallery.value == true) {
+    /* if (isTitleWidget.isEmpty || shouldRefreshTaggedGallery.value == true) {
       taggedItems.value = [];
       isTitleWidget.value = <bool>[];
 
@@ -174,33 +174,33 @@ class GalleryStore extends GetxController {
 
       //print('@@@@@ Tagged Items Length: ${taggedItems.length}');
       setShouldRefreshTaggedGallery(false);
-    }
+    } */
   }
 
   //@action
   void loadTaggedPicsStore() {
-    for (TagModel tagsStore
+    /* for (TagModel tagsStore
         in TagsController.to.allTags.values.map((e) => e.value).toList()) {
       TaggedPicsStore taggedPicsStore = TaggedPicsStore(tagValue: tagsStore);
       taggedPics.add(taggedPicsStore);
-    }
+    } */
 
     //print('finished adding all tagged pics stores!');
   }
 
   void runTotalTaggedPicsComputation(_) {
-    totalTaggedPics.value = taggedPics
+    /*  totalTaggedPics.value = taggedPics
         .map((element) => element.pics.length)
         .toList()
-        .reduce((value, element) => value + element);
+        .reduce((value, element) => value + element); */
   }
 
   void runTaggedKeysComputation(_) {
-    var tags = <String, String>{};
+    /* var tags = <String, String>{};
     taggedPics.forEach((element) {
       tags[element.tag.value.key] = '';
     });
-    taggedKeys.value = tags.keys.toList();
+    taggedKeys.value = tags.keys.toList(); */
   }
 
   /*  @computed
@@ -477,7 +477,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void addPicToTaggedPics({PicStore picStore, bool toInitialIndex = false}) {
-    for (TagModel tag in picStore.tags.values.map((e) => e.value).toList()) {
+    /* for (TagModel tag in picStore.tags.values.map((e) => e.value).toList()) {
       TaggedPicsStore taggedPicsStore = taggedPics
           .firstWhere((element) => element.tag == tag, orElse: () => null);
 
@@ -551,13 +551,13 @@ class GalleryStore extends GetxController {
     }
 
     taggedDatePicsStore.addPicStore(picStore);
-    setShouldRefreshTaggedGallery(true);
+    setShouldRefreshTaggedGallery(true); */
   }
 
   //@action
   void removePicFromTaggedPics({PicStore picStore, bool forceDelete = false}) {
     // //print('removePicFromTaggedPics');
-    List<TaggedPicsStore> toDelete = [];
+    /*  List<TaggedPicsStore> toDelete = [];
 
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
       if (picStore.tags[taggedPicsStore.tag.value.key] != null &&
@@ -580,7 +580,7 @@ class GalleryStore extends GetxController {
     }
 
     setShouldRefreshTaggedGallery(true);
-    tagsSuggestionsCalculate();
+    tagsSuggestionsCalculate(); */
   }
 
   //@action
@@ -642,7 +642,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void addPicToUntaggedPics({PicStore picStore}) {
-    DateTime picDate = picStore.createdAt;
+    /* DateTime picDate = picStore.createdAt;
 
     UntaggedPicsStore untaggedPicsStore = untaggedPics.firstWhere(
         (element) => Utils.isSameDay(element.date, picDate),
@@ -699,7 +699,7 @@ class GalleryStore extends GetxController {
           break;
         }
       }
-    }
+    } */
 
 /*     var gridPicMonthIndex = untaggedGridPicsByMonth.indexWhere(
         (element) => element.date == DateTime.utc(date.year, date.month));
@@ -720,14 +720,14 @@ class GalleryStore extends GetxController {
       }
     } */
 
-    untaggedPicsStore.addPicStore(picStore);
+    /* untaggedPicsStore.addPicStore(picStore); */
 
     //tagsSuggestionsCalculate();
   }
 
   //@action
   void removePicFromUntaggedPics({PicStore picStore}) {
-    var toDelete = <UntaggedPicsStore>[];
+    /*  var toDelete = <UntaggedPicsStore>[];
 
     for (var untaggedPicStore in untaggedPics) {
       if (untaggedPicStore.picStores[picStore.photoId] != null) {
@@ -772,7 +772,7 @@ class GalleryStore extends GetxController {
       /* if (untaggedGridPicsByMonth[indexOfMonth + 1].date != null) {
         untaggedGridPicsByMonth.removeAt(indexOfMonth);
       } */
-    }
+    } */
   }
 
   //@action
@@ -857,7 +857,7 @@ class GalleryStore extends GetxController {
 
   //@action
   void sortTaggedPhotos() {
-    taggedGridPics.clear();
+    /*  taggedGridPics.clear();
 
     for (var taggedPic in taggedDatePics) {
       taggedGridPics.add(TaggedGridPicStore(date: taggedPic.date));
@@ -866,7 +866,7 @@ class GalleryStore extends GetxController {
         var gridPicStore = TaggedGridPicStore(picStore: picStore);
         taggedGridPics.add(gridPicStore);
       }
-    }
+    } */
   }
 
   //@action
@@ -1437,11 +1437,11 @@ class GalleryStore extends GetxController {
 
   //@action
   void refreshPicThumbnails() {
-    clearPicThumbnails();
+    /* clearPicThumbnails();
 
     for (var store in untaggedPics) {
       addPicsToThumbnails(store.picStores.values.toList());
-    }
+    } */
   }
 }
 

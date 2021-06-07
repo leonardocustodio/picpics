@@ -117,13 +117,13 @@ dependency_overrides:
 dev_dependencies:
   #faker: 1.2.1
   #image: ^2.1.4
+  #mobx_codegen: ^1.1.2
   #mockito: 4.1.2
   #test: 1.16.0-nullsafety.5
   build_runner: ^1.10.3
   googleapis_auth: any
   googleapis: ^0.56.1
   hive_generator: ^0.8.1
-  #mobx_codegen: ^1.1.2
   moor_generator: ^3.4.0
   strings: ^0.1.2
 

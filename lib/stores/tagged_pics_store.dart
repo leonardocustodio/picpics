@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+/* import 'package:get/get.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'tags_controller.dart';
 
@@ -13,3 +13,4 @@ class TaggedPicsStore extends GetxController {
   /*  @observable */
   final pics = <PicStore>[].obs;
 }
+ */

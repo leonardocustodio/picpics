@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+/* import 'package:get/get.dart';
 import 'package:picPics/stores/pic_store.dart';
 
 class TaggedDatePicsStore extends GetxController {
@@ -20,3 +20,4 @@ class TaggedDatePicsStore extends GetxController {
     picStores.remove(picStore.photoId);
   }
 }
+ */

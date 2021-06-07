@@ -1,4 +1,4 @@
-import 'package:picPics/stores/pic_store.dart';
+/* import 'package:picPics/stores/pic_store.dart';
 
 class TaggedGridPicStore {
   final DateTime date;
@@ -6,3 +6,4 @@ class TaggedGridPicStore {
 
   TaggedGridPicStore({this.date, this.picStore});
 }
+ */
