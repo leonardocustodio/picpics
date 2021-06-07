@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 /* import 'package:picPics/stores/tagged_controller.dart'; */
@@ -656,13 +657,12 @@ class TagsController extends GetxController {
     }
     if (tagKey == kSecretTagKey) {
       // //print('Should add secret tag in the end!!!');
-      if (TabsController.to.secretPicIds[picId] == null ||
-          TabsController.to.secretPicIds[picId] ==
-              false /* !privatePics.contains(picStore) */) {
+      if (PrivatePhotosController.to.privateMap[picId] == null 
+      /* || TabsController.to.secretPicIds[picId] == false && !privatePics.contains(picStore) */) {
         await picStore.setIsPrivate(true);
         await Crypto.encryptImage(picStore, UserController.to.encryptionKey);
         // //print('this pic now is private');
-        TabsController.to.secretPicIds[picId] = true;
+        /* TabsController.to.secretPicIds[picId] = true; */
         //privatePics.add(picStore);
       }
       return;

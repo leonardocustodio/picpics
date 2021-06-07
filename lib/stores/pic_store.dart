@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/translate/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:metadata/metadata.dart' as md;
+/* import 'package:metadata/metadata.dart' as md; */
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -170,7 +170,7 @@ class PicStore extends GetxController {
     }
 
     entity.value = picEntity;
-    setChangePhotoId(picEntity.id);
+    await setChangePhotoId(picEntity.id);
     //print('Changed asset entity');
   }
 
@@ -231,7 +231,7 @@ class PicStore extends GetxController {
     if (UserController.to.shouldDeleteOnPrivate == true) {
       //print('**** Deleted original pic!!!');
       if (Platform.isAndroid) {
-        PhotoManager.editor.deleteWithIds([entity.value.id]);
+        await PhotoManager.editor.deleteWithIds([entity.value.id]);
       } else {
         final List<String> result =
             await PhotoManager.editor.deleteWithIds([entity.value.id]);
@@ -272,7 +272,7 @@ class PicStore extends GetxController {
       Uint8List picData = await assetOriginBytes;
       final AssetEntity imageEntity =
           await PhotoManager.editor.saveImage(picData);
-      changeAssetEntity(imageEntity);
+      await changeAssetEntity(imageEntity);
       //print('copied image back to gallery with id: ${imageEntity.id}');
     }
     Directory appDocumentsDir = await getApplicationDocumentsDirectory();
@@ -285,13 +285,13 @@ class PicStore extends GetxController {
     //print('Removed both files...');
   }
 
-  Future<void> loadExifData() async {
+/*   Future<void> loadExifData() async {
     File originFile = await entity.value.originFile;
     var originBytes = originFile.readAsBytesSync();
 
     var mapResult = md.MetaData.extractXMP(originBytes, raw: true);
     //print(mapResult['dc:subject']);
-  }
+  } */
 
   //@action
   Future<void> loadPicInfo() async {
@@ -332,9 +332,10 @@ class PicStore extends GetxController {
         }
         tags[tagKey] = tagModel;
       }
-    } else {
-      //print('pic $photoId doesnt exists in database');
     }
+    /* else {
+      //print('pic $photoId doesnt exists in database');
+    } */
   }
 
   //@action

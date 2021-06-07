@@ -787,7 +787,7 @@ class GalleryStore extends GetxController {
     var privatePhotoIdMap = <String, int>{};
     int index = 0;
 
-    (await database.getPrivatePhotoIdList()).forEach((photo) {
+    (await database.getPrivatePhotoList()).forEach((photo) {
       privatePhotoIdMap[photo.id] = index;
       index += 1;
     });

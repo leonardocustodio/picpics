@@ -24,6 +24,8 @@ import 'package:share/share.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 
+import 'private_photos_controller.dart';
+
 class Debouncer {
   final int milliseconds;
   VoidCallback action;
@@ -44,7 +46,7 @@ class TabsController extends GetxController {
   final toggleIndexTagged = 1.obs;
   final topOffsetFirstTab = 64.0.obs;
   final tutorialIndex = 0.obs;
-  final showPrivatePics = false.obs;
+  //final showPrivatePics = false.obs;
   final multiPicBar = false.obs;
   final multiTagSheet = false.obs;
   final showDeleteSecretModal = false.obs;
@@ -55,9 +57,9 @@ class TabsController extends GetxController {
   final modalCard = false.obs;
   final status = Status.Loading.obs;
 
-  var privatePhotoIdMap = <String, String>{};
-  final secretPicIds = <String, bool>{}.obs;
-  final secretPicData = <String, Private>{}.obs;
+  //var privatePhotoIdMap = <String, String>{};
+  /* final secretPicIds = <String, bool>{}.obs;
+  final secretPicData = <String, Private>{}.obs; */
   final selectedUntaggedPics = <String, bool>{}.obs;
   final photoPathMap = <String, String>{}.obs;
 
@@ -94,9 +96,9 @@ class TabsController extends GetxController {
     await initPlatformState();
     await loadAssetPath();
 
-    ever(showPrivatePics, (_) {
+    /* ever(showPrivatePics, (_) {
       refreshUntaggedList();
-    });
+    }); */
 
     KeyboardVisibilityController().onChange.listen((bool visible) {
       if (multiTagSheet.value) {
@@ -185,9 +187,9 @@ class TabsController extends GetxController {
       return year;
     });
 
-    var val = await database.getPrivatePhotoIdList();
+    /* var val = await database.getPrivatePhotoList();
     await Future.forEach(
-        val, (photo) async => privatePhotoIdMap[photo.id] = '');
+        val, (photo) async => privatePhotoIdMap[photo.id] = ''); */
 
     /// refreshing the taggedPhotos so that we can filter out the untagged photos from the below section.
     await TaggedController.to.refreshTaggedPhotos();
@@ -203,8 +205,10 @@ class TabsController extends GetxController {
       if (TaggedController.to.allTaggedPicIdList[entity.id] != null) {
         print('${entity.id}');
       }
+
+      /// Iterating and checking whether the picId is not a tagged pic or it's not a private pic
       if (TaggedController.to.allTaggedPicIdList[entity.id] == null &&
-          (privatePhotoIdMap[entity.id] == null || showPrivatePics.value)) {
+          PrivatePhotosController.to.privateMap[entity.id] == null) {
         var dateTime = DateTime.utc(entity.createDateTime.year,
             entity.createDateTime.month, entity.createDateTime.day);
         if (previousDay == null || previousMonth == null) {
@@ -276,8 +280,8 @@ class TabsController extends GetxController {
   void deletePic(String picId, bool removeFromGallery) {
     allUnTaggedPicsDay.remove(picId);
     allUnTaggedPicsMonth.remove(picId);
-    secretPicIds.remove(picId);
-    secretPicData.remove(picId);
+    /* secretPicIds.remove(picId);
+    secretPicData.remove(picId); */
     //picAssetThumbBytesMap.remove(picId);
     if (removeFromGallery) {}
   }
@@ -351,6 +355,7 @@ class TabsController extends GetxController {
   /// Here only those picId will come who are untagged.
   Rx<PicStore> explorPicStore(String picId) {
     var picStoreValue = picStoreMap[picId];
+
     if (picStoreMap[picId] == null) {
       AssetEntity entity = assetMap[picId];
 
@@ -364,8 +369,7 @@ class TabsController extends GetxController {
       ));
       WidgetsBinding.instance.addPostFrameCallback((_) {
         var map = RxMap<String, Rx<TagModel>>();
-        TaggedController
-            .to.picWiseTags.value[picStoreValue.value.photoId.value]?.keys
+        TaggedController.to.picWiseTags[picStoreValue.value.photoId.value]?.keys
             ?.toList()
             ?.forEach((tagKey) {
           map[tagKey] = TagsController.to.allTags[tagKey];

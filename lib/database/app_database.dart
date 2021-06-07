@@ -291,7 +291,7 @@ class AppDatabase extends _$AppDatabase {
         .get();
   }
 
-  Future<List<Photo>> getPrivatePhotoIdList() =>
+  Future<List<Photo>> getPrivatePhotoList() =>
       (select(photos)..where((tbl) => tbl.isPrivate.equals(true))).get();
 
   Future<List<Photo>> getAllPhoto() => select(photos).get();

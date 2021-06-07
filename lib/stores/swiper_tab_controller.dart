@@ -12,6 +12,10 @@ class SwiperTabController extends GetxController {
   @override
   void onReady() {
     super.onReady();
+    refresh();
+  }
+
+  void refresh() {
     TabsController.to.refreshUntaggedList().then((_) {
       swiperPicIdList.value =
           List<String>.from(TabsController.to.allUnTaggedPics.keys.toList());
