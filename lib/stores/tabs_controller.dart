@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
+import 'package:collection/collection.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -15,8 +16,10 @@ import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/swiper_tab_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
+import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/enum.dart';
@@ -24,9 +27,10 @@ import 'package:share/share.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 
+import '../constants.dart';
 import 'private_photos_controller.dart';
 
-class Debouncer {
+/* class Debouncer {
   final int milliseconds;
   VoidCallback action;
   Timer _timer;
@@ -37,7 +41,7 @@ class Debouncer {
     }
     _timer = Timer(Duration(milliseconds: milliseconds), action);
   }
-}
+} */
 
 class TabsController extends GetxController {
   static TabsController get to => Get.find();
@@ -61,7 +65,7 @@ class TabsController extends GetxController {
   /* final secretPicIds = <String, bool>{}.obs;
   final secretPicData = <String, Private>{}.obs; */
   final selectedUntaggedPics = <String, bool>{}.obs;
-  final photoPathMap = <String, String>{}.obs;
+  //final photoPathMap = <String, String>{}.obs;
 
   final picStoreMap = <String, Rx<PicStore>>{}.obs;
 
@@ -86,8 +90,8 @@ class TabsController extends GetxController {
   @override
   void onReady() {
     /// I know below line is redundant but it is used to kickstart initialization of the tags list.
-    var _ = TagsController.to.allTags.value;
-    var __ = TaggedController.to.taggedPicId.value;
+    var _ = TagsController.to.allTags;
+    var __ = TaggedController.to.taggedPicId;
     initialization();
     super.onReady();
   }
@@ -106,7 +110,7 @@ class TabsController extends GetxController {
       }
     });
 
-    ever(GalleryStore.to.trashedPic, (_) {
+    /* ever(GalleryStore.to.trashedPic, (_) {
       if (GalleryStore.to.trashedPic.value) {
         if (modalCard.value) {
           setModalCard(false);
@@ -124,7 +128,7 @@ class TabsController extends GetxController {
           setMultiPicBar(false);
         }
       }
-    });
+    }); */
 
     /*    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
       if (showModal) {
@@ -356,8 +360,11 @@ class TabsController extends GetxController {
   Rx<PicStore> explorPicStore(String picId) {
     var picStoreValue = picStoreMap[picId];
 
-    if (picStoreMap[picId] == null) {
+    if (null == picStoreMap[picId]) {
       AssetEntity entity = assetMap[picId];
+      if (null == entity) {
+        return null;
+      }
 
       picStoreValue = Rx<PicStore>(PicStore(
         isStarredValue: null,
@@ -537,11 +544,11 @@ class TabsController extends GetxController {
   //@action
   void setCurrentTab(int value) {
     if (currentTab.value != value) {
-      if (currentTab.value == 1) {
+      /* if (currentTab.value == 1) {
         GalleryStore.to.setSwipeIndex(GalleryStore.to.swipeIndex.value);
       } else if (currentTab.value == 2) {
         GalleryStore.to.clearSearchTags();
-      }
+      } */
 
       Analytics.sendCurrentTab(value);
       currentTab.value = value;
@@ -602,15 +609,21 @@ class TabsController extends GetxController {
   void setToggleIndexTagged(int value) => toggleIndexTagged.value = value;
 
   void returnAction() {
-    GalleryStore.to.clearSelectedPics();
+    selectedUntaggedPics.clear();
     setMultiPicBar(false);
   }
 
   Future<void> starredAction() async {
-    await WidgetManager.saveData(
-        picsStores: GalleryStore.to.selectedPics.toList());
-    GalleryStore.to.clearSelectedPics();
-    setMultiPicBar(false);
+    //await WidgetManager.saveData(picsStores: selectedUntaggedPics.toList());
+
+    selectedUntaggedPics.forEach((picId, value) {
+      PicStore picStore = picStoreMap[picId].value;
+      if (picStore == null) {
+        picStore = explorPicStore(picId).value;
+      }
+      picStore.switchIsStarred();
+    });
+    returnAction();
   }
 
   void tagAction() {
@@ -621,7 +634,7 @@ class TabsController extends GetxController {
   }
 
   Future<void> shareAction() async {
-    if (GalleryStore.to.selectedPics.isEmpty) {
+    if (selectedUntaggedPics.isEmpty) {
       return;
     }
     //print('sharing selected pics....');
@@ -632,11 +645,10 @@ class TabsController extends GetxController {
   }
 
   void trashAction() {
-    if (GalleryStore.to.selectedPics.isEmpty) {
+    if (selectedUntaggedPics.isEmpty) {
       return;
     }
-    GalleryStore.to
-        .trashMultiplePics(GalleryStore.to.selectedPics.value.toSet());
+    trashMultiplePics(selectedUntaggedPics.keys.toList().toSet());
   }
 
   bool get deviceHasPics {
@@ -679,18 +691,127 @@ class TabsController extends GetxController {
             /* picsStores: GalleryStore.to.selectedPics.toList() */);
         setIsLoading(false);
       } else if (index == 3) {
-        if (GalleryStore.to.selectedPics.isEmpty) {
+        if (selectedUntaggedPics.isEmpty) {
           return;
         }
-        GalleryStore.to
-            .trashMultiplePics(GalleryStore.to.selectedPics.value.toSet());
+
+        trashMultiplePics(selectedUntaggedPics.keys.toList().toSet());
       }
       return;
     }
 
     setCurrentTab(index);
   }
-/* 
+
+  Future<void> trashMultiplePics(Set<String> selectedPicsIds) async {
+    /* List<String> selectedPicsIds =
+        selectedPics.map((e) => e.photoId.value).toList(); */
+
+    bool deleted = false;
+
+    final List<String> result =
+        await PhotoManager.editor.deleteWithIds(selectedPicsIds.toList());
+    if (result.isNotEmpty) {
+      deleted = true;
+    }
+
+    if (deleted) {
+      /* var picsBox = Hive.box('pics');
+      var tagsBox = Hive.box('tags'); */
+
+      Future.wait([
+        Future.forEach(selectedPicsIds.toList(), (String picId) async {
+          PicStore picStore = picStoreMap[picId]?.value;
+          if (null == picStore) {
+            picStore = explorPicStore(picId)?.value;
+          }
+          if (null != picStore) {
+            removePicFromUI(picId);
+            /* filteredPics.remove(picStore);
+          removePicFromTaggedPics(picStore: picStore, forceDelete: true);
+          swipePics.remove(picStore);
+          removePicFromUntaggedPics(picStore: picStore);
+          allPics.value.remove(picStore);
+          user.setDefaultWidgetImage(allPics.value[0].entity.value); */
+            Photo pic =
+                await database.getPhotoByPhotoId(picStore.photoId.value);
+
+            if (pic != null) {
+              // //print('pic is in db... removing it from db!');
+              List<String> picTags = List<String>.from(pic.tags);
+              Future.wait([
+                Future.forEach(picTags, (tagKey) async {
+                  Label tag = await database.getLabelByLabelKey(tagKey);
+                  tag.photoId.remove(picStore.photoId);
+                  // //print('removed ${picStore.photoId} from tag ${tag.title}');
+                  await database.updateLabel(tag);
+                  //tagsBox.put(tagKey, tag);
+
+                  if (tagKey == kSecretTagKey) {
+                    picStore.removePrivatePath();
+                    picStore.deleteEncryptedPic();
+                  }
+                })
+              ]);
+
+              //picsBox.delete(picStore.photoId);
+              await database.deletePhotoByPhotoId(picStore.photoId.value);
+              // //print('removed ${picStore.photoId} from database');
+            }
+          }
+        })
+      ]);
+
+      Analytics.sendEvent(Event.deleted_photo);
+      // //print('Reaction!');
+      selectedUntaggedPics.clear();
+      //setTrashedPic(true);
+    }
+  }
+
+  void removePicFromUI(String picId) {
+    assetMap.remove(picId);
+    allUnTaggedPicsMonth.remove(picId);
+    allUnTaggedPicsDay.remove(picId);
+    allUnTaggedPics.remove(picId);
+    assetEntityList.removeWhere((element) => element.id == picId);
+    var index = SwiperTabController.to.swipeIndex.value;
+    SwiperTabController.to.swiperPicIdList.remove(picId);
+    TaggedController.to.picWiseTags.remove(picId);
+    TaggedController.to.refreshTaggedPhotos();
+    TabsController.to.refreshUntaggedList();
+    SwiperTabController.to.refresh();
+    if (SwiperTabController.to.swiperPicIdList.isNotEmpty) {
+      SwiperTabController.to.swipeIndex.value = index + 1;
+    }
+  }
+
+  //@action
+  Future<void> trashPic(String picId) async {
+    PicStore picStore = picStoreMap[picId]?.value;
+    if (null == picStore) {
+      picStore = explorPicStore(picId)?.value;
+    }
+    if (null != picStore) {
+      // //print('Going to trash pic!');
+      await picStore?.deletePic();
+      // //print('Deleted pic: $deleted');
+
+      /* if (deleted) {
+      filteredPics.remove(picStore);
+      removePicFromTaggedPics(picStore: picStore, forceDelete: true);
+      swipePics.remove(picStore);
+      removePicFromUntaggedPics(picStore: picStore);
+      allPics.value.remove(picStore);
+      user.setDefaultWidgetImage(allPics.value[0].entity.value);
+    } */
+
+      Analytics.sendEvent(Event.deleted_photo);
+    }
+    // //print('Reaction!');
+    //setTrashedPic(true);
+  }
+  /*
   setTabIndex(int index) {
     if (!GalleryStore.to.deviceHasPics.value) {
       setCurrentTab(index);
@@ -785,6 +906,49 @@ Future<void> sharePics({@required List<String> picKeys}) async {
 
   return;
 }
+
+/* Future<void> checkIsLibraryUpdated() async {
+  // //print('Scanning library again....');
+
+  final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
+    hasAll: true,
+    type: RequestType.image,
+    onlyAll: true,
+  );
+
+  final AssetPathEntity assetPathEntity = assets[0];
+  final List<AssetEntity> assetList = await assetPathEntity.getAssetListRange(
+      start: 0, end: assetPathEntity.assetCount);
+  final Set<String> entitiesIds = assetList.map((e) => e.id).toSet();
+  final bool isEqual =
+      SetEquality().equals(entitiesIds, allPics.value.keys.toSet());
+
+  if (isEqual) {
+    // //print('Library is updated!!!!!!');
+    // //print('#@#@#@# Total photos: ${allPics.value.length}');
+  } else {
+    // //print('Library not updated!!!');
+
+    final Set<String> createdPics =
+        entitiesIds.difference(allPics.value.keys.toSet());
+    final Set<String> deletedPics =
+        allPics.value.keys.toSet().difference(entitiesIds);
+
+    // //print('Created: $createdPics');
+    // //print('Deleted: $deletedPics');
+
+    for (String created in createdPics) {
+      AssetEntity entity = await AssetEntity.fromId(created);
+      addEntity(entity);
+    }
+
+    for (String deleted in deletedPics) {
+      deleteEntity(deleted);
+    }
+  }
+
+  await loadPrivateAssets();
+} */
 
 Future<String> _writeByteToImageFile(Uint8List byteData) async {
   Directory tempDir = await getTemporaryDirectory();

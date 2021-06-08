@@ -22,15 +22,15 @@ final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
 class AddLocationScreen extends StatefulWidget {
   static const id = 'add_location_screen';
+  final PicStore currentPic;
+  const AddLocationScreen(this.currentPic, {Key key}) : super(key: key);
 
   @override
   _AddLocationScreenState createState() => _AddLocationScreenState();
 }
 
 class _AddLocationScreenState extends State<AddLocationScreen> {
-  UserController appStore;
-  GalleryStore galleryStore;
-  PicStore get picStore => galleryStore.currentPic;
+  PicStore get picStore => widget.currentPic;
 
   Completer<GoogleMapController> _mapController = Completer();
   Set<Marker> _markers = {};
@@ -178,8 +178,6 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = UserController.to;
-    galleryStore = GalleryStore.to;
     findInitialCamera();
   }
 
@@ -313,8 +311,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 child: SearchMapPlaceWidget(
                   apiKey: kGoogleApiKey,
                   placeholder: S.of(context).search,
-                  language:
-                      appStore.appLanguage.value.split('_')[0], // arrumar isso
+                  language: UserController.to.appLanguage.value
+                      .split('_')[0], // arrumar isso
                   onSelected: (place) async {
                     final geolocation = await place.geolocation;
                     selectedGeolocation = geolocation;

@@ -1,4 +1,4 @@
-import 'package:collection/collection.dart';
+/* import 'package:collection/collection.dart';
 import 'package:date_utils/date_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -7,7 +7,9 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tagged_date_pics_store.dart';
 import 'package:picPics/stores/tagged_grid_pic_store.dart';
 import 'package:picPics/stores/tagged_pics_store.dart';
@@ -405,7 +407,9 @@ class GalleryStore extends GetxController {
     if (searchText == '') {
       for (var recent in getUser.recentTags) {
         // //print('Recent Tag: $recent');
-        if (multiPicTags[recent] != null || recent == kSecretTagKey) {
+        if (multiPicTags[recent] != null ||
+            (PrivatePhotosController.to.showPrivate == false &&
+                recent == kSecretTagKey)) {
           continue;
         }
         suggestionTags.add(recent);
@@ -425,7 +429,7 @@ class GalleryStore extends GetxController {
           }
           if (multiPicTags[tagKey] != null ||
               suggestionTags.contains(tagKey) ||
-              tagKey == kSecretTagKey) {
+              (PrivatePhotosController.to.showPrivate == false && tagKey == kSecretTagKey)) {
             continue;
           }
           // //print('Adding tag key: $tagKey');
@@ -1445,9 +1449,4 @@ class GalleryStore extends GetxController {
   }
 }
 
-enum PicSource {
-  UNTAGGED,
-  SWIPE,
-  TAGGED,
-  FILTERED,
-}
+ */

@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
@@ -29,13 +30,16 @@ import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'screens/all_tags_screen.dart';
 import 'stores/database_controller.dart';
 import 'stores/login_store.dart';
 import 'stores/pin_store.dart';
+import 'stores/refresh_controller.dart';
 import 'stores/swiper_tab_controller.dart';
 import 'stores/tabs_controller.dart';
 import 'stores/tagged_controller.dart';
@@ -62,11 +66,13 @@ String initialRoute = LoginScreen.id;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  //await Get.lazyPut(() => RefreshPicPicsController());
   await Get.lazyPut(() => UserController());
+  await Get.lazyPut(() => PrivatePhotosController());
   await Get.lazyPut(() => AllTagsController());
   await Get.lazyPut(() => TaggedController());
   await Get.lazyPut(() => SwiperTabController());
-  await Get.lazyPut(() => GalleryStore());
+  //await Get.lazyPut(() => GalleryStore());
   await Get.lazyPut(() => DatabaseController());
   await Get.lazyPut(() => TabsController());
   await Get.lazyPut(() => TagsController());
@@ -239,11 +245,11 @@ class PicPicsApp extends StatefulWidget {
 }
 
 class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
-  GalleryStore galleryStore;
+  /* GalleryStore galleryStore; */
 
   @override
   void initState() {
-    galleryStore = GalleryStore()..user = widget.user;
+    /* galleryStore = GalleryStore()..user = widget.user; */
     var tutorial = widget.user.tutorialCompleted.value;
     if (initialRoute != MigrationScreen.id && tutorial) {
       initialRoute = TabsScreen.id;
@@ -256,10 +262,10 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
     if (widget.user.encryptionKey == null) {
-      if (widget.user.secretPhotos == true) {
+      /* if (widget.user.secretPhotos == true) {
         widget.user.switchSecretPhotos();
         galleryStore.removeAllPrivatePics();
-      }
+      } */
     }
     super.initState();
   }
@@ -286,36 +292,57 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     //print('Main Build!!!');
-    return Center(
-      child: GetMaterialApp(
-        localizationsDelegates: [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        locale: Locale(widget.user.appLocale.value ?? 'en'),
-        supportedLocales: S.delegate.supportedLocales,
-        debugShowCheckedModeBanner: kDebugMode,
-        initialRoute: initialRoute,
-        navigatorObservers: [Analytics.observer],
-        routes: {
-          AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
-          LoginScreen.id: (context) => LoginScreen(),
-          TabsScreen.id: (context) => TabsScreen(),
-          PhotoScreen.id: (context) => PhotoScreen(
-                picId: null,
-                picIdList: <String>[],
-              ),
-          SettingsScreen.id: (context) => SettingsScreen(),
-          AddLocationScreen.id: (context) => AddLocationScreen(),
-          PremiumScreen.id: (context) => PremiumScreen(),
-          PinScreen.id: (context) => PinScreen(),
-          EmailScreen.id: (context) => EmailScreen(),
-          //TagsScreen.id: (context) => TagsScreen(),
-          MigrationScreen.id: (context) => MigrationScreen(),
-        },
-      ),
+    return /* RefreshConfiguration(
+      headerBuilder: () =>
+          WaterDropHeader(), // Configure the default header indicator. If you have the same header indicator for each page, you need to set this
+      footerBuilder: () =>
+          ClassicFooter(), // Configure default bottom indicator
+      headerTriggerDistance: 80.0, // header trigger refresh trigger distance
+      springDescription: SpringDescription(
+          stiffness: 170,
+          damping: 16,
+          mass:
+              1.9), // custom spring back animate,the props meaning see the flutter api
+      maxOverScrollExtent:
+          70, //The maximum dragging range of the head. Set this property if a rush out of the view area occurs
+      maxUnderScrollExtent: 0, // Maximum dragging range at the bottom
+      enableScrollWhenRefreshCompleted:
+          true, //This property is incompatible with PageView and TabBarView. If you need TabBarView to slide left and right, you need to set it to true.
+      enableLoadingWhenFailed:
+          true, //In the case of load failure, users can still trigger more loads by gesture pull-up.
+      hideFooterWhenNotFull:
+          false, // Disable pull-up to load more functionality when Viewport is less than one screen
+      enableBallisticLoad: true, // trigger load more by BallisticScrollActivity
+      child: */
+        GetMaterialApp(
+      localizationsDelegates: [
+        S.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      locale: Locale(widget.user.appLocale.value ?? 'en'),
+      supportedLocales: S.delegate.supportedLocales,
+      debugShowCheckedModeBanner: kDebugMode,
+      initialRoute: initialRoute,
+      navigatorObservers: [Analytics.observer],
+      routes: {
+        AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
+        LoginScreen.id: (context) => LoginScreen(),
+        TabsScreen.id: (context) => TabsScreen(),
+        PhotoScreen.id: (context) => PhotoScreen(
+              picId: null,
+              picIdList: <String>[],
+            ),
+        SettingsScreen.id: (context) => SettingsScreen(),
+        AddLocationScreen.id: (context) => AddLocationScreen(null),
+        PremiumScreen.id: (context) => PremiumScreen(),
+        PinScreen.id: (context) => PinScreen(),
+        EmailScreen.id: (context) => EmailScreen(),
+        //TagsScreen.id: (context) => TagsScreen(),
+        MigrationScreen.id: (context) => MigrationScreen(),
+      },
+      // ),
     );
   }
 }

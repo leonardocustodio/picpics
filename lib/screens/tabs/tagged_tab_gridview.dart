@@ -10,6 +10,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:extended_image/extended_image.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -53,7 +54,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                 ? TopBar(
                     appStore: UserController.to,
                     tagsController: TagsController.to,
-                    showSecretSwitch: UserController.to.secretPhotos.value,
+                    showSecretSwitch:
+                        PrivatePhotosController.to.showPrivate.value,
                     children: <Widget>[
                       Expanded(
                         child: Center(

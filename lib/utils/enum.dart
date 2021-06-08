@@ -10,3 +10,10 @@ enum Status {
   DeviceHasNoPics,
   InsufficientPermission,
 }
+
+enum PicSource {
+  UNTAGGED,
+  SWIPE,
+  TAGGED,
+  FILTERED,
+}

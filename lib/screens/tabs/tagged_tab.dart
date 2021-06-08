@@ -8,6 +8,7 @@ import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/tabs/tagged_tab_gridview.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -36,14 +37,14 @@ class TaggedTab extends GetWidget<TaggedController> {
     //print('&&&&&&&&&&&&&&&&& Build grid items!!!');
 
     double newPadding = 0.0;
-    if (GalleryStore.to.isSearching.value) {
+    /*  if (GalleryStore.to.isSearching.value) {
       newPadding = (controller.offsetThirdTab).clamp(0.0, 86.0);
       /*  if (newPadding > 86) {
         newPadding = 86.0;
       } else if (newPadding < 0) {
         newPadding = 0.0;
       } */
-    }
+    } */
 
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
@@ -482,7 +483,8 @@ class TaggedTab extends GetWidget<TaggedController> {
                 return TopBar(
                   appStore: UserController.to,
                   tagsController: TagsController.to,
-                  showSecretSwitch: UserController.to.secretPhotos.value,
+                  showSecretSwitch:
+                      PrivatePhotosController.to.showPrivate.value,
                   children: <Widget>[
                     Expanded(
                       child: Center(
@@ -550,7 +552,8 @@ class TaggedTab extends GetWidget<TaggedController> {
                 return TopBar(
                   appStore: UserController.to,
                   tagsController: TagsController.to,
-                  showSecretSwitch: UserController.to.secretPhotos.value,
+                  showSecretSwitch:
+                      PrivatePhotosController.to.showPrivate.value,
                   searchEditingController: searchEditingController,
                   searchFocusNode: searchFocusNode,
                   children: <Widget>[
@@ -604,7 +607,8 @@ class TaggedTab extends GetWidget<TaggedController> {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
-                                GalleryStore.to.showSearchTagsResults.value
+                                TagsController.to.searchText != ''
+                                    /* GalleryStore.to.showSearchTagsResults.value */
                                     ? S.current.search_results
                                     : S.current.recent_tags,
                                 textScaleFactor: 1.0,
@@ -675,7 +679,7 @@ class TaggedTab extends GetWidget<TaggedController> {
                                     ),
                                   );
                                 }
-                                return Padding(
+                                /* return Padding(
                                   padding: const EdgeInsets.only(
                                       left: 16.0,
                                       right: 16,
@@ -707,7 +711,7 @@ class TaggedTab extends GetWidget<TaggedController> {
                                       //print('do nothing');
                                     },
                                   ),
-                                );
+                                ); */
                               },
                             ),
 
@@ -788,13 +792,13 @@ class TaggedTab extends GetWidget<TaggedController> {
                         titleRight: S.current.toggle_tags,
                         activeToggle: controller.toggleIndexTagged.value,
                         onToggle: (index) {
-                          if (GalleryStore.to.isSearching.value && index == 0) {
+                          /* if (GalleryStore.to.isSearching.value && index == 0) {
                             GalleryStore.to.clearSearchTags();
                             GalleryStore.to.setShouldRefreshTaggedGallery(true);
                             GalleryStore.to.refreshItems();
                             //print('##### Rebuild everything!');
 
-                          }
+                          } */
                           TabsController.to.setToggleIndexTagged(index);
                         },
                       ),

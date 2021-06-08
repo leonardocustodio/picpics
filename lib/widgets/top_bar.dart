@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/secret_switch.dart';
@@ -103,7 +104,7 @@ class TopBar extends StatelessWidget {
                       value: true,
                       onChanged: (value) {
                         //print('turn off');
-                        appStore.switchSecretPhotos();
+                        PrivatePhotosController.to.switchSecretPhotos();
 
                         /// TODO: implement this functionality
                         // galleryStore.removeAllPrivatePics();

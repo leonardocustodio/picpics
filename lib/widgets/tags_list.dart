@@ -4,6 +4,7 @@ import 'package:picPics/constants.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -88,7 +89,13 @@ class _TagsListState extends State<TagsList> {
 
     for (int i = 0; i < tags.length; i++) {
       String tagKey = tags[i];
-      if (TagsController.to.allTags[tagKey]?.value?.title == null) {
+
+      /// We'll have to avoid the tags whose tag name is null and
+      ///
+      /// also if the tags is [kSecretTagKey] and showPrivate is False
+      if (TagsController.to.allTags[tagKey]?.value?.title == null ||
+          (PrivatePhotosController.to.showPrivate == false &&
+              tagKey == kSecretTagKey)) {
         continue;
       }
 

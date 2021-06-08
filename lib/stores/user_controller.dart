@@ -16,6 +16,7 @@ import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/stores/database_controller.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:local_auth/local_auth.dart';
@@ -36,7 +37,6 @@ class UserController extends GetxController {
   final isPinRegistered = false.obs;
   final keepAskingToDelete = false.obs;
   final shouldDeleteOnPrivate = false.obs;
-  final secretPhotos = false.obs;
   final isPremium = false.obs;
   final tutorialCompleted = false.obs;
   final canTagToday = false.obs;
@@ -95,7 +95,7 @@ class UserController extends GetxController {
     canTagToday.value = user.canTagToday;
     loggedIn = user.loggedIn ?? false;
     tryBuyId = initiatedWithProduct;
-    secretPhotos.value = user.secretPhotos ?? false;
+    PrivatePhotosController.to.showPrivate.value = user.secretPhotos ?? false;
     isPinRegistered.value = user.isPinRegistered ?? false;
     keepAskingToDelete.value = user.keepAskingToDelete ?? true;
     shouldDeleteOnPrivate.value = user.shouldDeleteOnPrivate ?? false;
@@ -274,21 +274,6 @@ class UserController extends GetxController {
     MoorUser currentUser = await database.getSingleMoorUser();
     await database
         .updateMoorUser(currentUser.copyWith(shouldDeleteOnPrivate: value));
-  }
-
-  Future<void> switchSecretPhotos() async {
-    secretPhotos.value = !secretPhotos.value;
-
-    if (secretPhotos == false) {
-      //print('Cleared encryption key in memory!!!');
-      setEncryptionKey(null);
-    }
-
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database
-        .updateMoorUser(currentUser.copyWith(secretPhotos: secretPhotos.value));
-
-    //    Analytics.sendEvent(Event.notification_switch);
   }
 
   //@action

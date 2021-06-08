@@ -143,8 +143,8 @@ class _PhotoCardState extends State<PhotoCard> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
-    //print('Pic Store Photo Id: ${picStore.photoId}');
+/*     final height = MediaQuery.of(context).size.height;
+ */ //print('Pic Store Photo Id: ${picStore.photoId}');
     //print('Other info: ${picStore.photoPath}');
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
@@ -259,7 +259,10 @@ class _PhotoCardState extends State<PhotoCard> {
                           color: kWarningColor,
                           iconSize: 19.2,
                           onTap: () {
-                            GalleryStore.to.trashPic(picStore);
+                            //GalleryStore.to.trashPic(picStore);
+                            TabsController.to
+                                .removePicFromUI(picStore.photoId.value);
+                            TabsController.to.trashPic(picStore.photoId.value);
                           },
                         ),
                         CircularMenuItem(
@@ -287,9 +290,10 @@ class _PhotoCardState extends State<PhotoCard> {
                           color: kSecondaryColor,
                           iconSize: 19.2,
                           onTap: () {
-                            GalleryStore.to
-                                .setInitialSelectedThumbnail(picStore);
-                            Get.to(() => PhotoScreen(picIdList: [], picId: ''));
+                            /* GalleryStore.to
+                                .setInitialSelectedThumbnail(picStore); */
+                            Get.to(() => PhotoScreen(
+                                picIdList: [], picId: picStore.photoId.value));
                           },
                         ),
                       ],
@@ -312,7 +316,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        Get.to(() => AddLocationScreen());
+                        Get.to(() => AddLocationScreen(picStore));
                       },
                       child: Obx(() {
                         return RichText(
@@ -492,7 +496,7 @@ class _PhotoCardState extends State<PhotoCard> {
                             picStore.aiTags.value
                             ? picStore.aiSuggestions.value
                             : */
-                            TagsController.to.searchTagsResults.value
+                            TagsController.to.searchTagsResults
                                 .map((e) => e.key)
                                 .toList()
                                 .where((tagKey) {

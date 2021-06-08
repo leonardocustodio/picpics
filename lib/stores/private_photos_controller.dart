@@ -1,6 +1,8 @@
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 
+import 'user_controller.dart';
+
 class PrivatePhotosController extends GetxController {
   static PrivatePhotosController get to => Get.find();
 
@@ -13,8 +15,21 @@ class PrivatePhotosController extends GetxController {
 
   Future<void> refreshPrivatePics() async {
     var _val = await _appDatabase.getPrivatePhotoList();
-    await Future.forEach(
-        _val, (photo) async => privateMap[photo.id] = '');
-    
+    await Future.forEach(_val, (photo) async => privateMap[photo.id] = '');
+  }
+
+  Future<void> switchSecretPhotos() async {
+    showPrivate.value = !showPrivate.value;
+
+    if (showPrivate.value == false) {
+      //print('Cleared encryption key in memory!!!');
+      UserController.to.setEncryptionKey(null);
+    }
+
+    MoorUser currentUser = await _appDatabase.getSingleMoorUser();
+    await _appDatabase
+        .updateMoorUser(currentUser.copyWith(secretPhotos: showPrivate.value));
+
+    //    Analytics.sendEvent(Event.notification_switch);
   }
 }

@@ -7,6 +7,7 @@ import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/languages.dart';
@@ -29,7 +30,7 @@ class SettingsScreen extends StatefulWidget {
 class _SettingsScreenState extends State<SettingsScreen>
     with WidgetsBindingObserver {
   UserController appStore;
-  GalleryStore galleryStore;
+  /* GalleryStore galleryStore; */
 
   @override
   void dispose() {
@@ -542,11 +543,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       padding: const EdgeInsets.all(0),
                                       pressedOpacity: 1.0,
                                       onPressed: () {
-                                        if (UserController.to.secretPhotos ==
+                                        if (PrivatePhotosController
+                                                .to.showPrivate.value ==
                                             true) {
-                                          UserController.to
+                                          PrivatePhotosController.to
                                               .switchSecretPhotos();
-                                          galleryStore.removeAllPrivatePics();
+                                          //galleryStore.removeAllPrivatePics();
                                           return;
                                         }
                                         UserController.to.popPinScreen =
@@ -565,14 +567,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           Obx(
                                             () {
                                               return SecretSwitch(
-                                                value: UserController
-                                                    .to.secretPhotos.value,
+                                                value: PrivatePhotosController
+                                                    .to.showPrivate.value,
                                                 onChanged: (value) {
                                                   if (value == false) {
-                                                    UserController.to
+                                                    PrivatePhotosController.to
                                                         .switchSecretPhotos();
-                                                    galleryStore
-                                                        .removeAllPrivatePics();
+                                                    //galleryStore .removeAllPrivatePics();
                                                     return;
                                                   }
 
@@ -598,7 +599,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   thickness: 1.0,
                                 ),
                                 Obx(() {
-                                  if (UserController.to.secretPhotos == true &&
+                                  if (PrivatePhotosController
+                                              .to.showPrivate.value ==
+                                          true &&
                                       // TODO: throwing error at UserController.to.availableBiometrics.isNotEmpty :
                                       // error: The getter 'isNotEmpty' was called on null.
                                       (UserController.to.availableBiometrics

@@ -11,6 +11,7 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/model/tag_model.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:strings/strings.dart';
 import 'package:picPics/constants.dart';

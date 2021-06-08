@@ -9,8 +9,8 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/email_screen.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pin_store.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
@@ -206,8 +206,8 @@ class PinScreen extends GetWidget<PinStore> {
           await controller.saveNewPin(UserController.to);
 
           UserController.to.setIsPinRegistered(true);
-          UserController.to.switchSecretPhotos();
-          GalleryStore.to.checkIsLibraryUpdated();
+          PrivatePhotosController.to.switchSecretPhotos();
+          //GalleryStore.to.checkIsLibraryUpdated();
           controller.setPinTemp('');
           controller.setConfirmPinTemp('');
           UserController.to.setWaitingAccessCode(false);
@@ -251,8 +251,8 @@ class PinScreen extends GetWidget<PinStore> {
             return;
           }
 
-          UserController.to.switchSecretPhotos();
-          GalleryStore.to.checkIsLibraryUpdated();
+          PrivatePhotosController.to.switchSecretPhotos();
+          //GalleryStore.to.checkIsLibraryUpdated();
 
           controller.setPinTemp('');
           controller.setConfirmPinTemp('');

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
@@ -48,7 +49,7 @@ void showDeleteSecretModalForMultiPic(TabsController controller) {
 
 Future<void> showDeleteSecretModal(
     /* BuildContext context, */ PicStore picStore) async {
-  if (UserController.to.secretPhotos != true) {
+  if (true != PrivatePhotosController.to.showPrivate.value) {
     UserController.to.popPinScreen = PopPinScreenTo.TabsScreen;
     Get.to(() => PinScreen());
     return;
@@ -65,7 +66,7 @@ Future<void> showDeleteSecretModal(
 
   if (UserController.to.keepAskingToDelete == false &&
       picStore.isPrivate == false) {
-    GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
+    //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
     return;
   }
 
@@ -80,7 +81,7 @@ Future<void> showDeleteSecretModal(
             Get.back();
           },
           onPressedOk: () {
-            GalleryStore.to.setPrivatePic(picStore: picStore, private: false);
+            //GalleryStore.to.setPrivatePic(picStore: picStore, private: false);
             Get.back();
           },
         );
@@ -90,12 +91,12 @@ Future<void> showDeleteSecretModal(
           Get.back();
         },
         onPressedDelete: () {
-          GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
+          //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
           UserController.to.setShouldDeleteOnPrivate(false);
           Get.back();
         },
         onPressedOk: () {
-          GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
+          //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
           UserController.to.setShouldDeleteOnPrivate(true);
           Get.back();
         },

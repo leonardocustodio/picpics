@@ -9,6 +9,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
@@ -318,7 +319,7 @@ class PinStore extends GetxController {
   void setPinAndPop() {
     UserController.to.setEmail(email.value);
     UserController.to.setIsPinRegistered(true);
-    UserController.to.switchSecretPhotos();
+    PrivatePhotosController.to.switchSecretPhotos();
     UserController.to.setWaitingAccessCode(false);
 
     if (UserController.to.popPinScreen == PopPinScreenTo.SettingsScreen) {
@@ -379,8 +380,8 @@ class PinStore extends GetxController {
         bool valid = await isBiometricValidated(UserController.to);
 
         if (valid == true) {
-          UserController.to.switchSecretPhotos();
-          GalleryStore.to.checkIsLibraryUpdated();
+          PrivatePhotosController.to.switchSecretPhotos();
+          //GalleryStore.to.checkIsLibraryUpdated();
           setPinTemp('');
           setConfirmPinTemp('');
           Get.back();

@@ -1,5 +1,6 @@
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
+import 'package:picPics/model/tag_model.dart';
 import 'package:flutter/material.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import '../constants.dart';

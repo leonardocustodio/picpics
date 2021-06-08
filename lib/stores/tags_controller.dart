@@ -10,36 +10,8 @@ import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import '../constants.dart';
+import 'package:picPics/model/tag_model.dart';
 import 'database_controller.dart';
-
-class TagModel extends GetxController {
-  RxMap _map = <String, dynamic>{}.obs;
-  TagModel(
-      {@required String key,
-      @required String title,
-      @required int count,
-      @required DateTime time}) {
-    assert(key != null && title != null);
-    _map = RxMap<String, dynamic>(<String, dynamic>{
-      'key': key,
-      'title': title,
-      'count': count ?? 0,
-      'time': time ?? DateTime.now(),
-    });
-  }
-
-  String get key => _map['key'];
-  void set key(String val) => _map['key'] = val;
-
-  String get title => _map['title'];
-  void set title(String val) => _map['title'] = val;
-
-  int get count => _map['count'];
-  void set count(int val) => _map['count'] = val;
-
-  DateTime get time => _map['time'];
-  void set time(DateTime val) => _map['time'] = val;
-}
 
 class TagsController extends GetxController {
   /// tagKey: {
@@ -159,7 +131,7 @@ class TagsController extends GetxController {
     // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
     if (multiPicTags[kSecretTagKey] == null &&
         !selectedFilteringTagsKeys.contains(kSecretTagKey) &&
-        UserController.to.secretPhotos == true &&
+        PrivatePhotosController.to.showPrivate.value == true &&
         text == '') {
       suggestionTags.add(kSecretTagKey);
     }
@@ -460,7 +432,7 @@ class TagsController extends GetxController {
     // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
     if (multiPicTags[kSecretTagKey] == null &&
         /* !searchingTagsKeys.contains(kSecretTagKey) && */
-        UserController.to.secretPhotos == true &&
+        PrivatePhotosController.to.showPrivate.value == true &&
         searchText == '') {
       suggestionTags.add(kSecretTagKey);
     }
@@ -657,8 +629,8 @@ class TagsController extends GetxController {
     }
     if (tagKey == kSecretTagKey) {
       // //print('Should add secret tag in the end!!!');
-      if (PrivatePhotosController.to.privateMap[picId] == null 
-      /* || TabsController.to.secretPicIds[picId] == false && !privatePics.contains(picStore) */) {
+      if (PrivatePhotosController.to.privateMap[picId] == null
+          /* || TabsController.to.secretPicIds[picId] == false && !privatePics.contains(picStore) */) {
         await picStore.setIsPrivate(true);
         await Crypto.encryptImage(picStore, UserController.to.encryptionKey);
         // //print('this pic now is private');

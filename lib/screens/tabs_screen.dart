@@ -100,8 +100,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                         //   return;
                                         // }
 
-                                        if (TagsController.to.multiPicTags
-                                                .value[kSecretTagKey] !=
+                                        if (TagsController.to
+                                                .multiPicTags[kSecretTagKey] !=
                                             null) {
                                           showDeleteSecretModalForMultiPic(
                                               controller);
@@ -384,7 +384,8 @@ class TabsScreen extends GetWidget<TabsController> {
                               ),
                               BottomNavigationBarItem(
                                 //title: Container(),
-                                icon: GalleryStore.to.selectedPics.isEmpty
+                                icon: controller.selectedUntaggedPics
+                                        .isEmpty /* GalleryStore.to.selectedPics.isEmpty */
                                     ? Opacity(
                                         opacity: 0.2,
                                         child: Image.asset(
@@ -395,7 +396,8 @@ class TabsScreen extends GetWidget<TabsController> {
                               ),
                               BottomNavigationBarItem(
                                 //title: Container(),
-                                icon: GalleryStore.to.selectedPics.isEmpty
+                                icon: controller.selectedUntaggedPics
+                                        .isEmpty // GalleryStore.to.selectedPics.isEmpty
                                     ? Opacity(
                                         opacity: 0.3,
                                         child: Image.asset(
@@ -601,7 +603,7 @@ class TabsScreen extends GetWidget<TabsController> {
               ),
             ),
           ),
-          Obx(() => controller.modalCard.value
+          /* Obx(() => controller.modalCard.value
               ? Material(
                   color: Colors.transparent,
                   child: Center(
@@ -663,7 +665,7 @@ class TabsScreen extends GetWidget<TabsController> {
                     ),
                   ),
                 )
-              : Container()),
+              : Container()), */
           Obx(() => controller.isLoading.value
               ? Material(
                   color: Colors.black.withOpacity(0.7),

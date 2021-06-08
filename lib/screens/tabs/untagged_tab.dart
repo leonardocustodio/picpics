@@ -12,9 +12,11 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/generated/l10n.dart';
 /* import 'package:picPics/stores/gallery_store.dart'; */
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/refresh_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../asset_entity_image_provider.dart';
@@ -964,151 +966,158 @@ class UntaggedTab extends GetWidget<TabsController> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints.expand(),
-      color: kWhiteColor,
-      child: SafeArea(
-        child: Obx(() {
-          var hasPics = controller.allUnTaggedPicsMonth.isNotEmpty ||
-              controller.allUnTaggedPicsDay.isNotEmpty;
-          if (!controller.isUntaggedPicsLoaded.value) {
-            return Center(
-              child: CircularProgressIndicator(
-                  // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+    return /* SmartRefresher(
+      enablePullDown: true,
+      enablePullUp: false,
+        header: MaterialClassicHeader(),
+      controller: RefreshPicPicsController.to.refreshController,
+      onRefresh: () => RefreshPicPicsController.to.onRefresh(),
+      child:  */Container(
+        //constraints: BoxConstraints.expand(),
+        color: kWhiteColor,
+        child: SafeArea(
+          child: Obx(() {
+            var hasPics = controller.allUnTaggedPicsMonth.isNotEmpty ||
+                controller.allUnTaggedPicsDay.isNotEmpty;
+            if (!controller.isUntaggedPicsLoaded.value) {
+              return Center(
+                child: CircularProgressIndicator(
+                    // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                    ),
+              );
+            } else if (!hasPics) {
+              return Stack(
+                children: <Widget>[
+                  Container(
+                    height: 56.0,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        CupertinoButton(
+                          onPressed: () {
+                            Get.to(() => SettingsScreen());
+                          },
+                          child: Image.asset('lib/images/settings.png'),
+                        ),
+                      ],
+                    ),
                   ),
-            );
-          } else if (!hasPics) {
-            return Stack(
-              children: <Widget>[
-                Container(
-                  height: 56.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      CupertinoButton(
-                        onPressed: () {
-                          Get.to(() => SettingsScreen());
-                        },
-                        child: Image.asset('lib/images/settings.png'),
-                      ),
-                    ],
+                  DeviceHasNoPics(
+                    message: S.of(context).device_has_no_pics,
                   ),
-                ),
-                DeviceHasNoPics(
-                  message: S.of(context).device_has_no_pics,
-                ),
-              ],
-            );
-          } else if (controller.isUntaggedPicsLoaded.value && !hasPics) {
-            return Stack(
-              children: <Widget>[
-                Container(
-                  height: 56.0,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      CupertinoButton(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        onPressed: () {
-                          Get.to(() => SettingsScreen());
-                        },
-                        child: Image.asset('lib/images/settings.png'),
-                      ),
-                    ],
+                ],
+              );
+            } else if (controller.isUntaggedPicsLoaded.value && !hasPics) {
+              return Stack(
+                children: <Widget>[
+                  Container(
+                    height: 56.0,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        CupertinoButton(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          onPressed: () {
+                            Get.to(() => SettingsScreen());
+                          },
+                          child: Image.asset('lib/images/settings.png'),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                DeviceHasNoPics(
-                  message: S.of(context).all_photos_were_tagged,
-                ),
-              ],
-            );
-          } else if (controller.isUntaggedPicsLoaded.value && hasPics) {
-            return Stack(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 48.0),
-                  child: GestureDetector(
+                  DeviceHasNoPics(
+                    message: S.of(context).all_photos_were_tagged,
+                  ),
+                ],
+              );
+            } else if (controller.isUntaggedPicsLoaded.value && hasPics) {
+              return Stack(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.only(top: 48.0),
+                    child: GestureDetector(
 //                              onScaleUpdate: (update) {
 /* //print(update.scale); */
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
-                    child: _buildGridView(context),
+                      child: _buildGridView(context),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      CupertinoButton(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        onPressed: () {
-                          Get.to(() => SettingsScreen());
-                        },
-                        child: Image.asset('lib/images/settings.png'),
-                      ),
-                    ],
-                  ),
-                ),
-                Positioned(
-                  left: 16.0,
-                  top: 10.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        controller.multiPicBar.value
-                            ? S.of(context).photo_gallery_count(
-                                controller.selectedUntaggedPics.length)
-                            : S.of(context).photo_gallery_description,
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff979a9b),
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                AnimatedOpacity(
-                  opacity: controller.isScrolling.value ? 0.0 : 1.0,
-                  curve: Curves.linear,
-                  duration: Duration(milliseconds: 300),
-                  onEnd: () {
-                    controller.setIsToggleBarVisible(
-                        controller.isScrolling.value ? false : true);
-                  },
-                  child: Visibility(
-                    visible: controller.isScrolling.value
-                        ? controller.isToggleBarVisible.value
-                        : true,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: ToggleBar(
-                          titleLeft: S.of(context).toggle_months,
-                          titleRight: S.of(context).toggle_days,
-                          activeToggle: controller.toggleIndexUntagged.value,
-                          onToggle: (index) {
-                            controller.setToggleIndexUntagged(index);
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        CupertinoButton(
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
+                          onPressed: () {
+                            Get.to(() => SettingsScreen());
                           },
+                          child: Image.asset('lib/images/settings.png'),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    left: 16.0,
+                    top: 10.0,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          controller.multiPicBar.value
+                              ? S.of(context).photo_gallery_count(
+                                  controller.selectedUntaggedPics.length)
+                              : S.of(context).photo_gallery_description,
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff979a9b),
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  AnimatedOpacity(
+                    opacity: controller.isScrolling.value ? 0.0 : 1.0,
+                    curve: Curves.linear,
+                    duration: Duration(milliseconds: 300),
+                    onEnd: () {
+                      controller.setIsToggleBarVisible(
+                          controller.isScrolling.value ? false : true);
+                    },
+                    child: Visibility(
+                      visible: controller.isScrolling.value
+                          ? controller.isToggleBarVisible.value
+                          : true,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: ToggleBar(
+                            titleLeft: S.of(context).toggle_months,
+                            titleRight: S.of(context).toggle_days,
+                            activeToggle: controller.toggleIndexUntagged.value,
+                            onToggle: (index) {
+                              controller.setToggleIndexUntagged(index);
+                            },
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            );
-          }
-          return Container();
-        }),
-      ),
+                ],
+              );
+            }
+            return Container();
+          }),
+        ),
+     // ),
     );
   }
 }
