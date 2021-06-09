@@ -9,7 +9,7 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/pin_store.dart';
+import 'package:picPics/stores/pin_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 
 class EmailStore extends GetxController {
@@ -19,8 +19,8 @@ class EmailStore extends GetxController {
 class EmailScreen extends StatefulWidget {
   static const String id = 'email_screen';
 
-  final PinStore pinStore;
-  EmailScreen({this.pinStore});
+  final PinController pinController;
+  EmailScreen({this.pinController});
 
   @override
   _EmailScreenState createState() => _EmailScreenState();
@@ -36,10 +36,10 @@ class _EmailScreenState extends State<EmailScreen> {
   }
 
   Future<void> startRegistration() async {
-    bool isValid = EmailValidator.validate(widget.pinStore.email.value);
+    bool isValid = EmailValidator.validate(widget.pinController.email.value);
 
     if (!isValid) {
-      PinStore.to
+      PinController.to
           .showErrorModal('Please type a valid e-mail address to proceed.');
       return;
     }
@@ -48,7 +48,7 @@ class _EmailScreenState extends State<EmailScreen> {
       isLoading = true;
     });
 
-    Map<String, dynamic> result = await widget.pinStore.register();
+    Map<String, dynamic> result = await widget.pinController.register();
 
     setState(() {
       isLoading = false;
@@ -60,11 +60,12 @@ class _EmailScreenState extends State<EmailScreen> {
     } else {
       //print('Result: $result');
       if (result['errorCode'] == 'email-already-in-use') {
-        PinStore.to.showErrorModal(
+        PinController.to.showErrorModal(
             'This e-mail is already in use by another account.');
         //print('Error !!!');
       } else {
-        PinStore.to.showErrorModal('An error has occured. Please try again!');
+        PinController.to
+            .showErrorModal('An error has occured. Please try again!');
         //print('Error !!!');
       }
     }
@@ -150,7 +151,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                   margin: const EdgeInsets.only(top: 6.0),
                                   child: TextField(
                                     maxLines: 1,
-                                    onChanged: widget.pinStore.setEmail,
+                                    onChanged: widget.pinController.setEmail,
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
                                           left: 10.0, right: 5.0),

@@ -1,0 +1,730 @@
+import 'dart:io';
+
+import 'package:expandable/expandable.dart';
+import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
+import 'package:picPics/constants.dart';
+import 'package:picPics/custom_scroll_physics.dart';
+import 'package:picPics/fade_image_builder.dart';
+import 'package:picPics/screens/photo_screen.dart';
+import 'package:picPics/screens/settings_screen.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tagged_controller.dart';
+import 'package:picPics/stores/tags_controller.dart';
+import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/functions.dart';
+import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/refresh_everything.dart';
+import 'package:picPics/widgets/device_no_pics.dart';
+import 'package:picPics/widgets/tags_list.dart';
+import 'package:visibility_detector/visibility_detector.dart';
+import '../../asset_entity_image_provider.dart';
+
+// ignore: must_be_immutable
+class TaggedTabGridView extends GetWidget<TaggedController> {
+  final String tagKey;
+  TaggedTabGridView(this.tagKey, {Key key}) : super(key: key);
+
+  //ScrollController scrollControllerFirstTab;
+  TextEditingController tagsEditingController = TextEditingController();
+  TextEditingController bottomTagsEditingController = TextEditingController();
+
+  Widget _buildGridView(BuildContext context) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollNotification) {
+        /// Hiding Months on days from here by listening to the scrollNotification
+        if (scrollNotification is ScrollStartNotification) {
+          //print('Start scrolling');
+          controller.setIsScrolling(true);
+          return false;
+        } else if (scrollNotification is ScrollEndNotification) {
+          //print('End scrolling');
+          controller.setIsScrolling(false);
+          return true;
+        }
+        return true;
+      },
+      child: Obx(
+        () {
+          var taggedPicIds = controller.taggedPicId[tagKey]?.keys?.toList();
+          if (taggedPicIds?.isEmpty ?? true) {
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return StaggeredGridView.countBuilder(
+              key: Key('Month'),
+              //controller: scrollControllerFirstTab,
+              physics: const CustomScrollPhysics(),
+              padding: EdgeInsets.only(top: 2),
+              addAutomaticKeepAlives: true,
+              crossAxisCount: 5,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 0,
+              itemCount: taggedPicIds.length,
+              staggeredTileBuilder: (_) {
+                return StaggeredTile.count(1, 1);
+              },
+              itemBuilder: (_, int index) {
+                return Obx(() {
+                  var picId = taggedPicIds[index];
+                  return VisibilityDetector(
+                    key: Key('$picId}'),
+                    onVisibilityChanged: (visibilityInfo) {
+                      var visiblePercentage =
+                          visibilityInfo.visibleFraction * 100;
+                      if (visiblePercentage > 10 &&
+                          TabsController.to.picStoreMap[picId] == null) {
+                        TabsController.to.picStoreMap[picId] =
+                            TabsController.to.explorPicStore(picId);
+                        /* debugPrint(
+                            'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
+                      }
+                      /* else {
+                          if (controller.picAssetThumbBytesMap[
+                                  monthKeys[index].key] !=
+                              null) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              controller.picAssetThumbBytesMap[
+                                  monthKeys[index].key] = null;
+                            });
+                          }
+                        } */
+                    },
+                    child: TabsController.to.picStoreMap[picId] == null
+                        ? greyWidget
+                        : Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Container(
+                                child: _buildItemOneMoreTrial(
+                                    TabsController.to.picStoreMap[picId].value,
+                                    picId),
+                              ),
+                            ),
+                          ),
+                  );
+                });
+              });
+        },
+      ),
+    );
+  }
+
+  Widget get _failedItem => Center(
+        child: Text(
+          'Failed loading',
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 18.0),
+        ),
+      );
+
+  Widget _buildItemOneMoreTrial(PicStore picStore, String picId) {
+//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
+
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: false);
+
+    return RepaintBoundary(
+      child: ExtendedImage(
+        image: imageProvider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = const ColoredBox(color: kGreyPlaceholder);
+              break;
+            case LoadState.completed:
+              loader = FadeImageBuilder(
+                child: () {
+                  return GestureDetector(
+                    onLongPress: () {
+                      //print('LongPress');
+                      if (controller.multiPicBar.value == false) {
+                        controller.selectedMultiBarPics[picId] = true;
+                        controller.setMultiPicBar(true);
+                      }
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        if (controller.multiPicBar.value) {
+                          if (controller.selectedMultiBarPics[picId] == null) {
+                            controller.selectedMultiBarPics[picId] = true;
+                          } else {
+                            controller.selectedMultiBarPics.remove(picId);
+                          }
+                          /* GalleryStore.to.setSelectedPics(
+                  picStore: picStore,
+                  picIsTagged: false,
+                ); */
+                          //print('Pics Selected Length: ');
+                          //print('${GalleryStore.to.selectedPics.length}');
+                          return;
+                        }
+                        var list =
+                            controller.taggedPicId[tagKey]?.keys?.toList();
+                        if (list?.isNotEmpty ?? false) {
+                          Get.to(
+                              () => PhotoScreen(picId: picId, picIdList: list));
+                        }
+                      },
+                      child: Obx(() {
+                        Widget image = Positioned.fill(
+                          child: RepaintBoundary(
+                            child: state.completedWidget,
+                          ),
+                        );
+                        if (controller.multiPicBar.value) {
+                          if (controller.selectedMultiBarPics[picId] != null) {
+                            return Stack(
+                              children: [
+                                image,
+                                Container(
+                                  constraints: BoxConstraints.expand(),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryColor.withOpacity(0.3),
+                                    border: Border.all(
+                                      color: kSecondaryColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 8.0,
+                                  top: 6.0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      gradient: kSecondaryGradient,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Image.asset(
+                                        'lib/images/checkwhiteico.png'),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Stack(
+                            children: [
+                              image,
+                              Positioned(
+                                left: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: kGrayColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Stack(
+                          children: [
+                            image,
+                          ],
+                        );
+                      }),
+                    ),
+                  );
+                }(),
+              );
+              break;
+            case LoadState.failed:
+              loader = _failedItem;
+              break;
+          }
+          return loader;
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () => controller.shouldPopOut(),
+      child: Obx(
+        () => Scaffold(
+          bottomNavigationBar: controller.multiTagSheet.value
+              ? ExpandableNotifier(
+                  controller: controller.expandableController.value,
+                  child: Container(
+                    color: Color(0xF1F3F5),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CupertinoButton(
+                          padding: const EdgeInsets.all(0),
+                          onPressed: () {
+                            controller.expandableController.value.expanded =
+                                !controller.expandableController.value.expanded;
+                          },
+                          child: SafeArea(
+                            bottom:
+                                !controller.expandableController.value.expanded,
+                            child: Container(
+                              color: Color(0xFFF1F3F5),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  CupertinoButton(
+                                    onPressed: () {
+                                      controller.setMultiTagSheet(false);
+                                    },
+                                    child: Container(
+                                      width: 80.0,
+                                      child: Text(
+                                        S.of(context).cancel,
+                                        textScaleFactor: 1.0,
+                                        style: TextStyle(
+                                          color: Color(0xff707070),
+                                          fontSize: 16,
+                                          fontFamily: 'Lato',
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Spacer(),
+                                  CupertinoButton(
+                                    onPressed: () async {
+                                      // if (!UserController.to.isPremium) {
+                                      //   Get.to(() =>   PremiumScreen());
+                                      //   return;
+                                      // }
+
+                                      if (TagsController
+                                              .to.multiPicTags[kSecretTagKey] !=
+                                          null) {
+                                        showDeleteSecretModalForMultiPic();
+                                        return;
+                                      }
+
+                                      controller.setMultiTagSheet(false);
+                                      controller.setMultiPicBar(false);
+                                      await TagsController.to
+                                          .addTagsToSelectedPics();
+                                      await refresh_everything();
+                                    },
+                                    child: Container(
+                                      width: 80.0,
+                                      child: Text(
+                                        S.of(context).ok,
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.end,
+                                        style: TextStyle(
+                                          color: Color(0xff707070),
+                                          fontSize: 16,
+                                          fontFamily: 'Lato',
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expandable(
+                          controller: controller.expandableController.value,
+                          expanded: Container(
+                            padding: const EdgeInsets.all(24.0),
+
+                            /// TODO: Tags List Not Showing
+                            color: Color(0xFFEFEFF4).withOpacity(0.94),
+                            child: SafeArea(
+                              bottom: true,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  TagsList(
+                                      tagsKeyList: TagsController
+                                          .to.multiPicTags.keys
+                                          .toList(),
+                                      addTagField: true,
+                                      textEditingController:
+                                          bottomTagsEditingController,
+                                      /*  showEditTagModal: (String tagKey) {
+                                                  showEditTagModal();
+                                                }, */
+                                      onTap: (String tagKey) {
+                                        ///  if (!UserController.to.isPremium) {
+                                        ///    Get.to(() =>   PremiumScreen);
+                                        ///    return;
+                                        ///  }
+                                        print('do nothing');
+                                      },
+                                      onPanEnd: (String tagKey) {
+                                        // if (!UserController.to.isPremium) {
+                                        //   Get.to(() =>   PremiumScreen);
+                                        //   return;
+                                        // }
+                                        TagsController.to.multiPicTags
+                                            .remove(tagKey);
+                                        TagsController.to.loadRecentTags();
+                                        //GalleryStore.to.removeFromMultiPicTags(tagKey);
+                                      },
+                                      onDoubleTap: (String tagKey) {
+                                        // if (!UserController.to.isPremium) {
+                                        //   Get.to(() =>   PremiumScreen);
+                                        //   return;
+                                        // }
+                                        print('do nothing');
+                                      },
+                                      onChanged: (text) {
+                                        TagsController.to.searchText.value =
+                                            text ?? '';
+                                        TagsController.to.loadRecentTags();
+                                        //GalleryStore.to.setSearchText(text);
+                                      },
+                                      onSubmitted: (text) {
+                                        // if (!UserController.to.isPremium) {
+                                        //   Get.to(() =>   PremiumScreen);
+                                        //   return;
+                                        // }
+                                        if (text != '') {
+                                          bottomTagsEditingController.clear();
+                                          TagsController.to.searchText.value =
+                                              text ?? '';
+                                          TagsController.to.loadRecentTags();
+                                          String tagKey =
+                                              Helpers.encryptTag(text);
+
+                                          if (TagsController
+                                                  .to.multiPicTags[tagKey] ==
+                                              null) {
+                                            if (TagsController
+                                                    .to.allTags[tagKey] ==
+                                                null) {
+                                              print(
+                                                  'tag does not exist! creating it!');
+                                              TagsController.to.createTag(text);
+                                            }
+                                            TagsController
+                                                .to.multiPicTags[tagKey] = '';
+                                            TagsController.to.searchText.value =
+                                                '';
+                                          }
+                                        }
+                                      }),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: TagsList(
+                                      title:
+                                          TagsController.to.searchText.value !=
+                                                  ''
+                                              ? S.of(context).search_results
+                                              : S.of(context).recent_tags,
+                                      tagsKeyList: TagsController
+                                          .to.recentTagKeyList.keys
+                                          .where((tag) =>
+                                              TagsController
+                                                  .to.multiPicTags[tag] ==
+                                              null)
+                                          .toList(),
+                                      tagStyle: TagStyle.GrayOutlined,
+                                      /* showEditTagModal: () =>
+                                                    showEditTagModal(context), */
+                                      onTap: (String tagKey) {
+                                        /* if (!UserController
+                                                      .to.isPremium.value) {
+                                                    Get.to(() => PremiumScreen);
+                                                    return;
+                                                  } */
+
+                                        bottomTagsEditingController.clear();
+                                        TagsController.to.searchText.value = '';
+                                        //GalleryStore.to.setSearchText('');
+                                        TagsController.to.multiPicTags[tagKey] =
+                                            '';
+                                        TagsController.to.loadRecentTags();
+                                        //GalleryStore.to.addToMultiPicTags(tagKey);
+                                      },
+                                      onDoubleTap: (String tagKey) {
+                                        /* if (!UserController
+                                                      .to.isPremium.value) {
+                                                    Get.to(() => PremiumScreen);
+                                                    return;
+                                                  } */
+                                        print('do nothing');
+                                      },
+                                      onPanEnd: (String tagKey) {
+                                        /* if (!UserController
+                                                      .to.isPremium.value) {
+                                                    Get.to(() => PremiumScreen);
+                                                    return;
+                                                  } */
+                                        print('do nothing');
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expandable(
+                          controller:
+                              controller.expandablePaddingController.value,
+                          expanded: Container(
+                            height: MediaQuery.of(context).viewInsets.bottom,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              : Obx(() {
+                  if (!controller.multiPicBar.value) {
+                    return Container(
+                      width: 0,
+                      height: 0,
+                    );
+                  }
+                  var listOfBottomNavigationItems = <BottomNavigationBarItem>[
+                    BottomNavigationBarItem(
+                      label: 'Return',
+                      icon: Image.asset('lib/images/returntabbutton.png'),
+                    ),
+                    BottomNavigationBarItem(
+                      label: 'Tag',
+                      icon: AnimatedOpacity(
+                          duration: Duration(milliseconds: 500),
+                          opacity:
+                              controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
+                          child: Image.asset('lib/images/tagtabbutton.png')),
+                    ),
+                    BottomNavigationBarItem(
+                      label: 'Share',
+                      icon: AnimatedOpacity(
+                          duration: Duration(milliseconds: 500),
+                          opacity:
+                              controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
+                          child: Image.asset('lib/images/sharetabbutton.png')),
+                    ),
+                    BottomNavigationBarItem(
+                        label: 'Trash',
+                        icon: AnimatedOpacity(
+                          duration: Duration(milliseconds: 500),
+                          opacity:
+                              controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
+                          child: Image.asset('lib/images/trashtabbutton.png'),
+                        )),
+                  ];
+                  return Platform.isIOS
+                      ? CupertinoTabBar(
+                          onTap: (index) {
+                            controller.setTabIndex(index);
+                          },
+                          iconSize: 24.0,
+                          border: Border(
+                              top: BorderSide(
+                                  color: Color(0xFFE2E4E5), width: 1.0)),
+                          items: listOfBottomNavigationItems)
+                      : SizedBox(
+                          height: 64.0,
+                          child: BottomNavigationBar(
+                              onTap: (index) {
+                                controller.setTabIndex(index);
+                              },
+                              type: BottomNavigationBarType.fixed,
+                              showSelectedLabels: false,
+                              showUnselectedLabels: false,
+                              items: listOfBottomNavigationItems),
+                        );
+                }),
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            shadowColor: Colors.transparent,
+            foregroundColor: Colors.black,
+            actions: [
+              CupertinoButton(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                onPressed: () {
+                  Get.to(() => SettingsScreen());
+                },
+                child: Image.asset('lib/images/settings.png'),
+              ),
+            ],
+            leading: GestureDetector(
+              onTap: () async {
+                if (await controller.shouldPopOut()) {
+                  Get.back();
+                }
+              },
+              child: Icon(
+                Icons.arrow_back_ios_rounded,
+                color: Colors.black.withOpacity(.5),
+                size: 24,
+              ),
+            ),
+            titleSpacing: -8,
+            title: Text(
+              ('${TagsController.to.allTags[tagKey]?.value?.title ?? ''} (${controller.taggedPicId[tagKey]?.keys?.length ?? 0})'),
+              style: TextStyle(
+                color: Colors.black.withOpacity(.5),
+              ),
+            ),
+          ),
+          body: Container(
+            //constraints: BoxConstraints.expand(),
+            color: kWhiteColor,
+            child: SafeArea(
+              child: Obx(() {
+                var hasPics =
+                    controller.taggedPicId[tagKey]?.isNotEmpty ?? false;
+                if (!controller.isTaggedPicsLoaded.value) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                        // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                        ),
+                  );
+                } else if (!hasPics) {
+                  return Stack(
+                    children: <Widget>[
+                      /* Container(
+                      height: 56.0,
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          CupertinoButton(
+                            onPressed: () {
+                              Get.to(() => SettingsScreen());
+                            },
+                            child: Image.asset('lib/images/settings.png'),
+                          ),
+                        ],
+                      ),
+                    ), */
+                      DeviceHasNoPics(
+                        message: S.of(context).device_has_no_pics,
+                      ),
+                    ],
+                  );
+                } else if (controller.isTaggedPicsLoaded.value && !hasPics) {
+                  return Stack(
+                    children: <Widget>[
+                      /* Container(
+                      height: 56.0,
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          CupertinoButton(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            onPressed: () {
+                              Get.to(() => SettingsScreen());
+                            },
+                            child: Image.asset('lib/images/settings.png'),
+                          ),
+                        ],
+                      ),
+                    ), */
+                      DeviceHasNoPics(
+                        message: S.of(context).all_photos_were_tagged,
+                      ),
+                    ],
+                  );
+                } else if (controller.isTaggedPicsLoaded.value && hasPics) {
+                  return Stack(
+                    children: <Widget>[
+                      GestureDetector(
+                        child: _buildGridView(context),
+                      ),
+                      /* Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          CupertinoButton(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            onPressed: () {
+                              Get.to(() => SettingsScreen());
+                            },
+                            child: Image.asset('lib/images/settings.png'),
+                          ),
+                        ],
+                      ),
+                    ), */
+                      /* Positioned(
+                      left: 16.0,
+                      top: 10.0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text(
+                            controller.multiPicBar.value
+                                ? S.of(context).photo_gallery_count(
+                                    controller.selectedMultiBarPics.length)
+                                : S.of(context).photo_gallery_description,
+                            textScaleFactor: 1.0,
+                            style: TextStyle(
+                              fontFamily: 'Lato',
+                              color: Color(0xff979a9b),
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              fontStyle: FontStyle.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ), 
+                  AnimatedOpacity(
+                    opacity: controller.isScrolling.value ? 0.0 : 1.0,
+                    curve: Curves.linear,
+                    duration: Duration(milliseconds: 300),
+                    onEnd: () {
+                      controller.setIsToggleBarVisible(
+                          controller.isScrolling.value ? false : true);
+                    },
+                    child: Visibility(
+                      visible: controller.isScrolling.value
+                          ? controller.isToggleBarVisible.value
+                          : true,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 10.0),
+                          child: ToggleBar(
+                            titleLeft: S.of(context).toggle_months,
+                            titleRight: S.of(context).toggle_days,
+                            activeToggle: controller.toggleIndexUntagged.value,
+                            onToggle: (index) {
+                              controller.setToggleIndexUntagged(index);
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ), */
+                    ],
+                  );
+                }
+                return Container();
+              }),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

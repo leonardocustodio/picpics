@@ -11,10 +11,10 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
 
-void showDeleteSecretModalForMultiPic(TabsController controller) {
+void showDeleteSecretModalForMultiPic() {
   if (UserController.to.keepAskingToDelete.value == false) {
-    controller.setMultiTagSheet(false);
-    controller.setMultiPicBar(false);
+    TabsController.to.setMultiTagSheet(false);
+    TabsController.to.setMultiPicBar(false);
     TagsController.to.addTagsToSelectedPics();
     return;
   }
@@ -30,15 +30,15 @@ void showDeleteSecretModalForMultiPic(TabsController controller) {
         },
         onPressedDelete: () {
           UserController.to.setShouldDeleteOnPrivate(false);
-          controller.setMultiTagSheet(false);
-          controller.setMultiPicBar(false);
+          TabsController.to.setMultiTagSheet(false);
+          TabsController.to.setMultiPicBar(false);
           TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
         onPressedOk: () {
           UserController.to.setShouldDeleteOnPrivate(true);
-          controller.setMultiTagSheet(false);
-          controller.setMultiPicBar(false);
+          TabsController.to.setMultiTagSheet(false);
+          TabsController.to.setMultiPicBar(false);
           TagsController.to.addTagsToSelectedPics();
           Get.back();
         },

@@ -9,6 +9,7 @@ import 'package:picPics/stores/tagged_controller.dart';
 /* import 'package:picPics/stores/tagged_controller.dart'; */
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/refresh_everything.dart';
 import '../constants.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'database_controller.dart';
@@ -509,7 +510,15 @@ class TagsController extends GetxController {
   Future<void> addTagsToSelectedPics() async {
     //var tagsBox = Hive.box('tags');
 
-    var selectedPicIds = TabsController.to.selectedUntaggedPics.keys.toList();
+    List<String> selectedPicIds = <String>[];
+    if (TabsController.to.currentTab.value == 0) {
+      selectedPicIds = List<String>.from(
+          TabsController.to.selectedMultiBarPics.keys.toList());
+    } else if (TabsController.to.currentTab.value == 2) {
+      selectedPicIds = List<String>.from(
+          TaggedController.to.selectedMultiBarPics.keys.toList());
+    }
+
     var multiTags = multiPicTags.keys.toList();
 
     await Future.wait(
@@ -518,72 +527,15 @@ class TagsController extends GetxController {
           for (var tagKey in multiTags) {
             await addTagToPic(picId: picId, tagKey: tagKey);
           }
-          /* 
-          var picStore = TabsController.to.picStoreMap[picId]?.value;
-          if (picStore == null) {
-            var fetchedPicStore =
-                (await TabsController.to.explorPicStore(picId));
-            TabsController.to.picStoreMap[picId] = fetchedPicStore;
-            picStore = fetchedPicStore.value;
-          }
-          for (String tagKey in multiTags) {
-            /// add the picId to the Tagged tab list for showing this picture there
-            //addPicIdToTaggedList(tagKey, picId);
-
-            /// remove this pic from the untaggedPicIdList list for hiding it from the untagged tab
-            /* TabsController.to.allUnTaggedPicsDay.remove(tagKey);
-            TabsController.to.allUnTaggedPicsMonth.remove(tagKey); */
-
-            /// TODO: check this is working or not, when swipe implementation is done !!
-            SwiperTabController.to.swiperPicIdList.remove(picStore);
-
-            if (picStore.tags[tagKey] != null) {
-              // //print('this tag is already in this picture');
-              continue;
-            }
-            if (tagKey == kSecretTagKey) {
-              // //print('Should add secret tag in the end!!!');
-              if (TabsController.to.secretPicIds[picId] == null ||
-                  TabsController.to.secretPicIds[picId] ==
-                      false /* !privatePics.contains(picStore) */) {
-                await picStore.setIsPrivate(true);
-                await Crypto.encryptImage(
-                    picStore, UserController.to.encryptionKey);
-                // //print('this pic now is private');
-                TabsController.to.secretPicIds[picId] = true;
-                //privatePics.add(picStore);
-              }
-              /* else {
-                // //print('this pic is already private');
-              } */
-              continue;
-            }
-
-            //Tag getTag = tagsBox.get(tagKey);
-            Label getTag = await _database.getLabelByLabelKey(tagKey);
-            getTag.photoId.add(picStore.photoId.value);
-            await _database.updateLabel(getTag);
-            //tagsBox.put(tagKey, getTag);
-
-            await picStore.addTagToPic(
-              tagKey: tagKey,
-              photoId: picStore.photoId.value,
-            );
-
-            // //print('update pictures in tag');
-          }
-
-          /*  if (selectedPicsAreTagged != true) {
-            // //print('Adding pic to tagged pics!');
-
-            addPicToTaggedPics(picStore: picStore);
-            removePicFromUntaggedPics(picStore: picStore);
-          } */ */
         }),
       ],
     ).then((_) {
       /// Clear the selectedUntaggedPics as now the processing is done
-      TabsController.to.clearSelectedUntaggedPics();
+      if (TabsController.to.currentTab.value == 0) {
+        TabsController.to.clearSelectedUntaggedPics();
+      } else if (TabsController.to.currentTab.value == 2) {
+        TaggedController.to.selectedMultiBarPics.clear();
+      }
 
       /// Also clear the multiPicTags as we have iterated and processed through it and
       /// now we have to make it empty for the next time
@@ -591,7 +543,11 @@ class TagsController extends GetxController {
 
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
-        await TabsController.to.refreshUntaggedList();
+        if (TabsController.to.currentTab.value == 0) {
+          TabsController.to.refreshUntaggedList();
+        } else if (TabsController.to.currentTab.value == 2) {
+          TaggedController.to.refreshTaggedPhotos();
+        }
       });
     });
   }

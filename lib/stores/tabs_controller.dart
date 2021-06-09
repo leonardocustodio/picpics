@@ -64,7 +64,7 @@ class TabsController extends GetxController {
   //var privatePhotoIdMap = <String, String>{};
   /* final secretPicIds = <String, bool>{}.obs;
   final secretPicData = <String, Private>{}.obs; */
-  final selectedUntaggedPics = <String, bool>{}.obs;
+  final selectedMultiBarPics = <String, bool>{}.obs;
   //final photoPathMap = <String, String>{}.obs;
 
   final picStoreMap = <String, Rx<PicStore>>{}.obs;
@@ -609,14 +609,14 @@ class TabsController extends GetxController {
   void setToggleIndexTagged(int value) => toggleIndexTagged.value = value;
 
   void returnAction() {
-    selectedUntaggedPics.clear();
+    selectedMultiBarPics.clear();
     setMultiPicBar(false);
   }
 
   Future<void> starredAction() async {
     //await WidgetManager.saveData(picsStores: selectedUntaggedPics.toList());
 
-    selectedUntaggedPics.forEach((picId, value) {
+    selectedMultiBarPics.forEach((picId, value) {
       PicStore picStore = picStoreMap[picId].value;
       if (picStore == null) {
         picStore = explorPicStore(picId).value;
@@ -634,21 +634,21 @@ class TabsController extends GetxController {
   }
 
   Future<void> shareAction() async {
-    if (selectedUntaggedPics.isEmpty) {
+    if (selectedMultiBarPics.isEmpty) {
       return;
     }
     //print('sharing selected pics....');
     setIsLoading(true);
-    await sharePics(picKeys: selectedUntaggedPics.keys.toList()
+    await sharePics(picKeys: selectedMultiBarPics.keys.toList()
         /* picsStores: GalleryStore.to.selectedPics.toList() */);
     setIsLoading(false);
   }
 
   void trashAction() {
-    if (selectedUntaggedPics.isEmpty) {
+    if (selectedMultiBarPics.isEmpty) {
       return;
     }
-    trashMultiplePics(selectedUntaggedPics.keys.toList().toSet());
+    trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
   }
 
   bool get deviceHasPics {
@@ -656,11 +656,11 @@ class TabsController extends GetxController {
   }
 
   void clearSelectedUntaggedPics() {
-    selectedUntaggedPics.clear();
+    selectedMultiBarPics.clear();
   }
 
   setTabIndex(int index) async {
-    if (!deviceHasPics || selectedUntaggedPics.isEmpty) {
+    if (!deviceHasPics || selectedMultiBarPics.isEmpty) {
       if (index == 0) {
         setMultiPicBar(false);
         clearSelectedUntaggedPics();
@@ -682,20 +682,20 @@ class TabsController extends GetxController {
           expandablePaddingController.value.expanded = true;
         });
       } else if (index == 2) {
-        if (/* GalleryStore.to.selectedPics */ selectedUntaggedPics.isEmpty) {
+        if (/* GalleryStore.to.selectedPics */ selectedMultiBarPics.isEmpty) {
           return;
         }
         //print('sharing selected pics....');
         setIsLoading(true);
-        await sharePics(picKeys: selectedUntaggedPics.keys.toList()
+        await sharePics(picKeys: selectedMultiBarPics.keys.toList()
             /* picsStores: GalleryStore.to.selectedPics.toList() */);
         setIsLoading(false);
       } else if (index == 3) {
-        if (selectedUntaggedPics.isEmpty) {
+        if (selectedMultiBarPics.isEmpty) {
           return;
         }
 
-        trashMultiplePics(selectedUntaggedPics.keys.toList().toSet());
+        trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
       }
       return;
     }
@@ -764,7 +764,7 @@ class TabsController extends GetxController {
 
       Analytics.sendEvent(Event.deleted_photo);
       // //print('Reaction!');
-      selectedUntaggedPics.clear();
+      selectedMultiBarPics.clear();
       //setTrashedPic(true);
     }
   }

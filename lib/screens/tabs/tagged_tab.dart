@@ -23,14 +23,18 @@ import 'package:picPics/widgets/top_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
+import 'tagged_tab_grid_view.dart';
+
 class TaggedTab extends GetWidget<TaggedController> {
   static const id = 'tagged_tab';
   TaggedTab({Key key}) : super(key: key);
 
+  var _ = Get.put(UserController());
+
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
-  TextEditingController tagsEditingController = TextEditingController();
+  /* TextEditingController tagsEditingController = TextEditingController(); */
 
   Widget _buildTaggedGridView() {
     //print('Rebuilding tagged gridview');

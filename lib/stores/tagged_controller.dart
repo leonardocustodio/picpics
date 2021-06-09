@@ -1,7 +1,12 @@
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
+import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tags_controller.dart';
+
+import 'tabs_controller.dart';
 
 class TaggedController extends GetxController {
   static TaggedController get to => Get.find();
@@ -10,15 +15,144 @@ class TaggedController extends GetxController {
   final taggedPicId = <String, RxMap<String, String>>{}.obs;
   final allTaggedPicIdList = <String, String>{}.obs;
   final picWiseTags = <String, RxMap<String, String>>{}.obs;
+  final isTaggedPicsLoaded = false.obs;
 
+  final multiPicBar = false.obs;
+  final multiTagSheet = false.obs;
+  final expandableController =
+      Rx<ExpandableController>(ExpandableController(initialExpanded: false));
+  final expandablePaddingController =
+      Rx<ExpandableController>(ExpandableController(initialExpanded: false));
   final toggleIndexTagged = 1.obs;
 
   ScrollController scrollControllerThirdTab;
 
   double offsetThirdTab = 0.0;
 
+  final selectedMultiBarPics = <String, bool>{}.obs;
   final isScrolling = false.obs;
   final database = AppDatabase();
+
+  void setMultiPicBar(bool value) {
+    if (value) {
+      Analytics.sendEvent(Event.selected_photos);
+    }
+    multiPicBar.value = value;
+  }
+
+  void returnAction() {
+    selectedMultiBarPics.clear();
+    setMultiPicBar(false);
+  }
+
+  void setMultiTagSheet(bool value) {
+    multiTagSheet.value = value;
+  }
+
+  Future<void> starredAction() async {
+    //await WidgetManager.saveData(picsStores: selectedUntaggedPics.toList());
+
+    selectedMultiBarPics.forEach((picId, value) {
+      PicStore picStore = TabsController.to.picStoreMap[picId].value;
+      if (picStore == null) {
+        picStore = TabsController.to.explorPicStore(picId).value;
+      }
+      picStore.switchIsStarred();
+    });
+    returnAction();
+  }
+
+  void tagAction() {
+    setMultiTagSheet(true);
+    Future.delayed(Duration(milliseconds: 200), () {
+      expandableController.value.expanded = true;
+    });
+  }
+
+  Future<void> shareAction() async {
+    if (selectedMultiBarPics.isEmpty) {
+      return;
+    }
+    //print('sharing selected pics....');
+    //setIsLoading(true);
+    await sharePics(picKeys: selectedMultiBarPics.keys.toList()
+        /* picsStores: GalleryStore.to.selectedPics.toList() */);
+    //setIsLoading(false);
+  }
+
+  void trashAction() {
+    if (selectedMultiBarPics.isEmpty) {
+      return;
+    }
+    TabsController.to
+        .trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
+  }
+
+  bool get deviceHasPics {
+    return TabsController.to.assetMap.isNotEmpty;
+  }
+
+  void clearSelectedUntaggedPics() {
+    selectedMultiBarPics.clear();
+  }
+
+  void onPoppingOut() {
+    selectedMultiBarPics.clear();
+    TagsController.to.multiPicTags.clear();
+  }
+
+  Future<bool> shouldPopOut() async {
+    /// if sheet is opened the don't allow popping and just
+    if (multiTagSheet.value) {
+      TagsController.to.multiPicTags.clear();
+      multiTagSheet.value = false;
+      return false;
+    }
+    if (multiPicBar.value) {
+      multiPicBar.value = false;
+      return false;
+    }
+    onPoppingOut();
+    return true;
+  }
+
+  setTabIndex(int index) async {
+    if (selectedMultiBarPics.isEmpty) {
+      if (index == 0) {
+        setMultiPicBar(false);
+        clearSelectedUntaggedPics();
+        TagsController.to.clearMultiPicTags();
+        return;
+      }
+    }
+
+    if (index == 0) {
+      clearSelectedUntaggedPics();
+      //GalleryStore.to.clearSelectedPics();
+      setMultiPicBar(false);
+    } else if (index == 1) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setMultiTagSheet(true);
+        expandableController.value.expanded = true;
+        expandablePaddingController.value.expanded = true;
+      });
+    } else if (index == 2) {
+      if (selectedMultiBarPics.isEmpty) {
+        return;
+      }
+      isTaggedPicsLoaded.value = false;
+      await sharePics(picKeys: selectedMultiBarPics.keys.toList()
+          /* picsStores: GalleryStore.to.selectedPics.toList() */);
+      isTaggedPicsLoaded.value = false;
+    } else if (index == 3) {
+      if (selectedMultiBarPics.isEmpty) {
+        return;
+      }
+
+      TabsController.to
+          .trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
+    }
+  }
 
   @override
   void onInit() {
@@ -59,6 +193,7 @@ class TaggedController extends GetxController {
   void setIsScrolling(bool value) => isScrolling.value = value;
 
   Future<void> refreshTaggedPhotos() async {
+    isTaggedPicsLoaded.value = false;
     var taggedPhotoIdList = await database.getAllPhoto();
 
     allTaggedPicIdList.clear();
@@ -80,8 +215,9 @@ class TaggedController extends GetxController {
         });
         allTaggedPicIdList[photo.id] = '';
       }
+    }).then((_) {
+      isTaggedPicsLoaded.value = true;
     });
-    print('${allTaggedPicIdList.keys.toList()}');
   }
 
   void addPicIdToTaggedList(String tagKey, String taggedPicId) {

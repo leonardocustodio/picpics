@@ -9,16 +9,13 @@ import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/generated/l10n.dart';
 // import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
@@ -28,7 +25,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 class TabsScreen extends GetWidget<TabsController> {
   static const id = 'tabs_screen';
 
-  SwiperController tutorialSwiperController = SwiperController();
+  //SwiperController tutorialSwiperController = SwiperController();
 
   TextEditingController tagsEditingController = TextEditingController();
 
@@ -103,8 +100,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         if (TagsController.to
                                                 .multiPicTags[kSecretTagKey] !=
                                             null) {
-                                          showDeleteSecretModalForMultiPic(
-                                              controller);
+                                          showDeleteSecretModalForMultiPic();
                                           return;
                                         }
 
@@ -384,7 +380,7 @@ class TabsScreen extends GetWidget<TabsController> {
                               ),
                               BottomNavigationBarItem(
                                 //title: Container(),
-                                icon: controller.selectedUntaggedPics
+                                icon: controller.selectedMultiBarPics
                                         .isEmpty /* GalleryStore.to.selectedPics.isEmpty */
                                     ? Opacity(
                                         opacity: 0.2,
@@ -396,7 +392,7 @@ class TabsScreen extends GetWidget<TabsController> {
                               ),
                               BottomNavigationBarItem(
                                 //title: Container(),
-                                icon: controller.selectedUntaggedPics
+                                icon: controller.selectedMultiBarPics
                                         .isEmpty // GalleryStore.to.selectedPics.isEmpty
                                     ? Opacity(
                                         opacity: 0.3,
@@ -431,7 +427,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                 BottomNavigationBarItem(
                                   label: 'Tag',
                                   icon: TabsController
-                                          .to.selectedUntaggedPics.isEmpty
+                                          .to.selectedMultiBarPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
                                           child: Image.asset(
@@ -443,7 +439,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                 BottomNavigationBarItem(
                                   label: 'Share',
                                   icon: TabsController
-                                          .to.selectedUntaggedPics.isEmpty
+                                          .to.selectedMultiBarPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
                                           child: Image.asset(
@@ -455,7 +451,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                 BottomNavigationBarItem(
                                   label: 'Trash',
                                   icon: TabsController
-                                          .to.selectedUntaggedPics.isEmpty
+                                          .to.selectedMultiBarPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
                                           child: Image.asset(

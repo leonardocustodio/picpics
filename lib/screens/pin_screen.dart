@@ -11,13 +11,13 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/pin_store.dart';
+import 'package:picPics/stores/pin_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
 
-class PinScreen extends GetWidget<PinStore> {
+class PinScreen extends GetWidget<PinController> {
   static const String id = 'pin_screen';
 
   bool isLoading = false;

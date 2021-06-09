@@ -72,17 +72,17 @@ class UntaggedTab extends GetWidget<TabsController> {
                     var isSelected = false;
                     if (controller.multiPicBar.value) {
                       isSelected = monthKeys[index].value.every((picId) =>
-                          controller.selectedUntaggedPics[picId] != null &&
-                          controller.selectedUntaggedPics[picId]);
+                          controller.selectedMultiBarPics[picId] != null &&
+                          controller.selectedMultiBarPics[picId]);
                     }
                     return GestureDetector(
                         onTap: () {
                           if (controller.multiPicBar.value) {
                             monthKeys[index].value.forEach((picId) {
                               if (isSelected) {
-                                controller.selectedUntaggedPics.remove(picId);
+                                controller.selectedMultiBarPics.remove(picId);
                               } else {
-                                controller.selectedUntaggedPics[picId] = true;
+                                controller.selectedMultiBarPics[picId] = true;
                               }
                             });
                           }
@@ -164,17 +164,17 @@ class UntaggedTab extends GetWidget<TabsController> {
                     var isSelected = false;
                     if (controller.multiPicBar.value) {
                       isSelected = dayKeys[index].value.every((picId) =>
-                          controller.selectedUntaggedPics[picId] != null &&
-                          controller.selectedUntaggedPics[picId]);
+                          controller.selectedMultiBarPics[picId] != null &&
+                          controller.selectedMultiBarPics[picId]);
                     }
                     return GestureDetector(
                         onTap: () {
                           if (controller.multiPicBar.value) {
                             dayKeys[index].value.forEach((picId) {
                               if (isSelected) {
-                                controller.selectedUntaggedPics.remove(picId);
+                                controller.selectedMultiBarPics.remove(picId);
                               } else {
-                                controller.selectedUntaggedPics[picId] = true;
+                                controller.selectedMultiBarPics[picId] = true;
                               }
                             });
                           }
@@ -589,7 +589,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                     onLongPress: () {
                       //print('LongPress');
                       if (controller.multiPicBar.value == false) {
-                        controller.selectedUntaggedPics[picId] = true;
+                        controller.selectedMultiBarPics[picId] = true;
                         controller.setMultiPicBar(true);
                       }
                     },
@@ -597,10 +597,10 @@ class UntaggedTab extends GetWidget<TabsController> {
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
                         if (controller.multiPicBar.value) {
-                          if (controller.selectedUntaggedPics[picId] == null) {
-                            controller.selectedUntaggedPics[picId] = true;
+                          if (controller.selectedMultiBarPics[picId] == null) {
+                            controller.selectedMultiBarPics[picId] = true;
                           } else {
-                            controller.selectedUntaggedPics.remove(picId);
+                            controller.selectedMultiBarPics.remove(picId);
                           }
                           /* GalleryStore.to.setSelectedPics(
                   picStore: picStore,
@@ -624,7 +624,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                           ),
                         );
                         if (controller.multiPicBar.value) {
-                          if (controller.selectedUntaggedPics[picId] != null) {
+                          if (controller.selectedMultiBarPics[picId] != null) {
                             return Stack(
                               children: [
                                 image,
@@ -720,7 +720,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                     onLongPress: () {
                       //print('LongPress');
                       if (controller.multiPicBar.value == false) {
-                        controller.selectedUntaggedPics[picId] = true;
+                        controller.selectedMultiBarPics[picId] = true;
                         controller.setMultiPicBar(true);
                       }
                     },
@@ -728,10 +728,10 @@ class UntaggedTab extends GetWidget<TabsController> {
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
                         if (controller.multiPicBar.value) {
-                          if (controller.selectedUntaggedPics[picId] == null) {
-                            controller.selectedUntaggedPics[picId] = true;
+                          if (controller.selectedMultiBarPics[picId] == null) {
+                            controller.selectedMultiBarPics[picId] = true;
                           } else {
-                            controller.selectedUntaggedPics.remove(picId);
+                            controller.selectedMultiBarPics.remove(picId);
                           }
                           /* GalleryStore.to.setSelectedPics(
                   picStore: picStore,
@@ -760,7 +760,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                           ),
                         );
                         if (controller.multiPicBar.value) {
-                          if (controller.selectedUntaggedPics[picId] != null) {
+                          if (controller.selectedMultiBarPics[picId] != null) {
                             return Stack(
                               children: [
                                 image,
@@ -972,152 +972,153 @@ class UntaggedTab extends GetWidget<TabsController> {
         header: MaterialClassicHeader(),
       controller: RefreshPicPicsController.to.refreshController,
       onRefresh: () => RefreshPicPicsController.to.onRefresh(),
-      child:  */Container(
-        //constraints: BoxConstraints.expand(),
-        color: kWhiteColor,
-        child: SafeArea(
-          child: Obx(() {
-            var hasPics = controller.allUnTaggedPicsMonth.isNotEmpty ||
-                controller.allUnTaggedPicsDay.isNotEmpty;
-            if (!controller.isUntaggedPicsLoaded.value) {
-              return Center(
-                child: CircularProgressIndicator(
-                    // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-                    ),
-              );
-            } else if (!hasPics) {
-              return Stack(
-                children: <Widget>[
-                  Container(
-                    height: 56.0,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        CupertinoButton(
-                          onPressed: () {
-                            Get.to(() => SettingsScreen());
-                          },
-                          child: Image.asset('lib/images/settings.png'),
-                        ),
-                      ],
-                    ),
+      child:  */
+        Container(
+      //constraints: BoxConstraints.expand(),
+      color: kWhiteColor,
+      child: SafeArea(
+        child: Obx(() {
+          var hasPics = controller.allUnTaggedPicsMonth.isNotEmpty ||
+              controller.allUnTaggedPicsDay.isNotEmpty;
+          if (!controller.isUntaggedPicsLoaded.value) {
+            return Center(
+              child: CircularProgressIndicator(
+                  // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
                   ),
-                  DeviceHasNoPics(
-                    message: S.of(context).device_has_no_pics,
+            );
+          } else if (!hasPics) {
+            return Stack(
+              children: <Widget>[
+                Container(
+                  height: 56.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      CupertinoButton(
+                        onPressed: () {
+                          Get.to(() => SettingsScreen());
+                        },
+                        child: Image.asset('lib/images/settings.png'),
+                      ),
+                    ],
                   ),
-                ],
-              );
-            } else if (controller.isUntaggedPicsLoaded.value && !hasPics) {
-              return Stack(
-                children: <Widget>[
-                  Container(
-                    height: 56.0,
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        CupertinoButton(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          onPressed: () {
-                            Get.to(() => SettingsScreen());
-                          },
-                          child: Image.asset('lib/images/settings.png'),
-                        ),
-                      ],
-                    ),
+                ),
+                DeviceHasNoPics(
+                  message: S.of(context).device_has_no_pics,
+                ),
+              ],
+            );
+          } else if (controller.isUntaggedPicsLoaded.value && !hasPics) {
+            return Stack(
+              children: <Widget>[
+                Container(
+                  height: 56.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      CupertinoButton(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        onPressed: () {
+                          Get.to(() => SettingsScreen());
+                        },
+                        child: Image.asset('lib/images/settings.png'),
+                      ),
+                    ],
                   ),
-                  DeviceHasNoPics(
-                    message: S.of(context).all_photos_were_tagged,
-                  ),
-                ],
-              );
-            } else if (controller.isUntaggedPicsLoaded.value && hasPics) {
-              return Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 48.0),
-                    child: GestureDetector(
+                ),
+                DeviceHasNoPics(
+                  message: S.of(context).all_photos_were_tagged,
+                ),
+              ],
+            );
+          } else if (controller.isUntaggedPicsLoaded.value && hasPics) {
+            return Stack(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 48.0),
+                  child: GestureDetector(
 //                              onScaleUpdate: (update) {
 /* //print(update.scale); */
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
-                      child: _buildGridView(context),
-                    ),
+                    child: _buildGridView(context),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        CupertinoButton(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          onPressed: () {
-                            Get.to(() => SettingsScreen());
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      CupertinoButton(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        onPressed: () {
+                          Get.to(() => SettingsScreen());
+                        },
+                        child: Image.asset('lib/images/settings.png'),
+                      ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  left: 16.0,
+                  top: 10.0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        controller.multiPicBar.value
+                            ? S.of(context).photo_gallery_count(
+                                controller.selectedMultiBarPics.length)
+                            : S.of(context).photo_gallery_description,
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff979a9b),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                AnimatedOpacity(
+                  opacity: controller.isScrolling.value ? 0.0 : 1.0,
+                  curve: Curves.linear,
+                  duration: Duration(milliseconds: 300),
+                  onEnd: () {
+                    controller.setIsToggleBarVisible(
+                        controller.isScrolling.value ? false : true);
+                  },
+                  child: Visibility(
+                    visible: controller.isScrolling.value
+                        ? controller.isToggleBarVisible.value
+                        : true,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: ToggleBar(
+                          titleLeft: S.of(context).toggle_months,
+                          titleRight: S.of(context).toggle_days,
+                          activeToggle: controller.toggleIndexUntagged.value,
+                          onToggle: (index) {
+                            controller.setToggleIndexUntagged(index);
                           },
-                          child: Image.asset('lib/images/settings.png'),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    left: 16.0,
-                    top: 10.0,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(
-                          controller.multiPicBar.value
-                              ? S.of(context).photo_gallery_count(
-                                  controller.selectedUntaggedPics.length)
-                              : S.of(context).photo_gallery_description,
-                          textScaleFactor: 1.0,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff979a9b),
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            fontStyle: FontStyle.normal,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  AnimatedOpacity(
-                    opacity: controller.isScrolling.value ? 0.0 : 1.0,
-                    curve: Curves.linear,
-                    duration: Duration(milliseconds: 300),
-                    onEnd: () {
-                      controller.setIsToggleBarVisible(
-                          controller.isScrolling.value ? false : true);
-                    },
-                    child: Visibility(
-                      visible: controller.isScrolling.value
-                          ? controller.isToggleBarVisible.value
-                          : true,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: ToggleBar(
-                            titleLeft: S.of(context).toggle_months,
-                            titleRight: S.of(context).toggle_days,
-                            activeToggle: controller.toggleIndexUntagged.value,
-                            onToggle: (index) {
-                              controller.setToggleIndexUntagged(index);
-                            },
-                          ),
                         ),
                       ),
                     ),
                   ),
-                ],
-              );
-            }
-            return Container();
-          }),
-        ),
-     // ),
+                ),
+              ],
+            );
+          }
+          return Container();
+        }),
+      ),
+      // ),
     );
   }
 }

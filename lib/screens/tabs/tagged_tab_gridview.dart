@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+/* import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -201,6 +201,137 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
     );
   }
 
+  Widget _buildItemOneMoreTrial(PicStore picStore, String picId) {
+//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
+
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: false);
+
+    return RepaintBoundary(
+      child: ExtendedImage(
+        image: imageProvider,
+        fit: BoxFit.cover,
+        loadStateChanged: (ExtendedImageState state) {
+          Widget loader;
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              loader = const ColoredBox(color: kGreyPlaceholder);
+              break;
+            case LoadState.completed:
+              loader = FadeImageBuilder(
+                child: () {
+                  return GestureDetector(
+                    onLongPress: () {
+                      //print('LongPress');
+                      if (false == controller.multiPicBar.value) {
+                        controller.selectedTaggedPics[picId] = true;
+                        controller.multiPicBar.value = true;
+                      }
+                    },
+                    child: CupertinoButton(
+                      padding: const EdgeInsets.all(0),
+                      onPressed: () {
+                        if (controller.multiPicBar.value) {
+                          if (controller.selectedTaggedPics[picId] == null) {
+                            controller.selectedTaggedPics[picId] = true;
+                          } else {
+                            controller.selectedTaggedPics.remove(picId);
+                          }
+                          return;
+                        }
+                        Get.to(() => PhotoScreen(
+                              picId: picId,
+                              picIdList: controller.taggedPicId[tagKey]?.keys
+                                  ?.toList(),
+                            ));
+
+/* 
+              tagsEditingController.text = '';
+              GalleryStore.to.setCurrentPic(picStore);
+              int indexOfSwipePic = GalleryStore.to.swipePics.indexOf(picStore);
+              GalleryStore.to.setSelectedSwipe(indexOfSwipePic);
+              controller.setModalCard(true); */
+                      },
+                      child: Obx(() {
+                        Widget image = Positioned.fill(
+                          child: RepaintBoundary(
+                            child: state.completedWidget,
+                          ),
+                        );
+                        if (controller.multiPicBar.value) {
+                          if (controller.selectedUntaggedPics[picId] != null) {
+                            return Stack(
+                              children: [
+                                image,
+                                Container(
+                                  constraints: BoxConstraints.expand(),
+                                  decoration: BoxDecoration(
+                                    color: kSecondaryColor.withOpacity(0.3),
+                                    border: Border.all(
+                                      color: kSecondaryColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  left: 8.0,
+                                  top: 6.0,
+                                  child: Container(
+                                    height: 20,
+                                    width: 20,
+                                    decoration: BoxDecoration(
+                                      gradient: kSecondaryGradient,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    child: Image.asset(
+                                        'lib/images/checkwhiteico.png'),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }
+                          return Stack(
+                            children: [
+                              image,
+                              Positioned(
+                                left: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    border: Border.all(
+                                      color: kGrayColor,
+                                      width: 2.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+                        return Stack(
+                          children: [
+                            image,
+                          ],
+                        );
+                      }),
+                    ),
+                  );
+                }(),
+              );
+              break;
+            case LoadState.failed:
+              loader = _failedItem;
+              break;
+          }
+          return loader;
+        },
+      ),
+    );
+  }
+
   Widget _buildPicItem(PicStore picStore, String picId, String tagKey) {
     final AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: false);
@@ -355,3 +486,4 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
     );
   }
 }
+ */

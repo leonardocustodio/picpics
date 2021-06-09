@@ -38,7 +38,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'screens/all_tags_screen.dart';
 import 'stores/database_controller.dart';
 import 'stores/login_store.dart';
-import 'stores/pin_store.dart';
+import 'stores/pin_controller.dart';
 import 'stores/refresh_controller.dart';
 import 'stores/swiper_tab_controller.dart';
 import 'stores/tabs_controller.dart';
@@ -76,9 +76,8 @@ void main() async {
   await Get.lazyPut(() => DatabaseController());
   await Get.lazyPut(() => TabsController());
   await Get.lazyPut(() => TagsController());
-  await Get.lazyPut(() => PinStore());
+  await Get.lazyPut(() => PinController());
   await Get.lazyPut(() => LoginStore());
-  await Get.lazyPut(() => PinStore());
   await Get.lazyPut(() => PhotoScreenController());
 
   await Hive.initFlutter();
