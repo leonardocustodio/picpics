@@ -437,8 +437,9 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                           .to.recentTagKeyList.keys
                                           .where((tag) =>
                                               TagsController
-                                                  .to.multiPicTags[tag] ==
-                                              null)
+                                                      .to.multiPicTags[tag] ==
+                                                  null &&
+                                              tag != tagKey)
                                           .toList(),
                                       tagStyle: TagStyle.GrayOutlined,
                                       /* showEditTagModal: () =>

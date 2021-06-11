@@ -9,7 +9,6 @@ import 'package:picPics/stores/tagged_controller.dart';
 /* import 'package:picPics/stores/tagged_controller.dart'; */
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/refresh_everything.dart';
 import '../constants.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'database_controller.dart';

@@ -20,7 +20,6 @@ import 'package:picPics/generated/l10n.dart';
 // import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 
 class TabsScreen extends GetWidget<TabsController> {
   static const id = 'tabs_screen';

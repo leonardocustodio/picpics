@@ -5,6 +5,7 @@ import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tags_controller.dart';
+import 'package:picPics/widgets/confirm_pic_delete.dart';
 
 import 'tabs_controller.dart';
 
@@ -140,17 +141,28 @@ class TaggedController extends GetxController {
       if (selectedMultiBarPics.isEmpty) {
         return;
       }
-      isTaggedPicsLoaded.value = false;
-      await sharePics(picKeys: selectedMultiBarPics.keys.toList()
-          /* picsStores: GalleryStore.to.selectedPics.toList() */);
-      isTaggedPicsLoaded.value = false;
+      await sharePics(picKeys: selectedMultiBarPics.keys.toList());
     } else if (index == 3) {
       if (selectedMultiBarPics.isEmpty) {
         return;
       }
-
-      TabsController.to
-          .trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
+      showDialog<void>(
+        context: Get.context,
+        barrierDismissible: true,
+        builder: (_) {
+          return ConfirmPicDelete(
+            onPressedDelete: () {
+              Analytics.sendEvent(Event.deleted_photo);
+              TabsController.to.trashMultiplePics(
+                  selectedMultiBarPics.keys.toList().toSet());
+              Get.back();
+            },
+            onPressedClose: () {
+              Get.back();
+            },
+          );
+        },
+      );
     }
   }
 

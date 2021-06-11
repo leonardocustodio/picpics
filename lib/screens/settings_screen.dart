@@ -9,7 +9,6 @@ import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:picPics/widgets/fadein.dart';
 import 'package:picPics/widgets/secret_switch.dart';

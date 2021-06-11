@@ -11,7 +11,6 @@ import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:picPics/widgets/general_modal.dart';
 

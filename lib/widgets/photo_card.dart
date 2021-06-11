@@ -1,6 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
@@ -10,11 +11,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/all_tags_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
+import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/functions.dart';
@@ -26,8 +27,6 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-
-import 'show_watch_ad_modal.dart';
 
 //typedef EditTagModalTypeDef = dynamic Function(String tagKey);
 
@@ -110,9 +109,13 @@ class _PhotoCardState extends State<PhotoCard> {
     UserController.to.setPhotoHeightInCardWidget(_cardBox.size.height);
   }
 
+  String hash;
+
   @override
   void initState() {
     super.initState();
+
+    hash = BlurHashController.to.blurHash[picStore.photoId.value];
     tagsFocusNode = FocusNode();
 
     if (KeyboardVisibility.isVisible) {
@@ -149,7 +152,6 @@ class _PhotoCardState extends State<PhotoCard> {
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
     /* //print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
-
     AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore,
         thumbSize: kDefaultPhotoSize, isOriginal: false);
     return Container(
@@ -190,7 +192,9 @@ class _PhotoCardState extends State<PhotoCard> {
                         Widget loader;
                         switch (state.extendedImageLoadState) {
                           case LoadState.loading:
-                            loader = const ColoredBox(color: kGreyPlaceholder);
+                            loader = null == hash
+                                ? ColoredBox(color: kGreyPlaceholder)
+                                : BlurHash(hash: hash);
                             break;
                           case LoadState.completed:
                             loader = FadeImageBuilder(
@@ -227,79 +231,73 @@ class _PhotoCardState extends State<PhotoCard> {
                     ),
                   ),
                 ),
-                Obx(
-                  () {
-                    //print('Photo Height: ${UserController.to.photoHeightInCardWidget}');
-                    return CircularMenu(
-                      // UserController.to: UserController.to,
-                      isExpanded: UserController.to.isMenuExpanded.value,
-                      useInHorizontal:
-                          UserController.to.photoHeightInCardWidget < 280
-                              ? true
-                              : false,
-                      alignment: Alignment.bottomRight,
-                      radius: 52,
-                      toggleButtonOnPressed: () {
-                        UserController.to.switchIsMenuExpanded();
-                      },
-                      toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
-                      toggleButtonBoxShadow: [
-                        BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 3,
-                            spreadRadius: 3),
-                      ],
-                      toggleButtonIconColor: Colors.white,
-                      toggleButtonMargin: 12.0,
-                      toggleButtonPadding: 8.0,
-                      toggleButtonSize: 19.2,
-                      items: [
-                        CircularMenuItem(
-                          image: Image.asset('lib/images/trashmenu.png'),
-                          color: kWarningColor,
-                          iconSize: 19.2,
-                          onTap: () {
-                            //GalleryStore.to.trashPic(picStore);
-                            TabsController.to
-                                .removePicFromUI(picStore.photoId.value);
-                            TabsController.to.trashPic(picStore.photoId.value);
-                          },
-                        ),
-                        CircularMenuItem(
-                          image: picStore.isPrivate == true
-                              ? Image.asset('lib/images/openlockmenu.png')
-                              : Image.asset('lib/images/lockmenu.png'),
-                          color: picStore.isPrivate == true
-                              ? Color(0xFFF5FAFA)
-                              : kYellowColor,
-                          iconSize: 19.2,
-                          onTap: () {
-                            showDeleteSecretModal(picStore);
-                          },
-                        ),
-                        CircularMenuItem(
-                          image: Image.asset('lib/images/sharemenu.png'),
-                          color: kPrimaryColor,
-                          iconSize: 19.2,
-                          onTap: () {
-                            picStore.sharePic();
-                          },
-                        ),
-                        CircularMenuItem(
-                          image: Image.asset('lib/images/expandmenu.png'),
-                          color: kSecondaryColor,
-                          iconSize: 19.2,
-                          onTap: () {
-                            /* GalleryStore.to
-                                .setInitialSelectedThumbnail(picStore); */
-                            Get.to(() => PhotoScreen(
-                                picIdList: [], picId: picStore.photoId.value));
-                          },
-                        ),
-                      ],
-                      backgroundWidget: Container(),
-                    );
+                //print('Photo Height: ${UserController.to.photoHeightInCardWidget}');
+                CircularMenu(
+                  // UserController.to: UserController.to,
+                  isExpanded: UserController.to.isMenuExpanded.value,
+                  useInHorizontal:
+                      UserController.to.photoHeightInCardWidget < 280
+                          ? true
+                          : false,
+                  alignment: Alignment.bottomRight,
+                  radius: 52,
+                  toggleButtonOnPressed: () {
+                    UserController.to.switchIsMenuExpanded();
                   },
+                  toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
+                  toggleButtonBoxShadow: [
+                    BoxShadow(
+                        color: Colors.black12, blurRadius: 3, spreadRadius: 3),
+                  ],
+                  toggleButtonIconColor: Colors.white,
+                  toggleButtonMargin: 12.0,
+                  toggleButtonPadding: 8.0,
+                  toggleButtonSize: 19.2,
+                  items: [
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/trashmenu.png'),
+                      color: kWarningColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        //GalleryStore.to.trashPic(picStore);
+                        TabsController.to
+                            .removePicFromUI(picStore.photoId.value);
+                        TabsController.to.trashPic(picStore.photoId.value);
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: picStore.isPrivate == true
+                          ? Image.asset('lib/images/openlockmenu.png')
+                          : Image.asset('lib/images/lockmenu.png'),
+                      color: picStore.isPrivate == true
+                          ? Color(0xFFF5FAFA)
+                          : kYellowColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        showDeleteSecretModal(picStore);
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/sharemenu.png'),
+                      color: kPrimaryColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        picStore.sharePic();
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/expandmenu.png'),
+                      color: kSecondaryColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        /* GalleryStore.to
+                                .setInitialSelectedThumbnail(picStore); */
+                        Get.to(() => PhotoScreen(
+                            picIdList: [], picId: picStore.photoId.value));
+                      },
+                    ),
+                  ],
+                  backgroundWidget: Container(),
                 ),
               ],
             ),

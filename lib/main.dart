@@ -8,7 +8,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
@@ -30,16 +29,14 @@ import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'screens/all_tags_screen.dart';
 import 'stores/database_controller.dart';
 import 'stores/login_store.dart';
 import 'stores/pin_controller.dart';
-import 'stores/refresh_controller.dart';
 import 'stores/swiper_tab_controller.dart';
 import 'stores/tabs_controller.dart';
 import 'stores/tagged_controller.dart';
@@ -67,6 +64,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   //await Get.lazyPut(() => RefreshPicPicsController());
+  await Get.lazyPut(() => BlurHashController());
   await Get.lazyPut(() => UserController());
   await Get.lazyPut(() => PrivatePhotosController());
   await Get.lazyPut(() => AllTagsController());

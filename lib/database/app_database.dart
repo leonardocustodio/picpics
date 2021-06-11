@@ -38,6 +38,14 @@ extension MoorTValue<T> on T {
   PhotosWithLabels(this.photo, this.labels);
 } */
 
+class PicBlurHashs extends Table {
+  TextColumn get photoId => text()();
+  @override
+  Set<Column> get primaryKey => {photoId};
+
+  TextColumn get blurHash => text()();
+}
+
 /// Old Info @Hive: Pic
 class Photos extends Table {
   TextColumn get id => text()();
@@ -177,7 +185,8 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(tables: [Photos, Privates, Labels, LabelEntries, MoorUsers])
+@UseMoor(
+    tables: [Photos, PicBlurHashs, Privates, Labels, LabelEntries, MoorUsers])
 class AppDatabase extends _$AppDatabase {
   static final AppDatabase _singleton = AppDatabase._internal();
 
@@ -188,6 +197,22 @@ class AppDatabase extends _$AppDatabase {
 
   @override
   int get schemaVersion => 1;
+
+  /**
+   * 
+   * Blur Hash operations Start
+   * 
+   */
+  Future createBlurHash(PicBlurHash newBlurHash) =>
+      into(picBlurHashs).insert(newBlurHash);
+
+  Future<List<PicBlurHash>> getAllPicBlurHash() => select(picBlurHashs).get();
+
+  Future<PicBlurHash> getSinglePicBlurHash(String photoId) =>
+      (select(picBlurHashs)
+            ..where(
+                (l) => l?.photoId?.equals(photoId) ?? const Constant(false)))
+          .getSingle();
 
   /**
    * 

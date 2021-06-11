@@ -13,7 +13,6 @@ import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';

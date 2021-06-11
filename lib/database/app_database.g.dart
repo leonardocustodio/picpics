@@ -750,6 +750,207 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
       ListStringConvertor();
 }
 
+class PicBlurHash extends DataClass implements Insertable<PicBlurHash> {
+  final String photoId;
+  final String blurHash;
+  PicBlurHash({@required this.photoId, @required this.blurHash});
+  factory PicBlurHash.fromData(Map<String, dynamic> data, GeneratedDatabase db,
+      {String prefix}) {
+    final effectivePrefix = prefix ?? '';
+    final stringType = db.typeSystem.forDartType<String>();
+    return PicBlurHash(
+      photoId: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}photo_id']),
+      blurHash: stringType
+          .mapFromDatabaseResponse(data['${effectivePrefix}blur_hash']),
+    );
+  }
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (!nullToAbsent || photoId != null) {
+      map['photo_id'] = Variable<String>(photoId);
+    }
+    if (!nullToAbsent || blurHash != null) {
+      map['blur_hash'] = Variable<String>(blurHash);
+    }
+    return map;
+  }
+
+  PicBlurHashsCompanion toCompanion(bool nullToAbsent) {
+    return PicBlurHashsCompanion(
+      photoId: photoId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(photoId),
+      blurHash: blurHash == null && nullToAbsent
+          ? const Value.absent()
+          : Value(blurHash),
+    );
+  }
+
+  factory PicBlurHash.fromJson(Map<String, dynamic> json,
+      {ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return PicBlurHash(
+      photoId: serializer.fromJson<String>(json['photoId']),
+      blurHash: serializer.fromJson<String>(json['blurHash']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer serializer}) {
+    serializer ??= moorRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'photoId': serializer.toJson<String>(photoId),
+      'blurHash': serializer.toJson<String>(blurHash),
+    };
+  }
+
+  PicBlurHash copyWith({String photoId, String blurHash}) => PicBlurHash(
+        photoId: photoId ?? this.photoId,
+        blurHash: blurHash ?? this.blurHash,
+      );
+  @override
+  String toString() {
+    return (StringBuffer('PicBlurHash(')
+          ..write('photoId: $photoId, ')
+          ..write('blurHash: $blurHash')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => $mrjf($mrjc(photoId.hashCode, blurHash.hashCode));
+  @override
+  bool operator ==(dynamic other) =>
+      identical(this, other) ||
+      (other is PicBlurHash &&
+          other.photoId == this.photoId &&
+          other.blurHash == this.blurHash);
+}
+
+class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
+  final Value<String> photoId;
+  final Value<String> blurHash;
+  const PicBlurHashsCompanion({
+    this.photoId = const Value.absent(),
+    this.blurHash = const Value.absent(),
+  });
+  PicBlurHashsCompanion.insert({
+    @required String photoId,
+    @required String blurHash,
+  })  : photoId = Value(photoId),
+        blurHash = Value(blurHash);
+  static Insertable<PicBlurHash> custom({
+    Expression<String> photoId,
+    Expression<String> blurHash,
+  }) {
+    return RawValuesInsertable({
+      if (photoId != null) 'photo_id': photoId,
+      if (blurHash != null) 'blur_hash': blurHash,
+    });
+  }
+
+  PicBlurHashsCompanion copyWith(
+      {Value<String> photoId, Value<String> blurHash}) {
+    return PicBlurHashsCompanion(
+      photoId: photoId ?? this.photoId,
+      blurHash: blurHash ?? this.blurHash,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (photoId.present) {
+      map['photo_id'] = Variable<String>(photoId.value);
+    }
+    if (blurHash.present) {
+      map['blur_hash'] = Variable<String>(blurHash.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('PicBlurHashsCompanion(')
+          ..write('photoId: $photoId, ')
+          ..write('blurHash: $blurHash')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $PicBlurHashsTable extends PicBlurHashs
+    with TableInfo<$PicBlurHashsTable, PicBlurHash> {
+  final GeneratedDatabase _db;
+  final String _alias;
+  $PicBlurHashsTable(this._db, [this._alias]);
+  final VerificationMeta _photoIdMeta = const VerificationMeta('photoId');
+  GeneratedTextColumn _photoId;
+  @override
+  GeneratedTextColumn get photoId => _photoId ??= _constructPhotoId();
+  GeneratedTextColumn _constructPhotoId() {
+    return GeneratedTextColumn(
+      'photo_id',
+      $tableName,
+      false,
+    );
+  }
+
+  final VerificationMeta _blurHashMeta = const VerificationMeta('blurHash');
+  GeneratedTextColumn _blurHash;
+  @override
+  GeneratedTextColumn get blurHash => _blurHash ??= _constructBlurHash();
+  GeneratedTextColumn _constructBlurHash() {
+    return GeneratedTextColumn(
+      'blur_hash',
+      $tableName,
+      false,
+    );
+  }
+
+  @override
+  List<GeneratedColumn> get $columns => [photoId, blurHash];
+  @override
+  $PicBlurHashsTable get asDslTable => this;
+  @override
+  String get $tableName => _alias ?? 'pic_blur_hashs';
+  @override
+  final String actualTableName = 'pic_blur_hashs';
+  @override
+  VerificationContext validateIntegrity(Insertable<PicBlurHash> instance,
+      {bool isInserting = false}) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('photo_id')) {
+      context.handle(_photoIdMeta,
+          photoId.isAcceptableOrUnknown(data['photo_id'], _photoIdMeta));
+    } else if (isInserting) {
+      context.missing(_photoIdMeta);
+    }
+    if (data.containsKey('blur_hash')) {
+      context.handle(_blurHashMeta,
+          blurHash.isAcceptableOrUnknown(data['blur_hash'], _blurHashMeta));
+    } else if (isInserting) {
+      context.missing(_blurHashMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {photoId};
+  @override
+  PicBlurHash map(Map<String, dynamic> data, {String tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : null;
+    return PicBlurHash.fromData(data, _db, prefix: effectivePrefix);
+  }
+
+  @override
+  $PicBlurHashsTable createAlias(String alias) {
+    return $PicBlurHashsTable(_db, alias);
+  }
+}
+
 class Private extends DataClass implements Insertable<Private> {
   final String id;
   final String path;
@@ -3195,6 +3396,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(SqlTypeSystem.defaultInstance, e);
   $PhotosTable _photos;
   $PhotosTable get photos => _photos ??= $PhotosTable(this);
+  $PicBlurHashsTable _picBlurHashs;
+  $PicBlurHashsTable get picBlurHashs =>
+      _picBlurHashs ??= $PicBlurHashsTable(this);
   $PrivatesTable _privates;
   $PrivatesTable get privates => _privates ??= $PrivatesTable(this);
   $LabelsTable _labels;
@@ -3208,5 +3412,5 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [photos, privates, labels, labelEntries, moorUsers];
+      [photos, picBlurHashs, privates, labels, labelEntries, moorUsers];
 }

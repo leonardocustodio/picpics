@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
-import 'package:collection/collection.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
@@ -15,13 +13,13 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
+import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/swiper_tab_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:share/share.dart';
 import 'dart:async';
@@ -98,6 +96,7 @@ class TabsController extends GetxController {
 
   Future<void> initialization() async {
     await initPlatformState();
+    await BlurHashController.to.loadBlurHash();
     await loadAssetPath();
 
     /* ever(showPrivatePics, (_) {
@@ -374,7 +373,7 @@ class TabsController extends GetxController {
         originalLatitude: entity.latitude,
         originalLongitude: entity.longitude,
       ));
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
         var map = RxMap<String, Rx<TagModel>>();
         TaggedController.to.picWiseTags[picStoreValue.value.photoId.value]?.keys
             ?.toList()
@@ -383,6 +382,11 @@ class TabsController extends GetxController {
         });
         picStoreValue.value.tags = map;
         picStoreMap[picId] = picStoreValue;
+        if (BlurHashController.to.blurHash[picId] == null) {
+          await picStoreValue.value.assetThumbBytes.then((imageBytes) {
+            BlurHashController.to.createBlurHash(picId, imageBytes);
+          });
+        }
       });
     }
     return picStoreValue;
