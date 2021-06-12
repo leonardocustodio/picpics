@@ -138,7 +138,7 @@ class TabsController extends GetxController {
 //        showDeleteSecretModal(context);
       }
     }); */
-
+    var ___ = Get.put(UserController());
     if (UserController.to.tutorialCompleted == true &&
         UserController.to.notifications == true) {
       PushNotificationsManager push = PushNotificationsManager();

@@ -98,28 +98,22 @@ class UntaggedTab extends GetWidget<TabsController> {
                         null) {
                       return greyWidget;
                     } */
-                    Widget child;
+                    Widget originalImage, loaderWidget;
+                    var blurHash =
+                        BlurHashController.to.blurHash[monthKeys[index].key];
 
-                    if (controller.picStoreMap[monthKeys[index].key] == null) {
-                      /// picstore map is empty
-                      var blurHash =
-                          BlurHashController.to.blurHash[monthKeys[index].key];
-
-                      if (null != blurHash) {
-                        child = Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: BlurHash(hash: blurHash),
-                          ),
-                        );
-                      } else {
-                        /// grey widget because for this image blur hash was neevr calculated
-                        child = greyWidget;
-                      }
+                    if (null != blurHash) {
+                      loaderWidget = BlurHash(
+                        hash: blurHash,
+                        color: Colors.transparent,
+                      );
                     } else {
-                      /// showing the pic right now
-                      child = Padding(
+                      /// grey widget because for this image blur hash was neevr calculated
+                      loaderWidget = greyWidget;
+                    }
+
+                    if (controller.picStoreMap[monthKeys[index].key] != null) {
+                      originalImage = Padding(
                         padding: const EdgeInsets.all(2),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(6),
@@ -157,7 +151,22 @@ class UntaggedTab extends GetWidget<TabsController> {
                           }
                         } */
                         },
-                        child: child);
+                        child: Stack(
+                          children: [
+                            if (loaderWidget != null)
+                              Positioned.fill(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: loaderWidget,
+                                  ),
+                                ),
+                              ),
+                            if (originalImage != null)
+                              Positioned.fill(child: originalImage),
+                          ],
+                        ));
                   });
                 });
           } else {
@@ -208,27 +217,22 @@ class UntaggedTab extends GetWidget<TabsController> {
                         null) {
                       return greyWidget;
                     } */
-                    Widget child;
+                    Widget loaderWidget, originalImage;
+                    var blurHash =
+                        BlurHashController.to.blurHash[dayKeys[index].key];
 
-                    if (controller.picStoreMap[dayKeys[index].key] == null) {
-                      /// picstore map is empty
-                      var blurHash =
-                          BlurHashController.to.blurHash[dayKeys[index].key];
-
-                      if (null != blurHash) {
-                        child = Padding(
-                          padding: const EdgeInsets.all(2),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: BlurHash(hash: blurHash),
-                          ),
-                        );
-                      } else {
-                        /// grey widget because for this image blur hash was neevr calculated
-                        child = greyWidget;
-                      }
+                    if (null != blurHash) {
+                      loaderWidget = BlurHash(
+                        hash: blurHash,
+                        color: Colors.transparent,
+                      );
                     } else {
-                      child = Padding(
+                      /// grey widget because for this image blur hash was neevr calculated
+                      loaderWidget = greyWidget;
+                    }
+
+                    if (controller.picStoreMap[dayKeys[index].key] != null) {
+                      originalImage = Padding(
                         padding: const EdgeInsets.all(2),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(6),
@@ -265,7 +269,22 @@ class UntaggedTab extends GetWidget<TabsController> {
                           }
                         } */
                         },
-                        child: child);
+                        child: Stack(
+                          children: [
+                            if (loaderWidget != null)
+                              Positioned.fill(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: loaderWidget,
+                                  ),
+                                ),
+                              ),
+                            if (originalImage != null)
+                              Positioned.fill(child: originalImage),
+                          ],
+                        ));
                   });
                 });
           }
@@ -359,99 +378,91 @@ class UntaggedTab extends GetWidget<TabsController> {
     final AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: false);
 
-    return RepaintBoundary(
-      child: ExtendedImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = null == hash
-                  ? ColoredBox(color: kGreyPlaceholder)
-                  : BlurHash(hash: hash);
-              break;
-            case LoadState.completed:
-              loader = FadeImageBuilder(
-                child: () {
-                  return GestureDetector(
-                    onLongPress: () {
-                      //print('LongPress');
-                      if (controller.multiPicBar.value == false) {
-                        controller.selectedMultiBarPics[picId] = true;
-                        controller.setMultiPicBar(true);
-                      }
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        if (controller.multiPicBar.value) {
-                          if (controller.selectedMultiBarPics[picId] == null) {
-                            controller.selectedMultiBarPics[picId] = true;
-                          } else {
-                            controller.selectedMultiBarPics.remove(picId);
-                          }
-                          /* GalleryStore.to.setSelectedPics(
-                  picStore: picStore,
-                  picIsTagged: false,
-                ); */
-                          //print('Pics Selected Length: ');
-                          //print('${GalleryStore.to.selectedPics.length}');
-                          return;
+    return ExtendedImage(
+      filterQuality: FilterQuality.high,
+      gaplessPlayback: true,
+      clearMemoryCacheWhenDispose: true,
+      handleLoadingProgress: true,
+      image: imageProvider,
+      fit: BoxFit.cover,
+      loadStateChanged: (ExtendedImageState state) {
+        Widget loader;
+        switch (state.extendedImageLoadState) {
+          case LoadState.loading:
+            if (null == hash) {
+              loader = ColoredBox(color: kGreyPlaceholder);
+            } else {
+              loader = BlurHash(
+                hash: hash,
+                color: Colors.transparent,
+              );
+            }
+            loader = Padding(
+              padding: const EdgeInsets.all(2),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: loader,
+              ),
+            );
+            break;
+          case LoadState.completed:
+            loader = () {
+              return FadeImageBuilder(
+                child: GestureDetector(
+                  onLongPress: () {
+                    //print('LongPress');
+                    if (controller.multiPicBar.value == false) {
+                      controller.selectedMultiBarPics[picId] = true;
+                      controller.setMultiPicBar(true);
+                    }
+                  },
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      if (controller.multiPicBar.value) {
+                        if (controller.selectedMultiBarPics[picId] == null) {
+                          controller.selectedMultiBarPics[picId] = true;
+                        } else {
+                          controller.selectedMultiBarPics.remove(picId);
                         }
-                        Get.to(() => PhotoScreen(
-                            picId: picId,
-                            picIdList:
-                                controller.allUnTaggedPics.keys.toList()));
+                        /* GalleryStore.to.setSelectedPics(
+                picStore: picStore,
+                picIsTagged: false,
+            ); */
+                        //print('Pics Selected Length: ');
+                        //print('${GalleryStore.to.selectedPics.length}');
+                        return;
+                      }
+                      Get.to(() => PhotoScreen(
+                          picId: picId,
+                          picIdList: controller.allUnTaggedPics.keys.toList()));
 
 /* 
-              tagsEditingController.text = '';
-              GalleryStore.to.setCurrentPic(picStore);
-              int indexOfSwipePic = GalleryStore.to.swipePics.indexOf(picStore);
-              GalleryStore.to.setSelectedSwipe(indexOfSwipePic);
-              controller.setModalCard(true); */
-                      },
-                      child: Obx(() {
-                        Widget image = Positioned.fill(
-                          child: RepaintBoundary(
-                            child: state.completedWidget,
-                          ),
-                        );
-                        if (controller.multiPicBar.value) {
-                          if (controller.selectedMultiBarPics[picId] != null) {
-                            return Stack(
-                              children: [
-                                image,
-                                Container(
-                                  constraints: BoxConstraints.expand(),
-                                  decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
-                                    border: Border.all(
-                                      color: kSecondaryColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 8.0,
-                                  top: 6.0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      gradient: kSecondaryGradient,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Image.asset(
-                                        'lib/images/checkwhiteico.png'),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
+            tagsEditingController.text = '';
+            GalleryStore.to.setCurrentPic(picStore);
+            int indexOfSwipePic = GalleryStore.to.swipePics.indexOf(picStore);
+            GalleryStore.to.setSelectedSwipe(indexOfSwipePic);
+            controller.setModalCard(true); */
+                    },
+                    child: Obx(() {
+                      Widget image = Positioned.fill(
+                        child: state.completedWidget,
+                      );
+                      if (controller.multiPicBar.value) {
+                        if (controller.selectedMultiBarPics[picId] != null) {
                           return Stack(
                             children: [
                               image,
+                              Container(
+                                constraints: BoxConstraints.expand(),
+                                decoration: BoxDecoration(
+                                  color: kSecondaryColor.withOpacity(0.3),
+                                  border: Border.all(
+                                    color: kSecondaryColor,
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
                               Positioned(
                                 left: 8.0,
                                 top: 6.0,
@@ -459,12 +470,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                                   height: 20,
                                   width: 20,
                                   decoration: BoxDecoration(
+                                    gradient: kSecondaryGradient,
                                     borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: Colors.transparent,
-                                      width: 2.0,
-                                    ),
                                   ),
+                                  child: Image.asset(
+                                      'lib/images/checkwhiteico.png'),
                                 ),
                               ),
                             ],
@@ -473,21 +483,41 @@ class UntaggedTab extends GetWidget<TabsController> {
                         return Stack(
                           children: [
                             image,
+                            Positioned(
+                              left: 8.0,
+                              top: 6.0,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  border: Border.all(
+                                    color: Colors.transparent,
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         );
-                      }),
-                    ),
-                  );
-                }(),
+                      }
+                      return Stack(
+                        children: [
+                          image,
+                        ],
+                      );
+                    }),
+                  ),
+                ),
               );
-              break;
-            case LoadState.failed:
-              loader = _failedItem;
-              break;
-          }
-          return loader;
-        },
-      ),
+            }();
+            break;
+          case LoadState.failed:
+            loader = _failedItem;
+            break;
+        }
+        return loader;
+      },
     );
   }
 
