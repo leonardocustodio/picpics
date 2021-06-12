@@ -1,12 +1,14 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -110,30 +112,60 @@ class TaggedTab extends GetWidget<TaggedController> {
               var tagKey = taggedKeys[index];
               var showingPicId =
                   controller.taggedPicId[taggedKeys[index]].keys.last;
+              Widget loaderWidget;
+
+              var blurHash = BlurHashController.to.blurHash[showingPicId];
+
+              if (null != blurHash) {
+                loaderWidget = BlurHash(
+                  hash: blurHash,
+                  color: Colors.transparent,
+                );
+              } else {
+                /// grey widget because for this image blur hash was neevr calculated
+                loaderWidget = greyWidget;
+              }
+              Widget originalImage;
 
               return Container(
                 margin: const EdgeInsets.all(4),
                 child: GetX<TabsController>(builder: (tabsController) {
+                  if (null == originalImage &&
+                      tabsController.picStoreMap[showingPicId]?.value != null) {
+                    originalImage = _buildPicItem(
+                        tabsController.picStoreMap[showingPicId]?.value,
+                        showingPicId,
+                        tagKey);
+                  }
+
                   return VisibilityDetector(
-                    key: Key('${tagKey}'),
-                    onVisibilityChanged: (visibilityInfo) {
-                      var visiblePercentage =
-                          visibilityInfo.visibleFraction * 100;
-                      if (visiblePercentage > 10 &&
-                          tabsController.picStoreMap[showingPicId]?.value ==
-                              null) {
-                        TabsController.to.picStoreMap[showingPicId] =
-                            tabsController.explorPicStore(showingPicId);
-                      }
-                    },
-                    child:
-                        tabsController.picStoreMap[showingPicId]?.value == null
-                            ? greyWidget
-                            : _buildPicItem(
-                                tabsController.picStoreMap[showingPicId]?.value,
-                                showingPicId,
-                                tagKey),
-                  );
+                      key: Key('${tagKey}'),
+                      onVisibilityChanged: (visibilityInfo) {
+                        var visiblePercentage =
+                            visibilityInfo.visibleFraction * 100;
+                        if (visiblePercentage > 10 &&
+                            tabsController.picStoreMap[showingPicId]?.value ==
+                                null) {
+                          TabsController.to.picStoreMap[showingPicId] =
+                              tabsController.explorPicStore(showingPicId);
+                        }
+                      },
+                      child: Stack(
+                        children: [
+                          if (loaderWidget != null)
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 25),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: loaderWidget,
+                                ),
+                              ),
+                            ),
+                          if (originalImage != null)
+                            Positioned.fill(child: originalImage),
+                        ],
+                      ));
                 }),
               );
 
@@ -287,8 +319,13 @@ class TaggedTab extends GetWidget<TaggedController> {
  */
 
   Widget _buildPicItem(PicStore picStore, String picId, String tagKey) {
+    if (null == picStore) {
+      return null;
+    }
     final AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: false);
+
+    var hash = BlurHashController.to.blurHash[picId];
 
     return RepaintBoundary(
       child: ExtendedImage(
@@ -299,7 +336,21 @@ class TaggedTab extends GetWidget<TaggedController> {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = const ColoredBox(color: kGreyPlaceholder);
+              if (null == hash) {
+                loader = ColoredBox(color: kGreyPlaceholder);
+              } else {
+                loader = BlurHash(
+                  hash: hash,
+                  color: Colors.transparent,
+                );
+              }
+              loader = Padding(
+                padding: const EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: loader,
+                ),
+              );
               break;
             case LoadState.completed:
               loader = FadeImageBuilder(

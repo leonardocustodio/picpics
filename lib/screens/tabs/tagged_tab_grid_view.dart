@@ -4,6 +4,7 @@ import 'package:expandable/expandable.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
@@ -12,6 +13,7 @@ import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -72,19 +74,38 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
               itemBuilder: (_, int index) {
                 return Obx(() {
                   var picId = taggedPicIds[index];
+                  Widget loaderWidget, originalImage;
+
+                  var blurHash = BlurHashController.to.blurHash[picId];
+
+                  if (null != blurHash) {
+                    loaderWidget = BlurHash(
+                      hash: blurHash,
+                      color: Colors.transparent,
+                    );
+                  } else {
+                    /// grey widget because for this image blur hash was neevr calculated
+                    loaderWidget = greyWidget;
+                  }
+                  if (null == originalImage &&
+                      null != TabsController.to.picStoreMap[picId]?.value) {
+                    originalImage = _buildItemOneMoreTrial(
+                        TabsController.to.picStoreMap[picId]?.value, picId);
+                  }
+
                   return VisibilityDetector(
-                    key: Key('$picId}'),
-                    onVisibilityChanged: (visibilityInfo) {
-                      var visiblePercentage =
-                          visibilityInfo.visibleFraction * 100;
-                      if (visiblePercentage > 10 &&
-                          TabsController.to.picStoreMap[picId] == null) {
-                        TabsController.to.picStoreMap[picId] =
-                            TabsController.to.explorPicStore(picId);
-                        /* debugPrint(
+                      key: Key('$picId}'),
+                      onVisibilityChanged: (visibilityInfo) {
+                        var visiblePercentage =
+                            visibilityInfo.visibleFraction * 100;
+                        if (visiblePercentage > 10 &&
+                            TabsController.to.picStoreMap[picId] == null) {
+                          TabsController.to.picStoreMap[picId] =
+                              TabsController.to.explorPicStore(picId);
+                          /* debugPrint(
                             'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
-                      }
-                      /* else {
+                        }
+                        /* else {
                           if (controller.picAssetThumbBytesMap[
                                   monthKeys[index].key] !=
                               null) {
@@ -94,21 +115,42 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                             });
                           }
                         } */
-                    },
-                    child: TabsController.to.picStoreMap[picId] == null
+                      },
+                      child: Stack(
+                        children: [
+                          if (loaderWidget != null)
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: loaderWidget,
+                                ),
+                              ),
+                            ),
+                          if (originalImage != null)
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(6),
+                                    child: originalImage),
+                              ),
+                            ),
+                        ],
+                      )
+                      /*  child: TabsController.to.picStoreMap[picId] == null
                         ? greyWidget
                         : Padding(
                             padding: const EdgeInsets.all(2),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(6),
                               child: Container(
-                                child: _buildItemOneMoreTrial(
-                                    TabsController.to.picStoreMap[picId].value,
-                                    picId),
+                                child: ,
                               ),
                             ),
-                          ),
-                  );
+                          ), */
+                      );
                 });
               });
         },
@@ -127,6 +169,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
   Widget _buildItemOneMoreTrial(PicStore picStore, String picId) {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
+    var hash = BlurHashController.to.blurHash[picId];
     final AssetEntityImageProvider imageProvider =
         AssetEntityImageProvider(picStore, isOriginal: false);
 
@@ -138,7 +181,21 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
           Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
-              loader = const ColoredBox(color: kGreyPlaceholder);
+              if (null == hash) {
+                loader = ColoredBox(color: kGreyPlaceholder);
+              } else {
+                loader = BlurHash(
+                  hash: hash,
+                  color: Colors.transparent,
+                );
+              }
+              loader = Padding(
+                padding: const EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: loader,
+                ),
+              );
               break;
             case LoadState.completed:
               loader = FadeImageBuilder(

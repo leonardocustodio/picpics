@@ -387,6 +387,7 @@ class UntaggedTab extends GetWidget<TabsController> {
       fit: BoxFit.cover,
       loadStateChanged: (ExtendedImageState state) {
         Widget loader;
+
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
             if (null == hash) {

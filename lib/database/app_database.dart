@@ -391,6 +391,29 @@ class AppDatabase extends _$AppDatabase {
    * 
    */
 
+  /**
+   * 
+   * Batch insert the photoBlurHash
+   * 
+   */
+
+  Future<void> insertAllPicBlurHash(List<PicBlurHash> blurHashes) async {
+    List<PicBlurHashsCompanion> blurHashedCompanion = [];
+
+    for (PicBlurHash blurHash in blurHashes) {
+      blurHashedCompanion.add(PicBlurHashsCompanion.insert(
+          photoId: blurHash.photoId, blurHash: blurHash.blurHash));
+    }
+
+    await batch((batch) {
+      batch.insertAll(
+        picBlurHashs,
+        blurHashedCompanion,
+        mode: InsertMode.insertOrReplace,
+      );
+    });
+  }
+
   /** 
    * 
    * 

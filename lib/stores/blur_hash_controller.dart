@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:image/image.dart' as img;
 import 'package:get/get.dart';
@@ -6,13 +7,17 @@ import 'package:picPics/third_party_lib/src/blurhash.dart';
 
 class BlurHashController extends GetxController {
   static BlurHashController get to => Get.find();
+  Timer _timer;
 
   final blurHash = <String, String>{}.obs;
+  final masterHash = <String, String>{};
   final _appDatabase = AppDatabase();
+  final _blurHashesQueue = <String, Uint8List>{};
 
   @override
   void onInit() {
     super.onInit();
+    loadBlurHash();
   }
 
   Future<void> loadBlurHash() async {
@@ -22,21 +27,57 @@ class BlurHashController extends GetxController {
 
     blurHashList.forEach((pic) {
       blurHash[pic.photoId] = pic.blurHash;
+      masterHash[pic.photoId] = pic.blurHash;
     });
   }
 
-  Future<String> createBlurHash(String photoId, Uint8List imageBytes) async {
-    if (null != blurHash[photoId]) {
-      return blurHash[photoId];
+  /// Below function will accept the calls for calculating the blur Hashes but will be executed after the calls
+  /// to this function stops and then it will do the processing
+  ///
+  /// It's a way to Debounce the calls and stops anything from throttling
+  ///
+  Future<void> createBlurHash(String photoId, Uint8List imageBytes) async {
+    if (_timer != null) {
+      _timer.cancel();
     }
-    blurHash[photoId] = _processBlurHash(photoId, imageBytes);
-    await _appDatabase.createBlurHash(
-        PicBlurHash(photoId: photoId, blurHash: blurHash[photoId]));
-    return blurHash[photoId];
+    if (null == masterHash[photoId]) {
+      _blurHashesQueue[photoId] = imageBytes;
+    }
+
+    _timer = Timer(Duration(milliseconds: 1000), () {
+      if (_blurHashesQueue.isNotEmpty) {
+        var picMaps = Map<String, Uint8List>.from(_blurHashesQueue);
+        _blurHashesQueue.clear();
+        var picBlurHashList = <PicBlurHash>[];
+
+        Future.forEach(picMaps.entries, (object) async {
+          if (null == masterHash[object.key]) {
+            var hash = await _calculateBlurHash(object.key, object.value);
+            if (null != hash) {
+              masterHash[object.key] = hash;
+              picBlurHashList
+                  .add(PicBlurHash(photoId: object.key, blurHash: hash));
+            }
+          }
+        }).then((_) async {
+          await _appDatabase.insertAllPicBlurHash(picBlurHashList);
+
+          ///
+          /// I thinks it's making the application laggy
+          ///
+          //blurHash.value = Map<String, String>.from(masterHash);
+        });
+      }
+      _timer = null;
+    });
   }
 
-  String _processBlurHash(String photoId, Uint8List imageBytes) {
-    final image = img.decodeImage(imageBytes.toList());
-    return BlurHash.encode(image).hash;
+  Future<String> _calculateBlurHash(
+      String photoId, Uint8List imageBytes) async {
+    if (null == masterHash[photoId]) {
+      final image = await img.decodeImage(imageBytes.toList());
+      return await BlurHash.encode(image).hash;
+    }
+    return null;
   }
 }

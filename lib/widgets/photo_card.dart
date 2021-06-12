@@ -174,6 +174,11 @@ class _PhotoCardState extends State<PhotoCard> {
           Expanded(
             child: Stack(
               children: [
+                if (null != hash)
+                  BlurHash(
+                    hash: hash,
+                    color: Colors.transparent,
+                  ),
                 ClipRRect(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(12.0),
@@ -181,6 +186,9 @@ class _PhotoCardState extends State<PhotoCard> {
                   ),
                   child: RepaintBoundary(
                     child: ExtendedImage(
+                      gaplessPlayback: true,
+                      clearMemoryCacheWhenDispose: true,
+                      handleLoadingProgress: true,
                       key: _photoSpaceKey,
                       afterPaintImage: (canvas, rect, image, paint) {
                         WidgetsBinding.instance
@@ -192,9 +200,14 @@ class _PhotoCardState extends State<PhotoCard> {
                         Widget loader;
                         switch (state.extendedImageLoadState) {
                           case LoadState.loading:
-                            loader = null == hash
-                                ? ColoredBox(color: kGreyPlaceholder)
-                                : BlurHash(hash: hash);
+                            if (null == hash) {
+                              loader = ColoredBox(color: kGreyPlaceholder);
+                            } else {
+                              loader = BlurHash(
+                                hash: hash,
+                                color: Colors.transparent,
+                              );
+                            }
                             break;
                           case LoadState.completed:
                             loader = FadeImageBuilder(

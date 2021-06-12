@@ -258,28 +258,6 @@ class TabsController extends GetxController {
     allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
   }
 
-  //final picAssetThumbBytesMap = <String, Future<Uint8List>>{}.obs;
-/* 
-  void addOriginBytesMap(String picId, Future<Uint8List> uint8List) {
-    if (picAssetOriginBytesMap[picId] == null) {
-      picAssetOriginBytesMap[picId] = uint8List;
-      /* if (picAssetThumbBytesMap.length > 500) {
-        print('removing pics');
-        picAssetThumbBytesMap.remove(picAssetThumbBytesMap.keys.first);
-      } */
-    }
-  }
-
-  void addThumbBytesMap(String picId, Future<Uint8List> uint8List) {
-    if (picAssetThumbBytesMap[picId] == null) {
-      picAssetThumbBytesMap[picId] = uint8List;
-      /* if (picAssetThumbBytesMap.length > 500) {
-        print('removing pics');
-        picAssetThumbBytesMap.remove(picAssetThumbBytesMap.keys.first);
-      } */
-    }
-  } */
-
   void deletePic(String picId, bool removeFromGallery) {
     allUnTaggedPicsDay.remove(picId);
     allUnTaggedPicsMonth.remove(picId);
@@ -382,6 +360,7 @@ class TabsController extends GetxController {
         });
         picStoreValue.value.tags = map;
         picStoreMap[picId] = picStoreValue;
+
         if (BlurHashController.to.blurHash[picId] == null) {
           await picStoreValue.value.assetThumbBytes.then((imageBytes) {
             BlurHashController.to.createBlurHash(picId, imageBytes);
