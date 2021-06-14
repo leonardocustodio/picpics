@@ -305,7 +305,8 @@ class UntaggedTab extends GetWidget<TabsController> {
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
     //print('Date Time Formatting: $dateTime');
-
+    
+    /* 
     if (dateTime.year == DateTime.now().year) {
       formatter = controller.toggleIndexUntagged == 0
           ? DateFormat.yMMMM()
@@ -313,6 +314,16 @@ class UntaggedTab extends GetWidget<TabsController> {
     } else {
       formatter = controller.toggleIndexUntagged == 0
           ? DateFormat.yMMMM()
+          : DateFormat.yMMMEd();
+    } */
+
+    /// More Optimised code
+
+    if (controller.toggleIndexUntagged == 0) {
+      formatter = DateFormat.yMMMM();
+    } else {
+      formatter = dateTime.year == DateTime.now().year
+          ? DateFormat.MMMEd()
           : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
@@ -427,12 +438,6 @@ class UntaggedTab extends GetWidget<TabsController> {
                         } else {
                           controller.selectedMultiBarPics.remove(picId);
                         }
-                        /* GalleryStore.to.setSelectedPics(
-                picStore: picStore,
-                picIsTagged: false,
-            ); */
-                        //print('Pics Selected Length: ');
-                        //print('${GalleryStore.to.selectedPics.length}');
                         return;
                       }
                       var result = await Get.to(() => PhotoScreen(
