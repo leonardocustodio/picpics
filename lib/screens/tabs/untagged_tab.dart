@@ -306,19 +306,7 @@ class UntaggedTab extends GetWidget<TabsController> {
     DateFormat formatter;
     //print('Date Time Formatting: $dateTime');
     
-    /* 
-    if (dateTime.year == DateTime.now().year) {
-      formatter = controller.toggleIndexUntagged == 0
-          ? DateFormat.yMMMM()
-          : DateFormat.MMMEd();
-    } else {
-      formatter = controller.toggleIndexUntagged == 0
-          ? DateFormat.yMMMM()
-          : DateFormat.yMMMEd();
-    } */
-
-    /// More Optimised code
-
+    /// More Optimized code
     if (controller.toggleIndexUntagged == 0) {
       formatter = DateFormat.yMMMM();
     } else {
