@@ -15,6 +15,7 @@ import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -419,7 +420,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                   },
                   child: CupertinoButton(
                     padding: const EdgeInsets.all(0),
-                    onPressed: () {
+                    onPressed: () async {
                       if (controller.multiPicBar.value) {
                         if (controller.selectedMultiBarPics[picId] == null) {
                           controller.selectedMultiBarPics[picId] = true;
@@ -434,9 +435,12 @@ class UntaggedTab extends GetWidget<TabsController> {
                         //print('${GalleryStore.to.selectedPics.length}');
                         return;
                       }
-                      Get.to(() => PhotoScreen(
+                      var result = await Get.to(() => PhotoScreen(
                           picId: picId,
                           picIdList: controller.allUnTaggedPics.keys.toList()));
+                      if (null == result) {
+                        refresh_everything();
+                      }
 
 /* 
             tagsEditingController.text = '';

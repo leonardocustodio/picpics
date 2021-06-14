@@ -11,8 +11,8 @@ class SwiperTabController extends GetxController {
 
   @override
   void onReady() {
-    super.onReady();
     refreshSwiperList();
+    super.onReady();
   }
 
   void refreshSwiperList() {

@@ -19,6 +19,7 @@ import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/functions.dart';
+import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
@@ -305,8 +306,11 @@ class _PhotoCardState extends State<PhotoCard> {
                       onTap: () {
                         /* GalleryStore.to
                                 .setInitialSelectedThumbnail(picStore); */
-                        Get.to(() => PhotoScreen(
+                        var result = Get.to(() => PhotoScreen(
                             picIdList: [], picId: picStore.photoId.value));
+                        if (null == result) {
+                          refresh_everything();
+                        }
                       },
                     ),
                   ],
