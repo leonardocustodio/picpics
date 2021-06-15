@@ -91,7 +91,7 @@ dependencies:
   visibility_detector: ^0.1.5
   #flutter_staggered_grid_view:
   #  git:
-  #    url: https://github.com/justkawal/flutter_staggered_grid_view.git
+  #    url: git://github.com/justkawal/flutter_staggered_grid_view.git
   home_widget:
     git:
       url: git://github.com/leonardocustodio/home_widget.git
@@ -107,13 +107,13 @@ dependency_overrides:
       ref: 59ad5403593283233d922f62f76832c64fa33a3b
   sqflite:
     git:
-      url: https://www.github.com/justkawal/sqflite_sqlcipher.git
+      url: git://www.github.com/justkawal/sqflite_sqlcipher.git
       path: sqflite 
       ref: bb2b0a
       #ref: fmdb_override
   moor_ffi:
     git:
-      url: https://github.com/justkawal/moor.git
+      url: git://github.com/justkawal/moor.git
       #ref: beta 
       ref: 85206d
       path: moor_ffi
