@@ -8,7 +8,7 @@
 //   final HttpClient httpClient;
 //   final String url;
 //
-//   SecretKeyAuthentication({@required this.httpClient, @required this.url});
+//   SecretKeyAuthentication({required this.httpClient, required this.url});
 //   Future<void> auth() async {
 //     await httpClient.request(url: url, method: 'post');
 //   }
@@ -16,8 +16,8 @@
 //
 // abstract class HttpClient {
 //   Future<void> request({
-//     @required String url,
-//     @required String method,
+//     required String url,
+//     required String method,
 //   });
 // }
 //

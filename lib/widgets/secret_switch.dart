@@ -8,8 +8,8 @@ class SecretSwitch extends StatefulWidget {
   final Function onChanged;
 
   SecretSwitch({
-    @required this.value,
-    @required this.onChanged,
+    required this.value,
+    required this.onChanged,
   });
 
   @override

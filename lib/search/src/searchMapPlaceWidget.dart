@@ -2,7 +2,7 @@ part of search_map_place;
 
 class SearchMapPlaceWidget extends StatefulWidget {
   SearchMapPlaceWidget({
-    @required this.apiKey,
+    required this.apiKey,
     this.placeholder,
     this.icon = Icons.search,
     this.hasClearButton = true,

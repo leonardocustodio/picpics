@@ -9,9 +9,9 @@ class GeneralModal extends StatelessWidget {
   final Function onPressedOk;
 
   GeneralModal({
-    @required this.message,
-    @required this.onPressedDelete,
-    @required this.onPressedOk,
+    required this.message,
+    required this.onPressedDelete,
+    required this.onPressedOk,
   });
 
   @override

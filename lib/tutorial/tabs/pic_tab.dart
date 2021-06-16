@@ -17,8 +17,8 @@ class TutsPicTab extends StatefulWidget {
   final Function showEditTagModal;
 
   TutsPicTab({
-    @required this.showEditTagModal,
-    @required this.showDeleteSecretModal,
+    required this.showEditTagModal,
+    required this.showDeleteSecretModal,
   });
 
   @override

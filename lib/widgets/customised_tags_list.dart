@@ -22,11 +22,11 @@ class CustomisedTagsList extends StatelessWidget {
   final Function onDoubleTap;
 
   CustomisedTagsList({
-    @required this.tagsKeyList,
-    @required this.selectedTags,
+    required this.tagsKeyList,
+    required this.selectedTags,
     this.maxLength,
-    @required this.onTap,
-    @required this.onDoubleTap,
+    required this.onTap,
+    required this.onDoubleTap,
     this.title,
   });
 

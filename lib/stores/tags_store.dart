@@ -2,10 +2,10 @@
 
 class TagsStore {
   TagsStore(
-      {@required this.id,
-      @required this.name,
-      @required this.count,
-      @required this.time});
+      {required this.id,
+      required this.name,
+      required this.count,
+      required this.time});
   
   String id;
   String name;
@@ -16,8 +16,8 @@ class TagsStore {
   void setTagInfo(
       {String tagId,
       String tagName,
-      @required int count,
-      @required DateTime time}) {
+      required int count,
+      required DateTime time}) {
     //print('Setting new tag info!!!!!!');
     id = tagId;
     name = tagName;

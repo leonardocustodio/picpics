@@ -22,15 +22,15 @@ class Photo extends DataClass implements Insertable<Photo> {
   final String generalLocation;
   final String base64encoded;
   Photo(
-      {@required this.id,
-      @required this.createdAt,
-      @required this.originalLatitude,
-      @required this.originalLongitude,
+      {required this.id,
+      required this.createdAt,
+      required this.originalLatitude,
+      required this.originalLongitude,
       this.latitude,
       this.longitude,
-      @required this.isPrivate,
-      @required this.deletedFromCameraRoll,
-      @required this.isStarred,
+      required this.isPrivate,
+      required this.deletedFromCameraRoll,
+      required this.isStarred,
       this.tags,
       this.specificLocation,
       this.generalLocation,
@@ -322,10 +322,10 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     this.base64encoded = const Value.absent(),
   });
   PhotosCompanion.insert({
-    @required String id,
-    @required DateTime createdAt,
-    @required double originalLatitude,
-    @required double originalLongitude,
+    required String id,
+    required DateTime createdAt,
+    required double originalLatitude,
+    required double originalLongitude,
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
     this.isPrivate = const Value.absent(),
@@ -753,7 +753,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
 class PicBlurHash extends DataClass implements Insertable<PicBlurHash> {
   final String photoId;
   final String blurHash;
-  PicBlurHash({@required this.photoId, @required this.blurHash});
+  PicBlurHash({required this.photoId, required this.blurHash});
   factory PicBlurHash.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -836,8 +836,8 @@ class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
     this.blurHash = const Value.absent(),
   });
   PicBlurHashsCompanion.insert({
-    @required String photoId,
-    @required String blurHash,
+    required String photoId,
+    required String blurHash,
   })  : photoId = Value(photoId),
         blurHash = Value(blurHash);
   static Insertable<PicBlurHash> custom({
@@ -960,13 +960,13 @@ class Private extends DataClass implements Insertable<Private> {
   final double originalLatitude;
   final double originalLongitude;
   Private(
-      {@required this.id,
-      @required this.path,
-      @required this.nonce,
+      {required this.id,
+      required this.path,
+      required this.nonce,
       this.thumbPath,
-      @required this.createDateTime,
-      @required this.originalLatitude,
-      @required this.originalLongitude});
+      required this.createDateTime,
+      required this.originalLatitude,
+      required this.originalLongitude});
   factory Private.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1138,13 +1138,13 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
     this.originalLongitude = const Value.absent(),
   });
   PrivatesCompanion.insert({
-    @required String id,
-    @required String path,
-    @required String nonce,
+    required String id,
+    required String path,
+    required String nonce,
     this.thumbPath = const Value.absent(),
-    @required DateTime createDateTime,
-    @required double originalLatitude,
-    @required double originalLongitude,
+    required DateTime createDateTime,
+    required double originalLatitude,
+    required double originalLongitude,
   })  : id = Value(id),
         path = Value(path),
         nonce = Value(nonce),
@@ -1416,9 +1416,9 @@ class Label extends DataClass implements Insertable<Label> {
   final String title;
   final List<String> photoId;
   Label(
-      {@required this.key,
-      @required this.counter,
-      @required this.lastUsedAt,
+      {required this.key,
+      required this.counter,
+      required this.lastUsedAt,
       this.title,
       this.photoId});
   factory Label.fromData(Map<String, dynamic> data, GeneratedDatabase db,
@@ -1743,7 +1743,7 @@ class LabelEntry extends DataClass implements Insertable<LabelEntry> {
   final int id;
   final String photo;
   final String label;
-  LabelEntry({@required this.id, @required this.photo, @required this.label});
+  LabelEntry({required this.id, required this.photo, required this.label});
   factory LabelEntry.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1839,8 +1839,8 @@ class LabelEntriesCompanion extends UpdateCompanion<LabelEntry> {
   });
   LabelEntriesCompanion.insert({
     this.id = const Value.absent(),
-    @required String photo,
-    @required String label,
+    required String photo,
+    required String label,
   })  : photo = Value(photo),
         label = Value(label);
   static Insertable<LabelEntry> custom({
@@ -2003,34 +2003,34 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
   final bool isBiometricActivated;
   final DateTime lastTaggedPicDate;
   MoorUser(
-      {@required this.customPrimaryKey,
-      @required this.id,
+      {required this.customPrimaryKey,
+      required this.id,
       this.email,
       this.password,
-      @required this.notification,
-      @required this.dailyChallenges,
+      required this.notification,
+      required this.dailyChallenges,
       this.recentTags,
       this.appLanguage,
       this.appVersion,
       this.secretKey,
       this.starredPhotos,
       this.defaultWidgetImage,
-      @required this.goal,
-      @required this.hourOfDay,
-      @required this.minuteOfDay,
-      @required this.picsTaggedToday,
-      @required this.isPremium,
-      @required this.tutorialCompleted,
-      @required this.canTagToday,
-      @required this.hasGalleryPermission,
-      @required this.loggedIn,
-      @required this.secretPhotos,
-      @required this.isPinRegistered,
-      @required this.keepAskingToDelete,
-      @required this.shouldDeleteOnPrivate,
-      @required this.tourCompleted,
-      @required this.isBiometricActivated,
-      @required this.lastTaggedPicDate});
+      required this.goal,
+      required this.hourOfDay,
+      required this.minuteOfDay,
+      required this.picsTaggedToday,
+      required this.isPremium,
+      required this.tutorialCompleted,
+      required this.canTagToday,
+      required this.hasGalleryPermission,
+      required this.loggedIn,
+      required this.secretPhotos,
+      required this.isPinRegistered,
+      required this.keepAskingToDelete,
+      required this.shouldDeleteOnPrivate,
+      required this.tourCompleted,
+      required this.isBiometricActivated,
+      required this.lastTaggedPicDate});
   factory MoorUser.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String prefix}) {
     final effectivePrefix = prefix ?? '';

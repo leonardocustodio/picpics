@@ -10,9 +10,9 @@ class DeleteSecretModal extends StatefulWidget {
   final Function onPressedOk;
 
   DeleteSecretModal({
-    @required this.onPressedClose,
-    @required this.onPressedDelete,
-    @required this.onPressedOk,
+    required this.onPressedClose,
+    required this.onPressedDelete,
+    required this.onPressedOk,
   });
 
   @override

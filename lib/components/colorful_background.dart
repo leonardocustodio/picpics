@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class ColorfulBackground extends CustomPainter {
   final Point moveBy;
-  ColorfulBackground({@required this.moveBy});
+  ColorfulBackground({required this.moveBy});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -27,7 +27,7 @@ class ColorfulBackground extends CustomPainter {
     Path pinkPath = getPinkPath(
         size.width, size.height, -(moveBy.x / 3), -(moveBy.y / 2 - 30));
     Path yellowPath =
-        getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y);
+        getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y + .0);
 
     canvas.drawPaint(primaryGradient);
     canvas.drawPath(pinkPath, pinkGradient);

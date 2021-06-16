@@ -628,9 +628,9 @@ class TagsController extends GetxController {
 
   /// edit the tags name
   void _editTagInternalFunction(
-      {@required String oldTagKey,
-      @required String newTagKey,
-      @required String newName}) {
+      {required String oldTagKey,
+      required String newTagKey,
+      required String newName}) {
     TagModel tagModel = allTags[oldTagKey].value;
 
     /// remove the oldTagKey because it will help us to make it un-listenable
@@ -675,7 +675,7 @@ class TagsController extends GetxController {
   }
 
   Future<void> editTagName(
-      {@required String oldTagKey, @required String newName}) async {
+      {required String oldTagKey, required String newName}) async {
     /// create a new tagKey
     String newTagKey = Helpers.encryptTag(newName);
 

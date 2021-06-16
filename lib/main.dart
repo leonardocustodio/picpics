@@ -235,7 +235,7 @@ void main() async {
 
 class PicPicsApp extends StatefulWidget {
   final UserController user;
-  const PicPicsApp({@required this.user});
+  const PicPicsApp({required this.user});
 
   @override
   _PicPicsAppState createState() => _PicPicsAppState();

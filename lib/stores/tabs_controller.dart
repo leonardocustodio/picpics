@@ -832,7 +832,7 @@ class TabsController extends GetxController {
   } */
 }
 
-Future<void> sharePics({@required List<String> picKeys}) async {
+Future<void> sharePics({required List<String> picKeys}) async {
   var imageList = <String>[], mimeList = <String>[];
 
   for (String picKey in picKeys) {

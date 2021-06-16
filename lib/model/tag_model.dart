@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 class TagModel extends GetxController {
   RxMap _map = <String, dynamic>{}.obs;
   TagModel(
-      {@required String key,
-      @required String title,
-      @required int count,
-      @required DateTime time}) {
+      {required String key,
+      required String title,
+      required int count,
+      required DateTime time}) {
     assert(key != null && title != null);
     _map = RxMap<String, dynamic>(<String, dynamic>{
       'key': key,

@@ -44,7 +44,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   var _ = Get.put(PhotoScreenController());
   List<String> idList;
   final List<String> picIdList;
-  PhotoScreen({@required this.picId, @required this.picIdList}) {
+  PhotoScreen({required this.picId, required this.picIdList}) {
     if (picIdList?.isNotEmpty ?? false) {
       idList = List<String>.from(picIdList);
     }
@@ -497,7 +497,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
 class BottomTabsListWidget extends GetWidget<TaggedController> {
   final String picId;
-  const BottomTabsListWidget({@required this.picId, Key key}) : super(key: key);
+  const BottomTabsListWidget({required this.picId, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

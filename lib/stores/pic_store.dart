@@ -75,15 +75,15 @@ class PicStore extends GetxController {
   final tagsSuggestions = <TagModel>[].obs;
 
   PicStore({
-    @required AssetEntity entityValue,
+    required AssetEntity entityValue,
     this.photoPath,
     this.thumbPath,
-    @required String photoIdValue,
+    required String photoIdValue,
     this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
     this.deletedFromCameraRoll,
-    @required bool isStarredValue,
+    required bool isStarredValue,
   }) {
     isStarred.value = isStarredValue ?? false;
     photoId.value = photoIdValue;

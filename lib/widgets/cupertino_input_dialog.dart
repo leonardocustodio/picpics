@@ -16,14 +16,14 @@ class CupertinoInputDialog extends StatelessWidget {
   final TextEditingController alertInputController;
 
   CupertinoInputDialog({
-    @required this.title,
+    required this.title,
     this.inputPlaceholder,
-    @required this.destructiveButtonTitle,
-    @required this.defaultButtonTitle,
-    @required this.onPressedDestructive,
-    @required this.onPressedDefault,
+    required this.destructiveButtonTitle,
+    required this.defaultButtonTitle,
+    required this.onPressedDestructive,
+    required this.onPressedDefault,
     this.prefixImage,
-    @required this.alertInputController,
+    required this.alertInputController,
   });
 
   @override

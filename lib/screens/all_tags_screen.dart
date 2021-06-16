@@ -53,13 +53,13 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
   /* final CompletionHandler completionHandler; */
   var _ = Get.put(AllTagsController());
   AllTagsScreen({
-    @required this.picStore,
+    required this.picStore,
     Key key,
-    /* @required this.completionHandler, */
+    /* required this.completionHandler, */
   }) : super(key: key);
 
   /* 
-  AllTagsScreen({@required this.picStore, Key key}) : super(key: key);
+  AllTagsScreen({required this.picStore, Key key}) : super(key: key);
 
   @override
   _AllTagsScreenState createState() => _AllTagsScreenState();

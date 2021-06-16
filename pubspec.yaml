@@ -4,119 +4,138 @@ publish_to: 'none'
 version: 1.9.0-kawal6
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  #blurhash_dart: 0.2.3
   #extended_image: ^1.3.0
   #flutter_mobx: ^1.1.0+2
   #get: ^3.26.0
+  #metadata: 1.0.2
   #mobx: ^1.2.1+4
+  #platform_alert_dialog: ^1.0.0+2
   #provider: ^4.3.2+4
   #shimmer: 1.1.2
   #sqlite3_flutter_libs: ^0.3.0
   #tflite_flutter: ^0.5.0
   #tflite: ^1.1.1
-  #blurhash_dart: 0.2.3
-  after_layout: ^1.0.7+2
-  autocomplete_textfield: 1.7.3
-  background_fetch: ^0.6.0
-  bubble_bottom_bar: ^1.2.0
-  carousel_slider: ^2.3.1
-  cloud_functions: 0.9.0
-  collection: ^1.15.0-nullsafety.3
-  convert: ^2.1.1
-  cryptography_flutter: ^1.0.0
-  cupertino_icons: 1.0.0
-  date_utils: ^0.1.0+3
-  pull_to_refresh: ^2.0.0
-  diacritic: ^0.1.1
-  email_validator: ^1.0.6
-  encrypt: ^4.1.0
-  esys_flutter_share: ^1.0.2
-  expandable: ^4.1.4
-  facebook_app_events: ^0.8.2
-  firebase_analytics: 7.0.1
-  firebase_auth: 0.20.0
-  firebase_core: 0.7.0
-  firebase_crashlytics: 0.4.0
-  firebase_messaging: 8.0.0-dev.13
-  firebase_ml_vision: 0.10.0
-  firebase_remote_config: 0.6.0
-  flare_flutter: ^2.0.6
-  flutter_animator: ^2.1.0
-  flutter_branch_sdk: ^1.3.2
-  flutter_device_locale: ^0.4.0
-  flutter_inapp_purchase: ^3.0.1
-  flutter_keyboard_visibility: ^4.0.2
-  flutter_local_notifications: ^2.0.2
-  flutter_secure_storage: ^3.3.4
-  flutter_spinkit: ^4.1.2+1
-  flutter_staggered_grid_view: ^0.3.2
-  flutter_swiper: ^1.1.6
-  flutter_vibrate: ^1.0.0
-  geocoding: ^1.0.5
-  geolocator: ^6.1.9
-  get: ^4.1.3
-  google_maps_flutter: ^1.1.0
-  hive: ^1.4.4+1
-  local_auth: ^0.6.3+4
-  image: 2.1.19
-  flutter_blurhash: ^0.6.0
-  lottie: ^0.7.0+1
-  metadata: ^1.0.2
-  mime: ^0.9.7
-  moor_db_viewer: ^2.0.3
-  moor: ^3.4.0
-  notification_permissions: ^0.4.8
-  outline_gradient_button: ^1.0.0+2
-  package_info: ^0.4.3+2
-  path_provider: ^1.6.27
-  path: ^1.8.0-nullsafety.1
-  photo_manager: ^0.6.0-dev.7
-  photo_view: ^0.10.3
-  platform_alert_dialog: ^1.0.0+2
-  purchases_flutter: ^2.0.0
-  rate_my_app: ^0.7.2
-  share_extend: ^1.1.9
-  share: ^0.6.5+4
-  showcaseview: ^0.1.6
-  simple_animations: ^2.4.0
-  sliver_tools: ^0.1.9
-  url_launcher: ^5.7.10
-  uuid: ^2.2.2
-  visibility_detector: ^0.1.5
+  after_layout: 1.1.0
+  #autocomplete_textfield: 1.7.3
+  autocomplete_textfield:
+    git:
+      url: https://github.com/justkawal/flutter-autocomplete-textfield.git
+  background_fetch: 1.0.0
+  #bubble_bottom_bar: 1.2.0
+  bubble_bottom_bar:
+    git:
+      url: https://github.com/justkawal/bubble_bottom_bar.git
+  carousel_slider: 4.0.0-nullsafety.0
+  cloud_functions: 1.1.2
+  collection: 1.15.0
+  cryptography_flutter: 2.0.0
+  cupertino_icons: 1.0.3
+  date_utils: 0.2.0
+  diacritic: 0.1.3
+  email_validator: 2.0.1
+  encrypt: 5.0.0
+  #esys_flutter_share: ^1.0.2
+  expandable: 5.0.1
+  extended_image: 4.1.0
+  facebook_app_events: 0.12.0
+  firebase_analytics: 8.1.2
+  firebase_auth: 1.4.1
+  firebase_core: 1.3.0
+  firebase_crashlytics: 2.0.6
+  firebase_messaging: 10.0.2
+  firebase_ml_vision: 0.12.0+2
+  firebase_remote_config: 0.10.0+2
+  flare_flutter: 3.0.1
+  flutter_animator: 3.1.1
+  flutter_blurhash: 0.6.0
+  flutter_branch_sdk: 3.2.0
+  #flutter_device_locale: 0.4.0
+  flutter_device_locale:
+    git:
+      url: https://github.com/justkawal/flutter_device_locale.git
+  flutter_inapp_purchase: 5.0.1
+  flutter_keyboard_visibility: 5.0.2
+  flutter_local_notifications: 7.0.0-dev.1
+  flutter_secure_storage: 4.2.0
+  flutter_spinkit: 5.0.0
+  flutter_staggered_grid_view: 0.4.0
+  #flutter_swiper: 1.1.6
+  flutter_swiper:
+    git:
+      url: https://github.com/justkawal/flutter_swiper.git
+  #flutter_vibrate: 1.0.0
+  flutter_vibrate:
+    git:
+      url: https://github.com/justkawal/flutter_vibrate.git
+  geocoding: 2.0.0
+  geolocator: 7.1.0
+  get: 4.1.3
+  google_maps_flutter: 2.0.6
+  hive: 2.0.4
+  home_widget: 0.1.2+1
+  image: 3.0.2
+  local_auth: 1.1.6
+  lottie: 1.0.1
+  mime: 1.0.0
+  moor_db_viewer: 4.0.0
+  moor: 4.3.2
+  notification_permissions: 0.5.0
+  outline_gradient_button: 2.0.0+1
+  package_info: 2.0.2
+  path: 1.8.0
+  photo_manager: 1.2.2
+  photo_view: 0.11.1
+  pull_to_refresh: 2.0.0
+  purchases_flutter: 3.2.2
+  rate_my_app: 1.1.0+1
+  share_extend: 2.0.0
+  share: 2.0.4
+  showcaseview: 1.0.0
+  simple_animations: 3.1.1
+  sliver_tools: 0.2.5
+  url_launcher: 6.0.6
+  uuid: 3.0.4
+  visibility_detector: 0.2.0
   #flutter_staggered_grid_view:
   #  git:
   #    url: git://github.com/justkawal/flutter_staggered_grid_view.git
-  home_widget:
-    git:
-      url: git://github.com/leonardocustodio/home_widget.git
-      ref: fix-build-ios
+  #home_widget:
+  #  git:
+  #    url: git://github.com/leonardocustodio/home_widget.git
+  #    ref: fix-build-ios
 
 dependency_overrides:
   intl: ^0.17.0
-  extended_image: 1.5.0-dev
-  hive_flutter:
-    git:
-      url: git://github.com/justkawal/hive.git
-      path: hive_flutter
-      ref: 59ad5403593283233d922f62f76832c64fa33a3b
-  sqflite:
-    git:
-      url: git://www.github.com/justkawal/sqflite_sqlcipher.git
-      path: sqflite 
-      ref: bb2b0a
-      #ref: fmdb_override
-  moor_ffi:
-    git:
-      url: git://github.com/justkawal/moor.git
-      #ref: beta 
-      ref: 85206d
-      path: moor_ffi
+  path_provider: ^2.0.0
+  convert: 3.0.0
+  hive_flutter: ^1.0.0
+  crypto: 3.0.1
+  sqflite: ^2.0.0+3
+  #hive_flutter:
+  #  git:
+  #    url: git://github.com/justkawal/hive.git
+  #    path: hive_flutter
+  #    ref: 59ad5403593283233d922f62f76832c64fa33a3b
+  #sqflite:
+  #  git:
+  #    url: git://github.com/justkawal/sqflite_sqlcipher.git
+  #    path: sqflite 
+  #    ref: bb2b0a
+  #    #ref: fmdb_override
+  #moor_ffi:
+  #  git:
+  #    url: git://github.com/justkawal/moor.git
+  #    #ref: beta 
+  #    ref: 85206d
+  #    path: moor_ffi
 
 dev_dependencies:
   #faker: 1.2.1
@@ -124,12 +143,12 @@ dev_dependencies:
   #mobx_codegen: ^1.1.2
   #mockito: 4.1.2
   #test: 1.16.0-nullsafety.5
-  build_runner: ^1.10.3
-  googleapis_auth: any
-  googleapis: ^0.56.1
-  hive_generator: ^0.8.1
-  moor_generator: ^3.4.0
-  strings: ^0.1.2
+  build_runner: 2.0.4
+  googleapis_auth: 1.1.0
+  googleapis: 3.0.0
+  hive_generator: 1.1.0
+  moor_generator: 4.3.1
+  strings: 0.2.1
 
 flutter:
   uses-material-design: true

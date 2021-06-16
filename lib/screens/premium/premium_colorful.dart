@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class ColorfulPremium extends CustomPainter {
   final double withOpacity;
-  ColorfulPremium({@required this.withOpacity});
+  ColorfulPremium({required this.withOpacity});
 
   @override
   void paint(Canvas canvas, Size size) {

@@ -8,8 +8,8 @@ class ConfirmPicDelete extends StatefulWidget {
   final Function onPressedDelete;
 
   const ConfirmPicDelete({
-    @required this.onPressedClose,
-    @required this.onPressedDelete,
+    required this.onPressedClose,
+    required this.onPressedDelete,
   });
 
   @override

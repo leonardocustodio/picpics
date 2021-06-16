@@ -27,7 +27,7 @@ class TutsTaggedTab extends StatefulWidget {
   final Function showEditTagModal;
 
   TutsTaggedTab({
-    @required this.showEditTagModal,
+    required this.showEditTagModal,
   });
 
   @override

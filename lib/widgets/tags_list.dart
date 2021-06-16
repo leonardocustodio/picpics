@@ -36,22 +36,22 @@ class TagsList extends StatefulWidget {
   final bool shouldChangeToSwipeMode;
 
   const TagsList({
-    @required this.tagsKeyList,
+    required this.tagsKeyList,
     this.tagStyle = TagStyle.MultiColored,
     this.textEditingController,
     this.textFocusNode,
     this.addTagField = false,
     this.addButtonVisible = true,
     this.addTagButton,
-    @required this.onTap,
-    @required this.onDoubleTap,
-    @required this.onPanEnd,
+    required this.onTap,
+    required this.onDoubleTap,
+    required this.onPanEnd,
     this.onSubmitted,
     this.onChanged,
     this.title,
     this.aiButtonTitle,
     this.onAiButtonTap,
-    //@required this.showEditTagModal,
+    //required this.showEditTagModal,
     this.shouldChangeToSwipeMode = false,
   });
 

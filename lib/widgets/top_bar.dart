@@ -19,9 +19,9 @@ class TopBar extends StatelessWidget {
   final bool showSecretSwitch;
 
   TopBar({
-    @required this.appStore,
-    @required this.tagsController,
-    @required this.showSecretSwitch,
+    required this.appStore,
+    required this.tagsController,
+    required this.showSecretSwitch,
     this.searchEditingController,
     this.searchFocusNode,
     this.children,

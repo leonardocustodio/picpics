@@ -16,7 +16,7 @@ class Throttle {
   Timer _timer;
 
   Throttle({
-    @required this.onCall,
+    required this.onCall,
     this.duration = const Duration(seconds: 2),
   });
 

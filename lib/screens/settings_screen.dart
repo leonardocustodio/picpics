@@ -14,8 +14,8 @@ import 'package:picPics/widgets/fadein.dart';
 import 'package:picPics/widgets/secret_switch.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -58,11 +58,11 @@ class _SettingsScreenState extends State<SettingsScreen>
   );
 
   void shareApp(BuildContext context) {
-    Share.text(
-      S.of(context).take_a_look,
-      S.of(context).take_a_look_description('https://picpics.link/share'),
-      'text/plain',
-    );
+    Share.share(S.of(context).take_a_look,
+        subject: S
+            .of(context)
+            .take_a_look_description('https://picpics.link/share'));
+
     Analytics.sendEvent(Event.shared_app);
   }
 

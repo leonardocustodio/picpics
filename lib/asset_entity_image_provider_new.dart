@@ -27,8 +27,8 @@ class AssetEntityImageProviderKawal
   final bool isOriginal;
   AssetEntityImageProviderKawal(
     this.entity, {
-    @required this.originBytes,
-    @required this.thumbBytes,
+    required this.originBytes,
+    required this.thumbBytes,
     this.photoPath,
     this.scale = 1.0,
     this.thumbSize = kDefaultPreviewThumbSize,
