@@ -6,8 +6,8 @@ import 'package:picPics/stores/pic_store.dart';
 class ImageLruCache {
   static LRUMap<_ImageCacheEntity, Uint8List> _map = LRUMap(500);
 
-  static Uint8List getData(PicStore picStore, [int size = 64]) {
-    return _map.get(_ImageCacheEntity(picStore.entity.value, size));
+  static Uint8List? getData(PicStore picStore, [int size = 64]) {
+    return _map.get(_ImageCacheEntity(picStore.entity.value!, size));
   }
 
   static void setData(AssetEntity entity, int size, Uint8List list) {
@@ -41,21 +41,20 @@ class _ImageCacheEntity {
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-typedef EvictionHandler<K, V>(K key, V value);
+typedef EvictionHandler<K, V>(K key, V? value);
 
 class LRUMap<K, V> {
   final LinkedHashMap<K, V> _map = LinkedHashMap<K, V>();
   final int _maxSize;
-  final EvictionHandler<K, V> _handler;
+  final EvictionHandler<K, V>? _handler;
 
   LRUMap(this._maxSize, [this._handler]);
 
-  V get(K key) {
-    V value = _map.remove(key);
-    if (value != null) {
-      _map[key] = value;
+  V? get(K key) {
+    if (_map[key] == null) {
+      return null;
     }
-    return value;
+    return _map[key];
   }
 
   void put(K key, V value) {
@@ -63,10 +62,8 @@ class LRUMap<K, V> {
     _map[key] = value;
     if (_map.length > _maxSize) {
       K evictedKey = _map.keys.first;
-      V evictedValue = _map.remove(evictedKey);
-      if (_handler != null) {
-        _handler(evictedKey, evictedValue);
-      }
+      V? evictedValue = _map.remove(evictedKey);
+      _handler?.call(evictedKey, evictedValue);
     }
   }
 

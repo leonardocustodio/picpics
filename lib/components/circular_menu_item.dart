@@ -50,10 +50,10 @@ class CircularMenuItem extends StatelessWidget {
         child: Material(
           color: color ?? Theme.of(context).primaryColor,
           child: InkWell(
+            onTap: onTap,
             child: Padding(
               padding: EdgeInsets.all(padding),
-              child: animatedIcon == null
-                  ? Padding(
+              child: animatedIcon ?? Padding(
                       padding: const EdgeInsets.only(right: 1.0, bottom: 1.0),
                       child: Container(
                         height: iconSize,
@@ -62,10 +62,8 @@ class CircularMenuItem extends StatelessWidget {
                           child: image,
                         ),
                       ),
-                    )
-                  : animatedIcon,
+                    ),
             ),
-            onTap: onTap,
           ),
         ),
       ),

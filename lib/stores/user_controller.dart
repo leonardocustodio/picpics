@@ -28,7 +28,7 @@ class UserController extends GetxController {
   static UserController get to => Get.find();
   String appVersion;
   String deviceLocale;
-  String initiatedWithProduct;
+  String? initiatedWithProduct;
   final LocalAuthentication biometricAuth = LocalAuthentication();
   AppDatabase database = AppDatabase();
 

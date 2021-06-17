@@ -42,7 +42,7 @@ import 'stores/tabs_controller.dart';
 import 'stores/tagged_controller.dart';
 import 'stores/tags_controller.dart';
 
-Future<String> checkForUserControllerInitiatedProducts() async {
+Future<String?> checkForUserControllerInitiatedProducts() async {
   //print('Checking if appstore initiated products');
   List<IAPItem> appStoreProducts =
       await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
@@ -64,19 +64,19 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   //await Get.lazyPut(() => RefreshPicPicsController());
-  await Get.lazyPut(() => BlurHashController());
-  await Get.lazyPut(() => UserController());
-  await Get.lazyPut(() => PrivatePhotosController());
-  await Get.lazyPut(() => AllTagsController());
-  await Get.lazyPut(() => TaggedController());
-  await Get.lazyPut(() => SwiperTabController());
-  //await Get.lazyPut(() => GalleryStore());
-  await Get.lazyPut(() => DatabaseController());
-  await Get.lazyPut(() => TabsController());
-  await Get.lazyPut(() => TagsController());
-  await Get.lazyPut(() => PinController());
-  await Get.lazyPut(() => LoginStore());
-  await Get.lazyPut(() => PhotoScreenController());
+  Get.lazyPut<BlurHashController>(() => BlurHashController());
+  Get.lazyPut<UserController>(() => UserController());
+  Get.lazyPut<PrivatePhotosController>(() => PrivatePhotosController());
+  Get.lazyPut<AllTagsController>(() => AllTagsController());
+  Get.lazyPut<TaggedController>(() => TaggedController());
+  Get.lazyPut<SwiperTabController>(() => SwiperTabController());
+  // Get.lazyPut(() => GalleryStore());
+  Get.lazyPut<DatabaseController>(() => DatabaseController());
+  Get.lazyPut<TabsController>(() => TabsController());
+  Get.lazyPut<TagsController>(() => TagsController());
+  Get.lazyPut<PinController>(() => PinController());
+  Get.lazyPut<LoginStore>(() => LoginStore());
+  Get.lazyPut<PhotoScreenController>(() => PhotoScreenController());
 
   await Hive.initFlutter();
 /*   Hive.registerAdapter(UserAdapter());
@@ -194,7 +194,7 @@ void main() async {
 
   //print('Device Locale: $deviceLocale');
 
-  String initiatedWithProduct;
+  String? initiatedWithProduct;
   if (Platform.isIOS) {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
   }
@@ -242,18 +242,15 @@ class PicPicsApp extends StatefulWidget {
 }
 
 class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
-  /* GalleryStore galleryStore; */
-
   @override
   void initState() {
-    /* galleryStore = GalleryStore()..user = widget.user; */
     var tutorial = widget.user.tutorialCompleted.value;
     if (initialRoute != MigrationScreen.id && tutorial) {
       initialRoute = TabsScreen.id;
       //TODO: uncomment
       //Hive.deleteFromDisk();
     }
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -289,41 +286,19 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     //print('Main Build!!!');
-    return /* RefreshConfiguration(
-      headerBuilder: () =>
-          WaterDropHeader(), // Configure the default header indicator. If you have the same header indicator for each page, you need to set this
-      footerBuilder: () =>
-          ClassicFooter(), // Configure default bottom indicator
-      headerTriggerDistance: 80.0, // header trigger refresh trigger distance
-      springDescription: SpringDescription(
-          stiffness: 170,
-          damping: 16,
-          mass:
-              1.9), // custom spring back animate,the props meaning see the flutter api
-      maxOverScrollExtent:
-          70, //The maximum dragging range of the head. Set this property if a rush out of the view area occurs
-      maxUnderScrollExtent: 0, // Maximum dragging range at the bottom
-      enableScrollWhenRefreshCompleted:
-          true, //This property is incompatible with PageView and TabBarView. If you need TabBarView to slide left and right, you need to set it to true.
-      enableLoadingWhenFailed:
-          true, //In the case of load failure, users can still trigger more loads by gesture pull-up.
-      hideFooterWhenNotFull:
-          false, // Disable pull-up to load more functionality when Viewport is less than one screen
-      enableBallisticLoad: true, // trigger load more by BallisticScrollActivity
-      child: */
-        GetMaterialApp(
+    return GetMaterialApp(
       localizationsDelegates: [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
-      locale: Locale(widget.user.appLocale.value ?? 'en'),
+      locale: Locale(widget.user.appLocale.value),
       supportedLocales: S.delegate.supportedLocales,
       debugShowCheckedModeBanner: kDebugMode,
       initialRoute: initialRoute,
       navigatorObservers: [Analytics.observer],
-      routes: {
+      /* routes: {
         AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
         LoginScreen.id: (context) => LoginScreen(),
         TabsScreen.id: (context) => TabsScreen(),
@@ -339,7 +314,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         //TagsScreen.id: (context) => TagsScreen(),
         MigrationScreen.id: (context) => MigrationScreen(),
       },
-      // ),
+      */
     );
   }
 }

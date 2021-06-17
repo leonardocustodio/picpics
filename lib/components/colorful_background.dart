@@ -8,25 +8,25 @@ class ColorfulBackground extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint primaryGradient = Paint()
+    var primaryGradient = Paint()
       ..shader = kPrimaryGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    Paint secondaryGradient = Paint()
+    var secondaryGradient = Paint()
       ..shader = kSecondaryGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    Paint pinkGradient = Paint()
+    var pinkGradient = Paint()
       ..shader = kPinkGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    Paint yellowPaint = Paint()
+    var yellowPaint = Paint()
       ..color = kYellowColor
       ..style = PaintingStyle.fill;
 
-    Path secondaryPath =
+    var secondaryPath =
         getSecondaryPath(size.width, size.height, moveBy.x - 20, moveBy.y * 2);
-    Path pinkPath = getPinkPath(
+    var pinkPath = getPinkPath(
         size.width, size.height, -(moveBy.x / 3), -(moveBy.y / 2 - 30));
-    Path yellowPath =
+    var yellowPath =
         getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y + .0);
 
     canvas.drawPaint(primaryGradient);

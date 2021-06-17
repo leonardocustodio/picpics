@@ -46,16 +46,16 @@ class PicStore extends GetxController {
   final searchText = ''.obs;
 
   // @observable
-  final latitude = RxDouble(null);
+  final latitude = RxnDouble(null);
 
   // @observable
-  final longitude = RxDouble(null);
+  final longitude = RxnDouble(null);
 
   // @observable
-  final specificLocation = RxString(null);
+  final specificLocation = RxnString(null);
 
   // @observable
-  final generalLocation = RxString(null);
+  final generalLocation = RxnString(null);
 
   String nonce;
 
@@ -66,10 +66,10 @@ class PicStore extends GetxController {
   final isStarred = false.obs;
 
   // @observable
-  final photoId = RxString(null);
+  final photoId = RxnString(null);
 
   // @observable
-  final entity = Rx<AssetEntity>(null);
+  final entity = Rxn<AssetEntity?>(null);
 
   // @observable
   final tagsSuggestions = <TagModel>[].obs;

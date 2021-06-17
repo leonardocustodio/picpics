@@ -12,12 +12,12 @@ class ArrowPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
+    var paint = Paint()
       ..color = strokeColor
       ..strokeWidth = strokeWidth
       ..style = paintingStyle;
 
-    Path path = getTrianglePath(size.width, size.height);
+    var path = getTrianglePath(size.width, size.height);
     canvas.drawShadow(path, strokeColor.withOpacity(0.5), 1.0, false);
     canvas.drawPath(path, paint);
   }

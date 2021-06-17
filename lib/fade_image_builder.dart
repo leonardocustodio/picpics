@@ -6,8 +6,8 @@ class FadeImageBuilder extends StatelessWidget {
   final int milliseconds;
 
   const FadeImageBuilder({
-    Key key,
-    this.child,
+    Key? key,
+    required this.child,
     this.milliseconds = 1000,
   }) : super(key: key);
 
@@ -16,7 +16,7 @@ class FadeImageBuilder extends StatelessWidget {
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
       duration: Duration(milliseconds: milliseconds),
-      builder: (BuildContext _, double value, Widget __) {
+      builder: (/* BuildContext */ _, double value, /* Widget? */ __) {
         return Opacity(opacity: value, child: child);
       },
     );

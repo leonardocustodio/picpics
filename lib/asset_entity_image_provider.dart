@@ -25,16 +25,14 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     this.scale = 1.0,
     this.thumbSize = kDefaultPreviewThumbSize,
     this.isOriginal = true,
-  }) : assert(
-          isOriginal || thumbSize?.length == 2,
-          'thumbSize must contain and only contain two integers when it\'s not original',
-        ) {
-    if (!isOriginal && thumbSize?.length != 2) {
+  }) : assert(isOriginal || thumbSize.length == 2,
+            'thumbSize must contain and only contain two integers when it\'s not original');
+  /* {
+    if (!isOriginal && thumbSize.length != 2) {
       throw ArgumentError(
         'thumbSize must contain and only contain two integers when it\'s not original',
       );
-    }
-  }
+    } */
 
   /// File type for the image asset, use it for some special type detection.
   /// 图片资源的类型，用于某些特殊类型的判断
@@ -65,22 +63,22 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     DecoderCallback decode,
   ) async {
     assert(key == this);
-    Uint8List data;
+    Uint8List? data;
 
-    if (isOriginal ?? false) {
+    if (isOriginal) {
       //print('Loading original...');
       data = picStore.isPrivate.value
           ? await key.picStore.assetOriginBytes
-          : await key.picStore.entity.value.originBytes;
+          : await key.picStore.entity.value?.originBytes;
     } else {
       //print('Loading thumbnail...');
-      if (picStore.entity == null) {
+      if (picStore.entity.value == null) {
         //print('Entity is null & isPrivate: ${picStore.isPrivate}');
       }
       data = picStore.isPrivate.value
           ? await key.picStore.assetThumbBytes
           : await key.picStore.entity.value
-              .thumbDataWithSize(thumbSize[0], thumbSize[1]);
+              ?.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     }
 
     // if (picStore.isPrivate == true) {
@@ -98,7 +96,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     // } else {
     //   data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     // }
-    return decode(data);
+    return decode(data!);
   }
 
   /// Get image type by reading the file extension.
@@ -108,10 +106,11 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// so this method might not work sometime.
   /// 并非所有的系统版本都支持读取文件名，所以该方法有时无法返回正确的type。
   ImageFileType _getType() {
-    ImageFileType type;
-    final String extension = picStore.entity == null
-        ? picStore.photoPath?.split('.')?.last
-        : picStore.entity.value.title?.split('.')?.last;
+    late ImageFileType type;
+
+    final String? extension = picStore.entity.value == null
+        ? picStore.photoPath.split('.').last
+        : picStore.entity.value?.title?.split('.').last;
     //print('Extension: $extension');
     if (extension != null) {
       switch (extension.toLowerCase()) {
@@ -148,7 +147,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
         // ignore: test_types_in_equals
         other as AssetEntityImageProvider;
 
-    if (picStore.entity == null) {
+    if (picStore.entity.value == null) {
       return picStore.photoPath == typedOther.picStore.photoPath;
     }
 

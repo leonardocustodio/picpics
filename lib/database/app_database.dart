@@ -16,7 +16,7 @@ import 'package:uuid/uuid.dart';
 part 'app_database.g.dart';
 
 extension MoorTValue<T> on T {
-  get moorValue {
+  Value<T> get moorValue {
     if (this == null) {
       return Value.absent();
     }
@@ -153,19 +153,19 @@ class MoorUsers extends Table {
 
 class ListStringConvertor extends TypeConverter<List<String>, String> {
   @override
-  List<String> mapToDart(String fromDb) {
+  List<String> mapToDart(String? fromDb) {
     if (fromDb == null) {
       return <String>[];
     }
     var r = json.decode(fromDb);
     if (r is List) {
-      return r?.toList()?.map((e) => e.toString())?.toList() ?? <String>[];
+      return r.toList().map((e) => e.toString()).toList();
     }
     return r;
   }
 
   @override
-  String mapToSql(List<String> value) {
+  String mapToSql(List<String>? value) {
     return json.encode(value ?? <String>[]);
   }
 }
@@ -195,14 +195,13 @@ class AppDatabase extends _$AppDatabase {
   }
   AppDatabase._internal() : super(_openConnection());
 
-  @override
   int get schemaVersion => 1;
 
-  /**
-   * 
-   * Blur Hash operations Start
-   * 
-   */
+  ///
+  ///
+  ///Blur Hash operations Start
+  ///
+  ///
   Future createBlurHash(PicBlurHash newBlurHash) =>
       into(picBlurHashs).insert(newBlurHash);
 
@@ -210,20 +209,20 @@ class AppDatabase extends _$AppDatabase {
 
   Future<PicBlurHash> getSinglePicBlurHash(String photoId) =>
       (select(picBlurHashs)
-            ..where(
-                (l) => l?.photoId?.equals(photoId) ?? const Constant(false)))
+            ..where((l) =>
+                l.photoId.equals(photoId) /* ?? const Constant(false) */))
           .getSingle();
 
-  /**
-   * 
-   * Labels CRUD operations Start
-   * 
-   */
+  ///
+  ///
+  ///Labels CRUD operations Start
+  ///
+  ///
   Future createLabel(Label newLabel) => into(labels).insert(newLabel);
 
-  Future<Label> getLabelByLabelKey(String labelKey) => (select(labels)
-        ..where((l) => l?.key?.equals(labelKey) ?? const Constant(false)))
-      .getSingle();
+  Future<Label?> getLabelByLabelKey(String labelKey) => (select(labels)
+        ..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */))
+      .getSingleOrNull();
 
   Future<void> incrementLabelByKey(String labelKey) async {
     var label = await getLabelByLabelKey(labelKey);
@@ -248,7 +247,7 @@ class AppDatabase extends _$AppDatabase {
   Future<List<Label>> getAllLabel() => select(labels).get();
 
   Future deleteLabelByLabelId(String labelKey) => (delete(labels)
-        ..where((l) => l?.key?.equals(labelKey) ?? const Constant(false)))
+        ..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */))
       .go();
 
   Future updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
@@ -287,21 +286,22 @@ class AppDatabase extends _$AppDatabase {
           ]))
         .get();
   }
-  /**
-   * 
-   * Labels CRUD operations End
-   * 
-   */
 
-  /**
-   * 
-   * Photos CRUD operations Start
-   * 
-   */
+  ///
+  ///
+  ///Labels CRUD operations End
+  ///
+  ///
+
+  ///
+  ///
+  ///Photos CRUD operations Start
+  ///
+  ///
   Future createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
 
   Future<Photo> getPhotoByPhotoId(String photoId) => (select(photos)
-        ..where((pri) => pri?.id?.equals(photoId) ?? const Constant(false)))
+        ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
       .getSingle();
 
   Future<List<Photo>> getAllTaggedPhotoIdList() {
@@ -310,8 +310,9 @@ class AppDatabase extends _$AppDatabase {
           ..where((tbl) {
             return Constant(convertor
                     .mapToDart(tbl.tags.moorValue.toString())
-                    ?.isNotEmpty ??
-                false);
+                    .isNotEmpty /* ??
+                false */
+                );
           }))
         .get();
   }
@@ -324,26 +325,27 @@ class AppDatabase extends _$AppDatabase {
   Future updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
 
   Future deletePhotoByPhotoId(String photoId) => (delete(photos)
-        ..where(
-            (picture) => picture?.id?.equals(photoId) ?? const Constant(false)))
+        ..where((picture) =>
+            picture.id.equals(photoId) /* ?? const Constant(false) */))
       .go();
 
   Future deletePhoto(Photo oldPhoto) => delete(photos).delete(oldPhoto);
-  /**
-   * 
-   * Photos CRUD operations End
-   * 
-   */
 
-  /**
-   * 
-   * Private CRUD operations Start
-   * 
-   */
+  ///
+  ///
+  ///Photos CRUD operations End
+  ///
+  ///
+
+  ///
+  ///
+  ///Private CRUD operations Start
+  ///
+  ///
   Future createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
 
   Future<Private> getPrivateByPhotoId(String photoId) => (select(privates)
-        ..where((pri) => pri?.id?.equals(photoId) ?? const Constant(false)))
+        ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
       .getSingle();
 
   Future<List<Private>> getAllPrivate() => select(privates).get();
@@ -353,24 +355,25 @@ class AppDatabase extends _$AppDatabase {
 
   Future deletePrivate(Private oldPrivate) =>
       delete(privates).delete(oldPrivate);
-  /**
-   * 
-   * Private CRUD operations End
-   * 
-   */
 
-  /**
-   * 
-   * MoorUser CRUD operations Start
-   * 
-   */
+  ///
+  ///
+  ///Private CRUD operations End
+  ///
+  ///
+
+  ///
+  ///
+  ///MoorUser CRUD operations Start
+  ///
+  ///
   Future createMoorUser(MoorUser newMoorUser) =>
       into(moorUsers).insert(newMoorUser, mode: InsertMode.insertOrReplace);
 
   //Future<List<MoorUser>> getAllMoorUser() => select(moorUsers).get();
 
-  Future<MoorUser> getSingleMoorUser({bool createIfNotExist = true}) async {
-    var moorUserReturn = await select(moorUsers).getSingle();
+  Future<MoorUser?> getSingleMoorUser({bool createIfNotExist = true}) async {
+    var moorUserReturn = await select(moorUsers).getSingleOrNull();
     if (createIfNotExist && moorUserReturn == null) {
       await createMoorUser(getDefaultMoorUser());
       return await select(moorUsers).getSingle();
@@ -383,19 +386,21 @@ class AppDatabase extends _$AppDatabase {
       update(moorUsers).replace(newMoorUser.copyWith(customPrimaryKey: 0));
 
   Future deleteMoorUser(MoorUser newMoorUser) => (delete(moorUsers)
-        ..where((u) => u?.customPrimaryKey?.equals(0) ?? const Constant(false)))
+        ..where(
+            (u) => u.customPrimaryKey.equals(0) /* ?? const Constant(false) */))
       .delete(newMoorUser);
-  /**
-   * 
-   * MoorUser CRUD operations End
-   * 
-   */
 
-  /**
-   * 
-   * Batch insert the photoBlurHash
-   * 
-   */
+  ///
+  ///
+  ///MoorUser CRUD operations End
+  ///
+  ///
+
+  ///
+  ///
+  ///Batch insert the photoBlurHash
+  ///
+  ///
 
   Future<void> insertAllPicBlurHash(List<PicBlurHash> blurHashes) async {
     List<PicBlurHashsCompanion> blurHashedCompanion = [];
@@ -414,17 +419,17 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  /** 
-   * 
-   * 
-   * 
-   * 
-   * Migration queries Start
-   * 
-   * 
-   * 
-   * 
-   */
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///Migration queries Start
+  ///
+  ///
+  ///
+  ///
+  ///
 
   Future<void> insertAllPrivates(List<Secret> secretPhotos) async {
     List<PrivatesCompanion> privatesCompanions = [];
@@ -436,8 +441,8 @@ class AppDatabase extends _$AppDatabase {
           path: secret.photoPath,
           thumbPath: secret.thumbPath.moorValue,
           createDateTime: secret.createDateTime,
-          originalLatitude: secret.originalLatitude ?? 0.0,
-          originalLongitude: secret.originalLongitude ?? 0.0,
+          originalLatitude: secret.originalLatitude /* ?? 0.0 */,
+          originalLongitude: secret.originalLongitude /* ?? 0.0 */,
           nonce: secret.nonce,
         ),
       );
@@ -448,42 +453,40 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Future<void> insertAllMoorUsers(User user, {UserKey userKey}) async {
+  Future<void> insertAllMoorUsers(User user, {UserKey? userKey}) async {
     var moorUserCompanionVariable;
-    if (user == null) {
-      moorUserCompanionVariable = MoorUsersCompanion.insert();
-    } else {
-      moorUserCompanionVariable = MoorUsersCompanion.insert(
-        customPrimaryKey: const Value(0),
-        id: user.id.moorValue,
-        recentTags: user.recentTags.moorValue,
-        starredPhotos: user.starredPhotos.moorValue,
-        email: user.email.moorValue,
-        password: user.password.moorValue,
-        notification: user.notifications.moorValue,
-        dailyChallenges: user.dailyChallenges.moorValue,
-        goal: user.goal.moorValue,
-        hourOfDay: user.hourOfDay.moorValue,
-        minuteOfDay: user.minutesOfDay.moorValue,
-        isPremium: user.isPremium.moorValue,
-        tutorialCompleted: user.tutorialCompleted.moorValue,
-        picsTaggedToday: user.picsTaggedToday.moorValue,
-        lastTaggedPicDate: user.lastTaggedPicDate.moorValue,
-        canTagToday: user.canTagToday.moorValue,
-        appLanguage: user.appLanguage.moorValue,
-        appVersion: user.appVersion.moorValue,
-        hasGalleryPermission: user.hasGalleryPermission.moorValue,
-        loggedIn: user.loggedIn.moorValue,
-        secretPhotos: user.secretPhotos.moorValue,
-        isPinRegistered: user.isPinRegistered.moorValue,
-        keepAskingToDelete: user.keepAskingToDelete.moorValue,
-        shouldDeleteOnPrivate: user.shouldDeleteOnPrivate.moorValue,
-        tourCompleted: user.tourCompleted.moorValue,
-        isBiometricActivated: user.isBiometricActivated.moorValue,
-        secretKey: userKey?.secretKey?.moorValue,
-      );
-    }
-    return into(moorUsers).insert(
+
+    moorUserCompanionVariable = MoorUsersCompanion.insert(
+      customPrimaryKey: const Value(0),
+      id: user.id.moorValue,
+      recentTags: user.recentTags.moorValue,
+      starredPhotos: user.starredPhotos.moorValue,
+      email: user.email.moorValue,
+      password: user.password.moorValue,
+      notification: user.notifications.moorValue,
+      dailyChallenges: user.dailyChallenges.moorValue,
+      goal: user.goal.moorValue,
+      hourOfDay: user.hourOfDay.moorValue,
+      minuteOfDay: user.minutesOfDay.moorValue,
+      isPremium: user.isPremium.moorValue,
+      tutorialCompleted: user.tutorialCompleted.moorValue,
+      picsTaggedToday: user.picsTaggedToday.moorValue,
+      lastTaggedPicDate: user.lastTaggedPicDate.moorValue,
+      canTagToday: user.canTagToday.moorValue,
+      appLanguage: user.appLanguage.moorValue,
+      appVersion: user.appVersion.moorValue,
+      hasGalleryPermission: user.hasGalleryPermission.moorValue,
+      loggedIn: user.loggedIn.moorValue,
+      secretPhotos: user.secretPhotos.moorValue,
+      isPinRegistered: user.isPinRegistered.moorValue,
+      keepAskingToDelete: user.keepAskingToDelete.moorValue,
+      shouldDeleteOnPrivate: user.shouldDeleteOnPrivate.moorValue,
+      tourCompleted: user.tourCompleted.moorValue,
+      isBiometricActivated: user.isBiometricActivated.moorValue,
+      secretKey: userKey?.secretKey.moorValue,
+    );
+
+    await into(moorUsers).insert(
       moorUserCompanionVariable,
       mode: InsertMode.insertOrReplace,
     );
@@ -529,7 +532,7 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> insertAllPhotos(List<Pic> pics) async {
     List<PhotosCompanion> photosCompanions = [];
-    Map<String, List<String>> photosTags = {};
+    var photosTags = <String, List<String>>{};
 
     for (Pic pic in pics) {
       photosTags[pic.photoId] = pic.tags;
@@ -537,8 +540,8 @@ class AppDatabase extends _$AppDatabase {
         PhotosCompanion.insert(
           id: pic.photoId,
           createdAt: pic.createdAt,
-          originalLatitude: pic.originalLatitude ?? 0.0,
-          originalLongitude: pic.originalLongitude ?? 0.0,
+          originalLatitude: pic.originalLatitude /* ?? 0.0 */,
+          originalLongitude: pic.originalLongitude /* ?? 0.0 */,
           latitude: pic.latitude.moorValue,
           longitude: pic.longitude.moorValue,
           specificLocation: pic.specificLocation.moorValue,
@@ -558,15 +561,15 @@ class AppDatabase extends _$AppDatabase {
     await insertAllLabelsEntries(photosTags);
   }
 
-  /** 
-   * 
-   * 
-   * 
-   * 
-   * Migration queries Start
-   * 
-   * 
-   * 
-   * 
-   */
+  ///
+  ///
+  ///
+  ///
+  ///
+  ///Migration queries Start
+  ///
+  ///
+  ///
+  ///
+  ///
 }

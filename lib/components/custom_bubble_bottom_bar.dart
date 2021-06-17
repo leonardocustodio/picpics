@@ -75,14 +75,14 @@ class _CustomBottomNavigationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    int size;
+    /* int size;
     Widget label;
     size = (flex * 1000.0).round();
     label = _Label(
       animation: animation,
       item: item,
       color: item.backgroundColor,
-    );
+    ); */
 
     return Expanded(
       flex: 1,
@@ -100,9 +100,7 @@ class _CustomBottomNavigationTile extends StatelessWidget {
               containedInkWell: true,
               onTap: onTap,
               splashColor: ink
-                  ? inkColor != null
-                      ? inkColor
-                      : Theme.of(context).splashColor
+                  ? inkColor ?? Theme.of(context).splashColor
                   : Colors.transparent,
               highlightColor: Colors.transparent,
               child: Container(
@@ -177,7 +175,7 @@ class _TileIcon extends StatelessWidget {
   }
 }
 
-class _Label extends StatelessWidget {
+/* class _Label extends StatelessWidget {
   final Animation<double> animation;
   final CustomBubbleBottomBarItem item;
   final Color color;
@@ -202,6 +200,7 @@ class _Label extends StatelessWidget {
     );
   }
 }
+ */
 
 class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar>
     with TickerProviderStateMixin {
@@ -228,7 +227,9 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar>
 //  Animatable<double> _flexTween = widget.hasNotch ? Tween<double>(begin: 1.15, end: 2.0) : Tween<double>(begin: 1.15, end: 1.75);
 
   void _resetState() {
-    for (AnimationController controller in _controllers) controller.dispose();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
 
     _controllers =
         List<AnimationController>.generate(widget.items.length, (int index) {
@@ -261,7 +262,9 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar>
 
   @override
   void dispose() {
-    for (AnimationController controller in _controllers) controller.dispose();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -282,9 +285,8 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar>
       _controllers[widget.currentIndex].forward();
 
       if (widget.fabLocation == CustomBubbleBottomBarFabLocation.center) {
-        CustomBubbleBottomBarItem _currentItem =
-            widget.items[oldWidget.currentIndex];
-        CustomBubbleBottomBarItem _nextItem = widget.items[widget.currentIndex];
+        var _currentItem = widget.items[oldWidget.currentIndex];
+        var _nextItem = widget.items[widget.currentIndex];
 
         widget.items[0] = _nextItem;
         widget.items[widget.currentIndex] = _currentItem;
@@ -294,17 +296,18 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar>
         _resetState();
       }
     } else {
-      if (_backgroundColor != widget.items[widget.currentIndex].backgroundColor)
+      if (_backgroundColor !=
+          widget.items[widget.currentIndex].backgroundColor) {
         _backgroundColor = widget.items[widget.currentIndex].backgroundColor;
+      }
     }
   }
 
   List<Widget> _createTiles() {
-    final MaterialLocalizations localizations =
-        MaterialLocalizations.of(context);
+    final localizations = MaterialLocalizations.of(context);
 
-    final List<Widget> children = <Widget>[];
-    for (int i = 0; i < widget.items.length; i += 1) {
+    final children = <Widget>[];
+    for (var i = 0; i < widget.items.length; i += 1) {
       children.add(
         _CustomBottomNavigationTile(
           widget.items[i],
@@ -368,7 +371,7 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar>
   Widget build(BuildContext context) {
     assert(debugCheckHasDirectionality(context));
     assert(debugCheckHasMaterialLocalizations(context));
-    final double additionalBottomPadding =
+    final additionalBottomPadding =
         math.max(MediaQuery.of(context).padding.bottom - _kBottomMargin, 0.0);
     return Semantics(
         explicitChildNodes: true,
@@ -386,8 +389,8 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar>
             : Material(
                 elevation: widget.elevation ?? 8.0,
                 color: widget.backgroundColor ?? Colors.white,
-                child: _inner(additionalBottomPadding),
                 borderRadius: widget.borderRadius ?? BorderRadius.zero,
+                child: _inner(additionalBottomPadding),
               ));
   }
 }
@@ -420,7 +423,7 @@ class _CustomBubbleBottomBarClipper extends CustomClipper<Path> {
 
   @override
   Path getClip(Size size) {
-    final Rect? button = geometry.value.floatingActionButtonArea?.translate(
+    final button = geometry.value.floatingActionButtonArea?.translate(
       0.0,
       (geometry.value.bottomNavigationBarTop ?? .0) * -1.0,
     );

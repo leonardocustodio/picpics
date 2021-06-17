@@ -58,7 +58,8 @@ class Analytics {
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
-  static sendEvent(Event event, {Map<String, dynamic> params = null}) async {
+  static Future<void> sendEvent(Event event,
+      {Map<String, dynamic>? params}) async {
     if (kDebugMode) {
       return;
     }
@@ -74,9 +75,9 @@ class Analytics {
     );
   }
 
-  static sendAdClick() async {}
+  static Future<void> sendAdClick() async {}
 
-  static sendAdImpression() async {
+  static Future<void> sendAdImpression() async {
     if (kDebugMode) {
       return;
     }
@@ -85,7 +86,7 @@ class Analytics {
     await facebookAppEvents.logEvent(name: 'AdImpression');
   }
 
-  static sendAppOpen() async {
+  static Future<void> sendAppOpen() async {
     if (kDebugMode) {
       return;
     }
@@ -94,7 +95,7 @@ class Analytics {
     await facebookAppEvents.logActivatedApp();
   }
 
-  static sendTutorialBegin() async {
+  static Future<void> sendTutorialBegin() async {
     if (kDebugMode) {
       return;
     }
@@ -104,7 +105,7 @@ class Analytics {
         name: '${enumToString(Event.tutorial_begin)}');
   }
 
-  static sendTutorialComplete() async {
+  static Future<void> sendTutorialComplete() async {
     if (kDebugMode) {
       return;
     }
@@ -113,13 +114,14 @@ class Analytics {
     await facebookAppEvents.logEvent(name: 'fb_mobile_tutorial_completion');
   }
 
-  static sendPresentOffer(
-      {String itemId,
-      String itemName,
-      String itemCategory,
-      int quantity,
-      double price,
-      String currency}) async {
+  static Future<void> sendPresentOffer({
+    required String itemId,
+    required String itemName,
+    required String itemCategory,
+    required int quantity,
+    required double price,
+    required String currency,
+  }) async {
     if (kDebugMode) {
       return;
     }
@@ -146,7 +148,8 @@ class Analytics {
     );
   }
 
-  static sendBeginCheckout({String currency, double price}) async {
+  static Future<void> sendBeginCheckout(
+      {required String currency, required double price}) async {
     if (kDebugMode) {
       return;
     }
@@ -165,7 +168,8 @@ class Analytics {
     );
   }
 
-  static sendPurchase({String currency, double price}) async {
+  static Future<void> sendPurchase(
+      {required String currency, required double price}) async {
     if (kDebugMode) {
       return;
     }
@@ -176,12 +180,12 @@ class Analytics {
     );
 
     await facebookAppEvents.logPurchase(
-      amount: price,
       currency: currency,
+      amount: price,
     );
   }
 
-  static setUserId(String userId) async {
+  static Future<void> setUserId(String userId) async {
     if (kDebugMode) {
       return;
     }
@@ -191,7 +195,7 @@ class Analytics {
     FlutterBranchSdk.setIdentity(userId);
   }
 
-  static sendCurrentScreen(Screen screen) async {
+  static Future<void> sendCurrentScreen(Screen screen) async {
     if (kDebugMode) {
       return;
     }
@@ -207,7 +211,7 @@ class Analytics {
     );
   }
 
-  static sendCurrentTab(int index) async {
+  static Future<void> sendCurrentTab(int index) async {
     if (kDebugMode) {
       return;
     }

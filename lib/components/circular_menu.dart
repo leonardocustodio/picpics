@@ -6,6 +6,7 @@ import 'package:picPics/components/circular_menu_item.dart';
 
 class CircularMenu extends StatefulWidget {
   /// use global key to control animation anywhere in the code
+  @override
   final GlobalKey<CircularMenuState>? key;
 
   /// list of CircularMenuItem contains at least two items.
@@ -107,7 +108,7 @@ class CircularMenuState extends State<CircularMenu>
   }
 
   List<Widget> _buildMenuItems() {
-    List<Widget> items = [];
+    var items = <Widget>[];
     widget.items.asMap().forEach((index, item) {
       items.add(
         Positioned.fill(
