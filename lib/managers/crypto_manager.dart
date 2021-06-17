@@ -130,26 +130,30 @@ class Crypto {
     var stringToBase64 = utf8.fuse(base64);
     final ivString =
         stringToBase64.encode('$userPin${appStore.email}').substring(0, 16);
-    final picKey = encrypt.Key(Uint8List.fromList(utf8.encode('1HxMbQeThWmZq3t6')));
+    final picKey =
+        encrypt.Key(Uint8List.fromList(utf8.encode('1HxMbQeThWmZq3t6')));
     final iv = encrypt.IV(Uint8List.fromList(utf8.encode(ivString)));
 
     try {
-      final decryptedData = encrypt.AES(picKey, mode: encrypt.AESMode.ctr
+      final decryptedData = encrypt
+          .AES(picKey, mode: encrypt.AESMode.ctr)
+          .decrypt(encrypt.Encrypted(Uint8List.fromList(hex.decode(spkey))),
+              iv: iv);
 
-      ).decrypt(encrypt.Encrypted(Uint8List.fromList(hex.decode(spkey))), secretKey: picKey, nonce: iv);
       final decryptedString = hex.encode(decryptedData);
 
       //print('Server key after decrypt: $decryptedString');
 
       //print('Hasing it to check if it is the correct key');
-      final digest = hex.encode((await sha256.hash(decryptedData)).bytes);
+      final digest =
+          hex.encode((await cryptography.Sha256().hash(decryptedData)).bytes);
       //print('Hashed key is: $digest');
 
       if (digest == hpkey) {
         //print('The key is valid!');
         //print('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
         //print('Decrypted Key: $decryptedData');
-        appStore.setEncryptionKey(SecretKey(decryptedData));
+        appStore.setEncryptionKey(encrypt.Key(decryptedData));
         return true;
       }
 
@@ -161,19 +165,22 @@ class Crypto {
     }
   }
 
-  static Future<String> getEncryptedPin(UserController appStore) async {
+  static Future<String?> getEncryptedPin(UserController appStore) async {
     final storage = FlutterSecureStorage();
 
     var secretString = appStore.getSecretKey();
-    String nounceString = await storage.read(key: 'npkey');
-    String encryptedPin = await storage.read(key: 'epkey');
-
-    final picKey = SecretKey(hex.decode(secretString));
-    final Nonce ivKey = Nonce(hex.decode(nounceString));
+    var nounceString = await storage.read(key: 'npkey') ?? '';
+    var encryptedPin = await storage.read(key: 'epkey') ?? '';
 
     try {
-      final decryptedData = await aesCtr.decrypt(hex.decode(encryptedPin),
-          secretKey: picKey, nonce: ivKey);
+      final picKey = encrypt.Key(Uint8List.fromList(hex.decode(secretString)));
+      final ivKey = encrypt.IV(Uint8List.fromList(hex.decode(nounceString)));
+
+      final decryptedData = encrypt
+          .AES(picKey, mode: encrypt.AESMode.ctr)
+          .decrypt(
+              encrypt.Encrypted(Uint8List.fromList(hex.decode(encryptedPin))),
+              iv: ivKey);
       //print('Pin: ${utf8.decode(decryptedData)}');
       return utf8.decode(decryptedData);
     } catch (error) {
@@ -192,7 +199,9 @@ class Crypto {
       String userPin, UserController appStore) async {
     final storage = FlutterSecureStorage();
 
-    final SecretKey picKey = aesCtr.newSecretKeySync();
+    //final SecretKey picKey = aesCtr.newSecretKeySync();
+    final picKey = encrypt.Key.fromSecureRandom(length);
+    final ivKey = encrypt.IV.fromSecureRandom(length);
     final Nonce ivKey = aesCtr.newNonce();
 
     final encryptedData = await aesCtr.encrypt(utf8.encode(userPin),
