@@ -5,9 +5,10 @@ import 'package:picPics/stores/pic_store.dart';
 
 class WidgetManager {
   static AppDatabase appDatabase = AppDatabase();
-  static Future<void> saveData({List<PicStore> picsStores}) async {
-    for (PicStore store in picsStores) {
-      store.switchIsStarred();
+  static Future<void> saveData(
+      {List<PicStore> picsStores = const <PicStore>[]}) async {
+    for (var store in picsStores) {
+      await store.switchIsStarred();
     }
     //print('Setted is starred to true');
   }

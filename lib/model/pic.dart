@@ -8,18 +8,18 @@ class Pic {
   bool isPrivate, deletedFromCameraRoll, isStarred;
 
   Pic({
-    this.photoId,
-    this.createdAt,
-    this.originalLatitude,
-    this.originalLongitude,
-    this.latitude,
-    this.longitude,
-    this.specificLocation,
-    this.generalLocation,
-    this.tags,
-    this.isPrivate,
-    this.deletedFromCameraRoll,
-    this.isStarred,
-    this.base64encoded,
+    required this.photoId,
+    required this.createdAt,
+    required this.originalLatitude,
+    required this.originalLongitude,
+    required this.latitude,
+    required this.longitude,
+    required this.specificLocation,
+    required this.generalLocation,
+    required this.tags,
+    required this.isPrivate,
+    required this.deletedFromCameraRoll,
+    required this.isStarred,
+    required this.base64encoded,
   });
 }

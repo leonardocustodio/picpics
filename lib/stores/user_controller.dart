@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:cryptography_flutter/cryptography.dart';
+import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
@@ -587,8 +587,8 @@ class UserController extends GetxController {
 
   PopPinScreenTo popPinScreen;
 
-  SecretKey encryptionKey;
-  void setEncryptionKey(SecretKey value) => encryptionKey = value;
+  cryptography.SecretKey? encryptionKey;
+  void setEncryptionKey(cryptography.SecretKey value) => encryptionKey = value;
 
   String tempEncryptionKey;
   void setTempEncryptionKey(String value) => tempEncryptionKey = value;

@@ -15,7 +15,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
 
-  static DatabaseManager _instance;
+  static DatabaseManager? _instance;
 
   static DatabaseManager get instance {
     return _instance ??= DatabaseManager._();
@@ -24,8 +24,8 @@ class DatabaseManager extends ChangeNotifier {
   List<String> slideThumbPhotoIds = [];
   List<double> lastLocationRequest = [0.0, 0.0];
 
-  String currentPhotoCity;
-  String currentPhotoState;
+  String currentPhotoCity = '';
+  String currentPhotoState = '';
 
   double scale = 1.0;
 
@@ -48,8 +48,8 @@ class DatabaseManager extends ChangeNotifier {
     //print('dailyChallenges: ${userSettings}');
 
     if (Platform.isIOS) {
-      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
-      _firebaseMessaging.requestPermission(
+      final _firebaseMessaging = FirebaseMessaging.instance;
+      await _firebaseMessaging.requestPermission(
           sound: true, badge: true, alert: true);
 
       // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
@@ -87,7 +87,7 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  Future<String> getTagName(String tagKey) async {
+  Future<String?> getTagName(String tagKey) async {
     /* 
     var tagsBox = Hive.box('tags'); */
     Label getTag = await database.getLabelByLabelKey(tagKey);
@@ -106,7 +106,7 @@ class DatabaseManager extends ChangeNotifier {
 
   Future<void> initPlatformState(String userId) async {
     if (kDebugMode) {
-      Purchases.setDebugLogsEnabled(true);
+      await Purchases.setDebugLogsEnabled(true);
     }
     await Purchases.setup(
       'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
@@ -114,9 +114,9 @@ class DatabaseManager extends ChangeNotifier {
     );
   }
 
-  Future<bool> checkPremiumStatus() async {
+  Future<bool?> checkPremiumStatus() async {
     try {
-      PurchaserInfo purchaserInfo = await Purchases.getPurchaserInfo();
+      final purchaserInfo = await Purchases.getPurchaserInfo();
       //print('### ${purchaserInfo.entitlements}');
       //print('### ${purchaserInfo.entitlements.all}');
       if (purchaserInfo.entitlements.all.isEmpty) {
@@ -124,7 +124,7 @@ class DatabaseManager extends ChangeNotifier {
         return null;
       }
 
-      if (purchaserInfo.entitlements.all["Premium"].isActive) {
+      if (purchaserInfo.entitlements.all['Premium']?.isActive ?? false) {
         // Grant user "pro" access
         //print('you are still premium');
         return true;
@@ -141,27 +141,25 @@ class DatabaseManager extends ChangeNotifier {
 
   void loadRemoteConfig() async {
     //print('loading remote config....');
-    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+    final remoteConfig = await RemoteConfig.instance;
     // Enable developer mode to relax fetch throttling
-    remoteConfig
-        .setConfigSettings(RemoteConfigSettings()); //debugMode: kDebugMode));
-    remoteConfig.setDefaults(<String, dynamic>{
+    await remoteConfig.setConfigSettings(RemoteConfigSettings(
+        fetchTimeout: const Duration(days: 5),
+        minimumFetchInterval:
+            const Duration(hours: 5))); //debugMode: kDebugMode));
+    await remoteConfig.setDefaults(<String, dynamic>{
       'daily_pics_for_ads': 25,
       'free_private_pics': 20,
     });
 
     try {
       // Using default duration to force fetching from remote server.
-      await remoteConfig.fetch(expiration: const Duration(hours: 5));
-      await remoteConfig.activateFetched();
+      await remoteConfig.fetch(/* expiration: const Duration(hours: 5) */);
+      await remoteConfig.activate();
       //print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
       //print('free_private_pics: ${remoteConfig.getInt('free_private_pics')}');
-    } on FetchThrottledException catch (_) {
-      // Fetch throttled.
-      //print(exception);
     } catch (exception) {
-      //print('Unable to fetch remote config. Cached or default values will be '
-      //print('used');
+      print('Unable to fetch remote config. Cached or default values will be used');
     }
   }
 
@@ -176,7 +174,7 @@ class DatabaseManager extends ChangeNotifier {
     //userBox.putAt(0, userSettings);
 
     if (notify = true) {
-      Analytics.sendEvent(Event.changed_language);
+      await Analytics.sendEvent(Event.changed_language);
       notifyListeners();
     }
   }
@@ -194,12 +192,12 @@ class DatabaseManager extends ChangeNotifier {
 
   Future findLocation(double latitude, double longitude) async {
     //print('Finding location...');
-    List<Placemark> placemarks = await placemarkFromCoordinates(
+    final placemarks = await placemarkFromCoordinates(
         latitude, longitude,
         localeIdentifier: 'pt_BR');
     //print('Placemark: ${placemarks.first.locality}');
-    currentPhotoCity = placemarks.first.locality;
-    currentPhotoState = placemarks.first.administrativeArea;
+    currentPhotoCity = placemarks.first.locality ?? '';
+    currentPhotoState = placemarks.first.administrativeArea ?? '';
     lastLocationRequest = [latitude, longitude];
   }
 }

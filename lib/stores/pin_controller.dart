@@ -81,16 +81,16 @@ class PinController extends GetxController {
 
   //@action
   Future<bool> requestRecoveryKey(String userEmail) async {
-    final HttpsCallable callable =
+    final callable =
         FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
     //..timeout = const Duration(seconds: 30);
 
-    Random rand = Random();
-    int randomNumber = rand.nextInt(900000) + 100000;
+    var rand = Random();
+    var randomNumber = rand.nextInt(900000) + 100000;
     setGeneratedIv('$randomNumber');
 
     try {
-      final HttpsCallableResult result = await callable.call(
+      final result = await callable.call(
         <String, dynamic>{
           'user_mail': userEmail,
           'random_iv': randomNumber,
@@ -128,7 +128,7 @@ class PinController extends GetxController {
   Future<bool> isRecoveryCodeValid(UserController appStore) async {
     //print('Typed Recovery Code: $recoveryCode');
 
-    bool valid = await Crypto.checkRecoveryKey(
+    var valid = await Crypto.checkRecoveryKey(
         encryptedRecoveryKey, recoveryCode.value, generatedIv, appStore);
     if (valid == true) {
       return true;
@@ -149,9 +149,9 @@ class PinController extends GetxController {
   Future<Map<String, dynamic>> register() async {
     //print('Email: $email - Pin: $pin');
 
-    Map<String, dynamic> result = {};
+    var result = <String, dynamic>{};
 
-    final FirebaseAuth auth = FirebaseAuth.instance;
+    final auth = FirebaseAuth.instance;
     User user;
 
     try {
@@ -180,17 +180,17 @@ class PinController extends GetxController {
 
   //@action
   Future<bool> _validateAccessCode(UserController appStore) async {
-    final HttpsCallable callable =
+    final callable =
         FirebaseFunctions.instance.httpsCallable('validateAccessCode');
     //. = const Duration(seconds: 30);
 
-    Random rand = Random();
-    int randomNumber = rand.nextInt(900000) + 100000;
-    String accessKey = await Crypto.encryptAccessKey(
+    var rand = Random();
+    var randomNumber = rand.nextInt(900000) + 100000;
+    var accessKey = await Crypto.encryptAccessKey(
         accessCode.value, email.value, '$randomNumber');
 
     try {
-      final HttpsCallableResult result = await callable.call(
+      final result = await callable.call(
         <String, dynamic>{
           'access_key': accessKey,
           'random_iv': randomNumber,
@@ -223,7 +223,7 @@ class PinController extends GetxController {
 
   //@action
   Future<bool> isPinValid(UserController appStore) async {
-    bool valid = await Crypto.checkIsPinValid(pinTemp.value, appStore);
+    var valid = await Crypto.checkIsPinValid(pinTemp.value, appStore);
     return valid;
   }
 
@@ -234,13 +234,13 @@ class PinController extends GetxController {
 
   //@action
   Future<bool> isBiometricValidated(UserController appStore) async {
-    String pin = await Crypto.getEncryptedPin(appStore);
+    var pin = await Crypto.getEncryptedPin(appStore);
     if (pin == null) {
       return false;
     }
 
     pinTemp.value = pin;
-    bool valid = await isPinValid(appStore);
+    var valid = await isPinValid(appStore);
     if (valid == false) {
       return false;
     }
@@ -255,7 +255,7 @@ class PinController extends GetxController {
   Future<void> validateAccessCode() async {
     isLoading.value = true;
 
-    bool valid = await _validateAccessCode(UserController.to);
+    var valid = await _validateAccessCode(UserController.to);
 
     setAccessCode('');
 
@@ -274,7 +274,7 @@ class PinController extends GetxController {
   void askEmail() async {
     //print('asking email');
 
-    TextEditingController alertInputController = TextEditingController();
+    var alertInputController = TextEditingController();
 
     //print('showModal');
     showDialog<void>(
@@ -302,7 +302,7 @@ class PinController extends GetxController {
   Future<void> recoverPin() async {
     isLoading.value = true;
 
-    bool request =
+    var request =
         await requestRecoveryKey(UserController.to.email ?? email.value);
 
     isLoading.value = false;
@@ -368,7 +368,7 @@ class PinController extends GetxController {
 
   Future<void> authenticate() async {
     try {
-      bool authenticated =
+      var authenticated =
           await UserController.to.biometricAuth.authenticateWithBiometrics(
         localizedReason: 'Scan your fingerprint to authenticate',
         useErrorDialogs: true,
@@ -376,7 +376,7 @@ class PinController extends GetxController {
       );
 
       if (authenticated == true) {
-        bool valid = await isBiometricValidated(UserController.to);
+        var valid = await isBiometricValidated(UserController.to);
 
         if (valid == true) {
           PrivatePhotosController.to.switchSecretPhotos();

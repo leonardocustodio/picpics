@@ -5,12 +5,12 @@ class Secret {
   final String nonce;
 
   Secret({
-    this.photoId,
-    this.photoPath,
-    this.thumbPath,
-    this.createDateTime,
-    this.originalLatitude,
-    this.originalLongitude,
-    this.nonce,
+    required this.photoId,
+    required this.photoPath,
+    required this.thumbPath,
+    required this.createDateTime,
+    required this.originalLatitude,
+    required this.originalLongitude,
+    required this.nonce,
   });
 }

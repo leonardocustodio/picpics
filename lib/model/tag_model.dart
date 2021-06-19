@@ -6,26 +6,25 @@ class TagModel extends GetxController {
   TagModel(
       {required String key,
       required String title,
-      required int count,
-      required DateTime time}) {
-    assert(key != null && title != null);
+      int count = 0,
+      DateTime? time}) {
     _map = RxMap<String, dynamic>(<String, dynamic>{
       'key': key,
       'title': title,
-      'count': count ?? 0,
-      'time': time ?? DateTime.now(),
+      'count': count,
+      'time': time,
     });
   }
 
   String get key => _map['key'];
-  void set key(String val) => _map['key'] = val;
+  set key(String val) => _map['key'] = val;
 
   String get title => _map['title'];
-  void set title(String val) => _map['title'] = val;
+  set title(String val) => _map['title'] = val;
 
   int get count => _map['count'];
-  void set count(int val) => _map['count'] = val;
+  set count(int val) => _map['count'] = val;
 
   DateTime get time => _map['time'];
-  void set time(DateTime val) => _map['time'] = val;
+  set time(DateTime val) => _map['time'] = val;
 }

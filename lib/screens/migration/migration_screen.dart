@@ -19,7 +19,7 @@ class MigrationScreen extends StatefulWidget {
  */
 class MigrationScreen extends GetWidget<MigrationStore> {
   static const id = 'migration_screen';
-  MigrationScreen({Key key}) : super(key: key);
+  MigrationScreen({Key? key}) : super(key: key);
 
   void seeDb() {
     final db = AppDatabase(); //This should be a singleton

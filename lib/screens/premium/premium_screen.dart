@@ -8,7 +8,6 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/screens/premium/premium_background.dart';
 import 'package:picPics/stores/user_controller.dart';
-import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -23,13 +22,12 @@ class PremiumScreen extends StatefulWidget {
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
-  UserController appStore;
 
   List<Package> _items = [];
   bool isLoading = false;
-  PurchasesErrorCode getOfferingError;
+  PurchasesErrorCode? getOfferingError;
 
-  void showError({String title, String description}) {
+  void showError({required String title,required  String description}) {
     setState(() {
       isLoading = false;
     });

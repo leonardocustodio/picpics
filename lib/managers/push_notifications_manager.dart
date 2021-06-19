@@ -20,7 +20,7 @@ class PushNotificationsManager {
   Future<void> init() async {
     if (!_initialized) {
       // For iOS request permission first.
-      _firebaseMessaging.requestPermission();
+      await _firebaseMessaging.requestPermission();
       // _firebaseMessaging.configure();
 
       // For testing purposes print the Firebase Messaging token
@@ -58,18 +58,18 @@ class PushNotificationsManager {
   }
 
   void register(
-      {int hourOfDay,
-      int minutesOfDay,
-      String title,
-      String description}) async {
+      {int hourOfDay = 0,
+      int minutesOfDay = 0,
+      String? title,
+      String? description}) async {
     if (!_initialized) {
-      init();
+      await init();
       //print('subscribed');
       return;
     }
 
-    _firebaseMessaging.requestPermission();
-    String token = await _firebaseMessaging.getToken();
+    await _firebaseMessaging.requestPermission();
+    final token = await _firebaseMessaging.getToken();
     //print("FirebaseMessaging token: $token");
     //print('subscribed');
 
@@ -93,7 +93,7 @@ class PushNotificationsManager {
       //var userBox = Hive.box('user');
       //DatabaseManager.instance.userSettings.dailyChallenges = false;
       //userBox.putAt(0, DatabaseManager.instance.userSettings);
-      DatabaseManager.instance.database.updateMoorUser(
+      await DatabaseManager.instance.database.updateMoorUser(
         DatabaseManager.instance.userSettings.copyWith(
           dailyChallenges: false,
         ),
@@ -108,8 +108,8 @@ class PushNotificationsManager {
   }
 
   tz.TZDateTime _nextInstanceOfTime(Time time) {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(
+    final now = tz.TZDateTime.now(tz.local);
+    var scheduledDate = tz.TZDateTime(
         tz.local, now.year, now.month, now.day, time.hour, time.minute);
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
@@ -118,10 +118,10 @@ class PushNotificationsManager {
   }
 
   void scheduleNotification(
-      {int hourOfDay,
-      int minutesOfDay,
-      String title,
-      String description}) async {
+      {int hourOfDay = 0,
+      int minutesOfDay = 0,
+      String? title,
+      String? description}) async {
     await _flutterLocalNotificationsPlugin.cancelAll();
 
     var time = Time(
@@ -131,18 +131,21 @@ class PushNotificationsManager {
     );
 
     await _flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        title,
-        description,
-        _nextInstanceOfTime(time),
-        const NotificationDetails(
-          android: AndroidNotificationDetails('0', 'Daily Goal',
-              'Notification for remembering your picPics daily goal'),
-        ),
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
-        scheduledNotificationRepeatFrequency:
-            ScheduledNotificationRepeatFrequency.daily);
+      0,
+      title,
+      description,
+      _nextInstanceOfTime(time),
+      const NotificationDetails(
+        android: AndroidNotificationDetails('0', 'Daily Goal',
+            'Notification for remembering your picPics daily goal'),
+      ),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+
+      /// TODO: What to do in this situation ?
+      /* scheduledNotificationRepeatFrequency:
+            ScheduledNotificationRepeatFrequency.daily, */
+    );
   }
 }

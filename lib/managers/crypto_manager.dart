@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:convert/convert.dart';
-import 'package:encrypt/encrypt.dart' as encrypt;
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -9,26 +8,30 @@ import 'package:path/path.dart' as p;
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:uuid/uuid.dart';
 import 'package:cryptography/cryptography.dart' as cryptography;
-import 'package:cryptography_flutter/cryptography_flutter.dart';
 
 class Crypto {
-  static String encryptAccessKey(
-      String accessCode, String email, String randomIv) {
-    final picKey = encrypt.Key(
-        Uint8List.fromList(utf8.encode('bQeThWmZq3t6w9z9CxF0JLNcRfUjXn2r')));
+  static Future<String> encryptAccessKey(
+      String accessCode, String email, String randomIv) async {
+        
+    /// preparing the algorithm
+    final algorithm = cryptography.AesCtr.with256bits(
+        macAlgorithm: cryptography.Hmac.sha256());
+
+    /// preparing the cryptography.SecretKey
+    final picKey = await algorithm
+        .newSecretKeyFromBytes(utf8.encode('bQeThWmZq3t6w9z9CxF0JLNcRfUjXn2r'));
 
     final ivString = '$randomIv$randomIv${randomIv.substring(0, 4)}';
-
-    final ivKey = encrypt.IV(Uint8List.fromList(utf8.encode(ivString)));
+    final ivKey = utf8.encode(ivString);
 
     final encryptValue = '$accessCode:$email';
-    final encryptedData = encrypt
-        .AES(picKey)
-        .encrypt(Uint8List.fromList(utf8.encode(encryptValue)), iv: ivKey);
+    final encryptedData = await algorithm.encrypt(utf8.encode(encryptValue),
+        secretKey: picKey, nonce: ivKey);
 
-    final hexData = hex.encode(encryptedData.bytes.toList());
+    final hexData = hex.encode(encryptedData.cipherText);
 
     //print('Encrypting $encryptValue - With ivString: $ivString');
     //print('Encrypted value: $hexData');
@@ -39,25 +42,35 @@ class Crypto {
   static Future<void> reSaveSpKey(
       String userPin, UserController appStore) async {
     final storage = FlutterSecureStorage();
-    var ppkey = await storage.read(key: 'ppkey');
-    var stringToBase64 = utf8.fuse(base64);
+
+    final ppkey = await storage.read(key: 'ppkey') ?? '';
+    final stringToBase64 = utf8.fuse(base64);
 
     //print('Decrypted spKey is: ${appStore.tempEncryptionKey}');
 
-    appStore.setEncryptionKey(encrypt.Key(
-        Uint8List.fromList(utf8.encode(appStore.tempEncryptionKey))));
+    /// preparing the algorithm
+    final algorithm = cryptography.AesCtr.with256bits(
+        macAlgorithm: cryptography.Hmac.sha256());
+
+    final encryptionKey = await algorithm
+        .newSecretKeyFromBytes(utf8.encode(appStore.tempEncryptionKey));
+
+    appStore.setEncryptionKey(encryptionKey);
 
     final picKey =
-        encrypt.Key(Uint8List.fromList(utf8.encode('1HxMbQeThWmZq3t6')));
+        await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
+
     final ivString =
         stringToBase64.encode('$userPin${appStore.email}').substring(0, 16);
-    //print('New generated IV for encryption: $ivString');
-    final ivKey = encrypt.IV(Uint8List.fromList(utf8.encode(ivString)));
 
-    final encryptedData = encrypt.AES(picKey).encrypt(
-        Uint8List.fromList(utf8.encode(appStore.tempEncryptionKey)),
-        iv: ivKey);
-    final hexData = hex.encode(encryptedData.bytes.toList());
+    //print('New generated IV for encryption: $ivString');
+    final ivKey = utf8.encode(ivString);
+
+    final encryptedData = await algorithm.encrypt(
+        utf8.encode(appStore.tempEncryptionKey),
+        secretKey: picKey,
+        nonce: ivKey);
+    final hexData = hex.encode(encryptedData.cipherText);
 
     //print('New key encrypted with new pin: $hexData');
     await storage.write(key: 'spkey', value: hexData);
@@ -67,36 +80,40 @@ class Crypto {
   static Future<bool> checkRecoveryKey(String encryptedRecoveryKey,
       String recoveryCode, String randomIv, UserController appStore) async {
     final storage = FlutterSecureStorage();
-    var hpkey = await storage.read(key: 'hpkey');
+    final hpkey = await storage.read(key: 'hpkey') ?? '';
 
-    var generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
-    var recoveryIv =
+    final generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
+    final recoveryIv =
         '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
 
-    final picKey = encrypt.Key(
-        Uint8List.fromList(utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4')));
-    final ivRecovery = encrypt.IV(Uint8List.fromList(utf8.encode(recoveryIv)));
-    final ivGenerated =
-        encrypt.IV(Uint8List.fromList(utf8.encode(generatedIv)));
+    /// preparing the algorithm
+    final algorithm = cryptography.AesCtr.with256bits(
+        macAlgorithm: cryptography.Hmac.sha256());
 
-    var encryptedValue =
-        encrypt.Encrypted(Uint8List.fromList(hex.decode(encryptedRecoveryKey)));
+    final picKey = algorithm
+        .newSecretKeyFromBytes(utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'));
+    final ivRecovery = utf8.encode(recoveryIv);
+    final ivGenerated = utf8.encode(generatedIv);
+
+    var encryptedValue = hex.decode(encryptedRecoveryKey);
     //print('Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
 
     try {
-      final decryptedFirstData =
-          encrypt.AES(picKey).decrypt(encryptedValue, iv: ivRecovery);
-      final decryptedFirstStep = encrypt.Encrypted(decryptedFirstData);
+      final secretBox = cryptography.SecretBox.
+      final decryptedFirstData = await algorithm.decrypt(encryptedValue,
+          secretKey: picKey, nonce: ivRecovery);
+      final decryptedFirstStep = utf8.decode(decryptedFirstData);
       //print('First Step Decrypted: $decryptedFirstStep');
 
-      final decryptedFinal =
-          encrypt.AES(picKey).decrypt(decryptedFirstStep, iv: ivGenerated);
+      final decryptedFinal = await aesCtr.decrypt(
+          hex.decode(decryptedFirstStep),
+          secretKey: picKey,
+          nonce: ivGenerated);
       final decryptedData = utf8.decode(decryptedFinal);
       //print('Final decrypted value: $decryptedData');
       //print('Hp Key: $hpkey');
 
-      final digest =
-          hex.encode((await cryptography.Sha256().hash(decryptedFinal)).bytes);
+      final digest = hex.encode((await sha256.hash(decryptedFinal)).bytes);
       //print('Final key hashed: $digest');
       //print('Saved hash: $hpkey');
 
@@ -123,37 +140,32 @@ class Crypto {
   static Future<bool> checkIsPinValid(
       String userPin, UserController appStore) async {
     final storage = FlutterSecureStorage();
-    var ppkey = await storage.read(key: 'ppkey') ?? '';
-    var hpkey = await storage.read(key: 'hpkey') ?? '';
-    var spkey = await storage.read(key: 'spkey') ?? '';
+    String ppkey = await storage.read(key: 'ppkey');
+    String hpkey = await storage.read(key: 'hpkey');
+    String spkey = await storage.read(key: 'spkey');
 
-    var stringToBase64 = utf8.fuse(base64);
-    final ivString =
-        stringToBase64.encode('$userPin${appStore.email}').substring(0, 16);
-    final picKey =
-        encrypt.Key(Uint8List.fromList(utf8.encode('1HxMbQeThWmZq3t6')));
-    final iv = encrypt.IV(Uint8List.fromList(utf8.encode(ivString)));
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+    final String ivString =
+        stringToBase64.encode('${userPin}${appStore.email}').substring(0, 16);
+    final SecretKey picKey = SecretKey(utf8.encode('1HxMbQeThWmZq3t6'));
+    final Nonce iv = Nonce(utf8.encode(ivString));
 
     try {
-      final decryptedData = encrypt
-          .AES(picKey, mode: encrypt.AESMode.ctr)
-          .decrypt(encrypt.Encrypted(Uint8List.fromList(hex.decode(spkey))),
-              iv: iv);
-
+      final decryptedData =
+          await aesCtr.decrypt(hex.decode(spkey), secretKey: picKey, nonce: iv);
       final decryptedString = hex.encode(decryptedData);
 
       //print('Server key after decrypt: $decryptedString');
 
       //print('Hasing it to check if it is the correct key');
-      final digest =
-          hex.encode((await cryptography.Sha256().hash(decryptedData)).bytes);
+      final digest = hex.encode((await sha256.hash(decryptedData)).bytes);
       //print('Hashed key is: $digest');
 
       if (digest == hpkey) {
         //print('The key is valid!');
         //print('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
         //print('Decrypted Key: $decryptedData');
-        appStore.setEncryptionKey(encrypt.Key(decryptedData));
+        appStore.setEncryptionKey(SecretKey(decryptedData));
         return true;
       }
 
@@ -165,22 +177,19 @@ class Crypto {
     }
   }
 
-  static Future<String?> getEncryptedPin(UserController appStore) async {
+  static Future<String> getEncryptedPin(UserController appStore) async {
     final storage = FlutterSecureStorage();
 
-    var secretString = appStore.getSecretKey();
-    var nounceString = await storage.read(key: 'npkey') ?? '';
-    var encryptedPin = await storage.read(key: 'epkey') ?? '';
+    String secretString = appStore.getSecretKey();
+    String nounceString = await storage.read(key: 'npkey');
+    String encryptedPin = await storage.read(key: 'epkey');
+
+    final SecretKey picKey = SecretKey(hex.decode(secretString));
+    final Nonce ivKey = Nonce(hex.decode(nounceString));
 
     try {
-      final picKey = encrypt.Key(Uint8List.fromList(hex.decode(secretString)));
-      final ivKey = encrypt.IV(Uint8List.fromList(hex.decode(nounceString)));
-
-      final decryptedData = encrypt
-          .AES(picKey, mode: encrypt.AESMode.ctr)
-          .decrypt(
-              encrypt.Encrypted(Uint8List.fromList(hex.decode(encryptedPin))),
-              iv: ivKey);
+      final decryptedData = await aesCtr.decrypt(hex.decode(encryptedPin),
+          secretKey: picKey, nonce: ivKey);
       //print('Pin: ${utf8.decode(decryptedData)}');
       return utf8.decode(decryptedData);
     } catch (error) {
@@ -199,9 +208,7 @@ class Crypto {
       String userPin, UserController appStore) async {
     final storage = FlutterSecureStorage();
 
-    //final SecretKey picKey = aesCtr.newSecretKeySync();
-    final picKey = encrypt.Key.fromSecureRandom(length);
-    final ivKey = encrypt.IV.fromSecureRandom(length);
+    final SecretKey picKey = aesCtr.newSecretKeySync();
     final Nonce ivKey = aesCtr.newNonce();
 
     final encryptedData = await aesCtr.encrypt(utf8.encode(userPin),
@@ -217,8 +224,9 @@ class Crypto {
 
   static Future<void> saveSaltKey() async {
     final storage = FlutterSecureStorage();
-    var stringToBase64 = utf8.fuse(base64);
-    final secretSalt = stringToBase64.encode(Uuid().v4()).substring(0, 16);
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
+    final String secretSalt =
+        stringToBase64.encode(Uuid().v4()).substring(0, 16);
     await storage.write(key: 'ppkey', value: secretSalt);
     //print('Secret salt: $secretSalt');
   }
@@ -227,11 +235,11 @@ class Crypto {
       String userEmail, UserController appStore) async {
     final storage = FlutterSecureStorage();
     String ppkey = await storage.read(key: 'ppkey');
-    var stringToBase64 = utf8.fuse(base64);
+    Codec<String, String> stringToBase64 = utf8.fuse(base64);
 
-    var generateIv = '$accessKey${accessKey.substring(0, 4)}$accessKey';
+    String generateIv = '$accessKey${accessKey.substring(0, 4)}$accessKey';
 
-    final picAccessKey =
+    final SecretKey picAccessKey =
         SecretKey(utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'));
     final Nonce ivAccess = Nonce(utf8.encode(generateIv));
 
@@ -250,8 +258,8 @@ class Crypto {
     //print('Saving hashed spKey: $digest');
     await storage.write(key: 'hpkey', value: digest);
 
-    final picKey = SecretKey(utf8.encode('1HxMbQeThWmZq3t6'));
-    final ivString =
+    final SecretKey picKey = SecretKey(utf8.encode('1HxMbQeThWmZq3t6'));
+    final String ivString =
         stringToBase64.encode('${userPin}${userEmail}').substring(0, 16);
     //print('New generated IV for encryption: $ivString');
 
@@ -285,10 +293,10 @@ class Crypto {
       return;
     }
 
-    var appDocumentsDir = await getApplicationDocumentsDirectory();
+    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
 
-    var photosPath = p.join('photos', title);
-    var thumbnailsPath = p.join('thumbnails', title);
+    String photosPath = p.join('photos', title);
+    String thumbnailsPath = p.join('thumbnails', title);
 
     final dirExists =
         await Directory(p.join(appDocumentsDir.path, 'photos')).exists();
@@ -297,8 +305,8 @@ class Crypto {
       Directory(p.join(appDocumentsDir.path, 'thumbnails')).create();
     }
 
-    var finalPhotoPath = p.join(appDocumentsDir.path, photosPath);
-    var finalThumbPath = p.join(appDocumentsDir.path, thumbnailsPath);
+    String finalPhotoPath = p.join(appDocumentsDir.path, photosPath);
+    String finalThumbPath = p.join(appDocumentsDir.path, thumbnailsPath);
 
     //print('Encrypting....');
     // Using 96 bytes nonce
@@ -320,8 +328,8 @@ class Crypto {
 
     //print('Saving to file...');
 
-    final savedPicFile = File(finalPhotoPath);
-    final savedThumbFile = File(finalThumbPath);
+    final File savedPicFile = File(finalPhotoPath);
+    final File savedThumbFile = File(finalThumbPath);
     savedPicFile.writeAsBytes(encryptedPicData);
     savedThumbFile.writeAsBytes(encryptedThumbData);
     //print('Writing to ${savedPicFile.path}');
@@ -336,10 +344,10 @@ class Crypto {
 
   static Future<Uint8List> decryptImage(
       String imagePath, SecretKey secretKey, Nonce nonce) async {
-    var appDocumentsDir = await getApplicationDocumentsDirectory();
-    var filePath = p.join(appDocumentsDir.path, imagePath);
+    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+    String filePath = p.join(appDocumentsDir.path, imagePath);
 
-    final file = File(filePath);
+    final File file = File(filePath);
 
     //print('Secret Key: ${secretKey.toString()}');
     //print('Nonce: ${nonce.toString()}');
