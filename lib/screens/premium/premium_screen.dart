@@ -63,7 +63,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
   void getOffers() async {
     try {
-      Offerings offerings = await Purchases.getOfferings();
+      var offerings = await Purchases.getOfferings();
       if (offerings.current != null &&
           offerings.current.availablePackages.isNotEmpty) {
         getOfferingError = null;
@@ -131,7 +131,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       );
 
       try {
-        PurchaserInfo purchaserInfo = await Purchases.purchasePackage(package);
+        var purchaserInfo = await Purchases.purchasePackage(package);
 
         if (purchaserInfo.entitlements.all["Premium"] != null) {
           if (purchaserInfo.entitlements.all["Premium"].isActive) {
@@ -171,7 +171,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     });
 
     try {
-      PurchaserInfo restoredInfo = await Purchases.restoreTransactions();
+      var restoredInfo = await Purchases.restoreTransactions();
       // ... check restored purchaserInfo to see if entitlement is now active
       if (restoredInfo.entitlements.all["Premium"] != null) {
         if (restoredInfo.entitlements.all["Premium"].isActive) {
@@ -221,7 +221,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   List<Widget> _premiumBenefits(BuildContext context) {
     //    var isPremium = DatabaseManager.instance.userSettings.isPremium;
 
-    List<Widget> widgets = [
+    var widgets = <Widget>[
       // Spacer(
       //   flex: 1,
       // ),
@@ -626,7 +626,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     var monthSubs = _items
         .firstWhere((e) => e.packageType == PackageType.monthly, orElse: null);
 
-    double save =
+    var save =
         100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
     //print('Save: $save');
 
