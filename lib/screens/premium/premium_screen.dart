@@ -22,12 +22,11 @@ class PremiumScreen extends StatefulWidget {
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
-
-  List<Package> _items = [];
+  final _items = <Package>[];
   bool isLoading = false;
   PurchasesErrorCode? getOfferingError;
 
-  void showError({required String title,required  String description}) {
+  void showError({required String title, required String description}) {
     setState(() {
       isLoading = false;
     });
@@ -72,11 +71,11 @@ class _PremiumScreenState extends State<PremiumScreen> {
         //print(offerings.getOffering("full_subscription").availablePackages);
 
         setState(() {
-          _items = offerings.getOffering("full_subscription").availablePackages;
+          _items = offerings.getOffering('full_subscription').availablePackages;
         });
 
         for (var item in _items) {
-          Analytics.sendPresentOffer(
+          await Analytics.sendPresentOffer(
             itemId: item.product.identifier,
             itemName: item.product.title,
             itemCategory: item.packageType == PackageType.annual
@@ -88,9 +87,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
           );
         }
 
-        if (appStore.tryBuyId != null) {
+        if (UserController.to.tryBuyId != null) {
           var getPackage = _items.firstWhere(
-              (element) => element.product.identifier == appStore.tryBuyId,
+              (element) => element.product.identifier == UserController.to.tryBuyId,
               orElse: () => null);
 
           if (getPackage != null) {
@@ -117,7 +116,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     if (true || kDebugMode) {
       appStore.setIsPremium(true);
       await UserController.to.setTutorialCompleted(true);
-      Get.offNamedUntil(TabsScreen.id, (route) => false);
+      await Get.offNamedUntil(TabsScreen.id, (route) => false);
       //Navigator.pushNamedAndRemoveUntil(context, TabsScreen.id, (route) => false);
       // Get.back();
       //return;
@@ -125,7 +124,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       setState(() {
         isLoading = true;
       });
-      Analytics.sendBeginCheckout(
+      await Analytics.sendBeginCheckout(
         currency: package.product.currencyCode,
         price: package.product.price,
       );
@@ -133,20 +132,20 @@ class _PremiumScreenState extends State<PremiumScreen> {
       try {
         var purchaserInfo = await Purchases.purchasePackage(package);
 
-        if (purchaserInfo.entitlements.all["Premium"] != null) {
-          if (purchaserInfo.entitlements.all["Premium"].isActive) {
+        if (purchaserInfo.entitlements.all['Premium'] != null) {
+          if (purchaserInfo.entitlements.all['Premium'].isActive) {
             // Unlock that great "pro" content
             setState(() {
               isLoading = false;
             });
 
-            Analytics.sendPurchase(
+            await Analytics.sendPurchase(
               currency: package.product.currencyCode,
               price: package.product.price,
             );
             appStore.setIsPremium(true);
             // Get.back();
-            Navigator.pushNamedAndRemoveUntil(
+            await Navigator.pushNamedAndRemoveUntil(
                 context, TabsScreen.id, (route) => false);
             return;
           }
@@ -173,8 +172,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
     try {
       var restoredInfo = await Purchases.restoreTransactions();
       // ... check restored purchaserInfo to see if entitlement is now active
-      if (restoredInfo.entitlements.all["Premium"] != null) {
-        if (restoredInfo.entitlements.all["Premium"].isActive) {
+      if (restoredInfo.entitlements.all['Premium'] != null) {
+        if (restoredInfo.entitlements.all['Premium'].isActive) {
           setState(() {
             isLoading = false;
           });
@@ -182,7 +181,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           //print('know you are fucking pro!');
           appStore.setIsPremium(true);
           // Get.back();
-          Navigator.pushNamedAndRemoveUntil(
+          await Navigator.pushNamedAndRemoveUntil(
               context, TabsScreen.id, (route) => false);
           return;
         }
@@ -198,7 +197,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     }
   }
 
-  _launchURL(String url) async {
+  void _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -443,7 +442,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       ];
     }
 
-    if (_items.length == 0) {
+    if (_items.isEmpty) {
       return [
         Padding(
           padding: const EdgeInsets.only(bottom: 32.0, top: 32.0),
@@ -476,7 +475,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 style: const TextStyle(
                   color: const Color(0xff606566),
                   fontWeight: FontWeight.bold,
-                  fontFamily: "Lato",
+                  fontFamily: 'Lato',
                   fontStyle: FontStyle.normal,
                   fontSize: 18.0,
                 ),
@@ -487,7 +486,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 style: const TextStyle(
                   color: const Color(0xff606566),
                   fontWeight: FontWeight.w300,
-                  fontFamily: "Lato",
+                  fontFamily: 'Lato',
                   fontStyle: FontStyle.normal,
                   fontSize: 18.0,
                 ),
@@ -610,7 +609,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       );
     }
 
-    if (_items.length == 0) {
+    if (_items.isEmpty) {
       return Padding(
         padding: const EdgeInsets.only(bottom: 16.0),
         child: Center(
@@ -649,7 +648,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      "${S.of(context).sign} ${monthSubs.product.priceString}\n${S.of(context).month}",
+                      '${S.of(context).sign} ${monthSubs.product.priceString}\n${S.of(context).month}',
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
                       style:
@@ -685,7 +684,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              "${S.of(context).sign} ${yearSubs.product.priceString}\n${S.of(context).year}",
+                              '${S.of(context).sign} ${yearSubs.product.priceString}\n${S.of(context).year}',
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: kPremiumButtonTextStyle,
@@ -708,7 +707,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             height: 24.0,
                             child: Center(
                               child: Text(
-                                "   ${S.of(context).save} ${save.round()}%",
+                                '   ${S.of(context).save} ${save.round()}%',
                                 textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -738,7 +737,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   style: const TextStyle(
                     color: const Color(0xff606566),
                     fontWeight: FontWeight.w400,
-                    fontFamily: "Lato",
+                    fontFamily: 'Lato',
                     fontStyle: FontStyle.normal,
                     fontSize: 12.0,
                   ),
@@ -748,7 +747,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   style: const TextStyle(
                     color: const Color(0xff606566),
                     fontWeight: FontWeight.w700,
-                    fontFamily: "Lato",
+                    fontFamily: 'Lato',
                     fontStyle: FontStyle.normal,
                     fontSize: 12.0,
                   ),
@@ -907,7 +906,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                 style: const TextStyle(
                                   color: const Color(0xff606566),
                                   fontWeight: FontWeight.w600,
-                                  fontFamily: "Lato",
+                                  fontFamily: 'Lato',
                                   fontStyle: FontStyle.normal,
                                   decoration: TextDecoration.underline,
                                   fontSize: 12.0,
@@ -915,11 +914,11 @@ class _PremiumScreenState extends State<PremiumScreen> {
                               ),
                             ),
                             Text(
-                              "  &   ",
+                              '  &   ',
                               style: const TextStyle(
                                 color: const Color(0xff606566),
                                 fontWeight: FontWeight.w600,
-                                fontFamily: "Lato",
+                                fontFamily: 'Lato',
                                 fontStyle: FontStyle.normal,
                                 fontSize: 12.0,
                               ),
@@ -936,7 +935,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                 style: const TextStyle(
                                   color: const Color(0xff606566),
                                   fontWeight: FontWeight.w600,
-                                  fontFamily: "Lato",
+                                  fontFamily: 'Lato',
                                   fontStyle: FontStyle.normal,
                                   decoration: TextDecoration.underline,
                                   fontSize: 12.0,
