@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
