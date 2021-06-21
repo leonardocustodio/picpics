@@ -21,7 +21,7 @@ import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/managers/crypto_manager_untouched.dart';
 
 import 'tags_controller.dart';
 

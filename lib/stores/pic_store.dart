@@ -17,7 +17,7 @@ import 'package:strings/strings.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/managers/crypto_manager_untouched.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/labels.dart';

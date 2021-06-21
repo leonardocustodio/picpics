@@ -31,13 +31,13 @@ class WidgetManager {
       List<String> starredPhotos = currentUser.starredPhotos;
       //print('Number of starred photos: ${starredPhotos.length}');
 
-      String baseString;
+      String? baseString;
 
-      if (starredPhotos.length == 0) {
+      if (starredPhotos.isEmpty) {
         baseString = currentUser.defaultWidgetImage;
       } else {
-        Random rand = Random();
-        int randInt = rand.nextInt(starredPhotos.length);
+        final rand = Random();
+        final randInt = rand.nextInt(starredPhotos.length);
         //print('Sorted number for widget: $randInt');
 
         Photo pic = await appDatabase.getPhotoByPhotoId(starredPhotos[randInt]);
@@ -49,8 +49,9 @@ class WidgetManager {
       }
 
       //print('Send base string!');
-      return Future.wait(
+      await Future.wait(
           [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]);
+      return;
     } catch (exception) {
       //print('Error Sending Data. $exception');
     }
@@ -59,11 +60,12 @@ class WidgetManager {
   static Future<void> _updateWidget() async {
     try {
       //print('Future update widget');
-      return HomeWidget.updateWidget(
+      await HomeWidget.updateWidget(
         name: 'PicsWidgetProvider',
         androidName: 'PicsWidgetProvider',
         iOSName: 'PicsWidget',
       );
+      return;
     } catch (exception) {
       //print('Error Updating Widget. $exception');
     }

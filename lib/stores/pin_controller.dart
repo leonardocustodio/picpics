@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/managers/crypto_manager_untouched.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
