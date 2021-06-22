@@ -8,6 +8,8 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/screens/premium/premium_background.dart';
 import 'package:picPics/stores/user_controller.dart';
+// ignore: import_of_legacy_library_into_null_safe
+import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,7 +24,7 @@ class PremiumScreen extends StatefulWidget {
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
-  final _items = <Package>[];
+  var _items = <Package>[];
   bool isLoading = false;
   PurchasesErrorCode? getOfferingError;
 
@@ -48,11 +50,11 @@ class _PremiumScreenState extends State<PremiumScreen> {
           ),
           actions: <Widget>[
             PlatformDialogAction(
-              child: Text(S.of(context).ok),
               actionType: ActionType.Preferred,
               onPressed: () {
                 Navigator.of(context).pop();
               },
+              child: Text(S.of(context).ok),
             ),
           ],
         );
@@ -64,17 +66,24 @@ class _PremiumScreenState extends State<PremiumScreen> {
     try {
       var offerings = await Purchases.getOfferings();
       if (offerings.current != null &&
-          offerings.current.availablePackages.isNotEmpty) {
+          offerings.current!.availablePackages.isNotEmpty) {
         getOfferingError = null;
 
         //print(offerings.current.availablePackages);
         //print(offerings.getOffering("full_subscription").availablePackages);
 
         setState(() {
-          _items = offerings.getOffering('full_subscription').availablePackages;
+          _items =
+              offerings.getOffering('full_subscription')?.availablePackages ??
+                  <Package>[];
         });
+        Package? getPackage;
 
         for (var item in _items) {
+          if (getPackage == null &&
+              item.product.identifier == UserController.to.tryBuyId) {
+            getPackage = item;
+          }
           await Analytics.sendPresentOffer(
             itemId: item.product.identifier,
             itemName: item.product.title,
@@ -88,33 +97,29 @@ class _PremiumScreenState extends State<PremiumScreen> {
         }
 
         if (UserController.to.tryBuyId != null) {
-          var getPackage = _items.firstWhere(
-              (element) => element.product.identifier == UserController.to.tryBuyId,
-              orElse: () => null);
-
           if (getPackage != null) {
             //print(getPackage);
             //print('making purchase!!!');
             makePurchase(context, getPackage);
 
-            appStore.setTryBuyId(null);
+            UserController.to.setTryBuyId(null);
           }
         }
       }
-    } catch (e) {
-      makePurchase(context, null);
+    } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
-      //print('#### Error Code: ${errorCode}');
-      /* setState(() {
-        getOfferingError = errorCode;
-      }); */
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        showError(
+            title: 'Error has occurred',
+            description: 'An error has occurred, please try again!');
+      }
     }
   }
 
   void makePurchase(BuildContext context, Package package) async {
     // TODO: remove true
-    if (true || kDebugMode) {
-      appStore.setIsPremium(true);
+    if (kDebugMode) {
+      await UserController.to.setIsPremium(true);
       await UserController.to.setTutorialCompleted(true);
       await Get.offNamedUntil(TabsScreen.id, (route) => false);
       //Navigator.pushNamedAndRemoveUntil(context, TabsScreen.id, (route) => false);
@@ -133,7 +138,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         var purchaserInfo = await Purchases.purchasePackage(package);
 
         if (purchaserInfo.entitlements.all['Premium'] != null) {
-          if (purchaserInfo.entitlements.all['Premium'].isActive) {
+          if (purchaserInfo.entitlements.all['Premium']!.isActive) {
             // Unlock that great "pro" content
             setState(() {
               isLoading = false;
@@ -143,7 +148,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               currency: package.product.currencyCode,
               price: package.product.price,
             );
-            appStore.setIsPremium(true);
+            await UserController.to.setIsPremium(true);
             // Get.back();
             await Navigator.pushNamedAndRemoveUntil(
                 context, TabsScreen.id, (route) => false);
@@ -173,13 +178,13 @@ class _PremiumScreenState extends State<PremiumScreen> {
       var restoredInfo = await Purchases.restoreTransactions();
       // ... check restored purchaserInfo to see if entitlement is now active
       if (restoredInfo.entitlements.all['Premium'] != null) {
-        if (restoredInfo.entitlements.all['Premium'].isActive) {
+        if (restoredInfo.entitlements.all['Premium']!.isActive) {
           setState(() {
             isLoading = false;
           });
           // Unlock that great "pro" content
-          //print('know you are fucking pro!');
-          appStore.setIsPremium(true);
+          //print('now you are fucking pro!');
+          await UserController.to.setIsPremium(true);
           // Get.back();
           await Navigator.pushNamedAndRemoveUntil(
               context, TabsScreen.id, (route) => false);
@@ -190,10 +195,12 @@ class _PremiumScreenState extends State<PremiumScreen> {
           title: S.of(context).no_previous_purchase,
           description: S.of(context).no_valid_subscription);
     } on PlatformException catch (e) {
-      //print(e);
-      showError(
-          title: 'Error has occurred',
-          description: 'An error has occurred, please try again!');
+      var errorCode = PurchasesErrorHelper.getErrorCode(e);
+      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+        showError(
+            title: 'Error has occurred',
+            description: 'An error has occurred, please try again!');
+      }
     }
   }
 
@@ -454,14 +461,18 @@ class _PremiumScreenState extends State<PremiumScreen> {
         )
       ];
     }
-
-    var yearSub = _items.firstWhere((e) => e.packageType == PackageType.annual,
-        orElse: null);
+    Package? yearSub;
+    for (var year in _items) {
+      if (year.packageType == PackageType.annual) {
+        yearSub = year;
+        break;
+      }
+    }
 
     //print(yearSub);
-    var daysFree = yearSub.product.introductoryPrice == null
+    var daysFree = yearSub?.product.introductoryPrice == null
         ? 3
-        : yearSub.product.introductoryPrice.introPricePeriodNumberOfUnits;
+        : yearSub!.product.introductoryPrice!.introPricePeriodNumberOfUnits;
 
     return [
       Container(
@@ -473,7 +484,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               TextSpan(
                 text: 'Try $daysFree days for free\n',
                 style: const TextStyle(
-                  color: const Color(0xff606566),
+                  color: Color(0xff606566),
                   fontWeight: FontWeight.bold,
                   fontFamily: 'Lato',
                   fontStyle: FontStyle.normal,
@@ -482,9 +493,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
               ),
               TextSpan(
                 text:
-                    'Then ${yearSub.product.priceString}/${S.of(context).year}',
+                    'Then ${yearSub!.product.priceString}/${S.of(context).year}',
                 style: const TextStyle(
-                  color: const Color(0xff606566),
+                  color: Color(0xff606566),
                   fontWeight: FontWeight.w300,
                   fontFamily: 'Lato',
                   fontStyle: FontStyle.normal,
@@ -501,7 +512,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       CupertinoButton(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         onPressed: () {
-          makePurchase(context, yearSub);
+          makePurchase(context, yearSub!);
         },
         child: Container(
           height: 95.0,
@@ -620,13 +631,24 @@ class _PremiumScreenState extends State<PremiumScreen> {
       );
     }
 
-    var yearSubs = _items.firstWhere((e) => e.packageType == PackageType.annual,
-        orElse: null);
-    var monthSubs = _items
-        .firstWhere((e) => e.packageType == PackageType.monthly, orElse: null);
+    Package? yearSubs;
+    Package? monthSubs;
 
-    var save =
-        100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
+    for (var item in _items) {
+      if (yearSubs == null && item.packageType == PackageType.annual) {
+        yearSubs = item;
+      }
+      if (monthSubs == null && item.packageType == PackageType.monthly) {
+        monthSubs = item;
+      }
+      if (yearSubs != null && monthSubs != null) {
+        break;
+      }
+    }
+
+    var save = yearSubs == null || monthSubs == null
+        ? 0
+        : 100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
     //print('Save: $save');
 
     return Column(
@@ -638,7 +660,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               child: CupertinoButton(
                 padding: const EdgeInsets.all(0),
                 onPressed: () {
-                  makePurchase(context, monthSubs);
+                  makePurchase(context, monthSubs!);
                 },
                 child: Container(
                   height: 65.0,
@@ -648,7 +670,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      '${S.of(context).sign} ${monthSubs.product.priceString}\n${S.of(context).month}',
+                      '${S.of(context).sign} ${monthSubs?.product.priceString}\n${S.of(context).month}',
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
                       style:
@@ -665,7 +687,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               child: CupertinoButton(
                 padding: const EdgeInsets.all(0),
                 onPressed: () {
-                  makePurchase(context, yearSubs);
+                  makePurchase(context, yearSubs!);
                 },
                 child: Container(
                   height: 102.0,
@@ -684,7 +706,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              '${S.of(context).sign} ${yearSubs.product.priceString}\n${S.of(context).year}',
+                              '${S.of(context).sign} ${yearSubs?.product.priceString}\n${S.of(context).year}',
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: kPremiumButtonTextStyle,
@@ -735,7 +757,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 TextSpan(
                   text: S.of(context).auto_renewable_first_part,
                   style: const TextStyle(
-                    color: const Color(0xff606566),
+                    color: Color(0xff606566),
                     fontWeight: FontWeight.w400,
                     fontFamily: 'Lato',
                     fontStyle: FontStyle.normal,
@@ -745,7 +767,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 TextSpan(
                   text: S.of(context).auto_renewable_second_part,
                   style: const TextStyle(
-                    color: const Color(0xff606566),
+                    color: Color(0xff606566),
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Lato',
                     fontStyle: FontStyle.normal,
@@ -758,12 +780,6 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ),
       ],
     );
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = UserController.to;
   }
 
   @override
@@ -864,11 +880,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           // Spacer(
                           //   flex: 2,
                           // ),
-                          Spacer(
-                            flex: 1,
-                          ),
-                          ...this._premiumBenefits(context),
-                          ...this._renderInAppPurchase(context),
+                          const Spacer(flex: 1),
+                          ..._premiumBenefits(context),
+                          ..._renderInAppPurchase(context),
                           // this._renderInApps(context),
                           // Spacer(
                           //   flex: 2,
@@ -904,7 +918,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                               child: Text(
                                 S.of(context).privacy_policy,
                                 style: const TextStyle(
-                                  color: const Color(0xff606566),
+                                  color: Color(0xff606566),
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Lato',
                                   fontStyle: FontStyle.normal,
@@ -916,7 +930,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             Text(
                               '  &   ',
                               style: const TextStyle(
-                                color: const Color(0xff606566),
+                                color: Color(0xff606566),
                                 fontWeight: FontWeight.w600,
                                 fontFamily: 'Lato',
                                 fontStyle: FontStyle.normal,
@@ -933,7 +947,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                               child: Text(
                                 S.of(context).terms_of_use,
                                 style: const TextStyle(
-                                  color: const Color(0xff606566),
+                                  color: Color(0xff606566),
                                   fontWeight: FontWeight.w600,
                                   fontFamily: 'Lato',
                                   fontStyle: FontStyle.normal,

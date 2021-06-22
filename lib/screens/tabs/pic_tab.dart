@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/swiper_tab_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
@@ -13,25 +12,26 @@ import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
 
+// ignore: must_be_immutable
 class PicTab extends GetWidget<SwiperTabController> {
   static const id = 'pic_tab';
-  PicTab({Key key}) : super(key: key);
+  PicTab({Key? key}) : super(key: key);
 
-  var _ = Get.put(UserController());
-  var __ = Get.put(SwiperTabController());
+  final _ = Get.put(UserController());
+  final __ = Get.put(SwiperTabController());
 
   CarouselController carouselController = CarouselController();
   ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
 
   Widget _buildPhotoSlider(int index) {
-    String picId = controller.swiperPicIdList[index];
-    PicStore picStore = TabsController.to.picStoreMap[picId]?.value ??
+    final picId = controller.swiperPicIdList[index];
+    final picStore = TabsController.to.picStoreMap[picId]?.value ??
         TabsController.to.explorPicStore(picId).value;
 
     if (picStore == null) {
       if ((controller.swipeIndex.value + 1) <
           controller.swiperPicIdList.length) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
           controller.swipeIndex.value += 1;
         });
       }
@@ -123,7 +123,7 @@ class PicTab extends GetWidget<SwiperTabController> {
                       return CarouselSlider.builder(
                         itemCount: controller.swiperPicIdList.length,
                         carouselController: carouselController,
-                        itemBuilder: (BuildContext context, int index) {
+                        itemBuilder: (BuildContext context, int index, int _) {
                           /* if (index < controller.swipeCutOff) {
                             return Container();
                           } */
@@ -141,7 +141,7 @@ class PicTab extends GetWidget<SwiperTabController> {
                           onPageChanged: (index, reason) {
                             controller.setSwipeIndex(index);
                           },
-                          onScrolled: (double) {
+                          onScrolled: (double? val) {
 //                              if (controller.swipeIndex <= controller.swipeCutOff && controller.swipeIndex != 0) {
                             //print('changing scroll physics');
 //                                setState(() {

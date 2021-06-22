@@ -171,7 +171,7 @@ class UserController extends GetxController {
   }
 
   //String initialRoute;
-  String tryBuyId;
+  String? tryBuyId;
   int dailyPicsForAds = 25;
   // int freePrivatePics = 20;
   bool tourCompleted;
@@ -189,7 +189,7 @@ class UserController extends GetxController {
     return len;
   }
 
-  void setTryBuyId(String value) => tryBuyId = value;
+  void setTryBuyId(String? value) => tryBuyId = value;
 
   Future<void> requestNotificationPermission() async {
     PushNotificationsManager push = PushNotificationsManager();

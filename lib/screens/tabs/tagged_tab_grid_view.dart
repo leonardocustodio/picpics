@@ -30,7 +30,7 @@ import '../../asset_entity_image_provider.dart';
 // ignore: must_be_immutable
 class TaggedTabGridView extends GetWidget<TaggedController> {
   final String tagKey;
-  TaggedTabGridView(this.tagKey, {Key key}) : super(key: key);
+  TaggedTabGridView(this.tagKey, {Key? key}) : super(key: key);
 
   //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
@@ -53,8 +53,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
       },
       child: Obx(
         () {
-          var taggedPicIds = controller.taggedPicId[tagKey]?.keys?.toList();
-          if (taggedPicIds?.isEmpty ?? true) {
+          var taggedPicIds = controller.taggedPicId[tagKey]?.keys.toList();
+          if (taggedPicIds == null || taggedPicIds.isEmpty) {
             return Center(child: CircularProgressIndicator());
           }
 
@@ -73,8 +73,9 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
               },
               itemBuilder: (_, int index) {
                 return Obx(() {
-                  var picId = taggedPicIds[index];
-                  Widget loaderWidget, originalImage;
+                  final picId = taggedPicIds[index];
+                  Widget? loaderWidget;
+                  Widget? originalImage;
 
                   var blurHash = BlurHashController.to.blurHash[picId];
 
@@ -87,10 +88,10 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                     /// grey widget because for this image blur hash was neevr calculated
                     loaderWidget = greyWidget;
                   }
-                  if (null == originalImage &&
-                      null != TabsController.to.picStoreMap[picId]?.value) {
+                  if (originalImage == null &&
+                      TabsController.to.picStoreMap[picId]?.value != null) {
                     originalImage = _buildItemOneMoreTrial(
-                        TabsController.to.picStoreMap[picId]?.value, picId);
+                        TabsController.to.picStoreMap[picId]!.value, picId);
                   }
 
                   return VisibilityDetector(
@@ -118,16 +119,15 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                       },
                       child: Stack(
                         children: [
-                          if (loaderWidget != null)
-                            Positioned.fill(
-                              child: Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: loaderWidget,
-                                ),
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: loaderWidget,
                               ),
                             ),
+                          ),
                           if (originalImage != null)
                             Positioned.fill(
                               child: Padding(
@@ -170,8 +170,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
     var hash = BlurHashController.to.blurHash[picId];
-    final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: false);
+    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     return RepaintBoundary(
       child: ExtendedImage(
@@ -226,8 +225,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                           return;
                         }
                         var list =
-                            controller.taggedPicId[tagKey]?.keys?.toList();
-                        if (list?.isNotEmpty ?? false) {
+                            controller.taggedPicId[tagKey]?.keys.toList();
+                        if (list != null && list.isNotEmpty) {
                           Get.to(
                               () => PhotoScreen(picId: picId, picIdList: list));
                         }
@@ -322,7 +321,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
               ? ExpandableNotifier(
                   controller: controller.expandableController.value,
                   child: Container(
-                    color: Color(0xF1F3F5),
+                    color: Color(0x0ff1f3f5),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -448,7 +447,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       },
                                       onChanged: (text) {
                                         TagsController.to.searchText.value =
-                                            text ?? '';
+                                            text;
                                         TagsController.to.loadRecentTags();
                                         //GalleryStore.to.setSearchText(text);
                                       },
@@ -460,9 +459,9 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                         if (text != '') {
                                           bottomTagsEditingController.clear();
                                           TagsController.to.searchText.value =
-                                              text ?? '';
+                                              text;
                                           TagsController.to.loadRecentTags();
-                                          String tagKey =
+                                          final tagKey =
                                               Helpers.encryptTag(text);
 
                                           if (TagsController
@@ -538,8 +537,10 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                               ),
                             ),
                           ),
+                          collapsed: Container(),
                         ),
                         Expandable(
+                          collapsed: Container(),
                           controller:
                               controller.expandablePaddingController.value,
                           expanded: Container(
@@ -636,7 +637,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
             ),
             titleSpacing: -8,
             title: Text(
-              ('${TagsController.to.allTags[tagKey]?.value?.title ?? ''} (${controller.taggedPicId[tagKey]?.keys?.length ?? 0})'),
+              ('${TagsController.to.allTags[tagKey]?.value.title ?? ''} (${controller.taggedPicId[tagKey]?.keys.length ?? 0})'),
               style: TextStyle(
                 color: Colors.black.withOpacity(.5),
               ),

@@ -25,11 +25,12 @@ import 'package:visibility_detector/visibility_detector.dart';
 
 import 'tagged_tab_grid_view.dart';
 
+// ignore: must_be_immutable
 class TaggedTab extends GetWidget<TaggedController> {
   static const id = 'tagged_tab';
-  TaggedTab({Key key}) : super(key: key);
+  TaggedTab({Key? key}) : super(key: key);
 
-  var _ = Get.put(UserController());
+  final _ = Get.put(UserController());
 
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
@@ -39,8 +40,6 @@ class TaggedTab extends GetWidget<TaggedController> {
   Widget _buildTaggedGridView() {
     //print('Rebuilding tagged gridview');
     //print('&&&&&&&&&&&&&&&&& Build grid items!!!');
-
-    double newPadding = 0.0;
     /*  if (GalleryStore.to.isSearching.value) {
       newPadding = (controller.offsetThirdTab).clamp(0.0, 86.0);
       /*  if (newPadding > 86) {
@@ -55,11 +54,12 @@ class TaggedTab extends GetWidget<TaggedController> {
         if (scrollNotification is ScrollStartNotification) {
           //print('Start scrolling');
           controller.setIsScrolling(true);
+          return true;
         } else if (scrollNotification is ScrollEndNotification) {
           //print('End scrolling');
           controller.setIsScrolling(false);
         }
-        return;
+        return false;
       },
       child: Obx(
         () {
@@ -88,7 +88,7 @@ class TaggedTab extends GetWidget<TaggedController> {
               },
             );
           } */
-          List<String> taggedKeys = controller.taggedPicId.keys.toList();
+          final taggedKeys = controller.taggedPicId.keys.toList();
 
           if (TagsController.to.selectedFilteringTagsKeys.isNotEmpty) {
             taggedKeys.removeWhere((element) =>
@@ -102,19 +102,21 @@ class TaggedTab extends GetWidget<TaggedController> {
             controller: controller.scrollControllerThirdTab,
             // padding: EdgeInsets.only(top: 86.0),
             padding:
-                EdgeInsets.only(top: /* 86 - */ newPadding, left: 7, right: 7),
+                EdgeInsets.only(left: 7, right: 7),
             physics: const CustomScrollPhysics(),
             crossAxisCount: 3,
             mainAxisSpacing: 8,
             crossAxisSpacing: 4,
             itemCount: taggedKeys.length,
             itemBuilder: (BuildContext context, int index) {
-              var tagKey = taggedKeys[index];
-              var showingPicId =
-                  controller.taggedPicId[taggedKeys[index]].keys.last;
-              Widget loaderWidget;
+              final tagKey = taggedKeys[index];
+              final showingPicId =
+                  controller.taggedPicId[taggedKeys[index]]?.keys.last;
+              Widget? loaderWidget;
+              Widget? originalImage;
 
-              var blurHash = BlurHashController.to.blurHash[showingPicId];
+
+              final blurHash = BlurHashController.to.blurHash[showingPicId];
 
               if (null != blurHash) {
                 loaderWidget = BlurHash(
@@ -125,21 +127,19 @@ class TaggedTab extends GetWidget<TaggedController> {
                 /// grey widget because for this image blur hash was neevr calculated
                 loaderWidget = greyWidget;
               }
-              Widget originalImage;
-
               return Container(
                 margin: const EdgeInsets.all(4),
                 child: GetX<TabsController>(builder: (tabsController) {
-                  if (null == originalImage &&
-                      tabsController.picStoreMap[showingPicId]?.value != null) {
+                  if (originalImage == null && showingPicId != null &&
+                      tabsController.picStoreMap[showingPicId] != null) {
                     originalImage = _buildPicItem(
-                        tabsController.picStoreMap[showingPicId]?.value,
+                        tabsController.picStoreMap[showingPicId]!.value,
                         showingPicId,
                         tagKey);
                   }
 
                   return VisibilityDetector(
-                      key: Key('${tagKey}'),
+                      key: Key('$tagKey'),
                       onVisibilityChanged: (visibilityInfo) {
                         var visiblePercentage =
                             visibilityInfo.visibleFraction * 100;
