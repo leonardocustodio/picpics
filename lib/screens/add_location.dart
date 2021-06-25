@@ -32,7 +32,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   PicStore get picStore => widget.currentPic;
 
   final _mapController = Completer<GoogleMapController>();
-  final Set _markers = <Marker>{};
+  final _markers = <Marker>{};
   Geolocation? selectedGeolocation;
 
   static final LatLng nullLocation = LatLng(0.0, 0.0);
@@ -103,7 +103,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   void getUserPosition() async {
     //print('getting current location');
 
-    Position position = await Geolocator.getCurrentPosition(
+    final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
 
     final geolocation = LatLng(position.latitude, position.longitude);
@@ -119,25 +119,25 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       position: geolocation,
     );
 
-    final GoogleMapController controller = await _mapController.future;
+    final controller = await _mapController.future;
     _markers.clear();
     setState(() {
       _markers.add(destination);
     });
 
-    controller.animateCamera(CameraUpdate.newLatLng(geolocation));
+    await controller.animateCamera(CameraUpdate.newLatLng(geolocation));
 
     //print('finished');
   }
 
   void findInitialCamera() async {
-    LatLng latLng;
+    LatLng? latLng;
 
-    if (picStore.latitude != null && picStore.longitude != null) {
-      latLng = LatLng(picStore.latitude.value, picStore.longitude.value);
+    if (picStore.latitude.value != null && picStore.longitude.value != null) {
+      latLng = LatLng(picStore.latitude.value!, picStore.longitude.value!);
     } else if (picStore.originalLatitude != null &&
         picStore.originalLongitude != null) {
-      latLng = LatLng(picStore.originalLatitude, picStore.originalLongitude);
+      latLng = LatLng(picStore.originalLatitude!, picStore.originalLongitude!);
     }
 
     if (latLng != null && latLng != nullLocation) {
@@ -152,7 +152,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
         position: latLng,
       );
 
-      final GoogleMapController controller = await _mapController.future;
+      final controller = await _mapController.future;
       _markers.clear();
       setState(() {
         _markers.add(destination);
@@ -160,11 +160,11 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
       //print(latLng);
 
-      final CameraPosition position = CameraPosition(
+      final position = CameraPosition(
         target: latLng == nullLocation ? rioDeJaneiro : latLng,
         zoom: latLng == nullLocation ? 0.0 : 14.0,
       );
-      controller.animateCamera(CameraUpdate.newCameraPosition(position));
+      await controller.animateCamera(CameraUpdate.newCameraPosition(position));
     }
   }
 
@@ -182,9 +182,8 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final double height = MediaQuery.of(context).size.height;
-    final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: true);
+    final height = MediaQuery.of(context).size.height;
+    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
     return Scaffold(
       key: homeScaffoldKey,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -327,16 +326,15 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       position: geolocation.coordinates,
                     );
 
-                    final GoogleMapController controller =
-                        await _mapController.future;
+                    final controller = await _mapController.future;
                     _markers.clear();
                     setState(() {
                       _markers.add(destination);
                     });
 
-                    controller.animateCamera(
+                    await controller.animateCamera(
                         CameraUpdate.newLatLng(geolocation.coordinates));
-                    controller.animateCamera(
+                    await controller.animateCamera(
                         CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
                   },
                 ),

@@ -26,8 +26,8 @@ import 'tags_controller.dart';
 
 class PicStore extends GetxController {
   final DateTime createdAt;
-  final double originalLatitude;
-  final double originalLongitude;
+  final double? originalLatitude;
+  final double? originalLongitude;
 
   final AppDatabase database = AppDatabase();
 

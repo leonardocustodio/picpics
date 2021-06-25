@@ -46,7 +46,7 @@ class AllTagsController extends GetxController {
 
 /* typedef CompletionHandler = Function(); */
 
-// ignore: must_be_immutable
+// ignore_for_file: must_be_immutable, unused_field, prefer_final_fields
 class AllTagsScreen extends GetWidget<AllTagsController> {
   static const id = 'all_tags_screen';
   final PicStore picStore;
@@ -54,7 +54,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
   var _ = Get.put(AllTagsController());
   AllTagsScreen({
     required this.picStore,
-    Key key,
+    Key? key,
     /* required this.completionHandler, */
   }) : super(key: key);
 
@@ -319,7 +319,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                           selectedTags: controller.selectedTags.value,
                           onTap: (String tagId, String tagName, int count,
                                   DateTime time) async =>
-                              await doTagging(tagId, tagName, count, time),
+                              doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
                             //print('do nothing');
                           },
@@ -418,8 +418,9 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
                           ),
                         ),
                         CustomisedTagsList(
-                          tagsKeyList:
-                              TagsController.to.lastWeekUsedTags.value.keys,
+                          tagsKeyList: TagsController
+                              .to.lastWeekUsedTags.value.keys
+                              .toList(),
                           selectedTags: controller.selectedTags.value,
                           onTap: (String tagId, String tagName, int count,
                                   DateTime time) async =>
@@ -473,7 +474,8 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
     );
   }
 
-  void doTagging(String tagId, String tagName, int count, DateTime time) async {
+  Future<void> doTagging(
+      String tagId, String tagName, int count, DateTime time) async {
     //print('do nothing');
     // TODO: Enable it to show ads
     //if (!UserController.to.canTagToday.value) {

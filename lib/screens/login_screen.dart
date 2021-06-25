@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final LoginStore loginStore = LoginStore();
+    final loginStore = LoginStore();
     var height = MediaQuery.of(context).size.height;
 
     return Scaffold(
@@ -43,7 +43,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
-                        if (loginStore.slideIndex != 0)
+                        if (loginStore.slideIndex.value != 0)
                           Image.asset('lib/images/picpics_small.png'),
                         Expanded(
                           child: Swiper(
@@ -126,10 +126,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             pagination: SwiperCustomPagination(
                               builder: (BuildContext context,
-                                  SwiperPluginConfig config) {
-                                List<Widget> navIndicators = [];
+                                  SwiperPluginConfig? config) {
+                                var navIndicators = <Widget>[];
 
-                                for (int x = 0;
+                                for (var x = 0;
                                     x < loginStore.totalSlides;
                                     x++) {
                                   navIndicators.add(
@@ -140,7 +140,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         horizontal: 7.0,
                                       ),
                                       decoration: BoxDecoration(
-                                        color: config.activeIndex == x
+                                        color: config?.activeIndex == x
                                             ? kWhiteColor
                                             : kGrayColor,
                                         borderRadius:
@@ -164,7 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 64.0),
                         CupertinoButton(
                           onPressed: () {
-                            if (loginStore.slideIndex ==
+                            if (loginStore.slideIndex.value ==
                                 loginStore.totalSlides - 1) {
                               Get.to(() => PremiumScreen());
                               return;
@@ -183,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             alignment: Alignment.center,
                             child: Text(
-                              loginStore.slideIndex ==
+                              loginStore.slideIndex.value ==
                                       loginStore.totalSlides - 1
                                   ? S.of(context).start.toUpperCase()
                                   : S.of(context).next.toUpperCase(),

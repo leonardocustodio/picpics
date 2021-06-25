@@ -20,7 +20,7 @@ class EmailScreen extends StatefulWidget {
   static const String id = 'email_screen';
 
   final PinController pinController;
-  EmailScreen({this.pinController});
+  EmailScreen({required this.pinController});
 
   @override
   _EmailScreenState createState() => _EmailScreenState();

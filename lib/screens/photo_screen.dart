@@ -7,7 +7,6 @@ import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 /* import 'package:picPics/stores/gallery_store.dart'; */
-import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 /* import 'package:picPics/stores/tabs_controller.dart'; */
 import 'package:picPics/stores/tagged_controller.dart';
@@ -35,18 +34,21 @@ class PhotoScreenController extends GetxController {
   }
 }
 
+// ignore_for_file: must_be_immutable,prefer_final_fields, unused_field
 class PhotoScreen extends GetWidget<PhotoScreenController> {
   static const id = 'photo_screen';
 
   final String picId;
-  PageController galleryPageController;
+  late PageController galleryPageController;
   //List<String> photoScreenSwiper = TabsController_.to.picStoreMap.keys.toList();
-  var _ = Get.put(PhotoScreenController());
-  List<String> idList;
+
+  final idList = <String>[];
+
   final List<String> picIdList;
+
   PhotoScreen({required this.picId, required this.picIdList}) {
-    if (picIdList?.isNotEmpty ?? false) {
-      idList = List<String>.from(picIdList);
+    if (picIdList.isNotEmpty) {
+      idList.addAll(picIdList);
     }
     var index = getPicIdList().indexOf(picId);
     if (index != -1) {
@@ -57,12 +59,14 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
             .value /* GalleryStore.to.selectedThumbnail.value */);
   }
 
+  final _ = Get.put(PhotoScreenController());
+
   /*  @override
   void initState() {
     super.initState();
   } */
 
-  String getPicId(int index) {
+  String? getPicId(int index) {
     try {
       return getPicIdList()[index];
     } catch (_) {
@@ -71,7 +75,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   List<String> getPicIdList() {
-    if (idList?.isNotEmpty ?? false) {
+    if (idList.isNotEmpty) {
       return idList;
     }
     return TabsController.to.assetMap.keys.toList();
@@ -100,54 +104,50 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
-    String picIdValue = getPicIdList()[index];
-    PicStore picStore = TabsController.to.picStoreMap[picIdValue]?.value;
-    if (picStore == null) {
-      picStore = TabsController.to.explorPicStore(picIdValue)?.value;
-    }
-    AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: true);
+    final picIdValue = getPicIdList()[index];
+    var picStore = TabsController.to.picStoreMap[picIdValue]?.value;
+    picStore ??= TabsController.to.explorPicStore(picIdValue).value;
+
+    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
 
     return PhotoViewGalleryPageOptions.customChild(
-      child: imageProvider == null
-          ? const ColoredBox(color: kGreyPlaceholder)
-          : Container(
-              color: Colors.black,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child: ExtendedImage(
-                image: imageProvider,
-                fit: BoxFit.contain,
-                loadStateChanged: (ExtendedImageState state) {
-                  Widget loader;
-                  switch (state.extendedImageLoadState) {
-                    case LoadState.loading:
-                      loader = const ColoredBox(color: kGreyPlaceholder);
-                      break;
-                    case LoadState.completed:
-                      loader = FadeImageBuilder(
-                        child: () {
-                          return RepaintBoundary(
-                            child: state.completedWidget,
-                          );
-                        }(),
-                      );
-                      break;
-                    case LoadState.failed:
-                      loader = Container();
-                      break;
-                  }
-                  return loader;
-                },
-              ),
+      child: Container(
+        color: Colors.black,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: ExtendedImage(
+          image: imageProvider,
+          fit: BoxFit.contain,
+          loadStateChanged: (ExtendedImageState state) {
+            Widget loader;
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                loader = const ColoredBox(color: kGreyPlaceholder);
+                break;
+              case LoadState.completed:
+                loader = FadeImageBuilder(
+                  child: () {
+                    return RepaintBoundary(
+                      child: state.completedWidget,
+                    );
+                  }(),
+                );
+                break;
+              case LoadState.failed:
+                loader = Container();
+                break;
+            }
+            return loader;
+          },
+        ),
 
-              // FullImageItem(
-              //   picStore: picStore,
-              //   size: MediaQuery.of(context).size.height.toInt(),
-              //   fit: BoxFit.contain,
-              //   backgroundColor: Colors.black,
-              // ),
-            ),
+        // FullImageItem(
+        //   picStore: picStore,
+        //   size: MediaQuery.of(context).size.height.toInt(),
+        //   fit: BoxFit.contain,
+        //   backgroundColor: Colors.black,
+        // ),
+      ),
       childSize: Size(
         MediaQuery.of(context).size.width,
         MediaQuery.of(context).size.height,
@@ -165,13 +165,10 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   Widget _buildThumbnails(BuildContext context, int index) {
-    String picIdValue = getPicIdList()[index];
-    PicStore picStore = TabsController.to.picStoreMap[picIdValue]?.value;
-    if (picStore == null) {
-      picStore = TabsController.to.explorPicStore(picIdValue)?.value;
-    }
-    final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: true);
+    final picIdValue = getPicIdList()[index];
+    var picStore = TabsController.to.picStoreMap[picIdValue]?.value;
+    picStore ??= TabsController.to.explorPicStore(picIdValue).value;
+    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
@@ -183,33 +180,31 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
         height: 98,
         width: 98,
         margin: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: imageProvider == null
-            ? const ColoredBox(color: kGreyPlaceholder)
-            : ExtendedImage(
-                image: imageProvider,
-                fit: BoxFit.cover,
-                loadStateChanged: (ExtendedImageState state) {
-                  Widget loader;
-                  switch (state.extendedImageLoadState) {
-                    case LoadState.loading:
-                      loader = const ColoredBox(color: kGreyPlaceholder);
-                      break;
-                    case LoadState.completed:
-                      loader = FadeImageBuilder(
-                        child: () {
-                          return RepaintBoundary(
-                            child: state.completedWidget,
-                          );
-                        }(),
-                      );
-                      break;
-                    case LoadState.failed:
-                      loader = Container();
-                      break;
-                  }
-                  return loader;
-                },
-              ),
+        child: ExtendedImage(
+          image: imageProvider,
+          fit: BoxFit.cover,
+          loadStateChanged: (ExtendedImageState state) {
+            Widget loader;
+            switch (state.extendedImageLoadState) {
+              case LoadState.loading:
+                loader = const ColoredBox(color: kGreyPlaceholder);
+                break;
+              case LoadState.completed:
+                loader = FadeImageBuilder(
+                  child: () {
+                    return RepaintBoundary(
+                      child: state.completedWidget,
+                    );
+                  }(),
+                );
+                break;
+              case LoadState.failed:
+                loader = Container();
+                break;
+            }
+            return loader;
+          },
+        ),
 
         // ImageItem(
         //   picStore: TabsController_.to.thumbnailsPics[index],
@@ -241,10 +236,10 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                       width: 20.0,
                       height: 20.0,
                       child: CircularProgressIndicator(
-                        value: event == null
+                        value: event == null || event.expectedTotalBytes == null
                             ? 0
                             : event.cumulativeBytesLoaded /
-                                event.expectedTotalBytes,
+                                event.expectedTotalBytes!,
                       ),
                     ),
                   ),
@@ -308,12 +303,10 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     var picIdValue = getPicIdList().toList()[
                                         controller.selectedIndex.value];
                                     var shareAblePicStore = TabsController
-                                        .to.picStoreMap[picIdValue].value;
-                                    if (shareAblePicStore == null) {
-                                      shareAblePicStore = TabsController.to
-                                          .explorPicStore(picIdValue)
-                                          .value;
-                                    }
+                                        .to.picStoreMap[picIdValue]?.value;
+                                    shareAblePicStore ??= TabsController.to
+                                        .explorPicStore(picIdValue)
+                                        .value;
                                     shareAblePicStore.sharePic();
                                   },
                                   child: Image.asset(
@@ -373,15 +366,15 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                               TextSpan(
                                                   text: TabsController
                                                           .to
-                                                          ?.picStoreMap[
+                                                          .picStoreMap[
                                                               getPicIdList()
                                                                       .toList()[
                                                                   controller
                                                                       .selectedIndex
                                                                       .value]]
                                                           ?.value
-                                                          ?.specificLocation
-                                                          ?.value ??
+                                                          .specificLocation
+                                                          .value ??
                                                       S
                                                           .of(context)
                                                           .photo_location,
@@ -396,7 +389,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   )),
                                               TextSpan(
                                                 text:
-                                                    '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value?.generalLocation?.value ?? S.of(context).country}',
+                                                    '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value.generalLocation.value ?? S.of(context).country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,
@@ -413,13 +406,13 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                         Text(
                                           dateFormat(TabsController
                                                   .to
-                                                  ?.picStoreMap[
+                                                  .picStoreMap[
                                                       getPicIdList().toList()[
                                                           controller
                                                               .selectedIndex
                                                               .value]]
                                                   ?.value
-                                                  ?.createdAt ??
+                                                  .createdAt ??
                                               DateTime.now()),
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
@@ -497,14 +490,14 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
 class BottomTabsListWidget extends GetWidget<TaggedController> {
   final String picId;
-  const BottomTabsListWidget({required this.picId, Key key}) : super(key: key);
+  const BottomTabsListWidget({required this.picId, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
       child: Obx(
-        () => (controller.picWiseTags[picId]?.keys?.toList()?.isEmpty ?? true)
+        () => (controller.picWiseTags[picId]?.keys.toList().isEmpty ?? true)
             ? TagsList(
                 tagsKeyList: <String>[],
                 tagStyle: TagStyle.MultiColored,
@@ -521,7 +514,7 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                     return;
                   }
 
-                  await Get.back();
+                  Get.back();
                 },
                 onTap: (String tagKey) {
                   //print('ignore click');
@@ -537,7 +530,8 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                                                     showEditTagModal(context, false), */
               )
             : TagsList(
-                tagsKeyList: controller.picWiseTags[this.picId]?.keys?.toList(),
+                tagsKeyList:
+                    controller.picWiseTags[picId]?.keys.toList() ?? <String>[],
                 tagStyle: TagStyle.MultiColored,
                 addTagButton: () async {
                   /* GalleryStore.to.setCurrentPic(
@@ -560,7 +554,7 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                     return;
                   }
 
-                  await Get.back();
+                  Get.back();
                 },
                 onTap: (String tagKey) {
                   //print('ignore click');
