@@ -17,10 +17,7 @@ class EmailStore extends GetxController {
 }
 
 class EmailScreen extends StatefulWidget {
-  static const String id = 'email_screen';
-
-  final PinController pinController;
-  EmailScreen({required this.pinController});
+  const EmailScreen({Key? key}): super(key:key);
 
   @override
   _EmailScreenState createState() => _EmailScreenState();
@@ -36,7 +33,7 @@ class _EmailScreenState extends State<EmailScreen> {
   }
 
   Future<void> startRegistration() async {
-    bool isValid = EmailValidator.validate(widget.pinController.email.value);
+    final isValid = EmailValidator.validate(PinController.to.email.value ?? '');
 
     if (!isValid) {
       PinController.to
@@ -48,7 +45,7 @@ class _EmailScreenState extends State<EmailScreen> {
       isLoading = true;
     });
 
-    Map<String, dynamic> result = await widget.pinController.register();
+    final result = await PinController.to.register();
 
     setState(() {
       isLoading = false;
@@ -56,7 +53,7 @@ class _EmailScreenState extends State<EmailScreen> {
 
     if (result['success'] == true) {
       UserController.to.setWaitingAccessCode(true);
-      Get.to(() => PinScreen());
+      await Get.to(() => PinScreen());
     } else {
       //print('Result: $result');
       if (result['errorCode'] == 'email-already-in-use') {
@@ -73,7 +70,7 @@ class _EmailScreenState extends State<EmailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     //print('Height: ${size.height} - Width: ${size.width}');
 
     return Scaffold(
@@ -151,7 +148,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                   margin: const EdgeInsets.only(top: 6.0),
                                   child: TextField(
                                     maxLines: 1,
-                                    onChanged: widget.pinController.setEmail,
+                                    onChanged: PinController.to.setEmail,
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
                                           left: 10.0, right: 5.0),

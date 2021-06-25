@@ -28,7 +28,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen>
     with WidgetsBindingObserver {
-  UserController appStore;
   /* GalleryStore galleryStore; */
 
   @override
@@ -36,7 +35,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     super.dispose();
   }
 
-  _launchURL(String url) async {
+  Future<void> _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -45,7 +44,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   void contactUs(BuildContext context) {
-    final Uri _emailLaunchUri = Uri(
+    final _emailLaunchUri = Uri(
       scheme: 'mailto',
       path: 'picpics@inovatso.com.br',
     );
@@ -71,7 +70,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       if (Platform.isAndroid) {
         await rateMyApp.launchStore();
       } else {
-        rateMyApp.showStarRateDialog(
+        await rateMyApp.showStarRateDialog(
           context,
           ignoreNativeDialog: false,
           onDismissed: () =>
@@ -83,14 +82,13 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   void showRequirePinPicker(BuildContext context) async {
-    FixedExtentScrollController extentScrollController =
-        FixedExtentScrollController(
-            initialItem: UserController.to.requireSecret.value);
+    final extentScrollController = FixedExtentScrollController(
+        initialItem: UserController.to.requireSecret.value);
 
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        int temporaryOption = UserController.to.requireSecret.value;
+        var temporaryOption = UserController.to.requireSecret.value;
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -165,18 +163,18 @@ class _SettingsScreenState extends State<SettingsScreen>
   void showLanguagePicker(BuildContext context) async {
     var language = LanguageLocal();
     var supportedLocales = S.delegate.supportedLocales;
-    List<String> supportedLanguages =
+    final supportedLanguages =
         supportedLocales.map((e) => e.languageCode).toList();
-    List<String> appSplit = UserController.to.appLanguage.split('_');
-    int languageIndex = supportedLanguages.indexOf(appSplit[0]);
+    final appSplit = UserController.to.appLanguage.split('_');
+    final languageIndex = supportedLanguages.indexOf(appSplit[0]);
 
-    FixedExtentScrollController extentScrollController =
+    final extentScrollController =
         FixedExtentScrollController(initialItem: languageIndex);
 
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        int temporaryLanguage = languageIndex;
+        var temporaryLanguage = languageIndex;
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -354,8 +352,8 @@ class _SettingsScreenState extends State<SettingsScreen>
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        DateTime now = DateTime.now();
-        DateTime time = DateTime(
+        var now = DateTime.now();
+        var time = DateTime(
             now.year,
             now.month,
             now.day,
@@ -470,7 +468,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     Analytics.sendCurrentScreen(Screen.settings_screen);
   }
 
@@ -603,10 +601,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           true &&
                                       // TODO: throwing error at UserController.to.availableBiometrics.isNotEmpty :
                                       // error: The getter 'isNotEmpty' was called on null.
-                                      (UserController.to.availableBiometrics
-                                              ?.isNotEmpty ??
-                                          false)) {
-                                    String enableBiometric;
+                                      (UserController
+                                          .to.availableBiometrics.isNotEmpty)) {
+                                    String? enableBiometric;
 
                                     if (UserController.to.availableBiometrics
                                         .contains(BiometricType.face)) {
@@ -646,8 +643,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                           const EdgeInsets.all(
                                                               0),
                                                       onPressed: () {
-                                                        if (UserController.to
-                                                                .isBiometricActivated !=
+                                                        if (UserController
+                                                                .to
+                                                                .isBiometricActivated
+                                                                .value !=
                                                             true) {
                                                           UserController.to
                                                                   .wantsToActivateBiometric =
@@ -670,7 +669,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                 .spaceBetween,
                                                         children: <Widget>[
                                                           Text(
-                                                            enableBiometric,
+                                                            enableBiometric ??
+                                                                '',
                                                             textScaleFactor:
                                                                 1.0,
                                                             style:
@@ -697,7 +697,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                           .popPinScreen =
                                                                       PopPinScreenTo
                                                                           .SettingsScreen;
-                                                                  Get.to(() =>
+                                                                  await Get.to(() =>
                                                                       PinScreen);
                                                                   return;
                                                                 }
@@ -997,6 +997,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 },
                                 padding: const EdgeInsets.all(0),
                                 child: OutlineGradientButton(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFFFFA4D1),
+                                      Color(0xFFFFCC00),
+                                    ],
+                                  ),
+                                  strokeWidth: 2.0,
+                                  radius: Radius.circular(8.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -1033,14 +1041,6 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       ),
                                     ],
                                   ),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFFFFA4D1),
-                                      Color(0xFFFFCC00),
-                                    ],
-                                  ),
-                                  strokeWidth: 2.0,
-                                  radius: Radius.circular(8.0),
                                 ),
                               ),
                             ),
@@ -1052,42 +1052,42 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   children: [
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8.0),
+                                      onPressed: () {
+                                        _launchURL(
+                                            'https://picpics.link/e/facebook');
+                                      },
                                       child: Container(
                                         height: 20,
                                         width: 20,
                                         child: Image.asset(
                                             'lib/images/facebookico.png'),
                                       ),
-                                      onPressed: () {
-                                        _launchURL(
-                                            'https://picpics.link/e/facebook');
-                                      },
                                     ),
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8.0),
+                                      onPressed: () {
+                                        _launchURL(
+                                            'https://picpics.link/e/website');
+                                      },
                                       child: Container(
                                         height: 20,
                                         width: 20,
                                         child: Image.asset(
                                             'lib/images/webico.png'),
                                       ),
-                                      onPressed: () {
-                                        _launchURL(
-                                            'https://picpics.link/e/website');
-                                      },
                                     ),
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8.0),
+                                      onPressed: () {
+                                        _launchURL(
+                                            'https://picpics.link/e/instagram');
+                                      },
                                       child: Container(
                                         height: 20,
                                         width: 20,
                                         child: Image.asset(
                                             'lib/images/instagramico.png'),
                                       ),
-                                      onPressed: () {
-                                        _launchURL(
-                                            'https://picpics.link/e/instagram');
-                                      },
                                     ),
                                   ],
                                 ),
@@ -1105,9 +1105,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       child: Text(
                                         S.of(context).privacy_policy,
                                         style: const TextStyle(
-                                          color: const Color(0xff606566),
+                                          color: Color(0xff606566),
                                           fontWeight: FontWeight.w400,
-                                          fontFamily: "Lato",
+                                          fontFamily: 'Lato',
                                           fontStyle: FontStyle.normal,
                                           decoration: TextDecoration.underline,
                                           fontSize: 10.0,
@@ -1115,11 +1115,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       ),
                                     ),
                                     Text(
-                                      "  &   ",
+                                      '  &   ',
                                       style: const TextStyle(
-                                        color: const Color(0xff606566),
+                                        color: Color(0xff606566),
                                         fontWeight: FontWeight.w400,
-                                        fontFamily: "Lato",
+                                        fontFamily: 'Lato',
                                         fontStyle: FontStyle.normal,
                                         fontSize: 10.0,
                                       ),
@@ -1135,9 +1135,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       child: Text(
                                         S.of(context).terms_of_use,
                                         style: const TextStyle(
-                                          color: const Color(0xff606566),
+                                          color: Color(0xff606566),
                                           fontWeight: FontWeight.w400,
-                                          fontFamily: "Lato",
+                                          fontFamily: 'Lato',
                                           fontStyle: FontStyle.normal,
                                           decoration: TextDecoration.underline,
                                           fontSize: 10.0,

@@ -594,7 +594,7 @@ class UserController extends GetxController {
   String tempEncryptionKey;
   void setTempEncryptionKey(String value) => tempEncryptionKey = value;
 
-  String email;
+  String? email;
   Future<void> setEmail(String value) async {
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);

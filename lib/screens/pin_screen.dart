@@ -17,6 +17,7 @@ import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
 
+// ignore_for_file: must_be_immutable
 class PinScreen extends GetWidget<PinController> {
   static const String id = 'pin_screen';
 
@@ -116,7 +117,7 @@ class PinScreen extends GetWidget<PinController> {
             onPinTapped: pinTapped,
           ),
           Spacer(),
-          if (controller.isWaitingRecoveryKey != true) ...[
+          if (controller.isWaitingRecoveryKey.value != true) ...[
             CupertinoButton(
               onPressed: () {
                 if (UserController.to.email == null) {
@@ -147,27 +148,27 @@ class PinScreen extends GetWidget<PinController> {
 
   void pinTapped(String value) async {
     //print('Value: ${controller.recoveryCode}${value}');
-    if (controller.isWaitingRecoveryKey == true) {
+    if (controller.isWaitingRecoveryKey.value == true) {
       if (carouselPage == 0) {
         if (value == '\u0008') {
           controller.setRecoveryCode(
               Helpers.removeLastCharacter(controller.recoveryCode.value));
           return;
         }
-        controller.setRecoveryCode('${controller.recoveryCode}${value}');
+        controller.setRecoveryCode('${controller.recoveryCode}$value');
 
         if (controller.recoveryCode.value.length == 6) {
           // set true
-          bool valid = await controller.isRecoveryCodeValid(UserController.to);
+          final valid = await controller.isRecoveryCodeValid(UserController.to);
 
           if (valid) {
-            carouselController.nextPage();
+            await carouselController.nextPage();
             carouselPage = 1;
             controller.setRecoveryCode('');
             return;
           }
 
-          controller.shakeRecovery.currentState.forward();
+          controller.shakeRecovery.currentState?.forward();
           controller.setRecoveryCode('');
         }
         return;
@@ -179,11 +180,11 @@ class PinScreen extends GetWidget<PinController> {
               Helpers.removeLastCharacter(controller.pinTemp.value));
           return;
         }
-        controller.setPinTemp('${controller.pinTemp}${value}');
+        controller.setPinTemp('${controller.pinTemp}$value');
 
         if (controller.pinTemp.value.length == 6) {
           carouselPage = 2;
-          carouselController.nextPage();
+          await carouselController.nextPage();
         }
         return;
       }
@@ -193,29 +194,28 @@ class PinScreen extends GetWidget<PinController> {
             Helpers.removeLastCharacter(controller.confirmPinTemp.value));
         return;
       }
-      controller.setConfirmPinTemp('${controller.confirmPinTemp}${value}');
+      controller.setConfirmPinTemp('${controller.confirmPinTemp}$value');
 
       if (controller.confirmPinTemp.value.length == 6) {
         if (controller.pinTemp == controller.confirmPinTemp) {
           //print('Setting new pin!!!!!');
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
-          UserController.to.setEmail(controller.email
-              .value); // Tem que deixar antes pois é utilizado quando salva o pin
+          await UserController.to.setEmail(controller.email.value ?? ''); // Tem que deixar antes pois é utilizado quando salva o pin
 
           await controller.saveNewPin(UserController.to);
 
-          UserController.to.setIsPinRegistered(true);
-          PrivatePhotosController.to.switchSecretPhotos();
+         await UserController.to.setIsPinRegistered(true);
+         await PrivatePhotosController.to.switchSecretPhotos();
           //GalleryStore.to.checkIsLibraryUpdated();
           controller.setPinTemp('');
           controller.setConfirmPinTemp('');
           UserController.to.setWaitingAccessCode(false);
-          carouselController.animateToPage(0);
+         await carouselController.animateToPage(0);
 
           Get.back();
         } else {
-          controller.shakeKeyConfirm.currentState.forward();
+          controller.shakeKeyConfirm.currentState?.forward();
           Future.delayed(Duration(seconds: 1, milliseconds: 300), () {
             carouselPage = 1;
             controller.setPinTemp('');
@@ -228,17 +228,17 @@ class PinScreen extends GetWidget<PinController> {
       return;
     }
 
-    if (UserController.to.isPinRegistered == true) {
+    if (UserController.to.isPinRegistered.value == true) {
       if (value == '\u0008') {
         controller
             .setPinTemp(Helpers.removeLastCharacter(controller.pinTemp.value));
         return;
       }
-      controller.setPinTemp('${controller.pinTemp}${value}');
+      controller.setPinTemp('${controller.pinTemp}$value');
 
       if (controller.pinTemp.value.length == 6) {
         // set true
-        bool valid = await controller.isPinValid(UserController.to);
+        final valid = await controller.isPinValid(UserController.to);
 
         if (valid) {
           if (UserController.to.wantsToActivateBiometric) {
@@ -251,7 +251,7 @@ class PinScreen extends GetWidget<PinController> {
             return;
           }
 
-          PrivatePhotosController.to.switchSecretPhotos();
+         await PrivatePhotosController.to.switchSecretPhotos();
           //GalleryStore.to.checkIsLibraryUpdated();
 
           controller.setPinTemp('');
@@ -260,20 +260,20 @@ class PinScreen extends GetWidget<PinController> {
           return;
         }
 
-        controller.shakeKey.currentState.forward();
+        controller.shakeKey.currentState?.forward();
         controller.setPinTemp('');
         controller.setConfirmPinTemp('');
       }
       return;
     }
 
-    if (UserController.to.waitingAccessCode == true) {
+    if (UserController.to.waitingAccessCode.value == true) {
       if (value == '\u0008') {
         controller.setAccessCode(
             Helpers.removeLastCharacter(controller.accessCode.value));
         return;
       }
-      controller.setAccessCode('${controller.accessCode}${value}');
+      controller.setAccessCode('${controller.accessCode}$value');
 
       if (controller.accessCode.value.length == 6) {
         await controller.validateAccessCode();
@@ -282,11 +282,11 @@ class PinScreen extends GetWidget<PinController> {
     }
 
     if (carouselPage == 0) {
-      controller.setPinTemp('${controller.pinTemp}${value}');
+      controller.setPinTemp('${controller.pinTemp}$value');
 
       if (controller.pinTemp.value.length == 6) {
         carouselPage = 1;
-        carouselController.nextPage();
+       await carouselController.nextPage();
       }
       return;
     }
@@ -296,7 +296,7 @@ class PinScreen extends GetWidget<PinController> {
           Helpers.removeLastCharacter(controller.confirmPinTemp.value));
       return;
     }
-    controller.setConfirmPinTemp('${controller.confirmPinTemp}${value}');
+    controller.setConfirmPinTemp('${controller.confirmPinTemp}$value');
 
     if (controller.confirmPinTemp.value.length == 6) {
       if (controller.pinTemp == controller.confirmPinTemp) {
@@ -304,10 +304,10 @@ class PinScreen extends GetWidget<PinController> {
         controller.pin = controller.pinTemp.value;
         controller.setPinTemp('');
         controller.setConfirmPinTemp('');
-        carouselController.animateToPage(0);
-        Get.to(() => EmailScreen());
+       await carouselController.animateToPage(0);
+       await Get.to(() => EmailScreen());
       } else {
-        controller.shakeKeyConfirm.currentState.forward();
+        controller.shakeKeyConfirm.currentState?.forward();
         Future.delayed(Duration(seconds: 1, milliseconds: 300), () {
           carouselPage = 0;
           controller.setPinTemp('');
@@ -340,7 +340,7 @@ class PinScreen extends GetWidget<PinController> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 5.0, vertical: 10.0),
                         onPressed: () {
-                          if (controller.isWaitingRecoveryKey == true) {
+                          if (controller.isWaitingRecoveryKey.value == true) {
                             controller.setIsWaitingRecoveryKey(false);
                           }
                           Get.back();
@@ -374,7 +374,7 @@ class PinScreen extends GetWidget<PinController> {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 3,
-                          itemBuilder: (BuildContext context, int index) {
+                          itemBuilder: (BuildContext context, int index, int _) {
                             return _buildPinPad(context, index);
                           },
                           options: CarouselOptions(
@@ -420,10 +420,10 @@ class PinScreen extends GetWidget<PinController> {
                         // );
                       }
 
-                      if (UserController.to.isPinRegistered == true) {
-                        String assetImage;
+                      if (UserController.to.isPinRegistered.value == true) {
+                        String? assetImage;
 
-                        if (UserController.to.isBiometricActivated == true) {
+                        if (UserController.to.isBiometricActivated.value == true) {
                           if (UserController.to.availableBiometrics
                               .contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
@@ -501,11 +501,11 @@ class PinScreen extends GetWidget<PinController> {
                         );
                       }
 
-                      if (UserController.to.waitingAccessCode == false) {
+                      if (UserController.to.waitingAccessCode.value == false) {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 2,
-                          itemBuilder: (BuildContext context, int index) {
+                          itemBuilder: (BuildContext context, int index, int _) {
                             return _buildPinPad(context, index);
                           },
                           options: CarouselOptions(
@@ -537,7 +537,7 @@ class PinScreen extends GetWidget<PinController> {
                             padding: const EdgeInsets.only(top: 16.0),
                             child: Text(
                               S.current.access_code_sent(
-                                  '${controller.email ?? 'user@email.com'}'),
+                                  '${controller.email.value ?? 'user@email.com'}'),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',
@@ -602,9 +602,9 @@ class PinPlaceholder extends StatelessWidget {
   });
 
   List<Widget> _buildPinPlaceholders() {
-    List<Widget> items = [];
+    final items = <Widget>[];
 
-    for (int x = 0; x < totalPositions; x++) {
+    for (var x = 0; x < totalPositions; x++) {
       items.add(
         Container(
           width: 16.0,
@@ -637,17 +637,17 @@ class NumberPad extends StatelessWidget {
   final Function onPinTapped;
 
   const NumberPad({
-    this.onPinTapped,
+   required this.onPinTapped,
   });
 
   List<Widget> _buildPinNumbers() {
-    List<Widget> items = [];
+    final items = <Widget>[];
 
-    int pin = 1;
-    for (int x = 0; x < 4; x++) {
-      List<Widget> number = [];
+    var pin = 1;
+    for (var x = 0; x < 4; x++) {
+      final number = <Widget>[];
 
-      for (int y = 0; y < 3; y++) {
+      for (var y = 0; y < 3; y++) {
         if (pin == 10) {
           number.add(
             GestureDetector(
@@ -665,7 +665,7 @@ class NumberPad extends StatelessWidget {
           continue;
         }
 
-        int value = pin;
+        var value = pin;
         number.add(
           GestureDetector(
             // padding: const EdgeInsets.all(0),

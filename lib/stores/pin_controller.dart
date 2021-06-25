@@ -17,7 +17,7 @@ import 'package:picPics/widgets/general_modal.dart';
 class PinController extends GetxController {
   static PinController get to => Get.find();
   //@observable
-  final email = ''.obs;
+  final email = Rxn<String>();
   String pin = '';
   //@observable
   final pinTemp = ''.obs;
