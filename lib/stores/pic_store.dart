@@ -705,7 +705,7 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> saveLocation(
-      {double lat, double long, String specific, String general}) async {
+      {double lat, double long, String? specific, String? general}) async {
     //var picsBox = Hive.box('pics');
 
     //Pic getPic = picsBox.get(photoId);

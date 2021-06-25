@@ -73,8 +73,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                     var isSelected = false;
                     if (controller.multiPicBar.value) {
                       isSelected = monthKeys[index].value.every((picId) =>
-                          controller.selectedMultiBarPics[picId] != null &&
-                          controller.selectedMultiBarPics[picId]);
+                          controller.selectedMultiBarPics[picId] == true);
                     }
                     return GestureDetector(
                         onTap: () {
@@ -99,7 +98,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                         null) {
                       return greyWidget;
                     } */
-                    Widget originalImage, loaderWidget;
+                    Widget? originalImage;
+                    Widget loaderWidget;
                     var blurHash =
                         BlurHashController.to.blurHash[monthKeys[index].key];
 
@@ -113,7 +113,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                       loaderWidget = greyWidget;
                     }
 
-                    if (controller.picStoreMap[monthKeys[index].key] != null) {
+                    if (controller.picStoreMap[monthKeys[index].key]?.value !=
+                        null) {
                       originalImage = Padding(
                         padding: const EdgeInsets.all(2),
                         child: ClipRRect(
@@ -121,7 +122,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                           child: Container(
                             child: _buildItemOneMoreTrial(
                                 controller
-                                    .picStoreMap[monthKeys[index].key].value,
+                                    .picStoreMap[monthKeys[index].key]!.value,
                                 monthKeys[index].key),
                           ),
                         ),
@@ -138,32 +139,19 @@ class UntaggedTab extends GetWidget<TabsController> {
                             TabsController
                                     .to.picStoreMap[monthKeys[index].key] =
                                 controller.explorPicStore(monthKeys[index].key);
-                            /* debugPrint(
-                            'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
                           }
-                          /* else {
-                          if (controller.picAssetThumbBytesMap[
-                                  monthKeys[index].key] !=
-                              null) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              controller.picAssetThumbBytesMap[
-                                  monthKeys[index].key] = null;
-                            });
-                          }
-                        } */
                         },
                         child: Stack(
                           children: [
-                            if (loaderWidget != null)
-                              Positioned.fill(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
-                                    child: loaderWidget,
-                                  ),
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: loaderWidget,
                                 ),
                               ),
+                            ),
                             if (originalImage != null)
                               Positioned.fill(child: originalImage),
                           ],
@@ -193,8 +181,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                     var isSelected = false;
                     if (controller.multiPicBar.value) {
                       isSelected = dayKeys[index].value.every((picId) =>
-                          controller.selectedMultiBarPics[picId] != null &&
-                          controller.selectedMultiBarPics[picId]);
+                          controller.selectedMultiBarPics[picId] == true);
                     }
                     return GestureDetector(
                         onTap: () {
@@ -218,7 +205,9 @@ class UntaggedTab extends GetWidget<TabsController> {
                         null) {
                       return greyWidget;
                     } */
-                    Widget loaderWidget, originalImage;
+                    Widget loaderWidget;
+
+                    Widget? originalImage;
                     var blurHash =
                         BlurHashController.to.blurHash[dayKeys[index].key];
 
@@ -232,7 +221,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                       loaderWidget = greyWidget;
                     }
 
-                    if (controller.picStoreMap[dayKeys[index].key] != null) {
+                    if (controller.picStoreMap[dayKeys[index].key]?.value !=
+                        null) {
                       originalImage = Padding(
                         padding: const EdgeInsets.all(2),
                         child: ClipRRect(
@@ -240,7 +230,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                           child: Container(
                             child: _buildItemOneMoreTrial(
                                 controller
-                                    .picStoreMap[dayKeys[index].key].value,
+                                    .picStoreMap[dayKeys[index].key]!.value,
                                 dayKeys[index].key),
                           ),
                         ),
@@ -272,16 +262,15 @@ class UntaggedTab extends GetWidget<TabsController> {
                         },
                         child: Stack(
                           children: [
-                            if (loaderWidget != null)
-                              Positioned.fill(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(2),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
-                                    child: loaderWidget,
-                                  ),
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: loaderWidget,
                                 ),
                               ),
+                            ),
                             if (originalImage != null)
                               Positioned.fill(child: originalImage),
                           ],
@@ -305,9 +294,9 @@ class UntaggedTab extends GetWidget<TabsController> {
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
     //print('Date Time Formatting: $dateTime');
-    
+
     /// More Optimized code
-    if (controller.toggleIndexUntagged == 0) {
+    if (controller.toggleIndexUntagged.value == 0) {
       formatter = DateFormat.yMMMM();
     } else {
       formatter = dateTime.year == DateTime.now().year
@@ -318,7 +307,6 @@ class UntaggedTab extends GetWidget<TabsController> {
   }
 
   Widget buildDateHeader(DateTime date, bool isSelected) {
-    isSelected ??= false;
     return Container(
       padding: const EdgeInsets.only(left: 8.0, right: 8.0),
       height: 40.0,
@@ -355,7 +343,7 @@ class UntaggedTab extends GetWidget<TabsController> {
               ),
             ), */
           Text(
-            '${date != null ? dateFormat(date) : ''}',
+            '${dateFormat(date)}',
             textScaleFactor: 1.0,
             style: TextStyle(
               fontFamily: 'Lato',
@@ -375,8 +363,7 @@ class UntaggedTab extends GetWidget<TabsController> {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     var hash = BlurHashController.to.blurHash[picId];
 
-    final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: false);
+    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     return ExtendedImage(
       filterQuality: FilterQuality.high,
@@ -432,15 +419,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                           picId: picId,
                           picIdList: controller.allUnTaggedPics.keys.toList()));
                       if (null == result) {
-                        refresh_everything();
+                        await refresh_everything();
                       }
-
-/* 
-            tagsEditingController.text = '';
-            GalleryStore.to.setCurrentPic(picStore);
-            int indexOfSwipePic = GalleryStore.to.swipePics.indexOf(picStore);
-            GalleryStore.to.setSelectedSwipe(indexOfSwipePic);
-            controller.setModalCard(true); */
                     },
                     child: Obx(() {
                       Widget image = Positioned.fill(
@@ -519,146 +499,9 @@ class UntaggedTab extends GetWidget<TabsController> {
     );
   }
 
-/* 
-  Widget _buildItem(PicStore picStore) {
-//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-
-    final AssetEntityImageProvider imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: false);
-
-    return RepaintBoundary(
-      child: ExtendedImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = const ColoredBox(color: kGreyPlaceholder);
-              break;
-            case LoadState.completed:
-              loader = FadeImageBuilder(
-                child: () {
-                  return GestureDetector(
-                    onLongPress: () {
-                      //print('LongPress');
-                      if (controller.multiPicBar == false) {
-                        GalleryStore.to.setSelectedPics(
-                          picStore: picStore,
-                          picIsTagged: false,
-                        );
-                        controller.setMultiPicBar(true);
-                      }
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        if (controller.multiPicBar.value) {
-                          GalleryStore.to.setSelectedPics(
-                            picStore: picStore,
-                            picIsTagged: false,
-                          );
-                          //print('Pics Selected Length: ');
-                          //print('${GalleryStore.to.selectedPics.length}');
-                          return;
-                        }
-
-                        tagsEditingController.text = '';
-                        GalleryStore.to.setCurrentPic(picStore);
-                        int indexOfSwipePic =
-                            GalleryStore.to.swipePics.indexOf(picStore);
-                        GalleryStore.to.setSelectedSwipe(indexOfSwipePic);
-                        controller.setModalCard(true);
-                      },
-                      child: Obx(() {
-                        Widget image = Positioned.fill(
-                          child: RepaintBoundary(
-                            child: state.completedWidget,
-                          ),
-                        );
-                        if (controller.multiPicBar.value) {
-                          if (GalleryStore.to.selectedPics.contains(picStore)) {
-                            return Stack(
-                              children: [
-                                image,
-                                Container(
-                                  constraints: BoxConstraints.expand(),
-                                  decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
-                                    border: Border.all(
-                                      color: kSecondaryColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 8.0,
-                                  top: 6.0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      gradient: kSecondaryGradient,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Image.asset(
-                                        'lib/images/checkwhiteico.png'),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                          return Stack(
-                            children: [
-                              image,
-                              Positioned(
-                                left: 8.0,
-                                top: 6.0,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: kGrayColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                        return Stack(
-                          children: [
-                            image,
-                          ],
-                        );
-                      }),
-                    ),
-                  );
-                }(),
-              );
-              break;
-            case LoadState.failed:
-              loader = _failedItem;
-              break;
-          }
-          return loader;
-        },
-      ),
-    );
-  } */
-
   @override
   Widget build(BuildContext context) {
-    return /* SmartRefresher(
-      enablePullDown: true,
-      enablePullUp: false,
-        header: MaterialClassicHeader(),
-      controller: RefreshPicPicsController.to.refreshController,
-      onRefresh: () => RefreshPicPicsController.to.onRefresh(),
-      child:  */
+    return 
         Container(
       //constraints: BoxConstraints.expand(),
       color: kWhiteColor,
@@ -804,16 +647,6 @@ class UntaggedTab extends GetWidget<TabsController> {
           return Container();
         }),
       ),
-      // ),
     );
   }
 }
-
-/* int getLength(int len) {
-  if ((len % 5) == 0) {
-    return len;
-  } else {
-    return (5 * (1 + (len ~/ 5)));
-  }
-}
- */

@@ -22,7 +22,7 @@ final searchScaffoldKey = GlobalKey<ScaffoldState>();
 class AddLocationScreen extends StatefulWidget {
   static const id = 'add_location_screen';
   final PicStore currentPic;
-  const AddLocationScreen(this.currentPic, {Key key}) : super(key: key);
+  const AddLocationScreen(this.currentPic, {Key? key}) : super(key: key);
 
   @override
   _AddLocationScreenState createState() => _AddLocationScreenState();
@@ -31,9 +31,9 @@ class AddLocationScreen extends StatefulWidget {
 class _AddLocationScreenState extends State<AddLocationScreen> {
   PicStore get picStore => widget.currentPic;
 
-  Completer<GoogleMapController> _mapController = Completer();
-  Set<Marker> _markers = {};
-  Geolocation selectedGeolocation;
+  final _mapController = Completer<GoogleMapController>();
+  final Set _markers = <Marker>{};
+  Geolocation? selectedGeolocation;
 
   static final LatLng nullLocation = LatLng(0.0, 0.0);
   static final LatLng rioDeJaneiro = LatLng(-22.951911, -52.2126759);
@@ -47,39 +47,39 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     if (selectedGeolocation != null) {
       //print(selectedGeolocation.fullJSON.toString());
 
-      String location;
-      String city;
-      String state;
-      String country;
+      String? location;
+      String? city;
+      String? state;
+      String? country;
 
       for (var components
-          in selectedGeolocation.fullJSON["address_components"]) {
-        var types = components["types"];
-        if (types.contains("establishment")) {
+          in selectedGeolocation!.fullJSON['address_components']) {
+        var types = components['types'];
+        if (types.contains('establishment')) {
           //print('find establishment: ${components["long_name"]}');
-          location = components["long_name"];
+          location = components['long_name'];
           continue;
-        } else if (types.contains("locality")) {
+        } else if (types.contains('locality')) {
           //print('locality: ${components["long_name"]}');
-          city = components["long_name"];
+          city = components['long_name'];
           continue;
-        } else if (types.contains("administrative_area_level_2")) {
+        } else if (types.contains('administrative_area_level_2')) {
           //print('find administrative_area_level_2: ${components["long_name"]}');
-          city = components["long_name"];
+          city = components['long_name'];
           continue;
-        } else if (types.contains("administrative_area_level_1")) {
+        } else if (types.contains('administrative_area_level_1')) {
           //print('find administrative_area_level_1: ${components["long_name"]}');
-          state = components["long_name"];
+          state = components['long_name'];
           continue;
-        } else if (types.contains("country")) {
+        } else if (types.contains('country')) {
           //print('country: ${components["long_name"]}');
-          country = components["long_name"];
+          country = components['long_name'];
           break;
         }
       }
 
       if (location != null) {
-        LatLng latLng = selectedGeolocation.coordinates;
+        LatLng latLng = selectedGeolocation!.coordinates;
         picStore.saveLocation(
           lat: latLng.latitude,
           long: latLng.longitude,
@@ -87,7 +87,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
           general: city,
         );
       } else {
-        LatLng latLng = selectedGeolocation.coordinates;
+        LatLng latLng = selectedGeolocation!.coordinates;
         picStore.saveLocation(
           lat: latLng.latitude,
           long: latLng.longitude,
