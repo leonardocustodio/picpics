@@ -159,7 +159,8 @@ class DatabaseManager extends ChangeNotifier {
       //print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
       //print('free_private_pics: ${remoteConfig.getInt('free_private_pics')}');
     } catch (exception) {
-      print('Unable to fetch remote config. Cached or default values will be used');
+      print(
+          'Unable to fetch remote config. Cached or default values will be used');
     }
   }
 
@@ -192,8 +193,7 @@ class DatabaseManager extends ChangeNotifier {
 
   Future findLocation(double latitude, double longitude) async {
     //print('Finding location...');
-    final placemarks = await placemarkFromCoordinates(
-        latitude, longitude,
+    final placemarks = await placemarkFromCoordinates(latitude, longitude,
         localeIdentifier: 'pt_BR');
     //print('Placemark: ${placemarks.first.locality}');
     currentPhotoCity = placemarks.first.locality ?? '';

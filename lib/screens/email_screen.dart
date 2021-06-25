@@ -17,7 +17,7 @@ class EmailStore extends GetxController {
 }
 
 class EmailScreen extends StatefulWidget {
-  const EmailScreen({Key? key}): super(key:key);
+  const EmailScreen({Key? key}) : super(key: key);
 
   @override
   _EmailScreenState createState() => _EmailScreenState();

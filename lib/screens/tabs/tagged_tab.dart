@@ -38,7 +38,6 @@ class TaggedTab extends GetWidget<TaggedController> {
   /* TextEditingController tagsEditingController = TextEditingController(); */
 
   Widget _buildTaggedGridView() {
-
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollStartNotification) {
@@ -147,8 +146,7 @@ class TaggedTab extends GetWidget<TaggedController> {
     if (null == picStore) {
       return null;
     }
-    final imageProvider =
-        AssetEntityImageProvider(picStore, isOriginal: false);
+    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     var hash = BlurHashController.to.blurHash[picId];
 

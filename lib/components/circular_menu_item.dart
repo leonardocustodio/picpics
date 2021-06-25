@@ -53,16 +53,17 @@ class CircularMenuItem extends StatelessWidget {
             onTap: onTap,
             child: Padding(
               padding: EdgeInsets.all(padding),
-              child: animatedIcon ?? Padding(
-                      padding: const EdgeInsets.only(right: 1.0, bottom: 1.0),
-                      child: Container(
-                        height: iconSize,
-                        width: iconSize,
-                        child: Center(
-                          child: image,
-                        ),
+              child: animatedIcon ??
+                  Padding(
+                    padding: const EdgeInsets.only(right: 1.0, bottom: 1.0),
+                    child: Container(
+                      height: iconSize,
+                      width: iconSize,
+                      child: Center(
+                        child: image,
                       ),
                     ),
+                  ),
             ),
           ),
         ),

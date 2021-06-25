@@ -201,17 +201,18 @@ class PinScreen extends GetWidget<PinController> {
           //print('Setting new pin!!!!!');
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
-          await UserController.to.setEmail(controller.email.value ?? ''); // Tem que deixar antes pois é utilizado quando salva o pin
+          await UserController.to.setEmail(controller.email.value ??
+              ''); // Tem que deixar antes pois é utilizado quando salva o pin
 
           await controller.saveNewPin(UserController.to);
 
-         await UserController.to.setIsPinRegistered(true);
-         await PrivatePhotosController.to.switchSecretPhotos();
+          await UserController.to.setIsPinRegistered(true);
+          await PrivatePhotosController.to.switchSecretPhotos();
           //GalleryStore.to.checkIsLibraryUpdated();
           controller.setPinTemp('');
           controller.setConfirmPinTemp('');
           UserController.to.setWaitingAccessCode(false);
-         await carouselController.animateToPage(0);
+          await carouselController.animateToPage(0);
 
           Get.back();
         } else {
@@ -251,7 +252,7 @@ class PinScreen extends GetWidget<PinController> {
             return;
           }
 
-         await PrivatePhotosController.to.switchSecretPhotos();
+          await PrivatePhotosController.to.switchSecretPhotos();
           //GalleryStore.to.checkIsLibraryUpdated();
 
           controller.setPinTemp('');
@@ -286,7 +287,7 @@ class PinScreen extends GetWidget<PinController> {
 
       if (controller.pinTemp.value.length == 6) {
         carouselPage = 1;
-       await carouselController.nextPage();
+        await carouselController.nextPage();
       }
       return;
     }
@@ -304,8 +305,8 @@ class PinScreen extends GetWidget<PinController> {
         controller.pin = controller.pinTemp.value;
         controller.setPinTemp('');
         controller.setConfirmPinTemp('');
-       await carouselController.animateToPage(0);
-       await Get.to(() => EmailScreen());
+        await carouselController.animateToPage(0);
+        await Get.to(() => EmailScreen());
       } else {
         controller.shakeKeyConfirm.currentState?.forward();
         Future.delayed(Duration(seconds: 1, milliseconds: 300), () {
@@ -374,7 +375,8 @@ class PinScreen extends GetWidget<PinController> {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 3,
-                          itemBuilder: (BuildContext context, int index, int _) {
+                          itemBuilder:
+                              (BuildContext context, int index, int _) {
                             return _buildPinPad(context, index);
                           },
                           options: CarouselOptions(
@@ -423,7 +425,8 @@ class PinScreen extends GetWidget<PinController> {
                       if (UserController.to.isPinRegistered.value == true) {
                         String? assetImage;
 
-                        if (UserController.to.isBiometricActivated.value == true) {
+                        if (UserController.to.isBiometricActivated.value ==
+                            true) {
                           if (UserController.to.availableBiometrics
                               .contains(BiometricType.face)) {
                             assetImage = 'lib/images/faceidwhiteico.png';
@@ -505,7 +508,8 @@ class PinScreen extends GetWidget<PinController> {
                         return CarouselSlider.builder(
                           carouselController: carouselController,
                           itemCount: 2,
-                          itemBuilder: (BuildContext context, int index, int _) {
+                          itemBuilder:
+                              (BuildContext context, int index, int _) {
                             return _buildPinPad(context, index);
                           },
                           options: CarouselOptions(
@@ -637,7 +641,7 @@ class NumberPad extends StatelessWidget {
   final Function onPinTapped;
 
   const NumberPad({
-   required this.onPinTapped,
+    required this.onPinTapped,
   });
 
   List<Widget> _buildPinNumbers() {

@@ -21,6 +21,7 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+// ignore_for_file: unused_local_variable, must_be_immutable
 class TabsScreen extends GetWidget<TabsController> {
   static const id = 'tabs_screen';
 
@@ -36,7 +37,7 @@ class TabsScreen extends GetWidget<TabsController> {
 
   @override
   Widget build(BuildContext context) {
-    Locale myLocale = Localizations.localeOf(context);
+    final myLocale = Localizations.localeOf(context);
     //print('Language Code: ${myLocale.languageCode}');
 
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
@@ -50,7 +51,7 @@ class TabsScreen extends GetWidget<TabsController> {
                 ? ExpandableNotifier(
                     controller: controller.expandableController.value,
                     child: Container(
-                      color: Color(0xF1F3F5),
+                      color: Color(0x00f1f3f5),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -176,7 +177,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         },
                                         onChanged: (text) {
                                           TagsController.to.searchText.value =
-                                              text ?? '';
+                                              text;
                                           TagsController.to.loadRecentTags();
                                           //GalleryStore.to.setSearchText(text);
                                         },
@@ -188,9 +189,9 @@ class TabsScreen extends GetWidget<TabsController> {
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
                                             TagsController.to.searchText.value =
-                                                text ?? '';
+                                                text;
                                             TagsController.to.loadRecentTags();
-                                            String tagKey =
+                                            final tagKey =
                                                 Helpers.encryptTag(text);
 
                                             if (TagsController
@@ -220,7 +221,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                             ? S.of(context).search_results
                                             : S.of(context).recent_tags,
                                         tagsKeyList: TagsController
-                                            .to.recentTagKeyList.value.keys
+                                            .to.recentTagKeyList.keys
                                             .where((tag) =>
                                                 TagsController
                                                     .to.multiPicTags[tag] ==
@@ -267,8 +268,10 @@ class TabsScreen extends GetWidget<TabsController> {
                                 ),
                               ),
                             ),
+                            collapsed: Container(),
                           ),
                           Expandable(
+                            collapsed: Container(),
                             controller:
                                 controller.expandablePaddingController.value,
                             expanded: Container(
@@ -468,8 +471,7 @@ class TabsScreen extends GetWidget<TabsController> {
               child: Stack(
                 children: <Widget>[
                   GetX<UserController>(builder: (userController) {
-                    if (userController.hasGalleryPermission.value == null ||
-                        userController.hasGalleryPermission.value == false) {
+                    if (userController.hasGalleryPermission.value == false) {
                       return Container(
                         constraints: BoxConstraints.expand(),
                         color: kWhiteColor,

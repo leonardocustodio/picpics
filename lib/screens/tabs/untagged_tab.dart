@@ -501,8 +501,7 @@ class UntaggedTab extends GetWidget<TabsController> {
 
   @override
   Widget build(BuildContext context) {
-    return 
-        Container(
+    return Container(
       //constraints: BoxConstraints.expand(),
       color: kWhiteColor,
       child: SafeArea(
