@@ -7,7 +7,7 @@ import 'package:picPics/third_party_lib/src/blurhash.dart';
 
 class BlurHashController extends GetxController {
   static BlurHashController get to => Get.find();
-  Timer _timer;
+  Timer? _timer;
 
   final blurHash = <String, String>{}.obs;
   final masterHash = <String, String>{};
@@ -37,9 +37,8 @@ class BlurHashController extends GetxController {
   /// It's a way to Debounce the calls and stops anything from throttling
   ///
   Future<void> createBlurHash(String photoId, Uint8List imageBytes) async {
-    if (_timer != null) {
-      _timer.cancel();
-    }
+    _timer?.cancel();
+
     if (null == masterHash[photoId]) {
       _blurHashesQueue[photoId] = imageBytes;
     }
@@ -50,7 +49,8 @@ class BlurHashController extends GetxController {
         _blurHashesQueue.clear();
         var picBlurHashList = <PicBlurHash>[];
 
-        Future.forEach(picMaps.entries, (object) async {
+        Future.forEach(picMaps.entries,
+            (MapEntry<String, Uint8List> object) async {
           if (null == masterHash[object.key]) {
             var hash = await _calculateBlurHash(object.key, object.value);
             if (null != hash) {
@@ -72,11 +72,13 @@ class BlurHashController extends GetxController {
     });
   }
 
-  Future<String> _calculateBlurHash(
+  Future<String?> _calculateBlurHash(
       String photoId, Uint8List imageBytes) async {
     if (null == masterHash[photoId]) {
-      final image = await img.decodeImage(imageBytes.toList());
-      return await BlurHash.encode(image).hash;
+      final image = img.decodeImage(imageBytes.toList());
+      if (null != image) {
+        return BlurHash.encode(image).hash;
+      }
     }
     return null;
   }

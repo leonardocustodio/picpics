@@ -5,21 +5,21 @@ import 'package:uuid/uuid.dart';
 
 class DatabaseController extends GetxController {
   static DatabaseController get to => Get.find();
-  AppDatabase _database = AppDatabase();
+  final _database = AppDatabase();
 
-  Future<MoorUser> getUser({String deviceLocale}) async {
+  Future<MoorUser> getUser({String? deviceLocale}) async {
     MoorUser user = await _database.getSingleMoorUser(createIfNotExist: false);
 
     if (user == null) {
 //      Locale locale = await DeviceLocale.getCurrentLocale();
       MoorUser user2 = getDefaultMoorUser(deviceLocale: deviceLocale);
       await _database.createMoorUser(user2);
-      Analytics.setUserId(user2.id);
-      Analytics.sendEvent(Event.created_user);
+     await Analytics.setUserId(user2.id);
+     await Analytics.sendEvent(Event.created_user);
       return user2;
     } else {
-      Analytics.setUserId(user.id);
-      Analytics.sendEvent(Event.user_returned);
+     await Analytics.setUserId(user.id);
+     await Analytics.sendEvent(Event.user_returned);
     }
     return user;
   }
@@ -40,7 +40,7 @@ class DatabaseController extends GetxController {
   }
 }
 
-MoorUser getDefaultMoorUser({String deviceLocale}) {
+MoorUser getDefaultMoorUser({String? deviceLocale}) {
   return MoorUser(
     customPrimaryKey: 0,
     id: Uuid().v4(),
