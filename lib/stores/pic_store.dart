@@ -24,7 +24,7 @@ import 'package:picPics/utils/labels.dart';
 import 'tags_controller.dart';
 
 class PicStore extends GetxController {
-  final DateTime createdAt;
+  final DateTime? createdAt;
   final double? originalLatitude;
   final double? originalLongitude;
 
@@ -56,7 +56,7 @@ class PicStore extends GetxController {
   // @observable
   final generalLocation = RxnString(null);
 
-  String nonce;
+  String? nonce;
 
   // @observable
   final isPrivate = false.obs;
@@ -68,20 +68,20 @@ class PicStore extends GetxController {
   final photoId;
 
   // @observable
-  final entity = Rxn<AssetEntity?>(null);
+  late Rx<AssetEntity> entity;
 
   // @observable
   final tagsSuggestions = <TagModel>[].obs;
 
   PicStore({
     required AssetEntity entityValue,
-    this.photoPath,
-    this.thumbPath,
+    required this.photoPath,
+    required this.thumbPath,
     required this.photoId,
     this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
-    this.deletedFromCameraRoll,
+    this.deletedFromCameraRoll = false,
     bool isStarredValue = false,
   }) {
     isStarred.value = isStarredValue;
@@ -194,7 +194,7 @@ class PicStore extends GetxController {
 
   String photoPath;
   String thumbPath;
-  bool deletedFromCameraRoll;
+  bool deletedFromCameraRoll = false;
 
   Future<void> setDeletedFromCameraRoll(bool value) async {
     //print('Setting deleted from camera roll as $value');
