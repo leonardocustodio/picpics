@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
-import 'package:cryptography_flutter/cryptography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:googleapis/translate/v3.dart';
@@ -66,7 +65,7 @@ class PicStore extends GetxController {
   final isStarred = false.obs;
 
   // @observable
-  final photoId = RxnString(null);
+  final photoId;
 
   // @observable
   final entity = Rxn<AssetEntity?>(null);
@@ -78,15 +77,14 @@ class PicStore extends GetxController {
     required AssetEntity entityValue,
     this.photoPath,
     this.thumbPath,
-    required String photoIdValue,
+    required this.photoId,
     this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
     this.deletedFromCameraRoll,
-    required bool isStarredValue,
+    bool isStarredValue = false,
   }) {
-    isStarred.value = isStarredValue ?? false;
-    photoId.value = photoIdValue;
+    isStarred.value = isStarredValue;
     entity.value = entityValue;
   }
   /*  {
@@ -107,11 +105,11 @@ class PicStore extends GetxController {
     //print('teste');
     if (isStarred.value) {
       var bytes = await entity.value.thumbDataWithSize(300, 300);
-      String encoded = base64.encode(bytes);
+      var encoded = base64.encode(bytes);
       base64encoded = encoded;
-      UserController.to.addToStarredPhotos(photoId.value);
+      await UserController.to.addToStarredPhotos(photoId.value);
     } else {
-      UserController.to.removeFromStarredPhotos(photoId.value);
+      await UserController.to.removeFromStarredPhotos(photoId.value);
     }
 
     /// Do the database writting
@@ -147,7 +145,7 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //Pic picOld = picsBox.get(photoId);
-    Photo picOld = await database.getPhotoByPhotoId(photoId.value);
+    Photo picOld = await database.getPhotoByPhotoId(photoId.value!);
 
     if (picOld != null) {
       Photo createPic = Photo(
@@ -234,17 +232,17 @@ class PicStore extends GetxController {
       if (Platform.isAndroid) {
         await PhotoManager.editor.deleteWithIds([entity.value.id]);
       } else {
-        final List<String> result =
+        final result =
             await PhotoManager.editor.deleteWithIds([entity.value.id]);
         if (result.isEmpty) {
           return false;
         }
       }
-      setDeletedFromCameraRoll(true);
+      await setDeletedFromCameraRoll(true);
       entity.value = null;
       return;
     }
-    setDeletedFromCameraRoll(false);
+    await setDeletedFromCameraRoll(false);
   }
 
   //@action
@@ -270,19 +268,24 @@ class PicStore extends GetxController {
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
       //print('Pic has entity? ${entity == null ? false : true}');
-      Uint8List picData = await assetOriginBytes;
-      final AssetEntity imageEntity =
-          await PhotoManager.editor.saveImage(picData);
+      var picData = await assetOriginBytes;
+      final imageEntity = await PhotoManager.editor.saveImage(picData);
+
+      /// TODO: what to do if the imageEntity is null ??
+      /// doing temporary thing
+      if (null == imageEntity) {
+        return;
+      }
       await changeAssetEntity(imageEntity);
       //print('copied image back to gallery with id: ${imageEntity.id}');
     }
-    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
+    var appDocumentsDir = await getApplicationDocumentsDirectory();
 
-    File photoFile = File(p.join(appDocumentsDir.path, photoPath));
-    File thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
+    var photoFile = File(p.join(appDocumentsDir.path, photoPath));
+    var thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
 
-    photoFile.delete();
-    thumbFile.delete();
+    await photoFile.delete();
+    await thumbFile.delete();
     //print('Removed both files...');
   }
 
@@ -314,7 +317,7 @@ class PicStore extends GetxController {
       isStarred.value = pic.isStarred ?? false;
 
       //print('Is private: $isPrivate');
-      if (isPrivate == true) {
+      if (isPrivate.value == true) {
         Private secretPic = await database.getPrivateByPhotoId(photoId.value);
 
         if (secretPic != null) {
@@ -402,7 +405,7 @@ class PicStore extends GetxController {
     tagsSuggestions.clear();
     searchText.value = searchText.trim();
 
-    if (searchText == '') {
+    if (searchText.value == '') {
       var suggestions = <TagModel>[];
       var suggestionTags = <String>[];
       var tagsKeys = tags.keys.toList();
@@ -432,7 +435,7 @@ class PicStore extends GetxController {
         }
       }
 
-      for (String tagId in suggestionTags) {
+      for (var tagId in suggestionTags) {
         suggestions.add(TagsController.to.allTags[tagId].value);
       }
 
@@ -466,7 +469,7 @@ class PicStore extends GetxController {
     //var tagsBox = Hive.box('tags');
     /* //print(tagsBox.keys); */
 
-    String tagKey = Helpers.encryptTag(tagName);
+    var tagKey = Helpers.encryptTag(tagName);
     //print('Adding tag: $tagName');
     Label getTag = await database.getLabelByLabelKey(tagKey);
 
@@ -499,12 +502,12 @@ class PicStore extends GetxController {
       //print('Tag photos ids: ${getTag.photoId}');
     }
 
-    Analytics.sendEvent(
+    await Analytics.sendEvent(
       Event.created_tag,
       params: {'tagName': tagName},
     );
     //print('adding tag to database...');
-    TagModel tagModel =
+    var tagModel =
         TagModel(key: tagKey, title: tagName, count: 1, time: DateTime.now());
     TagsController.to.addTag(tagModel);
 
@@ -554,7 +557,7 @@ class PicStore extends GetxController {
 
       await tagsSuggestionsCalculate();
 
-      Analytics.sendEvent(
+      await Analytics.sendEvent(
         Event.added_tag,
         params: {'tagName': tagModel.value.title},
       );
@@ -587,18 +590,18 @@ class PicStore extends GetxController {
     //print('@@@@@@@@ tagsKey: ${tagKey}');
 
     // Increase today tagged pics everytime it adds a new pic to database.
-    UserController.to.increaseTodayTaggedPics();
+    await UserController.to.increaseTodayTaggedPics();
 
     await tagsSuggestionsCalculate();
-    Analytics.sendEvent(
+    await Analytics.sendEvent(
       Event.added_tag,
       params: {'tagName': tagModel.value.title},
     );
   }
 
   Future<String> _writeByteToImageFile(Uint8List byteData) async {
-    Directory tempDir = await getTemporaryDirectory();
-    File imageFile = File(
+    var tempDir = await getTemporaryDirectory();
+    var imageFile = File(
         '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
@@ -607,7 +610,7 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> sharePic() async {
-    String path = '';
+    var path = '';
 
     if (Platform.isAndroid) {
       path = await _writeByteToImageFile(entity == null
@@ -631,8 +634,8 @@ class PicStore extends GetxController {
       return;
     }
 
-    Analytics.sendEvent(Event.shared_photo);
-    ShareExtend.share(path, "image");
+    await Analytics.sendEvent(Event.shared_photo);
+    await ShareExtend.share(path, "image");
   }
 
   //@action
@@ -640,10 +643,9 @@ class PicStore extends GetxController {
     //print('Before photo manager delete: ${entity.id}');
 
     if (Platform.isAndroid) {
-      PhotoManager.editor.deleteWithIds([entity.value.id]);
+      await PhotoManager.editor.deleteWithIds([entity.value.id]);
     } else {
-      final List<String> result =
-          await PhotoManager.editor.deleteWithIds([entity.value.id]);
+      final result = await PhotoManager.editor.deleteWithIds([entity.value.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -655,12 +657,12 @@ class PicStore extends GetxController {
 
     if (pic != null) {
       //print('pic is in db... removing it from db!');
-      List<String> picTags = List<String>.from(pic.tags);
-      for (String tagKey in picTags) {
+      var picTags = List<String>.from(pic.tags);
+      for (var tagKey in picTags) {
         await removeTagFromPic(tagKey: tagKey);
 
         if (tagKey == kSecretTagKey) {
-          deleteEncryptedPic();
+          await deleteEncryptedPic();
         }
       }
       //picsBox.delete(photoId);
@@ -692,12 +694,12 @@ class PicStore extends GetxController {
     }
 
     if (tagKey == kSecretTagKey) {
-      removePrivatePath();
+      await removePrivatePath();
     }
 
     await tagsSuggestionsCalculate();
 
-    Analytics.sendEvent(
+    await Analytics.sendEvent(
       Event.removed_tag,
       params: {'tagName': getTag.title},
     );

@@ -20,11 +20,11 @@ class LoginStore extends GetxController {
   //@action
   void setSlideIndex(int value) => slideIndex.value = value;
 
-  String getDescription(BuildContext context, int value) {
+  String? getDescription(BuildContext context, int value) {
     return Board.values[value].displayDescription(context);
   }
 
-  Image getImage(int value) {
+  Image? getImage(int value) {
     return Board.values[value].image;
   }
 }
@@ -38,7 +38,7 @@ enum Board {
 }
 
 extension SelectedBoard on Board {
-  String displayDescription(BuildContext context) {
+  String? displayDescription(BuildContext context) {
     switch (this) {
       case Board.introduction:
         return S.current.welcome;
@@ -55,7 +55,7 @@ extension SelectedBoard on Board {
     }
   }
 
-  Image get image {
+  Image? get image {
     switch (this) {
       case Board.introduction:
         return null;

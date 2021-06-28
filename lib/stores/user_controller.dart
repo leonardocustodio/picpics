@@ -449,10 +449,10 @@ class UserController extends GetxController {
   }
 
   //@action
-  Future<void> createDefaultTags(BuildContext context) async {
+  Future<void> createDefaultTags(BuildContext? context) async {
     var tagsBox = await database.getAllLabel();
 
-    if (tagsBox.length > 1) {
+    if (tagsBox.length > 1 || context == null) {
       // Criada a secret tag aqui por isso 1
       //print('Default tags already created');
       return;
