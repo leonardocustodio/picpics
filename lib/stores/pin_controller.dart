@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/managers/crypto_manager_untouched.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
@@ -17,7 +17,7 @@ import 'package:picPics/widgets/general_modal.dart';
 class PinController extends GetxController {
   static PinController get to => Get.find();
   //@observable
-  final email = Rxn<String>();
+  final email = Rx<String>('');
   String pin = '';
   //@observable
   final pinTemp = ''.obs;
@@ -71,12 +71,12 @@ class PinController extends GetxController {
   //@action
   void setIsSettingNewPin(bool value) => isSettingNewPin.value = value;
 
-  String encryptedRecoveryKey;
+  String encryptedRecoveryKey = '';
 
   //@action
   void setRecoveryCode(String value) => recoveryCode.value = value;
 
-  String generatedIv;
+  String generatedIv = '';
   void setGeneratedIv(String value) => generatedIv = value;
 
   //@action
@@ -140,7 +140,7 @@ class PinController extends GetxController {
   Future<void> saveNewPin(UserController appStore) async {
     await Crypto.reSaveSpKey(pin, appStore);
     appStore.setTempEncryptionKey(null);
-    pin = null;
+    pin = '';
     setIsWaitingRecoveryKey(false);
     //print('Saved new pin!!!');
   }
@@ -152,7 +152,7 @@ class PinController extends GetxController {
     var result = <String, dynamic>{};
 
     final auth = FirebaseAuth.instance;
-    User user;
+    User? user;
 
     try {
       user = (await auth.createUserWithEmailAndPassword(
@@ -169,7 +169,7 @@ class PinController extends GetxController {
     } catch (error) {
       //print('Error creating user: $error');
       result['success'] = false;
-      result['errorCode'] = error.code;
+      result['errorCode'] = error;
       return result;
     }
 
@@ -248,8 +248,8 @@ class PinController extends GetxController {
     return true;
   }
 
-  void cancelAuthentication() {
-    UserController.to.biometricAuth.stopAuthentication();
+  void cancelAuthentication() async {
+    await UserController.to.biometricAuth.stopAuthentication();
   }
 
   Future<void> validateAccessCode() async {
@@ -265,7 +265,7 @@ class PinController extends GetxController {
       //print('Is valid: $valid');
       showCreatedKeyModal();
     } else {
-      shakeKey.currentState.forward();
+      shakeKey.currentState?.forward();
       setInvalidAccessCode(true);
       // showErrorModal('The access code you typed is invalid!');
     }
@@ -277,8 +277,8 @@ class PinController extends GetxController {
     var alertInputController = TextEditingController();
 
     //print('showModal');
-    showDialog<void>(
-      context: Get.context,
+    await showDialog<void>(
+      context: Get.context!,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return CupertinoInputDialog(
@@ -315,22 +315,22 @@ class PinController extends GetxController {
     showErrorModal('An error has occurred, please try again!');
   }
 
-  void setPinAndPop() {
-    UserController.to.setEmail(email.value);
-    UserController.to.setIsPinRegistered(true);
-    PrivatePhotosController.to.switchSecretPhotos();
+  void setPinAndPop() async {
+    await UserController.to.setEmail(email.value);
+    await UserController.to.setIsPinRegistered(true);
+    await PrivatePhotosController.to.switchSecretPhotos();
     UserController.to.setWaitingAccessCode(false);
 
     if (UserController.to.popPinScreen == PopPinScreenTo.SettingsScreen) {
-      Navigator.popUntil(Get.context, ModalRoute.withName(SettingsScreen.id));
+      Navigator.popUntil(Get.context!, ModalRoute.withName(SettingsScreen.id));
     } else {
-      Navigator.popUntil(Get.context, ModalRoute.withName(TabsScreen.id));
+      Navigator.popUntil(Get.context!, ModalRoute.withName(TabsScreen.id));
     }
   }
 
-  void showErrorModal(String message) {
-    showDialog<void>(
-      context: Get.context,
+  void showErrorModal(String message) async {
+    await showDialog<void>(
+      context: Get.context!,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return GeneralModal(
@@ -346,9 +346,9 @@ class PinController extends GetxController {
     );
   }
 
-  void showCreatedKeyModal() {
-    showDialog<void>(
-      context: Get.context,
+  void showCreatedKeyModal() async {
+    await showDialog<void>(
+      context: Get.context!,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return GeneralModal(
@@ -368,10 +368,10 @@ class PinController extends GetxController {
 
   Future<void> authenticate() async {
     try {
-      var authenticated =
-          await UserController.to.biometricAuth.authenticateWithBiometrics(
+      var authenticated = await UserController.to.biometricAuth.authenticate(
         localizedReason: 'Scan your fingerprint to authenticate',
         useErrorDialogs: true,
+        biometricOnly: true,
         stickyAuth: true,
       );
 
@@ -379,7 +379,7 @@ class PinController extends GetxController {
         var valid = await isBiometricValidated(UserController.to);
 
         if (valid == true) {
-          PrivatePhotosController.to.switchSecretPhotos();
+          await PrivatePhotosController.to.switchSecretPhotos();
           //GalleryStore.to.checkIsLibraryUpdated();
           setPinTemp('');
           setConfirmPinTemp('');
@@ -387,13 +387,13 @@ class PinController extends GetxController {
           return;
         }
 
-        shakeKey.currentState.forward();
+        shakeKey.currentState?.forward();
         setPinTemp('');
         setConfirmPinTemp('');
       }
-    } on PlatformException catch (e) {
+    } on PlatformException catch (_) {
       //print(e);
-      shakeKey.currentState.forward();
+      shakeKey.currentState?.forward();
       setPinTemp('');
       setConfirmPinTemp('');
     }

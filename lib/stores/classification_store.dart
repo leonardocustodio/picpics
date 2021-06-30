@@ -9,10 +9,8 @@ class ClassificationStore {
 
   Future<void> makeClassification(File image) async {
     final visionImage = FirebaseVisionImage.fromFile(image);
-    final cloudLabeler =
-        FirebaseVision.instance.cloudImageLabeler();
-    final cloudLabels =
-        await cloudLabeler.processImage(visionImage);
+    final cloudLabeler = FirebaseVision.instance.cloudImageLabeler();
+    final cloudLabels = await cloudLabeler.processImage(visionImage);
 
     for (var label in cloudLabels) {
       final text = label.text;

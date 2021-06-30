@@ -11,10 +11,10 @@ class ToggleBar extends StatefulWidget {
   final String titleRight;
 
   ToggleBar({
-    this.titleLeft,
-    this.titleRight,
-    this.activeToggle,
-    this.onToggle,
+    required this.titleLeft,
+    required this.titleRight,
+    required this.activeToggle,
+    required this.onToggle,
   });
 
   @override
@@ -61,6 +61,7 @@ class _ToggleBarState extends State<ToggleBar> {
                           child: CupertinoButton(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 16.0),
+                            onPressed: null,
                             child: Text(
                               widget.activeToggle == 0
                                   ? widget.titleLeft
@@ -70,7 +71,6 @@ class _ToggleBarState extends State<ToggleBar> {
                                 color: Color(0xFF7E7E80),
                               ),
                             ),
-                            onPressed: null,
                           ),
                         ),
                       ),
@@ -80,6 +80,10 @@ class _ToggleBarState extends State<ToggleBar> {
                     children: [
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        onPressed: () {
+                          //print('Teste');
+                          widget.onToggle(0);
+                        },
                         child: Text(
                           widget.titleLeft,
                           textAlign: TextAlign.center,
@@ -91,13 +95,13 @@ class _ToggleBarState extends State<ToggleBar> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        onPressed: () {
-                          //print('Teste');
-                          widget.onToggle(0);
-                        },
                       ),
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        onPressed: () {
+                          //print('Teste');
+                          widget.onToggle(1);
+                        },
                         child: Text(
                           widget.titleRight,
                           textAlign: TextAlign.center,
@@ -109,10 +113,6 @@ class _ToggleBarState extends State<ToggleBar> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        onPressed: () {
-                          //print('Teste');
-                          widget.onToggle(1);
-                        },
                       ),
                     ],
                   ),

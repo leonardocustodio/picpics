@@ -33,7 +33,7 @@ class _EmailScreenState extends State<EmailScreen> {
   }
 
   Future<void> startRegistration() async {
-    final isValid = EmailValidator.validate(PinController.to.email.value ?? '');
+    final isValid = EmailValidator.validate(PinController.to.email.value);
 
     if (!isValid) {
       PinController.to

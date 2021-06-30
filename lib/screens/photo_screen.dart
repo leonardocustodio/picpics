@@ -108,6 +108,11 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
     var picStore = TabsController.to.picStoreMap[picIdValue]?.value;
     picStore ??= TabsController.to.explorPicStore(picIdValue).value;
 
+    if (picStore == null) {
+      return PhotoViewGalleryPageOptions.customChild(
+        child: ColoredBox(color: kGreyPlaceholder),
+      );
+    }
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
 
     return PhotoViewGalleryPageOptions.customChild(
@@ -168,6 +173,9 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
     final picIdValue = getPicIdList()[index];
     var picStore = TabsController.to.picStoreMap[picIdValue]?.value;
     picStore ??= TabsController.to.explorPicStore(picIdValue).value;
+    if (picStore == null) {
+      return const ColoredBox(color: kGreyPlaceholder);
+    }
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
 
     return CupertinoButton(
@@ -307,7 +315,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     shareAblePicStore ??= TabsController.to
                                         .explorPicStore(picIdValue)
                                         .value;
-                                    shareAblePicStore.sharePic();
+                                    shareAblePicStore?.sharePic();
                                   },
                                   child: Image.asset(
                                       'lib/images/sharebuttonwithdropshadow.png'),

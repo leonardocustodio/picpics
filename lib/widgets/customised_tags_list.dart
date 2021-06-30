@@ -16,10 +16,10 @@ typedef OnTap = Function(
 class CustomisedTagsList extends StatelessWidget {
   final List<String> tagsKeyList;
   final Map<String, TagModel> selectedTags;
-  int maxLength;
-  final String title;
-  final OnTap onTap;
-  final Function onDoubleTap;
+  int? maxLength;
+  final String? title;
+  final OnTap? onTap;
+  final Function? onDoubleTap;
 
   CustomisedTagsList({
     required this.tagsKeyList,
@@ -33,7 +33,7 @@ class CustomisedTagsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     tagsKeyList.removeWhere((element) =>
-        PrivatePhotosController.to.showPrivate == false &&
+        PrivatePhotosController.to.showPrivate.value == false &&
         element == kSecretTagKey);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -42,7 +42,7 @@ class CustomisedTagsList extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
-              title,
+              title!,
               textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
@@ -78,7 +78,7 @@ class CustomisedTagsList extends StatelessWidget {
                 ]
               : List.generate(
                   maxLength != null
-                      ? tagsKeyList.length.clamp(0, maxLength)
+                      ? tagsKeyList.length.clamp(0, maxLength!)
                       : tagsKeyList.length,
                   (index) => _buildItem(index),
                 ),
@@ -88,18 +88,18 @@ class CustomisedTagsList extends StatelessWidget {
   }
 
   Widget _buildItem(int index) {
-    TagModel tag = TagsController.to.allTags[tagsKeyList[index]].value;
+    var tag = TagsController.to.allTags[tagsKeyList[index]]!.value;
     var isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
       onTap: () {
         Vibrate.feedback(FeedbackType.success);
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
-        if (onTap != null) onTap(tag.key, tag.title, tag.count, tag.time);
+        onTap?.call(tag.key, tag.title, tag.count, tag.time);
       },
       onDoubleTap: () {
         Vibrate.feedback(FeedbackType.success);
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
-        if (onDoubleTap != null) onDoubleTap();
+        onDoubleTap?.call();
       },
       onLongPress: () {
         /* DatabaseManager.instance.selectedTagKey = tag.key; */

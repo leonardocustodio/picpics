@@ -1,6 +1,6 @@
 class BlurHashDecodeException implements Exception {
   BlurHashDecodeException([
-    String message,
+    String? message,
   ]) : message = message ?? '';
 
   final String message;
@@ -11,7 +11,7 @@ class BlurHashDecodeException implements Exception {
 
 class BlurHashEncodeException implements Exception {
   BlurHashEncodeException([
-    String message,
+    String? message,
   ]) : message = message ?? '';
 
   final String message;

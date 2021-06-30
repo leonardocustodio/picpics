@@ -7,8 +7,8 @@ import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/stores/user_controller.dart';
 
 class WatchAdModal extends StatelessWidget {
-  final Function onPressedWatchAdd;
-  final Function onPressedGetPremium;
+  final Function()? onPressedWatchAdd;
+  final Function()? onPressedGetPremium;
 
   WatchAdModal({
     this.onPressedWatchAdd,
@@ -81,6 +81,10 @@ class WatchAdModal extends StatelessWidget {
                     onPressed: onPressedGetPremium,
                     padding: const EdgeInsets.all(0),
                     child: OutlineGradientButton(
+                      gradient: LinearGradient(
+                          colors: [Color(0xFFFFA4D1), Color(0xFFFFCC00)]),
+                      strokeWidth: 2.0,
+                      radius: Radius.circular(8.0),
                       child: Container(
                         height: 44.0,
                         child: Column(
@@ -93,7 +97,7 @@ class WatchAdModal extends StatelessWidget {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontWeight: FontWeight.w400,
-                                fontFamily: "Lato",
+                                fontFamily: 'Lato',
                                 fontStyle: FontStyle.normal,
                                 fontSize: 16.0,
                               ),
@@ -116,10 +120,6 @@ class WatchAdModal extends StatelessWidget {
                           ],
                         ),
                       ),
-                      gradient: LinearGradient(
-                          colors: [Color(0xFFFFA4D1), Color(0xFFFFCC00)]),
-                      strokeWidth: 2.0,
-                      radius: Radius.circular(8.0),
                     ),
                   ),
                 ),

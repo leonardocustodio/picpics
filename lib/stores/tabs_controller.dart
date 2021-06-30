@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
@@ -21,9 +22,9 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/refresh_everything.dart';
 import 'package:share/share.dart';
 import 'dart:async';
-import 'package:flutter/foundation.dart';
 
 import '../constants.dart';
 import 'private_photos_controller.dart';
@@ -139,16 +140,16 @@ class TabsController extends GetxController {
       }
     }); */
     var ___ = Get.put(UserController());
-    if (UserController.to.tutorialCompleted == true &&
-        UserController.to.notifications == true) {
-      PushNotificationsManager push = PushNotificationsManager();
-      push.init();
+    if (UserController.to.tutorialCompleted.value == true &&
+        UserController.to.notifications.value == true) {
+      var push = PushNotificationsManager();
+      await push.init();
     }
 
     // Added for the case of buying premium from appstore
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance?.addPostFrameCallback((_) async {
       if (UserController.to.tryBuyId != null) {
-        Get.to(() => PremiumScreen());
+        await Get.to(() => PremiumScreen());
       }
     });
   }
@@ -162,12 +163,12 @@ class TabsController extends GetxController {
       return;
     }
 
-    AssetPathEntity assetPathEntity = assetsPath[0];
+    var assetPathEntity = assetsPath[0];
 
-    assetPathEntity
+    await assetPathEntity
         .getAssetListRange(start: 0, end: assetPathEntity.assetCount)
         .then((list) async {
-      assetEntityList = await List<AssetEntity>.from(list);
+      assetEntityList = List<AssetEntity>.from(list);
       await refreshUntaggedList();
     });
   }
@@ -197,9 +198,11 @@ class TabsController extends GetxController {
     /// refreshing the taggedPhotos so that we can filter out the untagged photos from the below section.
     await TaggedController.to.refreshTaggedPhotos();
 
-    DateTime previousDay, previousMonth;
-    List<String> previousMonthPicIdList = <String>[];
-    List<String> previousDayPicIdList = <String>[];
+    DateTime? previousDay;
+    DateTime? previousMonth;
+
+    var previousMonthPicIdList = <String>[];
+    var previousDayPicIdList = <String>[];
 
     /// clear the map as this function will be used to refresh from the tagging done via expandable or the swiper tags
 
@@ -223,17 +226,17 @@ class TabsController extends GetxController {
           allUnTaggedPicsDay[dateTime] = <String>[];
         }
 
-        if (previousDay.year != dateTime.year ||
-            previousDay.month != dateTime.month ||
-            previousDay.day != dateTime.day) {
-          if (previousDay.day != dateTime.day) {
+        if (previousDay!.year != dateTime.year ||
+            previousDay!.month != dateTime.month ||
+            previousDay!.day != dateTime.day) {
+          if (previousDay!.day != dateTime.day) {
             //allUnTaggedPicsDay[dateTime] = '';
             allUnTaggedPicsDay[previousDay] =
                 List<String>.from(previousDayPicIdList);
             previousDayPicIdList = <String>[];
             allUnTaggedPicsDay[dateTime] = <String>[];
           }
-          if (previousDay.month != dateTime.month) {
+          if (previousDay!.month != dateTime.month) {
             //allUnTaggedPicsMonth[dateTime] = '';
             allUnTaggedPicsMonth[previousMonth] =
                 List<String>.from(previousMonthPicIdList);
@@ -334,41 +337,46 @@ class TabsController extends GetxController {
   } */
 
   /// Here only those picId will come who are untagged.
-  Rx<PicStore> explorPicStore(String picId) {
+  Rx<PicStore?> explorPicStore(String picId) {
     var picStoreValue = picStoreMap[picId];
 
     if (null == picStoreMap[picId]) {
-      AssetEntity entity = assetMap[picId];
+      final entity = assetMap[picId];
       if (null == entity) {
-        return null;
+        /// TODO: In worst case scenario this is telling that the asset map is not update and does not contain the image
+        refresh_everything();
       }
 
       picStoreValue = Rx<PicStore>(PicStore(
-        isStarredValue: null,
-        entityValue: entity,
-        photoIdValue: entity.id,
+        entityValue: entity!,
         createdAt: entity.createDateTime,
         originalLatitude: entity.latitude,
         originalLongitude: entity.longitude,
+        photoId: null,
+        photoPath: '',
+        thumbPath: '',
       ));
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
+      WidgetsBinding.instance?.addPostFrameCallback((_) async {
         var map = RxMap<String, Rx<TagModel>>();
-        TaggedController.to.picWiseTags[picStoreValue.value.photoId.value]?.keys
-            ?.toList()
-            ?.forEach((tagKey) {
-          map[tagKey] = TagsController.to.allTags[tagKey];
+        TaggedController
+            .to.picWiseTags[picStoreValue!.value.photoId.value]?.keys
+            .toList()
+            .forEach((tagKey) {
+          map[tagKey] = TagsController.to.allTags[tagKey]!;
         });
         picStoreValue.value.tags = map;
         picStoreMap[picId] = picStoreValue;
 
         if (BlurHashController.to.blurHash[picId] == null) {
           await picStoreValue.value.assetThumbBytes.then((imageBytes) {
-            BlurHashController.to.createBlurHash(picId, imageBytes);
+            if (null != imageBytes) {
+              BlurHashController.to.createBlurHash(picId, imageBytes);
+            }
           });
         }
       });
     }
-    return picStoreValue;
+    return picStoreValue!;
   }
 
   /* Future<void> exploreThumbPic_(String picId) async {
@@ -467,7 +475,7 @@ class TabsController extends GetxController {
       return;
     }
     isUntaggedPicsLoaded.value = false;
-    FilterOptionGroup filterOptionGroup = FilterOptionGroup()
+    var filterOptionGroup = FilterOptionGroup()
       ..addOrderOption(
         OrderOption(
           type: OrderOptionType.createDate,
@@ -475,7 +483,7 @@ class TabsController extends GetxController {
         ),
       );
 
-    final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
+    final assets = await PhotoManager.getAssetPathList(
       hasAll: true,
       type: RequestType.image,
       onlyAll: true,
@@ -488,7 +496,7 @@ class TabsController extends GetxController {
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     // Configure BackgroundFetch.
-    BackgroundFetch.configure(
+    await BackgroundFetch.configure(
         BackgroundFetchConfig(
             minimumFetchInterval: 15,
             stopOnTerminate: false,
@@ -569,7 +577,7 @@ class TabsController extends GetxController {
 
   //@action
   void setTopOffsetFirstTab(double value) {
-    if (value == topOffsetFirstTab) {
+    if (value == topOffsetFirstTab.value) {
       return;
     }
     topOffsetFirstTab.value = value;
@@ -600,11 +608,9 @@ class TabsController extends GetxController {
     //await WidgetManager.saveData(picsStores: selectedUntaggedPics.toList());
 
     selectedMultiBarPics.forEach((picId, value) {
-      PicStore picStore = picStoreMap[picId].value;
-      if (picStore == null) {
-        picStore = explorPicStore(picId).value;
-      }
-      picStore.switchIsStarred();
+      var picStore = picStoreMap[picId]?.value;
+      picStore ??= explorPicStore(picId).value;
+      picStore?.switchIsStarred();
     });
     returnAction();
   }
@@ -642,7 +648,7 @@ class TabsController extends GetxController {
     selectedMultiBarPics.clear();
   }
 
-  setTabIndex(int index) async {
+  void setTabIndex(int index) async {
     if (!deviceHasPics || selectedMultiBarPics.isEmpty) {
       if (index == 0) {
         setMultiPicBar(false);
@@ -659,7 +665,7 @@ class TabsController extends GetxController {
         //GalleryStore.to.clearSelectedPics();
         setMultiPicBar(false);
       } else if (index == 1) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
           setMultiTagSheet(true);
           expandableController.value.expanded = true;
           expandablePaddingController.value.expanded = true;
@@ -678,7 +684,7 @@ class TabsController extends GetxController {
           return;
         }
 
-        trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
+        await trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
       }
       return;
     }
@@ -690,9 +696,9 @@ class TabsController extends GetxController {
     /* List<String> selectedPicsIds =
         selectedPics.map((e) => e.photoId.value).toList(); */
 
-    bool deleted = false;
+    var deleted = false;
 
-    final List<String> result =
+    final result =
         await PhotoManager.editor.deleteWithIds(selectedPicsIds.toList());
     if (result.isNotEmpty) {
       deleted = true;
@@ -702,12 +708,10 @@ class TabsController extends GetxController {
       /* var picsBox = Hive.box('pics');
       var tagsBox = Hive.box('tags'); */
 
-      Future.wait([
+      await Future.wait([
         Future.forEach(selectedPicsIds.toList(), (String picId) async {
-          PicStore picStore = picStoreMap[picId]?.value;
-          if (null == picStore) {
-            picStore = explorPicStore(picId)?.value;
-          }
+          var picStore = picStoreMap[picId]?.value;
+          picStore = explorPicStore(picId).value;
           if (null != picStore) {
             removePicFromUI(picId);
             /* filteredPics.remove(picStore);
@@ -721,18 +725,20 @@ class TabsController extends GetxController {
 
             if (pic != null) {
               // //print('pic is in db... removing it from db!');
-              List<String> picTags = List<String>.from(pic.tags);
-              Future.wait([
+              var picTags = List<String>.from(pic.tags);
+              await Future.wait([
                 Future.forEach(picTags, (tagKey) async {
                   Label tag = await database.getLabelByLabelKey(tagKey);
-                  tag.photoId.remove(picStore.photoId);
+                  if (picStore != null) {
+                    tag.photoId.remove(picStore.photoId);
+                  }
                   // //print('removed ${picStore.photoId} from tag ${tag.title}');
                   await database.updateLabel(tag);
                   //tagsBox.put(tagKey, tag);
 
                   if (tagKey == kSecretTagKey) {
-                    picStore.removePrivatePath();
-                    picStore.deleteEncryptedPic();
+                    await picStore?.removePrivatePath();
+                    await picStore?.deleteEncryptedPic();
                   }
                 })
               ]);
@@ -745,7 +751,7 @@ class TabsController extends GetxController {
         })
       ]);
 
-      Analytics.sendEvent(Event.deleted_photo);
+      await Analytics.sendEvent(Event.deleted_photo);
       // //print('Reaction!');
       selectedMultiBarPics.clear();
       //setTrashedPic(true);
@@ -771,13 +777,11 @@ class TabsController extends GetxController {
 
   //@action
   Future<void> trashPic(String picId) async {
-    PicStore picStore = picStoreMap[picId]?.value;
-    if (null == picStore) {
-      picStore = explorPicStore(picId)?.value;
-    }
+    var picStore = picStoreMap[picId]?.value;
+    picStore ??= explorPicStore(picId).value;
     if (null != picStore) {
       // //print('Going to trash pic!');
-      await picStore?.deletePic();
+      await picStore.deletePic();
       // //print('Deleted pic: $deleted');
 
       /* if (deleted) {
@@ -789,7 +793,7 @@ class TabsController extends GetxController {
       user.setDefaultWidgetImage(allPics.value[0].entity.value);
     } */
 
-      Analytics.sendEvent(Event.deleted_photo);
+      await Analytics.sendEvent(Event.deleted_photo);
     }
     // //print('Reaction!');
     //setTrashedPic(true);
@@ -835,11 +839,11 @@ class TabsController extends GetxController {
 Future<void> sharePics({required List<String> picKeys}) async {
   var imageList = <String>[], mimeList = <String>[];
 
-  for (String picKey in picKeys) {
+  for (var picKey in picKeys) {
     if (TabsController.to.assetMap[picKey] == null) {
       continue;
     }
-    AssetEntity data = TabsController.to.assetMap[picKey]; //.entity.value;
+    final data = TabsController.to.assetMap[picKey]; //.entity.value;
 
     if (data == null) {
       /*  var bytes = await TabsController
@@ -854,11 +858,14 @@ Future<void> sharePics({required List<String> picKeys}) async {
       //   format: ThumbFormat.jpeg,
       // );
       // String path = await _writeByteToImageFile(bytes);
-
-      String path = (await data.file).path;
-      String mime = lookupMimeType(path);
-      imageList.add(path);
-      mimeList.add(mime);
+      var path = (await data.file)?.path;
+      if (path != null) {
+        final mime = lookupMimeType(path);
+        if (mime != null) {
+          imageList.add(path);
+          mimeList.add(mime);
+        }
+      }
     }
 
 //      if (Platform.isAndroid) {
@@ -878,9 +885,9 @@ Future<void> sharePics({required List<String> picKeys}) async {
   // //print('Image List: $imageList');
   // //print('Mime List: $mimeList');
 
-  Analytics.sendEvent(Event.shared_photos);
+  await Analytics.sendEvent(Event.shared_photos);
 
-  Share.shareFiles(
+  await Share.shareFiles(
     imageList,
     mimeTypes: mimeList,
   );
@@ -934,8 +941,8 @@ Future<void> sharePics({required List<String> picKeys}) async {
 } */
 
 Future<String> _writeByteToImageFile(Uint8List byteData) async {
-  Directory tempDir = await getTemporaryDirectory();
-  File imageFile = File(
+  var tempDir = await getTemporaryDirectory();
+  var imageFile = File(
       '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
   imageFile.createSync(recursive: true);
   imageFile.writeAsBytesSync(byteData);

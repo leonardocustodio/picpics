@@ -201,8 +201,8 @@ class PinScreen extends GetWidget<PinController> {
           //print('Setting new pin!!!!!');
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
-          await UserController.to.setEmail(controller.email.value ??
-              ''); // Tem que deixar antes pois é utilizado quando salva o pin
+          await UserController.to.setEmail(controller.email
+              .value); // Tem que deixar antes pois é utilizado quando salva o pin
 
           await controller.saveNewPin(UserController.to);
 
@@ -541,7 +541,7 @@ class PinScreen extends GetWidget<PinController> {
                             padding: const EdgeInsets.only(top: 16.0),
                             child: Text(
                               S.current.access_code_sent(
-                                  '${controller.email.value ?? 'user@email.com'}'),
+                                  '${controller.email.value.isEmpty ? 'user@email.com' : controller.email.value.isEmpty}'),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',

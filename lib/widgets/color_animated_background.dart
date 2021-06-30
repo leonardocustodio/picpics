@@ -23,10 +23,10 @@ class ColorAnimatedBackground extends StatefulWidget {
 
 class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
     with AnimationMixin {
-  AnimationController widthController;
-  AnimationController heightController;
-  Animation<double> x_animation;
-  Animation<double> y_animation;
+  late AnimationController widthController;
+  late AnimationController heightController;
+  late Animation<double> x_animation;
+  late Animation<double> y_animation;
 
   @override
   void initState() {

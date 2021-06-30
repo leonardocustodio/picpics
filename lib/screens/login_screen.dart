@@ -104,7 +104,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                       bottom: 48.0,
                                     ),
                                     child: Text(
-                                      loginStore.getDescription(context, index) ?? '',
+                                      loginStore.getDescription(
+                                              context, index) ??
+                                          '',
                                       textScaleFactor: 1.0,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(

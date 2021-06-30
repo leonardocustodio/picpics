@@ -1,4 +1,4 @@
-import 'dart:math';
+/* import 'dart:math';
 import 'package:picPics/third_party_lib/src/foundation.dart';
 
 import 'blurhash.dart';
@@ -94,7 +94,7 @@ extension BlurHashExtensions on BlurHash {
       _getDarkness(color, threshold);
 
   /// Returns whether the average brightness is considered dark.
-  bool isAverageDark({double threshold}) =>
+  bool isAverageDark({double? threshold}) =>
       _getDarkness(averageLinearRgb, threshold);
 
   /// Returns whether the given row is considered dark.
@@ -103,19 +103,19 @@ extension BlurHashExtensions on BlurHash {
   /// Coordinates are given in percent and must be between 0 and 1.
   /// Throws [ArgumentError] if the coordinates are out of range.
   /// {@endtemplate}
-  bool isDarkAtX(double x, {double threshold}) =>
+  bool isDarkAtX(double x, {double? threshold}) =>
       _getDarkness(linearRgbAtX(x), threshold);
 
   /// Returns whether the given row is considered dark.
   ///
   /// {@macro ext_valid_args}
-  bool isDarkAtY(double y, {double threshold}) =>
+  bool isDarkAtY(double y, {double? threshold}) =>
       _getDarkness(linearRgbAtY(y), threshold);
 
   /// Returns whether the given point is considered dark.
   ///
   /// {@macro ext_valid_args}
-  bool isDarkAtPos(double x, double y, {double threshold}) =>
+  bool isDarkAtPos(double x, double y, {double? threshold}) =>
       _getDarkness(linearRgbAt(x, y), threshold);
 
   /// Returns whether the given rectangular region is considered dark.
@@ -124,7 +124,7 @@ extension BlurHashExtensions on BlurHash {
   bool isRectDark(
     Point<double> topLeftCorner,
     Point<double> bottomRightCorner, {
-    double threshold,
+    double? threshold,
   }) {
     return _getDarkness(
       linearRgbInRect(topLeftCorner, bottomRightCorner),
@@ -241,7 +241,7 @@ extension BlurHashExtensions on BlurHash {
 
   static const _defaultThreshold = 0.3;
 
-  static bool _getDarkness(ColorTriplet color, double threshold) {
+  static bool _getDarkness(ColorTriplet color, double? threshold) {
     return color.r * 0.299 + color.g * 0.587 + color.b * 0.114 <
         (threshold ?? _defaultThreshold);
   }
@@ -258,3 +258,4 @@ extension ColorTripletExtensions on ColorTriplet {
     );
   }
 }
+ */

@@ -10,35 +10,35 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
 
-void showDeleteSecretModalForMultiPic() {
+void showDeleteSecretModalForMultiPic() async {
   if (UserController.to.keepAskingToDelete.value == false) {
     TabsController.to.setMultiTagSheet(false);
     TabsController.to.setMultiPicBar(false);
-    TagsController.to.addTagsToSelectedPics();
+    await TagsController.to.addTagsToSelectedPics();
     return;
   }
 
   //print('showModal');
-  showDialog<void>(
-    context: Get.context,
+  await showDialog<void>(
+    context: Get.context!,
     barrierDismissible: true,
     builder: (BuildContext buildContext) {
       return DeleteSecretModal(
-        onPressedClose: () {
+        onPressedClose: () async {
           Get.back();
         },
-        onPressedDelete: () {
-          UserController.to.setShouldDeleteOnPrivate(false);
+        onPressedDelete: () async {
+          await UserController.to.setShouldDeleteOnPrivate(false);
           TabsController.to.setMultiTagSheet(false);
           TabsController.to.setMultiPicBar(false);
-          TagsController.to.addTagsToSelectedPics();
+          await TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
-        onPressedOk: () {
-          UserController.to.setShouldDeleteOnPrivate(true);
+        onPressedOk: () async {
+          await UserController.to.setShouldDeleteOnPrivate(true);
           TabsController.to.setMultiTagSheet(false);
           TabsController.to.setMultiPicBar(false);
-          TagsController.to.addTagsToSelectedPics();
+          await TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
       );
@@ -50,31 +50,31 @@ Future<void> showDeleteSecretModal(
     /* BuildContext context, */ PicStore picStore) async {
   if (true != PrivatePhotosController.to.showPrivate.value) {
     UserController.to.popPinScreen = PopPinScreenTo.TabsScreen;
-    Get.to(() => PinScreen());
+    await Get.to(() => PinScreen());
     return;
   }
 
-  if (UserController.to.isPremium == false) {
-    int freePrivatePics = await UserController.to.freePrivatePics;
+  if (UserController.to.isPremium.value == false) {
+    final freePrivatePics = await UserController.to.freePrivatePics;
     if (UserController.to.totalPrivatePics >= freePrivatePics &&
-        picStore.isPrivate == false) {
-      Get.to(() => PremiumScreen());
+        picStore.isPrivate.value == false) {
+      await Get.to(() => PremiumScreen());
       return;
     }
   }
 
-  if (UserController.to.keepAskingToDelete == false &&
-      picStore.isPrivate == false) {
+  if (UserController.to.keepAskingToDelete.value == false &&
+      picStore.isPrivate.value == false) {
     //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
     return;
   }
 
   //print('showModal');
-  showDialog<void>(
-    context: Get.context,
+  await showDialog<void>(
+    context: Get.context!,
     barrierDismissible: true,
     builder: (BuildContext buildContext) {
-      if (picStore.isPrivate == true) {
+      if (picStore.isPrivate.value == true) {
         return UnhideSecretModal(
           onPressedDelete: () {
             Get.back();
@@ -89,14 +89,14 @@ Future<void> showDeleteSecretModal(
         onPressedClose: () {
           Get.back();
         },
-        onPressedDelete: () {
+        onPressedDelete: () async {
           //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
-          UserController.to.setShouldDeleteOnPrivate(false);
+          await UserController.to.setShouldDeleteOnPrivate(false);
           Get.back();
         },
-        onPressedOk: () {
+        onPressedOk: () async {
           //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
-          UserController.to.setShouldDeleteOnPrivate(true);
+          await UserController.to.setShouldDeleteOnPrivate(true);
           Get.back();
         },
       );

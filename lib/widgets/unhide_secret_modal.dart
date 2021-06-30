@@ -4,8 +4,8 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 
 class UnhideSecretModal extends StatelessWidget {
-  final Function onPressedDelete;
-  final Function onPressedOk;
+  final Function() onPressedDelete;
+  final Function() onPressedOk;
 
   UnhideSecretModal({
     required this.onPressedDelete,
@@ -14,7 +14,7 @@ class UnhideSecretModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width;
 
     return Dialog(
       backgroundColor: Colors.transparent,

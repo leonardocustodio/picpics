@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 class DeviceHasNoPics extends StatelessWidget {
   final String message;
 
-  DeviceHasNoPics({this.message});
+  DeviceHasNoPics({required this.message});
 
   @override
   Widget build(BuildContext context) {

@@ -14,7 +14,7 @@ class TopBar extends StatelessWidget {
   /* final GalleryStore galleryStore; */
   final TagsController tagsController;
   final FocusNode searchFocusNode;
-  final TextEditingController searchEditingController;
+  final TextEditingController? searchEditingController;
   final List<Widget> children;
   final bool showSecretSwitch;
 
@@ -23,8 +23,8 @@ class TopBar extends StatelessWidget {
     required this.tagsController,
     required this.showSecretSwitch,
     this.searchEditingController,
-    this.searchFocusNode,
-    this.children,
+    required this.searchFocusNode,
+    required this.children,
   });
 
   @override
@@ -60,7 +60,7 @@ class TopBar extends StatelessWidget {
                         },
                         onSubmitted: (text) {
                           //print('return');
-                          searchEditingController.clear();
+                          searchEditingController?.clear();
                           tagsController.searchTagsResults.clear();
 //                          DatabaseManager.instance.searchResults = null;
                         },

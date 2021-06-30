@@ -4,15 +4,15 @@ import 'package:picPics/constants.dart';
 
 class CupertinoInputDialog extends StatelessWidget {
   final String title;
-  final String inputPlaceholder;
+  final String? inputPlaceholder;
 
   final String destructiveButtonTitle;
   final String defaultButtonTitle;
 
-  final Function onPressedDestructive;
-  final Function onPressedDefault;
+  final Function() onPressedDestructive;
+  final Function() onPressedDefault;
 
-  final Image prefixImage;
+  final Image? prefixImage;
   final TextEditingController alertInputController;
 
   CupertinoInputDialog({
@@ -65,7 +65,7 @@ class CupertinoInputDialog extends StatelessWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  if (prefixImage != null) prefixImage,
+                  if (prefixImage != null) prefixImage!,
                   Expanded(
                     child: TextField(
                       controller: alertInputController,

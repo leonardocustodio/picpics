@@ -40,11 +40,11 @@ class PhotoCard extends StatefulWidget {
   final int picsInThumbnailIndex;
 
   PhotoCard({
-    this.picStore,
+    required this.picStore,
     //this.showEditTagModal,
     //this.showDeleteSecretModal,
-    this.picsInThumbnails,
-    this.picsInThumbnailIndex,
+    required this.picsInThumbnails,
+    required this.picsInThumbnailIndex,
   });
 
   @override
@@ -54,15 +54,15 @@ class PhotoCard extends StatefulWidget {
 class _PhotoCardState extends State<PhotoCard> {
   final GlobalKey _photoSpaceKey = GlobalKey();
 
-  TabsController tabsStore;
+  //TabsController tabsStore;
   PicStore get picStore => widget.picStore;
 
-  List<int> photoSize;
+  //List<int> photoSize;
 
   BoxFit boxFit = BoxFit.cover;
 
   TextEditingController tagsEditingController = TextEditingController();
-  FocusNode tagsFocusNode;
+  late FocusNode tagsFocusNode;
 
   String dateFormat(DateTime dateTime) {
     var formatter = DateFormat.yMMMEd();
@@ -70,8 +70,12 @@ class _PhotoCardState extends State<PhotoCard> {
   }
 
   Future<List<String>> reverseGeocoding(BuildContext context) async {
-    if (picStore.specificLocation != null && picStore.generalLocation != null) {
-      return [picStore.specificLocation.value, '  ${picStore.generalLocation}'];
+    if (picStore.specificLocation.value != null &&
+        picStore.generalLocation.value != null) {
+      return [
+        picStore.specificLocation.value!,
+        '  ${picStore.generalLocation.value}'
+      ];
     }
 
     if ((picStore.originalLatitude == null ||
@@ -80,8 +84,8 @@ class _PhotoCardState extends State<PhotoCard> {
       return [S.of(context).photo_location, '  ${S.of(context).country}'];
     }
 
-    List<Placemark> placemark = await placemarkFromCoordinates(
-        picStore.originalLatitude, picStore.originalLongitude);
+    var placemark = await placemarkFromCoordinates(
+        picStore.originalLatitude!, picStore.originalLongitude!);
 
     //print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -90,13 +94,13 @@ class _PhotoCardState extends State<PhotoCard> {
 
     if (placemark.isNotEmpty) {
       //print('Saving pic!!!');
-      picStore.saveLocation(
-        lat: picStore.originalLatitude,
-        long: picStore.originalLongitude,
+      await picStore.saveLocation(
+        lat: picStore.originalLatitude!,
+        long: picStore.originalLongitude!,
         specific: placemark[0].locality,
         general: placemark[0].country,
       );
-      return [placemark[0].locality, '  ${placemark[0].country}'];
+      return [placemark[0].locality!, '  ${placemark[0].country}'];
     }
 
     return [S.of(context).photo_location, '  ${S.of(context).country}'];
@@ -105,12 +109,13 @@ class _PhotoCardState extends State<PhotoCard> {
   void focusTagsEditingController() {}
 
   void getSizeAndPosition() {
-    RenderBox _cardBox = _photoSpaceKey.currentContext.findRenderObject();
+    var _cardBox =
+        _photoSpaceKey.currentContext?.findRenderObject() as RenderBox;
     //print('Card Box Size: ${_cardBox.size.height}');
     UserController.to.setPhotoHeightInCardWidget(_cardBox.size.height);
   }
 
-  String hash;
+  String? hash;
 
   @override
   void initState() {
@@ -119,10 +124,10 @@ class _PhotoCardState extends State<PhotoCard> {
     hash = BlurHashController.to.blurHash[picStore.photoId.value];
     tagsFocusNode = FocusNode();
 
-    if (KeyboardVisibility.isVisible) {
+    /* if (KeyboardVisibility.isVisible) {
       //print('#### keyboard is visible!!!!');
       tagsFocusNode.requestFocus();
-    }
+    } */
   }
 
   @override
@@ -153,7 +158,7 @@ class _PhotoCardState extends State<PhotoCard> {
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
     /* //print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
-    AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore,
+    var imageProvider = AssetEntityImageProvider(picStore,
         thumbSize: kDefaultPhotoSize, isOriginal: false);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
@@ -177,7 +182,7 @@ class _PhotoCardState extends State<PhotoCard> {
               children: [
                 if (null != hash)
                   BlurHash(
-                    hash: hash,
+                    hash: hash!,
                     color: Colors.transparent,
                   ),
                 ClipRRect(
@@ -193,7 +198,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       key: _photoSpaceKey,
                       afterPaintImage: (canvas, rect, image, paint) {
                         WidgetsBinding.instance
-                            .addPostFrameCallback((_) => getSizeAndPosition());
+                            ?.addPostFrameCallback((_) => getSizeAndPosition());
                       },
                       image: imageProvider,
                       fit: boxFit,
@@ -205,7 +210,7 @@ class _PhotoCardState extends State<PhotoCard> {
                               loader = ColoredBox(color: kGreyPlaceholder);
                             } else {
                               loader = BlurHash(
-                                hash: hash,
+                                hash: hash!,
                                 color: Colors.transparent,
                               );
                             }
@@ -280,10 +285,10 @@ class _PhotoCardState extends State<PhotoCard> {
                       },
                     ),
                     CircularMenuItem(
-                      image: picStore.isPrivate == true
+                      image: picStore.isPrivate.value == true
                           ? Image.asset('lib/images/openlockmenu.png')
                           : Image.asset('lib/images/lockmenu.png'),
-                      color: picStore.isPrivate == true
+                      color: picStore.isPrivate.value == true
                           ? Color(0xFFF5FAFA)
                           : kYellowColor,
                       iconSize: 19.2,
@@ -339,7 +344,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           text: TextSpan(
                             children: [
                               TextSpan(
-                                text: picStore.specificLocation?.value
+                                text: picStore.specificLocation.value
                                         ?.toString() ??
                                     S.of(context).photo_location,
                                 style: TextStyle(
@@ -353,7 +358,7 @@ class _PhotoCardState extends State<PhotoCard> {
                               ),
                               TextSpan(
                                 text:
-                                    '  ${picStore?.generalLocation?.value ?? S.of(context).country}',
+                                    '  ${picStore.generalLocation.value ?? S.of(context).country}',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -369,7 +374,9 @@ class _PhotoCardState extends State<PhotoCard> {
                       }),
                     ),
                     Text(
-                      dateFormat(picStore.createdAt),
+                      picStore.createdAt == null
+                          ? ''
+                          : dateFormat(picStore.createdAt!),
                       textScaleFactor: 1.0,
                       style: TextStyle(
                         fontFamily: 'Lato',
@@ -388,7 +395,7 @@ class _PhotoCardState extends State<PhotoCard> {
                             .to
                             .picWiseTags[picStore.photoId.value.toString()]
                             ?.keys
-                            ?.toList() ??
+                            .toList() ??
                         <String>[],
                     addTagField: true,
                     textEditingController: tagsEditingController,
@@ -464,7 +471,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     String suggestionsTitle;
 
                     if (picStore.aiTags.value) {
-                      if (picStore.aiTagsLoaded == false) {
+                      if (picStore.aiTagsLoaded.value == false) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -495,7 +502,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       }
 
                       suggestionsTitle = S.of(context).suggestions;
-                    } else if (picStore.searchText != '') {
+                    } else if (picStore.searchText.value != '') {
                       suggestionsTitle = S.of(context).search_results;
                     } else {
                       suggestionsTitle = S.of(context).recent_tags;
@@ -520,7 +527,7 @@ class _PhotoCardState extends State<PhotoCard> {
                                   null &&
                               TaggedController.to.picWiseTags[
                                           picStore.photoId.value.toString()]
-                                      [tagKey] !=
+                                      ?[tagKey] !=
                                   null) {
                             return false;
                           }
@@ -548,7 +555,7 @@ class _PhotoCardState extends State<PhotoCard> {
                                       null &&
                                   TaggedController.to.picWiseTags[
                                               picStore.photoId.value.toString()]
-                                          [element.key] ==
+                                          ?[element.key] ==
                                       null) {
                                 return true;
                               }

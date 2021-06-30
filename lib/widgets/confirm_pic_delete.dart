@@ -4,8 +4,8 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 
 class ConfirmPicDelete extends StatefulWidget {
-  final Function onPressedClose;
-  final Function onPressedDelete;
+  final Function() onPressedClose;
+  final Function() onPressedDelete;
 
   const ConfirmPicDelete({
     required this.onPressedClose,
@@ -19,7 +19,7 @@ class ConfirmPicDelete extends StatefulWidget {
 class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width;
     //print('Width: $width');
 
     return Dialog(

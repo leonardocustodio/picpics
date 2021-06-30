@@ -3,25 +3,25 @@ import 'package:photo_manager/photo_manager.dart';
 import 'dart:typed_data';
 
 class OriginalImageItem extends StatelessWidget {
-  final AssetEntity entity;
+  final AssetEntity? entity;
   final Color backgroundColor;
   final int size;
   final BoxFit fit;
 
   const OriginalImageItem({
-    Key key,
+    Key? key,
     this.entity,
-    this.backgroundColor,
+    required this.backgroundColor,
     this.size = 64,
     this.fit = BoxFit.cover,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Uint8List>(
-      future: entity.thumbDataWithSize(
-          entity.size.width.toInt(), entity.size.height.toInt()),
-      builder: (BuildContext context, AsyncSnapshot<Uint8List> snapshot) {
+    return FutureBuilder<Uint8List?>(
+      future: entity!.thumbDataWithSize(
+          entity!.size.width.toInt(), entity!.size.height.toInt()),
+      builder: (BuildContext context, AsyncSnapshot<Uint8List?> snapshot) {
         var futureData = snapshot.data;
         if (snapshot.connectionState == ConnectionState.done &&
             futureData != null) {

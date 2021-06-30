@@ -17,10 +17,10 @@ class SecretSwitch extends StatefulWidget {
 }
 
 class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
-  CustomAnimationControl control = CustomAnimationControl.PLAY;
+  CustomAnimationControl control = CustomAnimationControl.play;
   bool goingRight = true;
-  bool initRight;
-  bool positionRight;
+  late bool initRight;
+  late bool positionRight;
 
   @override
   void initState() {
@@ -33,9 +33,9 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
     setState(() {
       goingRight = !goingRight;
       positionRight = widget.value;
-      control = (control == CustomAnimationControl.PLAY)
-          ? CustomAnimationControl.PLAY_REVERSE
-          : CustomAnimationControl.PLAY;
+      control = (control == CustomAnimationControl.play
+          ? CustomAnimationControl.playReverse
+          : CustomAnimationControl.play);
     });
   }
 

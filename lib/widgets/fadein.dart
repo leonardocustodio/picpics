@@ -9,8 +9,8 @@ class FadeIn extends StatelessWidget {
   final Widget child;
 
   FadeIn({
-    this.delay,
-    this.child,
+    required this.delay,
+    required this.child,
   });
 
   @override
@@ -23,7 +23,6 @@ class FadeIn extends StatelessWidget {
       delay: (300 * delay).round().milliseconds,
       duration: 120.milliseconds,
       tween: tween,
-      child: child,
       builder: (context, child, value) => Opacity(
         opacity: value.get(_AniProps.opacity),
         child: Container(
@@ -31,6 +30,7 @@ class FadeIn extends StatelessWidget {
           child: child,
         ),
       ),
+      child: child,
     );
   }
 }

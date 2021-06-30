@@ -5,8 +5,8 @@ import 'package:picPics/generated/l10n.dart';
 
 class GeneralModal extends StatelessWidget {
   final String message;
-  final Function onPressedDelete;
-  final Function onPressedOk;
+  final Function() onPressedDelete;
+  final Function() onPressedOk;
 
   GeneralModal({
     required this.message,

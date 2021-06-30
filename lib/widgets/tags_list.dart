@@ -13,17 +13,17 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
 
-typedef OnString = Function(String);
+typedef OnString = Function(String)?;
 typedef OnEmptyTap = Function();
 
 class TagsList extends StatefulWidget {
   final List<String> tagsKeyList;
-  final TextEditingController textEditingController;
-  final FocusNode textFocusNode;
+  TextEditingController? textEditingController;
+  final FocusNode? textFocusNode;
   final bool addTagField;
-  final Function addTagButton;
+  final Function()? addTagButton;
   final bool addButtonVisible;
-  final String title;
+  final String? title;
   final TagStyle tagStyle;
   final OnString onTap; // Function(String)
   final OnString onDoubleTap; // Function()
@@ -31,11 +31,11 @@ class TagsList extends StatefulWidget {
   final OnString onSubmitted; // Function(String)
   final OnString onChanged; // Function(String)
   //final OnString showEditTagModal; // Function()
-  final String aiButtonTitle;
-  final Function onAiButtonTap;
+  final String? aiButtonTitle;
+  final Function()? onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
-  const TagsList({
+  TagsList({
     required this.tagsKeyList,
     this.tagStyle = TagStyle.MultiColored,
     this.textEditingController,
@@ -60,12 +60,12 @@ class TagsList extends StatefulWidget {
 }
 
 class _TagsListState extends State<TagsList> {
-  int showSwiperInIndex;
-  String tagBeingPanned;
+  int? showSwiperInIndex;
+  String? tagBeingPanned;
   bool swipedRightDirection = false;
 
   Widget _buildTagsWidget(BuildContext context, List<String> tags) {
-    List<Widget> tagsWidgets = [];
+    var tagsWidgets = <Widget>[];
     //print('Tags in TagsList: ${tags}');
 
     if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
@@ -87,14 +87,14 @@ class _TagsListState extends State<TagsList> {
       );
     }
 
-    for (int i = 0; i < tags.length; i++) {
-      String tagKey = tags[i];
+    for (var i = 0; i < tags.length; i++) {
+      var tagKey = tags[i];
 
       /// We'll have to avoid the tags whose tag name is null and
       ///
       /// also if the tags is [kSecretTagKey] and showPrivate is False
-      if (TagsController.to.allTags[tagKey]?.value?.title == null ||
-          (PrivatePhotosController.to.showPrivate == false &&
+      if (TagsController.to.allTags[tagKey]?.value.title == null ||
+          (PrivatePhotosController.to.showPrivate.value == false &&
               tagKey == kSecretTagKey)) {
         continue;
       }
@@ -145,7 +145,7 @@ class _TagsListState extends State<TagsList> {
               showSwiperInIndex = null;
               Vibrate.feedback(FeedbackType.success);
               //DatabaseManager.instance.selectedTagKey = tag.key;
-              widget.onPanEnd(tagKey);
+              widget.onPanEnd?.call(tagKey);
               swipedRightDirection = false;
             }
           },
@@ -183,7 +183,7 @@ class _TagsListState extends State<TagsList> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8.0, horizontal: 16.0),
                         child: Text(
-                          TagsController.to.allTags[tagKey].value.title,
+                          TagsController.to.allTags[tagKey]!.value.title,
                           textScaleFactor: 1.0,
                           style: widget.tagStyle == TagStyle.MultiColored
                               ? kWhiteTextStyle
@@ -198,14 +198,14 @@ class _TagsListState extends State<TagsList> {
                             : Image.asset('lib/images/locktaggray.png'),
                       )
                 : CustomAnimation<double>(
-                    control: CustomAnimationControl.LOOP,
+                    control: CustomAnimationControl.loop,
                     tween: 0.0.tweenTo(600.0),
                     duration: 7.seconds,
                     startPosition: 0.0,
                     builder: (context, child, value) {
-                      double firstOpct = 0.0;
-                      double secondOpct = 0.0;
-                      double thirdOpct = 0.0;
+                      var firstOpct = 0.0;
+                      var secondOpct = 0.0;
+                      var thirdOpct = 0.0;
 
                       if (value <= 300) {
                         firstOpct = 0.0;
@@ -252,7 +252,7 @@ class _TagsListState extends State<TagsList> {
                               padding: EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16.0),
                               child: Text(
-                                TagsController.to.allTags[tagKey].value.title,
+                                TagsController.to.allTags[tagKey]!.value.title,
                                 textScaleFactor: 1.0,
                                 style: widget.tagStyle == TagStyle.MultiColored
                                     ? kWhiteTextStyle
@@ -396,8 +396,8 @@ class _TagsListState extends State<TagsList> {
                           padding: const EdgeInsets.all(0),
                           minSize: 30,
                           onPressed: () {
-                            widget
-                                .onSubmitted(widget.textEditingController.text);
+                            widget.onSubmitted
+                                ?.call(widget.textEditingController!.text);
                           },
                           child: Icon(
                             Icons.add,
@@ -416,7 +416,7 @@ class _TagsListState extends State<TagsList> {
                   child: Row(
                     children: [
                       Text(
-                        widget.aiButtonTitle,
+                        widget.aiButtonTitle!,
                         textScaleFactor: 1.0,
                         style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
@@ -439,7 +439,7 @@ class _TagsListState extends State<TagsList> {
           Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
-              widget.title,
+              widget.title!,
               textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',

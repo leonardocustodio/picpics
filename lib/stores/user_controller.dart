@@ -589,10 +589,10 @@ class UserController extends GetxController {
   PopPinScreenTo popPinScreen;
 
   cryptography.SecretKey? encryptionKey;
-  void setEncryptionKey(cryptography.SecretKey value) => encryptionKey = value;
+  void setEncryptionKey(cryptography.SecretKey? value) => encryptionKey = value;
 
-  String tempEncryptionKey;
-  void setTempEncryptionKey(String value) => tempEncryptionKey = value;
+  String? tempEncryptionKey;
+  void setTempEncryptionKey(String? value) => tempEncryptionKey = value;
 
   String? email;
   Future<void> setEmail(String value) async {

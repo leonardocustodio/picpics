@@ -31,10 +31,10 @@ class Helpers {
     return decrypted;
   }
 
-  static String removeLastCharacter(String str) {
-    String result;
+  static String removeLastCharacter(String? str) {
+    String? result;
     if (str?.isNotEmpty ?? false) {
-      result = str.substring(0, str.length - 1);
+      result = str!.substring(0, str.length - 1);
     }
 
     return result ?? '';
@@ -61,7 +61,7 @@ void doCustomisedSearching(
   if (tag == null) callback(false);
 
   var matched = true;
-  var title = (tag is TagModel ? tag?.title : tag)?.toLowerCase();
+  var title = (tag is TagModel ? tag.title : tag)?.toLowerCase();
   var i = 0;
   for (var index = 0; index < listOfLetters.length; index++) {
     var found = false;

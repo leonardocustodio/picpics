@@ -136,9 +136,15 @@ class UntaggedTab extends GetWidget<TabsController> {
                           if (visiblePercentage > 10 &&
                               controller.picStoreMap[monthKeys[index].key] ==
                                   null) {
-                            TabsController
-                                    .to.picStoreMap[monthKeys[index].key] =
-                                controller.explorPicStore(monthKeys[index].key);
+                            var picStore = controller
+                                .explorPicStore(monthKeys[index].key)
+                                .value;
+
+                            if (picStore != null) {
+                              TabsController
+                                      .to.picStoreMap[monthKeys[index].key] =
+                                  Rx<PicStore>(picStore);
+                            }
                           }
                         },
                         child: Stack(
@@ -244,8 +250,15 @@ class UntaggedTab extends GetWidget<TabsController> {
                           if (visiblePercentage > 10 &&
                               controller.picStoreMap[dayKeys[index].key] ==
                                   null) {
-                            TabsController.to.picStoreMap[dayKeys[index].key] =
-                                controller.explorPicStore(dayKeys[index].key);
+                            var picStore = controller
+                                .explorPicStore(dayKeys[index].key)
+                                .value;
+
+                            if (picStore != null) {
+                              TabsController
+                                      .to.picStoreMap[dayKeys[index].key] =
+                                  Rx<PicStore>(picStore);
+                            }
                             /* debugPrint(
                               'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
                           }

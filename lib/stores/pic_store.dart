@@ -10,6 +10,7 @@ import 'package:googleapis_auth/auth_io.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:strings/strings.dart';
@@ -56,7 +57,7 @@ class PicStore extends GetxController {
   // @observable
   final generalLocation = RxnString(null);
 
-  String? nonce;
+  String nonce = '';
 
   // @observable
   final isPrivate = false.obs;
@@ -68,7 +69,7 @@ class PicStore extends GetxController {
   final photoId;
 
   // @observable
-  late Rx<AssetEntity> entity;
+  late Rx<AssetEntity?> entity;
 
   // @observable
   final tagsSuggestions = <TagModel>[].obs;
@@ -101,10 +102,15 @@ class PicStore extends GetxController {
     //var picsBox = Hive.box('pics');
     Photo pic = await database.getPhotoByPhotoId(photoId.value);
     //pic.isStarred = value;
-    String base64encoded;
+    String? base64encoded;
     //print('teste');
     if (isStarred.value) {
-      var bytes = await entity.value.thumbDataWithSize(300, 300);
+      var bytes = await entity.value?.thumbDataWithSize(300, 300);
+
+      /// TODO: what to do in this case scenario
+      if (bytes == null) {
+        return;
+      }
       var encoded = base64.encode(bytes);
       base64encoded = encoded;
       await UserController.to.addToStarredPhotos(photoId.value);
@@ -173,23 +179,23 @@ class PicStore extends GetxController {
     //print('Changed asset entity');
   }
 
-  Future<Uint8List> get assetOriginBytes async {
-    if (isPrivate == false && entity != null) {
-      return await entity.value.originBytes;
+  Future<Uint8List?> get assetOriginBytes async {
+    if (isPrivate.value == false) {
+      return await entity.value?.originBytes;
     }
     //print('Returning decrypt image in privatePath: $photoPath');
     return await Crypto.decryptImage(
-        photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
+        photoPath, UserController.to.encryptionKey, hex.decode(nonce));
   }
 
-  Future<Uint8List> get assetThumbBytes async {
-    if (isPrivate == false && entity != null) {
-      return await entity.value.thumbDataWithSize(
+  Future<Uint8List?> get assetThumbBytes async {
+    if (isPrivate.value == false) {
+      return await entity.value?.thumbDataWithSize(
           kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
     }
     //print('Returning decrypt image in privatePath: $thumbPath');
     return await Crypto.decryptImage(
-        thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
+        thumbPath, UserController.to.encryptionKey, hex.decode(nonce));
   }
 
   String photoPath;
@@ -209,7 +215,7 @@ class PicStore extends GetxController {
   }
 
   //@action
-  Future<void> setPrivatePath(
+  Future<bool?> setPrivatePath(
       String picPath, String thumbnailPath, String picNonce) async {
     //var secretBox = Hive.box('secrets');
     Private secret = Private(
@@ -227,20 +233,21 @@ class PicStore extends GetxController {
     thumbPath = thumbnailPath;
     nonce = picNonce;
 
-    if (UserController.to.shouldDeleteOnPrivate == true) {
+    if (UserController.to.shouldDeleteOnPrivate.value == true &&
+        entity.value != null) {
       //print('**** Deleted original pic!!!');
       if (Platform.isAndroid) {
-        await PhotoManager.editor.deleteWithIds([entity.value.id]);
+        await PhotoManager.editor.deleteWithIds([entity.value!.id]);
       } else {
         final result =
-            await PhotoManager.editor.deleteWithIds([entity.value.id]);
+            await PhotoManager.editor.deleteWithIds([entity.value!.id]);
         if (result.isEmpty) {
           return false;
         }
       }
       await setDeletedFromCameraRoll(true);
       entity.value = null;
-      return;
+      return null;
     }
     await setDeletedFromCameraRoll(false);
   }
@@ -269,6 +276,11 @@ class PicStore extends GetxController {
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
       //print('Pic has entity? ${entity == null ? false : true}');
       var picData = await assetOriginBytes;
+
+      /// TODO: returning is picData is null
+      if (null == picData) {
+        return;
+      }
       final imageEntity = await PhotoManager.editor.saveImage(picData);
 
       /// TODO: what to do if the imageEntity is null ??
@@ -436,7 +448,9 @@ class PicStore extends GetxController {
       }
 
       for (var tagId in suggestionTags) {
-        suggestions.add(TagsController.to.allTags[tagId].value);
+        if (TagsController.to.allTags[tagId] != null) {
+          suggestions.add(TagsController.to.allTags[tagId]!.value);
+        }
       }
 
       tagsSuggestions.value = suggestions;
@@ -450,8 +464,9 @@ class PicStore extends GetxController {
           tagName,
           listOfLetters,
           (matched) {
-            if (matched && TagsController.to.allTags[tagKey].value != null)
-              tagsSuggestions.add(TagsController.to.allTags[tagKey].value);
+            if (matched && TagsController.to.allTags[tagKey] != null) {
+              tagsSuggestions.add(TagsController.to.allTags[tagKey]!.value);
+            }
           },
         );
         /* if (tagName.startsWith(Helpers.stripTag(searchText))) {
@@ -465,7 +480,7 @@ class PicStore extends GetxController {
   }
 
   //@action
-  Future<void> addTag({String tagName}) async {
+  Future<void> addTag({required String tagName}) async {
     //var tagsBox = Hive.box('tags');
     /* //print(tagsBox.keys); */
 
@@ -527,10 +542,10 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> addTagToPic(
-      {String tagKey,
-      String tagNameX,
-      String photoId,
-      List<AssetEntity> entities}) async {
+      {required String tagKey,
+      required String tagNameX,
+      required String photoId,
+      required List<AssetEntity> entities}) async {
     //var picsBox = Hive.box('pics');
     Photo getPic = await database.getPhotoByPhotoId(photoId);
 
@@ -552,14 +567,18 @@ class PicStore extends GetxController {
       //print('updated picture');
 
       var tagModel = TagsController.to.allTags[tagKey];
-
-      tags[tagKey] = tagModel;
+      if (tagModel == null) {
+        await TagsController.to.loadAllTags();
+      }
+      if (tagModel != null) {
+        tags[tagKey] = tagModel;
+      }
 
       await tagsSuggestionsCalculate();
 
       await Analytics.sendEvent(
         Event.added_tag,
-        params: {'tagName': tagModel.value.title},
+        params: {'tagName': tagModel!.value.title},
       );
       return;
     }
@@ -568,7 +587,7 @@ class PicStore extends GetxController {
     //print('Photo Id: $photoId');
 
     var tagModel = TagsController.to.allTags[tagKey];
-    tags[tagKey] = tagModel;
+    tags[tagKey] = tagModel!;
 
     Photo pic = Photo(
       id: photoId,
@@ -599,7 +618,10 @@ class PicStore extends GetxController {
     );
   }
 
-  Future<String> _writeByteToImageFile(Uint8List byteData) async {
+  Future<String?> _writeByteToImageFile(Uint8List? byteData) async {
+    if (byteData == null) {
+      return null;
+    }
     var tempDir = await getTemporaryDirectory();
     var imageFile = File(
         '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
@@ -610,20 +632,20 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> sharePic() async {
-    var path = '';
+    String? path;
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(entity == null
+      path = await _writeByteToImageFile(entity.value == null
           ? await assetOriginBytes
-          : await entity.value.originBytes);
+          : await entity.value!.originBytes);
     } else {
-      if (entity == null) {
+      if (entity.value == null) {
         var bytes = await assetOriginBytes;
         path = await _writeByteToImageFile(bytes);
       } else {
-        var bytes = await entity.value.thumbDataWithSize(
-          entity.value.size.width.toInt(),
-          entity.value.size.height.toInt(),
+        var bytes = await entity.value!.thumbDataWithSize(
+          entity.value!.size.width.toInt(),
+          entity.value!.size.height.toInt(),
           format: ThumbFormat.jpeg,
         );
         path = await _writeByteToImageFile(bytes);
@@ -635,13 +657,17 @@ class PicStore extends GetxController {
     }
 
     await Analytics.sendEvent(Event.shared_photo);
-    await ShareExtend.share(path, "image");
+    await ShareExtend.share(path, 'image');
   }
 
   //@action
   Future<bool> deletePic() async {
     //print('Before photo manager delete: ${entity.id}');
 
+    /// TODO: Is this I am doing, might be right or might be wrong
+    if (entity.value == null) {
+      return false;
+    }
     if (Platform.isAndroid) {
       await PhotoManager.editor.deleteWithIds([entity.value.id]);
     } else {
@@ -674,7 +700,7 @@ class PicStore extends GetxController {
   }
 
   //@action
-  Future<void> removeTagFromPic({String tagKey}) async {
+  Future<void> removeTagFromPic({required String tagKey}) async {
     Label getTag = await database.getLabelByLabelKey(tagKey);
 
     int indexOfPicInTag = getTag.photoId.indexOf(photoId.value);
@@ -707,7 +733,10 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> saveLocation(
-      {double lat, double long, String? specific, String? general}) async {
+      {required double lat,
+      required double long,
+      String? specific,
+      String? general}) async {
     //var picsBox = Hive.box('pics');
 
     //Pic getPic = picsBox.get(photoId);
@@ -762,7 +791,7 @@ class PicStore extends GetxController {
   void switchAiTags() {
     aiTags.value = !aiTags.value;
 
-    if (aiTags == true) {
+    if (aiTags.value == true) {
       //getAiSuggestions(context);
     }
   }
@@ -795,8 +824,8 @@ class PicStore extends GetxController {
 }
 ''');
 
-    const _SCOPES = const [TranslateApi.CloudTranslationScope];
-    List<String> translatedStrings;
+    final _SCOPES = [TranslateApi.cloudTranslationScope];
+    var translatedStrings = <String>[];
 
     await clientViaServiceAccount(_credentials, _SCOPES)
         .then((http_client) async {
@@ -812,8 +841,13 @@ class PicStore extends GetxController {
       var response =
           await translate.projects.translateText(request, 'projects/picpics');
       var translations = response.translations;
-      translatedStrings =
-          translations.map((e) => capitalize(e.translatedText)).toList();
+      if (translations != null) {
+        translations.forEach((element) {
+          if (element.translatedText != null) {
+            translatedStrings.add(capitalize(element.translatedText!));
+          }
+        });
+      }
     });
 
     return translatedStrings;

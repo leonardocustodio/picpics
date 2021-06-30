@@ -5,9 +5,9 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/user_controller.dart';
 
 class DeleteSecretModal extends StatefulWidget {
-  final Function onPressedClose;
-  final Function onPressedDelete;
-  final Function onPressedOk;
+  final Function() onPressedClose;
+  final Function() onPressedDelete;
+  final Function() onPressedOk;
 
   DeleteSecretModal({
     required this.onPressedClose,
