@@ -94,7 +94,7 @@ class PushNotificationsManager {
       //DatabaseManager.instance.userSettings.dailyChallenges = false;
       //userBox.putAt(0, DatabaseManager.instance.userSettings);
       await DatabaseManager.instance.database.updateMoorUser(
-        DatabaseManager.instance.userSettings.copyWith(
+        DatabaseManager.instance.userSettings!.copyWith(
           dailyChallenges: false,
         ),
       );

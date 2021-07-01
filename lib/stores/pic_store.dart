@@ -100,7 +100,7 @@ class PicStore extends GetxController {
     //print('Setting starred photo $photoId to $value');
 
     //var picsBox = Hive.box('pics');
-    Photo pic = await database.getPhotoByPhotoId(photoId.value);
+    var pic = await database.getPhotoByPhotoId(photoId.value);
     //pic.isStarred = value;
     String? base64encoded;
     //print('teste');
@@ -134,7 +134,7 @@ class PicStore extends GetxController {
 
     var tagKeys = tags.keys.toList();
     tagKeys.forEach((tKeys) async {
-      Label getTag = await database.getLabelByLabelKey(tKeys);
+      final getTag = await database.getLabelByLabelKey(tKeys);
 
       getTag.photoId.remove(photoId);
       getTag.photoId.add(value);
@@ -151,10 +151,10 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //Pic picOld = picsBox.get(photoId);
-    Photo picOld = await database.getPhotoByPhotoId(photoId.value!);
+    var picOld = await database.getPhotoByPhotoId(photoId.value!);
 
     if (picOld != null) {
-      Photo createPic = Photo(
+      var createPic = Photo(
         id: picEntity.id,
         createdAt: picOld.createdAt,
         originalLatitude: picOld.originalLatitude,
@@ -164,9 +164,9 @@ class PicStore extends GetxController {
         specificLocation: picOld.specificLocation,
         generalLocation: picOld.generalLocation,
         tags: picOld.tags,
-        isPrivate: picOld.isPrivate ?? false,
-        deletedFromCameraRoll: picOld.deletedFromCameraRoll ?? false,
-        isStarred: picOld.isStarred ?? false,
+        isPrivate: picOld.isPrivate,
+        deletedFromCameraRoll: picOld.deletedFromCameraRoll,
+        isStarred: picOld.isStarred,
       );
       //picsBox.put(picEntity.id, createPic);
       await database.createPhoto(createPic);
@@ -208,7 +208,7 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //Pic pic = picsBox.get(photoId);
-    Photo pic = await database.getPhotoByPhotoId(photoId.value);
+    var pic = await database.getPhotoByPhotoId(photoId.value);
     //pic.deletedFromCameraRoll = value;
     //pic.save();
     await database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
@@ -218,7 +218,7 @@ class PicStore extends GetxController {
   Future<bool?> setPrivatePath(
       String picPath, String thumbnailPath, String picNonce) async {
     //var secretBox = Hive.box('secrets');
-    Private secret = Private(
+    var secret = Private(
       id: photoId.value,
       path: picPath,
       thumbPath: thumbnailPath,
@@ -258,7 +258,7 @@ class PicStore extends GetxController {
 
     //var secretBox = Hive.box('secrets');
     //Secret secretPic = secretBox.get(photoId);
-    Private secretPic = await database.getPrivateByPhotoId(photoId.value);
+    var secretPic = await database.getPrivateByPhotoId(photoId.value);
 
     if (secretPic != null) {
       //secretPic.delete();
@@ -315,7 +315,7 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //var secretBox = Hive.box('secrets');
-    Photo pic = await database.getPhotoByPhotoId(photoId.value);
+    var pic = await database.getPhotoByPhotoId(photoId.value);
     if (pic != null) {
       //print('pic $photoId exists, loading data....');
       //Pic pic = picsBox.get(photoId);
@@ -330,7 +330,7 @@ class PicStore extends GetxController {
 
       //print('Is private: $isPrivate');
       if (isPrivate.value == true) {
-        Private secretPic = await database.getPrivateByPhotoId(photoId.value);
+        var secretPic = await database.getPrivateByPhotoId(photoId.value);
 
         if (secretPic != null) {
           photoPath = secretPic.path;
@@ -340,7 +340,7 @@ class PicStore extends GetxController {
         }
       }
 
-      for (String tagKey in pic.tags) {
+      for (var tagKey in pic.tags) {
         var tagModel = TagsController.to.allTags[tagKey];
         if (tagModel == null) {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
@@ -369,7 +369,7 @@ class PicStore extends GetxController {
     //print('Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
 
     //var picsBox = Hive.box('pics');
-    Photo getPic = await database.getPhotoByPhotoId(photoId.value);
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
     //getPic.isPrivate = value;
     //picsBox.put(photoId, getPic);
     await database.updatePhoto(getPic.copyWith(isPrivate: value));
@@ -547,7 +547,7 @@ class PicStore extends GetxController {
       required String photoId,
       required List<AssetEntity> entities}) async {
     //var picsBox = Hive.box('pics');
-    Photo getPic = await database.getPhotoByPhotoId(photoId);
+    var getPic = await database.getPhotoByPhotoId(photoId);
 
     if (getPic != null) {
       //print('this picture is in db going to update');
@@ -589,7 +589,7 @@ class PicStore extends GetxController {
     var tagModel = TagsController.to.allTags[tagKey];
     tags[tagKey] = tagModel!;
 
-    Photo pic = Photo(
+    var pic = Photo(
       id: photoId,
       createdAt: createdAt,
       originalLatitude: originalLatitude,
@@ -679,7 +679,7 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //Pic pic = picsBox.get(photoId);
-    Photo pic = await database.getPhotoByPhotoId(photoId.value);
+    var pic = await database.getPhotoByPhotoId(photoId.value);
 
     if (pic != null) {
       //print('pic is in db... removing it from db!');
@@ -703,15 +703,15 @@ class PicStore extends GetxController {
   Future<void> removeTagFromPic({required String tagKey}) async {
     Label getTag = await database.getLabelByLabelKey(tagKey);
 
-    int indexOfPicInTag = getTag.photoId.indexOf(photoId.value);
+    var indexOfPicInTag = getTag.photoId.indexOf(photoId.value);
 
     if (indexOfPicInTag != -1) {
       getTag.photoId.removeAt(indexOfPicInTag);
       await database.updateLabel(getTag);
     }
 
-    Photo getPic = await database.getPhotoByPhotoId(photoId.value);
-    int indexOfTagInPic = getPic.tags.indexOf(tagKey);
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
+    var indexOfTagInPic = getPic.tags.indexOf(tagKey);
 
     if (indexOfTagInPic != -1) {
       getPic.tags.removeAt(indexOfTagInPic);
@@ -740,7 +740,7 @@ class PicStore extends GetxController {
     //var picsBox = Hive.box('pics');
 
     //Pic getPic = picsBox.get(photoId);
-    Photo getPic = await database.getPhotoByPhotoId(photoId.value);
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
       //print('found pic');
@@ -759,7 +759,7 @@ class PicStore extends GetxController {
       //print('updated pic with new values');
     } else {
       //print('Did not found pic!');
-      Photo createPic = Photo(
+      var createPic = Photo(
         id: photoId.value,
         createdAt: createdAt,
         originalLatitude: originalLatitude,
