@@ -8,11 +8,11 @@ class DatabaseController extends GetxController {
   final _database = AppDatabase();
 
   Future<MoorUser> getUser({String? deviceLocale}) async {
-    MoorUser user = await _database.getSingleMoorUser(createIfNotExist: false);
+    final user = await _database.getSingleMoorUser(createIfNotExist: false);
 
     if (user == null) {
 //      Locale locale = await DeviceLocale.getCurrentLocale();
-      MoorUser user2 = getDefaultMoorUser(deviceLocale: deviceLocale);
+      final user2 = getDefaultMoorUser(deviceLocale: deviceLocale);
       await _database.createMoorUser(user2);
       await Analytics.setUserId(user2.id);
       await Analytics.sendEvent(Event.created_user);
@@ -27,16 +27,18 @@ class DatabaseController extends GetxController {
   Future<void> setDeletedFromCameraRoll(String picId, bool value) async {
     //var picsBox = Hive.box('pics');
     //Pic pic = picsBox.get(photoId);
-    Photo pic = await _database.getPhotoByPhotoId(picId);
+    final pic = await _database.getPhotoByPhotoId(picId);
     //pic.deletedFromCameraRoll = value;
     //pic.save();
     await _database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
   }
 
   void setKeepAskingToDelete(bool value) async {
-    MoorUser currentUser = await _database.getSingleMoorUser();
-    await _database
-        .updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
+    final currentUser = await _database.getSingleMoorUser();
+    if (currentUser != null) {
+      await _database
+          .updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
+    }
   }
 }
 
@@ -58,7 +60,7 @@ MoorUser getDefaultMoorUser({String? deviceLocale}) {
     lastTaggedPicDate: DateTime.now(),
     canTagToday: true,
     appLanguage: deviceLocale ?? '',
-    hasGalleryPermission: null,
+    hasGalleryPermission: false,
     loggedIn: false,
     secretPhotos: false,
     isPinRegistered: false,

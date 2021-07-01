@@ -195,6 +195,7 @@ class AppDatabase extends _$AppDatabase {
   }
   AppDatabase._internal() : super(_openConnection());
 
+  @override
   int get schemaVersion => 1;
 
   ///
@@ -403,9 +404,9 @@ class AppDatabase extends _$AppDatabase {
   ///
 
   Future<void> insertAllPicBlurHash(List<PicBlurHash> blurHashes) async {
-    List<PicBlurHashsCompanion> blurHashedCompanion = [];
+    final blurHashedCompanion = <PicBlurHashsCompanion>[];
 
-    for (PicBlurHash blurHash in blurHashes) {
+    for (var blurHash in blurHashes) {
       blurHashedCompanion.add(PicBlurHashsCompanion.insert(
           photoId: blurHash.photoId, blurHash: blurHash.blurHash));
     }
@@ -432,9 +433,9 @@ class AppDatabase extends _$AppDatabase {
   ///
 
   Future<void> insertAllPrivates(List<Secret> secretPhotos) async {
-    List<PrivatesCompanion> privatesCompanions = [];
+    final privatesCompanions = <PrivatesCompanion>[];
 
-    for (Secret secret in secretPhotos) {
+    for (var secret in secretPhotos) {
       privatesCompanions.add(
         PrivatesCompanion.insert(
           id: secret.photoId,
@@ -483,7 +484,7 @@ class AppDatabase extends _$AppDatabase {
       shouldDeleteOnPrivate: user.shouldDeleteOnPrivate.moorValue,
       tourCompleted: user.tourCompleted.moorValue,
       isBiometricActivated: user.isBiometricActivated.moorValue,
-      secretKey: userKey?.secretKey.moorValue,
+      secretKey: userKey?.secretKey.moorValue ?? Value.absent(),
     );
 
     await into(moorUsers).insert(
@@ -494,10 +495,10 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> insertAllLabelsEntries(
       Map<String, List<String>> photosTags) async {
-    List<LabelEntriesCompanion> labelsEntriesCompanions = [];
+    final labelsEntriesCompanions = <LabelEntriesCompanion>[];
 
     photosTags.forEach((key, value) {
-      for (String tag in value) {
+      for (var tag in value) {
         labelsEntriesCompanions.add(
           LabelEntriesCompanion.insert(
             photo: key,
@@ -513,9 +514,9 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<void> insertAllLabelsList(List<Tag> tags) async {
-    List<LabelsCompanion> labelsCompanions = [];
+    final labelsCompanions = <LabelsCompanion>[];
 
-    for (Tag tag in tags) {
+    for (final tag in tags) {
       labelsCompanions.add(
         LabelsCompanion.insert(
           key: tag.key.moorValue,
@@ -531,10 +532,10 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<void> insertAllPhotos(List<Pic> pics) async {
-    List<PhotosCompanion> photosCompanions = [];
+    final photosCompanions = <PhotosCompanion>[];
     var photosTags = <String, List<String>>{};
 
-    for (Pic pic in pics) {
+    for (var pic in pics) {
       photosTags[pic.photoId] = pic.tags;
       photosCompanions.add(
         PhotosCompanion.insert(

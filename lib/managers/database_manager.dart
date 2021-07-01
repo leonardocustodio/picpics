@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -30,7 +29,7 @@ class DatabaseManager extends ChangeNotifier {
   double scale = 1.0;
 
   //String selectedTagKey;
-  MoorUser userSettings;
+  late MoorUser? userSettings;
 
   double adOffset = 48.0;
   AppDatabase database = AppDatabase();
@@ -42,7 +41,7 @@ class DatabaseManager extends ChangeNotifier {
     // TODO: commented below line
     //var userBox = Hive.box('user');
 
-    var userSettings = await database.getSingleMoorUser();
+    userSettings = await database.getSingleMoorUser();
 
     //print('requesting notification...');
     //print('dailyChallenges: ${userSettings}');
@@ -73,9 +72,8 @@ class DatabaseManager extends ChangeNotifier {
       _firebaseMessaging.onIosSettingsRegistered. */
     } else {
       //print('its android!!!');
-
       await database.updateMoorUser(
-        userSettings.copyWith(
+        userSettings!.copyWith(
           notification: true,
           dailyChallenges: true,
         ),
@@ -90,7 +88,7 @@ class DatabaseManager extends ChangeNotifier {
   Future<String?> getTagName(String tagKey) async {
     /* 
     var tagsBox = Hive.box('tags'); */
-    Label getTag = await database.getLabelByLabelKey(tagKey);
+    final getTag = await database.getLabelByLabelKey(tagKey);
 
     // Verificar isso aqui pois tem a ver com as sugestões!!!!
     //print('TagKey: $tagKey');
@@ -141,7 +139,7 @@ class DatabaseManager extends ChangeNotifier {
 
   void loadRemoteConfig() async {
     //print('loading remote config....');
-    final remoteConfig = await RemoteConfig.instance;
+    final remoteConfig = RemoteConfig.instance;
     // Enable developer mode to relax fetch throttling
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
         fetchTimeout: const Duration(days: 5),
@@ -166,9 +164,11 @@ class DatabaseManager extends ChangeNotifier {
 
   Future<void> changeUserLanguage(String appLanguage,
       {bool notify = true}) async {
-    await database.updateMoorUser(userSettings.copyWith(
-      appLanguage: appLanguage,
-    ));
+    await database.updateMoorUser(
+      userSettings!.copyWith(
+        appLanguage: appLanguage,
+      ),
+    );
 
     //var userBox = Hive.box('user');
     //userSettings.appLanguage = appLanguage;
@@ -181,7 +181,7 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   String getUserLanguage() {
-    String appLanguage = userSettings.appLanguage.split('_')[0];
+    final appLanguage = userSettings!.appLanguage?.split('_')[0];
     var language = LanguageLocal();
     return '${language.getDisplayLanguage(appLanguage)['nativeName']}';
   }

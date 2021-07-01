@@ -53,7 +53,7 @@ class Crypto {
         macAlgorithm: cryptography.Hmac.sha256());
 
     final encryptionKey = await algorithm
-        .newSecretKeyFromBytes(utf8.encode(appStore.tempEncryptionKey));
+        .newSecretKeyFromBytes(utf8.encode(appStore.tempEncryptionKey!));
 
     appStore.setEncryptionKey(encryptionKey);
 
@@ -67,7 +67,7 @@ class Crypto {
     final ivKey = utf8.encode(ivString);
 
     final encryptedData = await algorithm.encrypt(
-        utf8.encode(appStore.tempEncryptionKey),
+        utf8.encode(appStore.tempEncryptionKey!),
         secretKey: picKey,
         nonce: ivKey);
     final hexData = hex.encode(encryptedData.cipherText);

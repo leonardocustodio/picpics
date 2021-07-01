@@ -13,7 +13,7 @@ class TopBar extends StatelessWidget {
   final UserController appStore;
   /* final GalleryStore galleryStore; */
   final TagsController tagsController;
-  final FocusNode searchFocusNode;
+  final FocusNode? searchFocusNode;
   final TextEditingController? searchEditingController;
   final List<Widget> children;
   final bool showSecretSwitch;
@@ -23,7 +23,7 @@ class TopBar extends StatelessWidget {
     required this.tagsController,
     required this.showSecretSwitch,
     this.searchEditingController,
-    required this.searchFocusNode,
+    this.searchFocusNode,
     required this.children,
   });
 
