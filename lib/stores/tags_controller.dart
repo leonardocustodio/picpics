@@ -599,12 +599,10 @@ class TagsController extends GetxController {
     }
     final getTag = await _database.getLabelByLabelKey(tagKey);
     if (getTag != null) {
-      getTag.photoId?.add(picStore?.photoId.value);
+      getTag.photoId?.add(picStore.photoId.value);
       await _database.updateLabel(getTag);
-      if (null != picStore) {
-        await picStore.addTagToPic(
-            tagKey: tagKey, photoId: picStore.photoId.value);
-      }
+      await picStore.addTagToPic(
+          tagKey: tagKey, photoId: picStore.photoId.value);
     }
   }
 
@@ -673,9 +671,7 @@ class TagsController extends GetxController {
 
   /// remove Tag from all tags
   void removeTag(TagModel tagModel) {
-    if (tagModel != null) {
-      allTags.remove(tagModel.key);
-    }
+    allTags.remove(tagModel.key);
   }
 
   Future<void> editTagName(
