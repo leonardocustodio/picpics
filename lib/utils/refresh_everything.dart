@@ -7,11 +7,10 @@ Future<void> refresh_everything() async {
   await PrivatePhotosController.to.refreshPrivatePics();
   await TabsController.to.refreshUntaggedList();
   await TaggedController.to.refreshTaggedPhotos();
-  await TagsController.to
-    ..loadAllTags()
-    ..loadLastMonthUsedTags()
-    ..loadLastWeekUsedTags()
-    ..loadMostUsedTags()
-    ..loadRecentTags();
+  await TagsController.to.loadAllTags();
+  TagsController.to.loadLastMonthUsedTags();
+  TagsController.to.loadLastWeekUsedTags();
+  TagsController.to.loadMostUsedTags();
+  await TagsController.to.loadRecentTags();
   TagsController.to.multiPicTags.clear();
 }

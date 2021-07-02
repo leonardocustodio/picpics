@@ -79,7 +79,7 @@ class Labels extends Table {
   IntColumn get counter => integer().withDefault(const Constant(1))();
   DateTimeColumn get lastUsedAt =>
       dateTime().withDefault(Constant(DateTime.now()))();
-  TextColumn get title => text().nullable()();
+  TextColumn get title => text().withDefault(const Constant(''))();
   TextColumn get photoId => text().nullable().map(ListStringConvertor())();
 }
 
@@ -208,11 +208,12 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<PicBlurHash>> getAllPicBlurHash() => select(picBlurHashs).get();
 
-  Future<PicBlurHash> getSinglePicBlurHash(String photoId) =>
+  Future<PicBlurHash?> getSinglePicBlurHash(
+          String photoId) =>
       (select(picBlurHashs)
             ..where((l) =>
                 l.photoId.equals(photoId) /* ?? const Constant(false) */))
-          .getSingle();
+          .getSingleOrNull();
 
   ///
   ///
@@ -301,9 +302,9 @@ class AppDatabase extends _$AppDatabase {
   ///
   Future createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
 
-  Future<Photo> getPhotoByPhotoId(String photoId) => (select(photos)
+  Future<Photo?> getPhotoByPhotoId(String photoId) => (select(photos)
         ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
-      .getSingle();
+      .getSingleOrNull();
 
   Future<List<Photo>> getAllTaggedPhotoIdList() {
     var convertor = ListStringConvertor();
@@ -345,9 +346,9 @@ class AppDatabase extends _$AppDatabase {
   ///
   Future createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
 
-  Future<Private> getPrivateByPhotoId(String photoId) => (select(privates)
+  Future<Private?> getPrivateByPhotoId(String photoId) => (select(privates)
         ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
-      .getSingle();
+      .getSingleOrNull();
 
   Future<List<Private>> getAllPrivate() => select(privates).get();
 
@@ -377,7 +378,7 @@ class AppDatabase extends _$AppDatabase {
     var moorUserReturn = await select(moorUsers).getSingleOrNull();
     if (createIfNotExist && moorUserReturn == null) {
       await createMoorUser(getDefaultMoorUser());
-      return await select(moorUsers).getSingle();
+      return await select(moorUsers).getSingleOrNull();
     } else {
       return moorUserReturn;
     }

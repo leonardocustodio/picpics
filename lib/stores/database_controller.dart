@@ -30,7 +30,9 @@ class DatabaseController extends GetxController {
     final pic = await _database.getPhotoByPhotoId(picId);
     //pic.deletedFromCameraRoll = value;
     //pic.save();
-    await _database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
+    if (pic != null) {
+      await _database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
+    }
   }
 
   void setKeepAskingToDelete(bool value) async {

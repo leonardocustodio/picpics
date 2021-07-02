@@ -15,10 +15,8 @@ class PrivatePhotosController extends GetxController {
 
   Future<void> refreshPrivatePics() async {
     var _val = await _appDatabase.getPrivatePhotoList();
-    await Future.forEach(_val, (photo) async {
-      if (photo?.id != null) {
-        privateMap[photo.id] = '';
-      }
+    await Future.forEach(_val, (Photo photo) async {
+      privateMap[photo.id] = '';
     });
   }
 
@@ -30,9 +28,9 @@ class PrivatePhotosController extends GetxController {
       UserController.to.setEncryptionKey(null);
     }
 
-    MoorUser currentUser = await _appDatabase.getSingleMoorUser();
+    final currentUser = await _appDatabase.getSingleMoorUser();
     await _appDatabase
-        .updateMoorUser(currentUser.copyWith(secretPhotos: showPrivate.value));
+        .updateMoorUser(currentUser!.copyWith(secretPhotos: showPrivate.value));
 
     //    Analytics.sendEvent(Event.notification_switch);
   }

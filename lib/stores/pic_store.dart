@@ -324,9 +324,9 @@ class PicStore extends GetxController {
       longitude.value = pic.longitude;
       specificLocation.value = pic.specificLocation;
       generalLocation.value = pic.generalLocation;
-      isPrivate.value = pic.isPrivate ?? false;
-      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
-      isStarred.value = pic.isStarred ?? false;
+      isPrivate.value = pic.isPrivate;
+      deletedFromCameraRoll = pic.deletedFromCameraRoll;
+      isStarred.value = pic.isStarred;
 
       //print('Is private: $isPrivate');
       if (isPrivate.value == true) {
@@ -372,20 +372,24 @@ class PicStore extends GetxController {
     var getPic = await database.getPhotoByPhotoId(photoId.value);
     //getPic.isPrivate = value;
     //picsBox.put(photoId, getPic);
-    await database.updatePhoto(getPic.copyWith(isPrivate: value));
+    if (getPic != null) {
+      await database.updatePhoto(getPic.copyWith(isPrivate: value));
+    }
   }
 
   Future<void> addSecretTagToPic() async {
     //var tagsBox = Hive.box('tags');
     //Tag getTag = tagsBox.get(kSecretTagKey);
-    Label getTag = await database.getLabelByLabelKey(kSecretTagKey);
+    final getTag = await database.getLabelByLabelKey(kSecretTagKey);
 
-    if (getTag.photoId.contains(photoId)) {
+    if (getTag == null ||
+        null == getTag.photoId ||
+        getTag.photoId!.contains(photoId)) {
       //print('this tag is already in this picture');
       return;
     }
 
-    getTag.photoId.add(photoId.value);
+    getTag.photoId!.add(photoId.value);
     //tagsBox.put(kSecretTagKey, getTag);
     await database.updateLabel(getTag);
 
@@ -542,10 +546,7 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> addTagToPic(
-      {required String tagKey,
-      required String tagNameX,
-      required String photoId,
-      required List<AssetEntity> entities}) async {
+      {required String tagKey, required String photoId}) async {
     //var picsBox = Hive.box('pics');
     var getPic = await database.getPhotoByPhotoId(photoId);
 

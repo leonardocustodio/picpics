@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
@@ -13,6 +12,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
@@ -21,14 +21,13 @@ import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:picPics/managers/crypto_manager_untouched.dart';
 
 import 'tags_controller.dart';
 
 class UserController extends GetxController {
   static UserController get to => Get.find();
-  String appVersion;
-  String deviceLocale;
+  final appVersion = ''.obs;
+  final deviceLocale = ''.obs;
   String? initiatedWithProduct;
   final LocalAuthentication biometricAuth = LocalAuthentication();
   AppDatabase database = AppDatabase();
@@ -39,12 +38,24 @@ class UserController extends GetxController {
   final keepAskingToDelete = false.obs;
   final shouldDeleteOnPrivate = false.obs;
   final isPremium = false.obs;
+  final picsTaggedToday = 0.obs;
+  final lastTaggedPicDate = Rxn<DateTime>();
+
+  final loggedIn = false.obs;
   final tutorialCompleted = false.obs;
   final canTagToday = false.obs;
   final hasGalleryPermission = false.obs;
   final waitingAccessCode = false.obs;
   final isMenuExpanded = true.obs;
   final isBiometricActivated = false.obs;
+
+  final starredPhotos = <String>[].obs;
+
+  //String initialRoute;
+  String? tryBuyId;
+  final dailyPicsForAds = 25.obs;
+  // int freePrivatePics = 20;
+  final tourCompleted = false.obs;
   // observable integers
   final requireSecret = 0.obs;
   final hourOfDay = 20.obs;
@@ -61,10 +72,10 @@ class UserController extends GetxController {
   @override
   void onReady() {
     DeviceLocale.getCurrentLocale().then((Locale locale) {
-      deviceLocale = locale.toString();
+      deviceLocale.value = locale.toString();
     });
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
-      appVersion = packageInfo.version;
+      appVersion.value = packageInfo.version;
     });
 
     ever(appLanguage, _settingCurrentLanguage);
@@ -74,7 +85,7 @@ class UserController extends GetxController {
   }
 
   void _settingCurrentLanguage(_) {
-    String lang = appLanguage.split('_')[0];
+    var lang = appLanguage.split('_')[0];
     appLocale.value = lang;
 
     var local = LanguageLocal();
@@ -82,8 +93,8 @@ class UserController extends GetxController {
   }
 
   Future initialize() async {
-    MoorUser user =
-        await DatabaseController.to.getUser(deviceLocale: deviceLocale);
+    var user =
+        await DatabaseController.to.getUser(deviceLocale: deviceLocale.value);
 
     notifications.value = user.notification;
     dailyChallenges.value = user.dailyChallenges;
@@ -91,19 +102,19 @@ class UserController extends GetxController {
     minutesOfDay.value = user.minuteOfDay;
     isPremium.value = user.isPremium;
     tutorialCompleted.value = user.tutorialCompleted;
-    appLanguage.value = user.appLanguage;
+    appLanguage.value = user.appLanguage ?? 'en';
     hasGalleryPermission.value = user.hasGalleryPermission;
     canTagToday.value = user.canTagToday;
-    loggedIn = user.loggedIn ?? false;
+    loggedIn.value = user.loggedIn;
     tryBuyId = initiatedWithProduct;
-    PrivatePhotosController.to.showPrivate.value = user.secretPhotos ?? false;
-    isPinRegistered.value = user.isPinRegistered ?? false;
-    keepAskingToDelete.value = user.keepAskingToDelete ?? true;
-    shouldDeleteOnPrivate.value = user.shouldDeleteOnPrivate ?? false;
+    PrivatePhotosController.to.showPrivate.value = user.secretPhotos;
+    isPinRegistered.value = user.isPinRegistered;
+    keepAskingToDelete.value = user.keepAskingToDelete;
+    shouldDeleteOnPrivate.value = user.shouldDeleteOnPrivate;
     email = user.email;
-    tourCompleted = user.tourCompleted ?? false;
-    isBiometricActivated.value = user.isBiometricActivated ?? false;
-    starredPhotos = user.starredPhotos ?? [];
+    tourCompleted.value = user.tourCompleted;
+    isBiometricActivated.value = user.isBiometricActivated;
+    starredPhotos.value = List<String>.from(user.starredPhotos ?? <String>[]);
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -112,9 +123,10 @@ class UserController extends GetxController {
     //createDefaultTags(Get.context);
 
     //TagsController.to.loadAllTags();
-
-    for (String tagKey in user.recentTags) {
-      TagsController.to.addRecentTag(tagKey);
+    if (user.recentTags != null) {
+      for (var tagKey in user.recentTags!) {
+        TagsController.to.addRecentTag(tagKey);
+      }
     }
 
     /* if (user.hasGalleryPermission != null || user.tutorialCompleted) {
@@ -122,29 +134,33 @@ class UserController extends GetxController {
     } */
 
     // Executa primeira vez para ver se ainda tem permissão
-    checkNotificationPermission();
+    await checkNotificationPermission();
 
-    DatabaseManager.instance.initPlatformState(user.id);
+    await DatabaseManager.instance.initPlatformState(user.id);
     DatabaseManager.instance.loadRemoteConfig();
 
     if (user.isPremium) {
-      checkPremiumStatus();
+      await checkPremiumStatus();
     }
 
-    checkAvailableBiometrics();
+    await checkAvailableBiometrics();
   }
 
   Future<void> setDefaultWidgetImage(AssetEntity entity) async {
     var bytes = await entity.thumbDataWithSize(300, 300);
-    String encoded = base64.encode(bytes);
 
-    MoorUser currentUser =
+    /// TODO: I wants to know what to do in this case scenario
+    if (bytes == null) {
+      return;
+    }
+    var encoded = base64.encode(bytes);
+
+    final currentUser =
         await database.getSingleMoorUser(createIfNotExist: true);
     await database
-        .updateMoorUser(currentUser.copyWith(defaultWidgetImage: encoded));
+        .updateMoorUser(currentUser!.copyWith(defaultWidgetImage: encoded));
   }
 
-  List<String> starredPhotos;
   Future<void> addToStarredPhotos(String photoId) async {
     if (starredPhotos.contains(photoId)) {
       return;
@@ -152,10 +168,10 @@ class UserController extends GetxController {
 
     starredPhotos.add(photoId);
 
-    MoorUser currentUser =
+    final currentUser =
         await database.getSingleMoorUser(createIfNotExist: true);
     await database
-        .updateMoorUser(currentUser.copyWith(starredPhotos: starredPhotos));
+        .updateMoorUser(currentUser!.copyWith(starredPhotos: starredPhotos));
   }
 
   Future<void> removeFromStarredPhotos(String photoId) async {
@@ -164,20 +180,14 @@ class UserController extends GetxController {
     }
 
     starredPhotos.remove(photoId);
-    MoorUser currentUser =
+    final currentUser =
         await database.getSingleMoorUser(createIfNotExist: true);
     await database
-        .updateMoorUser(currentUser.copyWith(starredPhotos: starredPhotos));
+        .updateMoorUser(currentUser!.copyWith(starredPhotos: starredPhotos));
   }
 
-  //String initialRoute;
-  String? tryBuyId;
-  int dailyPicsForAds = 25;
-  // int freePrivatePics = 20;
-  bool tourCompleted;
-
-  Future<int> get freePrivatePics async {
-    final RemoteConfig remoteConfig = await RemoteConfig.instance;
+  int get freePrivatePics {
+    final remoteConfig = RemoteConfig.instance;
     return remoteConfig.getInt('free_private_pics');
   }
 
@@ -192,7 +202,7 @@ class UserController extends GetxController {
   void setTryBuyId(String? value) => tryBuyId = value;
 
   Future<void> requestNotificationPermission() async {
-    PushNotificationsManager push = PushNotificationsManager();
+    var push = PushNotificationsManager();
     await push.init();
 
     // if (Platform.isAndroid) {
@@ -210,14 +220,14 @@ class UserController extends GetxController {
       {bool firstPermissionCheck = false}) async {
     return NotificationPermissions.getNotificationPermissionStatus()
         .then((status) async {
-      MoorUser currentUser = await database.getSingleMoorUser();
+      final currentUser = await database.getSingleMoorUser();
 
       if (status == PermissionStatus.denied) {
-        await database.updateMoorUser(currentUser.copyWith(
+        await database.updateMoorUser(currentUser!.copyWith(
           notification: false,
         ));
       } else {
-        var tempDailyChallenges = currentUser.dailyChallenges;
+        var tempDailyChallenges = currentUser!.dailyChallenges;
         if (firstPermissionCheck) {
           tempDailyChallenges = false;
         }
@@ -233,14 +243,14 @@ class UserController extends GetxController {
   }
 
   Future<void> switchDailyChallenges(
-      {String notificationTitle, String notificationDescription}) async {
+      {String? notificationTitle, String? notificationDescription}) async {
     dailyChallenges.value = !dailyChallenges.value;
 
-    MoorUser currentUser = await database.getSingleMoorUser();
+    final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(
-        currentUser.copyWith(dailyChallenges: dailyChallenges.value));
+        currentUser!.copyWith(dailyChallenges: dailyChallenges.value));
 
-    PushNotificationsManager push = PushNotificationsManager();
+    var push = PushNotificationsManager();
     if (dailyChallenges.value) {
       push.deregister();
     } else {
@@ -252,29 +262,30 @@ class UserController extends GetxController {
       );
     }
 
-    Analytics.sendEvent(Event.notification_switch);
+    await Analytics.sendEvent(Event.notification_switch);
   }
 
   Future<void> setIsPinRegistered(bool value) async {
     isPinRegistered.value = value;
 
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(isPinRegistered: value));
+    final currentUser = await database.getSingleMoorUser();
+    await database
+        .updateMoorUser(currentUser!.copyWith(isPinRegistered: value));
   }
 
   Future<void> setKeepAskingToDelete(bool value) async {
     keepAskingToDelete.value = value;
 
-    MoorUser currentUser = await database.getSingleMoorUser();
+    final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
+        .updateMoorUser(currentUser!.copyWith(keepAskingToDelete: value));
   }
 
   Future<void> setShouldDeleteOnPrivate(bool value) async {
     shouldDeleteOnPrivate.value = value;
-    MoorUser currentUser = await database.getSingleMoorUser();
+    final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(shouldDeleteOnPrivate: value));
+        .updateMoorUser(currentUser!.copyWith(shouldDeleteOnPrivate: value));
   }
 
   //@action
@@ -286,15 +297,15 @@ class UserController extends GetxController {
     hourOfDay.value = hour;
     minutesOfDay.value = minute;
 
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    final currentUser = await database.getSingleMoorUser();
+    await database.updateMoorUser(currentUser!.copyWith(
       hourOfDay: hour,
       minuteOfDay: minute,
     ));
 
-    Analytics.sendEvent(Event.notification_time);
+    await Analytics.sendEvent(Event.notification_time);
 
-    if (dailyChallenges == true) {
+    if (dailyChallenges.value == true) {
       //      PushNotificationsManager push = PushNotificationsManager();
       //      push.scheduleNotification();
       //print('rescheduling notifications....');
@@ -304,18 +315,18 @@ class UserController extends GetxController {
   Future<void> setIsPremium(bool value) async {
     isPremium.value = value;
 
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(isPremium: value));
+    final currentUser = await database.getSingleMoorUser();
+    await database.updateMoorUser(currentUser!.copyWith(isPremium: value));
 
-    if (isPremium == true) {
-      setCanTagToday(true);
+    if (isPremium.value == true) {
+      await setCanTagToday(true);
     }
   }
 
   Future<void> checkPremiumStatus() async {
-    bool premium = await DatabaseManager.instance.checkPremiumStatus();
+    final premium = await DatabaseManager.instance.checkPremiumStatus();
     if (premium == false) {
-      setIsPremium(false);
+      await setIsPremium(false);
     }
   }
 
@@ -328,30 +339,24 @@ class UserController extends GetxController {
     currentUser.tutorialCompleted = value;
     currentUser.save(); */
 
-    MoorUser currentUser = await database.getSingleMoorUser();
+    final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
+        .updateMoorUser(currentUser!.copyWith(tutorialCompleted: value));
     await requestGalleryPermission();
-    Analytics.sendTutorialComplete();
+    await Analytics.sendTutorialComplete();
   }
-
-  int picsTaggedToday;
-
-  DateTime lastTaggedPicDate;
-
-  bool loggedIn;
 
   //@action
   Future<void> setLoggedIn(bool value) async {
-    loggedIn = true;
+    loggedIn.value = true;
 
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0);
     currentUser.loggedIn = true;
     currentUser.save(); */
 
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(loggedIn: true));
+    final currentUser = await database.getSingleMoorUser();
+    await database.updateMoorUser(currentUser!.copyWith(loggedIn: true));
   }
 
   //@action
@@ -367,29 +372,28 @@ class UserController extends GetxController {
     currentUser.canTagToday = canTagToday;
     currentUser.save(); */
 
-    MoorUser currentUser = await database.getSingleMoorUser();
+    final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(canTagToday: canTagToday.value));
+        .updateMoorUser(currentUser!.copyWith(canTagToday: canTagToday.value));
   }
 
   //@action
   Future<void> increaseTodayTaggedPics() async {
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0); */
-    MoorUser currentUser = await database.getSingleMoorUser();
+    final currentUser = await database.getSingleMoorUser();
 
-    DateTime lastTaggedPicDate = currentUser.lastTaggedPicDate;
-    DateTime dateNow = DateTime.now();
+    var lastTaggedPicDate = currentUser!.lastTaggedPicDate;
+    var dateNow = DateTime.now();
     var picsTaggedToday = currentUser.picsTaggedToday;
     var lastTaggedPicNewDate = dateNow;
-    if (lastTaggedPicDate != null &&
-        Utils.isSameDay(lastTaggedPicDate, dateNow)) {
+    if (DateUtils.isSameDay(lastTaggedPicDate, dateNow)) {
       picsTaggedToday += 1;
       //print('same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
 
-      final RemoteConfig remoteConfig = await RemoteConfig.instance;
-      dailyPicsForAds = remoteConfig.getInt('daily_pics_for_ads');
-      int mod = currentUser.picsTaggedToday % dailyPicsForAds;
+      final remoteConfig = RemoteConfig.instance;
+      dailyPicsForAds.value = remoteConfig.getInt('daily_pics_for_ads');
+      var mod = currentUser.picsTaggedToday % dailyPicsForAds.value;
 
       if (mod == 0) {
         //print('### CALL ADS!!!');
@@ -398,7 +402,7 @@ class UserController extends GetxController {
           picsTaggedToday: picsTaggedToday,
           lastTaggedPicDate: lastTaggedPicNewDate,
         ));
-        setCanTagToday(false);
+        await setCanTagToday(false);
         return;
       }
     } else {
@@ -409,7 +413,7 @@ class UserController extends GetxController {
       picsTaggedToday: picsTaggedToday,
       lastTaggedPicDate: lastTaggedPicNewDate,
     ));
-    setCanTagToday(true);
+    await setCanTagToday(true);
   }
 
   //@action
@@ -423,8 +427,8 @@ class UserController extends GetxController {
     User currentUser = userBox.getAt(0);
     currentUser.hasGalleryPermission = hasGalleryPermission;
     currentUser.save(); */
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    final currentUser = await database.getSingleMoorUser();
+    await database.updateMoorUser(currentUser!.copyWith(
       hasGalleryPermission: result,
     ));
 
@@ -440,12 +444,12 @@ class UserController extends GetxController {
     currentUser.appLanguage = language;
     currentUser.save(); */
 
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    final currentUser = await database.getSingleMoorUser();
+    await database.updateMoorUser(currentUser!.copyWith(
       appLanguage: language,
     ));
 
-    Analytics.sendEvent(Event.changed_language);
+    await Analytics.sendEvent(Event.changed_language);
   }
 
   //@action
@@ -459,68 +463,68 @@ class UserController extends GetxController {
     }
 
     //print('adding default tags...');
-    Label tag1 = Label(
+    var tag1 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).family_tag),
         title: S.of(context).family_tag,
         photoId: []);
-    Label tag2 = Label(
+    var tag2 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).travel_tag),
         title: S.of(context).travel_tag,
         photoId: []);
-    Label tag3 = Label(
+    var tag3 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).pets_tag),
         title: S.of(context).pets_tag,
         photoId: []);
-    Label tag4 = Label(
+    var tag4 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).work_tag),
         title: S.of(context).work_tag,
         photoId: []);
-    Label tag5 = Label(
+    var tag5 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).selfies_tag),
         title: S.of(context).selfies_tag,
         photoId: []);
-    Label tag6 = Label(
+    var tag6 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).parties_tag),
         title: S.of(context).parties_tag,
         photoId: []);
-    Label tag7 = Label(
+    var tag7 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).sports_tag),
         title: S.of(context).sports_tag,
         photoId: []);
-    Label tag8 = Label(
+    var tag8 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).home_tag),
         title: S.of(context).home_tag,
         photoId: []);
-    Label tag9 = Label(
+    var tag9 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).foods_tag),
         title: S.of(context).foods_tag,
         photoId: []);
-    Label tag10 = Label(
+    var tag10 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).screenshots_tag),
         title: S.of(context).screenshots_tag,
         photoId: []);
 
-    List<Label> entries = [
+    var entries = <Label>[
       tag1,
       tag2,
       tag3,
@@ -532,23 +536,24 @@ class UserController extends GetxController {
       tag9,
       tag10,
     ];
-    await Future.forEach(entries, (newLabel) => database.createLabel(newLabel))
+    await Future.forEach(
+            entries, (Label newLabel) => database.createLabel(newLabel))
         .then((_) => TagsController.to.loadAllTags());
   }
 
   //@action
-  Future<void> addTagToRecent({String tagKey}) async {
+  Future<void> addTagToRecent({required String tagKey}) async {
     //print('adding tag to recent: $tagKey');
 
     /* var userBox = Hive.box('user');
     User getUser = userBox.getAt(0); */
-    MoorUser getUser = await database.getSingleMoorUser();
+    final getUser = await database.getSingleMoorUser();
 
     if (recentTags.contains(tagKey)) {
       recentTags.remove(tagKey);
       recentTags.insert(0, tagKey);
-      getUser.recentTags.remove(tagKey);
-      getUser.recentTags.insert(0, tagKey);
+      getUser!.recentTags?.remove(tagKey);
+      getUser.recentTags?.insert(0, tagKey);
       await database.updateMoorUser(getUser);
       //print('final tags in recent: ${getUser.recentTags}');
       return;
@@ -557,24 +562,24 @@ class UserController extends GetxController {
     while (recentTags.length >= kMaxNumOfRecentTags) {
       //print('removing last');
       recentTags.removeLast();
-      getUser.recentTags.removeLast();
+      getUser!.recentTags?.removeLast();
     }
 
     recentTags.insert(0, tagKey);
-    getUser.recentTags.insert(0, tagKey);
+    getUser!.recentTags?.insert(0, tagKey);
     await database.updateMoorUser(getUser);
     //print('final tags in recent: ${getUser.recentTags}');
   }
 
   //@action
-  Future<void> removeTagFromRecent({String tagKey}) async {
+  Future<void> removeTagFromRecent({required String tagKey}) async {
     /* var userBox = Hive.box('user');
     User getUser = userBox.getAt(0); */
 
     if (recentTags.contains(tagKey)) {
-      MoorUser getUser = await database.getSingleMoorUser();
+      final getUser = await database.getSingleMoorUser();
       recentTags.remove(tagKey);
-      getUser.recentTags.remove(tagKey);
+      getUser!.recentTags?.remove(tagKey);
       await database.updateMoorUser(getUser);
       /* userBox.putAt(0, getUser); */
       //print('recent tags after removed: ${getUser.recentTags}');
@@ -586,7 +591,7 @@ class UserController extends GetxController {
 
   bool hasObserver = false;
 
-  PopPinScreenTo popPinScreen;
+  PopPinScreenTo? popPinScreen;
 
   cryptography.SecretKey? encryptionKey;
   void setEncryptionKey(cryptography.SecretKey? value) => encryptionKey = value;
@@ -601,8 +606,8 @@ class UserController extends GetxController {
     currentUser.email = value;
     currentUser.save(); */
 
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    final currentUser = await database.getSingleMoorUser();
+    await database.updateMoorUser(currentUser!.copyWith(
       email: value,
     ));
 
@@ -625,8 +630,8 @@ class UserController extends GetxController {
     User currentUser = userBox.getAt(0);
     currentUser.isBiometricActivated = value;
     currentUser.save(); */
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    final currentUser = await database.getSingleMoorUser();
+    await database.updateMoorUser(currentUser!.copyWith(
       isBiometricActivated: value,
     ));
 
@@ -640,7 +645,7 @@ class UserController extends GetxController {
       canCheckBiometrics = await biometricAuth.canCheckBiometrics;
       if (canCheckBiometrics) {
         try {
-          biometricAuth.getAvailableBiometrics().then((val) {
+          await biometricAuth.getAvailableBiometrics().then((val) {
             availableBiometrics.value = List<BiometricType>.from(val);
           });
         } catch (e) {
@@ -656,16 +661,16 @@ class UserController extends GetxController {
     /* var userBox = Hive.box('userkey');
     UserKey userKey = UserKey(secretKey: value);
     userBox.put(0, userKey); */
-    MoorUser currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    final currentUser = await database.getSingleMoorUser();
+    await database.updateMoorUser(currentUser!.copyWith(
       secretKey: value,
     ));
   }
 
   String getSecretKey() {
-    String secret = '';
+    var secret;
     Future.value(database.getSingleMoorUser())
-        .then((user) => secret = user.secretKey);
+        .then((MoorUser? user) => secret = user!.secretKey);
     return secret;
   }
 
@@ -675,8 +680,8 @@ class UserController extends GetxController {
 
     /* var userBox = Hive.box('userkey');
     userBox.delete(0); */
-    MoorUser user = await database.getSingleMoorUser();
-    await database.updateMoorUser(user.copyWith(secretKey: ''));
+    final user = await database.getSingleMoorUser();
+    await database.updateMoorUser(user!.copyWith(secretKey: ''));
 
     //print('Deleted encrypted info!');
   }

@@ -720,25 +720,26 @@ class TabsController extends GetxController {
           removePicFromUntaggedPics(picStore: picStore);
           allPics.value.remove(picStore);
           user.setDefaultWidgetImage(allPics.value[0].entity.value); */
-            Photo pic =
-                await database.getPhotoByPhotoId(picStore.photoId.value);
+            var pic = await database.getPhotoByPhotoId(picStore.photoId.value);
 
-            if (pic != null) {
+            if (pic != null && pic.tags != null && pic.tags!.isNotEmpty) {
               // //print('pic is in db... removing it from db!');
-              var picTags = List<String>.from(pic.tags);
+              var picTags = List<String>.from(pic.tags!);
               await Future.wait([
-                Future.forEach(picTags, (tagKey) async {
-                  Label tag = await database.getLabelByLabelKey(tagKey);
-                  if (picStore != null) {
-                    tag.photoId.remove(picStore.photoId);
-                  }
-                  // //print('removed ${picStore.photoId} from tag ${tag.title}');
-                  await database.updateLabel(tag);
-                  //tagsBox.put(tagKey, tag);
+                Future.forEach(picTags, (String tagKey) async {
+                  var tag = await database.getLabelByLabelKey(tagKey);
+                  if (tag != null) {
+                    if (picStore != null) {
+                      tag.photoId?.remove(picStore.photoId);
+                    }
+                    // //print('removed ${picStore.photoId} from tag ${tag.title}');
+                    await database.updateLabel(tag);
+                    //tagsBox.put(tagKey, tag);
 
-                  if (tagKey == kSecretTagKey) {
-                    await picStore?.removePrivatePath();
-                    await picStore?.deleteEncryptedPic();
+                    if (tagKey == kSecretTagKey) {
+                      await picStore?.removePrivatePath();
+                      await picStore?.deleteEncryptedPic();
+                    }
                   }
                 })
               ]);

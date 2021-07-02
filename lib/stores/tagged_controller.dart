@@ -26,7 +26,7 @@ class TaggedController extends GetxController {
       Rx<ExpandableController>(ExpandableController(initialExpanded: false));
   final toggleIndexTagged = 1.obs;
 
-  ScrollController scrollControllerThirdTab;
+  late ScrollController scrollControllerThirdTab;
 
   double offsetThirdTab = 0.0;
 
@@ -54,11 +54,9 @@ class TaggedController extends GetxController {
     //await WidgetManager.saveData(picsStores: selectedUntaggedPics.toList());
 
     selectedMultiBarPics.forEach((picId, value) {
-      PicStore picStore = TabsController.to.picStoreMap[picId].value;
-      if (picStore == null) {
-        picStore = TabsController.to.explorPicStore(picId).value;
-      }
-      picStore.switchIsStarred();
+      var picStore = TabsController.to.picStoreMap[picId]?.value;
+      picStore ??= TabsController.to.explorPicStore(picId).value;
+      picStore?.switchIsStarred();
     });
     returnAction();
   }
@@ -117,7 +115,7 @@ class TaggedController extends GetxController {
     return true;
   }
 
-  setTabIndex(int index) async {
+  void setTabIndex(int index) async {
     if (selectedMultiBarPics.isEmpty) {
       if (index == 0) {
         setMultiPicBar(false);
@@ -132,7 +130,7 @@ class TaggedController extends GetxController {
       //GalleryStore.to.clearSelectedPics();
       setMultiPicBar(false);
     } else if (index == 1) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
         setMultiTagSheet(true);
         expandableController.value.expanded = true;
         expandablePaddingController.value.expanded = true;
@@ -146,8 +144,8 @@ class TaggedController extends GetxController {
       if (selectedMultiBarPics.isEmpty) {
         return;
       }
-      showDialog<void>(
-        context: Get.context,
+      await showDialog<void>(
+        context: Get.context!,
         barrierDismissible: true,
         builder: (_) {
           return ConfirmPicDelete(
@@ -180,7 +178,7 @@ class TaggedController extends GetxController {
 
   final hideTitleThirdTab = false.obs;
   void setHideTitleThirdTab(bool value) {
-    if (value == hideTitleThirdTab) {
+    if (value == hideTitleThirdTab.value) {
       return;
     }
     hideTitleThirdTab.value = value;
@@ -213,17 +211,17 @@ class TaggedController extends GetxController {
     picWiseTags.clear();
     await TagsController.to.loadAllTags();
     await Future.forEach(taggedPhotoIdList, (Photo photo) async {
-      if (photo?.tags?.isNotEmpty ?? false) {
-        photo?.tags?.forEach((tagKey) {
+      if (photo.tags?.isNotEmpty ?? false) {
+        photo.tags?.forEach((tagKey) {
           if (taggedPicId[tagKey] == null) {
             taggedPicId[tagKey] = <String, String>{}.obs;
           }
-          taggedPicId[tagKey][photo.id] = '';
+          taggedPicId[tagKey]![photo.id] = '';
 
           if (picWiseTags[photo.id] == null) {
             picWiseTags[photo.id] = <String, String>{}.obs;
           }
-          picWiseTags[photo.id][tagKey] = '';
+          picWiseTags[photo.id]![tagKey] = '';
         });
         allTaggedPicIdList[photo.id] = '';
       }
@@ -236,6 +234,6 @@ class TaggedController extends GetxController {
     if (TaggedController.to.taggedPicId[tagKey] == null) {
       TaggedController.to.taggedPicId[tagKey] = <String, String>{}.obs;
     }
-    TaggedController.to.taggedPicId[tagKey][taggedPicId] = '';
+    TaggedController.to.taggedPicId[tagKey]![taggedPicId] = '';
   }
 }

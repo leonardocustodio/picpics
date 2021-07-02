@@ -785,7 +785,7 @@ class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
   PicBlurHashsCompanion.insert({
     required String photoId,
     required String blurHash,
-  })   : photoId = Value(photoId),
+  })  : photoId = Value(photoId),
         blurHash = Value(blurHash);
   static Insertable<PicBlurHash> custom({
     Expression<String>? photoId,
@@ -1070,7 +1070,7 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
     required DateTime createDateTime,
     required double originalLatitude,
     required double originalLongitude,
-  })   : id = Value(id),
+  })  : id = Value(id),
         path = Value(path),
         nonce = Value(nonce),
         createDateTime = Value(createDateTime),
@@ -1331,13 +1331,13 @@ class Label extends DataClass implements Insertable<Label> {
   final String key;
   final int counter;
   final DateTime lastUsedAt;
-  final String? title;
+  final String title;
   final List<String>? photoId;
   Label(
       {required this.key,
       required this.counter,
       required this.lastUsedAt,
-      this.title,
+      required this.title,
       this.photoId});
   factory Label.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
@@ -1350,7 +1350,7 @@ class Label extends DataClass implements Insertable<Label> {
       lastUsedAt: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}last_used_at'])!,
       title: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}title']),
+          .mapFromDatabaseResponse(data['${effectivePrefix}title'])!,
       photoId: $LabelsTable.$converter0.mapToDart(const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}photo_id'])),
     );
@@ -1361,9 +1361,7 @@ class Label extends DataClass implements Insertable<Label> {
     map['key'] = Variable<String>(key);
     map['counter'] = Variable<int>(counter);
     map['last_used_at'] = Variable<DateTime>(lastUsedAt);
-    if (!nullToAbsent || title != null) {
-      map['title'] = Variable<String?>(title);
-    }
+    map['title'] = Variable<String>(title);
     if (!nullToAbsent || photoId != null) {
       final converter = $LabelsTable.$converter0;
       map['photo_id'] = Variable<String?>(converter.mapToSql(photoId));
@@ -1376,8 +1374,7 @@ class Label extends DataClass implements Insertable<Label> {
       key: Value(key),
       counter: Value(counter),
       lastUsedAt: Value(lastUsedAt),
-      title:
-          title == null && nullToAbsent ? const Value.absent() : Value(title),
+      title: Value(title),
       photoId: photoId == null && nullToAbsent
           ? const Value.absent()
           : Value(photoId),
@@ -1391,7 +1388,7 @@ class Label extends DataClass implements Insertable<Label> {
       key: serializer.fromJson<String>(json['key']),
       counter: serializer.fromJson<int>(json['counter']),
       lastUsedAt: serializer.fromJson<DateTime>(json['lastUsedAt']),
-      title: serializer.fromJson<String?>(json['title']),
+      title: serializer.fromJson<String>(json['title']),
       photoId: serializer.fromJson<List<String>?>(json['photoId']),
     );
   }
@@ -1402,7 +1399,7 @@ class Label extends DataClass implements Insertable<Label> {
       'key': serializer.toJson<String>(key),
       'counter': serializer.toJson<int>(counter),
       'lastUsedAt': serializer.toJson<DateTime>(lastUsedAt),
-      'title': serializer.toJson<String?>(title),
+      'title': serializer.toJson<String>(title),
       'photoId': serializer.toJson<List<String>?>(photoId),
     };
   }
@@ -1454,7 +1451,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
   final Value<String> key;
   final Value<int> counter;
   final Value<DateTime> lastUsedAt;
-  final Value<String?> title;
+  final Value<String> title;
   final Value<List<String>?> photoId;
   const LabelsCompanion({
     this.key = const Value.absent(),
@@ -1474,7 +1471,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
     Expression<String>? key,
     Expression<int>? counter,
     Expression<DateTime>? lastUsedAt,
-    Expression<String?>? title,
+    Expression<String>? title,
     Expression<List<String>?>? photoId,
   }) {
     return RawValuesInsertable({
@@ -1490,7 +1487,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
       {Value<String>? key,
       Value<int>? counter,
       Value<DateTime>? lastUsedAt,
-      Value<String?>? title,
+      Value<String>? title,
       Value<List<String>?>? photoId}) {
     return LabelsCompanion(
       key: key ?? this.key,
@@ -1514,7 +1511,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
       map['last_used_at'] = Variable<DateTime>(lastUsedAt.value);
     }
     if (title.present) {
-      map['title'] = Variable<String?>(title.value);
+      map['title'] = Variable<String>(title.value);
     }
     if (photoId.present) {
       final converter = $LabelsTable.$converter0;
@@ -1568,11 +1565,8 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
   @override
   late final GeneratedTextColumn title = _constructTitle();
   GeneratedTextColumn _constructTitle() {
-    return GeneratedTextColumn(
-      'title',
-      $tableName,
-      true,
-    );
+    return GeneratedTextColumn('title', $tableName, false,
+        defaultValue: const Constant(''));
   }
 
   final VerificationMeta _photoIdMeta = const VerificationMeta('photoId');
@@ -1732,7 +1726,7 @@ class LabelEntriesCompanion extends UpdateCompanion<LabelEntry> {
     this.id = const Value.absent(),
     required String photo,
     required String label,
-  })   : photo = Value(photo),
+  })  : photo = Value(photo),
         label = Value(label);
   static Insertable<LabelEntry> custom({
     Expression<int>? id,

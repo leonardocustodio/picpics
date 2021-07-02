@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/crypto_manager_untouched.dart';
+import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -34,7 +34,7 @@ class TagsController extends GetxController {
   final searchText = ''.obs;
   final selectedFilteringTagsKeys = <String>[].obs;
 
-  AppDatabase _database = AppDatabase();
+  final _database = AppDatabase();
 
   final isSearching = false.obs;
 
@@ -69,7 +69,7 @@ class TagsController extends GetxController {
     MoorUser getUser = await _database.getSingleMoorUser();
 
     //List<String> multiPicTags = multiPicTagKeys.toList();
-    List<String> suggestionTags = [];
+    var suggestionTags = <String>[];
     var text = searchText.trim();
 
     if (text == '') {
@@ -88,7 +88,7 @@ class TagsController extends GetxController {
 //            continue;
 //          }
       if (suggestionTags.length < kMaxNumOfSuggestions) {
-        for (Label tag in tagsList) {
+        for (var tag in tagsList) {
           var tagKey = tag.key;
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
@@ -106,7 +106,7 @@ class TagsController extends GetxController {
 //      }
     } else {
       var listOfLetters = text.toLowerCase().split('');
-      for (Label tag in tagsList) {
+      for (var tag in tagsList) {
         var tagKey = tag.key;
         if (tagKey == kSecretTagKey) {
           continue;
@@ -213,8 +213,9 @@ class TagsController extends GetxController {
 
     tempTags.sort((a, b) {
       var count = b.count.compareTo(a.count);
-      if (count == 0)
+      if (count == 0) {
         return b.title.toLowerCase().compareTo(a.title.toLowerCase());
+      }
       return count;
     });
 
@@ -338,10 +339,10 @@ class TagsController extends GetxController {
     //var tagsBox = Hive.box('tags');
     /*// //print(tagsBox.keys); */
 
-    String tagKey = Helpers.encryptTag(tagName);
+    var tagKey = Helpers.encryptTag(tagName);
     // //print('Adding tag: $tagName');
 
-    Label lab = await _database.getLabelByLabelKey(tagKey);
+    final lab = await _database.getLabelByLabelKey(tagKey);
 
     if (lab != null) {
       // //print('user already has this tag');
@@ -357,12 +358,12 @@ class TagsController extends GetxController {
         lastUsedAt: DateTime.now()));
     //tagsBox.put(tagKey, Tag(tagName, []));
 
-    TagModel tagModel =
+    var tagModel =
         TagModel(key: tagKey, title: tagName, count: 1, time: DateTime.now());
     addTag(tagModel);
     addRecentTag(tagKey);
 
-    Analytics.sendEvent(
+    await Analytics.sendEvent(
       Event.created_tag,
       params: {'tagName': tagName},
     );
@@ -374,10 +375,10 @@ class TagsController extends GetxController {
     //var tagsBox = Hive.box('tags');
     var tagsList = await _database.getAllLabel();
 
-    MoorUser getUser = await DatabaseController.to.getUser();
+    var getUser = await DatabaseController.to.getUser();
 
     //List<String> multiPicTags = multiPicTagKeys.toList();
-    List<String> suggestionTags = [];
+    var suggestionTags = <String>[];
     /* searchText.value = searchText.trim(); */
 
     if (searchText.trim() == '') {
@@ -396,7 +397,7 @@ class TagsController extends GetxController {
 //            continue;
 //          }
       if (suggestionTags.length < kMaxNumOfSuggestions) {
-        for (Label tag in tagsList) {
+        for (var tag in tagsList) {
           var tagKey = tag.key;
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
@@ -413,7 +414,7 @@ class TagsController extends GetxController {
 //      }
     } else {
       var listOfLetters = searchText.toLowerCase().split('');
-      for (Label tag in tagsList) {
+      for (var tag in tagsList) {
         var tagKey = tag.key;
         if (tagKey == kSecretTagKey) continue;
         if (allTags[tagKey] != null && multiPicTags[tagKey] == null) {
@@ -433,7 +434,7 @@ class TagsController extends GetxController {
     if (multiPicTags[kSecretTagKey] == null &&
         /* !searchingTagsKeys.contains(kSecretTagKey) && */
         PrivatePhotosController.to.showPrivate.value == true &&
-        searchText == '') {
+        searchText.value == '') {
       suggestionTags.add(kSecretTagKey);
     }
 
@@ -453,6 +454,7 @@ class TagsController extends GetxController {
     });
     // //print('Suggestions Tag Store: $suggestions');
     //tagsSuggestions.value = suggestions;
+    // ignore: invalid_use_of_protected_member
     return recentTagKeyList.value;
   }
 
@@ -460,8 +462,8 @@ class TagsController extends GetxController {
   Future<void> loadAllTags() async {
     var tagsBox = await _database.getAllLabel();
 
-    for (Label tag in tagsBox) {
-      TagModel tagModel = TagModel(
+    for (var tag in tagsBox) {
+      var tagModel = TagModel(
         key: tag.key,
         title: tag.title,
         count: tag.counter,
@@ -472,7 +474,7 @@ class TagsController extends GetxController {
 
     if (allTags[kSecretTagKey] == null) {
       //print('Creating secret tag in db!');
-      Label createSecretLabel = Label(
+      var createSecretLabel = Label(
         key: kSecretTagKey,
         title: 'Secret Pics',
         photoId: [],
@@ -480,7 +482,7 @@ class TagsController extends GetxController {
         lastUsedAt: DateTime.now(),
       );
 
-      TagModel tagModel = TagModel(
+      var tagModel = TagModel(
         key: kSecretTagKey,
         title: 'Secret Pics',
         count: 1,
@@ -509,7 +511,7 @@ class TagsController extends GetxController {
   Future<void> addTagsToSelectedPics() async {
     //var tagsBox = Hive.box('tags');
 
-    List<String> selectedPicIds = <String>[];
+    var selectedPicIds = <String>[];
     if (TabsController.to.currentTab.value == 0) {
       selectedPicIds = List<String>.from(
           TabsController.to.selectedMultiBarPics.keys.toList());
@@ -543,20 +545,19 @@ class TagsController extends GetxController {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
         if (TabsController.to.currentTab.value == 0) {
-          TabsController.to.refreshUntaggedList();
+          await TabsController.to.refreshUntaggedList();
         } else if (TabsController.to.currentTab.value == 2) {
-          TaggedController.to.refreshTaggedPhotos();
+          await TaggedController.to.refreshTaggedPhotos();
         }
       });
     });
   }
 
-  Future<void> removeTagFromPic({String picId, String tagKey}) async {
+  Future<void> removeTagFromPic(
+      {required String picId, required String tagKey}) async {
     var picStore = TabsController.to.picStoreMap[picId]?.value;
-    if (picStore == null) {
-      picStore = TabsController.to.explorPicStore(picId)?.value;
-    }
-    await picStore.removeTagFromPic(tagKey: tagKey);
+    picStore ??= TabsController.to.explorPicStore(picId).value;
+    await picStore?.removeTagFromPic(tagKey: tagKey);
 
     /// Refreshing the tagged pic map as a tag is removed from the picstore
     await TaggedController.to.refreshTaggedPhotos();
@@ -567,18 +568,19 @@ class TagsController extends GetxController {
     }
   }
 
-  Future<void> addTagToPic({String picId, String tagKey}) async {
+  Future<void> addTagToPic(
+      {required String picId, required String tagKey}) async {
     var picStore = TabsController.to.picStoreMap[picId]?.value;
     if (picStore == null) {
-      var fetchedPicStore = (await TabsController.to.explorPicStore(picId));
-      TabsController.to.picStoreMap[picId] = fetchedPicStore;
+      var fetchedPicStore = TabsController.to.explorPicStore(picId);
+      TabsController.to.picStoreMap[picId] = Rxn<PicStore?>(fetchedPicStore.value);
       picStore = fetchedPicStore.value;
     }
 
     /// TODO: check this is working or not, when swipe implementation is done !!
     //SwiperTabController.to.swiperPicIdList.remove(picStore);
 
-    if (picStore.tags[tagKey] != null) {
+    if (picStore == null || picStore.tags[tagKey] != null) {
       // //print('this tag is already in this picture');
       return;
     }
@@ -587,21 +589,23 @@ class TagsController extends GetxController {
       if (PrivatePhotosController.to.privateMap[picId] == null
           /* || TabsController.to.secretPicIds[picId] == false && !privatePics.contains(picStore) */) {
         await picStore.setIsPrivate(true);
-        await Crypto.encryptImage(picStore, UserController.to.encryptionKey);
+
+        await Crypto.encryptImage(picStore, UserController.to.encryptionKey!);
         // //print('this pic now is private');
         /* TabsController.to.secretPicIds[picId] = true; */
         //privatePics.add(picStore);
       }
       return;
     }
-    Label getTag = await _database.getLabelByLabelKey(tagKey);
-    getTag.photoId.add(picStore.photoId.value);
-    await _database.updateLabel(getTag);
-
-    await picStore.addTagToPic(
-      tagKey: tagKey,
-      photoId: picStore.photoId.value,
-    );
+    final getTag = await _database.getLabelByLabelKey(tagKey);
+    if (getTag != null) {
+      getTag.photoId?.add(picStore?.photoId.value);
+      await _database.updateLabel(getTag);
+      if (null != picStore) {
+        await picStore.addTagToPic(
+            tagKey: tagKey, photoId: picStore.photoId.value);
+      }
+    }
   }
 
   void clearMultiPicTags() {
@@ -631,7 +635,7 @@ class TagsController extends GetxController {
       {required String oldTagKey,
       required String newTagKey,
       required String newName}) {
-    TagModel tagModel = allTags[oldTagKey].value;
+    var tagModel = allTags[oldTagKey].value;
 
     /// remove the oldTagKey because it will help us to make it un-listenable
     /// as it might be used somewhere else and we don't need un necessary frame updates
@@ -677,7 +681,7 @@ class TagsController extends GetxController {
   Future<void> editTagName(
       {required String oldTagKey, required String newName}) async {
     /// create a new tagKey
-    String newTagKey = Helpers.encryptTag(newName);
+    var newTagKey = Helpers.encryptTag(newName);
 
     /// use that new tagKey to make the ui changes fastly
     _editTagInternalFunction(
@@ -689,7 +693,7 @@ class TagsController extends GetxController {
     Label oldTag = await _database.getLabelByLabelKey(oldTagKey);
 
     /// Creating new label
-    Label createTag = Label(
+    var createTag = Label(
         key: newTagKey,
         title: newName,
         photoId: oldTag.photoId,
@@ -703,7 +707,7 @@ class TagsController extends GetxController {
         Future.forEach(createTag.photoId, (photoId) async {
           Photo pic = await _database.getPhotoByPhotoId(photoId);
           //Pic pic = picsBox.get(photoId);
-          int indexOfOldTag = pic.tags.indexOf(oldTagKey);
+          var indexOfOldTag = pic.tags.indexOf(oldTagKey);
           // //print('Tags in this picture: ${pic.tags}');
           if (indexOfOldTag > -1) {
             pic.tags[indexOfOldTag] = newTagKey;
@@ -716,7 +720,7 @@ class TagsController extends GetxController {
     );
 
     await _database.deleteLabelByLabelId(oldTagKey);
-    Analytics.sendEvent(Event.edited_tag);
+    await Analytics.sendEvent(Event.edited_tag);
   }
 
   /// untag the pic with tags as `tagKey`
@@ -728,7 +732,7 @@ class TagsController extends GetxController {
     if (label != null) {
       // //print('found tag going to delete it');
       // Remove a tag das fotos já taggeadas
-      TagModel tagsStore = allTags[tagKey].value;
+      var tagsStore = allTags[tagKey].value;
       // //print('TagsStore Tag: ${tagsStore.name}');
       /*  TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);
@@ -747,7 +751,7 @@ class TagsController extends GetxController {
       await _database.deleteLabelByLabelId(tagKey); */
       //tagsBox.delete(tagKey);
       // //print('deleted from tags db');
-      Analytics.sendEvent(Event.deleted_tag);
+      await Analytics.sendEvent(Event.deleted_tag);
       removeOldTagReferences(tagKey);
     }
   }
