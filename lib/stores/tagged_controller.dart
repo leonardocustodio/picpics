@@ -211,8 +211,8 @@ class TaggedController extends GetxController {
     picWiseTags.clear();
     await TagsController.to.loadAllTags();
     await Future.forEach(taggedPhotoIdList, (Photo photo) async {
-      if (photo.tags?.isNotEmpty ?? false) {
-        photo.tags?.forEach((tagKey) {
+      if (photo.tags.isNotEmpty) {
+        photo.tags.forEach((tagKey) {
           if (taggedPicId[tagKey] == null) {
             taggedPicId[tagKey] = <String, String>{}.obs;
           }

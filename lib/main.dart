@@ -20,14 +20,9 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/admob_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
-import 'package:picPics/screens/add_location.dart';
-import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
@@ -44,9 +39,9 @@ import 'stores/tags_controller.dart';
 
 Future<String?> checkForUserControllerInitiatedProducts() async {
   //print('Checking if appstore initiated products');
-  List<IAPItem> appStoreProducts =
+  var appStoreProducts =
       await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
-  if (appStoreProducts.length > 0) {
+  if (appStoreProducts.isNotEmpty) {
     return appStoreProducts.last.productId;
   }
   return null;
@@ -198,19 +193,19 @@ void main() async {
   if (Platform.isIOS) {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
   }
-  UserController user = UserController()
+  var user = UserController()
     ..initiatedWithProduct = initiatedWithProduct;
   await user.initialize();
 
-  Analytics.sendAppOpen();
+  await Analytics.sendAppOpen();
   Ads.initialize();
   Ads.loadRewarded();
 
   // FlutterBranchSdk.setRequestMetadata(r'$google_analytics_user_id', userId);
-  StreamSubscription<Map> streamSubscription =
+  var streamSubscription =
       FlutterBranchSdk.initSession().listen((data) {
-    if (data.containsKey("+clicked_branch_link") &&
-        data["+clicked_branch_link"] == true) {
+    if (data.containsKey('+clicked_branch_link') &&
+        data['+clicked_branch_link'] == true) {
       //Link clicked. Add logic to get link data
       //print('Custom string: ${data["custom_string"]}');
     }
@@ -223,7 +218,7 @@ void main() async {
   //bool setAppGroup = await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
   //print('Has setted app group: $setAppGroup');
 
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  await BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   runZonedGuarded<void>(() {
     runApp(
       PicPicsApp(

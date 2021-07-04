@@ -55,8 +55,8 @@ class Photos extends Table {
 
   DateTimeColumn get createdAt => dateTime()();
 
-  RealColumn get originalLatitude => real()();
-  RealColumn get originalLongitude => real()();
+  RealColumn get originalLatitude => real().nullable()();
+  RealColumn get originalLongitude => real().nullable()();
   RealColumn get latitude => real().nullable()();
   RealColumn get longitude => real().nullable()();
 
@@ -65,7 +65,7 @@ class Photos extends Table {
       boolean().withDefault(const Constant(false))();
   BoolColumn get isStarred => boolean().withDefault(const Constant(false))();
 
-  TextColumn get tags => text().nullable().map(ListStringConvertor())();
+  TextColumn get tags => text().map(ListStringConvertor())();
 
   TextColumn get specificLocation => text().nullable()();
   TextColumn get generalLocation => text().nullable()();
@@ -80,7 +80,7 @@ class Labels extends Table {
   DateTimeColumn get lastUsedAt =>
       dateTime().withDefault(Constant(DateTime.now()))();
   TextColumn get title => text().withDefault(const Constant(''))();
-  TextColumn get photoId => text().nullable().map(ListStringConvertor())();
+  TextColumn get photoId => text().map(ListStringConvertor())();
 }
 
 @DataClassName('LabelEntry')
@@ -98,9 +98,9 @@ class Privates extends Table {
   TextColumn get path => text()();
   TextColumn get nonce => text()();
   TextColumn get thumbPath => text().nullable()();
-  DateTimeColumn get createDateTime => dateTime()();
-  RealColumn get originalLatitude => real()();
-  RealColumn get originalLongitude => real()();
+  DateTimeColumn get createDateTime => dateTime().nullable()();
+  RealColumn get originalLatitude => real().nullable()();
+  RealColumn get originalLongitude => real().nullable()();
 }
 
 /// Old Info @Hive: made from : User and UserKey-secretKey
@@ -115,12 +115,11 @@ class MoorUsers extends Table {
   BoolColumn get notification => boolean().withDefault(const Constant(false))();
   BoolColumn get dailyChallenges =>
       boolean().withDefault(const Constant(false))();
-  TextColumn get recentTags => text().nullable().map(ListStringConvertor())();
+  TextColumn get recentTags => text().map(ListStringConvertor())();
   TextColumn get appLanguage => text().nullable()();
   TextColumn get appVersion => text().nullable()();
   TextColumn get secretKey => text().nullable()();
-  TextColumn get starredPhotos =>
-      text().nullable().map(ListStringConvertor())();
+  TextColumn get starredPhotos => text().map(ListStringConvertor())();
   TextColumn get defaultWidgetImage => text().nullable()();
 
   IntColumn get goal => integer().withDefault(const Constant(20))();
@@ -374,13 +373,13 @@ class AppDatabase extends _$AppDatabase {
 
   //Future<List<MoorUser>> getAllMoorUser() => select(moorUsers).get();
 
-  Future<MoorUser?> getSingleMoorUser({bool createIfNotExist = true}) async {
+  Future<MoorUser> getSingleMoorUser({bool createIfNotExist = true}) async {
     var moorUserReturn = await select(moorUsers).getSingleOrNull();
     if (createIfNotExist && moorUserReturn == null) {
       await createMoorUser(getDefaultMoorUser());
-      return await select(moorUsers).getSingleOrNull();
+      return await select(moorUsers).getSingle();
     } else {
-      return moorUserReturn;
+      return moorUserReturn!;
     }
   }
 
@@ -442,9 +441,9 @@ class AppDatabase extends _$AppDatabase {
           id: secret.photoId,
           path: secret.photoPath,
           thumbPath: secret.thumbPath.moorValue,
-          createDateTime: secret.createDateTime,
-          originalLatitude: secret.originalLatitude /* ?? 0.0 */,
-          originalLongitude: secret.originalLongitude /* ?? 0.0 */,
+          createDateTime: secret.createDateTime.moorValue,
+          originalLatitude: secret.originalLatitude.moorValue /* ?? 0.0 */,
+          originalLongitude: secret.originalLongitude.moorValue /* ?? 0.0 */,
           nonce: secret.nonce,
         ),
       );
@@ -461,8 +460,8 @@ class AppDatabase extends _$AppDatabase {
     moorUserCompanionVariable = MoorUsersCompanion.insert(
       customPrimaryKey: const Value(0),
       id: user.id.moorValue,
-      recentTags: user.recentTags.moorValue,
-      starredPhotos: user.starredPhotos.moorValue,
+      recentTags: user.recentTags,
+      starredPhotos: user.starredPhotos,
       email: user.email.moorValue,
       password: user.password.moorValue,
       notification: user.notifications.moorValue,
@@ -522,7 +521,7 @@ class AppDatabase extends _$AppDatabase {
         LabelsCompanion.insert(
           key: tag.key.moorValue,
           title: tag.name.moorValue,
-          photoId: tag.photoId.moorValue,
+          photoId: tag.photoId,
         ),
       );
     }
@@ -542,8 +541,8 @@ class AppDatabase extends _$AppDatabase {
         PhotosCompanion.insert(
           id: pic.photoId,
           createdAt: pic.createdAt,
-          originalLatitude: pic.originalLatitude /* ?? 0.0 */,
-          originalLongitude: pic.originalLongitude /* ?? 0.0 */,
+          originalLatitude: pic.originalLatitude.moorValue /* ?? 0.0 */,
+          originalLongitude: pic.originalLongitude.moorValue /* ?? 0.0 */,
           latitude: pic.latitude.moorValue,
           longitude: pic.longitude.moorValue,
           specificLocation: pic.specificLocation.moorValue,
@@ -552,6 +551,7 @@ class AppDatabase extends _$AppDatabase {
           deletedFromCameraRoll: pic.deletedFromCameraRoll.moorValue,
           isStarred: pic.isStarred.moorValue,
           base64encoded: pic.base64encoded.moorValue,
+          tags: pic.tags,
         ),
       );
     }

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
@@ -722,15 +721,15 @@ class TabsController extends GetxController {
           user.setDefaultWidgetImage(allPics.value[0].entity.value); */
             var pic = await database.getPhotoByPhotoId(picStore.photoId.value);
 
-            if (pic != null && pic.tags != null && pic.tags!.isNotEmpty) {
+            if (pic != null && pic.tags.isNotEmpty) {
               // //print('pic is in db... removing it from db!');
-              var picTags = List<String>.from(pic.tags!);
+              var picTags = List<String>.from(pic.tags);
               await Future.wait([
                 Future.forEach(picTags, (String tagKey) async {
                   var tag = await database.getLabelByLabelKey(tagKey);
                   if (tag != null) {
                     if (picStore != null) {
-                      tag.photoId?.remove(picStore.photoId);
+                      tag.photoId.remove(picStore.photoId);
                     }
                     // //print('removed ${picStore.photoId} from tag ${tag.title}');
                     await database.updateLabel(tag);

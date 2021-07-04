@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -66,7 +67,7 @@ class TagsController extends GetxController {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
     var tagsList = await _database.getAllLabel();
-    MoorUser getUser = await _database.getSingleMoorUser();
+    final getUser = await _database.getSingleMoorUser();
 
     //List<String> multiPicTags = multiPicTagKeys.toList();
     var suggestionTags = <String>[];
@@ -115,7 +116,10 @@ class TagsController extends GetxController {
           continue;
         }
 
-        var tagsStoreValue = TagsController.to.allTags[tagKey].value;
+        var tagsStoreValue = TagsController.to.allTags[tagKey]?.value;
+        if (tagsStoreValue == null) {
+          continue;
+        }
         doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
           if (matched) {
             suggestionTags.add(tagKey);
@@ -145,7 +149,7 @@ class TagsController extends GetxController {
     var suggestions = <TagModel>[];
     suggestionTags.forEach((suggestedTag) {
       if (TagsController.to.allTags[suggestedTag] != null) {
-        suggestions.add(TagsController.to.allTags[suggestedTag].value);
+        suggestions.add(TagsController.to.allTags[suggestedTag]!.value);
       }
     });
     // //print('Suggestions Tag Store: $suggestions');
@@ -418,7 +422,7 @@ class TagsController extends GetxController {
         var tagKey = tag.key;
         if (tagKey == kSecretTagKey) continue;
         if (allTags[tagKey] != null && multiPicTags[tagKey] == null) {
-          var tagsStoreValue = /* TagsController.to. */ allTags[tagKey].value;
+          var tagsStoreValue = /* TagsController.to. */ allTags[tagKey]!.value;
           doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
             suggestionTags.add(tagKey);
           });
@@ -542,7 +546,7 @@ class TagsController extends GetxController {
       /// now we have to make it empty for the next time
       clearMultiPicTags();
 
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
+      WidgetsBinding.instance?.addPostFrameCallback((_) async {
         /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
         if (TabsController.to.currentTab.value == 0) {
           await TabsController.to.refreshUntaggedList();
@@ -562,7 +566,7 @@ class TagsController extends GetxController {
     /// Refreshing the tagged pic map as a tag is removed from the picstore
     await TaggedController.to.refreshTaggedPhotos();
 
-    if (picStore.tags.isEmpty) {
+    if (picStore != null && picStore.tags.isEmpty) {
       /// tags are empty now the untagged list should be refreshed so that this picStore will be visible there
       await TabsController.to.refreshUntaggedList();
     }
@@ -573,7 +577,10 @@ class TagsController extends GetxController {
     var picStore = TabsController.to.picStoreMap[picId]?.value;
     if (picStore == null) {
       var fetchedPicStore = TabsController.to.explorPicStore(picId);
-      TabsController.to.picStoreMap[picId] = Rxn<PicStore?>(fetchedPicStore.value);
+      if (fetchedPicStore.value != null) {
+        TabsController.to.picStoreMap[picId] =
+            Rx<PicStore>(fetchedPicStore.value!);
+      }
       picStore = fetchedPicStore.value;
     }
 
@@ -599,7 +606,7 @@ class TagsController extends GetxController {
     }
     final getTag = await _database.getLabelByLabelKey(tagKey);
     if (getTag != null) {
-      getTag.photoId?.add(picStore.photoId.value);
+      getTag.photoId.add(picStore.photoId.value);
       await _database.updateLabel(getTag);
       await picStore.addTagToPic(
           tagKey: tagKey, photoId: picStore.photoId.value);
@@ -633,7 +640,7 @@ class TagsController extends GetxController {
       {required String oldTagKey,
       required String newTagKey,
       required String newName}) {
-    var tagModel = allTags[oldTagKey].value;
+    var tagModel = allTags[oldTagKey]!.value;
 
     /// remove the oldTagKey because it will help us to make it un-listenable
     /// as it might be used somewhere else and we don't need un necessary frame updates
@@ -686,13 +693,13 @@ class TagsController extends GetxController {
     /// as soon as the `ui` changes are done - now secretly do the background changes in async manner
 
     /// fetch the `Label` from the `oldTagKey`
-    Label oldTag = await _database.getLabelByLabelKey(oldTagKey);
+    final oldTag = await _database.getLabelByLabelKey(oldTagKey);
 
     /// Creating new label
     var createTag = Label(
         key: newTagKey,
         title: newName,
-        photoId: oldTag.photoId,
+        photoId: oldTag!.photoId,
         counter: oldTag.counter < 1 ? 1 : oldTag.counter,
         lastUsedAt: DateTime.now());
 
@@ -700,17 +707,19 @@ class TagsController extends GetxController {
 
     await Future.wait(
       [
-        Future.forEach(createTag.photoId, (photoId) async {
-          Photo pic = await _database.getPhotoByPhotoId(photoId);
-          //Pic pic = picsBox.get(photoId);
-          var indexOfOldTag = pic.tags.indexOf(oldTagKey);
-          // //print('Tags in this picture: ${pic.tags}');
-          if (indexOfOldTag > -1) {
-            pic.tags[indexOfOldTag] = newTagKey;
+        Future.forEach(createTag.photoId, (String photoId) async {
+          final pic = await _database.getPhotoByPhotoId(photoId);
+          if (pic != null) {
+            //Pic pic = picsBox.get(photoId);
+            var indexOfOldTag = pic.tags.indexOf(oldTagKey);
+            // //print('Tags in this picture: ${pic.tags}');
+            if (indexOfOldTag > -1) {
+              pic.tags[indexOfOldTag] = newTagKey;
+            }
+            await _database.updatePhoto(pic);
+            //picsBox.put(photoId, pic);
+            // //print('updated tag in pic ${pic.id}');
           }
-          await _database.updatePhoto(pic);
-          //picsBox.put(photoId, pic);
-          // //print('updated tag in pic ${pic.id}');
         })
       ],
     );
@@ -720,15 +729,15 @@ class TagsController extends GetxController {
   }
 
   /// untag the pic with tags as `tagKey`
-  Future<void> deleteTagFromPic({String tagKey}) async {
+  Future<void> deleteTagFromPic({required String tagKey}) async {
     //var tagsBox = Hive.box('tags');
 
     var label = await _database.getLabelByLabelKey(tagKey);
 
-    if (label != null) {
+    if (label != null && allTags[tagKey] != null) {
       // //print('found tag going to delete it');
       // Remove a tag das fotos já taggeadas
-      var tagsStore = allTags[tagKey].value;
+      var tagsStore = allTags[tagKey]!.value;
       // //print('TagsStore Tag: ${tagsStore.name}');
       /*  TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);

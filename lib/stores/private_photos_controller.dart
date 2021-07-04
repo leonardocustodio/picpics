@@ -30,7 +30,7 @@ class PrivatePhotosController extends GetxController {
 
     final currentUser = await _appDatabase.getSingleMoorUser();
     await _appDatabase
-        .updateMoorUser(currentUser!.copyWith(secretPhotos: showPrivate.value));
+        .updateMoorUser(currentUser.copyWith(secretPhotos: showPrivate.value));
 
     //    Analytics.sendEvent(Event.notification_switch);
   }

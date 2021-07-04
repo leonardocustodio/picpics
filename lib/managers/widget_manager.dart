@@ -28,10 +28,8 @@ class WidgetManager {
       //var picsBox = await Hive.openBox('pics');
 
       var currentUser = await appDatabase.getSingleMoorUser();
-      if (null == currentUser || null == currentUser.starredPhotos) {
-        return;
-      }
-      final starredPhotos = currentUser.starredPhotos!;
+      
+      final starredPhotos = currentUser.starredPhotos;
       //print('Number of starred photos: ${starredPhotos.length}');
 
       String? baseString;

@@ -108,7 +108,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   ImageFileType _getType() {
     late ImageFileType type;
 
-    final String? extension = picStore.entity.value == null
+    final extension = picStore.entity.value == null
         ? picStore.photoPath.split('.').last
         : picStore.entity.value?.title?.split('.').last;
     //print('Extension: $extension');
@@ -143,7 +143,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    final AssetEntityImageProvider typedOther =
+    final typedOther =
         // ignore: test_types_in_equals
         other as AssetEntityImageProvider;
 

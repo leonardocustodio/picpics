@@ -10,28 +10,28 @@ part of 'app_database.dart';
 class Photo extends DataClass implements Insertable<Photo> {
   final String id;
   final DateTime createdAt;
-  final double originalLatitude;
-  final double originalLongitude;
+  final double? originalLatitude;
+  final double? originalLongitude;
   final double? latitude;
   final double? longitude;
   final bool isPrivate;
   final bool deletedFromCameraRoll;
   final bool isStarred;
-  final List<String>? tags;
+  final List<String> tags;
   final String? specificLocation;
   final String? generalLocation;
   final String? base64encoded;
   Photo(
       {required this.id,
       required this.createdAt,
-      required this.originalLatitude,
-      required this.originalLongitude,
+      this.originalLatitude,
+      this.originalLongitude,
       this.latitude,
       this.longitude,
       required this.isPrivate,
       required this.deletedFromCameraRoll,
       required this.isStarred,
-      this.tags,
+      required this.tags,
       this.specificLocation,
       this.generalLocation,
       this.base64encoded});
@@ -43,10 +43,10 @@ class Photo extends DataClass implements Insertable<Photo> {
           .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
       createdAt: const DateTimeType()
           .mapFromDatabaseResponse(data['${effectivePrefix}created_at'])!,
-      originalLatitude: const RealType().mapFromDatabaseResponse(
-          data['${effectivePrefix}original_latitude'])!,
+      originalLatitude: const RealType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}original_latitude']),
       originalLongitude: const RealType().mapFromDatabaseResponse(
-          data['${effectivePrefix}original_longitude'])!,
+          data['${effectivePrefix}original_longitude']),
       latitude: const RealType()
           .mapFromDatabaseResponse(data['${effectivePrefix}latitude']),
       longitude: const RealType()
@@ -58,7 +58,7 @@ class Photo extends DataClass implements Insertable<Photo> {
       isStarred: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}is_starred'])!,
       tags: $PhotosTable.$converter0.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}tags'])),
+          .mapFromDatabaseResponse(data['${effectivePrefix}tags']))!,
       specificLocation: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}specific_location']),
       generalLocation: const StringType()
@@ -72,8 +72,12 @@ class Photo extends DataClass implements Insertable<Photo> {
     final map = <String, Expression>{};
     map['id'] = Variable<String>(id);
     map['created_at'] = Variable<DateTime>(createdAt);
-    map['original_latitude'] = Variable<double>(originalLatitude);
-    map['original_longitude'] = Variable<double>(originalLongitude);
+    if (!nullToAbsent || originalLatitude != null) {
+      map['original_latitude'] = Variable<double?>(originalLatitude);
+    }
+    if (!nullToAbsent || originalLongitude != null) {
+      map['original_longitude'] = Variable<double?>(originalLongitude);
+    }
     if (!nullToAbsent || latitude != null) {
       map['latitude'] = Variable<double?>(latitude);
     }
@@ -83,9 +87,9 @@ class Photo extends DataClass implements Insertable<Photo> {
     map['is_private'] = Variable<bool>(isPrivate);
     map['deleted_from_camera_roll'] = Variable<bool>(deletedFromCameraRoll);
     map['is_starred'] = Variable<bool>(isStarred);
-    if (!nullToAbsent || tags != null) {
+    {
       final converter = $PhotosTable.$converter0;
-      map['tags'] = Variable<String?>(converter.mapToSql(tags));
+      map['tags'] = Variable<String>(converter.mapToSql(tags)!);
     }
     if (!nullToAbsent || specificLocation != null) {
       map['specific_location'] = Variable<String?>(specificLocation);
@@ -103,8 +107,12 @@ class Photo extends DataClass implements Insertable<Photo> {
     return PhotosCompanion(
       id: Value(id),
       createdAt: Value(createdAt),
-      originalLatitude: Value(originalLatitude),
-      originalLongitude: Value(originalLongitude),
+      originalLatitude: originalLatitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(originalLatitude),
+      originalLongitude: originalLongitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(originalLongitude),
       latitude: latitude == null && nullToAbsent
           ? const Value.absent()
           : Value(latitude),
@@ -114,7 +122,7 @@ class Photo extends DataClass implements Insertable<Photo> {
       isPrivate: Value(isPrivate),
       deletedFromCameraRoll: Value(deletedFromCameraRoll),
       isStarred: Value(isStarred),
-      tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      tags: Value(tags),
       specificLocation: specificLocation == null && nullToAbsent
           ? const Value.absent()
           : Value(specificLocation),
@@ -133,15 +141,16 @@ class Photo extends DataClass implements Insertable<Photo> {
     return Photo(
       id: serializer.fromJson<String>(json['id']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      originalLatitude: serializer.fromJson<double>(json['originalLatitude']),
-      originalLongitude: serializer.fromJson<double>(json['originalLongitude']),
+      originalLatitude: serializer.fromJson<double?>(json['originalLatitude']),
+      originalLongitude:
+          serializer.fromJson<double?>(json['originalLongitude']),
       latitude: serializer.fromJson<double?>(json['latitude']),
       longitude: serializer.fromJson<double?>(json['longitude']),
       isPrivate: serializer.fromJson<bool>(json['isPrivate']),
       deletedFromCameraRoll:
           serializer.fromJson<bool>(json['deletedFromCameraRoll']),
       isStarred: serializer.fromJson<bool>(json['isStarred']),
-      tags: serializer.fromJson<List<String>?>(json['tags']),
+      tags: serializer.fromJson<List<String>>(json['tags']),
       specificLocation: serializer.fromJson<String?>(json['specificLocation']),
       generalLocation: serializer.fromJson<String?>(json['generalLocation']),
       base64encoded: serializer.fromJson<String?>(json['base64encoded']),
@@ -153,14 +162,14 @@ class Photo extends DataClass implements Insertable<Photo> {
     return <String, dynamic>{
       'id': serializer.toJson<String>(id),
       'createdAt': serializer.toJson<DateTime>(createdAt),
-      'originalLatitude': serializer.toJson<double>(originalLatitude),
-      'originalLongitude': serializer.toJson<double>(originalLongitude),
+      'originalLatitude': serializer.toJson<double?>(originalLatitude),
+      'originalLongitude': serializer.toJson<double?>(originalLongitude),
       'latitude': serializer.toJson<double?>(latitude),
       'longitude': serializer.toJson<double?>(longitude),
       'isPrivate': serializer.toJson<bool>(isPrivate),
       'deletedFromCameraRoll': serializer.toJson<bool>(deletedFromCameraRoll),
       'isStarred': serializer.toJson<bool>(isStarred),
-      'tags': serializer.toJson<List<String>?>(tags),
+      'tags': serializer.toJson<List<String>>(tags),
       'specificLocation': serializer.toJson<String?>(specificLocation),
       'generalLocation': serializer.toJson<String?>(generalLocation),
       'base64encoded': serializer.toJson<String?>(base64encoded),
@@ -266,14 +275,14 @@ class Photo extends DataClass implements Insertable<Photo> {
 class PhotosCompanion extends UpdateCompanion<Photo> {
   final Value<String> id;
   final Value<DateTime> createdAt;
-  final Value<double> originalLatitude;
-  final Value<double> originalLongitude;
+  final Value<double?> originalLatitude;
+  final Value<double?> originalLongitude;
   final Value<double?> latitude;
   final Value<double?> longitude;
   final Value<bool> isPrivate;
   final Value<bool> deletedFromCameraRoll;
   final Value<bool> isStarred;
-  final Value<List<String>?> tags;
+  final Value<List<String>> tags;
   final Value<String?> specificLocation;
   final Value<String?> generalLocation;
   final Value<String?> base64encoded;
@@ -295,32 +304,31 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
   PhotosCompanion.insert({
     required String id,
     required DateTime createdAt,
-    required double originalLatitude,
-    required double originalLongitude,
+    this.originalLatitude = const Value.absent(),
+    this.originalLongitude = const Value.absent(),
     this.latitude = const Value.absent(),
     this.longitude = const Value.absent(),
     this.isPrivate = const Value.absent(),
     this.deletedFromCameraRoll = const Value.absent(),
     this.isStarred = const Value.absent(),
-    this.tags = const Value.absent(),
+    required List<String> tags,
     this.specificLocation = const Value.absent(),
     this.generalLocation = const Value.absent(),
     this.base64encoded = const Value.absent(),
   })  : id = Value(id),
         createdAt = Value(createdAt),
-        originalLatitude = Value(originalLatitude),
-        originalLongitude = Value(originalLongitude);
+        tags = Value(tags);
   static Insertable<Photo> custom({
     Expression<String>? id,
     Expression<DateTime>? createdAt,
-    Expression<double>? originalLatitude,
-    Expression<double>? originalLongitude,
+    Expression<double?>? originalLatitude,
+    Expression<double?>? originalLongitude,
     Expression<double?>? latitude,
     Expression<double?>? longitude,
     Expression<bool>? isPrivate,
     Expression<bool>? deletedFromCameraRoll,
     Expression<bool>? isStarred,
-    Expression<List<String>?>? tags,
+    Expression<List<String>>? tags,
     Expression<String?>? specificLocation,
     Expression<String?>? generalLocation,
     Expression<String?>? base64encoded,
@@ -346,14 +354,14 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
   PhotosCompanion copyWith(
       {Value<String>? id,
       Value<DateTime>? createdAt,
-      Value<double>? originalLatitude,
-      Value<double>? originalLongitude,
+      Value<double?>? originalLatitude,
+      Value<double?>? originalLongitude,
       Value<double?>? latitude,
       Value<double?>? longitude,
       Value<bool>? isPrivate,
       Value<bool>? deletedFromCameraRoll,
       Value<bool>? isStarred,
-      Value<List<String>?>? tags,
+      Value<List<String>>? tags,
       Value<String?>? specificLocation,
       Value<String?>? generalLocation,
       Value<String?>? base64encoded}) {
@@ -385,10 +393,10 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
     if (originalLatitude.present) {
-      map['original_latitude'] = Variable<double>(originalLatitude.value);
+      map['original_latitude'] = Variable<double?>(originalLatitude.value);
     }
     if (originalLongitude.present) {
-      map['original_longitude'] = Variable<double>(originalLongitude.value);
+      map['original_longitude'] = Variable<double?>(originalLongitude.value);
     }
     if (latitude.present) {
       map['latitude'] = Variable<double?>(latitude.value);
@@ -408,7 +416,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     }
     if (tags.present) {
       final converter = $PhotosTable.$converter0;
-      map['tags'] = Variable<String?>(converter.mapToSql(tags.value));
+      map['tags'] = Variable<String>(converter.mapToSql(tags.value)!);
     }
     if (specificLocation.present) {
       map['specific_location'] = Variable<String?>(specificLocation.value);
@@ -478,7 +486,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     return GeneratedRealColumn(
       'original_latitude',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -491,7 +499,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     return GeneratedRealColumn(
       'original_longitude',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -550,7 +558,7 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     return GeneratedTextColumn(
       'tags',
       $tableName,
-      true,
+      false,
     );
   }
 
@@ -634,16 +642,12 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
           _originalLatitudeMeta,
           originalLatitude.isAcceptableOrUnknown(
               data['original_latitude']!, _originalLatitudeMeta));
-    } else if (isInserting) {
-      context.missing(_originalLatitudeMeta);
     }
     if (data.containsKey('original_longitude')) {
       context.handle(
           _originalLongitudeMeta,
           originalLongitude.isAcceptableOrUnknown(
               data['original_longitude']!, _originalLongitudeMeta));
-    } else if (isInserting) {
-      context.missing(_originalLongitudeMeta);
     }
     if (data.containsKey('latitude')) {
       context.handle(_latitudeMeta,
@@ -901,17 +905,17 @@ class Private extends DataClass implements Insertable<Private> {
   final String path;
   final String nonce;
   final String? thumbPath;
-  final DateTime createDateTime;
-  final double originalLatitude;
-  final double originalLongitude;
+  final DateTime? createDateTime;
+  final double? originalLatitude;
+  final double? originalLongitude;
   Private(
       {required this.id,
       required this.path,
       required this.nonce,
       this.thumbPath,
-      required this.createDateTime,
-      required this.originalLatitude,
-      required this.originalLongitude});
+      this.createDateTime,
+      this.originalLatitude,
+      this.originalLongitude});
   factory Private.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -925,11 +929,11 @@ class Private extends DataClass implements Insertable<Private> {
       thumbPath: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}thumb_path']),
       createDateTime: const DateTimeType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}create_date_time'])!,
-      originalLatitude: const RealType().mapFromDatabaseResponse(
-          data['${effectivePrefix}original_latitude'])!,
+          .mapFromDatabaseResponse(data['${effectivePrefix}create_date_time']),
+      originalLatitude: const RealType()
+          .mapFromDatabaseResponse(data['${effectivePrefix}original_latitude']),
       originalLongitude: const RealType().mapFromDatabaseResponse(
-          data['${effectivePrefix}original_longitude'])!,
+          data['${effectivePrefix}original_longitude']),
     );
   }
   @override
@@ -941,9 +945,15 @@ class Private extends DataClass implements Insertable<Private> {
     if (!nullToAbsent || thumbPath != null) {
       map['thumb_path'] = Variable<String?>(thumbPath);
     }
-    map['create_date_time'] = Variable<DateTime>(createDateTime);
-    map['original_latitude'] = Variable<double>(originalLatitude);
-    map['original_longitude'] = Variable<double>(originalLongitude);
+    if (!nullToAbsent || createDateTime != null) {
+      map['create_date_time'] = Variable<DateTime?>(createDateTime);
+    }
+    if (!nullToAbsent || originalLatitude != null) {
+      map['original_latitude'] = Variable<double?>(originalLatitude);
+    }
+    if (!nullToAbsent || originalLongitude != null) {
+      map['original_longitude'] = Variable<double?>(originalLongitude);
+    }
     return map;
   }
 
@@ -955,9 +965,15 @@ class Private extends DataClass implements Insertable<Private> {
       thumbPath: thumbPath == null && nullToAbsent
           ? const Value.absent()
           : Value(thumbPath),
-      createDateTime: Value(createDateTime),
-      originalLatitude: Value(originalLatitude),
-      originalLongitude: Value(originalLongitude),
+      createDateTime: createDateTime == null && nullToAbsent
+          ? const Value.absent()
+          : Value(createDateTime),
+      originalLatitude: originalLatitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(originalLatitude),
+      originalLongitude: originalLongitude == null && nullToAbsent
+          ? const Value.absent()
+          : Value(originalLongitude),
     );
   }
 
@@ -969,9 +985,10 @@ class Private extends DataClass implements Insertable<Private> {
       path: serializer.fromJson<String>(json['path']),
       nonce: serializer.fromJson<String>(json['nonce']),
       thumbPath: serializer.fromJson<String?>(json['thumbPath']),
-      createDateTime: serializer.fromJson<DateTime>(json['createDateTime']),
-      originalLatitude: serializer.fromJson<double>(json['originalLatitude']),
-      originalLongitude: serializer.fromJson<double>(json['originalLongitude']),
+      createDateTime: serializer.fromJson<DateTime?>(json['createDateTime']),
+      originalLatitude: serializer.fromJson<double?>(json['originalLatitude']),
+      originalLongitude:
+          serializer.fromJson<double?>(json['originalLongitude']),
     );
   }
   @override
@@ -982,9 +999,9 @@ class Private extends DataClass implements Insertable<Private> {
       'path': serializer.toJson<String>(path),
       'nonce': serializer.toJson<String>(nonce),
       'thumbPath': serializer.toJson<String?>(thumbPath),
-      'createDateTime': serializer.toJson<DateTime>(createDateTime),
-      'originalLatitude': serializer.toJson<double>(originalLatitude),
-      'originalLongitude': serializer.toJson<double>(originalLongitude),
+      'createDateTime': serializer.toJson<DateTime?>(createDateTime),
+      'originalLatitude': serializer.toJson<double?>(originalLatitude),
+      'originalLongitude': serializer.toJson<double?>(originalLongitude),
     };
   }
 
@@ -1050,9 +1067,9 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
   final Value<String> path;
   final Value<String> nonce;
   final Value<String?> thumbPath;
-  final Value<DateTime> createDateTime;
-  final Value<double> originalLatitude;
-  final Value<double> originalLongitude;
+  final Value<DateTime?> createDateTime;
+  final Value<double?> originalLatitude;
+  final Value<double?> originalLongitude;
   const PrivatesCompanion({
     this.id = const Value.absent(),
     this.path = const Value.absent(),
@@ -1067,23 +1084,20 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
     required String path,
     required String nonce,
     this.thumbPath = const Value.absent(),
-    required DateTime createDateTime,
-    required double originalLatitude,
-    required double originalLongitude,
+    this.createDateTime = const Value.absent(),
+    this.originalLatitude = const Value.absent(),
+    this.originalLongitude = const Value.absent(),
   })  : id = Value(id),
         path = Value(path),
-        nonce = Value(nonce),
-        createDateTime = Value(createDateTime),
-        originalLatitude = Value(originalLatitude),
-        originalLongitude = Value(originalLongitude);
+        nonce = Value(nonce);
   static Insertable<Private> custom({
     Expression<String>? id,
     Expression<String>? path,
     Expression<String>? nonce,
     Expression<String?>? thumbPath,
-    Expression<DateTime>? createDateTime,
-    Expression<double>? originalLatitude,
-    Expression<double>? originalLongitude,
+    Expression<DateTime?>? createDateTime,
+    Expression<double?>? originalLatitude,
+    Expression<double?>? originalLongitude,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
@@ -1101,9 +1115,9 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
       Value<String>? path,
       Value<String>? nonce,
       Value<String?>? thumbPath,
-      Value<DateTime>? createDateTime,
-      Value<double>? originalLatitude,
-      Value<double>? originalLongitude}) {
+      Value<DateTime?>? createDateTime,
+      Value<double?>? originalLatitude,
+      Value<double?>? originalLongitude}) {
     return PrivatesCompanion(
       id: id ?? this.id,
       path: path ?? this.path,
@@ -1131,13 +1145,13 @@ class PrivatesCompanion extends UpdateCompanion<Private> {
       map['thumb_path'] = Variable<String?>(thumbPath.value);
     }
     if (createDateTime.present) {
-      map['create_date_time'] = Variable<DateTime>(createDateTime.value);
+      map['create_date_time'] = Variable<DateTime?>(createDateTime.value);
     }
     if (originalLatitude.present) {
-      map['original_latitude'] = Variable<double>(originalLatitude.value);
+      map['original_latitude'] = Variable<double?>(originalLatitude.value);
     }
     if (originalLongitude.present) {
-      map['original_longitude'] = Variable<double>(originalLongitude.value);
+      map['original_longitude'] = Variable<double?>(originalLongitude.value);
     }
     return map;
   }
@@ -1214,7 +1228,7 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
     return GeneratedDateTimeColumn(
       'create_date_time',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -1227,7 +1241,7 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
     return GeneratedRealColumn(
       'original_latitude',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -1240,7 +1254,7 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
     return GeneratedRealColumn(
       'original_longitude',
       $tableName,
-      false,
+      true,
     );
   }
 
@@ -1291,24 +1305,18 @@ class $PrivatesTable extends Privates with TableInfo<$PrivatesTable, Private> {
           _createDateTimeMeta,
           createDateTime.isAcceptableOrUnknown(
               data['create_date_time']!, _createDateTimeMeta));
-    } else if (isInserting) {
-      context.missing(_createDateTimeMeta);
     }
     if (data.containsKey('original_latitude')) {
       context.handle(
           _originalLatitudeMeta,
           originalLatitude.isAcceptableOrUnknown(
               data['original_latitude']!, _originalLatitudeMeta));
-    } else if (isInserting) {
-      context.missing(_originalLatitudeMeta);
     }
     if (data.containsKey('original_longitude')) {
       context.handle(
           _originalLongitudeMeta,
           originalLongitude.isAcceptableOrUnknown(
               data['original_longitude']!, _originalLongitudeMeta));
-    } else if (isInserting) {
-      context.missing(_originalLongitudeMeta);
     }
     return context;
   }
@@ -1332,13 +1340,13 @@ class Label extends DataClass implements Insertable<Label> {
   final int counter;
   final DateTime lastUsedAt;
   final String title;
-  final List<String>? photoId;
+  final List<String> photoId;
   Label(
       {required this.key,
       required this.counter,
       required this.lastUsedAt,
       required this.title,
-      this.photoId});
+      required this.photoId});
   factory Label.fromData(Map<String, dynamic> data, GeneratedDatabase db,
       {String? prefix}) {
     final effectivePrefix = prefix ?? '';
@@ -1352,7 +1360,7 @@ class Label extends DataClass implements Insertable<Label> {
       title: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}title'])!,
       photoId: $LabelsTable.$converter0.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}photo_id'])),
+          .mapFromDatabaseResponse(data['${effectivePrefix}photo_id']))!,
     );
   }
   @override
@@ -1362,9 +1370,9 @@ class Label extends DataClass implements Insertable<Label> {
     map['counter'] = Variable<int>(counter);
     map['last_used_at'] = Variable<DateTime>(lastUsedAt);
     map['title'] = Variable<String>(title);
-    if (!nullToAbsent || photoId != null) {
+    {
       final converter = $LabelsTable.$converter0;
-      map['photo_id'] = Variable<String?>(converter.mapToSql(photoId));
+      map['photo_id'] = Variable<String>(converter.mapToSql(photoId)!);
     }
     return map;
   }
@@ -1375,9 +1383,7 @@ class Label extends DataClass implements Insertable<Label> {
       counter: Value(counter),
       lastUsedAt: Value(lastUsedAt),
       title: Value(title),
-      photoId: photoId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(photoId),
+      photoId: Value(photoId),
     );
   }
 
@@ -1389,7 +1395,7 @@ class Label extends DataClass implements Insertable<Label> {
       counter: serializer.fromJson<int>(json['counter']),
       lastUsedAt: serializer.fromJson<DateTime>(json['lastUsedAt']),
       title: serializer.fromJson<String>(json['title']),
-      photoId: serializer.fromJson<List<String>?>(json['photoId']),
+      photoId: serializer.fromJson<List<String>>(json['photoId']),
     );
   }
   @override
@@ -1400,7 +1406,7 @@ class Label extends DataClass implements Insertable<Label> {
       'counter': serializer.toJson<int>(counter),
       'lastUsedAt': serializer.toJson<DateTime>(lastUsedAt),
       'title': serializer.toJson<String>(title),
-      'photoId': serializer.toJson<List<String>?>(photoId),
+      'photoId': serializer.toJson<List<String>>(photoId),
     };
   }
 
@@ -1452,7 +1458,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
   final Value<int> counter;
   final Value<DateTime> lastUsedAt;
   final Value<String> title;
-  final Value<List<String>?> photoId;
+  final Value<List<String>> photoId;
   const LabelsCompanion({
     this.key = const Value.absent(),
     this.counter = const Value.absent(),
@@ -1465,14 +1471,14 @@ class LabelsCompanion extends UpdateCompanion<Label> {
     this.counter = const Value.absent(),
     this.lastUsedAt = const Value.absent(),
     this.title = const Value.absent(),
-    this.photoId = const Value.absent(),
-  });
+    required List<String> photoId,
+  }) : photoId = Value(photoId);
   static Insertable<Label> custom({
     Expression<String>? key,
     Expression<int>? counter,
     Expression<DateTime>? lastUsedAt,
     Expression<String>? title,
-    Expression<List<String>?>? photoId,
+    Expression<List<String>>? photoId,
   }) {
     return RawValuesInsertable({
       if (key != null) 'key': key,
@@ -1488,7 +1494,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
       Value<int>? counter,
       Value<DateTime>? lastUsedAt,
       Value<String>? title,
-      Value<List<String>?>? photoId}) {
+      Value<List<String>>? photoId}) {
     return LabelsCompanion(
       key: key ?? this.key,
       counter: counter ?? this.counter,
@@ -1515,7 +1521,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
     }
     if (photoId.present) {
       final converter = $LabelsTable.$converter0;
-      map['photo_id'] = Variable<String?>(converter.mapToSql(photoId.value));
+      map['photo_id'] = Variable<String>(converter.mapToSql(photoId.value)!);
     }
     return map;
   }
@@ -1576,7 +1582,7 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
     return GeneratedTextColumn(
       'photo_id',
       $tableName,
-      true,
+      false,
     );
   }
 
@@ -1862,11 +1868,11 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
   final String? password;
   final bool notification;
   final bool dailyChallenges;
-  final List<String>? recentTags;
+  final List<String> recentTags;
   final String? appLanguage;
   final String? appVersion;
   final String? secretKey;
-  final List<String>? starredPhotos;
+  final List<String> starredPhotos;
   final String? defaultWidgetImage;
   final int goal;
   final int hourOfDay;
@@ -1891,11 +1897,11 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       this.password,
       required this.notification,
       required this.dailyChallenges,
-      this.recentTags,
+      required this.recentTags,
       this.appLanguage,
       this.appVersion,
       this.secretKey,
-      this.starredPhotos,
+      required this.starredPhotos,
       this.defaultWidgetImage,
       required this.goal,
       required this.hourOfDay,
@@ -1930,7 +1936,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       dailyChallenges: const BoolType()
           .mapFromDatabaseResponse(data['${effectivePrefix}daily_challenges'])!,
       recentTags: $MoorUsersTable.$converter0.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}recent_tags'])),
+          .mapFromDatabaseResponse(data['${effectivePrefix}recent_tags']))!,
       appLanguage: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}app_language']),
       appVersion: const StringType()
@@ -1938,7 +1944,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       secretKey: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}secret_key']),
       starredPhotos: $MoorUsersTable.$converter1.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}starred_photos'])),
+          .mapFromDatabaseResponse(data['${effectivePrefix}starred_photos']))!,
       defaultWidgetImage: const StringType().mapFromDatabaseResponse(
           data['${effectivePrefix}default_widget_image']),
       goal: const IntType()
@@ -1988,9 +1994,9 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
     }
     map['notification'] = Variable<bool>(notification);
     map['daily_challenges'] = Variable<bool>(dailyChallenges);
-    if (!nullToAbsent || recentTags != null) {
+    {
       final converter = $MoorUsersTable.$converter0;
-      map['recent_tags'] = Variable<String?>(converter.mapToSql(recentTags));
+      map['recent_tags'] = Variable<String>(converter.mapToSql(recentTags)!);
     }
     if (!nullToAbsent || appLanguage != null) {
       map['app_language'] = Variable<String?>(appLanguage);
@@ -2001,10 +2007,10 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
     if (!nullToAbsent || secretKey != null) {
       map['secret_key'] = Variable<String?>(secretKey);
     }
-    if (!nullToAbsent || starredPhotos != null) {
+    {
       final converter = $MoorUsersTable.$converter1;
       map['starred_photos'] =
-          Variable<String?>(converter.mapToSql(starredPhotos));
+          Variable<String>(converter.mapToSql(starredPhotos)!);
     }
     if (!nullToAbsent || defaultWidgetImage != null) {
       map['default_widget_image'] = Variable<String?>(defaultWidgetImage);
@@ -2039,9 +2045,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           : Value(password),
       notification: Value(notification),
       dailyChallenges: Value(dailyChallenges),
-      recentTags: recentTags == null && nullToAbsent
-          ? const Value.absent()
-          : Value(recentTags),
+      recentTags: Value(recentTags),
       appLanguage: appLanguage == null && nullToAbsent
           ? const Value.absent()
           : Value(appLanguage),
@@ -2051,9 +2055,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       secretKey: secretKey == null && nullToAbsent
           ? const Value.absent()
           : Value(secretKey),
-      starredPhotos: starredPhotos == null && nullToAbsent
-          ? const Value.absent()
-          : Value(starredPhotos),
+      starredPhotos: Value(starredPhotos),
       defaultWidgetImage: defaultWidgetImage == null && nullToAbsent
           ? const Value.absent()
           : Value(defaultWidgetImage),
@@ -2086,11 +2088,11 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       password: serializer.fromJson<String?>(json['password']),
       notification: serializer.fromJson<bool>(json['notification']),
       dailyChallenges: serializer.fromJson<bool>(json['dailyChallenges']),
-      recentTags: serializer.fromJson<List<String>?>(json['recentTags']),
+      recentTags: serializer.fromJson<List<String>>(json['recentTags']),
       appLanguage: serializer.fromJson<String?>(json['appLanguage']),
       appVersion: serializer.fromJson<String?>(json['appVersion']),
       secretKey: serializer.fromJson<String?>(json['secretKey']),
-      starredPhotos: serializer.fromJson<List<String>?>(json['starredPhotos']),
+      starredPhotos: serializer.fromJson<List<String>>(json['starredPhotos']),
       defaultWidgetImage:
           serializer.fromJson<String?>(json['defaultWidgetImage']),
       goal: serializer.fromJson<int>(json['goal']),
@@ -2125,11 +2127,11 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       'password': serializer.toJson<String?>(password),
       'notification': serializer.toJson<bool>(notification),
       'dailyChallenges': serializer.toJson<bool>(dailyChallenges),
-      'recentTags': serializer.toJson<List<String>?>(recentTags),
+      'recentTags': serializer.toJson<List<String>>(recentTags),
       'appLanguage': serializer.toJson<String?>(appLanguage),
       'appVersion': serializer.toJson<String?>(appVersion),
       'secretKey': serializer.toJson<String?>(secretKey),
-      'starredPhotos': serializer.toJson<List<String>?>(starredPhotos),
+      'starredPhotos': serializer.toJson<List<String>>(starredPhotos),
       'defaultWidgetImage': serializer.toJson<String?>(defaultWidgetImage),
       'goal': serializer.toJson<int>(goal),
       'hourOfDay': serializer.toJson<int>(hourOfDay),
@@ -2330,11 +2332,11 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
   final Value<String?> password;
   final Value<bool> notification;
   final Value<bool> dailyChallenges;
-  final Value<List<String>?> recentTags;
+  final Value<List<String>> recentTags;
   final Value<String?> appLanguage;
   final Value<String?> appVersion;
   final Value<String?> secretKey;
-  final Value<List<String>?> starredPhotos;
+  final Value<List<String>> starredPhotos;
   final Value<String?> defaultWidgetImage;
   final Value<int> goal;
   final Value<int> hourOfDay;
@@ -2389,11 +2391,11 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     this.password = const Value.absent(),
     this.notification = const Value.absent(),
     this.dailyChallenges = const Value.absent(),
-    this.recentTags = const Value.absent(),
+    required List<String> recentTags,
     this.appLanguage = const Value.absent(),
     this.appVersion = const Value.absent(),
     this.secretKey = const Value.absent(),
-    this.starredPhotos = const Value.absent(),
+    required List<String> starredPhotos,
     this.defaultWidgetImage = const Value.absent(),
     this.goal = const Value.absent(),
     this.hourOfDay = const Value.absent(),
@@ -2411,7 +2413,8 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     this.tourCompleted = const Value.absent(),
     this.isBiometricActivated = const Value.absent(),
     this.lastTaggedPicDate = const Value.absent(),
-  });
+  })  : recentTags = Value(recentTags),
+        starredPhotos = Value(starredPhotos);
   static Insertable<MoorUser> custom({
     Expression<int>? customPrimaryKey,
     Expression<String>? id,
@@ -2419,11 +2422,11 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     Expression<String?>? password,
     Expression<bool>? notification,
     Expression<bool>? dailyChallenges,
-    Expression<List<String>?>? recentTags,
+    Expression<List<String>>? recentTags,
     Expression<String?>? appLanguage,
     Expression<String?>? appVersion,
     Expression<String?>? secretKey,
-    Expression<List<String>?>? starredPhotos,
+    Expression<List<String>>? starredPhotos,
     Expression<String?>? defaultWidgetImage,
     Expression<int>? goal,
     Expression<int>? hourOfDay,
@@ -2486,11 +2489,11 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       Value<String?>? password,
       Value<bool>? notification,
       Value<bool>? dailyChallenges,
-      Value<List<String>?>? recentTags,
+      Value<List<String>>? recentTags,
       Value<String?>? appLanguage,
       Value<String?>? appVersion,
       Value<String?>? secretKey,
-      Value<List<String>?>? starredPhotos,
+      Value<List<String>>? starredPhotos,
       Value<String?>? defaultWidgetImage,
       Value<int>? goal,
       Value<int>? hourOfDay,
@@ -2565,7 +2568,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     if (recentTags.present) {
       final converter = $MoorUsersTable.$converter0;
       map['recent_tags'] =
-          Variable<String?>(converter.mapToSql(recentTags.value));
+          Variable<String>(converter.mapToSql(recentTags.value)!);
     }
     if (appLanguage.present) {
       map['app_language'] = Variable<String?>(appLanguage.value);
@@ -2579,7 +2582,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     if (starredPhotos.present) {
       final converter = $MoorUsersTable.$converter1;
       map['starred_photos'] =
-          Variable<String?>(converter.mapToSql(starredPhotos.value));
+          Variable<String>(converter.mapToSql(starredPhotos.value)!);
     }
     if (defaultWidgetImage.present) {
       map['default_widget_image'] = Variable<String?>(defaultWidgetImage.value);
@@ -2743,7 +2746,7 @@ class $MoorUsersTable extends MoorUsers
     return GeneratedTextColumn(
       'recent_tags',
       $tableName,
-      true,
+      false,
     );
   }
 
@@ -2789,7 +2792,7 @@ class $MoorUsersTable extends MoorUsers
     return GeneratedTextColumn(
       'starred_photos',
       $tableName,
-      true,
+      false,
     );
   }
 

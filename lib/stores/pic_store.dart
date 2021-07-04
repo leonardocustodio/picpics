@@ -17,7 +17,6 @@ import 'package:strings/strings.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/crypto_manager_untouched.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/labels.dart';
@@ -25,7 +24,7 @@ import 'package:picPics/utils/labels.dart';
 import 'tags_controller.dart';
 
 class PicStore extends GetxController {
-  final DateTime? createdAt;
+  final DateTime createdAt;
   final double? originalLatitude;
   final double? originalLongitude;
 
@@ -79,7 +78,7 @@ class PicStore extends GetxController {
     required this.photoPath,
     required this.thumbPath,
     required this.photoId,
-    this.createdAt,
+    required this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
     this.deletedFromCameraRoll = false,
@@ -101,6 +100,9 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     var pic = await database.getPhotoByPhotoId(photoId.value);
+    if (pic == null) {
+      return;
+    }
     //pic.isStarred = value;
     String? base64encoded;
     //print('teste');
@@ -135,11 +137,12 @@ class PicStore extends GetxController {
     var tagKeys = tags.keys.toList();
     tagKeys.forEach((tKeys) async {
       final getTag = await database.getLabelByLabelKey(tKeys);
-
-      getTag.photoId.remove(photoId);
-      getTag.photoId.add(value);
-      //print('Replaced tag in ${getTag.title} tagsbox');
-      await database.updateLabel(getTag);
+      if (getTag != null) {
+        getTag.photoId.remove(photoId);
+        getTag.photoId.add(value);
+        //print('Replaced tag in ${getTag.title} tagsbox');
+        await database.updateLabel(getTag);
+      }
     });
 
     photoId.value = value;
@@ -184,8 +187,11 @@ class PicStore extends GetxController {
       return await entity.value?.originBytes;
     }
     //print('Returning decrypt image in privatePath: $photoPath');
+    if (UserController.to.encryptionKey == null) {
+      return null;
+    }
     return await Crypto.decryptImage(
-        photoPath, UserController.to.encryptionKey, hex.decode(nonce));
+        photoPath, UserController.to.encryptionKey!, hex.decode(nonce));
   }
 
   Future<Uint8List?> get assetThumbBytes async {
@@ -193,9 +199,12 @@ class PicStore extends GetxController {
       return await entity.value?.thumbDataWithSize(
           kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
     }
-    //print('Returning decrypt image in privatePath: $thumbPath');
+    //print('Returning decrypt image in privatePath: $photoPath');
+    if (UserController.to.encryptionKey == null) {
+      return null;
+    }
     return await Crypto.decryptImage(
-        thumbPath, UserController.to.encryptionKey, hex.decode(nonce));
+        photoPath, UserController.to.encryptionKey!, hex.decode(nonce));
   }
 
   String photoPath;
@@ -211,7 +220,8 @@ class PicStore extends GetxController {
     var pic = await database.getPhotoByPhotoId(photoId.value);
     //pic.deletedFromCameraRoll = value;
     //pic.save();
-    await database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
+
+    await database.updatePhoto(pic!.copyWith(deletedFromCameraRoll: value));
   }
 
   //@action
@@ -334,7 +344,7 @@ class PicStore extends GetxController {
 
         if (secretPic != null) {
           photoPath = secretPic.path;
-          thumbPath = secretPic.thumbPath;
+          thumbPath = secretPic.thumbPath!;
           nonce = secretPic.nonce;
           //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
         }
@@ -382,14 +392,12 @@ class PicStore extends GetxController {
     //Tag getTag = tagsBox.get(kSecretTagKey);
     final getTag = await database.getLabelByLabelKey(kSecretTagKey);
 
-    if (getTag == null ||
-        null == getTag.photoId ||
-        getTag.photoId!.contains(photoId)) {
+    if (getTag == null || getTag.photoId.contains(photoId)) {
       //print('this tag is already in this picture');
       return;
     }
 
-    getTag.photoId!.add(photoId.value);
+    getTag.photoId.add(photoId.value);
     //tagsBox.put(kSecretTagKey, getTag);
     await database.updateLabel(getTag);
 
@@ -490,7 +498,7 @@ class PicStore extends GetxController {
 
     var tagKey = Helpers.encryptTag(tagName);
     //print('Adding tag: $tagName');
-    Label getTag = await database.getLabelByLabelKey(tagKey);
+    final getTag = await database.getLabelByLabelKey(tagKey);
 
     if (getTag != null) {
       //print('user already has this tag');
@@ -665,14 +673,15 @@ class PicStore extends GetxController {
   Future<bool> deletePic() async {
     //print('Before photo manager delete: ${entity.id}');
 
-    /// TODO: Is this I am doing, might be right or might be wrong
+    /// TODO: Is this I am doing, This I will check once again
     if (entity.value == null) {
       return false;
     }
     if (Platform.isAndroid) {
-      await PhotoManager.editor.deleteWithIds([entity.value.id]);
+      await PhotoManager.editor.deleteWithIds([entity.value!.id]);
     } else {
-      final result = await PhotoManager.editor.deleteWithIds([entity.value.id]);
+      final result =
+          await PhotoManager.editor.deleteWithIds([entity.value!.id]);
       if (result.isEmpty) {
         return false;
       }
@@ -702,7 +711,11 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> removeTagFromPic({required String tagKey}) async {
-    Label getTag = await database.getLabelByLabelKey(tagKey);
+    final getTag = await database.getLabelByLabelKey(tagKey);
+
+    if (getTag == null) {
+      return;
+    }
 
     var indexOfPicInTag = getTag.photoId.indexOf(photoId.value);
 
@@ -712,6 +725,11 @@ class PicStore extends GetxController {
     }
 
     var getPic = await database.getPhotoByPhotoId(photoId.value);
+
+    if (getPic == null) {
+      return;
+    }
+
     var indexOfTagInPic = getPic.tags.indexOf(tagKey);
 
     if (indexOfTagInPic != -1) {

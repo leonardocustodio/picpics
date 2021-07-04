@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
 
 class FadeImageBuilder extends StatelessWidget {
   final Widget child;

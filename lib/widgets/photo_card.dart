@@ -23,8 +23,6 @@ import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:intl/intl.dart';
-import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
@@ -374,9 +372,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       }),
                     ),
                     Text(
-                      picStore.createdAt == null
-                          ? ''
-                          : dateFormat(picStore.createdAt!),
+                      dateFormat(picStore.createdAt),
                       textScaleFactor: 1.0,
                       style: TextStyle(
                         fontFamily: 'Lato',

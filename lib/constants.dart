@@ -33,16 +33,16 @@ const kSuccessColor = Color(0xFF70FF98);
 const kAlertColor = Color(0xFFF68C0F);
 const kWarningColor = Color(0xFFE01717);
 const kWhiteColor = Color(0xFFF5FAFA);
-const kGrayColor = const Color(0xffbfc2c3);
-const kLightGrayColor = const Color(0xffe2e4e5);
+const kGrayColor = Color(0xffbfc2c3);
+const kLightGrayColor =  Color(0xffe2e4e5);
 const kGreyPlaceholder = Color(0xFFE0E0E0);
 
 const kPrimaryGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-    const Color(0xFF52CECE),
-    const Color(0xFF6BC9DB),
+     Color(0xFF52CECE),
+     Color(0xFF6BC9DB),
   ],
 );
 
@@ -50,8 +50,8 @@ const kSecondaryGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-    const Color(0xFFFF6666),
-    const Color(0xFFFF7878),
+    Color(0xFFFF6666),
+    Color(0xFFFF7878),
   ],
 );
 
@@ -59,8 +59,8 @@ const kCardYellowGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-    const Color(0xFFDFB300),
-    const Color(0xFFFFD93F),
+    Color(0xFFDFB300),
+    Color(0xFFFFD93F),
   ],
 );
 
@@ -68,8 +68,8 @@ const kPinkGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-    const Color(0xFFEC56A1),
-    const Color(0xFFED74B1),
+    Color(0xFFEC56A1),
+    Color(0xFFED74B1),
   ],
 );
 
@@ -77,8 +77,8 @@ const kYellowGradient = LinearGradient(
   begin: Alignment(-0.07, -0.3),
   end: Alignment(1.2, 1.05),
   colors: [
-    const Color.fromRGBO(232, 191, 27, 0.7),
-    const Color.fromRGBO(242, 206, 59, 0.7),
+    Color.fromRGBO(232, 191, 27, 0.7),
+    Color.fromRGBO(242, 206, 59, 0.7),
   ],
 );
 
