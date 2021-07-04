@@ -193,8 +193,7 @@ void main() async {
   if (Platform.isIOS) {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
   }
-  var user = UserController()
-    ..initiatedWithProduct = initiatedWithProduct;
+  var user = UserController()..initiatedWithProduct = initiatedWithProduct;
   await user.initialize();
 
   await Analytics.sendAppOpen();
@@ -202,8 +201,7 @@ void main() async {
   Ads.loadRewarded();
 
   // FlutterBranchSdk.setRequestMetadata(r'$google_analytics_user_id', userId);
-  var streamSubscription =
-      FlutterBranchSdk.initSession().listen((data) {
+  var streamSubscription = FlutterBranchSdk.initSession().listen((data) {
     if (data.containsKey('+clicked_branch_link') &&
         data['+clicked_branch_link'] == true) {
       //Link clicked. Add logic to get link data

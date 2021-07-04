@@ -34,15 +34,15 @@ const kAlertColor = Color(0xFFF68C0F);
 const kWarningColor = Color(0xFFE01717);
 const kWhiteColor = Color(0xFFF5FAFA);
 const kGrayColor = Color(0xffbfc2c3);
-const kLightGrayColor =  Color(0xffe2e4e5);
+const kLightGrayColor = Color(0xffe2e4e5);
 const kGreyPlaceholder = Color(0xFFE0E0E0);
 
 const kPrimaryGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-     Color(0xFF52CECE),
-     Color(0xFF6BC9DB),
+    Color(0xFF52CECE),
+    Color(0xFF6BC9DB),
   ],
 );
 
