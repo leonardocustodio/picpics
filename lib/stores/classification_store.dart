@@ -1,4 +1,4 @@
-import 'dart:async';
+/* import 'dart:async';
 import 'dart:io';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 
@@ -22,3 +22,4 @@ class ClassificationStore {
     cloudLabeler.close();
   }
 }
+ */

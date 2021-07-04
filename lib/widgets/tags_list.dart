@@ -13,7 +13,7 @@ import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
 
-typedef OnString = Function(String)?;
+typedef OnString = Function(String);
 typedef OnEmptyTap = Function();
 
 class TagsList extends StatefulWidget {
@@ -25,11 +25,11 @@ class TagsList extends StatefulWidget {
   final bool addButtonVisible;
   final String? title;
   final TagStyle tagStyle;
-  final OnString onTap; // Function(String)
-  final OnString onDoubleTap; // Function()
-  final OnString onPanEnd; // Function()
-  final OnString onSubmitted; // Function(String)
-  final OnString onChanged; // Function(String)
+  final OnString? onTap; // Function(String)
+  final OnString? onDoubleTap; // Function()
+  final OnString? onPanEnd; // Function()
+  final OnString? onSubmitted; // Function(String)
+  final OnString? onChanged; // Function(String)
   //final OnString showEditTagModal; // Function()
   final String? aiButtonTitle;
   final Function()? onAiButtonTap;

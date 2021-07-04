@@ -446,13 +446,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
-  firebase_ml_vision:
-    dependency: "direct main"
-    description:
-      name: firebase_ml_vision
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.12.0+2"
   firebase_remote_config:
     dependency: "direct main"
     description:
@@ -988,10 +981,12 @@ packages:
   platform_alert_dialog:
     dependency: "direct main"
     description:
-      name: platform_alert_dialog
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0+2"
+      path: "."
+      ref: HEAD
+      resolved-ref: bb240299506246f22425d93e8117d7aa5ffe79ee
+      url: "https://github.com/justkawal/platform_alert_dialog"
+    source: git
+    version: "1.0.0+3"
   plugin_platform_interface:
     dependency: transitive
     description:

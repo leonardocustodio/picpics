@@ -97,9 +97,6 @@
         <meta-data
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="label" />
-        <meta-data
-            android:name="com.google.firebase.ml.vision.DEPENDENCIES"
-            android:value="ocr" />
         <!-- Branch init -->
         <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_knQ56dVonIKMG12kp8oqImolxDdnijb4" />
         <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_lcH73hRidIOQG73jkWdU2phduxmejiDe" />
