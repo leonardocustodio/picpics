@@ -253,9 +253,11 @@ packages:
   cryptography_flutter:
     dependency: "direct main"
     description:
-      name: cryptography_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: cryptography_flutter
+      ref: HEAD
+      resolved-ref: d09adc4f7ba8ca94b7ffa0979f53c89a558cafba
+      url: "https://github.com/justkawal/cryptography.git"
+    source: git
     version: "2.0.0"
   cupertino_icons:
     dependency: "direct main"

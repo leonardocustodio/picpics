@@ -58,14 +58,14 @@ String initialRoute = LoginScreen.id;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //await Get.lazyPut(() => RefreshPicPicsController());
+  //Get.lazyPut(() => RefreshPicPicsController());
+  //Get.lazyPut(() => GalleryStore());
   Get.lazyPut<BlurHashController>(() => BlurHashController());
   Get.lazyPut<UserController>(() => UserController());
   Get.lazyPut<PrivatePhotosController>(() => PrivatePhotosController());
   Get.lazyPut<AllTagsController>(() => AllTagsController());
   Get.lazyPut<TaggedController>(() => TaggedController());
   Get.lazyPut<SwiperTabController>(() => SwiperTabController());
-  // Get.lazyPut(() => GalleryStore());
   Get.lazyPut<DatabaseController>(() => DatabaseController());
   Get.lazyPut<TabsController>(() => TabsController());
   Get.lazyPut<TagsController>(() => TagsController());

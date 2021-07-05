@@ -35,10 +35,14 @@ dependencies:
   platform_alert_dialog:
     git:
       url: https://github.com/justkawal/platform_alert_dialog
+  cryptography_flutter:
+    git:
+      url: https://github.com/justkawal/cryptography.git
+      path: cryptography_flutter
   carousel_slider: 4.0.0-nullsafety.0
   cloud_functions: 1.1.2
   collection: 1.15.0
-  cryptography_flutter: 2.0.0
+  #cryptography_flutter: 2.0.0
   cryptography: 2.0.0
   cupertino_icons: 1.0.3
   date_utils: 0.2.0
