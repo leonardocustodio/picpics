@@ -330,7 +330,7 @@ packages:
     source: hosted
     version: "0.12.0"
   ffi:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: ffi
       url: "https://pub.dartlang.org"
@@ -848,7 +848,7 @@ packages:
     source: hosted
     version: "1.0.0"
   moor:
-    dependency: "direct main"
+    dependency: "direct overridden"
     description:
       name: moor
       url: "https://pub.dartlang.org"
@@ -861,6 +861,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.0"
+  moor_ffi:
+    dependency: "direct overridden"
+    description:
+      name: moor_ffi
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.8.0"
   moor_generator:
     dependency: "direct dev"
     description:
@@ -1206,6 +1213,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.2"
+  sqlite3_flutter_libs:
+    dependency: transitive
+    description:
+      name: sqlite3_flutter_libs
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   sqlparser:
     dependency: transitive
     description:
