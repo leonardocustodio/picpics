@@ -1184,7 +1184,7 @@ packages:
     source: hosted
     version: "1.8.1"
   sqflite:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: sqflite
       url: "https://pub.dartlang.org"
@@ -1197,15 +1197,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0+2"
-  sqlcipher_flutter_libs:
-    dependency: "direct main"
-    description:
-      path: sqlcipher_flutter_libs
-      ref: HEAD
-      resolved-ref: "840f8036c3bf093c1944cc97c9ca1ccbd086cde1"
-      url: "https://github.com/justkawal/sqlite3.dart.git"
-    source: git
-    version: "0.5.0"
   sqlite3:
     dependency: transitive
     description:

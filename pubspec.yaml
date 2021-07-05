@@ -35,10 +35,11 @@ dependencies:
   platform_alert_dialog:
     git:
       url: https://github.com/justkawal/platform_alert_dialog
-  sqlcipher_flutter_libs:
+  sqflite:
     git:
-      url: https://github.com/justkawal/sqlite3.dart.git
-      path: sqlcipher_flutter_libs
+      url: https://www.github.com/justkawal/sqflite_sqlcipher.git
+      path: sqflite
+      ref: fmdb_override
   cryptography_flutter:
     git:
       url: https://github.com/justkawal/cryptography.git
