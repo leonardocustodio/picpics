@@ -70,7 +70,6 @@ class PicStore extends GetxController {
   // @observable
   final entity = Rxn<AssetEntity>();
 
-  // @observable
   final tagsSuggestions = <TagModel>[].obs;
 
   PicStore({
