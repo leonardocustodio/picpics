@@ -35,11 +35,6 @@ dependencies:
   platform_alert_dialog:
     git:
       url: https://github.com/justkawal/platform_alert_dialog
-  sqflite:
-    git:
-      url: https://www.github.com/justkawal/sqflite_sqlcipher.git
-      path: sqflite
-      ref: fmdb_override
   cryptography_flutter:
     git:
       url: https://github.com/justkawal/cryptography.git
@@ -130,7 +125,6 @@ dependency_overrides:
   convert: 3.0.0
   hive_flutter: ^1.0.0
   crypto: 3.0.1
-  sqflite: ^2.0.0+3
   #hive_flutter:
   #  git:
   #    url: git://github.com/justkawal/hive.git
@@ -138,10 +132,15 @@ dependency_overrides:
   #    ref: 59ad5403593283233d922f62f76832c64fa33a3b
   #sqflite:
   #  git:
-  #    url: git://github.com/justkawal/sqflite_sqlcipher.git
-  #    path: sqflite 
-  #    ref: bb2b0a
-  #    #ref: fmdb_override
+  #    url: https://www.github.com/justkawal/sqflite_sqlcipher.git
+  #    path: sqflite
+  #    ref: fmdb_override
+  sqflite:
+    git:
+      url: git://github.com/justkawal/sqflite_sqlcipher.git
+      path: sqflite 
+      ref: bb2b0a
+      #ref: fmdb_override
   #moor_ffi:
   #  git:
   #    url: git://github.com/justkawal/moor.git
