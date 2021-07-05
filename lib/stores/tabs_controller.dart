@@ -342,7 +342,8 @@ class TabsController extends GetxController {
     if (null == picStoreMap[picId]) {
       final entity = assetMap[picId];
       if (null == entity) {
-        /// TODO: In worst case scenario this is telling that the asset map is not update and does not contain the image
+        /// TODO: In worst case scenario this is telling that the asset map is not update 
+        /// and does not contain the image
         refresh_everything();
       }
 
@@ -351,7 +352,7 @@ class TabsController extends GetxController {
         createdAt: entity.createDateTime,
         originalLatitude: entity.latitude,
         originalLongitude: entity.longitude,
-        photoId: null,
+        photoId: picId,
         photoPath: '',
         thumbPath: '',
       ));

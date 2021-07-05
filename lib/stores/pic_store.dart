@@ -65,7 +65,7 @@ class PicStore extends GetxController {
   final isStarred = false.obs;
 
   // @observable
-  final photoId;
+  final photoId = ''.obs;
 
   // @observable
   final entity = Rxn<AssetEntity>();
@@ -76,13 +76,14 @@ class PicStore extends GetxController {
     required AssetEntity entityValue,
     required this.photoPath,
     required this.thumbPath,
-    required this.photoId,
+    required String photoId,
     required this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
     this.deletedFromCameraRoll = false,
     bool isStarredValue = false,
   }) {
+    this.photoId.value = photoId;
     isStarred.value = isStarredValue;
     entity.value = entityValue;
   }
@@ -153,7 +154,7 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //Pic picOld = picsBox.get(photoId);
-    var picOld = await database.getPhotoByPhotoId(photoId.value!);
+    var picOld = await database.getPhotoByPhotoId(photoId.value);
 
     if (picOld != null) {
       var createPic = Photo(
