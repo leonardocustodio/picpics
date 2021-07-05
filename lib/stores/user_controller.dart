@@ -153,10 +153,9 @@ class UserController extends GetxController {
     }
     var encoded = base64.encode(bytes);
 
-    final currentUser =
-        await database.getSingleMoorUser(createIfNotExist: true);
+    final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(defaultWidgetImage: encoded));
+        .updateMoorUser(currentUser!.copyWith(defaultWidgetImage: encoded));
   }
 
   Future<void> addToStarredPhotos(String photoId) async {
@@ -166,10 +165,9 @@ class UserController extends GetxController {
 
     starredPhotos.add(photoId);
 
-    final currentUser =
-        await database.getSingleMoorUser(createIfNotExist: true);
+    final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(starredPhotos: starredPhotos));
+        .updateMoorUser(currentUser!.copyWith(starredPhotos: starredPhotos));
   }
 
   Future<void> removeFromStarredPhotos(String photoId) async {
@@ -178,10 +176,9 @@ class UserController extends GetxController {
     }
 
     starredPhotos.remove(photoId);
-    final currentUser =
-        await database.getSingleMoorUser(createIfNotExist: true);
+    final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(starredPhotos: starredPhotos));
+        .updateMoorUser(currentUser!.copyWith(starredPhotos: starredPhotos));
   }
 
   int get freePrivatePics {
@@ -221,11 +218,11 @@ class UserController extends GetxController {
       final currentUser = await database.getSingleMoorUser();
 
       if (status == PermissionStatus.denied) {
-        await database.updateMoorUser(currentUser.copyWith(
+        await database.updateMoorUser(currentUser!.copyWith(
           notification: false,
         ));
       } else {
-        var tempDailyChallenges = currentUser.dailyChallenges;
+        var tempDailyChallenges = currentUser!.dailyChallenges;
         if (firstPermissionCheck) {
           tempDailyChallenges = false;
         }
@@ -246,7 +243,7 @@ class UserController extends GetxController {
 
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(
-        currentUser.copyWith(dailyChallenges: dailyChallenges.value));
+        currentUser!.copyWith(dailyChallenges: dailyChallenges.value));
 
     var push = PushNotificationsManager();
     if (dailyChallenges.value) {
@@ -267,7 +264,8 @@ class UserController extends GetxController {
     isPinRegistered.value = value;
 
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(isPinRegistered: value));
+    await database
+        .updateMoorUser(currentUser!.copyWith(isPinRegistered: value));
   }
 
   Future<void> setKeepAskingToDelete(bool value) async {
@@ -275,14 +273,14 @@ class UserController extends GetxController {
 
     final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(keepAskingToDelete: value));
+        .updateMoorUser(currentUser!.copyWith(keepAskingToDelete: value));
   }
 
   Future<void> setShouldDeleteOnPrivate(bool value) async {
     shouldDeleteOnPrivate.value = value;
     final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(shouldDeleteOnPrivate: value));
+        .updateMoorUser(currentUser!.copyWith(shouldDeleteOnPrivate: value));
   }
 
   //@action
@@ -295,7 +293,7 @@ class UserController extends GetxController {
     minutesOfDay.value = minute;
 
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    await database.updateMoorUser(currentUser!.copyWith(
       hourOfDay: hour,
       minuteOfDay: minute,
     ));
@@ -313,7 +311,7 @@ class UserController extends GetxController {
     isPremium.value = value;
 
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(isPremium: value));
+    await database.updateMoorUser(currentUser!.copyWith(isPremium: value));
 
     if (isPremium.value == true) {
       await setCanTagToday(true);
@@ -338,7 +336,7 @@ class UserController extends GetxController {
 
     final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(tutorialCompleted: value));
+        .updateMoorUser(currentUser!.copyWith(tutorialCompleted: value));
     await requestGalleryPermission();
     await Analytics.sendTutorialComplete();
   }
@@ -353,7 +351,7 @@ class UserController extends GetxController {
     currentUser.save(); */
 
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(loggedIn: true));
+    await database.updateMoorUser(currentUser!.copyWith(loggedIn: true));
   }
 
   //@action
@@ -371,7 +369,7 @@ class UserController extends GetxController {
 
     final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser.copyWith(canTagToday: canTagToday.value));
+        .updateMoorUser(currentUser!.copyWith(canTagToday: canTagToday.value));
   }
 
   //@action
@@ -380,7 +378,7 @@ class UserController extends GetxController {
     User currentUser = userBox.getAt(0); */
     final currentUser = await database.getSingleMoorUser();
 
-    var lastTaggedPicDate = currentUser.lastTaggedPicDate;
+    var lastTaggedPicDate = currentUser!.lastTaggedPicDate;
     var dateNow = DateTime.now();
     var picsTaggedToday = currentUser.picsTaggedToday;
     var lastTaggedPicNewDate = dateNow;
@@ -425,7 +423,7 @@ class UserController extends GetxController {
     currentUser.hasGalleryPermission = hasGalleryPermission;
     currentUser.save(); */
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    await database.updateMoorUser(currentUser!.copyWith(
       hasGalleryPermission: result,
     ));
 
@@ -442,7 +440,7 @@ class UserController extends GetxController {
     currentUser.save(); */
 
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    await database.updateMoorUser(currentUser!.copyWith(
       appLanguage: language,
     ));
 
@@ -549,7 +547,7 @@ class UserController extends GetxController {
     if (recentTags.contains(tagKey)) {
       recentTags.remove(tagKey);
       recentTags.insert(0, tagKey);
-      getUser.recentTags.remove(tagKey);
+      getUser!.recentTags.remove(tagKey);
       getUser.recentTags.insert(0, tagKey);
       await database.updateMoorUser(getUser);
       //print('final tags in recent: ${getUser.recentTags}');
@@ -559,11 +557,11 @@ class UserController extends GetxController {
     while (recentTags.length >= kMaxNumOfRecentTags) {
       //print('removing last');
       recentTags.removeLast();
-      getUser.recentTags.removeLast();
+      getUser!.recentTags.removeLast();
     }
 
     recentTags.insert(0, tagKey);
-    getUser.recentTags.insert(0, tagKey);
+    getUser!.recentTags.insert(0, tagKey);
     await database.updateMoorUser(getUser);
     //print('final tags in recent: ${getUser.recentTags}');
   }
@@ -576,7 +574,7 @@ class UserController extends GetxController {
     if (recentTags.contains(tagKey)) {
       final getUser = await database.getSingleMoorUser();
       recentTags.remove(tagKey);
-      getUser.recentTags.remove(tagKey);
+      getUser!.recentTags.remove(tagKey);
       await database.updateMoorUser(getUser);
       /* userBox.putAt(0, getUser); */
       //print('recent tags after removed: ${getUser.recentTags}');
@@ -604,7 +602,7 @@ class UserController extends GetxController {
     currentUser.save(); */
 
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    await database.updateMoorUser(currentUser!.copyWith(
       email: value,
     ));
 
@@ -628,7 +626,7 @@ class UserController extends GetxController {
     currentUser.isBiometricActivated = value;
     currentUser.save(); */
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    await database.updateMoorUser(currentUser!.copyWith(
       isBiometricActivated: value,
     ));
 
@@ -659,7 +657,7 @@ class UserController extends GetxController {
     UserKey userKey = UserKey(secretKey: value);
     userBox.put(0, userKey); */
     final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser.copyWith(
+    await database.updateMoorUser(currentUser!.copyWith(
       secretKey: value,
     ));
   }
@@ -678,7 +676,7 @@ class UserController extends GetxController {
     /* var userBox = Hive.box('userkey');
     userBox.delete(0); */
     final user = await database.getSingleMoorUser();
-    await database.updateMoorUser(user.copyWith(secretKey: ''));
+    await database.updateMoorUser(user!.copyWith(secretKey: ''));
 
     //print('Deleted encrypted info!');
   }

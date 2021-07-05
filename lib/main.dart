@@ -20,15 +20,20 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/admob_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
+import 'package:picPics/screens/add_location.dart';
+import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
+import 'package:picPics/screens/pin_screen.dart';
+import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 
 import 'screens/all_tags_screen.dart';
+import 'screens/settings_screen.dart';
 import 'stores/database_controller.dart';
 import 'stores/login_store.dart';
 import 'stores/pin_controller.dart';
@@ -291,12 +296,12 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
       debugShowCheckedModeBanner: kDebugMode,
       initialRoute: initialRoute,
       navigatorObservers: [Analytics.observer],
-      /* routes: {
+      routes: {
         AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
         LoginScreen.id: (context) => LoginScreen(),
         TabsScreen.id: (context) => TabsScreen(),
         PhotoScreen.id: (context) => PhotoScreen(
-              picId: null,
+              picId: '',
               picIdList: <String>[],
             ),
         SettingsScreen.id: (context) => SettingsScreen(),
@@ -307,7 +312,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         //TagsScreen.id: (context) => TagsScreen(),
         MigrationScreen.id: (context) => MigrationScreen(),
       },
-      */
+     
     );
   }
 }

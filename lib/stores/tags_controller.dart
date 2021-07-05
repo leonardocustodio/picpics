@@ -74,7 +74,7 @@ class TagsController extends GetxController {
     var text = searchText.trim();
 
     if (text == '') {
-      for (var recent in getUser.recentTags) {
+      for (var recent in getUser!.recentTags) {
         // //print('Recent Tag: $recent');
         if (multiPicTags[recent] != null || recent == kSecretTagKey) {
           continue;

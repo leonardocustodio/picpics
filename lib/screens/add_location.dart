@@ -21,7 +21,7 @@ final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
 class AddLocationScreen extends StatefulWidget {
   static const id = 'add_location_screen';
-  final PicStore currentPic;
+  final PicStore? currentPic;
   const AddLocationScreen(this.currentPic, {Key? key}) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class AddLocationScreen extends StatefulWidget {
 }
 
 class _AddLocationScreenState extends State<AddLocationScreen> {
-  PicStore get picStore => widget.currentPic;
+  PicStore get picStore => widget.currentPic!;
 
   final _mapController = Completer<GoogleMapController>();
   final _markers = <Marker>{};

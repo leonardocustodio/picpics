@@ -29,7 +29,7 @@ class DatabaseManager extends ChangeNotifier {
   double scale = 1.0;
 
   //String selectedTagKey;
-  late MoorUser? userSettings;
+  late MoorUser userSettings;
 
   double adOffset = 48.0;
   AppDatabase database = AppDatabase();
@@ -41,7 +41,7 @@ class DatabaseManager extends ChangeNotifier {
     // TODO: commented below line
     //var userBox = Hive.box('user');
 
-    userSettings = await database.getSingleMoorUser();
+    userSettings = (await database.getSingleMoorUser())!;
 
     //print('requesting notification...');
     //print('dailyChallenges: ${userSettings}');
@@ -73,7 +73,7 @@ class DatabaseManager extends ChangeNotifier {
     } else {
       //print('its android!!!');
       await database.updateMoorUser(
-        userSettings!.copyWith(
+        userSettings.copyWith(
           notification: true,
           dailyChallenges: true,
         ),
@@ -165,7 +165,7 @@ class DatabaseManager extends ChangeNotifier {
   Future<void> changeUserLanguage(String appLanguage,
       {bool notify = true}) async {
     await database.updateMoorUser(
-      userSettings!.copyWith(
+      userSettings.copyWith(
         appLanguage: appLanguage,
       ),
     );
@@ -181,7 +181,7 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   String getUserLanguage() {
-    final appLanguage = userSettings!.appLanguage?.split('_')[0];
+    final appLanguage = userSettings.appLanguage?.split('_')[0];
     var language = LanguageLocal();
     return '${language.getDisplayLanguage(appLanguage)['nativeName']}';
   }

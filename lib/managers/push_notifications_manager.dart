@@ -88,13 +88,13 @@ class PushNotificationsManager {
 
   void deregister() async {
     try {
-      _firebaseMessaging.deleteToken();
+      await _firebaseMessaging.deleteToken();
       //print('unsubscribed');
       //var userBox = Hive.box('user');
       //DatabaseManager.instance.userSettings.dailyChallenges = false;
       //userBox.putAt(0, DatabaseManager.instance.userSettings);
       await DatabaseManager.instance.database.updateMoorUser(
-        DatabaseManager.instance.userSettings!.copyWith(
+        DatabaseManager.instance.userSettings.copyWith(
           dailyChallenges: false,
         ),
       );

@@ -49,26 +49,14 @@ class AllTagsController extends GetxController {
 // ignore_for_file: must_be_immutable, unused_field, prefer_final_fields
 class AllTagsScreen extends GetWidget<AllTagsController> {
   static const id = 'all_tags_screen';
-  final PicStore picStore;
-  /* final CompletionHandler completionHandler; */
+  final PicStore? picStore;
+
   var _ = Get.put(AllTagsController());
   AllTagsScreen({
-    required this.picStore,
+    this.picStore,
     Key? key,
-    /* required this.completionHandler, */
   }) : super(key: key);
-
-  /* 
-  AllTagsScreen({required this.picStore, Key key}) : super(key: key);
-
-  @override
-  _AllTagsScreenState createState() => _AllTagsScreenState();
-}
-
-class _AllTagsScreenState extends State<AllTagsScreen> { */
-/*   UserController UserController.to;
-  TabsStore tabsStore;
-  GalleryStore GalleryStore.to; */
+  
   FocusNode focusNode = FocusNode();
   var searchEditingController = TextEditingController();
 
@@ -100,7 +88,7 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
     if (loadTagsFromPicStore) {
       //WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.selectedTags.value = Map<String, TagModel>.from(
-          picStore.tags.value.map((key, value) => MapEntry(key, value.value)));
+          picStore!.tags.value.map((key, value) => MapEntry(key, value.value)));
       loadTagsFromPicStore = false;
       // });
     }
@@ -486,13 +474,13 @@ class _AllTagsScreenState extends State<AllTagsScreen> { */
       controller.selectedTags.value.remove(tagId);
       //
       await TagsController.to.removeTagFromPic(
-          picId: picStore.photoId.value.toString(), tagKey: tagId);
+          picId: picStore!.photoId.value.toString(), tagKey: tagId);
     } else {
       controller.selectedTags.value[tagId] =
           TagModel(key: tagId, title: tagName, count: count, time: time);
       //
       await TagsController.to
-          .addTagToPic(picId: picStore.photoId.value.toString(), tagKey: tagId);
+          .addTagToPic(picId: picStore!.photoId.value.toString(), tagKey: tagId);
     }
     await TagsController.to.loadAllTags();
     await TaggedController.to.refreshTaggedPhotos();

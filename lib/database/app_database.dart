@@ -373,13 +373,13 @@ class AppDatabase extends _$AppDatabase {
 
   //Future<List<MoorUser>> getAllMoorUser() => select(moorUsers).get();
 
-  Future<MoorUser> getSingleMoorUser({bool createIfNotExist = true}) async {
+  Future<MoorUser?> getSingleMoorUser({bool createIfNotExist = true}) async {
     var moorUserReturn = await select(moorUsers).getSingleOrNull();
     if (createIfNotExist && moorUserReturn == null) {
       await createMoorUser(getDefaultMoorUser());
       return await select(moorUsers).getSingle();
     } else {
-      return moorUserReturn!;
+      return moorUserReturn;
     }
   }
 
