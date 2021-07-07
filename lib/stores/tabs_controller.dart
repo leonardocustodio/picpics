@@ -77,7 +77,6 @@ class TabsController extends GetxController {
   List<AssetEntity> assetEntityList = <AssetEntity>[];
   //final picAssetOriginBytesMap = <String, Future<Uint8List>>{}.obs;
 
-  //@action
   final starredPicMap = <String, bool>{}.obs;
 
   final expandableController =
@@ -92,6 +91,27 @@ class TabsController extends GetxController {
     var __ = TaggedController.to.taggedPicId;
     initialization();
     super.onReady();
+  }
+
+  Future<bool> shouldPopOut() async {
+    /// if sheet is opened the don't allow popping and just
+    if (multiTagSheet.value) {
+      TagsController.to.multiPicTags.clear();
+      multiTagSheet.value = false;
+      return false;
+    }
+    if (multiPicBar.value) {
+      multiPicBar.value = false;
+      selectedMultiBarPics.clear();
+      return false;
+    }
+    onPoppingOut();
+    return true;
+  }
+
+  void onPoppingOut() {
+    selectedMultiBarPics.clear();
+    TagsController.to.multiPicTags.clear();
   }
 
   Future<void> initialization() async {
@@ -155,7 +175,6 @@ class TabsController extends GetxController {
 
   Future<void> getDataForPic(String picId) async {}
 
-  //@action
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
     if (assetsPath.isEmpty) {
       status.value = Status.DeviceHasNoPics;
@@ -342,7 +361,7 @@ class TabsController extends GetxController {
     if (null == picStoreMap[picId]) {
       final entity = assetMap[picId];
       if (null == entity) {
-        /// TODO: In worst case scenario this is telling that the asset map is not update 
+        /// TODO: In worst case scenario this is telling that the asset map is not update
         /// and does not contain the image
         refresh_everything();
       }
@@ -532,7 +551,6 @@ class TabsController extends GetxController {
     //if (!mounted) return;
   }
 
-  //@action
   void setCurrentTab(int value) {
     if (currentTab.value != value) {
       /* if (currentTab.value == 1) {
@@ -546,7 +564,6 @@ class TabsController extends GetxController {
     }
   }
 
-  //@action
   void setMultiPicBar(bool value) {
     if (value) {
       Analytics.sendEvent(Event.selected_photos);
@@ -554,28 +571,23 @@ class TabsController extends GetxController {
     multiPicBar.value = value;
   }
 
-  //@action
   void setMultiTagSheet(bool value) {
     multiTagSheet.value = value;
   }
 
-  //@action
   void setIsLoading(bool value) {
     isLoading.value = value;
   }
 
-  //@action
   void setModalCard(bool value) {
     Analytics.sendEvent(Event.showed_card);
     modalCard.value = value;
   }
 
-  //@action
   void setTutorialIndex(int value) => tutorialIndex.value = value;
 
   double offsetFirstTab = 0.0;
 
-  //@action
   void setTopOffsetFirstTab(double value) {
     if (value == topOffsetFirstTab.value) {
       return;
@@ -583,20 +595,16 @@ class TabsController extends GetxController {
     topOffsetFirstTab.value = value;
   }
 
-  //@action
-  void setShowDeleteSecretModal(bool value) =>
-      showDeleteSecretModal.value = value;
+  void setShowDeleteSecretModal(bool value) {
+    showDeleteSecretModal.value = value;
+  }
 
-  //@action
   void setIsScrolling(bool value) => isScrolling.value = value;
 
-  //@action
   void setIsToggleBarVisible(bool value) => isToggleBarVisible.value = value;
 
-  //@action
   void setToggleIndexUntagged(int value) => toggleIndexUntagged.value = value;
 
-  //@action
   void setToggleIndexTagged(int value) => toggleIndexTagged.value = value;
 
   void returnAction() {
@@ -628,8 +636,7 @@ class TabsController extends GetxController {
     }
     //print('sharing selected pics....');
     setIsLoading(true);
-    await sharePics(picKeys: selectedMultiBarPics.keys.toList()
-        /* picsStores: GalleryStore.to.selectedPics.toList() */);
+    await sharePics(picKeys: selectedMultiBarPics.keys.toList());
     setIsLoading(false);
   }
 
@@ -662,7 +669,6 @@ class TabsController extends GetxController {
     if (multiPicBar.value) {
       if (index == 0) {
         clearSelectedUntaggedPics();
-        //GalleryStore.to.clearSelectedPics();
         setMultiPicBar(false);
       } else if (index == 1) {
         WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -671,13 +677,12 @@ class TabsController extends GetxController {
           expandablePaddingController.value.expanded = true;
         });
       } else if (index == 2) {
-        if (/* GalleryStore.to.selectedPics */ selectedMultiBarPics.isEmpty) {
+        if (selectedMultiBarPics.isEmpty) {
           return;
         }
         //print('sharing selected pics....');
         setIsLoading(true);
-        await sharePics(picKeys: selectedMultiBarPics.keys.toList()
-            /* picsStores: GalleryStore.to.selectedPics.toList() */);
+        await sharePics(picKeys: selectedMultiBarPics.keys.toList());
         setIsLoading(false);
       } else if (index == 3) {
         if (selectedMultiBarPics.isEmpty) {
@@ -776,7 +781,6 @@ class TabsController extends GetxController {
     }
   }
 
-  //@action
   Future<void> trashPic(String picId) async {
     var picStore = picStoreMap[picId]?.value;
     picStore ??= explorPicStore(picId).value;

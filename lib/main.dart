@@ -312,7 +312,6 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         //TagsScreen.id: (context) => TagsScreen(),
         MigrationScreen.id: (context) => MigrationScreen(),
       },
-     
     );
   }
 }

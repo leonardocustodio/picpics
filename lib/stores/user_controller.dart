@@ -80,7 +80,6 @@ class UserController extends GetxController {
 
     ever(appLanguage, _settingCurrentLanguage);
     initialize();
-    _settingCurrentLanguage(null);
     super.onReady();
   }
 
@@ -142,6 +141,8 @@ class UserController extends GetxController {
     }
 
     await checkAvailableBiometrics();
+
+    _settingCurrentLanguage(null);
   }
 
   Future<void> setDefaultWidgetImage(AssetEntity entity) async {

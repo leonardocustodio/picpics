@@ -54,7 +54,7 @@ class _EmailScreenState extends State<EmailScreen> {
 
     if (result['success'] == true) {
       UserController.to.setWaitingAccessCode(true);
-      await Get.to(() => PinScreen());
+      await Get.toNamed(PinScreen.id);
     } else {
       //print('Result: $result');
       if (result['errorCode'] == 'email-already-in-use') {

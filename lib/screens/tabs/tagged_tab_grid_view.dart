@@ -317,6 +317,12 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
 
   @override
   Widget build(BuildContext context) {
+    if (controller.taggedPicId[tagKey]?.keys.isEmpty ?? true) {
+      /// If there are no pictures present related to this tagKey then let's go back to previous screen
+      WidgetsBinding.instance?.addPostFrameCallback((_) {
+        Get.back();
+      });
+    }
     return WillPopScope(
       onWillPop: () => controller.shouldPopOut(),
       child: Obx(

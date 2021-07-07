@@ -56,7 +56,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
     this.picStore,
     Key? key,
   }) : super(key: key);
-  
+
   FocusNode focusNode = FocusNode();
   var searchEditingController = TextEditingController();
 
@@ -479,8 +479,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
       controller.selectedTags.value[tagId] =
           TagModel(key: tagId, title: tagName, count: count, time: time);
       //
-      await TagsController.to
-          .addTagToPic(picId: picStore!.photoId.value.toString(), tagKey: tagId);
+      await TagsController.to.addTagToPic(
+          picId: picStore!.photoId.value.toString(), tagKey: tagId);
     }
     await TagsController.to.loadAllTags();
     await TaggedController.to.refreshTaggedPhotos();

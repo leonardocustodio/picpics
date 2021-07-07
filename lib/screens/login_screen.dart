@@ -165,14 +165,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         SizedBox(height: 64.0),
                         CupertinoButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (loginStore.slideIndex.value ==
                                 loginStore.totalSlides - 1) {
-                              Get.to(() => PremiumScreen());
+                              await Get.toNamed(PremiumScreen.id);
                               return;
                             }
                             //print('next');
-                            swiperController.next(animation: true);
+                            await swiperController.next(animation: true);
                           },
                           padding: const EdgeInsets.all(0),
                           child: Container(

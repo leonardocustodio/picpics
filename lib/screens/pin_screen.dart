@@ -306,7 +306,7 @@ class PinScreen extends GetWidget<PinController> {
         controller.setPinTemp('');
         controller.setConfirmPinTemp('');
         await carouselController.animateToPage(0);
-        await Get.to(() => EmailScreen());
+        await Get.toNamed(EmailScreen.id);
       } else {
         controller.shakeKeyConfirm.currentState?.forward();
         Future.delayed(Duration(seconds: 1, milliseconds: 300), () {

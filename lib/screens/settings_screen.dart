@@ -223,9 +223,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                           .changeUserLanguage(
                               supportedLocales[temporaryLanguage].toString())
                           .then((_) {
-                        setState(
-                            () => S.load(supportedLocales[temporaryLanguage]));
-                        Get.back();
+                        S
+                            .load(supportedLocales[temporaryLanguage])
+                            .then((value) {
+                          setState(() {});
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        });
                       });
                     },
                     child: Container(
@@ -539,18 +543,18 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     child: CupertinoButton(
                                       padding: const EdgeInsets.all(0),
                                       pressedOpacity: 1.0,
-                                      onPressed: () {
+                                      onPressed: () async {
                                         if (PrivatePhotosController
                                                 .to.showPrivate.value ==
                                             true) {
-                                          PrivatePhotosController.to
+                                          await PrivatePhotosController.to
                                               .switchSecretPhotos();
                                           //galleryStore.removeAllPrivatePics();
                                           return;
                                         }
                                         UserController.to.popPinScreen =
                                             PopPinScreenTo.SettingsScreen;
-                                        Get.to(() => PinScreen());
+                                        await Get.toNamed(PinScreen.id);
                                       },
                                       child: Row(
                                         mainAxisAlignment:
@@ -566,9 +570,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                                               return SecretSwitch(
                                                 value: PrivatePhotosController
                                                     .to.showPrivate.value,
-                                                onChanged: (value) {
+                                                onChanged: (value) async {
                                                   if (value == false) {
-                                                    PrivatePhotosController.to
+                                                    await PrivatePhotosController
+                                                        .to
                                                         .switchSecretPhotos();
                                                     //galleryStore .removeAllPrivatePics();
                                                     return;
@@ -581,7 +586,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                           .to.popPinScreen =
                                                       PopPinScreenTo
                                                           .SettingsScreen;
-                                                  Get.to(() => PinScreen);
+                                                  await Get.toNamed(
+                                                      PinScreen.id);
                                                 },
                                               );
                                             },
