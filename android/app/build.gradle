@@ -82,6 +82,9 @@ flutter {
 }
 
 dependencies {
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    kapt 'com.github.bumptech.glide:compiler:4.11.0'
+    
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     // required for all Android apps
     implementation 'io.branch.sdk.android:library:5.+'

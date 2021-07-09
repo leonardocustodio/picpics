@@ -284,6 +284,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     //print('Main Build!!!');
+    print('lang: ${widget.user.appLocale.value}');
     return GetMaterialApp(
       localizationsDelegates: [
         S.delegate,

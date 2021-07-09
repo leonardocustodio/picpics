@@ -84,7 +84,10 @@ class UserController extends GetxController {
   }
 
   void _settingCurrentLanguage(_) {
-    var lang = appLanguage.split('_')[0];
+    var lang = appLanguage.value.split('_')[0];
+    if (lang.trim().isEmpty) {
+      lang = 'en';
+    }
     appLocale.value = lang;
 
     var local = LanguageLocal();
