@@ -28,6 +28,7 @@ class UntaggedTab extends GetWidget<TabsController> {
 
   //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
+  final _scrollController = ScrollController();
 
   Widget _buildGridView(BuildContext context) {
     return NotificationListener<ScrollNotification>(
@@ -55,9 +56,10 @@ class UntaggedTab extends GetWidget<TabsController> {
             return StaggeredGridView.countBuilder(
                 key: Key('Month'),
                 //controller: scrollControllerFirstTab,
-                physics: const CustomScrollPhysics(),
+                controller: _scrollController,
                 padding: EdgeInsets.only(top: 2),
-                addAutomaticKeepAlives: true,
+                addAutomaticKeepAlives: false,
+                addRepaintBoundaries: false,
                 crossAxisCount: 5,
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
@@ -128,40 +130,47 @@ class UntaggedTab extends GetWidget<TabsController> {
                         ),
                       );
                     }
-                    return VisibilityDetector(
-                        key: Key('${monthKeys[index].key}'),
-                        onVisibilityChanged: (visibilityInfo) {
-                          var visiblePercentage =
-                              visibilityInfo.visibleFraction * 100;
-                          if (visiblePercentage > 10 &&
-                              controller.picStoreMap[monthKeys[index].key] ==
-                                  null) {
-                            var picStore = controller
-                                .explorPicStore(monthKeys[index].key)
-                                .value;
-
-                            if (picStore != null) {
-                              TabsController
-                                      .to.picStoreMap[monthKeys[index].key] =
-                                  Rx<PicStore>(picStore);
-                            }
-                          }
-                        },
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: loaderWidget,
-                                ),
-                              ),
+                    return Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: loaderWidget,
                             ),
-                            if (originalImage != null)
-                              Positioned.fill(child: originalImage),
-                          ],
-                        ));
+                          ),
+                        ),
+                        if (originalImage != null)
+                          Positioned.fill(child: originalImage),
+                      ],
+                    );
+/* 
+                    if ((_scrollController.position.activity?.velocity ?? 15) <
+                        80) {
+                      return stack;
+                    }
+                    return VisibilityDetector(
+                      key: Key('${monthKeys[index].key}'),
+                      onVisibilityChanged: (visibilityInfo) {
+                        var visiblePercentage =
+                            visibilityInfo.visibleFraction * 100;
+                        if (visiblePercentage > 10 &&
+                            controller.picStoreMap[monthKeys[index].key] ==
+                                null) {
+                          var picStore = controller
+                              .explorPicStore(monthKeys[index].key)
+                              .value;
+
+                          if (picStore != null) {
+                            TabsController
+                                    .to.picStoreMap[monthKeys[index].key] =
+                                Rx<PicStore>(picStore);
+                          }
+                        }
+                      },
+                      child: stack,
+                    ); */
                   });
                 });
           } else {
@@ -169,10 +178,11 @@ class UntaggedTab extends GetWidget<TabsController> {
             return StaggeredGridView.countBuilder(
                 key: Key('Day'),
                 //controller: scrollControllerFirstTab,
-                physics: const CustomScrollPhysics(),
+                controller: _scrollController,
                 padding: EdgeInsets.only(top: 2),
                 itemCount: controller.allUnTaggedPicsDay.length,
-                addAutomaticKeepAlives: true,
+                addAutomaticKeepAlives: false,
+                addRepaintBoundaries: false,
                 crossAxisCount: 5,
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
@@ -242,27 +252,47 @@ class UntaggedTab extends GetWidget<TabsController> {
                         ),
                       );
                     }
-                    return VisibilityDetector(
-                        key: Key('${dayKeys[index].key}'),
-                        onVisibilityChanged: (visibilityInfo) {
-                          var visiblePercentage =
-                              visibilityInfo.visibleFraction * 100;
-                          if (visiblePercentage > 10 &&
-                              controller.picStoreMap[dayKeys[index].key] ==
-                                  null) {
-                            var picStore = controller
-                                .explorPicStore(dayKeys[index].key)
-                                .value;
 
-                            if (picStore != null) {
-                              TabsController
-                                      .to.picStoreMap[dayKeys[index].key] =
-                                  Rx<PicStore>(picStore);
-                            }
-                            /* debugPrint(
-                              'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
+                   return Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: loaderWidget,
+                            ),
+                          ),
+                        ),
+                        if (originalImage != null)
+                          Positioned.fill(child: originalImage),
+                      ],
+                    );
+/* 
+                    if ((_scrollController.position.activity?.velocity ?? 15) <
+                        80) {
+                      return stack;
+                    }
+                    return VisibilityDetector(
+                      key: Key('${dayKeys[index].key}'),
+                      onVisibilityChanged: (visibilityInfo) {
+                        var visiblePercentage =
+                            visibilityInfo.visibleFraction * 100;
+                        if (visiblePercentage > 10 &&
+                            controller.picStoreMap[dayKeys[index].key] ==
+                                null) {
+                          var picStore = controller
+                              .explorPicStore(dayKeys[index].key)
+                              .value;
+
+                          if (picStore != null) {
+                            TabsController.to.picStoreMap[dayKeys[index].key] =
+                                Rx<PicStore>(picStore);
                           }
-                          /*  else {
+                          /* debugPrint(
+                              'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
+                        }
+                        /*  else {
                           if (controller
                                   .picAssetThumbBytesMap[dayKeys[index].key] !=
                               null) {
@@ -272,22 +302,9 @@ class UntaggedTab extends GetWidget<TabsController> {
                             });
                           }
                         } */
-                        },
-                        child: Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: loaderWidget,
-                                ),
-                              ),
-                            ),
-                            if (originalImage != null)
-                              Positioned.fill(child: originalImage),
-                          ],
-                        ));
+                      },
+                      child: stack,
+                    ); */
                   });
                 });
           }
@@ -379,7 +396,7 @@ class UntaggedTab extends GetWidget<TabsController> {
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     return ExtendedImage(
-      filterQuality: FilterQuality.high,
+      filterQuality: FilterQuality.low,
       gaplessPlayback: true,
       clearMemoryCacheWhenDispose: true,
       handleLoadingProgress: true,

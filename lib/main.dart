@@ -180,8 +180,10 @@ void main() async {
 
   await Firebase.initializeApp();
   // await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
+
+  /// TODO: change to this ---->     kDebugMode ? false : true
   await FirebaseCrashlytics.instance
-      .setCrashlyticsCollectionEnabled(kDebugMode ? false : true);
+      .setCrashlyticsCollectionEnabled(kDebugMode ? false : false);
 
   FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
   Isolate.current.addErrorListener(RawReceivePort((pair) async {

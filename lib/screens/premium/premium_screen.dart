@@ -118,7 +118,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
   void makePurchase(BuildContext context, Package package) async {
     // TODO: remove true
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       await UserController.to.setIsPremium(true);
       await UserController.to.setTutorialCompleted(true);
       await Get.offNamedUntil(TabsScreen.id, (route) => false);

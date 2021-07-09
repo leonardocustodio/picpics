@@ -60,7 +60,7 @@ class Analytics {
 
   static Future<void> sendEvent(Event event,
       {Map<String, dynamic>? params}) async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -78,7 +78,7 @@ class Analytics {
   static Future<void> sendAdClick() async {}
 
   static Future<void> sendAdImpression() async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -87,7 +87,7 @@ class Analytics {
   }
 
   static Future<void> sendAppOpen() async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -96,7 +96,7 @@ class Analytics {
   }
 
   static Future<void> sendTutorialBegin() async {
-    if (kDebugMode) {
+   if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -106,7 +106,7 @@ class Analytics {
   }
 
   static Future<void> sendTutorialComplete() async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -122,7 +122,7 @@ class Analytics {
     required double price,
     required String currency,
   }) async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -150,7 +150,7 @@ class Analytics {
 
   static Future<void> sendBeginCheckout(
       {required String currency, required double price}) async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -170,7 +170,7 @@ class Analytics {
 
   static Future<void> sendPurchase(
       {required String currency, required double price}) async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -186,7 +186,7 @@ class Analytics {
   }
 
   static Future<void> setUserId(String userId) async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -196,7 +196,7 @@ class Analytics {
   }
 
   static Future<void> sendCurrentScreen(Screen screen) async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 
@@ -212,7 +212,7 @@ class Analytics {
   }
 
   static Future<void> sendCurrentTab(int index) async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       return;
     }
 

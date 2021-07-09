@@ -103,7 +103,7 @@ class DatabaseManager extends ChangeNotifier {
   }
 
   Future<void> initPlatformState(String userId) async {
-    if (kDebugMode) {
+    if (/* kDebugMode */ true ) {
       await Purchases.setDebugLogsEnabled(true);
     }
     await Purchases.setup(

@@ -268,6 +268,7 @@ class TabsController extends GetxController {
         allUnTaggedPicsMonth[entity.id] = '';
         allUnTaggedPicsDay[entity.id] = '';
         allUnTaggedPics[entity.id] = '';
+        picStoreMap[entity.id] = Rx<PicStore>(explorPicStore(entity.id).value!);
         previousMonthPicIdList.add(entity.id);
         previousDayPicIdList.add(entity.id);
       }
