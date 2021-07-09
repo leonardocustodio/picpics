@@ -1,30 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 
-class ConfirmPicDelete extends StatefulWidget {
-  final Function() onPressedClose;
+class ConfirmPicDelete extends StatelessWidget {
+  final String deleteText;
+  final Function()? onPressedClose;
   final Function() onPressedDelete;
 
   const ConfirmPicDelete({
-    required this.onPressedClose,
+    this.deleteText = 'Are you sure you want to delete photo ?',
+    this.onPressedClose,
     required this.onPressedDelete,
   });
 
   @override
-  _ConfirmPicDeleteState createState() => _ConfirmPicDeleteState();
-}
-
-class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
-  @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    //print('Width: $width');
-
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360
+      insetPadding: Get.width < 360
           ? EdgeInsets.symmetric(horizontal: 20.0)
           : EdgeInsets.symmetric(horizontal: 40.0),
       child: Container(
@@ -32,8 +27,8 @@ class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
         decoration: BoxDecoration(
           color: Color(0xFFF1F3F5),
           borderRadius: BorderRadius.vertical(
-            top: Radius.circular(14),
-            bottom: Radius.circular(19.0),
+            top: const Radius.circular(14),
+            bottom: const Radius.circular(19.0),
           ),
         ),
         child: Padding(
@@ -48,6 +43,7 @@ class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
                     opacity: 0.0,
                     child: CupertinoButton(
                       onPressed: () {
+                        Get.back();
                         //print('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
@@ -65,7 +61,10 @@ class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
                     ),
                   ),
                   CupertinoButton(
-                    onPressed: widget.onPressedClose,
+                    onPressed: () {
+                      onPressedClose?.call();
+                      Get.back();
+                    },
                     child: Image.asset('lib/images/closegrayico.png'),
                   ),
                 ],
@@ -77,7 +76,7 @@ class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
               Padding(
                 padding: const EdgeInsets.only(top: 10.0),
                 child: Text(
-                  'Are you sure you want to delete photo ?',
+                  deleteText,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Lato',
@@ -88,118 +87,6 @@ class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
                   ),
                 ),
               ),
-              /* Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CupertinoButton(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      onPressed: () {
-                        setState(() {
-                          keepAsking = true;
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 20.0,
-                            width: 20.0,
-                            margin: const EdgeInsets.only(right: 8.0),
-                            child: keepAsking
-                                ? Image.asset('lib/images/checkwhiteico.png')
-                                : null,
-                            decoration: keepAsking
-                                ? BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        kSecondaryColor,
-                                        Color(0xffff7878)
-                                      ],
-                                      stops: [0, 1],
-                                      begin: Alignment(-1.00, 0.00),
-                                      end: Alignment(1.00, -0.00),
-                                    ),
-                                  )
-                                : BoxDecoration(
-                                    border: Border.all(
-                                      color: Color(0xFFB2C2C3),
-                                      width: 2.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                          ),
-                          Text(
-                            S.of(context).keep_asking,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: Color(0xff707070),
-                              fontSize: 11.0,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      constraints: BoxConstraints(maxWidth: 16.0),
-                    ),
-                    CupertinoButton(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                      onPressed: () {
-                        setState(() {
-                          keepAsking = false;
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 20.0,
-                            width: 20.0,
-                            margin: const EdgeInsets.only(right: 8.0),
-                            child: !keepAsking
-                                ? Image.asset('lib/images/checkwhiteico.png')
-                                : null,
-                            decoration: !keepAsking
-                                ? BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        kSecondaryColor,
-                                        Color(0xffff7878)
-                                      ],
-                                      stops: [0, 1],
-                                      begin: Alignment(-1.00, 0.00),
-                                      end: Alignment(1.00, -0.00),
-                                    ),
-                                  )
-                                : BoxDecoration(
-                                    border: Border.all(
-                                      color: Color(0xFFB2C2C3),
-                                      width: 2.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                          ),
-                          Text(
-                            S.of(context).dont_ask_again,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: Color(0xff707070),
-                              fontSize: 11.0,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-               */
               Padding(
                 padding: const EdgeInsets.only(bottom: 5.0, top: 25.0),
                 child: Row(
@@ -213,7 +100,8 @@ class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
                           /* if (keepAsking == false) {
                             UserController.to.setKeepAskingToDelete(false);
                           } */
-                          widget.onPressedClose();
+                          onPressedClose?.call();
+                          Get.back();
                         },
                         child: Container(
                           height: 44.0,
@@ -241,7 +129,7 @@ class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
                           /* if (keepAsking == false) {
                             UserController.to.setKeepAskingToDelete(false);
                           } */
-                          widget.onPressedDelete();
+                          onPressedDelete();
                         },
                         child: Container(
                           height: 44.0,
@@ -269,17 +157,6 @@ class _ConfirmPicDeleteState extends State<ConfirmPicDelete> {
                   ],
                 ),
               ),
-              /* Text(
-                S.of(context).view_hidden_photos,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff707070),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                ),
-              ), */
             ],
           ),
         ),

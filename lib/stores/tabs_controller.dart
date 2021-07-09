@@ -22,6 +22,7 @@ import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/refresh_everything.dart';
+import 'package:picPics/widgets/confirm_pic_delete.dart';
 import 'package:share/share.dart';
 import 'dart:async';
 
@@ -688,8 +689,20 @@ class TabsController extends GetxController {
         if (selectedMultiBarPics.isEmpty) {
           return;
         }
-
-        await trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
+        await showDialog<void>(
+          context: Get.context!,
+          barrierDismissible: true,
+          builder: (_) {
+            return ConfirmPicDelete(
+              onPressedDelete: () async {
+                await trashMultiplePics(
+                    selectedMultiBarPics.keys.toList().toSet());
+              },
+              deleteText:
+                  'Are you sure you want to delete ${selectedMultiBarPics.length} photos ?',
+            );
+          },
+        );
       }
       return;
     }

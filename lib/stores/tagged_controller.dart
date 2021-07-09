@@ -153,10 +153,7 @@ class TaggedController extends GetxController {
               TabsController.to.trashMultiplePics(
                   selectedMultiBarPics.keys.toList().toSet());
               Get.back();
-            },
-            onPressedClose: () {
-              Get.back();
-            },
+            }
           );
         },
       );
