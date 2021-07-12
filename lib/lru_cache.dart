@@ -41,35 +41,37 @@ class _ImageCacheEntity {
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-typedef EvictionHandler<_ImageCacheEntity, Uint8List> = Function(
-    _ImageCacheEntity key, Uint8List? value);
+typedef EvictionHandler<K, V> = Function(K key, V value);
 
-class LRUMap<_ImageCacheEntity, Uint8List> {
-  final LinkedHashMap<_ImageCacheEntity, Uint8List> _map =
-      LinkedHashMap<_ImageCacheEntity, Uint8List>();
+class LRUMap<K, V> {
+  final LinkedHashMap<K, V> _map = LinkedHashMap<K, V>();
   final int _maxSize;
-  final EvictionHandler<_ImageCacheEntity, Uint8List>? _handler;
+  //final EvictionHandler<K, V>? _handler;
 
-  LRUMap(this._maxSize, [this._handler]);
+  LRUMap(this._maxSize /* , [this._handler] */);
 
-  Uint8List? get(_ImageCacheEntity key) {
+  V? get(K key) {
     if (_map[key] == null) {
       return null;
     }
     return _map[key];
   }
 
-  void put(_ImageCacheEntity key, Uint8List value) {
+  void put(K key, V value) {
+    if (_map[key] != null) {
+      return;
+    }
     _map.remove(key);
     _map[key] = value;
     if (_map.length > _maxSize) {
       final evictedKey = _map.keys.first;
-      final evictedValue = _map.remove(evictedKey);
-      _handler?.call(evictedKey, evictedValue);
+      /* final evictedValue =  */
+      _map.remove(evictedKey);
+      //_handler?.call(evictedKey, evictedValue);
     }
   }
 
-  void remove(_ImageCacheEntity key) {
+  void remove(K key) {
     _map.remove(key);
   }
 

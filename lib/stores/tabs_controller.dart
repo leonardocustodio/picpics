@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:expandable/expandable.dart';
@@ -9,6 +10,7 @@ import 'package:moor/moor.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
+import 'package:picPics/lru_cache.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
@@ -174,6 +176,37 @@ class TabsController extends GetxController {
     });
   }
 
+  final lruCache = <String, String>{}.obs;
+  final maxLruSpace = 100;
+
+  Timer? _timer;
+
+  dynamic getCache(String key) {
+    return lruCache.value[key];
+  }
+
+  /// a temporary place to overload the buffer coming in to the ui and then push at once the timer triggers
+  // ignore: prefer_collection_literals
+  final _stashLru = LinkedHashMap<String, String>();
+
+  void putCache(String key) {
+    _timer?.cancel();
+
+    if (null == _stashLru[key]) {
+      _stashLru[key] = '';
+      if (_stashLru.length > maxLruSpace) {
+        _stashLru.remove(_stashLru.keys.first);
+      }
+    }
+
+    _timer = Timer(Duration(milliseconds: 100), () {
+      if (_stashLru.isNotEmpty) {
+        lruCache.value = Map<String, String>.from(_stashLru);
+        _stashLru.clear();
+      }
+    });
+  }
+
   Future<void> getDataForPic(String picId) async {}
 
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
@@ -273,8 +306,8 @@ class TabsController extends GetxController {
         previousDayPicIdList.add(entity.id);
       }
       //status.value = Status.Loaded;
-      isUntaggedPicsLoaded.value = true;
     });
+    isUntaggedPicsLoaded.value = true;
 
     allUnTaggedPicsMonth[previousMonth] =
         List<String>.from(previousMonthPicIdList);

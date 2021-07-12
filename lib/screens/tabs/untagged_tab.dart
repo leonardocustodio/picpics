@@ -55,11 +55,10 @@ class UntaggedTab extends GetWidget<TabsController> {
             var monthKeys = controller.allUnTaggedPicsMonth.entries.toList();
             return StaggeredGridView.countBuilder(
                 key: Key('Month'),
-                //controller: scrollControllerFirstTab,
                 controller: _scrollController,
                 padding: EdgeInsets.only(top: 2),
-                addAutomaticKeepAlives: false,
-                addRepaintBoundaries: false,
+                primary: false,
+                shrinkWrap: false,
                 crossAxisCount: 5,
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
@@ -95,82 +94,67 @@ class UntaggedTab extends GetWidget<TabsController> {
                         ));
                   }
                   return Obx(() {
-                    /* if (controller
-                            .picAssetThumbBytesMap[monthKeys[index].key] ==
-                        null) {
-                      return greyWidget;
-                    } */
-                    Widget? originalImage;
-                    Widget loaderWidget;
                     var blurHash =
                         BlurHashController.to.blurHash[monthKeys[index].key];
 
-                    if (null != blurHash) {
-                      loaderWidget = BlurHash(
-                        hash: blurHash,
-                        color: Colors.transparent,
-                      );
-                    } else {
-                      /// grey widget because for this image blur hash was neevr calculated
-                      loaderWidget = greyWidget;
-                    }
-
-                    if (controller.picStoreMap[monthKeys[index].key]?.value !=
-                        null) {
-                      originalImage = Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            child: _buildItemOneMoreTrial(
-                                controller
-                                    .picStoreMap[monthKeys[index].key]!.value,
-                                monthKeys[index].key),
-                          ),
-                        ),
-                      );
-                    }
-                    return Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: loaderWidget,
-                            ),
-                          ),
-                        ),
-                        if (originalImage != null)
-                          Positioned.fill(child: originalImage),
-                      ],
-                    );
-/* 
-                    if ((_scrollController.position.activity?.velocity ?? 15) <
-                        80) {
-                      return stack;
-                    }
                     return VisibilityDetector(
                       key: Key('${monthKeys[index].key}'),
                       onVisibilityChanged: (visibilityInfo) {
                         var visiblePercentage =
                             visibilityInfo.visibleFraction * 100;
                         if (visiblePercentage > 10 &&
-                            controller.picStoreMap[monthKeys[index].key] ==
-                                null) {
-                          var picStore = controller
-                              .explorPicStore(monthKeys[index].key)
-                              .value;
-
-                          if (picStore != null) {
-                            TabsController
-                                    .to.picStoreMap[monthKeys[index].key] =
-                                Rx<PicStore>(picStore);
+                            (_scrollController.position.activity?.velocity ??
+                                    15) <
+                                30) {
+                          for (var i = index - 50; i < index + 50; i++) {
+                            if (i > -1 &&
+                                i < monthKeys.length &&
+                                monthKeys[i].key is! DateTime) {
+                              controller.putCache(monthKeys[i].key);
+                            }
                           }
                         }
                       },
-                      child: stack,
-                    ); */
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: blurHash != null
+                                    ? BlurHash(
+                                        hash: blurHash,
+                                        color: Colors.transparent,
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.all(12),
+                                        color: Colors.grey[300],
+                                      ),
+                              ),
+                            ),
+                          ),
+                          if (controller.picStoreMap[monthKeys[index].key]
+                                      ?.value !=
+                                  null &&
+                              controller.getCache(monthKeys[index].key) != null)
+                            Positioned.fill(
+                                child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: Container(
+                                  child: _buildItemOneMoreTrial(
+                                      controller
+                                          .picStoreMap[monthKeys[index].key]!
+                                          .value,
+                                      monthKeys[index].key),
+                                ),
+                              ),
+                            )),
+                        ],
+                      ),
+                    );
                   });
                 });
           } else {
@@ -217,94 +201,68 @@ class UntaggedTab extends GetWidget<TabsController> {
                         ));
                   }
                   return Obx(() {
-                    /* if (controller.picAssetThumbBytesMap[dayKeys[index].key] ==
-                        null) {
-                      return greyWidget;
-                    } */
-                    Widget loaderWidget;
-
-                    Widget? originalImage;
                     var blurHash =
                         BlurHashController.to.blurHash[dayKeys[index].key];
 
-                    if (null != blurHash) {
-                      loaderWidget = BlurHash(
-                        hash: blurHash,
-                        color: Colors.transparent,
-                      );
-                    } else {
-                      /// grey widget because for this image blur hash was neevr calculated
-                      loaderWidget = greyWidget;
-                    }
-
-                    if (controller.picStoreMap[dayKeys[index].key]?.value !=
-                        null) {
-                      originalImage = Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            child: _buildItemOneMoreTrial(
-                                controller
-                                    .picStoreMap[dayKeys[index].key]!.value,
-                                dayKeys[index].key),
-                          ),
-                        ),
-                      );
-                    }
-
-                   return Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: loaderWidget,
-                            ),
-                          ),
-                        ),
-                        if (originalImage != null)
-                          Positioned.fill(child: originalImage),
-                      ],
-                    );
-/* 
-                    if ((_scrollController.position.activity?.velocity ?? 15) <
-                        80) {
-                      return stack;
-                    }
                     return VisibilityDetector(
                       key: Key('${dayKeys[index].key}'),
                       onVisibilityChanged: (visibilityInfo) {
                         var visiblePercentage =
                             visibilityInfo.visibleFraction * 100;
                         if (visiblePercentage > 10 &&
-                            controller.picStoreMap[dayKeys[index].key] ==
-                                null) {
-                          var picStore = controller
-                              .explorPicStore(dayKeys[index].key)
-                              .value;
-
-                          if (picStore != null) {
-                            TabsController.to.picStoreMap[dayKeys[index].key] =
-                                Rx<PicStore>(picStore);
+                            (_scrollController.position.activity?.velocity ??
+                                    15) <
+                                30) {
+                          for (var i = index - 50; i < index + 50; i++) {
+                            if (i > -1 &&
+                                i < dayKeys.length &&
+                                dayKeys[i].key is! DateTime) {
+                              controller.putCache(dayKeys[i].key);
+                            }
                           }
-                          /* debugPrint(
-                              'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
                         }
-                        /*  else {
-                          if (controller
-                                  .picAssetThumbBytesMap[dayKeys[index].key] !=
-                              null) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              controller.picAssetThumbBytesMap[
-                                  dayKeys[index].key] = null;
-                            });
-                          }
-                        } */
                       },
-                      child: stack,
-                    ); */
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: blurHash != null
+                                    ? BlurHash(
+                                        hash: blurHash,
+                                        color: Colors.transparent,
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.all(12),
+                                        color: Colors.grey[300],
+                                      ),
+                              ),
+                            ),
+                          ),
+                          if (controller
+                                      .picStoreMap[dayKeys[index].key]?.value !=
+                                  null &&
+                              controller.getCache(dayKeys[index].key) != null)
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Container(
+                                    child: _buildItemOneMoreTrial(
+                                        controller
+                                            .picStoreMap[dayKeys[index].key]!
+                                            .value,
+                                        dayKeys[index].key),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    );
                   });
                 });
           }
@@ -403,94 +361,75 @@ class UntaggedTab extends GetWidget<TabsController> {
       image: imageProvider,
       fit: BoxFit.cover,
       loadStateChanged: (ExtendedImageState state) {
-        Widget loader;
-
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
             if (null == hash) {
-              loader = ColoredBox(color: kGreyPlaceholder);
+              return Padding(
+                padding: const EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: ColoredBox(color: kGreyPlaceholder),
+                ),
+              );
             } else {
-              loader = BlurHash(
-                hash: hash,
-                color: Colors.transparent,
+              return Padding(
+                padding: const EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: BlurHash(
+                    hash: hash,
+                    color: Colors.transparent,
+                  ),
+                ),
               );
             }
-            loader = Padding(
-              padding: const EdgeInsets.all(2),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: loader,
-              ),
-            );
-            break;
           case LoadState.completed:
-            loader = () {
-              return FadeImageBuilder(
-                child: GestureDetector(
-                  onLongPress: () {
-                    //print('LongPress');
-                    if (controller.multiPicBar.value == false) {
-                      controller.selectedMultiBarPics[picId] = true;
-                      controller.setMultiPicBar(true);
+            return FadeImageBuilder(
+              child: GestureDetector(
+                onLongPress: () {
+                  //print('LongPress');
+                  if (controller.multiPicBar.value == false) {
+                    controller.selectedMultiBarPics[picId] = true;
+                    controller.setMultiPicBar(true);
+                  }
+                },
+                child: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () async {
+                    if (controller.multiPicBar.value) {
+                      if (controller.selectedMultiBarPics[picId] == null) {
+                        controller.selectedMultiBarPics[picId] = true;
+                      } else {
+                        controller.selectedMultiBarPics.remove(picId);
+                      }
+                      return;
+                    }
+                    var result = await Get.to(() => PhotoScreen(
+                        picId: picId,
+                        picIdList: controller.allUnTaggedPics.keys.toList()));
+                    if (null == result) {
+                      await refresh_everything();
                     }
                   },
-                  child: CupertinoButton(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () async {
-                      if (controller.multiPicBar.value) {
-                        if (controller.selectedMultiBarPics[picId] == null) {
-                          controller.selectedMultiBarPics[picId] = true;
-                        } else {
-                          controller.selectedMultiBarPics.remove(picId);
-                        }
-                        return;
-                      }
-                      var result = await Get.to(() => PhotoScreen(
-                          picId: picId,
-                          picIdList: controller.allUnTaggedPics.keys.toList()));
-                      if (null == result) {
-                        await refresh_everything();
-                      }
-                    },
-                    child: Obx(() {
-                      Widget image = Positioned.fill(
-                        child: state.completedWidget,
-                      );
-                      if (controller.multiPicBar.value) {
-                        if (controller.selectedMultiBarPics[picId] != null) {
-                          return Stack(
-                            children: [
-                              image,
-                              Container(
-                                constraints: BoxConstraints.expand(),
-                                decoration: BoxDecoration(
-                                  color: kSecondaryColor.withOpacity(0.3),
-                                  border: Border.all(
-                                    color: kSecondaryColor,
-                                    width: 2.0,
-                                  ),
-                                ),
-                              ),
-                              Positioned(
-                                left: 8.0,
-                                top: 6.0,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    gradient: kSecondaryGradient,
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Image.asset(
-                                      'lib/images/checkwhiteico.png'),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
+                  child: Obx(() {
+                    Widget image = Positioned.fill(
+                      child: state.completedWidget,
+                    );
+                    if (controller.multiPicBar.value) {
+                      if (controller.selectedMultiBarPics[picId] != null) {
                         return Stack(
                           children: [
                             image,
+                            Container(
+                              constraints: BoxConstraints.expand(),
+                              decoration: BoxDecoration(
+                                color: kSecondaryColor.withOpacity(0.3),
+                                border: Border.all(
+                                  color: kSecondaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
                             Positioned(
                               left: 8.0,
                               top: 6.0,
@@ -498,12 +437,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                                 height: 20,
                                 width: 20,
                                 decoration: BoxDecoration(
+                                  gradient: kSecondaryGradient,
                                   borderRadius: BorderRadius.circular(10.0),
-                                  border: Border.all(
-                                    color: Colors.transparent,
-                                    width: 2.0,
-                                  ),
                                 ),
+                                child:
+                                    Image.asset('lib/images/checkwhiteico.png'),
                               ),
                             ),
                           ],
@@ -512,19 +450,36 @@ class UntaggedTab extends GetWidget<TabsController> {
                       return Stack(
                         children: [
                           image,
+                          Positioned(
+                            left: 8.0,
+                            top: 6.0,
+                            child: Container(
+                              height: 20,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(
+                                  color: Colors.transparent,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
                       );
-                    }),
-                  ),
+                    }
+                    return Stack(
+                      children: [
+                        image,
+                      ],
+                    );
+                  }),
                 ),
-              );
-            }();
-            break;
+              ),
+            );
           case LoadState.failed:
-            loader = _failedItem;
-            break;
+            return _failedItem;
         }
-        return loader;
       },
     );
   }
