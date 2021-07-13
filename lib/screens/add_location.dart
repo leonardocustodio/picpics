@@ -183,7 +183,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    final imageProvider = AssetEntityImageProvider(picStore,isOriginal: true);
     return Scaffold(
       key: homeScaffoldKey,
       body: AnnotatedRegion<SystemUiOverlayStyle>(

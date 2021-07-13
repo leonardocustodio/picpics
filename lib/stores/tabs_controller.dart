@@ -177,7 +177,7 @@ class TabsController extends GetxController {
   }
 
   final lruCache = <String, String>{}.obs;
-  final maxLruSpace = 100;
+  final maxLruSpace = 80;
 
   Timer? _timer;
 
@@ -200,6 +200,7 @@ class TabsController extends GetxController {
     }
 
     _timer = Timer(Duration(milliseconds: 100), () {
+      print('triggered');
       if (_stashLru.isNotEmpty) {
         lruCache.value = Map<String, String>.from(_stashLru);
         _stashLru.clear();
@@ -420,14 +421,14 @@ class TabsController extends GetxController {
         });
         picStoreValue.value.tags = map;
         picStoreMap[picId] = picStoreValue;
-
+/* 
         if (BlurHashController.to.blurHash[picId] == null) {
           await picStoreValue.value.assetThumbBytes.then((imageBytes) {
             if (null != imageBytes) {
               BlurHashController.to.createBlurHash(picId, imageBytes);
             }
           });
-        }
+        } */
       });
     }
     return picStoreValue!;

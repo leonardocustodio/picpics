@@ -23,28 +23,30 @@ class BlurHashController extends GetxController {
   Future<void> loadBlurHash() async {
     var blurHashList = await _appDatabase.getAllPicBlurHash();
 
-    blurHash.clear();
-
     blurHashList.forEach((pic) {
-      blurHash[pic.photoId] = pic.blurHash;
       masterHash[pic.photoId] = pic.blurHash;
     });
+    blurHash.value = Map<String, String>.from(masterHash);
   }
 
   /// Below function will accept the calls for calculating the blur Hashes but will be executed after the calls
   /// to this function stops and then it will do the processing
   ///
-  /// It's a way to Debounce the calls and stops anything from throttling
+  /// It's a way to Debounce the calls and overloads it with the updated data
   ///
+
   Future<void> createBlurHash(String photoId, Uint8List imageBytes) async {
+    if (null != _blurHashesQueue[photoId] || null != masterHash[photoId]) {
+      return;
+    }
     _timer?.cancel();
 
-    if (null == masterHash[photoId]) {
-      _blurHashesQueue[photoId] = imageBytes;
-    }
+    print('blur hash: creating');
+    _blurHashesQueue[photoId] = imageBytes;
 
     _timer = Timer(Duration(milliseconds: 1000), () {
       if (_blurHashesQueue.isNotEmpty) {
+        print('blur hash: inserting');
         var picMaps = Map<String, Uint8List>.from(_blurHashesQueue);
         _blurHashesQueue.clear();
         var picBlurHashList = <PicBlurHash>[];
@@ -61,6 +63,7 @@ class BlurHashController extends GetxController {
           }
         }).then((_) async {
           await _appDatabase.insertAllPicBlurHash(picBlurHashList);
+          //await loadBlurHash();
 
           ///
           /// I thinks it's making the application laggy

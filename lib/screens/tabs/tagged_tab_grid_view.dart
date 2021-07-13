@@ -90,7 +90,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                   }
                   if (originalImage == null &&
                       TabsController.to.picStoreMap[picId]?.value != null) {
-                    originalImage = _buildItemOneMoreTrial(
+                    originalImage = _buildImageWidget(
                         TabsController.to.picStoreMap[picId]!.value, picId);
                   }
 
@@ -170,7 +170,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
         ),
       );
 
-  Widget _buildItemOneMoreTrial(PicStore picStore, String picId) {
+  Widget _buildImageWidget(PicStore picStore, String picId) {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
     var hash = BlurHashController.to.blurHash[picId];
@@ -317,12 +317,6 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
 
   @override
   Widget build(BuildContext context) {
-    if (controller.taggedPicId[tagKey]?.keys.isEmpty ?? true) {
-      /// If there are no pictures present related to this tagKey then let's go back to previous screen
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        Get.back();
-      });
-    }
     return WillPopScope(
       onWillPop: () => controller.shouldPopOut(),
       child: Obx(
@@ -601,7 +595,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                   return Platform.isIOS
                       ? CupertinoTabBar(
                           onTap: (index) {
-                            controller.setTabIndex(index);
+                            controller.setTabIndex(index, tagKey);
                           },
                           iconSize: 24.0,
                           border: Border(
@@ -612,7 +606,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                           height: 64.0,
                           child: BottomNavigationBar(
                               onTap: (index) {
-                                controller.setTabIndex(index);
+                                controller.setTabIndex(index, tagKey);
                               },
                               type: BottomNavigationBarType.fixed,
                               showSelectedLabels: false,

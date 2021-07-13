@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 
 @immutable
@@ -20,6 +21,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// Choose if original data or thumb data should be loaded.
   /// 选择载入原数据还是缩略图数据
   final bool isOriginal;
+
   AssetEntityImageProvider(
     this.picStore, {
     this.scale = 1.0,
@@ -70,6 +72,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       data = picStore.isPrivate.value
           ? await key.picStore.assetOriginBytes
           : await key.picStore.entity.value?.originBytes;
+
     } else {
       //print('Loading thumbnail...');
       if (picStore.entity.value == null) {
@@ -79,6 +82,12 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
           ? await key.picStore.assetThumbBytes
           : await key.picStore.entity.value
               ?.thumbDataWithSize(thumbSize[0], thumbSize[1]);
+      if (BlurHashController.to.masterHash[picStore.photoId.value] == null &&
+          data != null) {
+        // ignore: unawaited_futures
+        BlurHashController.to
+            .createBlurHash(picStore.photoId.value, data);
+      }
     }
 
     // if (picStore.isPrivate == true) {

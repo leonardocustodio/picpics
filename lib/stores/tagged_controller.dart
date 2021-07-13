@@ -114,7 +114,7 @@ class TaggedController extends GetxController {
     return true;
   }
 
-  void setTabIndex(int index) async {
+  void setTabIndex(int index, String? tagKey) async {
     if (selectedMultiBarPics.isEmpty) {
       if (index == 0) {
         setMultiPicBar(false);
@@ -147,14 +147,23 @@ class TaggedController extends GetxController {
         context: Get.context!,
         barrierDismissible: true,
         builder: (_) {
-          return ConfirmPicDelete(
-            onPressedDelete: () {
-              Analytics.sendEvent(Event.deleted_photo);
-              TabsController.to.trashMultiplePics(
-                  selectedMultiBarPics.keys.toList().toSet());
-              Get.back();
+          return ConfirmPicDelete(onPressedDelete: () async {
+            await Analytics.sendEvent(Event.deleted_photo);
+            Get.back();
+            isTaggedPicsLoaded.value = false;
+            await TabsController.to
+                .trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
+            await refreshTaggedPhotos();
+            isTaggedPicsLoaded.value = true;
+            if (taggedPicId[tagKey]?.keys.isEmpty ?? true) {
+              /// If there are no pictures present related to this tagKey then
+              /// let's go back to previous screen
+              WidgetsBinding.instance?.addPostFrameCallback((_) {
+                print('going back');
+                Get.back();
+              });
             }
-          );
+          });
         },
       );
     }

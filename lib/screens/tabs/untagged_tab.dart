@@ -106,7 +106,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                             (_scrollController.position.activity?.velocity ??
                                     15) <
                                 30) {
-                          for (var i = index - 50; i < index + 50; i++) {
+                          for (var i = index - 40; i < index + 40; i++) {
                             if (i > -1 &&
                                 i < monthKeys.length &&
                                 monthKeys[i].key is! DateTime) {
@@ -213,7 +213,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                             (_scrollController.position.activity?.velocity ??
                                     15) <
                                 30) {
-                          for (var i = index - 50; i < index + 50; i++) {
+                          for (var i = index - 40; i < index + 40; i++) {
                             if (i > -1 &&
                                 i < dayKeys.length &&
                                 dayKeys[i].key is! DateTime) {
@@ -353,6 +353,7 @@ class UntaggedTab extends GetWidget<TabsController> {
 
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
+    
     return ExtendedImage(
       filterQuality: FilterQuality.low,
       gaplessPlayback: true,
