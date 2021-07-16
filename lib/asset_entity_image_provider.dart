@@ -72,7 +72,6 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       data = picStore.isPrivate.value
           ? await key.picStore.assetOriginBytes
           : await key.picStore.entity.value?.originBytes;
-
     } else {
       //print('Loading thumbnail...');
       if (picStore.entity.value == null) {
@@ -85,8 +84,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       if (BlurHashController.to.masterHash[picStore.photoId.value] == null &&
           data != null) {
         // ignore: unawaited_futures
-        BlurHashController.to
-            .createBlurHash(picStore.photoId.value, data);
+        BlurHashController.to.createBlurHash(picStore.photoId.value, data);
       }
     }
 

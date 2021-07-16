@@ -7,5 +7,4 @@ class CustomScrollPhysics extends AlwaysScrollableScrollPhysics {
   AlwaysScrollableScrollPhysics applyTo(ScrollPhysics? ancestor) {
     return CustomScrollPhysics(parent: buildParent(ancestor));
   }
-
 }

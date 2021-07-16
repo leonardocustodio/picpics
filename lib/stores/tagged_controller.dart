@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:collection';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -207,65 +210,43 @@ class TaggedController extends GetxController {
 
   void setIsScrolling(bool value) => isScrolling.value = value;
 
+  final lruCache = <String, String>{}.obs;
+  final maxLruSpace = 80;
+
+  Timer? _timer;
+
+  dynamic getCache(String key) {
+    return lruCache.value[key];
+  }
+
+  /// a temporary place to overload the buffer coming in to the ui and then push at once the timer triggers
+  // ignore: prefer_collection_literals
+  final _stashLru = LinkedHashMap<String, String>();
+
+  void putCache(String key) {
+    _timer?.cancel();
+
+    if (null == _stashLru[key]) {
+      _stashLru[key] = '';
+      if (_stashLru.length > maxLruSpace) {
+        _stashLru.remove(_stashLru.keys.first);
+      }
+    }
+
+    _timer = Timer(Duration(milliseconds: 100), () {
+      print('triggered');
+      if (_stashLru.isNotEmpty) {
+        lruCache.value = Map<String, String>.from(_stashLru);
+        _stashLru.clear();
+      }
+    });
+  }
+
   final allTaggedPicDateWiseMap = <dynamic, dynamic>{}.obs;
 
   Future<void> refreshTaggedPhotos() async {
     isTaggedPicsLoaded.value = false;
     final taggedPhotoIdList = await database.getAllTaggedPhotoIdList();
-
-    /// Sorting the photo-ids on basis of their creation datetime
-
-    taggedPhotoIdList.sort((a, b) {
-      var year = b.createdAt.year.compareTo(a.createdAt.year);
-      if (year == 0) {
-        var month = b.createdAt.month.compareTo(a.createdAt.month);
-        if (month == 0) {
-          var day = b.createdAt.day.compareTo(a.createdAt.day);
-          return day;
-        }
-        return month;
-      }
-      return year;
-    });
-
-    DateTime? previousDay;
-    DateTime? previousMonth;
-
-    var previousDatePicIdList = <String>[];
-
-    taggedPhotoIdList.forEach((Photo photo) {
-      /// Iterating and checking whether the picId is not a tagged pic or it's not a private pic
-
-      var dateTime = DateTime.utc(
-          photo.createdAt.year, photo.createdAt.month, photo.createdAt.day);
-      if (previousDay == null || previousMonth == null) {
-        previousDay = dateTime;
-        previousMonth = dateTime;
-
-        allTaggedPicDateWiseMap[dateTime] = <String>[];
-      }
-
-      if (previousDay!.year != dateTime.year ||
-          previousDay!.month != dateTime.month ||
-          previousDay!.day != dateTime.day) {
-        if (previousDay!.day != dateTime.day) {
-          allTaggedPicDateWiseMap[previousDay] =
-              List<String>.from(previousDatePicIdList);
-          previousDatePicIdList = <String>[];
-          allTaggedPicDateWiseMap[dateTime] = <String>[];
-        }
-        if (previousDay!.month != dateTime.month) {
-          allTaggedPicDateWiseMap[previousDay] =
-              List<String>.from(previousDatePicIdList);
-          previousDatePicIdList = <String>[];
-          allTaggedPicDateWiseMap[dateTime] = <String>[];
-          previousMonth = dateTime;
-        }
-        previousDay = dateTime;
-      }
-      previousDatePicIdList.add(photo.id);
-      //status.value = Status.Loaded;
-    });
 
     allTaggedPicIdList.clear();
     taggedPicId.clear();
@@ -286,8 +267,60 @@ class TaggedController extends GetxController {
         });
         allTaggedPicIdList[photo.id] = '';
       }
-    }).then((_) {
-      isTaggedPicsLoaded.value = true;
+    }).then((_) async {
+      /// Sorting the photo-ids on basis of their creation datetime
+
+      taggedPhotoIdList.sort((a, b) {
+        var year = b.createdAt.year.compareTo(a.createdAt.year);
+        if (year == 0) {
+          var month = b.createdAt.month.compareTo(a.createdAt.month);
+          if (month == 0) {
+            var day = b.createdAt.day.compareTo(a.createdAt.day);
+            return day;
+          }
+          return month;
+        }
+        return year;
+      });
+
+      DateTime? previousDay;
+      DateTime? previousMonth;
+
+      var previousDatePicIdList = <String>[];
+
+      await Future.forEach(taggedPhotoIdList, (Photo photo) async {
+        /// Iterating and checking whether the picId is not a tagged pic or it's not a private pic
+
+        var dateTime = DateTime.utc(
+            photo.createdAt.year, photo.createdAt.month, photo.createdAt.day);
+        if (previousDay == null || previousMonth == null) {
+          previousDay = dateTime;
+          previousMonth = dateTime;
+
+          allTaggedPicDateWiseMap[dateTime] = <String>[];
+        }
+
+        if (previousDay!.year != dateTime.year ||
+            previousDay!.month != dateTime.month ||
+            previousDay!.day != dateTime.day) {
+          if (previousDay!.day != dateTime.day) {
+            allTaggedPicDateWiseMap[previousDay] =
+                List<String>.from(previousDatePicIdList);
+            previousDatePicIdList = <String>[];
+            allTaggedPicDateWiseMap[dateTime] = <String>[];
+          }
+          if (previousDay!.month != dateTime.month) {
+            allTaggedPicDateWiseMap[previousDay] =
+                List<String>.from(previousDatePicIdList);
+            previousDatePicIdList = <String>[];
+            allTaggedPicDateWiseMap[dateTime] = <String>[];
+            previousMonth = dateTime;
+          }
+        }
+        previousDatePicIdList.add(photo.id);
+      }).then((_) {
+        isTaggedPicsLoaded.value = true;
+      });
     });
   }
 

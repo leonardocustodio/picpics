@@ -208,8 +208,6 @@ class TabsController extends GetxController {
     });
   }
 
-  Future<void> getDataForPic(String picId) async {}
-
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
     if (assetsPath.isEmpty) {
       status.value = Status.DeviceHasNoPics;

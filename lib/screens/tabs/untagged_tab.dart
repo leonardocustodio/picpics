@@ -353,7 +353,6 @@ class UntaggedTab extends GetWidget<TabsController> {
 
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
-    
     return ExtendedImage(
       filterQuality: FilterQuality.low,
       gaplessPlayback: true,
