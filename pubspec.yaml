@@ -85,6 +85,7 @@ dependencies:
   sliver_tools: 0.2.5
   url_launcher: 6.0.6
   uuid: 3.0.4
+  #flutter_sticky_header: ^0.6.0
   visibility_detector: 0.2.0
   flutter_vibrate:
     git:

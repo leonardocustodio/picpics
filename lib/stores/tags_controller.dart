@@ -697,11 +697,12 @@ class TagsController extends GetxController {
 
     /// Creating new label
     var createTag = Label(
-        key: newTagKey,
-        title: newName,
-        photoId: oldTag!.photoId,
-        counter: oldTag.counter < 1 ? 1 : oldTag.counter,
-        lastUsedAt: DateTime.now());
+      key: newTagKey,
+      title: newName,
+      photoId: oldTag!.photoId,
+      counter: oldTag.counter < 1 ? 1 : oldTag.counter,
+      lastUsedAt: DateTime.now(),
+    );
 
     await _database.createLabel(createTag);
 

@@ -243,7 +243,6 @@ class TabsController extends GetxController {
       }
       return year;
     });
-
     /* var val = await database.getPrivatePhotoList();
     await Future.forEach(
         val, (photo) async => privatePhotoIdMap[photo.id] = ''); */
@@ -323,72 +322,6 @@ class TabsController extends GetxController {
     //picAssetThumbBytesMap.remove(picId);
     if (removeFromGallery) {}
   }
-
-  /* Future<void> exploreOriginPic(String picId) async {
-    /// if it is not secret pic
-    if (secretPicIds[picId] != null) {
-      if (!secretPicIds[picId]) {
-        // not a secret pic
-        addOriginBytesMap(picId, assetOriginBytes(false, assetMap[picId]));
-        return;
-      } else if (secretPicData[picId] != null) {
-        // it is a secret pic as we had successfully found the data related to it
-        addOriginBytesMap(
-            picId,
-            assetOriginBytes(true, assetMap[picId], secretPicData[picId].nonce,
-                secretPicData[picId].thumbPath));
-        return;
-      }
-    }
-
-    Photo pic = await database.getPhotoByPhotoId(assetMap[picId].id);
-    if (pic != null) {
-      //print('pic $photoId exists, loading data....');
-      //Pic pic = picsBox.get(photoId);
-
-      /* latitude.value = pic.latitude;
-      longitude.value = pic.longitude;
-      specificLocation.value = pic.specificLocation;
-      generalLocation.value = pic.generalLocation;
-      isPrivate.value = pic.isPrivate ?? false;
-      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
-      isStarred.value = pic.isStarred ?? false; */
-
-      //print('Is private: $isPrivate');
-      /* for (String tagKey in pic.tags) {
-        TagsStore tagsStore = UserController.to.tags[tagKey];
-        if (tagsStore == null) {
-          //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
-          continue;
-        }
-
-        /// TODO: tags[tagKey] = tagsStore;
-      } */
-      if (pic.isPrivate == true) {
-        Private secretPic =
-            await database.getPrivateByPhotoId(assetMap[picId].id);
-
-        if (secretPic != null) {
-          var thumbPath = secretPic.thumbPath;
-          var nonce = secretPic.nonce;
-          secretPicIds[assetMap[picId].id] = true;
-          secretPicData[assetMap[picId].id] = secretPic;
-          //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
-          /* picAssetOriginBytesMap[assetMap[picId].id] =
-              assetOriginBytes(true, assetMap[picId], nonce, photoPath); */
-          //await Crypto.decryptImage(photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
-          addOriginBytesMap(
-              picId, assetOriginBytes(true, assetMap[picId], nonce, thumbPath));
-          //await Crypto.decryptImage(thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
-        }
-      }
-    }
-    /* picAssetOriginBytesMap[assetMap[picId].id] =
-        assetOriginBytes(false, assetMap[picId]); */
-    //await entity.originBytes;
-    addOriginBytesMap(picId, assetOriginBytes(false, assetMap[picId]));
-    //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
-  } */
 
   /// Here only those picId will come who are untagged.
   Rx<PicStore?> explorPicStore(String picId) {
@@ -498,27 +431,6 @@ class TabsController extends GetxController {
     //await entity.originBytes;
     addThumbBytesMap(picId, assetThumbBytes(false, assetMap[picId]));
     //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
-  } */
-
-  /* Future<Uint8List> assetOriginBytes(bool isPrivate, AssetEntity entity,
-      [String nonce, String photoPath]) async {
-    if (isPrivate == false && entity != null) {
-      return await entity.originBytes;
-    }
-    //print('Returning decrypt image in privatePath: $photoPath');
-    return await Crypto.decryptImage(
-        photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
-  }
-
-  Future<Uint8List> assetThumbBytes(bool isPrivate, AssetEntity entity,
-      [String nonce, String thumbPath]) async {
-    if (isPrivate == false && entity != null) {
-      return await entity.thumbDataWithSize(
-          kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
-    }
-    //print('Returning decrypt image in privatePath: $thumbPath');
-    return await Crypto.decryptImage(
-        thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
   } */
 
   Future<void> loadAssetPath() async {

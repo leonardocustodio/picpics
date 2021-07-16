@@ -66,7 +66,7 @@ class TaggedTab extends GetWidget<TaggedController> {
             controller: controller.scrollControllerThirdTab,
             // padding: EdgeInsets.only(top: 86.0),
             padding: EdgeInsets.only(left: 7, right: 7),
-            physics: const CustomScrollPhysics(),
+            //physics: const CustomScrollPhysics(),
             crossAxisCount: 3,
             mainAxisSpacing: 8,
             crossAxisSpacing: 4,
@@ -75,66 +75,67 @@ class TaggedTab extends GetWidget<TaggedController> {
               final tagKey = taggedKeys[index];
               final showingPicId =
                   controller.taggedPicId[taggedKeys[index]]?.keys.last;
-              Widget? loaderWidget;
               Widget? originalImage;
 
               final blurHash = BlurHashController.to.blurHash[showingPicId];
 
-              if (null != blurHash) {
-                loaderWidget = BlurHash(
-                  hash: blurHash,
-                  color: Colors.transparent,
-                );
-              } else {
-                /// grey widget because for this image blur hash was neevr calculated
-                loaderWidget = greyWidget;
-              }
               return Container(
                 margin: const EdgeInsets.all(4),
                 child: GetX<TabsController>(builder: (tabsController) {
-                  if (originalImage == null &&
-                      showingPicId != null &&
-                      tabsController.picStoreMap[showingPicId]?.value != null) {
-                    originalImage = _buildPicItem(
-                        tabsController.picStoreMap[showingPicId]!.value,
-                        showingPicId,
-                        tagKey);
-                  }
-
                   return VisibilityDetector(
-                      key: Key('$tagKey'),
-                      onVisibilityChanged: (visibilityInfo) {
-                        var visiblePercentage =
-                            visibilityInfo.visibleFraction * 100;
-                        if (showingPicId != null &&
-                            visiblePercentage > 10 &&
-                            tabsController.picStoreMap[showingPicId]?.value ==
-                                null) {
-                          var picStore =
-                              tabsController.explorPicStore(showingPicId).value;
+                    key: Key('$tagKey'),
+                    onVisibilityChanged: (visibilityInfo) {
+                      var visiblePercentage =
+                          visibilityInfo.visibleFraction * 100;
+                      if (showingPicId != null &&
+                          visiblePercentage > 10 &&
+                          tabsController.picStoreMap[showingPicId]?.value ==
+                              null) {
+                        var picStore =
+                            tabsController.explorPicStore(showingPicId).value;
 
-                          if (picStore != null) {
-                            TabsController.to.picStoreMap[showingPicId] =
-                                Rx<PicStore>(picStore);
-                          }
+                        if (picStore != null) {
+                          TabsController.to.picStoreMap[showingPicId] =
+                              Rx<PicStore>(picStore);
                         }
-                      },
-                      child: Stack(
-                        children: [
-                          if (loaderWidget != null)
-                            Positioned.fill(
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 25),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: loaderWidget,
-                                ),
-                              ),
+                      }
+                    },
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 25),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: null != blurHash
+                                  ? BlurHash(
+                                      hash: blurHash,
+                                      color: Colors.transparent,
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        color: Colors.grey[300],
+                                      ),
+                                    ),
                             ),
-                          if (originalImage != null)
-                            Positioned.fill(child: originalImage!),
-                        ],
-                      ));
+                          ),
+                        ),
+                        if (originalImage == null &&
+                            showingPicId != null &&
+                            tabsController.picStoreMap[showingPicId]?.value !=
+                                null)
+                          Positioned.fill(
+                            child: _buildPicItem(
+                              tabsController.picStoreMap[showingPicId]!.value,
+                              showingPicId,
+                              tagKey,
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
                 }),
               );
             },
@@ -147,9 +148,9 @@ class TaggedTab extends GetWidget<TaggedController> {
     );
   }
 
-  Widget? _buildPicItem(PicStore? picStore, String picId, String tagKey) {
+  Widget _buildPicItem(PicStore? picStore, String picId, String tagKey) {
     if (null == picStore) {
-      return null;
+      return Container();
     }
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 

@@ -207,9 +207,65 @@ class TaggedController extends GetxController {
 
   void setIsScrolling(bool value) => isScrolling.value = value;
 
+  final allTaggedPicDateWiseMap = <dynamic, dynamic>{}.obs;
+
   Future<void> refreshTaggedPhotos() async {
     isTaggedPicsLoaded.value = false;
-    var taggedPhotoIdList = await database.getAllPhoto();
+    final taggedPhotoIdList = await database.getAllTaggedPhotoIdList();
+
+    /// Sorting the photo-ids on basis of their creation datetime
+
+    taggedPhotoIdList.sort((a, b) {
+      var year = b.createdAt.year.compareTo(a.createdAt.year);
+      if (year == 0) {
+        var month = b.createdAt.month.compareTo(a.createdAt.month);
+        if (month == 0) {
+          var day = b.createdAt.day.compareTo(a.createdAt.day);
+          return day;
+        }
+        return month;
+      }
+      return year;
+    });
+
+    DateTime? previousDay;
+    DateTime? previousMonth;
+
+    var previousDatePicIdList = <String>[];
+
+    taggedPhotoIdList.forEach((Photo photo) {
+      /// Iterating and checking whether the picId is not a tagged pic or it's not a private pic
+
+      var dateTime = DateTime.utc(
+          photo.createdAt.year, photo.createdAt.month, photo.createdAt.day);
+      if (previousDay == null || previousMonth == null) {
+        previousDay = dateTime;
+        previousMonth = dateTime;
+
+        allTaggedPicDateWiseMap[dateTime] = <String>[];
+      }
+
+      if (previousDay!.year != dateTime.year ||
+          previousDay!.month != dateTime.month ||
+          previousDay!.day != dateTime.day) {
+        if (previousDay!.day != dateTime.day) {
+          allTaggedPicDateWiseMap[previousDay] =
+              List<String>.from(previousDatePicIdList);
+          previousDatePicIdList = <String>[];
+          allTaggedPicDateWiseMap[dateTime] = <String>[];
+        }
+        if (previousDay!.month != dateTime.month) {
+          allTaggedPicDateWiseMap[previousDay] =
+              List<String>.from(previousDatePicIdList);
+          previousDatePicIdList = <String>[];
+          allTaggedPicDateWiseMap[dateTime] = <String>[];
+          previousMonth = dateTime;
+        }
+        previousDay = dateTime;
+      }
+      previousDatePicIdList.add(photo.id);
+      //status.value = Status.Loaded;
+    });
 
     allTaggedPicIdList.clear();
     taggedPicId.clear();
