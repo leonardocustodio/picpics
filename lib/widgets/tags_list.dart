@@ -396,8 +396,10 @@ class _TagsListState extends State<TagsList> {
                           padding: const EdgeInsets.all(0),
                           minSize: 30,
                           onPressed: () {
-                            widget.onSubmitted
-                                ?.call(widget.textEditingController!.text);
+                            if (widget.onSubmitted != null) {
+                              widget.onSubmitted!(
+                                  widget.textEditingController!.text);
+                            }
                           },
                           child: Icon(
                             Icons.add,

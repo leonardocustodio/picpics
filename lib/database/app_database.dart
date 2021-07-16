@@ -305,7 +305,7 @@ class AppDatabase extends _$AppDatabase {
         ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
       .getSingleOrNull();
 
-  Future<List<Photo>> getAllTaggedPhotoIdList() {
+  /* Future<List<Photo>> getAllTaggedPhotoIdList() {
     var convertor = ListStringConvertor();
     return (select(photos)
           ..where((tbl) {
@@ -316,12 +316,12 @@ class AppDatabase extends _$AppDatabase {
                 );
           }))
         .get();
-  }
+  } */
 
   Future<List<Photo>> getPrivatePhotoList() =>
       (select(photos)..where((tbl) => tbl.isPrivate.equals(true))).get();
 
-  Future<List<Photo>> getAllTaggedPhoto() => select(photos).get();
+  Future<List<Photo>> getAllPhoto() => select(photos).get();
 
   Future updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
 

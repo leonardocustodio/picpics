@@ -551,8 +551,6 @@ class TabsController extends GetxController {
 
   void setToggleIndexUntagged(int value) => toggleIndexUntagged.value = value;
 
-  void setToggleIndexTagged(int value) => toggleIndexTagged.value = value;
-
   void returnAction() {
     selectedMultiBarPics.clear();
     setMultiPicBar(false);

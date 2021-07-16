@@ -246,7 +246,7 @@ class TaggedController extends GetxController {
 
   Future<void> refreshTaggedPhotos() async {
     isTaggedPicsLoaded.value = false;
-    final taggedPhotoIdList = await database.getAllTaggedPhotoIdList();
+    final taggedPhotoIdList = await database.getAllPhoto();
 
     allTaggedPicIdList.clear();
     taggedPicId.clear();
@@ -267,28 +267,30 @@ class TaggedController extends GetxController {
         });
         allTaggedPicIdList[photo.id] = '';
       }
-    }).then((_) async {
-      /// Sorting the photo-ids on basis of their creation datetime
+    });
 
-      taggedPhotoIdList.sort((a, b) {
-        var year = b.createdAt.year.compareTo(a.createdAt.year);
-        if (year == 0) {
-          var month = b.createdAt.month.compareTo(a.createdAt.month);
-          if (month == 0) {
-            var day = b.createdAt.day.compareTo(a.createdAt.day);
-            return day;
-          }
-          return month;
+    /// Sorting the photo-ids on basis of their creation datetime
+
+    taggedPhotoIdList.sort((a, b) {
+      var year = b.createdAt.year.compareTo(a.createdAt.year);
+      if (year == 0) {
+        var month = b.createdAt.month.compareTo(a.createdAt.month);
+        if (month == 0) {
+          var day = b.createdAt.day.compareTo(a.createdAt.day);
+          return day;
         }
-        return year;
-      });
+        return month;
+      }
+      return year;
+    });
 
-      DateTime? previousDay;
-      DateTime? previousMonth;
+    DateTime? previousDay;
+    DateTime? previousMonth;
 
-      var previousDatePicIdList = <String>[];
+    var previousDatePicIdList = <String>[];
 
-      await Future.forEach(taggedPhotoIdList, (Photo photo) async {
+    await Future.forEach(taggedPhotoIdList, (Photo photo) async {
+      if (photo.tags.isNotEmpty) {
         /// Iterating and checking whether the picId is not a tagged pic or it's not a private pic
 
         var dateTime = DateTime.utc(
@@ -303,24 +305,23 @@ class TaggedController extends GetxController {
         if (previousDay!.year != dateTime.year ||
             previousDay!.month != dateTime.month ||
             previousDay!.day != dateTime.day) {
-          if (previousDay!.day != dateTime.day) {
-            allTaggedPicDateWiseMap[previousDay] =
-                List<String>.from(previousDatePicIdList);
-            previousDatePicIdList = <String>[];
-            allTaggedPicDateWiseMap[dateTime] = <String>[];
-          }
           if (previousDay!.month != dateTime.month) {
-            allTaggedPicDateWiseMap[previousDay] =
+            allTaggedPicDateWiseMap[previousMonth] =
                 List<String>.from(previousDatePicIdList);
             previousDatePicIdList = <String>[];
             allTaggedPicDateWiseMap[dateTime] = <String>[];
             previousMonth = dateTime;
           }
         }
+        allTaggedPicDateWiseMap[photo.id] = '';
         previousDatePicIdList.add(photo.id);
-      }).then((_) {
-        isTaggedPicsLoaded.value = true;
-      });
+      }
+    }).then((_) {
+      if (previousMonth != null) {
+        allTaggedPicDateWiseMap[previousMonth] =
+            List<String>.from(previousDatePicIdList);
+      }
+      isTaggedPicsLoaded.value = true;
     });
   }
 

@@ -4,11 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:intl/intl.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/screens/tabs/tagged_tab_date.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
@@ -17,15 +16,12 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-
-import '../photo_screen.dart';
 import 'tagged_tab_grid_view.dart';
 
 // ignore_for_file: must_be_immutable, unused_field
@@ -38,66 +34,7 @@ class TaggedTab extends GetWidget<TaggedController> {
   TextEditingController searchEditingController = TextEditingController();
   FocusNode searchFocusNode = FocusNode();
 
-  final _scrollController = ScrollController();
-
   /* TextEditingController tagsEditingController = TextEditingController(); */
-
-  String dateFormat(DateTime dateTime) {
-    return DateFormat.yMMMM().format(dateTime);
-  }
-
-  Widget buildDateHeader(DateTime date, bool isSelected) {
-    return Container(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      height: 40.0,
-      child: Row(
-        children: [
-          if (TabsController.to.multiPicBar.value)
-            Container(
-              width: 20,
-              height: 20,
-              margin: const EdgeInsets.only(right: 10),
-              decoration: isSelected
-                  ? BoxDecoration(
-                      gradient: kSecondaryGradient,
-                      borderRadius: BorderRadius.circular(10.0),
-                    )
-                  : BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(color: Colors.grey, width: 1.0)),
-              child: isSelected
-                  ? Image.asset('lib/images/checkwhiteico.png')
-                  : null,
-            ),
-          /* Positioned(
-              left: 8.0,
-              top: 6.0,
-              child: Container(
-                height: 20,
-                width: 20,
-                decoration: BoxDecoration(
-                  gradient: kSecondaryGradient,
-                  borderRadius: BorderRadius.circular(10.0),
-                ),
-                child: Image.asset('lib/images/checkwhiteico.png'),
-              ),
-            ), */
-          Text(
-            '${dateFormat(date)}',
-            textScaleFactor: 1.0,
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: Color(0xff606566),
-              fontSize: 14.0,
-              fontWeight: FontWeight.w400,
-              fontStyle: FontStyle.normal,
-              letterSpacing: -0.4099999964237213,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   Widget _buildTaggedGridView() {
     return NotificationListener<ScrollNotification>(
@@ -114,116 +51,12 @@ class TaggedTab extends GetWidget<TaggedController> {
       },
       child: Obx(
         () {
-          if (controller.toggleIndexTagged.value == 1) {
-            var monthKeys = controller.allTaggedPicDateWiseMap.entries.toList();
-            return StaggeredGridView.countBuilder(
-                key: Key('Month'),
-                controller: _scrollController,
-                padding: EdgeInsets.only(top: 2),
-                primary: false,
-                shrinkWrap: false,
-                crossAxisCount: 5,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-                itemCount: controller.allTaggedPicDateWiseMap.length,
-                staggeredTileBuilder: (int index) {
-                  if (index == 0 || monthKeys[index].key is DateTime) {
-                    return StaggeredTile.extent(5, 40);
-                  }
-                  return StaggeredTile.count(1, 1);
-                },
-                itemBuilder: (_, int index) {
-                  if (index == 0 || monthKeys[index].key is DateTime) {
-                    var isSelected = false;
-                    if (controller.multiPicBar.value) {
-                      isSelected = monthKeys[index].value.every((picId) =>
-                          controller.selectedMultiBarPics[picId] == true);
-                    }
-                    return GestureDetector(
-                        onTap: () {
-                          if (controller.multiPicBar.value) {
-                            monthKeys[index].value.forEach((picId) {
-                              if (isSelected) {
-                                controller.selectedMultiBarPics.remove(picId);
-                              } else {
-                                controller.selectedMultiBarPics[picId] = true;
-                              }
-                            });
-                          }
-                        },
-                        child: buildDateHeader(
-                          monthKeys[index].key,
-                          isSelected,
-                        ));
-                  }
-                  return Obx(() {
-                    var blurHash =
-                        BlurHashController.to.blurHash[monthKeys[index].key];
-
-                    return VisibilityDetector(
-                      key: Key('${monthKeys[index].key}'),
-                      onVisibilityChanged: (visibilityInfo) {
-                        var visiblePercentage =
-                            visibilityInfo.visibleFraction * 100;
-                        if (visiblePercentage > 10 &&
-                            (_scrollController.position.activity?.velocity ??
-                                    15) <
-                                30) {
-                          for (var i = index - 40; i < index + 40; i++) {
-                            if (i > -1 &&
-                                i < monthKeys.length &&
-                                monthKeys[i].key is! DateTime) {
-                              controller.putCache(monthKeys[i].key);
-                            }
-                          }
-                        }
-                      },
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: blurHash != null
-                                    ? BlurHash(
-                                        hash: blurHash,
-                                        color: Colors.transparent,
-                                      )
-                                    : Container(
-                                        padding: const EdgeInsets.all(12),
-                                        color: Colors.grey[300],
-                                      ),
-                              ),
-                            ),
-                          ),
-                          if (TabsController
-                                      .to
-                                      .picStoreMap[monthKeys[index].key]
-                                      ?.value !=
-                                  null &&
-                              controller.getCache(monthKeys[index].key) != null)
-                            Positioned.fill(
-                                child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Container(
-                                  child: _buildItemOneMoreTrial(
-                                      TabsController
-                                          .to
-                                          .picStoreMap[monthKeys[index].key]!
-                                          .value,
-                                      monthKeys[index].key),
-                                ),
-                              ),
-                            )),
-                        ],
-                      ),
-                    );
-                  });
-                });
+          /// Show the date tab
+          if (controller.toggleIndexTagged.value == 0) {
+            return TaggedTabDate();
           }
+
+          /// Show the tags tab
           final taggedKeys = controller.taggedPicId.keys.toList();
 
           if (TagsController.to.selectedFilteringTagsKeys.isNotEmpty) {
@@ -317,150 +150,6 @@ class TaggedTab extends GetWidget<TaggedController> {
           );
         },
       ),
-    );
-  }
-
-  Widget _buildItemOneMoreTrial(PicStore picStore, String picId) {
-//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-    var hash = BlurHashController.to.blurHash[picId];
-
-    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
-
-    return ExtendedImage(
-      filterQuality: FilterQuality.low,
-      gaplessPlayback: true,
-      clearMemoryCacheWhenDispose: true,
-      handleLoadingProgress: true,
-      image: imageProvider,
-      fit: BoxFit.cover,
-      loadStateChanged: (ExtendedImageState state) {
-        switch (state.extendedImageLoadState) {
-          case LoadState.loading:
-            if (null == hash) {
-              return Padding(
-                padding: const EdgeInsets.all(2),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: ColoredBox(color: kGreyPlaceholder),
-                ),
-              );
-            } else {
-              return Padding(
-                padding: const EdgeInsets.all(2),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: BlurHash(
-                    hash: hash,
-                    color: Colors.transparent,
-                  ),
-                ),
-              );
-            }
-          case LoadState.completed:
-            return FadeImageBuilder(
-              child: GestureDetector(
-                onLongPress: () {
-                  //print('LongPress');
-                  if (controller.multiPicBar.value == false) {
-                    controller.selectedMultiBarPics[picId] = true;
-                    controller.setMultiPicBar(true);
-                  }
-                },
-                child: CupertinoButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () async {
-                    if (controller.multiPicBar.value) {
-                      if (controller.selectedMultiBarPics[picId] == null) {
-                        controller.selectedMultiBarPics[picId] = true;
-                      } else {
-                        controller.selectedMultiBarPics.remove(picId);
-                      }
-                      return;
-                    }
-                    var result = await Get.to(() => PhotoScreen(
-                        picId: picId,
-                        picIdList:
-                            TabsController.to.allUnTaggedPics.keys.toList()));
-                    if (null == result) {
-                      await refresh_everything();
-                    }
-                  },
-                  child: Obx(() {
-                    Widget image = Positioned.fill(
-                      child: state.completedWidget,
-                    );
-                    if (controller.multiPicBar.value) {
-                      if (controller.selectedMultiBarPics[picId] != null) {
-                        return Stack(
-                          children: [
-                            image,
-                            Container(
-                              constraints: BoxConstraints.expand(),
-                              decoration: BoxDecoration(
-                                color: kSecondaryColor.withOpacity(0.3),
-                                border: Border.all(
-                                  color: kSecondaryColor,
-                                  width: 2.0,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              left: 8.0,
-                              top: 6.0,
-                              child: Container(
-                                height: 20,
-                                width: 20,
-                                decoration: BoxDecoration(
-                                  gradient: kSecondaryGradient,
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child:
-                                    Image.asset('lib/images/checkwhiteico.png'),
-                              ),
-                            ),
-                          ],
-                        );
-                      }
-                      return Stack(
-                        children: [
-                          image,
-                          Positioned(
-                            left: 8.0,
-                            top: 6.0,
-                            child: Container(
-                              height: 20,
-                              width: 20,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                border: Border.all(
-                                  color: Colors.transparent,
-                                  width: 2.0,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }
-                    return Stack(
-                      children: [
-                        image,
-                      ],
-                    );
-                  }),
-                ),
-              ),
-            );
-          case LoadState.failed:
-            return Center(
-              child: Text(
-                'Failed loading',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 18.0),
-              ),
-            );
-        }
-      },
     );
   }
 
@@ -602,174 +291,230 @@ class TaggedTab extends GetWidget<TaggedController> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    return Container(
-      padding: const EdgeInsets.only(bottom: 0.0),
-//                    constraints: BoxConstraints.expand(),
-//                    color: kWhiteColor,
-      child: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            Obx(() {
-              if (!TabsController.to.deviceHasPics) {
-                return DeviceHasNoPics(message: S.current.device_has_no_pics);
-              } else if (controller.allTaggedPicIdList.isEmpty &&
-                  TabsController.to.deviceHasPics) {
-                return TopBar(
-                  appStore: UserController.to,
-                  tagsController: TagsController.to,
-                  showSecretSwitch:
-                      PrivatePhotosController.to.showPrivate.value,
-                  children: <Widget>[
-                    Expanded(
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            SizedBox(
-                              height: height / 2,
-                              child:
-                                  Image.asset('lib/images/notaggedphotos.png'),
-                            ),
-                            SizedBox(
-                              height: 21.0,
-                            ),
-                            Text(
-                              S.current.no_tagged_photos,
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: Color(0xff979a9b),
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
+    return WillPopScope(
+      onWillPop: () async {
+        if (TagsController.to.isSearching.value) {
+          TagsController.to.isSearching.value = false;
+          return false;
+        }
+        return true;
+      },
+      child: Container(
+        padding: const EdgeInsets.only(bottom: 0.0),
+        //                    constraints: BoxConstraints.expand(),
+        //                    color: kWhiteColor,
+        child: SafeArea(
+          child: Stack(
+            children: <Widget>[
+              Obx(() {
+                if (!TabsController.to.deviceHasPics) {
+                  return DeviceHasNoPics(message: S.current.device_has_no_pics);
+                } else if (controller.allTaggedPicIdList.isEmpty &&
+                    TabsController.to.deviceHasPics) {
+                  return TopBar(
+                    showSecretSwitch:
+                        PrivatePhotosController.to.showPrivate.value,
+                    children: <Widget>[
+                      Expanded(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              SizedBox(
+                                height: height / 2,
+                                child: Image.asset(
+                                    'lib/images/notaggedphotos.png'),
                               ),
-                            ),
-                            SizedBox(
-                              height: 17.0,
-                            ),
-                            CupertinoButton(
-                              padding: const EdgeInsets.all(0),
-                              onPressed: () =>
-                                  TabsController.to.setCurrentTab(1),
-                              child: Container(
-                                width: 201.0,
-                                height: 44.0,
-                                decoration: BoxDecoration(
-                                  gradient: kPrimaryGradient,
-                                  borderRadius: BorderRadius.circular(8),
+                              SizedBox(
+                                height: 21.0,
+                              ),
+                              Text(
+                                S.current.no_tagged_photos,
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff979a9b),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    S.current.start_tagging,
-                                    textScaleFactor: 1.0,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: kWhiteColor,
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w700,
-                                      fontStyle: FontStyle.normal,
-                                      letterSpacing: -0.4099999964237213,
+                              ),
+                              SizedBox(
+                                height: 17.0,
+                              ),
+                              CupertinoButton(
+                                padding: const EdgeInsets.all(0),
+                                onPressed: () =>
+                                    TabsController.to.setCurrentTab(1),
+                                child: Container(
+                                  width: 201.0,
+                                  height: 44.0,
+                                  decoration: BoxDecoration(
+                                    gradient: kPrimaryGradient,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      S.current.start_tagging,
+                                      textScaleFactor: 1.0,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: kWhiteColor,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w700,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                );
-              } else if (controller.allTaggedPicIdList.isNotEmpty &&
-                  TabsController.to.deviceHasPics) {
-                return TopBar(
-                  appStore: UserController.to,
-                  tagsController: TagsController.to,
-                  showSecretSwitch:
-                      PrivatePhotosController.to.showPrivate.value,
-                  searchEditingController: searchEditingController,
-                  searchFocusNode: searchFocusNode,
-                  children: <Widget>[
-                    /// results bar for the searching
-                    Obx(() {
-                      if (TagsController.to.isSearching.value) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            if (TagsController
-                                .to.selectedFilteringTagsKeys.isNotEmpty)
+                    ],
+                  );
+                } else if (controller.allTaggedPicIdList.isNotEmpty &&
+                    TabsController.to.deviceHasPics) {
+                  return TopBar(
+                    showSecretSwitch:
+                        PrivatePhotosController.to.showPrivate.value,
+                    searchEditingController: searchEditingController,
+                    searchFocusNode: searchFocusNode,
+                    children: <Widget>[
+                      /// results bar for the searching
+                      Obx(() {
+                        if (TagsController.to.isSearching.value) {
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              if (TagsController
+                                  .to.selectedFilteringTagsKeys.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 16.0, right: 16.0, bottom: 8.0),
+                                  child: TagsList(
+                                    tagsKeyList: TagsController
+                                        .to.selectedFilteringTagsKeys
+                                        .toList(),
+                                    tagStyle: TagStyle.MultiColored,
+                                    onTap: (String tagKey) {
+                                      TagsController.to
+                                          .removeTagKeyFromFiltering(tagKey);
+                                    },
+                                    onPanEnd: (String tagKey) {
+                                      TagsController.to
+                                          .removeTagKeyFromFiltering(tagKey);
+                                    },
+                                    onDoubleTap: (String tagKey) {
+                                      //print('do nothing');
+                                    },
+                                    // showEditTagModal: showEditTagModal,
+                                  ),
+                                ),
+                              //                            if (GalleryStore.to.showSearchTagsResults) ...[
                               Padding(
-                                padding: const EdgeInsets.only(
-                                    left: 16.0, right: 16.0, bottom: 8.0),
-                                child: TagsList(
-                                  tagsKeyList: TagsController
-                                      .to.selectedFilteringTagsKeys
-                                      .toList(),
-                                  tagStyle: TagStyle.MultiColored,
-                                  onTap: (String tagKey) {
-                                    TagsController.to
-                                        .removeTagKeyFromFiltering(tagKey);
-                                  },
-                                  onPanEnd: (String tagKey) {
-                                    TagsController.to
-                                        .removeTagKeyFromFiltering(tagKey);
-                                  },
-                                  onDoubleTap: (String tagKey) {
-                                    //print('do nothing');
-                                  },
-                                  // showEditTagModal: showEditTagModal,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0),
+                                child: Text(
+                                  TagsController.to.searchText.value != ''
+                                      /* GalleryStore.to.showSearchTagsResults.value */
+                                      ? S.current.search_results
+                                      : S.current.recent_tags,
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff979a9b),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w300,
+                                    fontStyle: FontStyle.normal,
+                                    letterSpacing: -0.4099999964237213,
+                                  ),
                                 ),
                               ),
-//                            if (GalleryStore.to.showSearchTagsResults) ...[
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text(
-                                TagsController.to.searchText.value != ''
-                                    /* GalleryStore.to.showSearchTagsResults.value */
-                                    ? S.current.search_results
-                                    : S.current.recent_tags,
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff979a9b),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                            ),
-                            Obx(
-                              () {
-                                if (TagsController
-                                    .to.searchTagsResults.isNotEmpty) {
-                                  //print('############ ${GalleryStore.to.tagsSuggestions}');
-                                  return Padding(
+                              Obx(
+                                () {
+                                  if (TagsController
+                                      .to.searchTagsResults.isNotEmpty) {
+                                    //print('############ ${GalleryStore.to.tagsSuggestions}');
+                                    return Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 16.0,
+                                          right: 16,
+                                          top: 8.0,
+                                          bottom: 16.0),
+                                      child: TagsList(
+                                        tagsKeyList: TagsController
+                                            .to.searchTagsResults
+                                            .map((e) => e.key)
+                                            .toList(),
+                                        tagStyle: TagStyle.GrayOutlined,
+                                        /* showEditTagModal: showEditTagModal, */
+                                        onTap: (tagKey) {
+                                          /* if (controller.toggleIndexTagged.value == 0) {
+                                            TabsController.to
+                                                .setToggleIndexTagged(1);
+                                          } */
+
+                                          TagsController.to
+                                              .selectTagKeyForFiltering(tagKey);
+                                          /* searchEditingController.clear(); */
+                                          /* GalleryStore.to.searchResultsTags(
+                                              searchEditingController.text); */
+                                        },
+                                        onDoubleTap: (String tagKey) {
+                                          //print('do nothing');
+                                        },
+                                        onPanEnd: (String tagKey) {
+                                          //print('do nothing');
+                                        },
+                                      ),
+                                    );
+                                  } else {
+                                    return Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 10.0, left: 26.0, bottom: 10.0),
+                                      child: Text(
+                                        S.current.no_tags_found,
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff979a9b),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          fontStyle: FontStyle.normal,
+                                          letterSpacing: -0.4099999964237213,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                  /* return Padding(
                                     padding: const EdgeInsets.only(
                                         left: 16.0,
                                         right: 16,
                                         top: 8.0,
                                         bottom: 16.0),
                                     child: TagsList(
-                                      tagsKeyList: TagsController
-                                          .to.searchTagsResults
+                                      tagsKeyList: GalleryStore
+                                          .to.searchTagsResults.value
                                           .map((e) => e.key)
                                           .toList(),
                                       tagStyle: TagStyle.GrayOutlined,
                                       /* showEditTagModal: showEditTagModal, */
-                                      onTap: (tagKey) {
-                                        /* if (controller.toggleIndexTagged.value == 0) {
+                                      onTap: (String tagKey) {
+                                        if (controller.toggleIndexTagged == 0) {
                                           TabsController.to
                                               .setToggleIndexTagged(1);
-                                        } */
-
-                                        TagsController.to
-                                            .selectTagKeyForFiltering(tagKey);
-                                        /* searchEditingController.clear(); */
-                                        /* GalleryStore.to.searchResultsTags(
-                                            searchEditingController.text); */
+                                        }
+    
+                                        GalleryStore.to
+                                            .addTagToSearchFilter(tagKey);
+                                        searchEditingController.clear();
+                                        GalleryStore.to.searchResultsTags(
+                                            searchEditingController.text);
                                       },
                                       onDoubleTap: (String tagKey) {
                                         //print('do nothing');
@@ -778,155 +523,97 @@ class TaggedTab extends GetWidget<TaggedController> {
                                         //print('do nothing');
                                       },
                                     ),
-                                  );
-                                } else {
-                                  return Container(
-                                    padding: const EdgeInsets.only(
-                                        top: 10.0, left: 26.0, bottom: 10.0),
-                                    child: Text(
-                                      S.current.no_tags_found,
-                                      textScaleFactor: 1.0,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff979a9b),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
-                                      ),
-                                    ),
-                                  );
-                                }
-                                /* return Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 16.0,
-                                      right: 16,
-                                      top: 8.0,
-                                      bottom: 16.0),
-                                  child: TagsList(
-                                    tagsKeyList: GalleryStore
-                                        .to.searchTagsResults.value
-                                        .map((e) => e.key)
-                                        .toList(),
-                                    tagStyle: TagStyle.GrayOutlined,
-                                    /* showEditTagModal: showEditTagModal, */
-                                    onTap: (String tagKey) {
-                                      if (controller.toggleIndexTagged == 0) {
-                                        TabsController.to
-                                            .setToggleIndexTagged(1);
-                                      }
+                                  ); */
+                                },
+                              ),
 
-                                      GalleryStore.to
-                                          .addTagToSearchFilter(tagKey);
-                                      searchEditingController.clear();
-                                      GalleryStore.to.searchResultsTags(
-                                          searchEditingController.text);
-                                    },
-                                    onDoubleTap: (String tagKey) {
-                                      //print('do nothing');
-                                    },
-                                    onPanEnd: (String tagKey) {
-                                      //print('do nothing');
-                                    },
-                                  ),
-                                ); */
-                              },
-                            ),
-
-//                            ],
-                            Container(
-                              height: 1,
-                              color: kLightGrayColor,
-                            ),
-                          ],
-                        );
-                      }
-                      return Container();
-                    }),
-                    Expanded(
-                      child: _buildTaggedGridView(),
-                    ),
-                  ],
-                );
-              }
-              return Container();
-            }),
-            /* Obx(() {
-              if (GalleryStore.to.taggedPics.length > 0 &&
-                  !controller.hideTitleThirdTab.value &&
-                  !GalleryStore.to.isSearching.value &&
-                  GalleryStore.to.deviceHasPics.value) {
-                return Positioned(
-                  left: 19.0,
-                  top: 64.0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        controller.multiPicBar.value
-                            ? S.current.photo_gallery_count(
-                                GalleryStore.to.selectedPics.length)
-                            : S.current.organized_photos_title,
-                        textScaleFactor: 1.0,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff979a9b),
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                          fontStyle: FontStyle.normal,
-                        ),
+                              //                            ],
+                              Container(
+                                height: 1,
+                                color: kLightGrayColor,
+                              ),
+                            ],
+                          );
+                        }
+                        return Container();
+                      }),
+                      Expanded(
+                        child: _buildTaggedGridView(),
                       ),
                     ],
-                  ),
-                );
-              }
-              return Container();
-            }),*/
-            Obx(() {
-              return AnimatedOpacity(
-                opacity: controller.isScrolling.value
-                    ? 0.0
-                    : (searchFocusNode.hasFocus ||
-                            TaggedController.to.allTaggedPicIdList.isEmpty)
-                        ? 0.0
-                        : 1.0,
-                curve: Curves.linear,
-                duration:
-                    Duration(milliseconds: searchFocusNode.hasFocus ? 0 : 300),
-                onEnd: () {
-                  TabsController.to.setIsToggleBarVisible(
-                      controller.isScrolling.value ? false : true);
-                },
-                child: Visibility(
-                  visible: controller.isScrolling.value
-                      ? TabsController.to.isToggleBarVisible.value
-                      : true,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 10.0),
-                      child: ToggleBar(
-                        titleLeft: S.current.toggle_date,
-                        titleRight: S.current.toggle_tags,
-                        activeToggle: controller.toggleIndexTagged.value,
-                        onToggle: (index) {
-                          /* if (GalleryStore.to.isSearching.value && index == 0) {
-                            GalleryStore.to.clearSearchTags();
-                            GalleryStore.to.setShouldRefreshTaggedGallery(true);
-                            GalleryStore.to.refreshItems();
-                            //print('##### Rebuild everything!');
-
-                          } */
-                          TabsController.to.setToggleIndexTagged(index);
-                        },
+                  );
+                }
+                return Container();
+              }),
+              /* Obx(() {
+                if (GalleryStore.to.taggedPics.length > 0 &&
+                    !controller.hideTitleThirdTab.value &&
+                    !GalleryStore.to.isSearching.value &&
+                    GalleryStore.to.deviceHasPics.value) {
+                  return Positioned(
+                    left: 19.0,
+                    top: 64.0,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          controller.multiPicBar.value
+                              ? S.current.photo_gallery_count(
+                                  GalleryStore.to.selectedPics.length)
+                              : S.current.organized_photos_title,
+                          textScaleFactor: 1.0,
+                          style: TextStyle(
+                            fontFamily: 'Lato',
+                            color: Color(0xff979a9b),
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                            fontStyle: FontStyle.normal,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+                return Container();
+              }),*/
+              Obx(() {
+                return AnimatedOpacity(
+                  opacity: controller.isScrolling.value
+                      ? 0.0
+                      : (searchFocusNode.hasFocus ||
+                              TaggedController.to.allTaggedPicIdList.isEmpty)
+                          ? 0.0
+                          : 1.0,
+                  curve: Curves.linear,
+                  duration: Duration(
+                      milliseconds: searchFocusNode.hasFocus ? 0 : 300),
+                  onEnd: () {
+                    TabsController.to.setIsToggleBarVisible(
+                        controller.isScrolling.value ? false : true);
+                  },
+                  child: Visibility(
+                    visible: controller.isScrolling.value
+                        ? TabsController.to.isToggleBarVisible.value
+                        : true,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: ToggleBar(
+                          titleLeft: S.current.toggle_date,
+                          titleRight: S.current.toggle_tags,
+                          activeToggle: controller.toggleIndexTagged.value,
+                          onToggle: (index) {
+                            controller.toggleIndexTagged.value = index;
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
-              );
-            }),
-          ],
+                );
+              }),
+            ],
+          ),
         ),
       ),
     );

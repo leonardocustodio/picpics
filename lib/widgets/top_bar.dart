@@ -6,21 +6,16 @@ import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/secret_switch.dart';
 
 class TopBar extends StatelessWidget {
-  final UserController appStore;
   /* final GalleryStore galleryStore; */
-  final TagsController tagsController;
   final FocusNode? searchFocusNode;
   final TextEditingController? searchEditingController;
   final List<Widget> children;
   final bool showSecretSwitch;
 
   TopBar({
-    required this.appStore,
-    required this.tagsController,
     required this.showSecretSwitch,
     this.searchEditingController,
     this.searchFocusNode,
@@ -43,54 +38,63 @@ class TopBar extends StatelessWidget {
                     child: Focus(
                       onFocusChange: (focus) {
                         //print('hasFocus: ${searchFocusNode.hasFocus}');
-                        if (focus) {
-                          tagsController.setIsSearching(true);
-                          tagsController.tagsSuggestionsCalculate(null);
+                        /* if (TagsController.to.isSearching.value == false) {
+                          TagsController.to.setIsSearching(true);
+                          TagsController.to.tagsSuggestionsCalculate(null);
                         } else {
-                          tagsController.selectedFilteringTagsKeys.clear();
-                          tagsController.setIsSearching(false);
-                        }
+                          TagsController.to.selectedFilteringTagsKeys.clear();
+                          TagsController.to.setIsSearching(false);
+                          searchFocusNode?.unfocus();
+                        } */
                       },
-                      child: TextField(
-                        controller: searchEditingController,
-                        focusNode: searchFocusNode,
-                        onChanged: (text) {
-                          //print('searching: $text');
-                          tagsController.searchText.value = text;
+                      child: GestureDetector(
+                        onTap: () {
+                          if (TagsController.to.isSearching.value == false) {
+                            TagsController.to.setIsSearching(true);
+                            TagsController.to.tagsSuggestionsCalculate(null);
+                          }
                         },
-                        onSubmitted: (text) {
-                          //print('return');
-                          searchEditingController?.clear();
-                          tagsController.searchTagsResults.clear();
-//                          DatabaseManager.instance.searchResults = null;
-                        },
-                        keyboardType: TextInputType.text,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontFamily: 'Lato',
-                          color: Color(0xff606566),
-                          fontSize: 16,
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          letterSpacing: -0.4099999964237213,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: const EdgeInsets.only(right: 2.0),
-                          enabledBorder:
-                              OutlineInputBorder(borderSide: BorderSide.none),
-                          focusedBorder:
-                              OutlineInputBorder(borderSide: BorderSide.none),
-                          border:
-                              OutlineInputBorder(borderSide: BorderSide.none),
-                          prefixIcon: Image.asset('lib/images/searchico.png'),
-                          hintText: S.of(context).search,
-                          hintStyle: TextStyle(
+                        child: TextField(
+                          controller: searchEditingController,
+                          focusNode: searchFocusNode,
+                          onChanged: (text) {
+                            //print('searching: $text');
+                            TagsController.to.searchText.value = text;
+                          },
+                          onSubmitted: (text) {
+                            //print('return');
+                            searchEditingController?.clear();
+                            TagsController.to.searchTagsResults.clear();
+                            //                          DatabaseManager.instance.searchResults = null;
+                          },
+                          keyboardType: TextInputType.text,
+                          maxLines: 1,
+                          style: TextStyle(
                             fontFamily: 'Lato',
-                            color: kGrayColor,
+                            color: Color(0xff606566),
                             fontSize: 16,
                             fontWeight: FontWeight.w400,
                             fontStyle: FontStyle.normal,
                             letterSpacing: -0.4099999964237213,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding: const EdgeInsets.only(right: 2.0),
+                            enabledBorder:
+                                OutlineInputBorder(borderSide: BorderSide.none),
+                            focusedBorder:
+                                OutlineInputBorder(borderSide: BorderSide.none),
+                            border:
+                                OutlineInputBorder(borderSide: BorderSide.none),
+                            prefixIcon: Image.asset('lib/images/searchico.png'),
+                            hintText: S.of(context).search,
+                            hintStyle: TextStyle(
+                              fontFamily: 'Lato',
+                              color: kGrayColor,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              fontStyle: FontStyle.normal,
+                              letterSpacing: -0.4099999964237213,
+                            ),
                           ),
                         ),
                       ),
