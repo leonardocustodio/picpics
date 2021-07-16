@@ -27,6 +27,7 @@ class TaggedTabDate extends GetWidget<TaggedController> {
       var monthKeys = controller.allTaggedPicDateWiseMap.entries.toList();
 
       return StaggeredGridView.countBuilder(
+          addAutomaticKeepAlives: true,
           key: Key('Date Tagging'),
           controller: _scrollController,
           padding: EdgeInsets.only(top: 2),

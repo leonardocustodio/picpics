@@ -529,9 +529,7 @@ class TagsController extends GetxController {
     await Future.wait(
       [
         Future.forEach(selectedPicIds, (String picId) async {
-          for (var tagKey in multiTags) {
-            await addTagToPic(picId: picId, tagKey: tagKey);
-          }
+          await addTagToPic(picId: picId, multiTags: multiTags);
         }),
       ],
     ).then((_) {
@@ -573,44 +571,44 @@ class TagsController extends GetxController {
   }
 
   Future<void> addTagToPic(
-      {required String picId, required String tagKey}) async {
-    var picStore = TabsController.to.picStoreMap[picId]?.value;
-    if (picStore == null) {
-      var fetchedPicStore = TabsController.to.explorPicStore(picId);
-      if (fetchedPicStore.value != null) {
-        TabsController.to.picStoreMap[picId] =
-            Rx<PicStore>(fetchedPicStore.value!);
-      }
-      picStore = fetchedPicStore.value;
-    }
+      {required String picId, required List<String> multiTags}) async {
+    var fetchedPicStore = TabsController.to.explorPicStore(picId, silent: true);
+    var picStore = fetchedPicStore.value;
 
     /// TODO: check this is working or not, when swipe implementation is done !!
     //SwiperTabController.to.swiperPicIdList.remove(picStore);
 
-    if (picStore == null || picStore.tags[tagKey] != null) {
+    if (picStore == null ||
+        multiTags.every((element) => picStore.tags.keys.contains(element))) {
       // //print('this tag is already in this picture');
       return;
     }
-    if (tagKey == kSecretTagKey) {
+    if (multiTags.contains(kSecretTagKey)) {
       // //print('Should add secret tag in the end!!!');
       if (PrivatePhotosController.to.privateMap[picId] == null
           /* || TabsController.to.secretPicIds[picId] == false && !privatePics.contains(picStore) */) {
-        await picStore.setIsPrivate(true);
+        //await picStore.setIsPrivate(true);
 
-        await Crypto.encryptImage(picStore, UserController.to.encryptionKey!);
+        //await Crypto.encryptImage(picStore, UserController.to.encryptionKey!);
         // //print('this pic now is private');
         /* TabsController.to.secretPicIds[picId] = true; */
         //privatePics.add(picStore);
       }
       return;
     }
-    final getTag = await _database.getLabelByLabelKey(tagKey);
-    if (getTag != null) {
-      getTag.photoId.add(picStore.photoId.value);
-      await _database.updateLabel(getTag);
-      await picStore.addTagToPic(
-          tagKey: tagKey, photoId: picStore.photoId.value);
-    }
+    final acceptedTagKeys = <String>[];
+    multiTags.forEach((tagKey) async {
+      final getTag = await _database.getLabelByLabelKey(tagKey);
+
+      if (getTag != null) {
+        getTag.photoId.add(picStore.photoId.value);
+        await _database.updateLabel(getTag);
+        acceptedTagKeys.add(tagKey);
+      }
+    });
+
+    await picStore.addTagToPicMultipleTagFunction(
+        acceptedTagKeys: acceptedTagKeys, photoId: picStore.photoId.value);
   }
 
   void clearMultiPicTags() {

@@ -59,11 +59,10 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
           }
 
           return StaggeredGridView.countBuilder(
+              addAutomaticKeepAlives: true,
               key: Key('Month'),
               //controller: scrollControllerFirstTab,
-              physics: const CustomScrollPhysics(),
               padding: EdgeInsets.only(top: 2),
-              addAutomaticKeepAlives: true,
               crossAxisCount: 5,
               mainAxisSpacing: 0,
               crossAxisSpacing: 0,

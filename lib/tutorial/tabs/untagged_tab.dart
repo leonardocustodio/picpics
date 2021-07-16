@@ -516,7 +516,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                 return Column(
                   children: [
                     buildDateHeader(dateTime),
-                    StaggeredGridView.countBuilder(
+                    StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
                       key: Key(dateTime.toString()),
                       //controller: scrollControllerFirstTab,
                       physics: const NeverScrollableScrollPhysics(),
@@ -544,7 +544,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   ],
                 );
               });
-          /* StaggeredGridView.countBuilder(
+          /* StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
             key: Key('month'),
             controller: scrollControllerFirstTab,
             physics: const CustomScrollPhysics(),
@@ -569,7 +569,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
           ); */
         }
 
-        return StaggeredGridView.countBuilder(
+        return StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
           key: Key('day'),
           //controller: scrollControllerFirstTab,
           physics: const CustomScrollPhysics(),

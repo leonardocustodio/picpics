@@ -449,7 +449,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         var tagKey = await TagsController.to.createTag(text);
                         await TagsController.to.addTagToPic(
                             picId: picStore.photoId.value.toString(),
-                            tagKey: tagKey);
+                            multiTags: [tagKey]);
 
                         Vibrate.feedback(FeedbackType.success);
                         tagsEditingController.clear();
@@ -540,7 +540,7 @@ class _PhotoCardState extends State<PhotoCard> {
 
                           await TagsController.to.addTagToPic(
                               picId: picStore.photoId.value.toString(),
-                              tagKey: tagKey);
+                              multiTags: [tagKey]);
                           await TagsController.to
                               .tagsSuggestionsCalculate(null)
                               .then((value) async {

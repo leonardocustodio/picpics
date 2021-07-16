@@ -165,7 +165,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
       child: Observer(
         builder: (_) {
           if (tabsStore.toggleIndexTagged == 0) {
-            return StaggeredGridView.countBuilder(
+            return StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
               key: Key('date'),
               controller: scrollControllerThirdTab,
               physics: const CustomScrollPhysics(),
@@ -190,7 +190,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
             );
           }
 
-          return StaggeredGridView.countBuilder(
+          return StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
             key: Key('tag'),
             controller: scrollControllerThirdTab,
             // padding: EdgeInsets.only(top: 86.0),

@@ -553,6 +553,87 @@ class PicStore extends GetxController {
   }
 
   //@action
+  Future<void> addTagToPicMultipleTagFunction(
+      {required List<String> acceptedTagKeys, required String photoId}) async {
+    //var picsBox = Hive.box('pics');
+    var getPic = await database.getPhotoByPhotoId(photoId);
+
+    if (getPic != null) {
+      //print('this picture is in db going to update');
+
+      //Pic getPic = picsBox.get(photoId);
+
+      /// See if all the multi tags are already present in the Tags of picture or not
+      if (acceptedTagKeys.every((element) => getPic.tags.contains(element))) {
+        //print('this tag is already in this picture');
+        return;
+      }
+
+      getPic.tags.addAll(acceptedTagKeys.toList());
+      //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+      //picsBox.put(photoId, getPic);
+      await database.updatePhoto(getPic);
+      //print('updated picture');
+/* 
+      var tagModel = TagsController.to.allTags[tagKey];
+      if (tagModel == null) {
+        /* await TagsController.to.loadAllTags(); */
+        throw Exception('Heya');
+      } */
+
+      var tagNames = <String>[];
+      acceptedTagKeys.forEach((tagKey) {
+        final tagModel = TagsController.to.allTags[tagKey];
+        if (tagModel != null) {
+          tagNames.add(tagModel.value.title);
+        }
+      });
+      await Analytics.sendEvent(
+        Event.added_tag,
+        params: {'tagName': tagNames.toString()},
+      );
+      return;
+    }
+
+    //print('this picture is not in db, adding it...');
+    //print('Photo Id: $photoId');
+
+    var pic = Photo(
+      id: photoId,
+      createdAt: createdAt,
+      originalLatitude: originalLatitude,
+      originalLongitude: originalLongitude,
+      latitude: null,
+      longitude: null,
+      specificLocation: null,
+      generalLocation: null,
+      tags: acceptedTagKeys,
+      isStarred: false,
+      deletedFromCameraRoll: false,
+      isPrivate: acceptedTagKeys.contains(kSecretTagKey),
+    );
+
+    //await picsBox.put(photoId, pic);
+    await database.createPhoto(pic);
+    //print('@@@@@@@@ tagsKey: ${tagKey}');
+
+    // Increase today tagged pics everytime it adds a new pic to database.
+    //await UserController.to.increaseTodayTaggedPics();
+
+    var tagNames = <String>[];
+    acceptedTagKeys.forEach((tagKey) {
+      final tagModel = TagsController.to.allTags[tagKey];
+      if (tagModel != null) {
+        tagNames.add(tagModel.value.title);
+      }
+    });
+    await Analytics.sendEvent(
+      Event.added_tag,
+      params: {'tagName': tagNames.toString()},
+    );
+  }
+
+  //@action
   Future<void> addTagToPic(
       {required String tagKey, required String photoId}) async {
     //var picsBox = Hive.box('pics');

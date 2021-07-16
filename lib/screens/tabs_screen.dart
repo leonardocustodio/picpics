@@ -93,7 +93,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                       ),
                                       Spacer(),
                                       CupertinoButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           // if (!UserController.to.isPremium) {
                                           //   Get.to(() =>   PremiumScreen());
                                           //   return;
@@ -108,8 +108,10 @@ class TabsScreen extends GetWidget<TabsController> {
 
                                           controller.setMultiTagSheet(false);
                                           controller.setMultiPicBar(false);
-                                          TagsController.to
+                                          controller.isLoading.value = true;
+                                          await TagsController.to
                                               .addTagsToSelectedPics();
+                                          controller.isLoading.value = false;
                                         },
                                         child: Container(
                                           width: 80.0,
@@ -675,10 +677,14 @@ class TabsScreen extends GetWidget<TabsController> {
             Obx(() => controller.isLoading.value
                 ? Material(
                     color: Colors.black.withOpacity(0.7),
-                    child: Center(
-                      child: SpinKitChasingDots(
-                        color: kPrimaryColor,
-                        size: 80.0,
+                    child: Container(
+                      width: Get.width,
+                      height: Get.height,
+                      child: Center(
+                        child: SpinKitChasingDots(
+                          color: kPrimaryColor,
+                          size: 80.0,
+                        ),
                       ),
                     ),
                   )

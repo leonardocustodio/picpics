@@ -122,7 +122,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
           }
           var height = Get.width / 3 - 12;
 
-          return StaggeredGridView.countBuilder(
+          return StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
             key: Key('tag'),
             controller: controller.scrollControllerThirdTab,
             // padding: EdgeInsets.only(top: 86.0),

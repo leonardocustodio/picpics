@@ -322,7 +322,7 @@ class TabsController extends GetxController {
   }
 
   /// Here only those picId will come who are untagged.
-  Rx<PicStore?> explorPicStore(String picId) {
+  Rx<PicStore?> explorPicStore(String picId, {bool silent = false}) {
     var picStoreValue = picStoreMap[picId];
 
     if (null == picStoreMap[picId]) {
@@ -342,16 +342,17 @@ class TabsController extends GetxController {
         photoPath: '',
         thumbPath: '',
       ));
-      WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        var map = RxMap<String, Rx<TagModel>>();
-        TaggedController
-            .to.picWiseTags[picStoreValue!.value.photoId.value]?.keys
-            .toList()
-            .forEach((tagKey) {
-          map[tagKey] = TagsController.to.allTags[tagKey]!;
-        });
-        picStoreValue.value.tags = map;
-        picStoreMap[picId] = picStoreValue;
+      if (silent == false) {
+        WidgetsBinding.instance?.addPostFrameCallback((_) async {
+          var map = RxMap<String, Rx<TagModel>>();
+          TaggedController
+              .to.picWiseTags[picStoreValue!.value.photoId.value]?.keys
+              .toList()
+              .forEach((tagKey) {
+            map[tagKey] = TagsController.to.allTags[tagKey]!;
+          });
+          picStoreValue.value.tags = map;
+          picStoreMap[picId] = picStoreValue;
 /* 
         if (BlurHashController.to.blurHash[picId] == null) {
           await picStoreValue.value.assetThumbBytes.then((imageBytes) {
@@ -360,7 +361,8 @@ class TabsController extends GetxController {
             }
           });
         } */
-      });
+        });
+      }
     }
     return picStoreValue!;
   }
