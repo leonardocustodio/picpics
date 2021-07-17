@@ -47,7 +47,7 @@ import 'private_photos_controller.dart';
 class TabsController extends GetxController {
   static TabsController get to => Get.find();
   final currentTab = 0.obs;
-  final toggleIndexUntagged = 0.obs;
+  final toggleIndexUntagged = 1.obs;
   final toggleIndexTagged = 1.obs;
   final topOffsetFirstTab = 64.0.obs;
   final tutorialIndex = 0.obs;
@@ -176,6 +176,7 @@ class TabsController extends GetxController {
     });
   }
 
+/* 
   final lruCache = <String, String>{}.obs;
   final maxLruSpace = 80;
 
@@ -207,7 +208,7 @@ class TabsController extends GetxController {
       }
     });
   }
-
+ */
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
     if (assetsPath.isEmpty) {
       status.value = Status.DeviceHasNoPics;
@@ -256,7 +257,7 @@ class TabsController extends GetxController {
 
     /// clear the map as this function will be used to refresh from the tagging done via expandable or the swiper tags
 
-    assetEntityList.forEach((entity) {
+    await Future.forEach(assetEntityList, (AssetEntity entity) async {
       assetMap[entity.id] = entity;
       if (TaggedController.to.allTaggedPicIdList[entity.id] != null) {
         print('${entity.id}');
@@ -300,6 +301,13 @@ class TabsController extends GetxController {
         allUnTaggedPicsDay[entity.id] = '';
         allUnTaggedPics[entity.id] = '';
         picStoreMap[entity.id] = Rx<PicStore>(explorPicStore(entity.id).value!);
+
+        if (BlurHashController.to.masterHash[entity.id] == null) {
+          final data = await picStoreMap[entity.id]!.value.assetThumbBytes;
+          if (data != null) {
+            await BlurHashController.to.createBlurHash(entity.id, data);
+          }
+        }
         previousMonthPicIdList.add(entity.id);
         previousDayPicIdList.add(entity.id);
       }

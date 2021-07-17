@@ -44,14 +44,14 @@ class BlurHashController extends GetxController {
     print('blur hash: creating');
     _blurHashesQueue[photoId] = imageBytes;
 
-    _timer = Timer(Duration(milliseconds: 1000), () {
+    _timer = Timer(Duration(seconds: 1), () async {
       if (_blurHashesQueue.isNotEmpty) {
         print('blur hash: inserting');
         var picMaps = Map<String, Uint8List>.from(_blurHashesQueue);
         _blurHashesQueue.clear();
         var picBlurHashList = <PicBlurHash>[];
 
-        Future.forEach(picMaps.entries,
+        await Future.forEach(picMaps.entries,
             (MapEntry<String, Uint8List> object) async {
           if (null == masterHash[object.key]) {
             var hash = await _calculateBlurHash(object.key, object.value);
@@ -63,7 +63,6 @@ class BlurHashController extends GetxController {
           }
         }).then((_) async {
           await _appDatabase.insertAllPicBlurHash(picBlurHashList);
-          //await loadBlurHash();
 
           ///
           /// I thinks it's making the application laggy

@@ -95,177 +95,145 @@ class UntaggedTab extends GetWidget<TabsController> {
                         ));
                   }
                   return Obx(() {
+                    /* 
                     var blurHash =
-                        BlurHashController.to.blurHash[monthKeys[index].key];
+                        BlurHashController.to.blurHash[monthKeys[index].key]; */
 
-                    return VisibilityDetector(
-                      key: Key('${monthKeys[index].key}'),
-                      onVisibilityChanged: (visibilityInfo) {
-                        var visiblePercentage =
-                            visibilityInfo.visibleFraction * 100;
-                        if (visiblePercentage > 10 &&
-                            (_scrollController.position.activity?.velocity ??
-                                    15) <
-                                30) {
-                          for (var i = index - 40; i < index + 40; i++) {
-                            if (i > -1 &&
-                                i < monthKeys.length &&
-                                monthKeys[i].key is! DateTime) {
-                              controller.putCache(monthKeys[i].key);
-                            }
-                          }
-                        }
-                      },
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: blurHash != null
-                                    ? BlurHash(
-                                        hash: blurHash,
-                                        color: Colors.transparent,
-                                      )
-                                    : Container(
-                                        padding: const EdgeInsets.all(12),
-                                        color: Colors.grey[300],
-                                      ),
+                    return Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child:
+                                  /*  blurHash != null
+                                  ? BlurHash(
+                                      hash: blurHash,
+                                      color: Colors.transparent,
+                                    )
+                                  : */
+                                  Container(
+                                padding: const EdgeInsets.all(12),
+                                color: Colors.grey[300],
                               ),
                             ),
                           ),
-                          if (controller.picStoreMap[monthKeys[index].key]
-                                      ?.value !=
-                                  null &&
-                              controller.getCache(monthKeys[index].key) != null)
-                            Positioned.fill(
-                                child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Container(
-                                  child: _buildItemOneMoreTrial(
-                                      controller
-                                          .picStoreMap[monthKeys[index].key]!
-                                          .value,
-                                      monthKeys[index].key),
-                                ),
+                        ),
+                        if (controller
+                                .picStoreMap[monthKeys[index].key]?.value !=
+                            null)
+                          Positioned.fill(
+                              child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child: Container(
+                                child: _buildItemOneMoreTrial(
+                                    controller
+                                        .picStoreMap[monthKeys[index].key]!
+                                        .value,
+                                    monthKeys[index].key),
                               ),
-                            )),
-                        ],
-                      ),
+                            ),
+                          )),
+                      ],
                     );
                   });
                 });
           } else {
             var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
             return StaggeredGridView.countBuilder(
-                addAutomaticKeepAlives: true,
-                key: Key('Day'),
-                //controller: scrollControllerFirstTab,
-                controller: _scrollController,
-                padding: EdgeInsets.only(top: 2),
-                itemCount: controller.allUnTaggedPicsDay.length,
-                addRepaintBoundaries: true,
-                crossAxisCount: 5,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-                staggeredTileBuilder: (int index) {
-                  if (index == 0 || dayKeys[index].key is DateTime) {
-                    return StaggeredTile.extent(5, 40);
+              addAutomaticKeepAlives: true,
+              key: Key('Day'),
+              //controller: scrollControllerFirstTab,
+              controller: _scrollController,
+              padding: EdgeInsets.only(top: 2),
+              itemCount: controller.allUnTaggedPicsDay.length,
+              addRepaintBoundaries: true,
+              crossAxisCount: 3,
+              mainAxisSpacing: 0,
+              crossAxisSpacing: 0,
+              staggeredTileBuilder: (int index) {
+                if (index == 0 || dayKeys[index].key is DateTime) {
+                  return StaggeredTile.extent(3, 40);
+                }
+                return StaggeredTile.count(1, 1);
+              },
+              itemBuilder: (_, int index) {
+                if (index == 0 || dayKeys[index].key is DateTime) {
+                  var isSelected = false;
+                  if (controller.multiPicBar.value) {
+                    isSelected = dayKeys[index].value.every((picId) =>
+                        controller.selectedMultiBarPics[picId] == true);
                   }
-                  return StaggeredTile.count(1, 1);
-                },
-                itemBuilder: (_, int index) {
-                  if (index == 0 || dayKeys[index].key is DateTime) {
-                    var isSelected = false;
-                    if (controller.multiPicBar.value) {
-                      isSelected = dayKeys[index].value.every((picId) =>
-                          controller.selectedMultiBarPics[picId] == true);
-                    }
-                    return GestureDetector(
-                        onTap: () {
-                          if (controller.multiPicBar.value) {
-                            dayKeys[index].value.forEach((picId) {
-                              if (isSelected) {
-                                controller.selectedMultiBarPics.remove(picId);
-                              } else {
-                                controller.selectedMultiBarPics[picId] = true;
-                              }
-                            });
-                          }
-                        },
-                        child: buildDateHeader(
-                          dayKeys[index].key,
-                          isSelected,
-                        ));
-                  }
-                  return Obx(() {
-                    var blurHash =
-                        BlurHashController.to.blurHash[dayKeys[index].key];
-
-                    return VisibilityDetector(
-                      key: Key('${dayKeys[index].key}'),
-                      onVisibilityChanged: (visibilityInfo) {
-                        var visiblePercentage =
-                            visibilityInfo.visibleFraction * 100;
-                        if (visiblePercentage > 10 &&
-                            (_scrollController.position.activity?.velocity ??
-                                    15) <
-                                30) {
-                          for (var i = index - 40; i < index + 40; i++) {
-                            if (i > -1 &&
-                                i < dayKeys.length &&
-                                dayKeys[i].key is! DateTime) {
-                              controller.putCache(dayKeys[i].key);
+                  return GestureDetector(
+                      onTap: () {
+                        if (controller.multiPicBar.value) {
+                          dayKeys[index].value.forEach((picId) {
+                            if (isSelected) {
+                              controller.selectedMultiBarPics.remove(picId);
+                            } else {
+                              controller.selectedMultiBarPics[picId] = true;
                             }
-                          }
+                          });
                         }
                       },
-                      child: Stack(
-                        children: [
+                      child: buildDateHeader(
+                        dayKeys[index].key,
+                        isSelected,
+                      ));
+                }
+                return Obx(
+                  () {
+                    /* 
+                    var blurHash =
+                        BlurHashController.to.blurHash[dayKeys[index].key]; */
+
+                    return Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6),
+                              child:
+                                  /*  blurHash != null
+                                  ? BlurHash(
+                                      hash: blurHash,
+                                      color: Colors.transparent,
+                                    )
+                                  :  */
+                                  Container(
+                                padding: const EdgeInsets.all(12),
+                                color: Colors.grey[300],
+                              ),
+                            ),
+                          ),
+                        ),
+                        if (controller.picStoreMap[dayKeys[index].key]?.value !=
+                            null)
                           Positioned.fill(
                             child: Padding(
                               padding: const EdgeInsets.all(2),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
-                                child: blurHash != null
-                                    ? BlurHash(
-                                        hash: blurHash,
-                                        color: Colors.transparent,
-                                      )
-                                    : Container(
-                                        padding: const EdgeInsets.all(12),
-                                        color: Colors.grey[300],
-                                      ),
-                              ),
-                            ),
-                          ),
-                          if (controller
-                                      .picStoreMap[dayKeys[index].key]?.value !=
-                                  null &&
-                              controller.getCache(dayKeys[index].key) != null)
-                            Positioned.fill(
-                              child: Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: Container(
-                                    child: _buildItemOneMoreTrial(
-                                        controller
-                                            .picStoreMap[dayKeys[index].key]!
-                                            .value,
-                                        dayKeys[index].key),
-                                  ),
+                                child: Container(
+                                  child: _buildItemOneMoreTrial(
+                                      controller
+                                          .picStoreMap[dayKeys[index].key]!
+                                          .value,
+                                      dayKeys[index].key),
                                 ),
                               ),
                             ),
-                        ],
-                      ),
+                          ),
+                      ],
                     );
-                  });
-                });
+                  },
+                );
+              },
+            );
           }
         },
       ),
@@ -356,15 +324,12 @@ class UntaggedTab extends GetWidget<TabsController> {
 
     return ExtendedImage(
       filterQuality: FilterQuality.low,
-      gaplessPlayback: true,
-      clearMemoryCacheWhenDispose: true,
-      handleLoadingProgress: true,
       image: imageProvider,
       fit: BoxFit.cover,
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
-            if (null == hash) {
+            if (hash == null) {
               return Padding(
                 padding: const EdgeInsets.all(2),
                 child: ClipRRect(
@@ -386,6 +351,7 @@ class UntaggedTab extends GetWidget<TabsController> {
             }
           case LoadState.completed:
             return FadeImageBuilder(
+              milliseconds: 100,
               child: GestureDetector(
                 onLongPress: () {
                   //print('LongPress');
