@@ -95,9 +95,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                         ));
                   }
                   return Obx(() {
-                    /* 
                     var blurHash =
-                        BlurHashController.to.blurHash[monthKeys[index].key]; */
+                        BlurHashController.to.blurHash[monthKeys[index].key];
 
                     return Stack(
                       children: [
@@ -106,17 +105,15 @@ class UntaggedTab extends GetWidget<TabsController> {
                             padding: const EdgeInsets.all(2),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(6),
-                              child:
-                                  /*  blurHash != null
+                              child: blurHash != null
                                   ? BlurHash(
                                       hash: blurHash,
                                       color: Colors.transparent,
                                     )
-                                  : */
-                                  Container(
-                                padding: const EdgeInsets.all(12),
-                                color: Colors.grey[300],
-                              ),
+                                  : Container(
+                                      padding: const EdgeInsets.all(12),
+                                      color: Colors.grey[300],
+                                    ),
                             ),
                           ),
                         ),
@@ -186,9 +183,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                 }
                 return Obx(
                   () {
-                    /* 
                     var blurHash =
-                        BlurHashController.to.blurHash[dayKeys[index].key]; */
+                        BlurHashController.to.blurHash[dayKeys[index].key];
 
                     return Stack(
                       children: [
@@ -197,17 +193,15 @@ class UntaggedTab extends GetWidget<TabsController> {
                             padding: const EdgeInsets.all(2),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(6),
-                              child:
-                                  /*  blurHash != null
+                              child: blurHash != null
                                   ? BlurHash(
                                       hash: blurHash,
                                       color: Colors.transparent,
                                     )
-                                  :  */
-                                  Container(
-                                padding: const EdgeInsets.all(12),
-                                color: Colors.grey[300],
-                              ),
+                                  : Container(
+                                      padding: const EdgeInsets.all(12),
+                                      color: Colors.grey[300],
+                                    ),
                             ),
                           ),
                         ),
@@ -351,7 +345,7 @@ class UntaggedTab extends GetWidget<TabsController> {
             }
           case LoadState.completed:
             return FadeImageBuilder(
-              milliseconds: 100,
+              milliseconds: 200,
               child: GestureDetector(
                 onLongPress: () {
                   //print('LongPress');

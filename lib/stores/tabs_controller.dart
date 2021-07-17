@@ -301,13 +301,6 @@ class TabsController extends GetxController {
         allUnTaggedPicsDay[entity.id] = '';
         allUnTaggedPics[entity.id] = '';
         picStoreMap[entity.id] = Rx<PicStore>(explorPicStore(entity.id).value!);
-
-        if (BlurHashController.to.masterHash[entity.id] == null) {
-          final data = await picStoreMap[entity.id]!.value.assetThumbBytes;
-          if (data != null) {
-            await BlurHashController.to.createBlurHash(entity.id, data);
-          }
-        }
         previousMonthPicIdList.add(entity.id);
         previousDayPicIdList.add(entity.id);
       }

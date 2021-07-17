@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:picPics/constants.dart';
+import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 
 @immutable
@@ -80,6 +81,13 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
           ? await key.picStore.assetThumbBytes
           : await key.picStore.entity.value
               ?.thumbDataWithSize(thumbSize[0], thumbSize[1]);
+
+      if (BlurHashController.to.masterHash[picStore.photoId.value] == null) {
+        if (data != null) {
+          await BlurHashController.to
+              .createBlurHash(picStore.photoId.value, data);
+        }
+      }
     }
 
     // if (picStore.isPrivate == true) {
