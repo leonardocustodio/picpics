@@ -15,7 +15,6 @@ import 'package:picPics/stores/tabs_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/utils/refresh_everything.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 class TaggedTabDate extends GetWidget<TaggedController> {
   TaggedTabDate({Key? key}) : super(key: key);
@@ -72,58 +71,41 @@ class TaggedTabDate extends GetWidget<TaggedController> {
               var blurHash =
                   BlurHashController.to.blurHash[monthKeys[index].key];
 
-              return VisibilityDetector(
-                key: Key('${monthKeys[index].key}'),
-                onVisibilityChanged: (visibilityInfo) {
-                  var visiblePercentage = visibilityInfo.visibleFraction * 100;
-                  if (visiblePercentage > 10 &&
-                      (_scrollController.position.activity?.velocity ?? 15) <
-                          30) {
-                    for (var i = index - 40; i < index + 40; i++) {
-                      if (i > -1 &&
-                          i < monthKeys.length &&
-                          monthKeys[i].key is! DateTime) {
-                        controller.putCache(monthKeys[i].key);
-                      }
-                    }
-                  }
-                },
-                child: Stack(
-                  children: [
-                    Positioned.fill(
-                      child: Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: blurHash != null
-                              ? BlurHash(
-                                  hash: blurHash,
-                                  color: Colors.transparent,
-                                )
-                              : Container(
-                                  padding: const EdgeInsets.all(12),
-                                  color: Colors.grey[300],
-                                ),
-                        ),
+              return Stack(
+                children: [
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: blurHash != null
+                            ? BlurHash(
+                                hash: blurHash,
+                                color: Colors.transparent,
+                              )
+                            : Container(
+                                padding: const EdgeInsets.all(12),
+                                color: Colors.grey[300],
+                              ),
                       ),
                     ),
-                    if (TabsController
-                                .to.picStoreMap[monthKeys[index].key]?.value !=
-                            null &&
-                        controller.getCache(monthKeys[index].key) != null)
-                      Positioned.fill(
-                          child: Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            child: _buildTaggedDateImageWidget(TabsController
-                                .to.picStoreMap[monthKeys[index].key]!.value),
-                          ),
+                  ),
+                  if (TabsController
+                              .to.picStoreMap[monthKeys[index].key]?.value !=
+                          null &&
+                      controller.getCache(monthKeys[index].key) != null)
+                    Positioned.fill(
+                        child: Padding(
+                      padding: const EdgeInsets.all(2),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(6),
+                        child: Container(
+                          child: _buildTaggedDateImageWidget(TabsController
+                              .to.picStoreMap[monthKeys[index].key]!.value),
                         ),
-                      )),
-                  ],
-                ),
+                      ),
+                    )),
+                ],
               );
             });
           });

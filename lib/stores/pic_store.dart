@@ -554,7 +554,8 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> addTagToPicMultipleTagFunction(
-      {required List<String> acceptedTagKeys, required String photoId}) async {
+      {required Map<String, String> acceptedTagKeys,
+      required String photoId}) async {
     //var picsBox = Hive.box('pics');
     var getPic = await database.getPhotoByPhotoId(photoId);
 
@@ -564,12 +565,15 @@ class PicStore extends GetxController {
       //Pic getPic = picsBox.get(photoId);
 
       /// See if all the multi tags are already present in the Tags of picture or not
-      if (acceptedTagKeys.every((element) => getPic.tags.contains(element))) {
+      getPic.tags.forEach((tagKey) {
+        acceptedTagKeys.remove(tagKey);
+      });
+      if (acceptedTagKeys.isEmpty) {
         //print('this tag is already in this picture');
         return;
       }
 
-      getPic.tags.addAll(acceptedTagKeys.toList());
+      getPic.tags.addAll(acceptedTagKeys.keys.toList());
       //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
       //picsBox.put(photoId, getPic);
       await database.updatePhoto(getPic);
@@ -582,7 +586,7 @@ class PicStore extends GetxController {
       } */
 
       var tagNames = <String>[];
-      acceptedTagKeys.forEach((tagKey) {
+      acceptedTagKeys.forEach((tagKey, _) {
         final tagModel = TagsController.to.allTags[tagKey];
         if (tagModel != null) {
           tagNames.add(tagModel.value.title);
@@ -607,10 +611,10 @@ class PicStore extends GetxController {
       longitude: null,
       specificLocation: null,
       generalLocation: null,
-      tags: acceptedTagKeys,
+      tags: acceptedTagKeys.keys.toList(),
       isStarred: false,
       deletedFromCameraRoll: false,
-      isPrivate: acceptedTagKeys.contains(kSecretTagKey),
+      isPrivate: acceptedTagKeys.keys.contains(kSecretTagKey),
     );
 
     //await picsBox.put(photoId, pic);
@@ -621,7 +625,7 @@ class PicStore extends GetxController {
     //await UserController.to.increaseTodayTaggedPics();
 
     var tagNames = <String>[];
-    acceptedTagKeys.forEach((tagKey) {
+    acceptedTagKeys.forEach((tagKey, _) {
       final tagModel = TagsController.to.allTags[tagKey];
       if (tagModel != null) {
         tagNames.add(tagModel.value.title);

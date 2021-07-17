@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:expandable/expandable.dart';
@@ -10,7 +9,6 @@ import 'package:moor/moor.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
-import 'package:picPics/lru_cache.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
@@ -343,27 +341,6 @@ class TabsController extends GetxController {
         photoPath: '',
         thumbPath: '',
       ));
-      if (silent == false) {
-        WidgetsBinding.instance?.addPostFrameCallback((_) async {
-          var map = RxMap<String, Rx<TagModel>>();
-          TaggedController
-              .to.picWiseTags[picStoreValue!.value.photoId.value]?.keys
-              .toList()
-              .forEach((tagKey) {
-            map[tagKey] = TagsController.to.allTags[tagKey]!;
-          });
-          picStoreValue.value.tags = map;
-          picStoreMap[picId] = picStoreValue;
-/* 
-        if (BlurHashController.to.blurHash[picId] == null) {
-          await picStoreValue.value.assetThumbBytes.then((imageBytes) {
-            if (null != imageBytes) {
-              BlurHashController.to.createBlurHash(picId, imageBytes);
-            }
-          });
-        } */
-        });
-      }
     }
     return picStoreValue!;
   }

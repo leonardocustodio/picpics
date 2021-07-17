@@ -595,9 +595,9 @@ class TabsScreen extends GetWidget<TabsController> {
                           ),
                         );
                       } else if (controller.currentTab.value == 0 &&
-                          userController.hasGalleryPermission.value)
+                          userController.hasGalleryPermission.value) {
                         return UntaggedTab();
-                      else if (controller.currentTab.value == 1 &&
+                      } else if (controller.currentTab.value == 1 &&
                           userController.hasGalleryPermission.value) {
                         return PicTab();
                       } else if (controller.currentTab.value == 2 &&

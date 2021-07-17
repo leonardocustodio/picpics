@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
@@ -18,7 +17,6 @@ import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 
 import '../../asset_entity_image_provider.dart';
 

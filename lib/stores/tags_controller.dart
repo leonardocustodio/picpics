@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -524,12 +522,11 @@ class TagsController extends GetxController {
           TaggedController.to.selectedMultiBarPics.keys.toList());
     }
 
-    var multiTags = multiPicTags.keys.toList();
-
     await Future.wait(
       [
         Future.forEach(selectedPicIds, (String picId) async {
-          await addTagToPic(picId: picId, multiTags: multiTags);
+          await addTagToPic(
+              picId: picId, selectedTags: multiPicTags.keys.toList());
         }),
       ],
     ).then((_) {
@@ -571,19 +568,29 @@ class TagsController extends GetxController {
   }
 
   Future<void> addTagToPic(
-      {required String picId, required List<String> multiTags}) async {
+      {required String picId, required List<String> selectedTags}) async {
     var fetchedPicStore = TabsController.to.explorPicStore(picId, silent: true);
     var picStore = fetchedPicStore.value;
 
     /// TODO: check this is working or not, when swipe implementation is done !!
     //SwiperTabController.to.swiperPicIdList.remove(picStore);
 
-    if (picStore == null ||
-        multiTags.every((element) => picStore.tags.keys.contains(element))) {
+    final multiTags = <String, String>{
+      for (var tagKey in selectedTags) tagKey: '',
+    };
+
+    if (picStore != null) {
       // //print('this tag is already in this picture');
+      picStore.tags.keys.forEach((tagKey) {
+        multiTags.remove(multiTags);
+      });
+      if (multiTags.isEmpty) {
+        return;
+      }
+    } else {
       return;
     }
-    if (multiTags.contains(kSecretTagKey)) {
+    if (multiTags[kSecretTagKey] != null) {
       // //print('Should add secret tag in the end!!!');
       if (PrivatePhotosController.to.privateMap[picId] == null
           /* || TabsController.to.secretPicIds[picId] == false && !privatePics.contains(picStore) */) {
@@ -596,14 +603,14 @@ class TagsController extends GetxController {
       }
       return;
     }
-    final acceptedTagKeys = <String>[];
-    multiTags.forEach((tagKey) async {
+    final acceptedTagKeys = <String, String>{};
+    multiTags.forEach((tagKey, v) async {
       final getTag = await _database.getLabelByLabelKey(tagKey);
 
-      if (getTag != null) {
+      if (getTag != null && !getTag.photoId.contains(picStore.photoId.value)) {
         getTag.photoId.add(picStore.photoId.value);
         await _database.updateLabel(getTag);
-        acceptedTagKeys.add(tagKey);
+        acceptedTagKeys[tagKey] = '';
       }
     });
 

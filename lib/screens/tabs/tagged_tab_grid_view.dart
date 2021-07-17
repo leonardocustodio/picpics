@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
@@ -24,7 +23,6 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/tags_list.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import '../../asset_entity_image_provider.dart';
 
 // ignore: must_be_immutable
@@ -93,56 +91,29 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                         TabsController.to.picStoreMap[picId]!.value, picId);
                   }
 
-                  return VisibilityDetector(
-                      key: Key('$picId}'),
-                      onVisibilityChanged: (visibilityInfo) {
-                        var visiblePercentage =
-                            visibilityInfo.visibleFraction * 100;
-                        if (visiblePercentage > 10 &&
-                            TabsController.to.picStoreMap[picId] == null) {
-                          var picStore =
-                              TabsController.to.explorPicStore(picId).value;
-                          if (picStore != null) {
-                            TabsController.to.picStoreMap[picId] =
-                                Rx<PicStore>(picStore);
-                          }
-                          /* debugPrint(
-                            'Widget ${visibilityInfo.key} is ${visiblePercentage}% visible'); */
-                        }
-                        /* else {
-                          if (controller.picAssetThumbBytesMap[
-                                  monthKeys[index].key] !=
-                              null) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              controller.picAssetThumbBytesMap[
-                                  monthKeys[index].key] = null;
-                            });
-                          }
-                        } */
-                      },
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Padding(
-                              padding: const EdgeInsets.all(2),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: loaderWidget,
-                              ),
-                            ),
+                  return Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(6),
+                            child: loaderWidget,
                           ),
-                          if (originalImage != null)
-                            Positioned.fill(
-                              child: Padding(
-                                padding: const EdgeInsets.all(2),
-                                child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(6),
-                                    child: originalImage),
-                              ),
-                            ),
-                        ],
-                      )
-                      /*  child: TabsController.to.picStoreMap[picId] == null
+                        ),
+                      ),
+                      if (originalImage != null)
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2),
+                            child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: originalImage),
+                          ),
+                        ),
+                    ],
+
+                    /*  child: TabsController.to.picStoreMap[picId] == null
                         ? greyWidget
                         : Padding(
                             padding: const EdgeInsets.all(2),
@@ -153,7 +124,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                               ),
                             ),
                           ), */
-                      );
+                  );
                 });
               });
         },

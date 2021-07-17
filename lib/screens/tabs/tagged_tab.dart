@@ -21,7 +21,6 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:visibility_detector/visibility_detector.dart';
 import 'tagged_tab_grid_view.dart';
 
 // ignore_for_file: must_be_immutable, unused_field
@@ -88,59 +87,40 @@ class TaggedTab extends GetWidget<TaggedController> {
               return Container(
                 margin: const EdgeInsets.all(4),
                 child: GetX<TabsController>(builder: (tabsController) {
-                  return VisibilityDetector(
-                    key: Key('$tagKey'),
-                    onVisibilityChanged: (visibilityInfo) {
-                      var visiblePercentage =
-                          visibilityInfo.visibleFraction * 100;
-                      if (showingPicId != null &&
-                          visiblePercentage > 10 &&
-                          tabsController.picStoreMap[showingPicId]?.value ==
-                              null) {
-                        var picStore =
-                            tabsController.explorPicStore(showingPicId).value;
-
-                        if (picStore != null) {
-                          TabsController.to.picStoreMap[showingPicId] =
-                              Rx<PicStore>(picStore);
-                        }
-                      }
-                    },
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Padding(
-                            padding: const EdgeInsets.only(bottom: 25),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: null != blurHash
-                                  ? BlurHash(
-                                      hash: blurHash,
-                                      color: Colors.transparent,
-                                    )
-                                  : Padding(
-                                      padding: const EdgeInsets.all(2),
-                                      child: Container(
-                                        padding: const EdgeInsets.all(10),
-                                        color: Colors.grey[300],
-                                      ),
+                  return Stack(
+                    children: [
+                      Positioned.fill(
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 25),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: null != blurHash
+                                ? BlurHash(
+                                    hash: blurHash,
+                                    color: Colors.transparent,
+                                  )
+                                : Padding(
+                                    padding: const EdgeInsets.all(2),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(10),
+                                      color: Colors.grey[300],
                                     ),
-                            ),
+                                  ),
                           ),
                         ),
-                        if (originalImage == null &&
-                            showingPicId != null &&
-                            tabsController.picStoreMap[showingPicId]?.value !=
-                                null)
-                          Positioned.fill(
-                            child: _buildPicItem(
-                              tabsController.picStoreMap[showingPicId]!.value,
-                              showingPicId,
-                              tagKey,
-                            ),
+                      ),
+                      if (originalImage == null &&
+                          showingPicId != null &&
+                          tabsController.picStoreMap[showingPicId]?.value !=
+                              null)
+                        Positioned.fill(
+                          child: _buildPicItem(
+                            tabsController.picStoreMap[showingPicId]!.value,
+                            showingPicId,
+                            tagKey,
                           ),
-                      ],
-                    ),
+                        ),
+                    ],
                   );
                 }),
               );
