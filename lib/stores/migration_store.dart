@@ -19,11 +19,11 @@ class MigrationStore extends GetxController {
     var secretBox = Hive.box('secrets');
     var keyBox = Hive.box('userkey');
 
-    List<Tag> tags = [];
-    List<Pic> pics = [];
-    List<Secret> secrets = [];
+    final tags = <Tag>[];
+    final pics = <Pic>[];
+    final secrets = <Secret>[];
 
-    AppDatabase database = AppDatabase();
+    final database = AppDatabase();
 
     for (Tag tag in tagsBox.values) {
       tags.add(tag);

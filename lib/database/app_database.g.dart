@@ -789,7 +789,7 @@ class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
   PicBlurHashsCompanion.insert({
     required String photoId,
     required String blurHash,
-  })  : photoId = Value(photoId),
+  })   : photoId = Value(photoId),
         blurHash = Value(blurHash);
   static Insertable<PicBlurHash> custom({
     Expression<String>? photoId,
@@ -1732,7 +1732,7 @@ class LabelEntriesCompanion extends UpdateCompanion<LabelEntry> {
     this.id = const Value.absent(),
     required String photo,
     required String label,
-  })  : photo = Value(photo),
+  })   : photo = Value(photo),
         label = Value(label);
   static Insertable<LabelEntry> custom({
     Expression<int>? id,
