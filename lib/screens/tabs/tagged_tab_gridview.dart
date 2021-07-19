@@ -201,7 +201,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
     );
   }
 
-  Widget _buildItemOneMoreTrial(PicStore picStore, String picId) {
+  Widget _buildImageWidget(PicStore picStore, String picId) {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
     final AssetEntityImageProvider imageProvider =

@@ -124,7 +124,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(6),
                               child: Container(
-                                child: _buildItemOneMoreTrial(
+                                child: _buildImageWidget(
                                     controller
                                         .picStoreMap[monthKeys[index].key]!
                                         .value,
@@ -211,7 +211,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
                                 child: Container(
-                                  child: _buildItemOneMoreTrial(
+                                  child: _buildImageWidget(
                                       controller
                                           .picStoreMap[dayKeys[index].key]!
                                           .value,
@@ -308,14 +308,14 @@ class UntaggedTab extends GetWidget<TabsController> {
     );
   }
 
-  Widget _buildItemOneMoreTrial(PicStore picStore, String picId) {
+  Widget _buildImageWidget(PicStore picStore, String picId) {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     var hash = BlurHashController.to.blurHash[picId];
 
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     return ExtendedImage(
-      filterQuality: FilterQuality.low,
+      filterQuality: FilterQuality.medium,
       image: imageProvider,
       fit: BoxFit.cover,
       loadStateChanged: (ExtendedImageState state) {

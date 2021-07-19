@@ -44,34 +44,7 @@ class BlurHashController extends GetxController {
     print('blur hash: creating');
     _blurHashesQueue[photoId] = imageBytes;
 
-    _timer = Timer(Duration(seconds: 1), () async {
-      if (_blurHashesQueue.isNotEmpty) {
-        print('blur hash: inserting');
-        var picMaps = Map<String, Uint8List>.from(_blurHashesQueue);
-        _blurHashesQueue.clear();
-        var picBlurHashList = <PicBlurHash>[];
-
-        await Future.forEach(picMaps.entries,
-            (MapEntry<String, Uint8List> object) async {
-          if (null == masterHash[object.key]) {
-            var hash = await _calculateBlurHash(object.key, object.value);
-            if (null != hash) {
-              masterHash[object.key] = hash;
-              picBlurHashList
-                  .add(PicBlurHash(photoId: object.key, blurHash: hash));
-            }
-          }
-        }).then((_) async {
-          await _appDatabase.insertAllPicBlurHash(picBlurHashList);
-
-          ///
-          /// I thinks it's making the application laggy
-          ///
-          //blurHash.value = Map<String, String>.from(masterHash);
-        });
-      }
-      _timer = null;
-    });
+    _timer = Timer(Duration(seconds: 3), _insertBlurHashToDatabase);
   }
 
   Future<String?> _calculateBlurHash(
@@ -83,5 +56,34 @@ class BlurHashController extends GetxController {
       }
     }
     return null;
+  }
+
+  Future<void> _insertBlurHashToDatabase() async {
+    if (_blurHashesQueue.isNotEmpty) {
+      print('blur hash: inserting');
+      var picMaps = Map<String, Uint8List>.from(_blurHashesQueue);
+      _blurHashesQueue.clear();
+      var picBlurHashList = <PicBlurHash>[];
+
+      await Future.forEach(picMaps.entries,
+          (MapEntry<String, Uint8List> object) async {
+        if (null == masterHash[object.key]) {
+          var hash = await _calculateBlurHash(object.key, object.value);
+          if (null != hash) {
+            masterHash[object.key] = hash;
+            picBlurHashList
+                .add(PicBlurHash(photoId: object.key, blurHash: hash));
+          }
+        }
+      }).then((_) async {
+        await _appDatabase.insertAllPicBlurHash(picBlurHashList);
+
+        ///
+        /// I thinks it's making the application laggy
+        ///
+        //blurHash.value = Map<String, String>.from(masterHash);
+      });
+    }
+    _timer = null;
   }
 }

@@ -553,11 +553,11 @@ class PicStore extends GetxController {
   }
 
   //@action
-  Future<void> addTagToPicMultipleTagFunction(
-      {required Map<String, String> acceptedTagKeys,
-      required String photoId}) async {
+  Future<void> addTagToPicMultiple(
+      {required Map<String, String> acceptedTagKeys}) async {
     //var picsBox = Hive.box('pics');
-    var getPic = await database.getPhotoByPhotoId(photoId);
+
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
       //print('this picture is in db going to update');
@@ -566,7 +566,9 @@ class PicStore extends GetxController {
 
       /// See if all the multi tags are already present in the Tags of picture or not
       getPic.tags.forEach((tagKey) {
-        acceptedTagKeys.remove(tagKey);
+        if (acceptedTagKeys[tagKey] != null) {
+          acceptedTagKeys.remove(tagKey);
+        }
       });
       if (acceptedTagKeys.isEmpty) {
         //print('this tag is already in this picture');
@@ -603,7 +605,7 @@ class PicStore extends GetxController {
     //print('Photo Id: $photoId');
 
     var pic = Photo(
-      id: photoId,
+      id: photoId.value,
       createdAt: createdAt,
       originalLatitude: originalLatitude,
       originalLongitude: originalLongitude,
@@ -626,6 +628,90 @@ class PicStore extends GetxController {
 
     var tagNames = <String>[];
     acceptedTagKeys.forEach((tagKey, _) {
+      final tagModel = TagsController.to.allTags[tagKey];
+      if (tagModel != null) {
+        tagNames.add(tagModel.value.title);
+      }
+    });
+    await Analytics.sendEvent(
+      Event.added_tag,
+      params: {'tagName': tagNames.toString()},
+    );
+  }
+
+  Future<void> addTagToPicSingle(
+      {required List<String> acceptedTagKeys}) async {
+    //var picsBox = Hive.box('pics');
+
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
+
+    if (getPic != null) {
+      //print('this picture is in db going to update');
+
+      //Pic getPic = picsBox.get(photoId);
+
+      /// See if all the multi tags are already present in the Tags of picture or not
+      getPic.tags.forEach((tagKey) {
+        acceptedTagKeys.remove(tagKey);
+      });
+      if (acceptedTagKeys.isEmpty) {
+        //print('this tag is already in this picture');
+        return;
+      }
+
+      getPic.tags.addAll(acceptedTagKeys.toList());
+      //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+      //picsBox.put(photoId, getPic);
+      await database.updatePhoto(getPic);
+      //print('updated picture');
+/* 
+      var tagModel = TagsController.to.allTags[tagKey];
+      if (tagModel == null) {
+        /* await TagsController.to.loadAllTags(); */
+        throw Exception('Heya');
+      } */
+
+      var tagNames = <String>[];
+      acceptedTagKeys.forEach((tagKey) {
+        final tagModel = TagsController.to.allTags[tagKey];
+        if (tagModel != null) {
+          tagNames.add(tagModel.value.title);
+        }
+      });
+      await Analytics.sendEvent(
+        Event.added_tag,
+        params: {'tagName': tagNames.toString()},
+      );
+      return;
+    }
+
+    //print('this picture is not in db, adding it...');
+    //print('Photo Id: $photoId');
+
+    var pic = Photo(
+      id: photoId.value,
+      createdAt: createdAt,
+      originalLatitude: originalLatitude,
+      originalLongitude: originalLongitude,
+      latitude: null,
+      longitude: null,
+      specificLocation: null,
+      generalLocation: null,
+      tags: acceptedTagKeys.toList(),
+      isStarred: false,
+      deletedFromCameraRoll: false,
+      isPrivate: acceptedTagKeys.contains(kSecretTagKey),
+    );
+
+    //await picsBox.put(photoId, pic);
+    await database.createPhoto(pic);
+    //print('@@@@@@@@ tagsKey: ${tagKey}');
+
+    // Increase today tagged pics everytime it adds a new pic to database.
+    //await UserController.to.increaseTodayTaggedPics();
+
+    var tagNames = <String>[];
+    acceptedTagKeys.forEach((tagKey) {
       final tagModel = TagsController.to.allTags[tagKey];
       if (tagModel != null) {
         tagNames.add(tagModel.value.title);

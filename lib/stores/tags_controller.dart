@@ -521,15 +521,11 @@ class TagsController extends GetxController {
       selectedPicIds = List<String>.from(
           TaggedController.to.selectedMultiBarPics.keys.toList());
     }
-
-    await Future.wait(
-      [
-        Future.forEach(selectedPicIds, (String picId) async {
-          await addTagToPic(
-              picId: picId, selectedTags: multiPicTags.keys.toList());
-        }),
-      ],
-    ).then((_) {
+    await addTagToPicMultiple(
+            selectedPicIds,
+            // ignore: invalid_use_of_protected_member
+            multiPicTags.value)
+        .then((_) {
       /// Clear the selectedUntaggedPics as now the processing is done
       if (TabsController.to.currentTab.value == 0) {
         TabsController.to.clearSelectedUntaggedPics();
@@ -567,29 +563,93 @@ class TagsController extends GetxController {
     }
   }
 
-  Future<void> addTagToPic(
-      {required String picId, required List<String> selectedTags}) async {
-    var fetchedPicStore = TabsController.to.explorPicStore(picId, silent: true);
-    var picStore = fetchedPicStore.value;
+  Future<void> _addPhotoIdToLabelMultiple(
+      List<String> picIds, Map<String, String> selectedTags) async {
+    selectedTags.keys.forEach((tagKey) async {
+      final getTag = await _database.getLabelByLabelKey(tagKey);
 
-    /// TODO: check this is working or not, when swipe implementation is done !!
-    //SwiperTabController.to.swiperPicIdList.remove(picStore);
-
-    final multiTags = <String, String>{
-      for (var tagKey in selectedTags) tagKey: '',
-    };
-
-    if (picStore != null) {
-      // //print('this tag is already in this picture');
-      picStore.tags.keys.forEach((tagKey) {
-        multiTags.remove(multiTags);
-      });
-      if (multiTags.isEmpty) {
-        return;
+      if (getTag != null) {
+        picIds.forEach((picId) {
+          if (getTag.photoId.contains(picId) == false) {
+            getTag.photoId.add(picId);
+          }
+        });
+        await _database.updateLabel(getTag);
       }
-    } else {
-      return;
-    }
+    });
+  }
+
+  Future<void> _removePhotoIdFromLabelMultiple(
+      List<String> picIds, Map<String, String> selectedTags) async {
+    selectedTags.forEach((tagKey, _) async {
+      final getTag = await _database.getLabelByLabelKey(tagKey);
+
+      if (getTag != null) {
+        getTag.photoId.removeWhere((picId) => picIds.contains(picId));
+        await _database.updateLabel(getTag);
+      }
+    });
+  }
+
+  /// Will add the photoId from the labels Table
+  Future<void> _addSinglePhotoIdToLabel(
+      String picId, Map<String, String> selectedTags) async {
+    selectedTags.keys.forEach((tagKey) async {
+      final getTag = await _database.getLabelByLabelKey(tagKey);
+
+      if (getTag != null && getTag.photoId.contains(picId) == false) {
+        getTag.photoId.add(picId);
+        await _database.updateLabel(getTag);
+      }
+    });
+  }
+
+  /// Will remove the photoId from the labels Table
+  Future<void> _removeSinglePhotoIdFromLabel(
+      String picId, Map<String, String> selectedTags) async {
+    selectedTags.forEach((tagKey, _) async {
+      final getTag = await _database.getLabelByLabelKey(tagKey);
+
+      if (getTag != null && getTag.photoId.contains(picId)) {
+        getTag.photoId.remove(picId);
+        await _database.updateLabel(getTag);
+      }
+    });
+  }
+
+  Future<void> _addTagToPhotoIdMultiple(
+      List<String> picIds, Map<String, String> selectedTags) async {
+    await Future.forEach(picIds, (picId) {
+      var picStore = TabsController.to.picStoreMap[picId]!.value;
+      picStore.addTagToPicMultiple(acceptedTagKeys: selectedTags);
+    });
+  }
+
+  Future<void> addTagToPicSingle(
+      {required String picId, required List<String> selectedTags}) async {
+    var picStore = TabsController.to.picStoreMap[picId]!.value;
+    await picStore.addTagToPicSingle(acceptedTagKeys: selectedTags);
+  }
+
+  Future<void> addTagToPicMultiple(
+      List<String> picIds, Map<String, String> selectedTags) async {
+    await _addPhotoIdToLabelMultiple(picIds, selectedTags);
+    await _addTagToPhotoIdMultiple(picIds, selectedTags);
+  }
+
+  Future<void> removeTagFromPicMultiple(
+      List<String> picIds, Map<String, String> selectedTags) async {
+    await _removePhotoIdFromLabelMultiple(picIds, selectedTags);
+  }
+/* 
+  /// Map<String, List<String>>
+  /// {
+  ///   'picId1': ['tagKey', 'tagKey'],
+  ///
+  ///   'picId2': ['tagKey', 'tagKey'],
+  /// }
+  Future<void> addTagToPic(
+      {required Map<String, List<String>> picIdMappedTagKey}) async {
     if (multiTags[kSecretTagKey] != null) {
       // //print('Should add secret tag in the end!!!');
       if (PrivatePhotosController.to.privateMap[picId] == null
@@ -604,8 +664,10 @@ class TagsController extends GetxController {
       return;
     }
     final acceptedTagKeys = <String, String>{};
+    print('print:' + multiTags.toString());
     multiTags.forEach((tagKey, v) async {
       final getTag = await _database.getLabelByLabelKey(tagKey);
+      print('print:' + (getTag?.photoId.toString() ?? ''));
 
       if (getTag != null && !getTag.photoId.contains(picStore.photoId.value)) {
         getTag.photoId.add(picStore.photoId.value);
@@ -616,7 +678,7 @@ class TagsController extends GetxController {
 
     await picStore.addTagToPicMultipleTagFunction(
         acceptedTagKeys: acceptedTagKeys, photoId: picStore.photoId.value);
-  }
+  } */
 
   void clearMultiPicTags() {
     multiPicTags.clear();

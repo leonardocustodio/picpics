@@ -447,7 +447,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           tagName: text,
                         ); */
                         var tagKey = await TagsController.to.createTag(text);
-                        await TagsController.to.addTagToPic(
+                        await TagsController.to.addTagToPicSingle(
                             picId: picStore.photoId.value.toString(),
                             selectedTags: [tagKey]);
 
@@ -538,7 +538,7 @@ class _PhotoCardState extends State<PhotoCard> {
                             return;
                           } */
 
-                          await TagsController.to.addTagToPic(
+                          await TagsController.to.addTagToPicSingle(
                               picId: picStore.photoId.value.toString(),
                               selectedTags: [tagKey]);
                           await TagsController.to
