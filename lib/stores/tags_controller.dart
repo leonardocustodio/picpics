@@ -619,9 +619,9 @@ class TagsController extends GetxController {
 
   Future<void> _addTagToPhotoIdMultiple(
       List<String> picIds, Map<String, String> selectedTags) async {
-    await Future.forEach(picIds, (picId) {
+    await Future.forEach(picIds, (picId) async {
       var picStore = TabsController.to.picStoreMap[picId]!.value;
-      picStore.addTagToPicMultiple(acceptedTagKeys: selectedTags);
+      await picStore.addTagToPicMultiple(acceptedTagKeys: selectedTags);
     });
   }
 

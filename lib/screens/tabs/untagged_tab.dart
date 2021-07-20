@@ -367,7 +367,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                         picId: picId,
                         picIdList: controller.allUnTaggedPics.keys.toList()));
                     if (null == result) {
-                      await refresh_everything();
+                      //await refresh_everything();
                     }
                   },
                   child: Obx(() {
