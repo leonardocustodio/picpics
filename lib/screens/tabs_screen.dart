@@ -108,10 +108,15 @@ class TabsScreen extends GetWidget<TabsController> {
 
                                           controller.setMultiTagSheet(false);
                                           controller.setMultiPicBar(false);
-                                          controller.isLoading.value = true;
+                                          controller.isUntaggedPicsLoaded
+                                              .value = false;
+
                                           await TagsController.to
-                                              .addTagsToSelectedPics();
-                                          controller.isLoading.value = false;
+                                              .addTagsToSelectedPics()
+                                              .then((_) {
+                                            controller.isUntaggedPicsLoaded
+                                                .value = true;
+                                          });
                                         },
                                         child: Container(
                                           width: 80.0,
@@ -481,6 +486,21 @@ class TabsScreen extends GetWidget<TabsController> {
                 child: Stack(
                   children: <Widget>[
                     GetX<UserController>(builder: (userController) {
+                      /* if (true || controller.isLoading.value) {
+                        return Material(
+                          color: Colors.black.withOpacity(0.7),
+                          child: Container(
+                            width: Get.width,
+                            height: Get.height,
+                            child: Center(
+                              child: SpinKitChasingDots(
+                                color: kPrimaryColor,
+                                size: 80.0,
+                              ),
+                            ),
+                          ),
+                        );
+                      } else  */
                       if (userController.hasGalleryPermission.value == false) {
                         return Container(
                           constraints: BoxConstraints.expand(),
@@ -674,7 +694,7 @@ class TabsScreen extends GetWidget<TabsController> {
                   ),
                 )
               : Container()), */
-            Obx(() => controller.isLoading.value
+            /* Obx(() => controller.isLoading.value
                 ? Material(
                     color: Colors.black.withOpacity(0.7),
                     child: Container(
@@ -688,7 +708,7 @@ class TabsScreen extends GetWidget<TabsController> {
                       ),
                     ),
                   )
-                : Container()),
+                : Container()), */
           ],
         ),
       ),

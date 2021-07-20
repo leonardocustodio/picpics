@@ -576,12 +576,13 @@ class TagsController extends GetxController {
     /// iterate over the pictures and add tags to it
     ///
 
+    final stopwatch = Stopwatch()..start();
     await Future.forEach(picIdToTagKey.keys, (String picId) async {
       var picStore = TabsController.to.picStoreMap[picId]!.value;
-
       await picStore.addMultipleTagsToPic(
           acceptedTagKeys: picIdToTagKey[picId]!);
     });
+      print('executed in: ${stopwatch.elapsed}');
   }
 
 /* 

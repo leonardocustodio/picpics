@@ -515,15 +515,18 @@ class PicStore extends GetxController {
     );
   }
 
-  Future<void> _addPhotoIdToLabel(Map<String, String> selectedTags) async {
+  Future<String> _addPhotoIdToLabel(Map<String, String> selectedTags) async {
+    final list = <String>[];
     selectedTags.keys.forEach((tagKey) async {
       final getTag = await database.getLabelByLabelKey(tagKey);
 
       if (getTag != null && getTag.photoId.contains(photoId.value) == false) {
+        list.add(getTag.title);
         getTag.photoId.add(photoId.value);
         await database.updateLabel(getTag);
       }
     });
+    return list.join(', ');
   }
 
   /// Will remove the photoId from the labels Table
@@ -540,13 +543,13 @@ class PicStore extends GetxController {
       }
     });
 
-    return list.join(',');
+    return list.join(', ');
   }
 
   //@action
   Future<void> addMultipleTagsToPic(
       {required Map<String, String> acceptedTagKeys}) async {
-    await _addPhotoIdToLabel(acceptedTagKeys);
+    var title = await _addPhotoIdToLabel(acceptedTagKeys);
 
     var getPic = await database.getPhotoByPhotoId(photoId.value);
 
@@ -554,11 +557,8 @@ class PicStore extends GetxController {
       //print('this picture is in db going to update');
 
       /// See if all the multi tags are already present in the Tags of picture or not
-      getPic.tags.forEach((tagKey) {
-        if (acceptedTagKeys[tagKey] != null) {
-          acceptedTagKeys.remove(tagKey);
-        }
-      });
+      acceptedTagKeys.removeWhere((key, _) => getPic.tags.contains(key));
+
       if (acceptedTagKeys.isEmpty) {
         //print('this tag is already in this picture');
         return;
@@ -568,16 +568,9 @@ class PicStore extends GetxController {
       //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
       await database.updatePhoto(getPic);
 
-      var tagNames = <String>[];
-      acceptedTagKeys.forEach((tagKey, _) {
-        final tagModel = TagsController.to.allTags[tagKey];
-        if (tagModel != null) {
-          tagNames.add(tagModel.value.title);
-        }
-      });
       await Analytics.sendEvent(
         Event.added_tag,
-        params: {'tagName': tagNames.toString()},
+        params: {'tagName': title},
       );
       return;
     }
@@ -602,16 +595,9 @@ class PicStore extends GetxController {
 
     await database.createPhoto(pic);
 
-    var tagNames = <String>[];
-    acceptedTagKeys.forEach((tagKey, _) {
-      final tagModel = TagsController.to.allTags[tagKey];
-      if (tagModel != null) {
-        tagNames.add(tagModel.value.title);
-      }
-    });
     await Analytics.sendEvent(
       Event.added_tag,
-      params: {'tagName': tagNames.toString()},
+      params: {'tagName': title},
     );
   }
 

@@ -71,25 +71,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
               itemBuilder: (_, int index) {
                 return Obx(() {
                   final picId = taggedPicIds[index];
-                  Widget? loaderWidget;
-                  Widget? originalImage;
 
                   var blurHash = BlurHashController.to.blurHash[picId];
-
-                  if (null != blurHash) {
-                    loaderWidget = BlurHash(
-                      hash: blurHash,
-                      color: Colors.transparent,
-                    );
-                  } else {
-                    /// grey widget because for this image blur hash was neevr calculated
-                    loaderWidget = greyWidget;
-                  }
-                  if (originalImage == null &&
-                      TabsController.to.picStoreMap[picId]?.value != null) {
-                    originalImage = _buildImageWidget(
-                        TabsController.to.picStoreMap[picId]!.value, picId);
-                  }
 
                   return Stack(
                     children: [
@@ -98,17 +81,24 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                           padding: const EdgeInsets.all(2),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(6),
-                            child: loaderWidget,
+                            child: null != blurHash
+                                ? BlurHash(
+                                    hash: blurHash,
+                                    color: Colors.transparent,
+                                  )
+                                : greyWidget,
                           ),
                         ),
                       ),
-                      if (originalImage != null)
+                      if (TabsController.to.picStoreMap[picId]?.value != null)
                         Positioned.fill(
                           child: Padding(
                             padding: const EdgeInsets.all(2),
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
-                                child: originalImage),
+                                child: _buildImageWidget(
+                                    TabsController.to.picStoreMap[picId]!.value,
+                                    picId)),
                           ),
                         ),
                     ],
@@ -151,101 +141,83 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
         image: imageProvider,
         fit: BoxFit.cover,
         loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               if (null == hash) {
-                loader = ColoredBox(color: kGreyPlaceholder);
+                return Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: ColoredBox(color: kGreyPlaceholder),
+                  ),
+                );
               } else {
-                loader = BlurHash(
-                  hash: hash,
-                  color: Colors.transparent,
+                return Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: BlurHash(
+                      hash: hash,
+                      color: Colors.transparent,
+                    ),
+                  ),
                 );
               }
-              loader = Padding(
-                padding: const EdgeInsets.all(2),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: loader,
-                ),
-              );
-              break;
+
             case LoadState.completed:
-              loader = FadeImageBuilder(
-                child: () {
-                  return GestureDetector(
-                    onLongPress: () {
-                      //print('LongPress');
-                      if (controller.multiPicBar.value == false) {
-                        controller.selectedMultiBarPics[picId] = true;
-                        controller.setMultiPicBar(true);
-                      }
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        if (controller.multiPicBar.value) {
-                          if (controller.selectedMultiBarPics[picId] == null) {
-                            controller.selectedMultiBarPics[picId] = true;
-                          } else {
-                            controller.selectedMultiBarPics.remove(picId);
-                          }
-                          /* GalleryStore.to.setSelectedPics(
+              return FadeImageBuilder(
+                child: GestureDetector(
+                  onLongPress: () {
+                    //print('LongPress');
+                    if (controller.multiPicBar.value == false) {
+                      controller.selectedMultiBarPics[picId] = true;
+                      controller.setMultiPicBar(true);
+                    }
+                  },
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () {
+                      if (controller.multiPicBar.value) {
+                        if (controller.selectedMultiBarPics[picId] == null) {
+                          controller.selectedMultiBarPics[picId] = true;
+                        } else {
+                          controller.selectedMultiBarPics.remove(picId);
+                        }
+                        /* GalleryStore.to.setSelectedPics(
                   picStore: picStore,
                   picIsTagged: false,
                 ); */
-                          //print('Pics Selected Length: ');
-                          //print('${GalleryStore.to.selectedPics.length}');
-                          return;
-                        }
-                        var list =
-                            controller.taggedPicId[tagKey]?.keys.toList();
-                        if (list != null && list.isNotEmpty) {
-                          Get.to(
-                              () => PhotoScreen(picId: picId, picIdList: list));
-                        }
-                      },
-                      child: Obx(() {
-                        Widget image = Positioned.fill(
-                          child: RepaintBoundary(
-                            child: state.completedWidget,
-                          ),
-                        );
-                        if (controller.multiPicBar.value) {
-                          if (controller.selectedMultiBarPics[picId] != null) {
-                            return Stack(
-                              children: [
-                                image,
-                                Container(
-                                  constraints: BoxConstraints.expand(),
-                                  decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
-                                    border: Border.all(
-                                      color: kSecondaryColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 8.0,
-                                  top: 6.0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      gradient: kSecondaryGradient,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Image.asset(
-                                        'lib/images/checkwhiteico.png'),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
+                        //print('Pics Selected Length: ');
+                        //print('${GalleryStore.to.selectedPics.length}');
+                        return;
+                      }
+                      var list = controller.taggedPicId[tagKey]?.keys.toList();
+                      if (list != null && list.isNotEmpty) {
+                        Get.to(
+                            () => PhotoScreen(picId: picId, picIdList: list));
+                      }
+                    },
+                    child: Obx(() {
+                      Widget image = Positioned.fill(
+                        child: RepaintBoundary(
+                          child: state.completedWidget,
+                        ),
+                      );
+                      if (controller.multiPicBar.value) {
+                        if (controller.selectedMultiBarPics[picId] != null) {
                           return Stack(
                             children: [
                               image,
+                              Container(
+                                constraints: BoxConstraints.expand(),
+                                decoration: BoxDecoration(
+                                  color: kSecondaryColor.withOpacity(0.3),
+                                  border: Border.all(
+                                    color: kSecondaryColor,
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
                               Positioned(
                                 left: 8.0,
                                 top: 6.0,
@@ -253,12 +225,11 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                   height: 20,
                                   width: 20,
                                   decoration: BoxDecoration(
+                                    gradient: kSecondaryGradient,
                                     borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: kGrayColor,
-                                      width: 2.0,
-                                    ),
                                   ),
+                                  child: Image.asset(
+                                      'lib/images/checkwhiteico.png'),
                                 ),
                               ),
                             ],
@@ -267,19 +238,36 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                         return Stack(
                           children: [
                             image,
+                            Positioned(
+                              left: 8.0,
+                              top: 6.0,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  border: Border.all(
+                                    color: kGrayColor,
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ],
                         );
-                      }),
-                    ),
-                  );
-                }(),
+                      }
+                      return Stack(
+                        children: [
+                          image,
+                        ],
+                      );
+                    }),
+                  ),
+                ),
               );
-              break;
             case LoadState.failed:
-              loader = _failedItem;
-              break;
+              return _failedItem;
           }
-          return loader;
         },
       ),
     );
