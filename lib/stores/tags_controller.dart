@@ -511,21 +511,27 @@ class TagsController extends GetxController {
   }
 
   Future<void> addTagsToSelectedPics() async {
-    //var tagsBox = Hive.box('tags');
-
     var selectedPicIds = <String>[];
     if (TabsController.to.currentTab.value == 0) {
-      selectedPicIds = List<String>.from(
-          TabsController.to.selectedMultiBarPics.keys.toList());
+      TabsController.to.selectedMultiBarPics.forEach((key, value) {
+        if (value) {
+          selectedPicIds.add(key);
+        }
+      });
     } else if (TabsController.to.currentTab.value == 2) {
-      selectedPicIds = List<String>.from(
-          TaggedController.to.selectedMultiBarPics.keys.toList());
+      TaggedController.to.selectedMultiBarPics.forEach((key, value) {
+        if (value) {
+          selectedPicIds.add(key);
+        }
+      });
     }
-    await addTagToPicMultiple(
-            selectedPicIds,
-            // ignore: invalid_use_of_protected_member
-            multiPicTags.value)
-        .then((_) {
+
+    await addTagsToPics(
+      picIdToTagKey: <String, Map<String, String>>{
+        // ignore: invalid_use_of_protected_member
+        for (var picId in selectedPicIds) picId: multiPicTags.value,
+      },
+    ).then((_) {
       /// Clear the selectedUntaggedPics as now the processing is done
       if (TabsController.to.currentTab.value == 0) {
         TabsController.to.clearSelectedUntaggedPics();
@@ -552,7 +558,9 @@ class TagsController extends GetxController {
       {required String picId, required String tagKey}) async {
     var picStore = TabsController.to.picStoreMap[picId]?.value;
     picStore ??= TabsController.to.explorPicStore(picId).value;
-    await picStore?.removeTagFromPic(tagKey: tagKey);
+    await picStore?.removeMultipleTagFromPic(
+      acceptedTags: {tagKey: ''},
+    );
 
     /// Refreshing the tagged pic map as a tag is removed from the picstore
     await TaggedController.to.refreshTaggedPhotos();
@@ -563,84 +571,19 @@ class TagsController extends GetxController {
     }
   }
 
-  Future<void> _addPhotoIdToLabelMultiple(
-      List<String> picIds, Map<String, String> selectedTags) async {
-    selectedTags.keys.forEach((tagKey) async {
-      final getTag = await _database.getLabelByLabelKey(tagKey);
+  Future<void> addTagsToPics(
+      {required Map<String, Map<String, String>> picIdToTagKey}) async {
+    /// iterate over the pictures and add tags to it
+    ///
 
-      if (getTag != null) {
-        picIds.forEach((picId) {
-          if (getTag.photoId.contains(picId) == false) {
-            getTag.photoId.add(picId);
-          }
-        });
-        await _database.updateLabel(getTag);
-      }
-    });
-  }
-
-  Future<void> _removePhotoIdFromLabelMultiple(
-      List<String> picIds, Map<String, String> selectedTags) async {
-    selectedTags.forEach((tagKey, _) async {
-      final getTag = await _database.getLabelByLabelKey(tagKey);
-
-      if (getTag != null) {
-        getTag.photoId.removeWhere((picId) => picIds.contains(picId));
-        await _database.updateLabel(getTag);
-      }
-    });
-  }
-
-  /// Will add the photoId from the labels Table
-  Future<void> _addSinglePhotoIdToLabel(
-      String picId, Map<String, String> selectedTags) async {
-    selectedTags.keys.forEach((tagKey) async {
-      final getTag = await _database.getLabelByLabelKey(tagKey);
-
-      if (getTag != null && getTag.photoId.contains(picId) == false) {
-        getTag.photoId.add(picId);
-        await _database.updateLabel(getTag);
-      }
-    });
-  }
-
-  /// Will remove the photoId from the labels Table
-  Future<void> _removeSinglePhotoIdFromLabel(
-      String picId, Map<String, String> selectedTags) async {
-    selectedTags.forEach((tagKey, _) async {
-      final getTag = await _database.getLabelByLabelKey(tagKey);
-
-      if (getTag != null && getTag.photoId.contains(picId)) {
-        getTag.photoId.remove(picId);
-        await _database.updateLabel(getTag);
-      }
-    });
-  }
-
-  Future<void> _addTagToPhotoIdMultiple(
-      List<String> picIds, Map<String, String> selectedTags) async {
-    await Future.forEach(picIds, (picId) async {
+    await Future.forEach(picIdToTagKey.keys, (String picId) async {
       var picStore = TabsController.to.picStoreMap[picId]!.value;
-      await picStore.addTagToPicMultiple(acceptedTagKeys: selectedTags);
+
+      await picStore.addMultipleTagsToPic(
+          acceptedTagKeys: picIdToTagKey[picId]!);
     });
   }
 
-  Future<void> addTagToPicSingle(
-      {required String picId, required List<String> selectedTags}) async {
-    var picStore = TabsController.to.picStoreMap[picId]!.value;
-    await picStore.addTagToPicSingle(acceptedTagKeys: selectedTags);
-  }
-
-  Future<void> addTagToPicMultiple(
-      List<String> picIds, Map<String, String> selectedTags) async {
-    await _addPhotoIdToLabelMultiple(picIds, selectedTags);
-    await _addTagToPhotoIdMultiple(picIds, selectedTags);
-  }
-
-  Future<void> removeTagFromPicMultiple(
-      List<String> picIds, Map<String, String> selectedTags) async {
-    await _removePhotoIdFromLabelMultiple(picIds, selectedTags);
-  }
 /* 
   /// Map<String, List<String>>
   /// {

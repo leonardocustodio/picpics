@@ -478,9 +478,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
     } else {
       controller.selectedTags.value[tagId] =
           TagModel(key: tagId, title: tagName, count: count, time: time);
-      //
-      await TagsController.to.addTagToPicSingle(
-          picId: picStore!.photoId.value.toString(), selectedTags: [tagId]);
+
+      await picStore?.addMultipleTagsToPic(acceptedTagKeys: {tagId: ''});
     }
     await TagsController.to.loadAllTags();
     await TaggedController.to.refreshTaggedPhotos();

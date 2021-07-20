@@ -388,29 +388,14 @@ class PicStore extends GetxController {
   }
 
   Future<void> addSecretTagToPic() async {
-    //var tagsBox = Hive.box('tags');
-    //Tag getTag = tagsBox.get(kSecretTagKey);
-    final getTag = await database.getLabelByLabelKey(kSecretTagKey);
-
-    if (getTag == null || getTag.photoId.contains(photoId)) {
-      //print('this tag is already in this picture');
-      return;
-    }
-
-    getTag.photoId.add(photoId.value);
-    //tagsBox.put(kSecretTagKey, getTag);
-    await database.updateLabel(getTag);
-
-    await addTagToPic(
-      tagKey: kSecretTagKey,
-      photoId: photoId.value,
-    );
+    await addMultipleTagsToPic(acceptedTagKeys: {kSecretTagKey: ''});
     await tagsSuggestionsCalculate();
     //print('Added secret tag to pic!');
   }
 
   Future<void> removeSecretTagFromPic() async {
-    await removeTagFromPic(tagKey: kSecretTagKey);
+    await removeMultipleTagFromPic(
+        acceptedTags: <String, String>{kSecretTagKey: ''});
     await tagsSuggestionsCalculate();
     //print('Added secret tag to pic!');
   }
@@ -501,68 +486,72 @@ class PicStore extends GetxController {
     final getTag = await database.getLabelByLabelKey(tagKey);
 
     if (getTag != null) {
-      //print('user already has this tag');
-
-      //Tag getTag = tagsBox.get(tagKey);
-
-      if (getTag.photoId.contains(photoId)) {
-        //print('this tag is already in this picture');
-        return;
-      }
-
-      getTag.photoId.add(photoId.value);
-
-      /// Updating the last used time and also incrementing the counter.
-      var count = getTag.counter + 1;
-      if (count < 0) count = 1;
-      var updatedTag =
-          getTag.copyWith(counter: count, lastUsedAt: DateTime.now());
-      //tagsBox.put(tagKey, getTag);
-      await database.updateLabel(updatedTag);
-      await addTagToPic(
-        tagKey: tagKey,
-        photoId: photoId.value,
+      TagsController.to.addTag(
+        TagModel(
+          key: tagKey,
+          title: tagName,
+          count: 1,
+          time: DateTime.now(),
+        ),
       );
 
-      await UserController.to.addTagToRecent(tagKey: tagKey);
-      //print('updated pictures in tag');
-      //print('Tag photos ids: ${getTag.photoId}');
+      await database.createLabel(Label(
+          key: tagKey,
+          title: tagName,
+          photoId: [photoId.value],
+          counter: 1,
+          lastUsedAt: DateTime.now()));
     }
 
+    //print('adding tag to database...');
+
+    await addMultipleTagsToPic(
+      acceptedTagKeys: <String, String>{tagKey: ''},
+    );
+    await UserController.to.addTagToRecent(tagKey: tagKey);
     await Analytics.sendEvent(
       Event.created_tag,
       params: {'tagName': tagName},
     );
-    //print('adding tag to database...');
-    var tagModel =
-        TagModel(key: tagKey, title: tagName, count: 1, time: DateTime.now());
-    TagsController.to.addTag(tagModel);
+  }
 
-    //tagsBox.put(tagKey, Tag(tagName, [photoId]));
-    await database.createLabel(Label(
-        key: tagKey,
-        title: tagName,
-        photoId: [photoId.value],
-        counter: 1,
-        lastUsedAt: DateTime.now()));
-    await addTagToPic(
-      tagKey: tagKey,
-      photoId: photoId.value,
-    );
-    await UserController.to.addTagToRecent(tagKey: tagKey);
+  Future<void> _addPhotoIdToLabel(Map<String, String> selectedTags) async {
+    selectedTags.keys.forEach((tagKey) async {
+      final getTag = await database.getLabelByLabelKey(tagKey);
+
+      if (getTag != null && getTag.photoId.contains(photoId.value) == false) {
+        getTag.photoId.add(photoId.value);
+        await database.updateLabel(getTag);
+      }
+    });
+  }
+
+  /// Will remove the photoId from the labels Table
+  Future<String> _removePhotoIdFromLabel(
+      Map<String, String> selectedTags) async {
+    final list = <String>[];
+    selectedTags.forEach((tagKey, _) async {
+      final getTag = await database.getLabelByLabelKey(tagKey);
+
+      if (getTag != null) {
+        list.add(getTag.title);
+        getTag.photoId.removeWhere((picId) => picId == photoId.value);
+        await database.updateLabel(getTag);
+      }
+    });
+
+    return list.join(',');
   }
 
   //@action
-  Future<void> addTagToPicMultiple(
+  Future<void> addMultipleTagsToPic(
       {required Map<String, String> acceptedTagKeys}) async {
-    //var picsBox = Hive.box('pics');
+    await _addPhotoIdToLabel(acceptedTagKeys);
 
     var getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
       //print('this picture is in db going to update');
-
-      //Pic getPic = picsBox.get(photoId);
 
       /// See if all the multi tags are already present in the Tags of picture or not
       getPic.tags.forEach((tagKey) {
@@ -577,15 +566,7 @@ class PicStore extends GetxController {
 
       getPic.tags.addAll(acceptedTagKeys.keys.toList());
       //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
-      //picsBox.put(photoId, getPic);
       await database.updatePhoto(getPic);
-      //print('updated picture');
-/* 
-      var tagModel = TagsController.to.allTags[tagKey];
-      if (tagModel == null) {
-        /* await TagsController.to.loadAllTags(); */
-        throw Exception('Heya');
-      } */
 
       var tagNames = <String>[];
       acceptedTagKeys.forEach((tagKey, _) {
@@ -619,12 +600,7 @@ class PicStore extends GetxController {
       isPrivate: acceptedTagKeys.keys.contains(kSecretTagKey),
     );
 
-    //await picsBox.put(photoId, pic);
     await database.createPhoto(pic);
-    //print('@@@@@@@@ tagsKey: ${tagKey}');
-
-    // Increase today tagged pics everytime it adds a new pic to database.
-    //await UserController.to.increaseTodayTaggedPics();
 
     var tagNames = <String>[];
     acceptedTagKeys.forEach((tagKey, _) {
@@ -636,165 +612,6 @@ class PicStore extends GetxController {
     await Analytics.sendEvent(
       Event.added_tag,
       params: {'tagName': tagNames.toString()},
-    );
-  }
-
-  Future<void> addTagToPicSingle(
-      {required List<String> acceptedTagKeys}) async {
-    //var picsBox = Hive.box('pics');
-
-    var getPic = await database.getPhotoByPhotoId(photoId.value);
-
-    if (getPic != null) {
-      //print('this picture is in db going to update');
-
-      //Pic getPic = picsBox.get(photoId);
-
-      /// See if all the multi tags are already present in the Tags of picture or not
-      getPic.tags.forEach((tagKey) {
-        acceptedTagKeys.remove(tagKey);
-      });
-      if (acceptedTagKeys.isEmpty) {
-        //print('this tag is already in this picture');
-        return;
-      }
-
-      getPic.tags.addAll(acceptedTagKeys.toList());
-      //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
-      //picsBox.put(photoId, getPic);
-      await database.updatePhoto(getPic);
-      //print('updated picture');
-/* 
-      var tagModel = TagsController.to.allTags[tagKey];
-      if (tagModel == null) {
-        /* await TagsController.to.loadAllTags(); */
-        throw Exception('Heya');
-      } */
-
-      var tagNames = <String>[];
-      acceptedTagKeys.forEach((tagKey) {
-        final tagModel = TagsController.to.allTags[tagKey];
-        if (tagModel != null) {
-          tagNames.add(tagModel.value.title);
-        }
-      });
-      await Analytics.sendEvent(
-        Event.added_tag,
-        params: {'tagName': tagNames.toString()},
-      );
-      return;
-    }
-
-    //print('this picture is not in db, adding it...');
-    //print('Photo Id: $photoId');
-
-    var pic = Photo(
-      id: photoId.value,
-      createdAt: createdAt,
-      originalLatitude: originalLatitude,
-      originalLongitude: originalLongitude,
-      latitude: null,
-      longitude: null,
-      specificLocation: null,
-      generalLocation: null,
-      tags: acceptedTagKeys.toList(),
-      isStarred: false,
-      deletedFromCameraRoll: false,
-      isPrivate: acceptedTagKeys.contains(kSecretTagKey),
-    );
-
-    //await picsBox.put(photoId, pic);
-    await database.createPhoto(pic);
-    //print('@@@@@@@@ tagsKey: ${tagKey}');
-
-    // Increase today tagged pics everytime it adds a new pic to database.
-    //await UserController.to.increaseTodayTaggedPics();
-
-    var tagNames = <String>[];
-    acceptedTagKeys.forEach((tagKey) {
-      final tagModel = TagsController.to.allTags[tagKey];
-      if (tagModel != null) {
-        tagNames.add(tagModel.value.title);
-      }
-    });
-    await Analytics.sendEvent(
-      Event.added_tag,
-      params: {'tagName': tagNames.toString()},
-    );
-  }
-
-  //@action
-  Future<void> addTagToPic(
-      {required String tagKey, required String photoId}) async {
-    //var picsBox = Hive.box('pics');
-    var getPic = await database.getPhotoByPhotoId(photoId);
-
-    if (getPic != null) {
-      //print('this picture is in db going to update');
-
-      //Pic getPic = picsBox.get(photoId);
-
-      if (getPic.tags.contains(tagKey)) {
-        //print('this tag is already in this picture');
-        await tagsSuggestionsCalculate();
-        return;
-      }
-
-      getPic.tags.add(tagKey);
-      //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
-      //picsBox.put(photoId, getPic);
-      await database.updatePhoto(getPic);
-      //print('updated picture');
-
-      var tagModel = TagsController.to.allTags[tagKey];
-      if (tagModel == null) {
-        await TagsController.to.loadAllTags();
-      }
-      if (tagModel != null) {
-        tags[tagKey] = tagModel;
-      }
-
-      await tagsSuggestionsCalculate();
-
-      await Analytics.sendEvent(
-        Event.added_tag,
-        params: {'tagName': tagModel!.value.title},
-      );
-      return;
-    }
-
-    //print('this picture is not in db, adding it...');
-    //print('Photo Id: $photoId');
-
-    var tagModel = TagsController.to.allTags[tagKey];
-    tags[tagKey] = tagModel!;
-
-    var pic = Photo(
-      id: photoId,
-      createdAt: createdAt,
-      originalLatitude: originalLatitude,
-      originalLongitude: originalLongitude,
-      latitude: null,
-      longitude: null,
-      specificLocation: null,
-      generalLocation: null,
-      tags: [tagKey],
-      isStarred: false,
-      deletedFromCameraRoll: false,
-      isPrivate: tagKey == kSecretTagKey ? true : false,
-    );
-
-    //await picsBox.put(photoId, pic);
-    await database.createPhoto(pic);
-    //print('@@@@@@@@ tagsKey: ${tagKey}');
-
-    // Increase today tagged pics everytime it adds a new pic to database.
-    await UserController.to.increaseTodayTaggedPics();
-
-    await tagsSuggestionsCalculate();
-    await Analytics.sendEvent(
-      Event.added_tag,
-      params: {'tagName': tagModel.value.title},
     );
   }
 
@@ -866,7 +683,9 @@ class PicStore extends GetxController {
       //print('pic is in db... removing it from db!');
       var picTags = List<String>.from(pic.tags);
       for (var tagKey in picTags) {
-        await removeTagFromPic(tagKey: tagKey);
+        await removeMultipleTagFromPic(
+          acceptedTags: <String, String>{tagKey: ''},
+        );
 
         if (tagKey == kSecretTagKey) {
           await deleteEncryptedPic();
@@ -881,43 +700,27 @@ class PicStore extends GetxController {
   }
 
   //@action
-  Future<void> removeTagFromPic({required String tagKey}) async {
-    final getTag = await database.getLabelByLabelKey(tagKey);
-
-    if (getTag == null) {
-      return;
-    }
-
-    var indexOfPicInTag = getTag.photoId.indexOf(photoId.value);
-
-    if (indexOfPicInTag != -1) {
-      getTag.photoId.removeAt(indexOfPicInTag);
-      await database.updateLabel(getTag);
-    }
+  Future<void> removeMultipleTagFromPic(
+      {required Map<String, String> acceptedTags}) async {
+    var title = await _removePhotoIdFromLabel(acceptedTags);
 
     var getPic = await database.getPhotoByPhotoId(photoId.value);
 
-    if (getPic == null) {
-      return;
-    }
-
-    var indexOfTagInPic = getPic.tags.indexOf(tagKey);
-
-    if (indexOfTagInPic != -1) {
-      getPic.tags.removeAt(indexOfTagInPic);
+    if (getPic != null) {
+      getPic.tags.removeWhere((key) => acceptedTags[key] != null);
       await database.updatePhoto(getPic);
-      tags.remove(tagKey);
-    }
+      tags.removeWhere((key, _) => acceptedTags[key] != null);
 
-    if (tagKey == kSecretTagKey) {
-      await removePrivatePath();
+      if (acceptedTags[kSecretTagKey] != null) {
+        await removePrivatePath();
+      }
     }
 
     await tagsSuggestionsCalculate();
 
     await Analytics.sendEvent(
       Event.removed_tag,
-      params: {'tagName': getTag.title},
+      params: {'tagName': title},
     );
   }
 
