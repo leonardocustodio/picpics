@@ -82,12 +82,12 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
           : await key.picStore.entity.value
               ?.thumbDataWithSize(thumbSize[0], thumbSize[1]);
 
-      if (BlurHashController.to.masterHash[picStore.photoId.value] == null) {
+      /* if (BlurHashController.to.masterHash[picStore.photoId.value] == null) {
         if (data != null) {
           await BlurHashController.to
               .createBlurHash(picStore.photoId.value, data);
         }
-      }
+      } */
     }
 
     // if (picStore.isPrivate == true) {

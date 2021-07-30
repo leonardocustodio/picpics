@@ -337,7 +337,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
 
                                       controller.setMultiTagSheet(false);
                                       controller.setMultiPicBar(false);
-                                      await TagsController.to
+                                       TagsController.to
                                           .addTagsToSelectedPics();
                                       await refresh_everything();
                                     },

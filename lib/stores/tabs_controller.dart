@@ -69,14 +69,13 @@ class TabsController extends GetxController {
   final picStoreMap = <String, Rx<PicStore>>{}.obs;
 
   AppDatabase database = AppDatabase();
-  final allUnTaggedPicsMonth = <dynamic, dynamic>{}.obs;
+  final allUnTaggedPicsMonth = <dynamic>[].obs;
   final allUnTaggedPicsDay = <dynamic, dynamic>{}.obs;
   final allUnTaggedPics = <String, String>{}.obs;
 
   // picId: assetPathEntity
   final assetMap = <String, AssetEntity>{}.obs;
   List<AssetEntity> assetEntityList = <AssetEntity>[];
-  //final picAssetOriginBytesMap = <String, Future<Uint8List>>{}.obs;
 
   final starredPicMap = <String, bool>{}.obs;
 
@@ -91,6 +90,14 @@ class TabsController extends GetxController {
     var _ = TagsController.to.allTags;
     var __ = TaggedController.to.taggedPicId;
     initialization();
+
+    /* Future.delayed(Duration(seconds: 5), () {
+      Timer.periodic(Duration(milliseconds: 4), (_) {
+        print('runned');
+        allUnTaggedPicsMonth.remove(allUnTaggedPicsMonth.keys.toList()[1]);
+        allUnTaggedPicsDay.remove(allUnTaggedPicsDay.keys.toList()[1]);
+      });
+    }); */
     super.onReady();
   }
 
@@ -117,7 +124,7 @@ class TabsController extends GetxController {
 
   Future<void> initialization() async {
     await initPlatformState();
-    await BlurHashController.to.loadBlurHash();
+    //await BlurHashController.to.loadBlurHash();
     await loadAssetPath();
 
     /* ever(showPrivatePics, (_) {
@@ -225,20 +232,11 @@ class TabsController extends GetxController {
 
   Future<void> refreshUntaggedList() async {
     isUntaggedPicsLoaded.value = false;
-    allUnTaggedPics.clear();
-    allUnTaggedPicsMonth.clear();
-    allUnTaggedPicsDay.clear();
     assetEntityList.sort((a, b) {
-      var year = b.createDateTime.year.compareTo(a.createDateTime.year);
-      if (year == 0) {
-        var month = b.createDateTime.month.compareTo(a.createDateTime.month);
-        if (month == 0) {
-          var day = b.createDateTime.day.compareTo(a.createDateTime.day);
-          return day;
-        }
-        return month;
-      }
-      return year;
+      return DateTime(b.createDateTime.year, b.createDateTime.month,
+              b.createDateTime.day)
+          .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month,
+              a.createDateTime.day));
     });
     /* var val = await database.getPrivatePhotoList();
     await Future.forEach(
@@ -255,11 +253,11 @@ class TabsController extends GetxController {
 
     /// clear the map as this function will be used to refresh from the tagging done via expandable or the swiper tags
 
+    allUnTaggedPics.clear();
+    allUnTaggedPicsMonth.clear();
+    allUnTaggedPicsDay.clear();
     await Future.forEach(assetEntityList, (AssetEntity entity) async {
       assetMap[entity.id] = entity;
-      if (TaggedController.to.allTaggedPicIdList[entity.id] != null) {
-        print('${entity.id}');
-      }
 
       /// Iterating and checking whether the picId is not a tagged pic or it's not a private pic
       if (TaggedController.to.allTaggedPicIdList[entity.id] == null &&
@@ -271,7 +269,7 @@ class TabsController extends GetxController {
           previousMonth = dateTime;
           /* allUnTaggedPicsDay[dateTime] = '';
           allUnTaggedPicsMonth[dateTime] = ''; */
-          allUnTaggedPicsMonth[dateTime] = <String>[];
+          allUnTaggedPicsMonth.add(dateTime);
           allUnTaggedPicsDay[dateTime] = <String>[];
         }
 
@@ -287,27 +285,27 @@ class TabsController extends GetxController {
           }
           if (previousDay!.month != dateTime.month) {
             //allUnTaggedPicsMonth[dateTime] = '';
-            allUnTaggedPicsMonth[previousMonth] =
-                List<String>.from(previousMonthPicIdList);
+            //allUnTaggedPicsMonth[previousMonth] = List<String>.from(previousMonthPicIdList);
             previousMonthPicIdList = <String>[];
-            allUnTaggedPicsMonth[dateTime] = <String>[];
+            allUnTaggedPicsMonth.add(dateTime);
             previousMonth = dateTime;
           }
           previousDay = dateTime;
         }
-        allUnTaggedPicsMonth[entity.id] = '';
+        allUnTaggedPicsMonth.add(entity.id);
         allUnTaggedPicsDay[entity.id] = '';
         allUnTaggedPics[entity.id] = '';
-        picStoreMap[entity.id] = Rx<PicStore>(explorPicStore(entity.id).value!);
         previousMonthPicIdList.add(entity.id);
         previousDayPicIdList.add(entity.id);
+      }
+      if (picStoreMap[entity.id] == null) {
+        picStoreMap[entity.id] = Rx<PicStore>(explorPicStore(entity.id).value!);
       }
       //status.value = Status.Loaded;
     });
     isUntaggedPicsLoaded.value = true;
 
-    allUnTaggedPicsMonth[previousMonth] =
-        List<String>.from(previousMonthPicIdList);
+    //allUnTaggedPicsMonth[previousMonth] = List<String>.from(previousMonthPicIdList);
     allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
   }
 
@@ -325,12 +323,13 @@ class TabsController extends GetxController {
     var picStoreValue = picStoreMap[picId];
 
     if (null == picStoreMap[picId]) {
-      final entity = assetMap[picId];
+      var entity = assetMap[picId];
       if (null == entity) {
         /// TODO: In worst case scenario this is telling that the asset map is not update
         /// and does not contain the image
         refresh_everything();
       }
+      entity = assetMap[picId];
 
       picStoreValue = Rx<PicStore>(PicStore(
         entityValue: entity!,

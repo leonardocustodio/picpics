@@ -14,7 +14,7 @@ void showDeleteSecretModalForMultiPic() async {
   if (UserController.to.keepAskingToDelete.value == false) {
     TabsController.to.setMultiTagSheet(false);
     TabsController.to.setMultiPicBar(false);
-    await TagsController.to.addTagsToSelectedPics();
+     TagsController.to.addTagsToSelectedPics();
     return;
   }
 
@@ -31,14 +31,14 @@ void showDeleteSecretModalForMultiPic() async {
           await UserController.to.setShouldDeleteOnPrivate(false);
           TabsController.to.setMultiTagSheet(false);
           TabsController.to.setMultiPicBar(false);
-          await TagsController.to.addTagsToSelectedPics();
+           TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
         onPressedOk: () async {
           await UserController.to.setShouldDeleteOnPrivate(true);
           TabsController.to.setMultiTagSheet(false);
           TabsController.to.setMultiPicBar(false);
-          await TagsController.to.addTagsToSelectedPics();
+           TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
       );

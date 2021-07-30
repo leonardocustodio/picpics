@@ -108,14 +108,12 @@ class TabsScreen extends GetWidget<TabsController> {
 
                                           controller.setMultiTagSheet(false);
                                           controller.setMultiPicBar(false);
-                                          controller.isUntaggedPicsLoaded
-                                              .value = false;
 
-                                          await TagsController.to
-                                              .addTagsToSelectedPics()
-                                              .then((_) {
-                                            controller.isUntaggedPicsLoaded
-                                                .value = true;
+                                          WidgetsBinding.instance
+                                              ?.addPostFrameCallback(
+                                                  (timeStamp) async {
+                                            TagsController.to
+                                                .addTagsToSelectedPics();
                                           });
                                         },
                                         child: Container(

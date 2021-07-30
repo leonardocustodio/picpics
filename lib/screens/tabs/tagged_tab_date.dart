@@ -17,7 +17,6 @@ import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/utils/refresh_everything.dart';
 
 class TaggedTabDate extends GetWidget<TaggedController> {
-  TaggedTabDate({Key? key}) : super(key: key);
   final _scrollController = ScrollController();
 
   @override
@@ -91,17 +90,18 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                     ),
                   ),
                   if (TabsController
-                              .to.picStoreMap[monthKeys[index].key]?.value !=
-                          null &&
-                      controller.getCache(monthKeys[index].key) != null)
+                          .to.picStoreMap[monthKeys[index].key]?.value !=
+                      null)
                     Positioned.fill(
                         child: Padding(
                       padding: const EdgeInsets.all(2),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(6),
                         child: Container(
-                          child: _buildTaggedDateImageWidget(TabsController
-                              .to.picStoreMap[monthKeys[index].key]!.value),
+                          child: _buildTaggedDateImageWidget(
+                            TabsController
+                                .to.picStoreMap[monthKeys[index].key]!.value,
+                          ),
                         ),
                       ),
                     )),

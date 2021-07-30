@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
@@ -7,6 +10,7 @@ import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 /* import 'package:picPics/stores/tagged_controller.dart'; */
 import 'package:picPics/stores/user_controller.dart';
+import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/helpers.dart';
 import '../constants.dart';
 import 'package:picPics/model/tag_model.dart';
@@ -45,6 +49,15 @@ class TagsController extends GetxController {
       await TagsController.to.loadRecentTags();
     });
     ever(searchText, (_) => tagsSuggestionsCalculate(null));
+/* 
+    Future.delayed(Duration(seconds: 10), () {
+      Timer.periodic(Duration.zero, (_) {
+        TabsController.to.allUnTaggedPicsMonth
+            .remove(TabsController.to.allUnTaggedPicsMonth.keys.toList()[1]);
+        TabsController.to.allUnTaggedPicsDay
+            .remove(TabsController.to.allUnTaggedPicsDay.keys.toList()[1]);
+      });
+    }); */
   }
 
   void setIsSearching(bool val) {
@@ -511,47 +524,40 @@ class TagsController extends GetxController {
   }
 
   Future<void> addTagsToSelectedPics() async {
+    final tabsController = Get.find<TabsController>();
+
     var selectedPicIds = <String>[];
-    if (TabsController.to.currentTab.value == 0) {
-      TabsController.to.selectedMultiBarPics.forEach((key, value) {
-        if (value) {
-          selectedPicIds.add(key);
-        }
-      });
-    } else if (TabsController.to.currentTab.value == 2) {
-      TaggedController.to.selectedMultiBarPics.forEach((key, value) {
-        if (value) {
-          selectedPicIds.add(key);
-        }
-      });
+    if (tabsController.currentTab.value == 0) {
+      selectedPicIds = tabsController.selectedMultiBarPics.keys.toList();
+    } else if (tabsController.currentTab.value == 2) {
+      selectedPicIds = TaggedController.to.selectedMultiBarPics.keys.toList();
     }
 
-    await addTagsToPics(
-      picIdToTagKey: <String, Map<String, String>>{
-        // ignore: invalid_use_of_protected_member
-        for (var picId in selectedPicIds) picId: multiPicTags.value,
-      },
-    ).then((_) {
-      /// Clear the selectedUntaggedPics as now the processing is done
-      if (TabsController.to.currentTab.value == 0) {
-        TabsController.to.clearSelectedUntaggedPics();
-      } else if (TabsController.to.currentTab.value == 2) {
-        TaggedController.to.selectedMultiBarPics.clear();
-      }
+    final map = <String, Map<String, String>>{
+      // ignore: invalid_use_of_protected_member
+      for (var picId in selectedPicIds) picId: multiPicTags.value,
+    };
 
-      /// Also clear the multiPicTags as we have iterated and processed through it and
-      /// now we have to make it empty for the next time
-      clearMultiPicTags();
+    await addTagsToPics(picIdToTagKey: map);
 
+    /// Clear the selectedUntaggedPics as now the processing is done
+    if (tabsController.currentTab.value == 0) {
+      tabsController.clearSelectedUntaggedPics();
+    } else if (tabsController.currentTab.value == 2) {
+      TaggedController.to.selectedMultiBarPics.clear();
+    }
+
+    /// Also clear the multiPicTags as we have iterated and processed through it and
+    /// now we have to make it empty for the next time
+    clearMultiPicTags();
+/* 
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
         /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
-        if (TabsController.to.currentTab.value == 0) {
+        if (TabsController.to.currentTab.value == 0 ||
+            TabsController.to.currentTab.value == 2) {
           await TabsController.to.refreshUntaggedList();
-        } else if (TabsController.to.currentTab.value == 2) {
-          await TaggedController.to.refreshTaggedPhotos();
         }
-      });
-    });
+      }); */
   }
 
   Future<void> removeTagFromPic(
@@ -571,58 +577,38 @@ class TagsController extends GetxController {
     }
   }
 
+  /// Add All Untagged Pics To Tagged Pics with same Tags
+
+  Future<void> _addPhotoIdToLabel(String tagKey, String picId) async {
+    final getTag = await _database.getLabelByLabelKey(tagKey);
+
+    if (getTag == null || getTag.photoId.contains(picId)) {
+      return;
+    }
+    getTag.photoId.add(picId);
+    await _database.updateLabel(getTag);
+  }
+
   Future<void> addTagsToPics(
       {required Map<String, Map<String, String>> picIdToTagKey}) async {
     /// iterate over the pictures and add tags to it
-    ///
+    final tabsController = Get.find<TabsController>();
 
-    final stopwatch = Stopwatch()..start();
     await Future.forEach(picIdToTagKey.keys, (String picId) async {
-      var picStore = TabsController.to.picStoreMap[picId]!.value;
-      await picStore.addMultipleTagsToPic(
-          acceptedTagKeys: picIdToTagKey[picId]!);
+      await Future.delayed(Duration.zero, () async {
+        var map = picIdToTagKey[picId]!;
+
+        var picStore = tabsController.picStoreMap[picId]!.value;
+        await Future.forEach(map.keys, (String tagKey) async {
+          await _addPhotoIdToLabel(tagKey, picId);
+        });
+
+        await picStore.addMultipleTagsToPic(
+            acceptedTagKeys: Map<String, String>.from(map));
+      });
+        tabsController.allUnTaggedPicsMonth.remove(picId);
     });
-      print('executed in: ${stopwatch.elapsed}');
   }
-
-/* 
-  /// Map<String, List<String>>
-  /// {
-  ///   'picId1': ['tagKey', 'tagKey'],
-  ///
-  ///   'picId2': ['tagKey', 'tagKey'],
-  /// }
-  Future<void> addTagToPic(
-      {required Map<String, List<String>> picIdMappedTagKey}) async {
-    if (multiTags[kSecretTagKey] != null) {
-      // //print('Should add secret tag in the end!!!');
-      if (PrivatePhotosController.to.privateMap[picId] == null
-          /* || TabsController.to.secretPicIds[picId] == false && !privatePics.contains(picStore) */) {
-        //await picStore.setIsPrivate(true);
-
-        //await Crypto.encryptImage(picStore, UserController.to.encryptionKey!);
-        // //print('this pic now is private');
-        /* TabsController.to.secretPicIds[picId] = true; */
-        //privatePics.add(picStore);
-      }
-      return;
-    }
-    final acceptedTagKeys = <String, String>{};
-    print('print:' + multiTags.toString());
-    multiTags.forEach((tagKey, v) async {
-      final getTag = await _database.getLabelByLabelKey(tagKey);
-      print('print:' + (getTag?.photoId.toString() ?? ''));
-
-      if (getTag != null && !getTag.photoId.contains(picStore.photoId.value)) {
-        getTag.photoId.add(picStore.photoId.value);
-        await _database.updateLabel(getTag);
-        acceptedTagKeys[tagKey] = '';
-      }
-    });
-
-    await picStore.addTagToPicMultipleTagFunction(
-        acceptedTagKeys: acceptedTagKeys, photoId: picStore.photoId.value);
-  } */
 
   void clearMultiPicTags() {
     multiPicTags.clear();

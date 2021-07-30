@@ -17,10 +17,10 @@ class BlurHashController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    loadBlurHash();
+    _loadBlurHash();
   }
 
-  Future<void> loadBlurHash() async {
+  Future<void> _loadBlurHash() async {
     var blurHashList = await _appDatabase.getAllPicBlurHash();
 
     blurHashList.forEach((pic) {
@@ -35,7 +35,7 @@ class BlurHashController extends GetxController {
   /// It's a way to Debounce the calls and overloads it with the updated data
   ///
 
-  Future<void> createBlurHash(String photoId, Uint8List imageBytes) async {
+  Future<void> _createBlurHash(String photoId, Uint8List imageBytes) async {
     if (null != _blurHashesQueue[photoId] || null != masterHash[photoId]) {
       return;
     }

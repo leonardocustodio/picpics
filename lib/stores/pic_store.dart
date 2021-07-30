@@ -388,7 +388,9 @@ class PicStore extends GetxController {
   }
 
   Future<void> addSecretTagToPic() async {
-    await addMultipleTagsToPic(acceptedTagKeys: {kSecretTagKey: ''});
+    await addMultipleTagsToPic(
+      acceptedTagKeys: {kSecretTagKey: ''},
+    );
     await tagsSuggestionsCalculate();
     //print('Added secret tag to pic!');
   }
@@ -505,28 +507,12 @@ class PicStore extends GetxController {
 
     //print('adding tag to database...');
 
-    await addMultipleTagsToPic(
-      acceptedTagKeys: <String, String>{tagKey: ''},
-    );
+    await addMultipleTagsToPic(acceptedTagKeys: <String, String>{tagKey: ''});
     await UserController.to.addTagToRecent(tagKey: tagKey);
     await Analytics.sendEvent(
       Event.created_tag,
       params: {'tagName': tagName},
     );
-  }
-
-  Future<String> _addPhotoIdToLabel(Map<String, String> selectedTags) async {
-    final list = <String>[];
-    selectedTags.keys.forEach((tagKey) async {
-      final getTag = await database.getLabelByLabelKey(tagKey);
-
-      if (getTag != null && getTag.photoId.contains(photoId.value) == false) {
-        list.add(getTag.title);
-        getTag.photoId.add(photoId.value);
-        await database.updateLabel(getTag);
-      }
-    });
-    return list.join(', ');
   }
 
   /// Will remove the photoId from the labels Table
@@ -548,16 +534,18 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> addMultipleTagsToPic(
-      {required Map<String, String> acceptedTagKeys}) async {
-    var title = await _addPhotoIdToLabel(acceptedTagKeys);
-
+      {required Map<String, String> acceptedTagKeys, String? name}) async {
     var getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
       //print('this picture is in db going to update');
 
       /// See if all the multi tags are already present in the Tags of picture or not
-      acceptedTagKeys.removeWhere((key, _) => getPic.tags.contains(key));
+      getPic.tags.forEach((key) {
+        if (acceptedTagKeys[key] != null) {
+          acceptedTagKeys.remove(key);
+        }
+      });
 
       if (acceptedTagKeys.isEmpty) {
         //print('this tag is already in this picture');
@@ -568,10 +556,12 @@ class PicStore extends GetxController {
       //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
       await database.updatePhoto(getPic);
 
-      await Analytics.sendEvent(
-        Event.added_tag,
-        params: {'tagName': title},
-      );
+      if (name == null) {
+        await Analytics.sendEvent(
+          Event.added_tag,
+          params: {'tagName': name},
+        );
+      }
       return;
     }
 
@@ -590,15 +580,17 @@ class PicStore extends GetxController {
       tags: acceptedTagKeys.keys.toList(),
       isStarred: false,
       deletedFromCameraRoll: false,
-      isPrivate: acceptedTagKeys.keys.contains(kSecretTagKey),
+      isPrivate: acceptedTagKeys[kSecretTagKey] != null,
     );
 
     await database.createPhoto(pic);
 
-    await Analytics.sendEvent(
-      Event.added_tag,
-      params: {'tagName': title},
-    );
+    if (name == null) {
+      await Analytics.sendEvent(
+        Event.added_tag,
+        params: {'tagName': name},
+      );
+    }
   }
 
   Future<String?> _writeByteToImageFile(Uint8List? byteData) async {

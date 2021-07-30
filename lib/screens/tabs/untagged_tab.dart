@@ -26,7 +26,6 @@ class UntaggedTab extends GetWidget<TabsController> {
 
   //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
-  final _scrollController = ScrollController();
 
   Widget _buildGridView(BuildContext context) {
     return NotificationListener<ScrollNotification>(
@@ -45,186 +44,243 @@ class UntaggedTab extends GetWidget<TabsController> {
       },
       child: Obx(
         () {
-          if (controller.allUnTaggedPicsMonth.isEmpty) {
-            return Center(child: CircularProgressIndicator());
-          }
           var isMonth = controller.toggleIndexUntagged.value == 0;
           if (isMonth) {
-            var monthKeys = controller.allUnTaggedPicsMonth.entries.toList();
-            return StaggeredGridView.countBuilder(
-                addAutomaticKeepAlives: true,
-                key: Key('Month'),
-                controller: _scrollController,
-                padding: EdgeInsets.only(top: 2),
-                primary: false,
-                shrinkWrap: false,
-                crossAxisCount: 5,
-                mainAxisSpacing: 0,
-                crossAxisSpacing: 0,
-                itemCount: controller.allUnTaggedPicsMonth.length,
-                staggeredTileBuilder: (int index) {
-                  if (index == 0 || monthKeys[index].key is DateTime) {
-                    return StaggeredTile.extent(5, 40);
-                  }
-                  return StaggeredTile.count(1, 1);
-                },
-                itemBuilder: (_, int index) {
-                  if (index == 0 || monthKeys[index].key is DateTime) {
-                    var isSelected = false;
-                    if (controller.multiPicBar.value) {
-                      isSelected = monthKeys[index].value.every((picId) =>
-                          controller.selectedMultiBarPics[picId] == true);
+            if (controller.allUnTaggedPicsMonth.isEmpty) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return Obx(
+              () => StaggeredGridView.countBuilder(
+                  addAutomaticKeepAlives: true,
+                  addRepaintBoundaries: true,
+                  key: Key('Month'),
+                  padding: EdgeInsets.only(top: 2),
+                  primary: true,
+                  shrinkWrap: true,
+                  crossAxisCount: 5,
+                  mainAxisSpacing: 0,
+                  crossAxisSpacing: 0,
+                  itemCount: controller.allUnTaggedPicsMonth.length,
+                  staggeredTileBuilder: (int index) {
+                    if (index == 0 ||
+                        controller.allUnTaggedPicsMonth[index] is DateTime) {
+                      if (index + 1 < controller.allUnTaggedPicsMonth.length &&
+                          controller.allUnTaggedPicsMonth[index + 1]
+                              is DateTime) {
+                        return StaggeredTile.extent(5, 0);
+                      }
+                      return StaggeredTile.extent(5, 40);
                     }
-                    return GestureDetector(
-                        onTap: () {
-                          if (controller.multiPicBar.value) {
-                            monthKeys[index].value.forEach((picId) {
-                              if (isSelected) {
-                                controller.selectedMultiBarPics.remove(picId);
-                              } else {
-                                controller.selectedMultiBarPics[picId] = true;
-                              }
-                            });
-                          }
-                        },
-                        child: buildDateHeader(
-                          monthKeys[index].key,
-                          isSelected,
-                        ));
-                  }
-                  return Obx(() {
-                    var blurHash =
-                        BlurHashController.to.blurHash[monthKeys[index].key];
-
-                    return Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: blurHash != null
-                                  ? BlurHash(
-                                      hash: blurHash,
-                                      color: Colors.transparent,
-                                    )
-                                  : Container(
-                                      padding: const EdgeInsets.all(12),
-                                      color: Colors.grey[300],
-                                    ),
-                            ),
-                          ),
-                        ),
-                        if (controller
-                                .picStoreMap[monthKeys[index].key]?.value !=
-                            null)
-                          Positioned.fill(
-                              child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: Container(
-                                child: _buildImageWidget(
-                                    controller
-                                        .picStoreMap[monthKeys[index].key]!
-                                        .value,
-                                    monthKeys[index].key),
-                              ),
-                            ),
-                          )),
-                      ],
-                    );
-                  });
-                });
-          } else {
-            var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
-            return StaggeredGridView.countBuilder(
-              addAutomaticKeepAlives: true,
-              key: Key('Day'),
-              //controller: scrollControllerFirstTab,
-              controller: _scrollController,
-              padding: EdgeInsets.only(top: 2),
-              itemCount: controller.allUnTaggedPicsDay.length,
-              addRepaintBoundaries: true,
-              crossAxisCount: 3,
-              mainAxisSpacing: 0,
-              crossAxisSpacing: 0,
-              staggeredTileBuilder: (int index) {
-                if (index == 0 || dayKeys[index].key is DateTime) {
-                  return StaggeredTile.extent(3, 40);
-                }
-                return StaggeredTile.count(1, 1);
-              },
-              itemBuilder: (_, int index) {
-                if (index == 0 || dayKeys[index].key is DateTime) {
-                  var isSelected = false;
-                  if (controller.multiPicBar.value) {
-                    isSelected = dayKeys[index].value.every((picId) =>
-                        controller.selectedMultiBarPics[picId] == true);
-                  }
-                  return GestureDetector(
-                      onTap: () {
+                    return StaggeredTile.count(1, 1);
+                  },
+                  itemBuilder: (_, int index) {
+                    return Obx(() {
+                      if (index == 0 ||
+                          controller.allUnTaggedPicsMonth[index] is DateTime) {
+                        var isSelected = false;
                         if (controller.multiPicBar.value) {
-                          dayKeys[index].value.forEach((picId) {
-                            if (isSelected) {
-                              controller.selectedMultiBarPics.remove(picId);
-                            } else {
-                              controller.selectedMultiBarPics[picId] = true;
-                            }
-                          });
-                        }
-                      },
-                      child: buildDateHeader(
-                        dayKeys[index].key,
-                        isSelected,
-                      ));
-                }
-                return Obx(
-                  () {
-                    var blurHash =
-                        BlurHashController.to.blurHash[dayKeys[index].key];
+                          var i = index + 1;
 
-                    return Stack(
-                      children: [
-                        Positioned.fill(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: blurHash != null
-                                  ? BlurHash(
-                                      hash: blurHash,
-                                      color: Colors.transparent,
-                                    )
-                                  : Container(
-                                      padding: const EdgeInsets.all(12),
-                                      color: Colors.grey[300],
-                                    ),
-                            ),
+                          /// assuming that every picId is selected so the wh
+                          var everySelected = false;
+                          while (i < controller.allUnTaggedPicsMonth.length &&
+                              controller.allUnTaggedPicsMonth[i] is String) {
+                            if (controller.selectedMultiBarPics[
+                                        controller.allUnTaggedPicsMonth[i]] ==
+                                    null ||
+                                controller.selectedMultiBarPics[
+                                        controller.allUnTaggedPicsMonth[i]] ==
+                                    false) {
+                              everySelected = true;
+                              break;
+                            }
+                            i++;
+                          }
+                          isSelected = !everySelected;
+                        }
+                        return GestureDetector(
+                          onTap: () {
+                            if (controller.multiPicBar.value) {
+                              var i = index + 1;
+                              if (isSelected) {
+                                while (i <
+                                        controller
+                                            .allUnTaggedPicsMonth.length &&
+                                    controller.allUnTaggedPicsMonth[i]
+                                        is String) {
+                                  controller.selectedMultiBarPics.remove(
+                                      controller.allUnTaggedPicsMonth[i]);
+                                  i++;
+                                }
+                              } else {
+                                while (i <
+                                        controller
+                                            .allUnTaggedPicsMonth.length &&
+                                    controller.allUnTaggedPicsMonth[i]
+                                        is String) {
+                                  controller.selectedMultiBarPics[controller
+                                      .allUnTaggedPicsMonth[i]] = true;
+                                  i++;
+                                }
+                              }
+                            }
+                          },
+                          child: buildDateHeader(
+                            controller.allUnTaggedPicsMonth[index],
+                            isSelected,
                           ),
-                        ),
-                        if (controller.picStoreMap[dayKeys[index].key]?.value !=
-                            null)
+                        );
+                      }
+                      /* 
+                      var blurHash =
+                          BlurHashController.to.blurHash[monthKeys[index].key];
+ */
+                      return Stack(
+                        children: [
                           Positioned.fill(
                             child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child:
+                                    /* blurHash != null
+                                    ? BlurHash(
+                                        hash: blurHash,
+                                        color: Colors.transparent,
+                                      )
+                                    :  */
+                                    Container(
+                                  padding: const EdgeInsets.all(12),
+                                  color: Colors.grey[300],
+                                ),
+                              ),
+                            ),
+                          ),
+                          if (controller
+                                  .picStoreMap[
+                                      controller.allUnTaggedPicsMonth[index]]
+                                  ?.value !=
+                              null)
+                            Positioned.fill(
+                                child: Padding(
                               padding: const EdgeInsets.all(2),
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
                                 child: Container(
                                   child: _buildImageWidget(
                                       controller
-                                          .picStoreMap[dayKeys[index].key]!
+                                          .picStoreMap[controller
+                                              .allUnTaggedPicsMonth[index]]!
                                           .value,
-                                      dayKeys[index].key),
+                                      controller.allUnTaggedPicsMonth[index]),
+                                ),
+                              ),
+                            )),
+                        ],
+                      );
+                    });
+                  }),
+            );
+          } else {
+            var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
+            return Obx(
+              () => StaggeredGridView.countBuilder(
+                addAutomaticKeepAlives: true,
+                key: Key('Day'),
+                primary: true,
+                shrinkWrap: true,
+                padding: EdgeInsets.only(top: 2),
+                itemCount: controller.allUnTaggedPicsDay.length,
+                addRepaintBoundaries: true,
+                crossAxisCount: 3,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+                staggeredTileBuilder: (int index) {
+                  if (index == 0 || dayKeys[index].key is DateTime) {
+                    if (index + 1 < dayKeys.length &&
+                        dayKeys[index + 1].key is DateTime) {
+                      return StaggeredTile.extent(3, 0);
+                    }
+                    return StaggeredTile.extent(3, 40);
+                  }
+                  return StaggeredTile.count(1, 1);
+                },
+                itemBuilder: (_, int index) {
+                  return Obx(
+                    () {
+                      if (index == 0 || dayKeys[index].key is DateTime) {
+                        var isSelected = false;
+                        if (controller.multiPicBar.value) {
+                          isSelected = dayKeys[index].value.every((picId) =>
+                              controller.selectedMultiBarPics[picId] == true);
+                        }
+                        return GestureDetector(
+                            onTap: () {
+                              if (controller.multiPicBar.value) {
+                                dayKeys[index].value.forEach((picId) {
+                                  if (isSelected) {
+                                    controller.selectedMultiBarPics
+                                        .remove(picId);
+                                  } else {
+                                    controller.selectedMultiBarPics[picId] =
+                                        true;
+                                  }
+                                });
+                              }
+                            },
+                            child: buildDateHeader(
+                              dayKeys[index].key,
+                              isSelected,
+                            ));
+                      }
+                      /* var blurHash =
+                          BlurHashController.to.blurHash[dayKeys[index].key]; */
+
+                      return Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child:
+                                    /*  blurHash != null
+                                  ? BlurHash(
+                                      hash: blurHash,
+                                      color: Colors.transparent,
+                                    )
+                                  : */
+                                    Container(
+                                  padding: const EdgeInsets.all(12),
+                                  color: Colors.grey[300],
                                 ),
                               ),
                             ),
                           ),
-                      ],
-                    );
-                  },
-                );
-              },
+                          if (controller
+                                  .picStoreMap[dayKeys[index].key]?.value !=
+                              null)
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Container(
+                                    child: _buildImageWidget(
+                                        controller
+                                            .picStoreMap[dayKeys[index].key]!
+                                            .value,
+                                        dayKeys[index].key),
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  );
+                },
+              ),
             );
           }
         },
@@ -309,7 +365,6 @@ class UntaggedTab extends GetWidget<TabsController> {
   }
 
   Widget _buildImageWidget(PicStore picStore, String picId) {
-//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
     var hash = BlurHashController.to.blurHash[picId];
 
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
@@ -348,8 +403,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                 onLongPress: () {
                   //print('LongPress');
                   if (controller.multiPicBar.value == false) {
-                    controller.selectedMultiBarPics[picId] = true;
                     controller.setMultiPicBar(true);
+                    controller.selectedMultiBarPics[picId] = true;
                   }
                 },
                 child: CupertinoButton(
@@ -370,15 +425,12 @@ class UntaggedTab extends GetWidget<TabsController> {
                       //await refresh_everything();
                     }
                   },
-                  child: Obx(() {
-                    Widget image = Positioned.fill(
-                      child: state.completedWidget,
-                    );
-                    if (controller.multiPicBar.value) {
-                      if (controller.selectedMultiBarPics[picId] != null) {
-                        return Stack(
-                          children: [
-                            image,
+                  child: Obx(() => Stack(
+                        children: [
+                          Positioned.fill(child: state.completedWidget),
+                          if (controller.multiPicBar.value &&
+                              controller.selectedMultiBarPics[picId] !=
+                                  null) ...[
                             Container(
                               constraints: BoxConstraints.expand(),
                               decoration: BoxDecoration(
@@ -404,35 +456,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                               ),
                             ),
                           ],
-                        );
-                      }
-                      return Stack(
-                        children: [
-                          image,
-                          Positioned(
-                            left: 8.0,
-                            top: 6.0,
-                            child: Container(
-                              height: 20,
-                              width: 20,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                border: Border.all(
-                                  color: Colors.transparent,
-                                  width: 2.0,
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
-                      );
-                    }
-                    return Stack(
-                      children: [
-                        image,
-                      ],
-                    );
-                  }),
+                      )),
                 ),
               ),
             );
@@ -452,7 +477,7 @@ class UntaggedTab extends GetWidget<TabsController> {
         child: Obx(() {
           var hasPics = controller.allUnTaggedPicsMonth.isNotEmpty ||
               controller.allUnTaggedPicsDay.isNotEmpty;
-          if (!controller.isUntaggedPicsLoaded.value) {
+          if (controller.isUntaggedPicsLoaded.value == false) {
             return Center(
               child: CircularProgressIndicator(
                   // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),

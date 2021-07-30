@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/confirm_pic_delete.dart';
 
@@ -209,38 +210,6 @@ class TaggedController extends GetxController {
   }
 
   void setIsScrolling(bool value) => isScrolling.value = value;
-
-  final lruCache = <String, String>{}.obs;
-  final maxLruSpace = 80;
-
-  Timer? _timer;
-
-  dynamic getCache(String key) {
-    return lruCache.value[key];
-  }
-
-  /// a temporary place to overload the buffer coming in to the ui and then push at once the timer triggers
-  // ignore: prefer_collection_literals
-  final _stashLru = LinkedHashMap<String, String>();
-
-  void putCache(String key) {
-    _timer?.cancel();
-
-    if (null == _stashLru[key]) {
-      _stashLru[key] = '';
-      if (_stashLru.length > maxLruSpace) {
-        _stashLru.remove(_stashLru.keys.first);
-      }
-    }
-
-    _timer = Timer(Duration(milliseconds: 100), () {
-      print('triggered');
-      if (_stashLru.isNotEmpty) {
-        lruCache.value = Map<String, String>.from(_stashLru);
-        _stashLru.clear();
-      }
-    });
-  }
 
   final allTaggedPicDateWiseMap = <dynamic, dynamic>{}.obs;
 
