@@ -68,8 +68,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
           offerings.current!.availablePackages.isNotEmpty) {
         getOfferingError = null;
 
-        //print(offerings.current.availablePackages);
-        //print(offerings.getOffering("full_subscription").availablePackages);
+        print(offerings.current!.availablePackages);
+        print(offerings.getOffering('full_subscription')!.availablePackages);
 
         setState(() {
           _items =
@@ -105,12 +105,15 @@ class _PremiumScreenState extends State<PremiumScreen> {
           }
         }
       }
-    } on PlatformException catch (e) {
-      var errorCode = PurchasesErrorHelper.getErrorCode(e);
-      if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
-        showError(
-            title: 'Error has occurred',
-            description: 'An error has occurred, please try again!');
+    } on Exception catch (e) {
+      print('Error has occurred: ${e.toString()}');
+      if (e is PlatformException) {
+        var errorCode = PurchasesErrorHelper.getErrorCode(e);
+        if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
+          showError(
+              title: 'Error has occurred',
+              description: 'An error has occurred, please try again!');
+        }
       }
     }
   }
@@ -213,9 +216,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
   @override
   void initState() {
+    getOffers();
     super.initState();
     Analytics.sendCurrentScreen(Screen.premium_screen);
-    getOffers();
   }
 
   @override
