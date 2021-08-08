@@ -607,20 +607,23 @@ class TabsController extends GetxController {
         await sharePics(picKeys: selectedMultiBarPics.keys.toList());
         setIsLoading(false);
       } else if (index == 3) {
-        if (selectedMultiBarPics.isEmpty) {
+        final picSet = selectedMultiBarPics.keys.toList().toSet();
+        if (picSet.isEmpty) {
           return;
         }
+        setMultiPicBar(false);
+        setMultiTagSheet(false);
         await showDialog<void>(
           context: Get.context!,
           barrierDismissible: true,
-          builder: (_) {
+          builder: (context) {
             return ConfirmPicDelete(
               onPressedDelete: () async {
-                await trashMultiplePics(
-                    selectedMultiBarPics.keys.toList().toSet());
+                Navigator.pop(context);
+                await trashMultiplePics(picSet);
               },
               deleteText:
-                  'Are you sure you want to delete ${selectedMultiBarPics.length} photos ?',
+                  'Are you sure you want to delete ${picSet.length} photos ?',
             );
           },
         );
@@ -689,7 +692,11 @@ class TabsController extends GetxController {
             }
           }
         })
-      ]);
+      ]).then((_) {
+        TaggedController.to.refreshTaggedPhotos();
+        TabsController.to.refreshUntaggedList();
+        SwiperTabController.to.refresh();
+      });
 
       await Analytics.sendEvent(Event.deleted_photo);
       // //print('Reaction!');
@@ -707,9 +714,6 @@ class TabsController extends GetxController {
     var index = SwiperTabController.to.swipeIndex.value;
     SwiperTabController.to.swiperPicIdList.remove(picId);
     TaggedController.to.picWiseTags.remove(picId);
-    TaggedController.to.refreshTaggedPhotos();
-    TabsController.to.refreshUntaggedList();
-    SwiperTabController.to.refresh();
     if (SwiperTabController.to.swiperPicIdList.isNotEmpty) {
       SwiperTabController.to.swipeIndex.value = index + 1;
     }

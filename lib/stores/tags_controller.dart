@@ -46,7 +46,7 @@ class TagsController extends GetxController {
     super.onInit();
     UserController.to.createDefaultTags(Get.context).then((_) async {
       await loadAllTags();
-      await TagsController.to.loadRecentTags();
+      await TagsController.to.tagsSuggestionsCalculate(null);
     });
     ever(searchText, (_) => tagsSuggestionsCalculate(null));
 /* 
@@ -83,6 +83,7 @@ class TagsController extends GetxController {
     //List<String> multiPicTags = multiPicTagKeys.toList();
     var suggestionTags = <String>[];
     var text = searchText.trim();
+    
 
     if (text == '') {
       for (var recent in getUser!.recentTags) {
@@ -131,8 +132,15 @@ class TagsController extends GetxController {
         if (tagsStoreValue == null) {
           continue;
         }
+        print(listOfLetters.toString());
+        print(suggestionTags
+            .map((e) => '${TagsController.to.allTags[e]!.value.title}')
+            .toString());
+    print('------');
         doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
           if (matched) {
+            print(
+                'searching: ${TagsController.to.allTags[tagKey]!.value.title}');
             suggestionTags.add(tagKey);
           }
         });
@@ -164,7 +172,10 @@ class TagsController extends GetxController {
       }
     });
     // //print('Suggestions Tag Store: $suggestions');
+    searchTagsResults.clear();
     searchTagsResults.value = List<TagModel>.from(suggestions);
+    print('------');
+    print(suggestions.toString());
     return suggestions;
   }
 
@@ -385,7 +396,7 @@ class TagsController extends GetxController {
     return tagKey;
   }
 
-  Future<Map<String, String>> loadRecentTags() async {
+  /* Future<Map<String, String>> loadRecentTags() async {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
     var tagsList = await _database.getAllLabel();
@@ -472,7 +483,7 @@ class TagsController extends GetxController {
     // ignore: invalid_use_of_protected_member
     return recentTagKeyList.value;
   }
-
+ */
   /// load all the tags async
   Future<void> loadAllTags() async {
     var tagsBox = await _database.getAllLabel();

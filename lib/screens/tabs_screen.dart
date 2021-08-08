@@ -173,7 +173,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                             // }
                                             TagsController.to.multiPicTags
                                                 .remove(tagKey);
-                                            TagsController.to.loadRecentTags();
+                                            TagsController.to.tagsSuggestionsCalculate(null);
                                             //GalleryStore.to.removeFromMultiPicTags(tagKey);
                                           },
                                           onDoubleTap: (String tagKey) {
@@ -186,7 +186,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                           onChanged: (text) {
                                             TagsController.to.searchText.value =
                                                 text;
-                                            TagsController.to.loadRecentTags();
+                                            TagsController.to.tagsSuggestionsCalculate(null);
                                             //GalleryStore.to.setSearchText(text);
                                           },
                                           onSubmitted: (text) {
@@ -200,7 +200,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                               TagsController
                                                   .to.searchText.value = text;
                                               TagsController.to
-                                                  .loadRecentTags();
+                                                  .tagsSuggestionsCalculate(null);
                                               final tagKey =
                                                   Helpers.encryptTag(text);
 
@@ -232,12 +232,11 @@ class TabsScreen extends GetWidget<TabsController> {
                                               ? S.of(context).search_results
                                               : S.of(context).recent_tags,
                                           tagsKeyList: TagsController
-                                              .to.recentTagKeyList.keys
-                                              .where((tag) =>
+                                              .to.searchTagsResults.value.where((tag) =>
                                                   TagsController
-                                                      .to.multiPicTags[tag] ==
+                                                      .to.multiPicTags[tag.key] ==
                                                   null)
-                                              .toList(),
+                                              .toList().map((e) => e.key).toList(),
                                           tagStyle: TagStyle.GrayOutlined,
                                           /* showEditTagModal: () =>
                                                   showEditTagModal(context), */
@@ -254,7 +253,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                             //GalleryStore.to.setSearchText('');
                                             TagsController
                                                 .to.multiPicTags[tagKey] = '';
-                                            TagsController.to.loadRecentTags();
+                                            TagsController.to.tagsSuggestionsCalculate(null);
                                             //GalleryStore.to.addToMultiPicTags(tagKey);
                                           },
                                           onDoubleTap: (String tagKey) {

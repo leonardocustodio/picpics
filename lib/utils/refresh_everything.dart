@@ -11,6 +11,6 @@ Future<void> refresh_everything() async {
   TagsController.to.loadLastMonthUsedTags();
   TagsController.to.loadLastWeekUsedTags();
   TagsController.to.loadMostUsedTags();
-  await TagsController.to.loadRecentTags();
+  await TagsController.to.tagsSuggestionsCalculate(null);
   TagsController.to.multiPicTags.clear();
 }

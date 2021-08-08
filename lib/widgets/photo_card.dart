@@ -128,12 +128,6 @@ class _PhotoCardState extends State<PhotoCard> {
     } */
   }
 
-  @override
-  void dispose() {
-    tagsFocusNode = FocusNode();
-    super.dispose();
-  }
-
 /*   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -201,49 +195,38 @@ class _PhotoCardState extends State<PhotoCard> {
                       image: imageProvider,
                       fit: boxFit,
                       loadStateChanged: (ExtendedImageState state) {
-                        Widget loader;
                         switch (state.extendedImageLoadState) {
                           case LoadState.loading:
                             if (null == hash) {
-                              loader = ColoredBox(color: kGreyPlaceholder);
+                              return ColoredBox(color: kGreyPlaceholder);
                             } else {
-                              loader = BlurHash(
+                              return BlurHash(
                                 hash: hash!,
                                 color: Colors.transparent,
                               );
                             }
-                            break;
                           case LoadState.completed:
-                            loader = FadeImageBuilder(
-                              child: () {
-                                return GestureDetector(
-                                  onDoubleTap: () {
-                                    if (boxFit == BoxFit.cover) {
-                                      setState(() {
-                                        boxFit = BoxFit.contain;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        boxFit = BoxFit.cover;
-                                      });
-                                    }
-                                  },
-                                  child: RepaintBoundary(
-                                    child: Container(
-                                      color: Colors.black,
-                                      constraints: BoxConstraints.expand(),
-                                      child: state.completedWidget,
-                                    ),
+                            return FadeImageBuilder(
+                              child: GestureDetector(
+                                onDoubleTap: () {
+                                  setState(() {
+                                    boxFit = (boxFit == BoxFit.cover)
+                                        ? BoxFit.contain
+                                        : BoxFit.cover;
+                                  });
+                                },
+                                child: RepaintBoundary(
+                                  child: Container(
+                                    color: Colors.black,
+                                    constraints: BoxConstraints.expand(),
+                                    child: state.completedWidget,
                                   ),
-                                );
-                              }(),
+                                ),
+                              ),
                             );
-                            break;
                           case LoadState.failed:
-                            loader = Container();
-                            break;
+                            return Container();
                         }
-                        return loader;
                       },
                     ),
                   ),

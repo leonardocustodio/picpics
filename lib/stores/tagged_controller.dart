@@ -133,6 +133,7 @@ class TaggedController extends GetxController {
       //GalleryStore.to.clearSelectedPics();
       setMultiPicBar(false);
     } else if (index == 1) {
+      await TagsController.to.tagsSuggestionsCalculate(null);
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         setMultiTagSheet(true);
         expandableController.value.expanded = true;

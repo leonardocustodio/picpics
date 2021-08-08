@@ -74,8 +74,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                   },
                   itemBuilder: (_, int index) {
                     return Obx(() {
-                      if (index == 0 ||
-                          controller.allUnTaggedPicsMonth[index] is DateTime) {
+                      if (controller.allUnTaggedPicsMonth[index] is DateTime) {
                         var isSelected = false;
                         if (controller.multiPicBar.value) {
                           var i = index + 1;
@@ -207,8 +206,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                 itemBuilder: (_, int index) {
                   return Obx(
                     () {
-                      if (index == 0 ||
-                          controller.allUnTaggedPicsDay[index] is DateTime) {
+                      if (controller.allUnTaggedPicsDay[index] is DateTime) {
                         var isSelected = false;
                         if (controller.multiPicBar.value) {
                           var i = index + 1;

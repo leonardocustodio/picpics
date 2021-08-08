@@ -337,8 +337,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
 
                                       controller.setMultiTagSheet(false);
                                       controller.setMultiPicBar(false);
-                                       TagsController.to
-                                          .addTagsToSelectedPics();
+                                      TagsController.to.addTagsToSelectedPics();
                                       await refresh_everything();
                                     },
                                     child: Container(
@@ -397,7 +396,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                         // }
                                         TagsController.to.multiPicTags
                                             .remove(tagKey);
-                                        TagsController.to.loadRecentTags();
+                                          TagsController.to.tagsSuggestionsCalculate(null);
                                         //GalleryStore.to.removeFromMultiPicTags(tagKey);
                                       },
                                       onDoubleTap: (String tagKey) {
@@ -410,7 +409,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       onChanged: (text) {
                                         TagsController.to.searchText.value =
                                             text;
-                                        TagsController.to.loadRecentTags();
+                                          TagsController.to.tagsSuggestionsCalculate(null);
                                         //GalleryStore.to.setSearchText(text);
                                       },
                                       onSubmitted: (text) {
@@ -422,7 +421,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                           bottomTagsEditingController.clear();
                                           TagsController.to.searchText.value =
                                               text;
-                                          TagsController.to.loadRecentTags();
+                                          TagsController.to.tagsSuggestionsCalculate(null);
                                           final tagKey =
                                               Helpers.encryptTag(text);
 
@@ -452,12 +451,11 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                               ? S.of(context).search_results
                                               : S.of(context).recent_tags,
                                       tagsKeyList: TagsController
-                                          .to.recentTagKeyList.keys
-                                          .where((tag) =>
+                                          .to.searchTagsResults.value.where((tag) =>
                                               TagsController
-                                                      .to.multiPicTags[tag] ==
-                                                  null &&
-                                              tag != tagKey)
+                                                  .to.multiPicTags[tag.key] ==
+                                              null).toList()
+                                          .map((e) => e.key)
                                           .toList(),
                                       tagStyle: TagStyle.GrayOutlined,
                                       /* showEditTagModal: () =>
@@ -474,7 +472,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                         //GalleryStore.to.setSearchText('');
                                         TagsController.to.multiPicTags[tagKey] =
                                             '';
-                                        TagsController.to.loadRecentTags();
+                                          TagsController.to.tagsSuggestionsCalculate(null);
                                         //GalleryStore.to.addToMultiPicTags(tagKey);
                                       },
                                       onDoubleTap: (String tagKey) {
