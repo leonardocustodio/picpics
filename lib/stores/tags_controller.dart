@@ -538,26 +538,26 @@ class TagsController extends GetxController {
       for (var picId in selectedPicIds) picId: multiPicTags.value,
     };
 
-    await addTagsToPics(picIdToTagKey: map);
+    await addTagsToPics(picIdToTagKey: map).then((value) {
+      /// Clear the selectedUntaggedPics as now the processing is done
+      if (tabsController.currentTab.value == 0) {
+        tabsController.clearSelectedUntaggedPics();
+      } else if (tabsController.currentTab.value == 2) {
+        TaggedController.to.selectedMultiBarPics.clear();
+      }
 
-    /// Clear the selectedUntaggedPics as now the processing is done
-    if (tabsController.currentTab.value == 0) {
-      tabsController.clearSelectedUntaggedPics();
-    } else if (tabsController.currentTab.value == 2) {
-      TaggedController.to.selectedMultiBarPics.clear();
-    }
+      /// Also clear the multiPicTags as we have iterated and processed through it and
+      /// now we have to make it empty for the next time
+      clearMultiPicTags();
 
-    /// Also clear the multiPicTags as we have iterated and processed through it and
-    /// now we have to make it empty for the next time
-    clearMultiPicTags();
-/* 
       WidgetsBinding.instance?.addPostFrameCallback((_) async {
         /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
         if (TabsController.to.currentTab.value == 0 ||
             TabsController.to.currentTab.value == 2) {
           await TabsController.to.refreshUntaggedList();
         }
-      }); */
+      });
+    });
   }
 
   Future<void> removeTagFromPic(
@@ -578,15 +578,27 @@ class TagsController extends GetxController {
   }
 
   /// Add All Untagged Pics To Tagged Pics with same Tags
-
-  Future<void> _addPhotoIdToLabel(String tagKey, String picId) async {
+  Future<void> _addPhotoIdToLabel(
+      String tagKey, Map<String, String> picIdsMap) async {
     final getTag = await _database.getLabelByLabelKey(tagKey);
 
-    if (getTag == null || getTag.photoId.contains(picId)) {
+    if (getTag == null) {
       return;
     }
-    getTag.photoId.add(picId);
-    await _database.updateLabel(getTag);
+    for (var id in getTag.photoId) {
+      if (picIdsMap.isEmpty) {
+        break;
+      }
+
+      /// below line means that the photoId is already present in the database of LabelKey
+      if (picIdsMap[id] != null) {
+        picIdsMap.remove(id);
+      }
+    }
+    if (picIdsMap.isNotEmpty) {
+      getTag.photoId.addAll(picIdsMap.keys.toList());
+      await _database.updateLabel(getTag);
+    }
   }
 
   Future<void> addTagsToPics(
@@ -594,19 +606,31 @@ class TagsController extends GetxController {
     /// iterate over the pictures and add tags to it
     final tabsController = Get.find<TabsController>();
 
-    await Future.forEach(picIdToTagKey.keys, (String picId) async {
-      await Future.delayed(Duration.zero, () async {
-        var map = picIdToTagKey[picId]!;
+    final tagKeyToPicId = <String, Map<String, String>>{};
 
-        var picStore = tabsController.picStoreMap[picId]!.value;
-        await Future.forEach(map.keys, (String tagKey) async {
-          await _addPhotoIdToLabel(tagKey, picId);
-        });
-
-        await picStore.addMultipleTagsToPic(
-            acceptedTagKeys: Map<String, String>.from(map));
+    picIdToTagKey.forEach((pictureId, tagMap) {
+      tagMap.keys.forEach((tagKey) {
+        if (tagKeyToPicId[tagKey] == null) {
+          tagKeyToPicId[tagKey] = <String, String>{pictureId: ''};
+        } else {
+          tagKeyToPicId[tagKey]![pictureId] = '';
+        }
       });
+    });
+
+    await Future.forEach(tagKeyToPicId.keys, (String tagKey) async {
+      await _addPhotoIdToLabel(tagKey, tagKeyToPicId[tagKey]!);
+    });
+
+    await Future.forEach(picIdToTagKey.keys, (String picId) async {
+      var picStore = tabsController.picStoreMap[picId]!.value;
+      var map = picIdToTagKey[picId]!;
+
+      await picStore.addMultipleTagsToPic(acceptedTagKeys: map);
+      await Future.delayed(Duration.zero, () {
         tabsController.allUnTaggedPicsMonth.remove(picId);
+        tabsController.allUnTaggedPicsDay.remove(picId);
+      });
     });
   }
 

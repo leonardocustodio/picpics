@@ -5,13 +5,19 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "picpics",
+            "name": "picpics (debug)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug"
         },
         {
-            "name": "picpics (profile mode)",
+            "name": "picpics (release)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "picpics (profile)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"

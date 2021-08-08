@@ -70,7 +70,7 @@ class TabsController extends GetxController {
 
   AppDatabase database = AppDatabase();
   final allUnTaggedPicsMonth = <dynamic>[].obs;
-  final allUnTaggedPicsDay = <dynamic, dynamic>{}.obs;
+  final allUnTaggedPicsDay = <dynamic>[].obs;
   final allUnTaggedPics = <String, String>{}.obs;
 
   // picId: assetPathEntity
@@ -270,7 +270,7 @@ class TabsController extends GetxController {
           /* allUnTaggedPicsDay[dateTime] = '';
           allUnTaggedPicsMonth[dateTime] = ''; */
           allUnTaggedPicsMonth.add(dateTime);
-          allUnTaggedPicsDay[dateTime] = <String>[];
+          allUnTaggedPicsDay.add(dateTime);
         }
 
         if (previousDay!.year != dateTime.year ||
@@ -278,22 +278,21 @@ class TabsController extends GetxController {
             previousDay!.day != dateTime.day) {
           if (previousDay!.day != dateTime.day) {
             //allUnTaggedPicsDay[dateTime] = '';
-            allUnTaggedPicsDay[previousDay] =
-                List<String>.from(previousDayPicIdList);
-            previousDayPicIdList = <String>[];
-            allUnTaggedPicsDay[dateTime] = <String>[];
+            //allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
+            //previousDayPicIdList = <String>[];
+            allUnTaggedPicsDay.add(dateTime);
           }
           if (previousDay!.month != dateTime.month) {
             //allUnTaggedPicsMonth[dateTime] = '';
             //allUnTaggedPicsMonth[previousMonth] = List<String>.from(previousMonthPicIdList);
-            previousMonthPicIdList = <String>[];
+            //previousMonthPicIdList = <String>[];
             allUnTaggedPicsMonth.add(dateTime);
             previousMonth = dateTime;
           }
           previousDay = dateTime;
         }
         allUnTaggedPicsMonth.add(entity.id);
-        allUnTaggedPicsDay[entity.id] = '';
+        allUnTaggedPicsDay.add(entity.id);
         allUnTaggedPics[entity.id] = '';
         previousMonthPicIdList.add(entity.id);
         previousDayPicIdList.add(entity.id);
@@ -306,7 +305,7 @@ class TabsController extends GetxController {
     isUntaggedPicsLoaded.value = true;
 
     //allUnTaggedPicsMonth[previousMonth] = List<String>.from(previousMonthPicIdList);
-    allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
+    //allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
   }
 
   void deletePic(String picId, bool removeFromGallery) {

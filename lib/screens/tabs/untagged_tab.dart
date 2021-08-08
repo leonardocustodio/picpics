@@ -14,7 +14,6 @@ import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 
@@ -57,7 +56,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                   padding: EdgeInsets.only(top: 2),
                   primary: true,
                   shrinkWrap: true,
-                  crossAxisCount: 5,
+                  crossAxisCount: 4,
                   mainAxisSpacing: 0,
                   crossAxisSpacing: 0,
                   itemCount: controller.allUnTaggedPicsMonth.length,
@@ -67,9 +66,9 @@ class UntaggedTab extends GetWidget<TabsController> {
                       if (index + 1 < controller.allUnTaggedPicsMonth.length &&
                           controller.allUnTaggedPicsMonth[index + 1]
                               is DateTime) {
-                        return StaggeredTile.extent(5, 0);
+                        return StaggeredTile.extent(4, 0);
                       }
-                      return StaggeredTile.extent(5, 40);
+                      return StaggeredTile.extent(4, 40);
                     }
                     return StaggeredTile.count(1, 1);
                   },
@@ -182,7 +181,6 @@ class UntaggedTab extends GetWidget<TabsController> {
                   }),
             );
           } else {
-            var dayKeys = controller.allUnTaggedPicsDay.entries.toList();
             return Obx(
               () => StaggeredGridView.countBuilder(
                 addAutomaticKeepAlives: true,
@@ -196,9 +194,10 @@ class UntaggedTab extends GetWidget<TabsController> {
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
                 staggeredTileBuilder: (int index) {
-                  if (index == 0 || dayKeys[index].key is DateTime) {
-                    if (index + 1 < dayKeys.length &&
-                        dayKeys[index + 1].key is DateTime) {
+                  if (index == 0 ||
+                      controller.allUnTaggedPicsDay[index] is DateTime) {
+                    if (index + 1 < controller.allUnTaggedPicsDay.length &&
+                        controller.allUnTaggedPicsDay[index + 1] is DateTime) {
                       return StaggeredTile.extent(3, 0);
                     }
                     return StaggeredTile.extent(3, 40);
@@ -208,28 +207,58 @@ class UntaggedTab extends GetWidget<TabsController> {
                 itemBuilder: (_, int index) {
                   return Obx(
                     () {
-                      if (index == 0 || dayKeys[index].key is DateTime) {
+                      if (index == 0 ||
+                          controller.allUnTaggedPicsDay[index] is DateTime) {
                         var isSelected = false;
                         if (controller.multiPicBar.value) {
-                          isSelected = dayKeys[index].value.every((picId) =>
-                              controller.selectedMultiBarPics[picId] == true);
+                          var i = index + 1;
+
+                          /// assuming that every picId is selected so the wh
+                          var everySelected = false;
+                          while (i < controller.allUnTaggedPicsDay.length &&
+                              controller.allUnTaggedPicsDay[i] is String) {
+                            if (controller.selectedMultiBarPics[
+                                        controller.allUnTaggedPicsDay[i]] ==
+                                    null ||
+                                controller.selectedMultiBarPics[
+                                        controller.allUnTaggedPicsDay[i]] ==
+                                    false) {
+                              everySelected = true;
+                              break;
+                            }
+                            i++;
+                          }
+                          isSelected = !everySelected;
                         }
                         return GestureDetector(
                             onTap: () {
                               if (controller.multiPicBar.value) {
-                                dayKeys[index].value.forEach((picId) {
-                                  if (isSelected) {
-                                    controller.selectedMultiBarPics
-                                        .remove(picId);
-                                  } else {
-                                    controller.selectedMultiBarPics[picId] =
-                                        true;
+                                var i = index + 1;
+                                if (isSelected) {
+                                  while (i <
+                                          controller
+                                              .allUnTaggedPicsDay.length &&
+                                      controller.allUnTaggedPicsDay[i]
+                                          is String) {
+                                    controller.selectedMultiBarPics.remove(
+                                        controller.allUnTaggedPicsDay[i]);
+                                    i++;
                                   }
-                                });
+                                } else {
+                                  while (i <
+                                          controller
+                                              .allUnTaggedPicsDay.length &&
+                                      controller.allUnTaggedPicsDay[i]
+                                          is String) {
+                                    controller.selectedMultiBarPics[controller
+                                        .allUnTaggedPicsDay[i]] = true;
+                                    i++;
+                                  }
+                                }
                               }
                             },
                             child: buildDateHeader(
-                              dayKeys[index].key,
+                              controller.allUnTaggedPicsDay[index],
                               isSelected,
                             ));
                       }
@@ -258,7 +287,9 @@ class UntaggedTab extends GetWidget<TabsController> {
                             ),
                           ),
                           if (controller
-                                  .picStoreMap[dayKeys[index].key]?.value !=
+                                  .picStoreMap[
+                                      controller.allUnTaggedPicsDay[index]]
+                                  ?.value !=
                               null)
                             Positioned.fill(
                               child: Padding(
@@ -268,9 +299,10 @@ class UntaggedTab extends GetWidget<TabsController> {
                                   child: Container(
                                     child: _buildImageWidget(
                                         controller
-                                            .picStoreMap[dayKeys[index].key]!
+                                            .picStoreMap[controller
+                                                .allUnTaggedPicsDay[index]]!
                                             .value,
-                                        dayKeys[index].key),
+                                        controller.allUnTaggedPicsDay[index]),
                                   ),
                                 ),
                               ),
