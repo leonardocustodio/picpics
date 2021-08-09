@@ -556,7 +556,7 @@ class PicStore extends GetxController {
       //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
       await database.updatePhoto(getPic);
 
-      if (name == null) {
+      if (name != null) {
         await Analytics.sendEvent(
           Event.added_tag,
           params: {'tagName': name},
@@ -585,7 +585,7 @@ class PicStore extends GetxController {
 
     await database.createPhoto(pic);
 
-    if (name == null) {
+    if (name != null) {
       await Analytics.sendEvent(
         Event.added_tag,
         params: {'tagName': name},

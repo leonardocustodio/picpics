@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const List<int> kDefaultPhotoSize = <int>[600, 600];
-const List<int> kDefaultPreviewThumbSize = <int>[100, 100];
+const List<int> kDefaultPreviewThumbSize = <int>[200, 200];
 
 final greyWidget = Padding(
   padding: const EdgeInsets.all(2),

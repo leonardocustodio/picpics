@@ -403,6 +403,12 @@ class AppDatabase extends _$AppDatabase {
   ///
   ///
 
+  Future createPicBlurHash(PicBlurHash newPicBlurHash) =>
+      into(picBlurHashs).insert(
+        newPicBlurHash,
+        mode: InsertMode.insertOrReplace,
+      );
+
   Future<void> insertAllPicBlurHash(List<PicBlurHash> blurHashes) async {
     final blurHashedCompanion = <PicBlurHashsCompanion>[];
 
@@ -411,7 +417,7 @@ class AppDatabase extends _$AppDatabase {
           photoId: blurHash.photoId, blurHash: blurHash.blurHash));
     }
 
-    await batch((batch) {
+    await batch((Batch batch) {
       batch.insertAll(
         picBlurHashs,
         blurHashedCompanion,

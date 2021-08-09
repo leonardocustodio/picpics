@@ -81,7 +81,7 @@ class TagsController extends GetxController {
     var suggestionTags = <String>[];
     var text = searchText.trim();
 
-    if (text == '') {
+    if (text.trim() == '') {
       for (var recent in getUser!.recentTags) {
         // //print('Recent Tag: $recent');
         if (multiPicTags[recent] != null || recent == kSecretTagKey) {
@@ -170,7 +170,7 @@ class TagsController extends GetxController {
     // //print('Suggestions Tag Store: $suggestions');
     searchTagsResults.clear();
     searchTagsResults.value = List<TagModel>.from(suggestions);
-    print('------');
+    print('$suggestions:');
     print(suggestions.toString());
     return suggestions;
   }
@@ -532,6 +532,10 @@ class TagsController extends GetxController {
 
   Future<void> addTagsToSelectedPics() async {
     final tabsController = Get.find<TabsController>();
+    if (tabsController.currentTab.value == 0) {
+      tabsController.isToggleBarVisible.value = false;
+      tabsController.toggleIndexUntagged.value = 1;
+    }
 
     var selectedPicIds = <String>[];
     if (tabsController.currentTab.value == 0) {
@@ -545,7 +549,7 @@ class TagsController extends GetxController {
       for (var picId in selectedPicIds) picId: multiPicTags.value,
     };
 
-    await addTagsToPics(picIdToTagKey: map).then((value) {
+    await addTagsToPics(picIdToTagKey: map).then((_) async {
       /// Clear the selectedUntaggedPics as now the processing is done
       if (tabsController.currentTab.value == 0) {
         tabsController.clearSelectedUntaggedPics();
@@ -557,13 +561,9 @@ class TagsController extends GetxController {
       /// now we have to make it empty for the next time
       clearMultiPicTags();
 
-      WidgetsBinding.instance?.addPostFrameCallback((_) async {
-        /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
-        if (TabsController.to.currentTab.value == 0 ||
-            TabsController.to.currentTab.value == 2) {
-          await TabsController.to.refreshUntaggedList();
-        }
-      });
+      /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
+
+      await tabsController.refreshUntaggedList();
     });
   }
 
@@ -630,12 +630,11 @@ class TagsController extends GetxController {
     });
 
     await Future.forEach(picIdToTagKey.keys, (String picId) async {
-      var picStore = tabsController.picStoreMap[picId]!.value;
-      var map = picIdToTagKey[picId]!;
+      await tabsController.picStoreMap[picId]!.value
+          .addMultipleTagsToPic(acceptedTagKeys: picIdToTagKey[picId]!);
 
-      await picStore.addMultipleTagsToPic(acceptedTagKeys: map);
+      /// remove it from ui
       await Future.delayed(Duration.zero, () {
-        tabsController.allUnTaggedPicsMonth.remove(picId);
         tabsController.allUnTaggedPicsDay.remove(picId);
       });
     });
