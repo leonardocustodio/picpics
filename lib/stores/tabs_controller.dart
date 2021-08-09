@@ -13,12 +13,10 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/swiper_tab_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/refresh_everything.dart';
@@ -180,7 +178,7 @@ class TabsController extends GetxController {
       }
     });
   }
-  
+
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
     if (assetsPath.isEmpty) {
       status.value = Status.DeviceHasNoPics;

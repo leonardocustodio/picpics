@@ -4,9 +4,9 @@ class Geolocation {
   Geolocation(this._coordinates, this._bounds);
 
   Geolocation.fromJSON(geolocationJSON) {
-    this._coordinates = geolocationJSON["results"][0]["geometry"]["location"];
-    this._bounds = geolocationJSON["results"][0]["geometry"]["viewport"];
-    this.fullJSON = geolocationJSON["results"][0];
+    _coordinates = geolocationJSON['results'][0]['geometry']['location'];
+    _bounds = geolocationJSON['results'][0]['geometry']['viewport'];
+    fullJSON = geolocationJSON['results'][0];
   }
 
   /// Property that holds the JSON response that contains the location of the place.
@@ -27,7 +27,7 @@ class Geolocation {
   /// a `LatLng` object. Otherwise, it'll be returned as Map.
   get coordinates {
     try {
-      return LatLng(_coordinates["lat"], _coordinates["lng"]);
+      return LatLng(_coordinates['lat'], _coordinates['lng']);
     } catch (e) {
       //print('You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with the latitude and longitude");
       return _coordinates;
@@ -40,9 +40,9 @@ class Geolocation {
     try {
       return LatLngBounds(
         southwest:
-            LatLng(_bounds["southwest"]["lat"], _bounds["southwest"]["lng"]),
+            LatLng(_bounds['southwest']['lat'], _bounds['southwest']['lng']),
         northeast:
-            LatLng(_bounds["northeast"]["lat"], _bounds["northeast"]["lng"]),
+            LatLng(_bounds['northeast']['lat'], _bounds['northeast']['lng']),
       );
     } catch (e) {
       //print('You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with southwest and northeast bounds");

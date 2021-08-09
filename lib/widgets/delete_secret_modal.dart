@@ -23,7 +23,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
   bool keepAsking = true;
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width;
     //print('Width: $width');
 
     return Dialog(

@@ -19,7 +19,6 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/generated/l10n.dart';
 // import 'package:firebase_admob/firebase_admob.dart';
 import 'package:expandable/expandable.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 // ignore_for_file: unused_local_variable, must_be_immutable
 class TabsScreen extends GetWidget<TabsController> {
@@ -112,7 +111,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                           WidgetsBinding.instance
                                               ?.addPostFrameCallback(
                                                   (timeStamp) async {
-                                            TagsController.to
+                                            await TagsController.to
                                                 .addTagsToSelectedPics();
                                           });
                                         },

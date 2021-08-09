@@ -14,7 +14,7 @@ void showDeleteSecretModalForMultiPic() async {
   if (UserController.to.keepAskingToDelete.value == false) {
     TabsController.to.setMultiTagSheet(false);
     TabsController.to.setMultiPicBar(false);
-     TagsController.to.addTagsToSelectedPics();
+    await TagsController.to.addTagsToSelectedPics();
     return;
   }
 
@@ -31,14 +31,14 @@ void showDeleteSecretModalForMultiPic() async {
           await UserController.to.setShouldDeleteOnPrivate(false);
           TabsController.to.setMultiTagSheet(false);
           TabsController.to.setMultiPicBar(false);
-           TagsController.to.addTagsToSelectedPics();
+          await TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
         onPressedOk: () async {
           await UserController.to.setShouldDeleteOnPrivate(true);
           TabsController.to.setMultiTagSheet(false);
           TabsController.to.setMultiPicBar(false);
-           TagsController.to.addTagsToSelectedPics();
+          await TagsController.to.addTagsToSelectedPics();
           Get.back();
         },
       );
@@ -55,7 +55,7 @@ Future<void> showDeleteSecretModal(
   }
 
   if (UserController.to.isPremium.value == false) {
-    final freePrivatePics = await UserController.to.freePrivatePics;
+    final freePrivatePics = UserController.to.freePrivatePics;
     if (UserController.to.totalPrivatePics >= freePrivatePics &&
         picStore.isPrivate.value == false) {
       await Get.to(() => PremiumScreen());

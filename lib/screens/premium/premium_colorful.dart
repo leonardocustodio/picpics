@@ -11,7 +11,7 @@ class ColorfulPremium extends CustomPainter {
     //   ..shader = kPrimaryGradient
     //       .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    Paint secondaryGradient = Paint()
+    final secondaryGradient = Paint()
       ..shader = kSecondaryGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..colorFilter = ColorFilter.mode(
@@ -19,7 +19,7 @@ class ColorfulPremium extends CustomPainter {
         BlendMode.srcOver,
       );
 
-    Paint pinkGradient = Paint()
+    final pinkGradient = Paint()
       ..colorFilter = ColorFilter.mode(
         Colors.white.withOpacity(withOpacity),
         BlendMode.srcOver,
@@ -27,7 +27,7 @@ class ColorfulPremium extends CustomPainter {
       ..shader = kPinkGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    Paint yellowPaint = Paint()
+    final yellowPaint = Paint()
       ..color = kYellowColor
       ..colorFilter = ColorFilter.mode(
         Colors.white.withOpacity(withOpacity),
@@ -35,9 +35,9 @@ class ColorfulPremium extends CustomPainter {
       )
       ..style = PaintingStyle.fill;
 
-    Path secondaryPath = getSecondaryPath(size.width, size.height, -20, 0);
-    Path pinkPath = getPinkPath(size.width, size.height, 0, 30);
-    Path yellowPath = getYellowPath(size.width, size.height, 0, 0);
+    final secondaryPath = getSecondaryPath(size.width, size.height, -20, 0);
+    final pinkPath = getPinkPath(size.width, size.height, 0, 30);
+    final yellowPath = getYellowPath(size.width, size.height, 0, 0);
 
     // canvas.drawPaint(primaryGradient);
     canvas.drawPath(pinkPath, pinkGradient);

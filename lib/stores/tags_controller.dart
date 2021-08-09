@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
@@ -10,11 +9,9 @@ import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 /* import 'package:picPics/stores/tagged_controller.dart'; */
 import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/helpers.dart';
 import '../constants.dart';
 import 'package:picPics/model/tag_model.dart';
-import 'database_controller.dart';
 
 class TagsController extends GetxController {
   /// tagKey: {
