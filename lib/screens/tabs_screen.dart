@@ -173,7 +173,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                             // }
                                             TagsController.to.multiPicTags
                                                 .remove(tagKey);
-                                            TagsController.to.tagsSuggestionsCalculate(null);
+                                            TagsController.to
+                                                .tagsSuggestionsCalculate();
                                             //GalleryStore.to.removeFromMultiPicTags(tagKey);
                                           },
                                           onDoubleTap: (String tagKey) {
@@ -186,7 +187,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                           onChanged: (text) {
                                             TagsController.to.searchText.value =
                                                 text;
-                                            TagsController.to.tagsSuggestionsCalculate(null);
+                                            TagsController.to
+                                                .tagsSuggestionsCalculate();
                                             //GalleryStore.to.setSearchText(text);
                                           },
                                           onSubmitted: (text) {
@@ -200,7 +202,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                               TagsController
                                                   .to.searchText.value = text;
                                               TagsController.to
-                                                  .tagsSuggestionsCalculate(null);
+                                                  .tagsSuggestionsCalculate();
                                               final tagKey =
                                                   Helpers.encryptTag(text);
 
@@ -232,11 +234,14 @@ class TabsScreen extends GetWidget<TabsController> {
                                               ? S.of(context).search_results
                                               : S.of(context).recent_tags,
                                           tagsKeyList: TagsController
-                                              .to.searchTagsResults.value.where((tag) =>
-                                                  TagsController
-                                                      .to.multiPicTags[tag.key] ==
+                                              .to.searchTagsResults.value
+                                              .where((tag) =>
+                                                  TagsController.to
+                                                      .multiPicTags[tag.key] ==
                                                   null)
-                                              .toList().map((e) => e.key).toList(),
+                                              .toList()
+                                              .map((e) => e.key)
+                                              .toList(),
                                           tagStyle: TagStyle.GrayOutlined,
                                           /* showEditTagModal: () =>
                                                   showEditTagModal(context), */
@@ -253,7 +258,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                             //GalleryStore.to.setSearchText('');
                                             TagsController
                                                 .to.multiPicTags[tagKey] = '';
-                                            TagsController.to.tagsSuggestionsCalculate(null);
+                                            TagsController.to
+                                                .tagsSuggestionsCalculate();
                                             //GalleryStore.to.addToMultiPicTags(tagKey);
                                           },
                                           onDoubleTap: (String tagKey) {

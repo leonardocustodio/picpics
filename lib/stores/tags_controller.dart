@@ -46,9 +46,9 @@ class TagsController extends GetxController {
     super.onInit();
     UserController.to.createDefaultTags(Get.context).then((_) async {
       await loadAllTags();
-      await TagsController.to.tagsSuggestionsCalculate(null);
+      await TagsController.to.tagsSuggestionsCalculate();
     });
-    ever(searchText, (_) => tagsSuggestionsCalculate(null));
+    ever(searchText, (_) => tagsSuggestionsCalculate());
 /* 
     Future.delayed(Duration(seconds: 10), () {
       Timer.periodic(Duration.zero, (_) {
@@ -71,10 +71,10 @@ class TagsController extends GetxController {
     if (!selectedFilteringTagsKeys.contains(tagKey)) {
       selectedFilteringTagsKeys.add(tagKey);
     }
-    tagsSuggestionsCalculate(null);
+    tagsSuggestionsCalculate();
   }
 
-  Future<List<TagModel>> tagsSuggestionsCalculate(_) async {
+  Future<List<TagModel>> tagsSuggestionsCalculate() async {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
     var tagsList = await _database.getAllLabel();
@@ -83,7 +83,6 @@ class TagsController extends GetxController {
     //List<String> multiPicTags = multiPicTagKeys.toList();
     var suggestionTags = <String>[];
     var text = searchText.trim();
-    
 
     if (text == '') {
       for (var recent in getUser!.recentTags) {
@@ -136,7 +135,7 @@ class TagsController extends GetxController {
         print(suggestionTags
             .map((e) => '${TagsController.to.allTags[e]!.value.title}')
             .toString());
-    print('------');
+        print('------');
         doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
           if (matched) {
             print(
@@ -183,7 +182,7 @@ class TagsController extends GetxController {
     if (selectedFilteringTagsKeys.contains(tagKey)) {
       selectedFilteringTagsKeys.remove(tagKey);
     }
-    tagsSuggestionsCalculate(null);
+    tagsSuggestionsCalculate();
   }
 
 /*   void searchForTagName(_) {

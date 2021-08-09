@@ -180,40 +180,7 @@ class TabsController extends GetxController {
       }
     });
   }
-
-/* 
-  final lruCache = <String, String>{}.obs;
-  final maxLruSpace = 80;
-
-  Timer? _timer;
-
-  dynamic getCache(String key) {
-    return lruCache.value[key];
-  }
-
-  /// a temporary place to overload the buffer coming in to the ui and then push at once the timer triggers
-  // ignore: prefer_collection_literals
-  final _stashLru = LinkedHashMap<String, String>();
-
-  void putCache(String key) {
-    _timer?.cancel();
-
-    if (null == _stashLru[key]) {
-      _stashLru[key] = '';
-      if (_stashLru.length > maxLruSpace) {
-        _stashLru.remove(_stashLru.keys.first);
-      }
-    }
-
-    _timer = Timer(Duration(milliseconds: 100), () {
-      print('triggered');
-      if (_stashLru.isNotEmpty) {
-        lruCache.value = Map<String, String>.from(_stashLru);
-        _stashLru.clear();
-      }
-    });
-  }
- */
+  
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
     if (assetsPath.isEmpty) {
       status.value = Status.DeviceHasNoPics;
@@ -222,12 +189,9 @@ class TabsController extends GetxController {
 
     var assetPathEntity = assetsPath[0];
 
-    await assetPathEntity
-        .getAssetListRange(start: 0, end: assetPathEntity.assetCount)
-        .then((list) async {
-      assetEntityList = List<AssetEntity>.from(list);
-      await refreshUntaggedList();
-    });
+    assetEntityList = List<AssetEntity>.from(await assetPathEntity
+        .getAssetListRange(start: 0, end: assetPathEntity.assetCount));
+    await refreshUntaggedList();
   }
 
   Future<void> refreshUntaggedList() async {
@@ -342,72 +306,6 @@ class TabsController extends GetxController {
     }
     return picStoreValue!;
   }
-
-  /* Future<void> exploreThumbPic_(String picId) async {
-    /// if it is not secret pic
-    if (secretPicIds[picId] != null) {
-      if (!secretPicIds[picId]) {
-        // not a secret pic
-        addThumbBytesMap(picId, assetThumbBytes(false, assetMap[picId]));
-        return;
-      } else if (secretPicData[picId] != null) {
-        // it is a secret pic as we had successfully found the data related to it
-        addThumbBytesMap(
-            picId,
-            assetThumbBytes(true, assetMap[picId], secretPicData[picId].nonce,
-                secretPicData[picId].thumbPath));
-        return;
-      }
-    }
-
-    Photo pic = await database.getPhotoByPhotoId(assetMap[picId].id);
-    if (pic != null) {
-      //print('pic $photoId exists, loading data....');
-      //Pic pic = picsBox.get(photoId);
-
-      /* latitude.value = pic.latitude;
-      longitude.value = pic.longitude;
-      specificLocation.value = pic.specificLocation;
-      generalLocation.value = pic.generalLocation;
-      isPrivate.value = pic.isPrivate ?? false;
-      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
-      isStarred.value = pic.isStarred ?? false; */
-
-      //print('Is private: $isPrivate');
-      /* for (String tagKey in pic.tags) {
-        TagsStore tagsStore = UserController.to.tags[tagKey];
-        if (tagsStore == null) {
-          //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
-          continue;
-        }
-
-        /// TODO: tags[tagKey] = tagsStore;
-      } */
-      if (pic.isPrivate == true) {
-        Private secretPic =
-            await database.getPrivateByPhotoId(assetMap[picId].id);
-
-        if (secretPic != null) {
-          var thumbPath = secretPic.thumbPath;
-          var nonce = secretPic.nonce;
-          secretPicIds[assetMap[picId].id] = true;
-          secretPicData[assetMap[picId].id] = secretPic;
-          //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
-          /* picAssetOriginBytesMap[assetMap[picId].id] =
-              assetOriginBytes(true, assetMap[picId], nonce, photoPath); */
-          //await Crypto.decryptImage(photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
-          addThumbBytesMap(
-              picId, assetThumbBytes(true, assetMap[picId], nonce, thumbPath));
-          //await Crypto.decryptImage(thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
-        }
-      }
-    }
-    /* picAssetOriginBytesMap[assetMap[picId].id] =
-        assetOriginBytes(false, assetMap[picId]); */
-    //await entity.originBytes;
-    addThumbBytesMap(picId, assetThumbBytes(false, assetMap[picId]));
-    //await entity.thumbDataWithSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
-  } */
 
   Future<void> loadAssetPath() async {
     /// we are asking permission here because the PhotoManager will surely ask for permission

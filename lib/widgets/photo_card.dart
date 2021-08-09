@@ -412,7 +412,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     },
                     onChanged: (text) async {
                       TagsController.to.searchText.value = text;
-                      await TagsController.to.tagsSuggestionsCalculate(null);
+                      await TagsController.to.tagsSuggestionsCalculate();
                     },
                     onSubmitted: (text) async {
                       //print('return');
@@ -436,7 +436,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         Vibrate.feedback(FeedbackType.success);
                         tagsEditingController.clear();
                         TagsController.to.searchText.value = '';
-                        await TagsController.to.tagsSuggestionsCalculate(null);
+                        await TagsController.to.tagsSuggestionsCalculate();
                         await TaggedController.to.refreshTaggedPhotos();
                         await TabsController.to.refreshUntaggedList();
                       }
@@ -487,7 +487,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     }
 
                     //print('${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');
-                    TagsController.to.tagsSuggestionsCalculate(null);
+                    TagsController.to.tagsSuggestionsCalculate();
                     return Obx(
                       () => TagsList(
                         title: suggestionsTitle,
@@ -523,7 +523,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           await picStore.addMultipleTagsToPic(
                               acceptedTagKeys: {tagKey: ''});
                           await TagsController.to
-                              .tagsSuggestionsCalculate(null)
+                              .tagsSuggestionsCalculate()
                               .then((value) async {
                             await TaggedController.to.refreshTaggedPhotos();
                             var newList = value.where((element) {
@@ -542,7 +542,7 @@ class _PhotoCardState extends State<PhotoCard> {
                                 newList.isEmpty) {
                               TagsController.to.searchText.value = '';
                               await TagsController.to
-                                  .tagsSuggestionsCalculate(null);
+                                  .tagsSuggestionsCalculate();
                             }
                           });
                           await TaggedController.to.refreshTaggedPhotos();

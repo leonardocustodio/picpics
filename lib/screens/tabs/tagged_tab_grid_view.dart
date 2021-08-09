@@ -396,7 +396,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                         // }
                                         TagsController.to.multiPicTags
                                             .remove(tagKey);
-                                          TagsController.to.tagsSuggestionsCalculate(null);
+                                        TagsController.to
+                                            .tagsSuggestionsCalculate();
                                         //GalleryStore.to.removeFromMultiPicTags(tagKey);
                                       },
                                       onDoubleTap: (String tagKey) {
@@ -409,7 +410,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       onChanged: (text) {
                                         TagsController.to.searchText.value =
                                             text;
-                                          TagsController.to.tagsSuggestionsCalculate(null);
+                                        TagsController.to
+                                            .tagsSuggestionsCalculate();
                                         //GalleryStore.to.setSearchText(text);
                                       },
                                       onSubmitted: (text) {
@@ -421,7 +423,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                           bottomTagsEditingController.clear();
                                           TagsController.to.searchText.value =
                                               text;
-                                          TagsController.to.tagsSuggestionsCalculate(null);
+                                          TagsController.to
+                                              .tagsSuggestionsCalculate();
                                           final tagKey =
                                               Helpers.encryptTag(text);
 
@@ -451,10 +454,12 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                               ? S.of(context).search_results
                                               : S.of(context).recent_tags,
                                       tagsKeyList: TagsController
-                                          .to.searchTagsResults.value.where((tag) =>
+                                          .to.searchTagsResults.value
+                                          .where((tag) =>
                                               TagsController
                                                   .to.multiPicTags[tag.key] ==
-                                              null).toList()
+                                              null)
+                                          .toList()
                                           .map((e) => e.key)
                                           .toList(),
                                       tagStyle: TagStyle.GrayOutlined,
@@ -472,7 +477,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                         //GalleryStore.to.setSearchText('');
                                         TagsController.to.multiPicTags[tagKey] =
                                             '';
-                                          TagsController.to.tagsSuggestionsCalculate(null);
+                                        TagsController.to
+                                            .tagsSuggestionsCalculate();
                                         //GalleryStore.to.addToMultiPicTags(tagKey);
                                       },
                                       onDoubleTap: (String tagKey) {

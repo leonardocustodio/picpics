@@ -40,7 +40,7 @@ class TopBar extends StatelessWidget {
                         //print('hasFocus: ${searchFocusNode.hasFocus}');
                         /* if (TagsController.to.isSearching.value == false) {
                           TagsController.to.setIsSearching(true);
-                          TagsController.to.tagsSuggestionsCalculate(null);
+                          TagsController.to.tagsSuggestionsCalculate();
                         } else {
                           TagsController.to.selectedFilteringTagsKeys.clear();
                           TagsController.to.setIsSearching(false);
@@ -51,7 +51,7 @@ class TopBar extends StatelessWidget {
                         onTap: () {
                           if (TagsController.to.isSearching.value == false) {
                             TagsController.to.setIsSearching(true);
-                            TagsController.to.tagsSuggestionsCalculate(null);
+                            TagsController.to.tagsSuggestionsCalculate();
                           }
                         },
                         child: TextField(
