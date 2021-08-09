@@ -1,10 +1,33 @@
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
 import 'package:picPics/model/tag_model.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class Helpers {
+  static Widget failedItem = Center(
+    child: Text(
+      'Failed loading',
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 18.0),
+    ),
+  );
+  static String dateFormat(DateTime dateTime, {bool isMonth = true}) {
+    DateFormat formatter;
+    //print('Date Time Formatting: $dateTime');
+
+    /// More Optimized code
+    if (isMonth) {
+      formatter = DateFormat.yMMMM();
+    } else {
+      formatter = dateTime.year == DateTime.now().year
+          ? DateFormat.MMMEd()
+          : DateFormat.yMMMEd();
+    }
+    return formatter.format(dateTime);
+  }
+
   static String stripTag(String tag) => removeDiacritics(tag.toLowerCase());
 
   static String encryptTag(String tag) {
