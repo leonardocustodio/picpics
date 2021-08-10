@@ -192,20 +192,19 @@ class TabsController extends GetxController {
     await refreshUntaggedList();
   }
 
-  Future<void> refreshUntaggedList() async {
-    isUntaggedPicsLoaded.value = false;
+  void sortAssetEntityList() {
     assetEntityList.sort((a, b) {
       return DateTime(b.createDateTime.year, b.createDateTime.month,
               b.createDateTime.day)
           .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month,
               a.createDateTime.day));
     });
-    /* var val = await database.getPrivatePhotoList();
-    await Future.forEach(
-        val, (photo) async => privatePhotoIdMap[photo.id] = ''); */
+  }
 
+  Future<void> filterUntaggedPhotos() async {
     /// refreshing the taggedPhotos so that we can filter out the untagged photos from the below section.
     await TaggedController.to.refreshTaggedPhotos();
+    await PrivatePhotosController.to.refreshPrivatePics();
 
     DateTime? previousDay;
     DateTime? previousMonth;
@@ -229,8 +228,6 @@ class TabsController extends GetxController {
         if (previousDay == null || previousMonth == null) {
           previousDay = dateTime;
           previousMonth = dateTime;
-          /* allUnTaggedPicsDay[dateTime] = '';
-          allUnTaggedPicsMonth[dateTime] = ''; */
           allUnTaggedPicsMonth.add(dateTime);
           allUnTaggedPicsDay.add(dateTime);
         }
@@ -239,15 +236,9 @@ class TabsController extends GetxController {
             previousDay!.month != dateTime.month ||
             previousDay!.day != dateTime.day) {
           if (previousDay!.day != dateTime.day) {
-            //allUnTaggedPicsDay[dateTime] = '';
-            //allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
-            //previousDayPicIdList = <String>[];
             allUnTaggedPicsDay.add(dateTime);
           }
           if (previousDay!.month != dateTime.month) {
-            //allUnTaggedPicsMonth[dateTime] = '';
-            //allUnTaggedPicsMonth[previousMonth] = List<String>.from(previousMonthPicIdList);
-            //previousMonthPicIdList = <String>[];
             allUnTaggedPicsMonth.add(dateTime);
             previousMonth = dateTime;
           }
@@ -264,10 +255,13 @@ class TabsController extends GetxController {
       }
       //status.value = Status.Loaded;
     });
-    isUntaggedPicsLoaded.value = true;
+  }
 
-    //allUnTaggedPicsMonth[previousMonth] = List<String>.from(previousMonthPicIdList);
-    //allUnTaggedPicsDay[previousDay] = List<String>.from(previousDayPicIdList);
+  Future<void> refreshUntaggedList() async {
+    isUntaggedPicsLoaded.value = false;
+    sortAssetEntityList();
+    await filterUntaggedPhotos();
+    isUntaggedPicsLoaded.value = true;
   }
 
   void deletePic(String picId, bool removeFromGallery) {
@@ -562,7 +556,7 @@ class TabsController extends GetxController {
 
             if (pic != null && pic.tags.isNotEmpty) {
               // //print('pic is in db... removing it from db!');
-              var picTags = List<String>.from(pic.tags);
+              var picTags = List<String>.from(pic.tags.keys);
               await Future.wait([
                 Future.forEach(picTags, (String tagKey) async {
                   var tag = await database.getLabelByLabelKey(tagKey);
@@ -637,42 +631,6 @@ class TabsController extends GetxController {
     // //print('Reaction!');
     //setTrashedPic(true);
   }
-  /*
-  setTabIndex(int index) {
-    if (!GalleryStore.to.deviceHasPics.value) {
-      setCurrentTab(index);
-      return;
-    }
-
-    if (multiPicBar.value) {
-      if (index == 0) {
-        returnAction();
-      } else if (index == 1) {
-        if (currentTab.value == 0) {
-          tagAction();
-        } else {
-          starredAction();
-        }
-      } else if (index == 2) {
-        if (currentTab.value == 0) {
-          shareAction();
-        } else {
-          tagAction();
-        }
-      } else if (index == 3) {
-        if (currentTab.value == 0) {
-          trashAction();
-        } else {
-          shareAction();
-        }
-      } else if (index == 4) {
-        trashAction();
-      }
-      return;
-    }
-
-    setCurrentTab(index);
-  } */
 }
 
 Future<void> sharePics({required List<String> picKeys}) async {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -45,7 +45,7 @@ class UntaggedTabDay extends GetWidget<TabsController> {
                   /// assuming that every picId is selected so the wh
                   var everySelected = false;
                   while (i < controller.allUnTaggedPicsDay.length &&
-                      controller.allUnTaggedPicsDay[i] is String) {
+                      controller.allUnTaggedPicsDay[i] is! DateTime) {
                     if (controller.selectedMultiBarPics[
                                 controller.allUnTaggedPicsDay[i]] ==
                             null ||
@@ -65,14 +65,14 @@ class UntaggedTabDay extends GetWidget<TabsController> {
                         var i = index + 1;
                         if (isSelected) {
                           while (i < controller.allUnTaggedPicsDay.length &&
-                              controller.allUnTaggedPicsDay[i] is String) {
+                              controller.allUnTaggedPicsDay[i] is! DateTime) {
                             controller.selectedMultiBarPics
                                 .remove(controller.allUnTaggedPicsDay[i]);
                             i++;
                           }
                         } else {
                           while (i < controller.allUnTaggedPicsDay.length &&
-                              controller.allUnTaggedPicsDay[i] is String) {
+                              controller.allUnTaggedPicsDay[i] is! DateTime) {
                             controller.selectedMultiBarPics[
                                 controller.allUnTaggedPicsDay[i]] = true;
                             i++;
@@ -117,14 +117,15 @@ class UntaggedTabDay extends GetWidget<TabsController> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(6),
                           child: Container(
-                              child: UntaggedImageWidgets(
-                            picStore: controller
-                                .picStoreMap[
-                                    controller.allUnTaggedPicsDay[index]]!
-                                .value,
-                            picId: controller.allUnTaggedPicsDay[index],
-                            hash: blurHash,
-                          )),
+                            child: UntaggedImageWidgets(
+                              picStore: controller
+                                  .picStoreMap[
+                                      controller.allUnTaggedPicsDay[index]]!
+                                  .value,
+                              picId: controller.allUnTaggedPicsDay[index],
+                              hash: blurHash,
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -137,3 +138,4 @@ class UntaggedTabDay extends GetWidget<TabsController> {
     );
   }
 }
+ */

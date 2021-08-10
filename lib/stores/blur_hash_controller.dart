@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:isolate';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
@@ -10,11 +9,12 @@ import 'package:picPics/third_party_lib/src/blurhash.dart';
 class BlurHashController extends GetxController {
   static BlurHashController get to => Get.find();
   static Timer? _timer;
+  static Timer? _settingTimer;
 
   final blurHash = <String, String>{}.obs;
-  final masterHash = <String, String>{}.obs;
+  final masterHash = <String, String>{};
   static final _appDatabase = AppDatabase();
-  final _blurHashesQueue = <String, Uint8List>{};
+  final _blurHashesQueue = <String, Uint8List>{}.obs;
 
   @override
   void onInit() {
@@ -40,63 +40,62 @@ class BlurHashController extends GetxController {
 
   Future<void> createBlurHash(String photoId, Uint8List imageBytes) async {
     return;
-    if (null != _blurHashesQueue[photoId] || null != masterHash[photoId]) {}
-    _timer?.cancel();
+    if (null != _blurHashesQueue[photoId] || null != masterHash[photoId]) {
+      return;
+    }
+    _settingTimer?.cancel();
 
     _blurHashesQueue[photoId] = imageBytes;
 
-    _timer = Timer(Duration(seconds: 5), spawnBlurHashInsertingIsolate);
-  }
-
-  static Future<String?> _calculateBlurHash(Uint8List imageBytes) async {
-    final image = img.decodeImage(imageBytes.toList());
-    if (null != image) {
-      return BlurHash.encode(image).hash;
-    }
-    return null;
+    _settingTimer = Timer(Duration(seconds: 5), () {
+      _timer = Timer(Duration(seconds: 1), spawnBlurHashInsertingIsolate);
+    });
   }
 
   void spawnBlurHashInsertingIsolate() async {
-    Map<String, String>? val;
     try {
-      print('Before: ' + masterHash.value.toString());
-      val = await compute<Map<String, Uint8List>, Map<String, String>>(
-          _insertBlurHashToDatabase, _blurHashesQueue);
+      final val = await compute(_insertBlurHashToDatabase, _blurHashesQueue);
+
       if (val.isNotEmpty) {
         var picBlurHashList = <PicBlurHash>[];
         val.forEach((key, value) {
           masterHash[key] = value;
           picBlurHashList.add(PicBlurHash(photoId: key, blurHash: value));
         });
-        await Future.forEach(picBlurHashList, _appDatabase.createPicBlurHash);
+        await _appDatabase.insertAllPicBlurHash(picBlurHashList);
       }
-      print('After: $val');
     } catch (e) {
-      print('After2: $val : ');
       print('Error: $e');
     }
   }
 
   static FutureOr<Map<String, String>> _insertBlurHashToDatabase(
-      Map<String, Uint8List> val) async {
+      RxMap<String, Uint8List> val) async {
     print('_blurHashesQueue : ${val.keys}');
+
+    /// creating hashMap to return the value
     var localBlurHashMap = <String, String>{};
 
     if (val.isNotEmpty) {
-      var picMaps = Map<String, Uint8List>.from(val);
-      val.clear();
-      var picBlurHashList = <PicBlurHash>[];
-
-      await Future.forEach(picMaps.entries,
+      await Future.forEach(val.entries,
           (MapEntry<String, Uint8List> object) async {
-        var hash = await _calculateBlurHash(object.value);
-        if (null != hash) {
+        String? hash;
+
+        ///
+        /// get image bytes
+        ///
+        final image = img.decodeImage(object.value.toList());
+        if (null != image) {
+          ///
+          /// calculate blurHash
+          ///
+          hash = BlurHash.encode(image).hash;
           localBlurHashMap[object.key] = hash;
-          picBlurHashList.add(PicBlurHash(photoId: object.key, blurHash: hash));
         }
       });
     }
     _timer = null;
+    _settingTimer = null;
     return localBlurHashMap;
   }
 }

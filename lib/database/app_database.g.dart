@@ -17,7 +17,7 @@ class Photo extends DataClass implements Insertable<Photo> {
   final bool isPrivate;
   final bool deletedFromCameraRoll;
   final bool isStarred;
-  final List<String> tags;
+  final Map<String, String> tags;
   final String? specificLocation;
   final String? generalLocation;
   final String? base64encoded;
@@ -150,7 +150,7 @@ class Photo extends DataClass implements Insertable<Photo> {
       deletedFromCameraRoll:
           serializer.fromJson<bool>(json['deletedFromCameraRoll']),
       isStarred: serializer.fromJson<bool>(json['isStarred']),
-      tags: serializer.fromJson<List<String>>(json['tags']),
+      tags: serializer.fromJson<Map<String, String>>(json['tags']),
       specificLocation: serializer.fromJson<String?>(json['specificLocation']),
       generalLocation: serializer.fromJson<String?>(json['generalLocation']),
       base64encoded: serializer.fromJson<String?>(json['base64encoded']),
@@ -169,7 +169,7 @@ class Photo extends DataClass implements Insertable<Photo> {
       'isPrivate': serializer.toJson<bool>(isPrivate),
       'deletedFromCameraRoll': serializer.toJson<bool>(deletedFromCameraRoll),
       'isStarred': serializer.toJson<bool>(isStarred),
-      'tags': serializer.toJson<List<String>>(tags),
+      'tags': serializer.toJson<Map<String, String>>(tags),
       'specificLocation': serializer.toJson<String?>(specificLocation),
       'generalLocation': serializer.toJson<String?>(generalLocation),
       'base64encoded': serializer.toJson<String?>(base64encoded),
@@ -186,7 +186,7 @@ class Photo extends DataClass implements Insertable<Photo> {
           bool? isPrivate,
           bool? deletedFromCameraRoll,
           bool? isStarred,
-          List<String>? tags,
+          Map<String, String>? tags,
           String? specificLocation,
           String? generalLocation,
           String? base64encoded}) =>
@@ -282,7 +282,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
   final Value<bool> isPrivate;
   final Value<bool> deletedFromCameraRoll;
   final Value<bool> isStarred;
-  final Value<List<String>> tags;
+  final Value<Map<String, String>> tags;
   final Value<String?> specificLocation;
   final Value<String?> generalLocation;
   final Value<String?> base64encoded;
@@ -311,7 +311,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     this.isPrivate = const Value.absent(),
     this.deletedFromCameraRoll = const Value.absent(),
     this.isStarred = const Value.absent(),
-    required List<String> tags,
+    required Map<String, String> tags,
     this.specificLocation = const Value.absent(),
     this.generalLocation = const Value.absent(),
     this.base64encoded = const Value.absent(),
@@ -328,7 +328,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
     Expression<bool>? isPrivate,
     Expression<bool>? deletedFromCameraRoll,
     Expression<bool>? isStarred,
-    Expression<List<String>>? tags,
+    Expression<Map<String, String>>? tags,
     Expression<String?>? specificLocation,
     Expression<String?>? generalLocation,
     Expression<String?>? base64encoded,
@@ -361,7 +361,7 @@ class PhotosCompanion extends UpdateCompanion<Photo> {
       Value<bool>? isPrivate,
       Value<bool>? deletedFromCameraRoll,
       Value<bool>? isStarred,
-      Value<List<String>>? tags,
+      Value<Map<String, String>>? tags,
       Value<String?>? specificLocation,
       Value<String?>? generalLocation,
       Value<String?>? base64encoded}) {
@@ -706,8 +706,8 @@ class $PhotosTable extends Photos with TableInfo<$PhotosTable, Photo> {
     return $PhotosTable(_db, alias);
   }
 
-  static TypeConverter<List<String>, String> $converter0 =
-      ListStringConvertor();
+  static TypeConverter<Map<String, String>, String> $converter0 =
+      MapStringConvertor();
 }
 
 class PicBlurHash extends DataClass implements Insertable<PicBlurHash> {
@@ -789,7 +789,7 @@ class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
   PicBlurHashsCompanion.insert({
     required String photoId,
     required String blurHash,
-  })   : photoId = Value(photoId),
+  })  : photoId = Value(photoId),
         blurHash = Value(blurHash);
   static Insertable<PicBlurHash> custom({
     Expression<String>? photoId,
@@ -1340,7 +1340,7 @@ class Label extends DataClass implements Insertable<Label> {
   final int counter;
   final DateTime lastUsedAt;
   final String title;
-  final List<String> photoId;
+  final Map<String, String> photoId;
   Label(
       {required this.key,
       required this.counter,
@@ -1395,7 +1395,7 @@ class Label extends DataClass implements Insertable<Label> {
       counter: serializer.fromJson<int>(json['counter']),
       lastUsedAt: serializer.fromJson<DateTime>(json['lastUsedAt']),
       title: serializer.fromJson<String>(json['title']),
-      photoId: serializer.fromJson<List<String>>(json['photoId']),
+      photoId: serializer.fromJson<Map<String, String>>(json['photoId']),
     );
   }
   @override
@@ -1406,7 +1406,7 @@ class Label extends DataClass implements Insertable<Label> {
       'counter': serializer.toJson<int>(counter),
       'lastUsedAt': serializer.toJson<DateTime>(lastUsedAt),
       'title': serializer.toJson<String>(title),
-      'photoId': serializer.toJson<List<String>>(photoId),
+      'photoId': serializer.toJson<Map<String, String>>(photoId),
     };
   }
 
@@ -1415,7 +1415,7 @@ class Label extends DataClass implements Insertable<Label> {
           int? counter,
           DateTime? lastUsedAt,
           String? title,
-          List<String>? photoId}) =>
+          Map<String, String>? photoId}) =>
       Label(
         key: key ?? this.key,
         counter: counter ?? this.counter,
@@ -1458,7 +1458,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
   final Value<int> counter;
   final Value<DateTime> lastUsedAt;
   final Value<String> title;
-  final Value<List<String>> photoId;
+  final Value<Map<String, String>> photoId;
   const LabelsCompanion({
     this.key = const Value.absent(),
     this.counter = const Value.absent(),
@@ -1471,14 +1471,14 @@ class LabelsCompanion extends UpdateCompanion<Label> {
     this.counter = const Value.absent(),
     this.lastUsedAt = const Value.absent(),
     this.title = const Value.absent(),
-    required List<String> photoId,
+    required Map<String, String> photoId,
   }) : photoId = Value(photoId);
   static Insertable<Label> custom({
     Expression<String>? key,
     Expression<int>? counter,
     Expression<DateTime>? lastUsedAt,
     Expression<String>? title,
-    Expression<List<String>>? photoId,
+    Expression<Map<String, String>>? photoId,
   }) {
     return RawValuesInsertable({
       if (key != null) 'key': key,
@@ -1494,7 +1494,7 @@ class LabelsCompanion extends UpdateCompanion<Label> {
       Value<int>? counter,
       Value<DateTime>? lastUsedAt,
       Value<String>? title,
-      Value<List<String>>? photoId}) {
+      Value<Map<String, String>>? photoId}) {
     return LabelsCompanion(
       key: key ?? this.key,
       counter: counter ?? this.counter,
@@ -1635,230 +1635,8 @@ class $LabelsTable extends Labels with TableInfo<$LabelsTable, Label> {
     return $LabelsTable(_db, alias);
   }
 
-  static TypeConverter<List<String>, String> $converter0 =
-      ListStringConvertor();
-}
-
-class LabelEntry extends DataClass implements Insertable<LabelEntry> {
-  final int id;
-  final String photo;
-  final String label;
-  LabelEntry({required this.id, required this.photo, required this.label});
-  factory LabelEntry.fromData(Map<String, dynamic> data, GeneratedDatabase db,
-      {String? prefix}) {
-    final effectivePrefix = prefix ?? '';
-    return LabelEntry(
-      id: const IntType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}id'])!,
-      photo: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}photo'])!,
-      label: const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}label'])!,
-    );
-  }
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<int>(id);
-    map['photo'] = Variable<String>(photo);
-    map['label'] = Variable<String>(label);
-    return map;
-  }
-
-  LabelEntriesCompanion toCompanion(bool nullToAbsent) {
-    return LabelEntriesCompanion(
-      id: Value(id),
-      photo: Value(photo),
-      label: Value(label),
-    );
-  }
-
-  factory LabelEntry.fromJson(Map<String, dynamic> json,
-      {ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return LabelEntry(
-      id: serializer.fromJson<int>(json['id']),
-      photo: serializer.fromJson<String>(json['photo']),
-      label: serializer.fromJson<String>(json['label']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= moorRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<int>(id),
-      'photo': serializer.toJson<String>(photo),
-      'label': serializer.toJson<String>(label),
-    };
-  }
-
-  LabelEntry copyWith({int? id, String? photo, String? label}) => LabelEntry(
-        id: id ?? this.id,
-        photo: photo ?? this.photo,
-        label: label ?? this.label,
-      );
-  @override
-  String toString() {
-    return (StringBuffer('LabelEntry(')
-          ..write('id: $id, ')
-          ..write('photo: $photo, ')
-          ..write('label: $label')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode =>
-      $mrjf($mrjc(id.hashCode, $mrjc(photo.hashCode, label.hashCode)));
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is LabelEntry &&
-          other.id == this.id &&
-          other.photo == this.photo &&
-          other.label == this.label);
-}
-
-class LabelEntriesCompanion extends UpdateCompanion<LabelEntry> {
-  final Value<int> id;
-  final Value<String> photo;
-  final Value<String> label;
-  const LabelEntriesCompanion({
-    this.id = const Value.absent(),
-    this.photo = const Value.absent(),
-    this.label = const Value.absent(),
-  });
-  LabelEntriesCompanion.insert({
-    this.id = const Value.absent(),
-    required String photo,
-    required String label,
-  })   : photo = Value(photo),
-        label = Value(label);
-  static Insertable<LabelEntry> custom({
-    Expression<int>? id,
-    Expression<String>? photo,
-    Expression<String>? label,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (photo != null) 'photo': photo,
-      if (label != null) 'label': label,
-    });
-  }
-
-  LabelEntriesCompanion copyWith(
-      {Value<int>? id, Value<String>? photo, Value<String>? label}) {
-    return LabelEntriesCompanion(
-      id: id ?? this.id,
-      photo: photo ?? this.photo,
-      label: label ?? this.label,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<int>(id.value);
-    }
-    if (photo.present) {
-      map['photo'] = Variable<String>(photo.value);
-    }
-    if (label.present) {
-      map['label'] = Variable<String>(label.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('LabelEntriesCompanion(')
-          ..write('id: $id, ')
-          ..write('photo: $photo, ')
-          ..write('label: $label')
-          ..write(')'))
-        .toString();
-  }
-}
-
-class $LabelEntriesTable extends LabelEntries
-    with TableInfo<$LabelEntriesTable, LabelEntry> {
-  final GeneratedDatabase _db;
-  final String? _alias;
-  $LabelEntriesTable(this._db, [this._alias]);
-  final VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedIntColumn id = _constructId();
-  GeneratedIntColumn _constructId() {
-    return GeneratedIntColumn('id', $tableName, false,
-        hasAutoIncrement: true, declaredAsPrimaryKey: true);
-  }
-
-  final VerificationMeta _photoMeta = const VerificationMeta('photo');
-  @override
-  late final GeneratedTextColumn photo = _constructPhoto();
-  GeneratedTextColumn _constructPhoto() {
-    return GeneratedTextColumn(
-      'photo',
-      $tableName,
-      false,
-    );
-  }
-
-  final VerificationMeta _labelMeta = const VerificationMeta('label');
-  @override
-  late final GeneratedTextColumn label = _constructLabel();
-  GeneratedTextColumn _constructLabel() {
-    return GeneratedTextColumn(
-      'label',
-      $tableName,
-      false,
-    );
-  }
-
-  @override
-  List<GeneratedColumn> get $columns => [id, photo, label];
-  @override
-  $LabelEntriesTable get asDslTable => this;
-  @override
-  String get $tableName => _alias ?? 'label_entries';
-  @override
-  final String actualTableName = 'label_entries';
-  @override
-  VerificationContext validateIntegrity(Insertable<LabelEntry> instance,
-      {bool isInserting = false}) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    }
-    if (data.containsKey('photo')) {
-      context.handle(
-          _photoMeta, photo.isAcceptableOrUnknown(data['photo']!, _photoMeta));
-    } else if (isInserting) {
-      context.missing(_photoMeta);
-    }
-    if (data.containsKey('label')) {
-      context.handle(
-          _labelMeta, label.isAcceptableOrUnknown(data['label']!, _labelMeta));
-    } else if (isInserting) {
-      context.missing(_labelMeta);
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  LabelEntry map(Map<String, dynamic> data, {String? tablePrefix}) {
-    return LabelEntry.fromData(data, _db,
-        prefix: tablePrefix != null ? '$tablePrefix.' : null);
-  }
-
-  @override
-  $LabelEntriesTable createAlias(String alias) {
-    return $LabelEntriesTable(_db, alias);
-  }
+  static TypeConverter<Map<String, String>, String> $converter0 =
+      MapStringConvertor();
 }
 
 class MoorUser extends DataClass implements Insertable<MoorUser> {
@@ -1872,7 +1650,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
   final String? appLanguage;
   final String? appVersion;
   final String? secretKey;
-  final List<String> starredPhotos;
+  final Map<String, String> starredPhotos;
   final String? defaultWidgetImage;
   final int goal;
   final int hourOfDay;
@@ -2092,7 +1870,8 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       appLanguage: serializer.fromJson<String?>(json['appLanguage']),
       appVersion: serializer.fromJson<String?>(json['appVersion']),
       secretKey: serializer.fromJson<String?>(json['secretKey']),
-      starredPhotos: serializer.fromJson<List<String>>(json['starredPhotos']),
+      starredPhotos:
+          serializer.fromJson<Map<String, String>>(json['starredPhotos']),
       defaultWidgetImage:
           serializer.fromJson<String?>(json['defaultWidgetImage']),
       goal: serializer.fromJson<int>(json['goal']),
@@ -2131,7 +1910,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       'appLanguage': serializer.toJson<String?>(appLanguage),
       'appVersion': serializer.toJson<String?>(appVersion),
       'secretKey': serializer.toJson<String?>(secretKey),
-      'starredPhotos': serializer.toJson<List<String>>(starredPhotos),
+      'starredPhotos': serializer.toJson<Map<String, String>>(starredPhotos),
       'defaultWidgetImage': serializer.toJson<String?>(defaultWidgetImage),
       'goal': serializer.toJson<int>(goal),
       'hourOfDay': serializer.toJson<int>(hourOfDay),
@@ -2163,7 +1942,7 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           String? appLanguage,
           String? appVersion,
           String? secretKey,
-          List<String>? starredPhotos,
+          Map<String, String>? starredPhotos,
           String? defaultWidgetImage,
           int? goal,
           int? hourOfDay,
@@ -2336,7 +2115,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
   final Value<String?> appLanguage;
   final Value<String?> appVersion;
   final Value<String?> secretKey;
-  final Value<List<String>> starredPhotos;
+  final Value<Map<String, String>> starredPhotos;
   final Value<String?> defaultWidgetImage;
   final Value<int> goal;
   final Value<int> hourOfDay;
@@ -2395,7 +2174,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     this.appLanguage = const Value.absent(),
     this.appVersion = const Value.absent(),
     this.secretKey = const Value.absent(),
-    required List<String> starredPhotos,
+    required Map<String, String> starredPhotos,
     this.defaultWidgetImage = const Value.absent(),
     this.goal = const Value.absent(),
     this.hourOfDay = const Value.absent(),
@@ -2426,7 +2205,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     Expression<String?>? appLanguage,
     Expression<String?>? appVersion,
     Expression<String?>? secretKey,
-    Expression<List<String>>? starredPhotos,
+    Expression<Map<String, String>>? starredPhotos,
     Expression<String?>? defaultWidgetImage,
     Expression<int>? goal,
     Expression<int>? hourOfDay,
@@ -2493,7 +2272,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       Value<String?>? appLanguage,
       Value<String?>? appVersion,
       Value<String?>? secretKey,
-      Value<List<String>>? starredPhotos,
+      Value<Map<String, String>>? starredPhotos,
       Value<String?>? defaultWidgetImage,
       Value<int>? goal,
       Value<int>? hourOfDay,
@@ -3158,8 +2937,8 @@ class $MoorUsersTable extends MoorUsers
 
   static TypeConverter<List<String>, String> $converter0 =
       ListStringConvertor();
-  static TypeConverter<List<String>, String> $converter1 =
-      ListStringConvertor();
+  static TypeConverter<Map<String, String>, String> $converter1 =
+      MapStringConvertor();
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {
@@ -3168,11 +2947,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $PicBlurHashsTable picBlurHashs = $PicBlurHashsTable(this);
   late final $PrivatesTable privates = $PrivatesTable(this);
   late final $LabelsTable labels = $LabelsTable(this);
-  late final $LabelEntriesTable labelEntries = $LabelEntriesTable(this);
   late final $MoorUsersTable moorUsers = $MoorUsersTable(this);
   @override
   Iterable<TableInfo> get allTables => allSchemaEntities.whereType<TableInfo>();
   @override
   List<DatabaseSchemaEntity> get allSchemaEntities =>
-      [photos, picBlurHashs, privates, labels, labelEntries, moorUsers];
+      [photos, picBlurHashs, privates, labels, moorUsers];
 }

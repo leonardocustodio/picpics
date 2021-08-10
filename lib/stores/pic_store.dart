@@ -139,7 +139,7 @@ class PicStore extends GetxController {
       final getTag = await database.getLabelByLabelKey(tKeys);
       if (getTag != null) {
         getTag.photoId.remove(photoId);
-        getTag.photoId.add(value);
+        getTag.photoId[value] = '';
         //print('Replaced tag in ${getTag.title} tagsbox');
         await database.updateLabel(getTag);
       }
@@ -350,7 +350,7 @@ class PicStore extends GetxController {
         }
       }
 
-      for (var tagKey in pic.tags) {
+      for (var tagKey in pic.tags.keys) {
         var tagModel = TagsController.to.allTags[tagKey];
         if (tagModel == null) {
           //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
@@ -500,7 +500,7 @@ class PicStore extends GetxController {
       await database.createLabel(Label(
           key: tagKey,
           title: tagName,
-          photoId: [photoId.value],
+          photoId: <String, String>{photoId.value: ''},
           counter: 1,
           lastUsedAt: DateTime.now()));
     }
@@ -524,12 +524,29 @@ class PicStore extends GetxController {
 
       if (getTag != null) {
         list.add(getTag.title);
-        getTag.photoId.removeWhere((picId) => picId == photoId.value);
+        getTag.photoId.remove(photoId.value);
         await database.updateLabel(getTag);
       }
     });
 
     return list.join(', ');
+  }
+
+  Photo photoObject(Map<String, String> tagsMap, bool isPrivate) {
+    return Photo(
+      id: photoId.value,
+      createdAt: createdAt,
+      originalLatitude: originalLatitude,
+      originalLongitude: originalLongitude,
+      latitude: null,
+      longitude: null,
+      specificLocation: null,
+      generalLocation: null,
+      tags: tagsMap,
+      isStarred: false,
+      deletedFromCameraRoll: false,
+      isPrivate: isPrivate,
+    );
   }
 
   //@action
@@ -538,21 +555,14 @@ class PicStore extends GetxController {
     var getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
-      //print('this picture is in db going to update');
-
-      /// See if all the multi tags are already present in the Tags of picture or not
-      getPic.tags.forEach((key) {
-        if (acceptedTagKeys[key] != null) {
-          acceptedTagKeys.remove(key);
-        }
-      });
+      print('this picture is in db going to update');
 
       if (acceptedTagKeys.isEmpty) {
         //print('this tag is already in this picture');
         return;
       }
 
-      getPic.tags.addAll(acceptedTagKeys.keys.toList());
+      getPic.tags.addAll(acceptedTagKeys);
       //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
       await database.updatePhoto(getPic);
 
@@ -568,20 +578,8 @@ class PicStore extends GetxController {
     //print('this picture is not in db, adding it...');
     //print('Photo Id: $photoId');
 
-    var pic = Photo(
-      id: photoId.value,
-      createdAt: createdAt,
-      originalLatitude: originalLatitude,
-      originalLongitude: originalLongitude,
-      latitude: null,
-      longitude: null,
-      specificLocation: null,
-      generalLocation: null,
-      tags: acceptedTagKeys.keys.toList(),
-      isStarred: false,
-      deletedFromCameraRoll: false,
-      isPrivate: acceptedTagKeys[kSecretTagKey] != null,
-    );
+    var pic =
+        photoObject(acceptedTagKeys, acceptedTagKeys[kSecretTagKey] != null);
 
     await database.createPhoto(pic);
 
@@ -659,7 +657,7 @@ class PicStore extends GetxController {
 
     if (pic != null) {
       //print('pic is in db... removing it from db!');
-      var picTags = List<String>.from(pic.tags);
+      var picTags = List<String>.from(pic.tags.keys);
       for (var tagKey in picTags) {
         await removeMultipleTagFromPic(
           acceptedTags: <String, String>{tagKey: ''},
@@ -685,7 +683,7 @@ class PicStore extends GetxController {
     var getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
-      getPic.tags.removeWhere((key) => acceptedTags[key] != null);
+      getPic.tags.removeWhere((key, _) => acceptedTags[key] != null);
       await database.updatePhoto(getPic);
       tags.removeWhere((key, _) => acceptedTags[key] != null);
 
@@ -739,7 +737,7 @@ class PicStore extends GetxController {
         longitude: longitude.value,
         specificLocation: specificLocation.value,
         generalLocation: generalLocation.value,
-        tags: [],
+        tags: <String, String>{},
         isStarred: false,
         isPrivate: false,
         deletedFromCameraRoll: false,

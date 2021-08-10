@@ -375,7 +375,7 @@ class TagsController extends GetxController {
     await _database.createLabel(Label(
         key: tagKey,
         title: tagName,
-        photoId: <String>[],
+        photoId: <String, String>{},
         counter: 1,
         lastUsedAt: DateTime.now()));
     //tagsBox.put(tagKey, Tag(tagName, []));
@@ -499,7 +499,7 @@ class TagsController extends GetxController {
       var createSecretLabel = Label(
         key: kSecretTagKey,
         title: 'Secret Pics',
-        photoId: [],
+        photoId: <String, String>{},
         counter: 1,
         lastUsedAt: DateTime.now(),
       );
@@ -562,7 +562,7 @@ class TagsController extends GetxController {
       clearMultiPicTags();
 
       /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
-
+      ///
       await tabsController.refreshUntaggedList();
     });
   }
@@ -589,21 +589,18 @@ class TagsController extends GetxController {
       String tagKey, Map<String, String> picIdsMap) async {
     final getTag = await _database.getLabelByLabelKey(tagKey);
 
-    if (getTag == null) {
+    if (getTag == null && allTags[tagKey] != null) {
+      var newLabel = Label(
+          key: tagKey,
+          counter: 1,
+          lastUsedAt: DateTime.now(),
+          title: allTags[tagKey]!.value.title,
+          photoId: picIdsMap);
+      await _database.createLabel(newLabel);
       return;
     }
-    for (var id in getTag.photoId) {
-      if (picIdsMap.isEmpty) {
-        break;
-      }
-
-      /// below line means that the photoId is already present in the database of LabelKey
-      if (picIdsMap[id] != null) {
-        picIdsMap.remove(id);
-      }
-    }
     if (picIdsMap.isNotEmpty) {
-      getTag.photoId.addAll(picIdsMap.keys.toList());
+      getTag!.photoId.addAll(picIdsMap);
       await _database.updateLabel(getTag);
     }
   }
@@ -615,6 +612,8 @@ class TagsController extends GetxController {
 
     final tagKeyToPicId = <String, Map<String, String>>{};
 
+    final stopWatch = Stopwatch()..start();
+
     picIdToTagKey.forEach((pictureId, tagMap) {
       tagMap.keys.forEach((tagKey) {
         if (tagKeyToPicId[tagKey] == null) {
@@ -624,20 +623,27 @@ class TagsController extends GetxController {
         }
       });
     });
+    print('ran tag creation in :${stopWatch.elapsed}');
+    stopWatch.reset();
 
     await Future.forEach(tagKeyToPicId.keys, (String tagKey) async {
       await _addPhotoIdToLabel(tagKey, tagKeyToPicId[tagKey]!);
     });
+    print('ran tag insertion in :${stopWatch.elapsed}');
+    stopWatch.reset();
 
     await Future.forEach(picIdToTagKey.keys, (String picId) async {
-      await tabsController.picStoreMap[picId]!.value
-          .addMultipleTagsToPic(acceptedTagKeys: picIdToTagKey[picId]!);
+      final map = picIdToTagKey[picId]!;
 
-      /// remove it from ui
-      await Future.delayed(Duration.zero, () {
+      await tabsController.picStoreMap[picId]!.value
+          .addMultipleTagsToPic(acceptedTagKeys: map);
+      await Future.delayed(Duration(milliseconds: 30), () {
         tabsController.allUnTaggedPicsDay.remove(picId);
+        tabsController.allUnTaggedPicsMonth.remove(picId);
       });
     });
+    print('ran photo insertion in :${stopWatch.elapsed}');
+    /*  print('ran photos insertion in :${stopWatch.elapsed}'); */
   }
 
   void clearMultiPicTags() {
@@ -735,15 +741,11 @@ class TagsController extends GetxController {
 
     await Future.wait(
       [
-        Future.forEach(createTag.photoId, (String photoId) async {
+        Future.forEach(createTag.photoId.keys, (String photoId) async {
           final pic = await _database.getPhotoByPhotoId(photoId);
           if (pic != null) {
             //Pic pic = picsBox.get(photoId);
-            var indexOfOldTag = pic.tags.indexOf(oldTagKey);
-            // //print('Tags in this picture: ${pic.tags}');
-            if (indexOfOldTag > -1) {
-              pic.tags[indexOfOldTag] = newTagKey;
-            }
+            pic.tags[oldTagKey] = newTagKey;
             await _database.updatePhoto(pic);
             //picsBox.put(photoId, pic);
             // //print('updated tag in pic ${pic.id}');

@@ -41,7 +41,8 @@ class WidgetManager {
         final randInt = rand.nextInt(starredPhotos.length);
         //print('Sorted number for widget: $randInt');
 
-        final pic = await appDatabase.getPhotoByPhotoId(starredPhotos[randInt]);
+        final pic = await appDatabase
+            .getPhotoByPhotoId(starredPhotos.keys.toList()[randInt]);
         //print('Base64: ${pic.base64encoded}');
         baseString = pic?.base64encoded;
       }

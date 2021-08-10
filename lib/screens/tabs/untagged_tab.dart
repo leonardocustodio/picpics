@@ -9,11 +9,13 @@ import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/screens/tabs/untagged_tabs/untagged_image_widgets.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 /* import 'package:picPics/stores/gallery_store.dart'; */
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 
@@ -52,25 +54,24 @@ class UntaggedTab extends GetWidget<TabsController> {
               () => StaggeredGridView.countBuilder(
                   addAutomaticKeepAlives: true,
                   addRepaintBoundaries: true,
-                  key: Key('Month'),
-                  padding: EdgeInsets.only(top: 2),
                   primary: true,
                   shrinkWrap: true,
+                  key: Key('Month'),
+                  padding: const EdgeInsets.only(top: 2),
                   crossAxisCount: 4,
                   mainAxisSpacing: 0,
                   crossAxisSpacing: 0,
                   itemCount: controller.allUnTaggedPicsMonth.length,
                   staggeredTileBuilder: (int index) {
-                    if (index == 0 ||
-                        controller.allUnTaggedPicsMonth[index] is DateTime) {
+                    if (controller.allUnTaggedPicsMonth[index] is DateTime) {
                       if (index + 1 < controller.allUnTaggedPicsMonth.length &&
                           controller.allUnTaggedPicsMonth[index + 1]
                               is DateTime) {
-                        return StaggeredTile.extent(4, 0);
+                        return const StaggeredTile.extent(4, 0);
                       }
-                      return StaggeredTile.extent(4, 40);
+                      return const StaggeredTile.extent(4, 40);
                     }
-                    return StaggeredTile.count(1, 1);
+                    return const StaggeredTile.count(1, 1);
                   },
                   itemBuilder: (_, int index) {
                     return Obx(() {
@@ -147,7 +148,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                                         color: Colors.transparent,
                                       )
                                     : Container(
-                                        padding: const EdgeInsets.all(12),
+                                        padding: EdgeInsets.all(12),
                                         color: Colors.grey[300],
                                       ),
                               ),
@@ -164,14 +165,14 @@ class UntaggedTab extends GetWidget<TabsController> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
                                 child: Container(
-                                  child: _buildImageWidget(
-                                      controller
-                                          .picStoreMap[controller
-                                              .allUnTaggedPicsMonth[index]]!
-                                          .value,
-                                      controller.allUnTaggedPicsMonth[index],
-                                      blurHash),
-                                ),
+                                    child: _buildImageWidget(
+                                        picStore: controller
+                                            .picStoreMap[controller
+                                                .allUnTaggedPicsMonth[index]]!
+                                            .value,
+                                        picId: controller
+                                            .allUnTaggedPicsMonth[index],
+                                        hash: blurHash)),
                               ),
                             )),
                         ],
@@ -183,12 +184,12 @@ class UntaggedTab extends GetWidget<TabsController> {
             return Obx(
               () => StaggeredGridView.countBuilder(
                 addAutomaticKeepAlives: true,
-                key: Key('Day'),
+                addRepaintBoundaries: true,
                 primary: true,
                 shrinkWrap: true,
-                padding: EdgeInsets.only(top: 2),
+                key: Key('Day'),
+                padding: const EdgeInsets.only(top: 2),
                 itemCount: controller.allUnTaggedPicsDay.length,
-                addRepaintBoundaries: true,
                 crossAxisCount: 3,
                 mainAxisSpacing: 0,
                 crossAxisSpacing: 0,
@@ -196,11 +197,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                   if (controller.allUnTaggedPicsDay[index] is DateTime) {
                     if (index + 1 < controller.allUnTaggedPicsDay.length &&
                         controller.allUnTaggedPicsDay[index + 1] is DateTime) {
-                      return StaggeredTile.extent(3, 0);
+                      return const StaggeredTile.extent(3, 0);
                     }
-                    return StaggeredTile.extent(3, 40);
+                    return const StaggeredTile.extent(3, 40);
                   }
-                  return StaggeredTile.count(1, 1);
+                  return const StaggeredTile.count(1, 1);
                 },
                 itemBuilder: (_, int index) {
                   return Obx(
@@ -293,12 +294,13 @@ class UntaggedTab extends GetWidget<TabsController> {
                                   borderRadius: BorderRadius.circular(6),
                                   child: Container(
                                     child: _buildImageWidget(
-                                        controller
+                                        picStore: controller
                                             .picStoreMap[controller
                                                 .allUnTaggedPicsDay[index]]!
                                             .value,
-                                        controller.allUnTaggedPicsDay[index],
-                                        blurHash),
+                                        picId: controller
+                                            .allUnTaggedPicsDay[index],
+                                        hash: blurHash),
                                   ),
                                 ),
                               ),
@@ -316,13 +318,13 @@ class UntaggedTab extends GetWidget<TabsController> {
     );
   }
 
-  Widget get _failedItem => Center(
-        child: Text(
-          'Failed loading',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 18.0),
-        ),
-      );
+  final _failedItem = const Center(
+    child: Text(
+      'Failed loading',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 18.0),
+    ),
+  );
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
@@ -341,8 +343,8 @@ class UntaggedTab extends GetWidget<TabsController> {
 
   Widget buildDateHeader(DateTime date, bool isSelected) {
     return Container(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      height: 40.0,
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      height: 40,
       child: Row(
         children: [
           if (TabsController.to.multiPicBar.value)
@@ -367,7 +369,7 @@ class UntaggedTab extends GetWidget<TabsController> {
             textScaleFactor: 1.0,
             style: TextStyle(
               fontFamily: 'Lato',
-              color: Color(0xff606566),
+              color: const Color(0xff606566),
               fontSize: 14.0,
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.normal,
@@ -379,7 +381,8 @@ class UntaggedTab extends GetWidget<TabsController> {
     );
   }
 
-  Widget _buildImageWidget(PicStore picStore, String picId, String? hash) {
+  Widget _buildImageWidget(
+      {required PicStore picStore, required String picId, String? hash}) {
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
     return ExtendedImage(
@@ -394,7 +397,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                 padding: const EdgeInsets.all(2),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6),
-                  child: ColoredBox(color: kGreyPlaceholder),
+                  child: const ColoredBox(color: kGreyPlaceholder),
                 ),
               );
             } else {
@@ -435,7 +438,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                         picId: picId,
                         picIdList: controller.allUnTaggedPics.keys.toList()));
                     if (null == result) {
-                      //await refresh_everything();
+                      await refresh_everything();
                     }
                   },
                   child: Obx(() => Stack(
@@ -585,7 +588,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
-                          color: Color(0xff979a9b),
+                          color: const Color(0xff979a9b),
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
                           fontStyle: FontStyle.normal,

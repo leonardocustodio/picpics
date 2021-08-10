@@ -65,7 +65,7 @@ class Photos extends Table {
       boolean().withDefault(const Constant(false))();
   BoolColumn get isStarred => boolean().withDefault(const Constant(false))();
 
-  TextColumn get tags => text().map(ListStringConvertor())();
+  TextColumn get tags => text().map(MapStringConvertor())();
 
   TextColumn get specificLocation => text().nullable()();
   TextColumn get generalLocation => text().nullable()();
@@ -80,15 +80,15 @@ class Labels extends Table {
   DateTimeColumn get lastUsedAt =>
       dateTime().withDefault(Constant(DateTime.now()))();
   TextColumn get title => text().withDefault(const Constant(''))();
-  TextColumn get photoId => text().map(ListStringConvertor())();
+  TextColumn get photoId => text().map(MapStringConvertor())();
 }
 
-@DataClassName('LabelEntry')
+/* @DataClassName('LabelEntry')
 class LabelEntries extends Table {
   IntColumn get id => integer().autoIncrement()();
   TextColumn get photo => text()();
   TextColumn get label => text()();
-}
+} */
 
 // Old Info @Hive: Secret
 class Privates extends Table {
@@ -119,7 +119,7 @@ class MoorUsers extends Table {
   TextColumn get appLanguage => text().nullable()();
   TextColumn get appVersion => text().nullable()();
   TextColumn get secretKey => text().nullable()();
-  TextColumn get starredPhotos => text().map(ListStringConvertor())();
+  TextColumn get starredPhotos => text().map(MapStringConvertor())();
   TextColumn get defaultWidgetImage => text().nullable()();
 
   IntColumn get goal => integer().withDefault(const Constant(20))();
@@ -148,6 +148,26 @@ class MoorUsers extends Table {
 
   DateTimeColumn get lastTaggedPicDate =>
       dateTime().withDefault(Constant(DateTime.now()))();
+}
+
+class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
+  @override
+  Map<String, String> mapToDart(String? fromDb) {
+    if (fromDb == null) {
+      return <String, String>{};
+    }
+    var r = json.decode(fromDb);
+    if (r is List) {
+      return <String, String>{};
+    }
+    
+    return Map<String, String>.from(r);
+  }
+
+  @override
+  String mapToSql(Map<String, String>? value) {
+    return json.encode(value ?? <String, String>{});
+  }
 }
 
 class ListStringConvertor extends TypeConverter<List<String>, String> {
@@ -184,8 +204,7 @@ LazyDatabase _openConnection() {
   });
 }
 
-@UseMoor(
-    tables: [Photos, PicBlurHashs, Privates, Labels, LabelEntries, MoorUsers])
+@UseMoor(tables: [Photos, PicBlurHashs, Privates, Labels, MoorUsers])
 class AppDatabase extends _$AppDatabase {
   static final AppDatabase _singleton = AppDatabase._internal();
 
@@ -499,36 +518,17 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<void> insertAllLabelsEntries(
-      Map<String, List<String>> photosTags) async {
-    final labelsEntriesCompanions = <LabelEntriesCompanion>[];
-
-    photosTags.forEach((key, value) {
-      for (var tag in value) {
-        labelsEntriesCompanions.add(
-          LabelEntriesCompanion.insert(
-            photo: key,
-            label: tag,
-          ),
-        );
-      }
-    });
-
-    await batch((batch) {
-      batch.insertAll(labelEntries, labelsEntriesCompanions);
-    });
-  }
-
   Future<void> insertAllLabelsList(List<Tag> tags) async {
     final labelsCompanions = <LabelsCompanion>[];
 
     for (final tag in tags) {
       labelsCompanions.add(
         LabelsCompanion.insert(
-          key: tag.key.moorValue,
-          title: tag.name.moorValue,
-          photoId: tag.photoId,
-        ),
+            key: tag.key.moorValue,
+            title: tag.name.moorValue,
+            photoId: <String, String>{
+              for (var t in tag.photoId) t: '',
+            }),
       );
     }
 
@@ -537,15 +537,15 @@ class AppDatabase extends _$AppDatabase {
     });
   }
 
-  Future<void> insertAllPhotos(List<Pic> pics) async {
+  Future<void> insertAllPhotos(List<Photo> pics) async {
     final photosCompanions = <PhotosCompanion>[];
-    var photosTags = <String, List<String>>{};
+    var photosTags = <String, Map<String, String>>{};
 
     for (var pic in pics) {
-      photosTags[pic.photoId] = pic.tags;
+      photosTags[pic.id] = pic.tags;
       photosCompanions.add(
         PhotosCompanion.insert(
-          id: pic.photoId,
+          id: pic.id,
           createdAt: pic.createdAt,
           originalLatitude: pic.originalLatitude.moorValue /* ?? 0.0 */,
           originalLongitude: pic.originalLongitude.moorValue /* ?? 0.0 */,
@@ -565,8 +565,40 @@ class AppDatabase extends _$AppDatabase {
     await batch((batch) {
       batch.insertAll(photos, photosCompanions);
     });
+  }
 
-    await insertAllLabelsEntries(photosTags);
+  ///
+  /// Below function is saem as batch write for photos but this is used for migration purpose.
+  ///
+  Future<void> insertAllPics(List<Pic> pics) async {
+    final photosCompanions = <PhotosCompanion>[];
+    var photosTags = <String, List<String>>{};
+
+    for (var pic in pics) {
+      photosTags[pic.photoId] = pic.tags;
+      photosCompanions.add(
+        PhotosCompanion.insert(
+            id: pic.photoId,
+            createdAt: pic.createdAt,
+            originalLatitude: pic.originalLatitude.moorValue /* ?? 0.0 */,
+            originalLongitude: pic.originalLongitude.moorValue /* ?? 0.0 */,
+            latitude: pic.latitude.moorValue,
+            longitude: pic.longitude.moorValue,
+            specificLocation: pic.specificLocation.moorValue,
+            generalLocation: pic.generalLocation.moorValue,
+            isPrivate: pic.isPrivate.moorValue,
+            deletedFromCameraRoll: pic.deletedFromCameraRoll.moorValue,
+            isStarred: pic.isStarred.moorValue,
+            base64encoded: pic.base64encoded.moorValue,
+            tags: <String, String>{
+              for (var t in pic.tags) t: '',
+            }),
+      );
+    }
+
+    await batch((batch) {
+      batch.insertAll(photos, photosCompanions);
+    });
   }
 
   ///

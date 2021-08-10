@@ -107,9 +107,6 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                             height: 20.0,
                             width: 20.0,
                             margin: const EdgeInsets.only(right: 8.0),
-                            child: keepAsking
-                                ? Image.asset('lib/images/checkwhiteico.png')
-                                : null,
                             decoration: keepAsking
                                 ? BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -130,6 +127,9 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                                     ),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
+                            child: keepAsking
+                                ? Image.asset('lib/images/checkwhiteico.png')
+                                : null,
                           ),
                           Text(
                             S.of(context).keep_asking,
@@ -160,9 +160,6 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                             height: 20.0,
                             width: 20.0,
                             margin: const EdgeInsets.only(right: 8.0),
-                            child: !keepAsking
-                                ? Image.asset('lib/images/checkwhiteico.png')
-                                : null,
                             decoration: !keepAsking
                                 ? BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
@@ -183,6 +180,9 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                                     ),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
+                            child: !keepAsking
+                                ? Image.asset('lib/images/checkwhiteico.png')
+                                : null,
                           ),
                           Text(
                             S.of(context).dont_ask_again,

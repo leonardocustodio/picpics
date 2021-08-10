@@ -17,7 +17,7 @@ class User {
       dailyChallenges,
       tutorialCompleted;
   DateTime lastTaggedPicDate;
-  List<String> starredPhotos;
+  Map<String, String> starredPhotos;
   User({
     required this.id,
     required this.email,

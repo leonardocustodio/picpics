@@ -49,7 +49,7 @@ class UserController extends GetxController {
   final isMenuExpanded = true.obs;
   final isBiometricActivated = false.obs;
 
-  final starredPhotos = <String>[].obs;
+  final starredPhotos = <String, String>{}.obs;
 
   //String initialRoute;
   String? tryBuyId;
@@ -116,7 +116,7 @@ class UserController extends GetxController {
     email = user.email;
     tourCompleted.value = user.tourCompleted;
     isBiometricActivated.value = user.isBiometricActivated;
-    starredPhotos.value = List<String>.from(user.starredPhotos);
+    starredPhotos.value = Map<String, String>.from(user.starredPhotos);
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -163,11 +163,11 @@ class UserController extends GetxController {
   }
 
   Future<void> addToStarredPhotos(String photoId) async {
-    if (starredPhotos.contains(photoId)) {
+    if (starredPhotos[photoId] != null) {
       return;
     }
 
-    starredPhotos.add(photoId);
+    starredPhotos[photoId] = '';
 
     final currentUser = await database.getSingleMoorUser();
     await database
@@ -175,7 +175,7 @@ class UserController extends GetxController {
   }
 
   Future<void> removeFromStarredPhotos(String photoId) async {
-    if (!starredPhotos.contains(photoId)) {
+    if (starredPhotos[photoId] == null) {
       return;
     }
 
@@ -467,61 +467,61 @@ class UserController extends GetxController {
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).family_tag),
         title: S.of(context).family_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag2 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).travel_tag),
         title: S.of(context).travel_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag3 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).pets_tag),
         title: S.of(context).pets_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag4 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).work_tag),
         title: S.of(context).work_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag5 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).selfies_tag),
         title: S.of(context).selfies_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag6 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).parties_tag),
         title: S.of(context).parties_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag7 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).sports_tag),
         title: S.of(context).sports_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag8 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).home_tag),
         title: S.of(context).home_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag9 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).foods_tag),
         title: S.of(context).foods_tag,
-        photoId: []);
+        photoId: <String, String>{});
     var tag10 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(S.of(context).screenshots_tag),
         title: S.of(context).screenshots_tag,
-        photoId: []);
+        photoId: <String, String>{});
 
     var entries = <Label>[
       tag1,

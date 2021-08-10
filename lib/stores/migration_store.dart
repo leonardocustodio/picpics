@@ -34,7 +34,7 @@ class MigrationStore extends GetxController {
       pics.add(pic);
     }
 
-    await database.insertAllPhotos(pics);
+    await database.insertAllPics(pics);
     await database.insertAllMoorUsers(
       userBox.getAt(0),
       userKey: keyBox.length > 0 ? keyBox.getAt(0) : null,
