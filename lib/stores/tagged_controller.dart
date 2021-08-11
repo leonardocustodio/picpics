@@ -14,6 +14,10 @@ class TaggedController extends GetxController {
 
   /// tagKey: {picId: ''}
   final taggedPicId = <String, RxMap<String, String>>{}.obs;
+
+  TextEditingController searchEditingController = TextEditingController();
+  FocusNode searchFocusNode = FocusNode();
+
   final allTaggedPicIdList = <String, String>{}.obs;
   final picWiseTags = <String, RxMap<String, String>>{}.obs;
   final isTaggedPicsLoaded = false.obs;
@@ -97,13 +101,13 @@ class TaggedController extends GetxController {
 
   void onPoppingOut() {
     selectedMultiBarPics.clear();
-    TagsController.to.multiPicTags.clear();
+    tagsController.multiPicTags.clear();
   }
 
   Future<bool> shouldPopOut() async {
     /// if sheet is opened the don't allow popping and just
     if (multiTagSheet.value) {
-      TagsController.to.multiPicTags.clear();
+      tagsController.multiPicTags.clear();
       multiTagSheet.value = false;
       return false;
     }
@@ -120,7 +124,7 @@ class TaggedController extends GetxController {
       if (index == 0) {
         setMultiPicBar(false);
         clearSelectedUntaggedPics();
-        TagsController.to.clearMultiPicTags();
+        tagsController.clearMultiPicTags();
         return;
       }
     }
@@ -130,7 +134,7 @@ class TaggedController extends GetxController {
       //GalleryStore.to.clearSelectedPics();
       setMultiPicBar(false);
     } else if (index == 1) {
-      await TagsController.to.tagsSuggestionsCalculate();
+      await tagsController.tagsSuggestionsCalculate();
       WidgetsBinding.instance?.addPostFrameCallback((_) {
         setMultiTagSheet(true);
         expandableController.value.expanded = true;
@@ -171,9 +175,20 @@ class TaggedController extends GetxController {
     }
   }
 
+  final tagsController = Get.find<TagsController>();
+
   @override
   void onInit() {
     super.onInit();
+
+    searchFocusNode.addListener(() {
+      tagsController.isSearching.value = searchFocusNode.hasFocus ||
+          tagsController.searchText.isNotEmpty ||
+          tagsController.selectedFilteringTagsKeys.isNotEmpty;
+      if (tagsController.isSearching.value) {
+        tagsController.tagsSuggestionsCalculate();
+      }
+    });
     scrollControllerThirdTab =
         ScrollController(initialScrollOffset: offsetThirdTab);
     scrollControllerThirdTab.addListener(() {
@@ -218,7 +233,7 @@ class TaggedController extends GetxController {
     allTaggedPicIdList.clear();
     taggedPicId.clear();
     picWiseTags.clear();
-    await TagsController.to.loadAllTags();
+    await tagsController.loadAllTags();
     await Future.forEach(taggedPhotoIdList, (Photo photo) async {
       if (photo.tags.isNotEmpty) {
         photo.tags.forEach((tagKey, _) {

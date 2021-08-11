@@ -160,7 +160,7 @@ class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
     if (r is List) {
       return <String, String>{};
     }
-    
+
     return Map<String, String>.from(r);
   }
 

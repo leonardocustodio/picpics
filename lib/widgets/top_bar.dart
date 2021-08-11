@@ -12,6 +12,8 @@ class TopBar extends StatelessWidget {
   /* final GalleryStore galleryStore; */
   final FocusNode? searchFocusNode;
   final TextEditingController? searchEditingController;
+  final void Function(String value)? onChanged;
+  final void Function(String value)? onSubmitted;
   final List<Widget> children;
   final bool showSecretSwitch;
 
@@ -19,8 +21,12 @@ class TopBar extends StatelessWidget {
     required this.showSecretSwitch,
     this.searchEditingController,
     this.searchFocusNode,
+    this.onSubmitted,
+    this.onChanged,
     required this.children,
-  });
+  }) : assert((searchEditingController == null
+            ? (onChanged == null && onSubmitted == null)
+            : (onChanged != null && onSubmitted != null)));
 
   @override
   Widget build(BuildContext context) {
@@ -59,12 +65,14 @@ class TopBar extends StatelessWidget {
                           focusNode: searchFocusNode,
                           onChanged: (text) {
                             //print('searching: $text');
-                            TagsController.to.searchText.value = text;
+                            onChanged?.call(text);
+                            /* TagsController.to.searchText.value = text; */
                           },
                           onSubmitted: (text) {
                             //print('return');
+                            onSubmitted?.call(text);
                             searchEditingController?.clear();
-                            TagsController.to.searchTagsResults.clear();
+                            /* TagsController.to.searchTagsResults.clear(); */
                             //                          DatabaseManager.instance.searchResults = null;
                           },
                           keyboardType: TextInputType.text,

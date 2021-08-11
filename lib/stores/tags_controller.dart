@@ -32,11 +32,13 @@ class TagsController extends GetxController {
   final searchTagsResults = <TagModel>[].obs;
 
   final searchText = ''.obs;
-  final selectedFilteringTagsKeys = <String>[].obs;
+  final selectedFilteringTagsKeys = <String, String>{}.obs;
 
   final _database = AppDatabase();
 
   final isSearching = false.obs;
+  final taggedController = Get.find<TaggedController>();
+  final tabsController = Get.find<TabsController>();
 
   @override
   void onInit() {
@@ -45,14 +47,21 @@ class TagsController extends GetxController {
       await loadAllTags();
       await TagsController.to.tagsSuggestionsCalculate();
     });
-    ever(searchText, (_) => tagsSuggestionsCalculate());
+
+    ever(selectedFilteringTagsKeys, (_) {
+      isSearching.value = taggedController.searchFocusNode.hasFocus ||
+          selectedFilteringTagsKeys.isNotEmpty;
+    });
+    ever(searchText, (_) {
+      tagsSuggestionsCalculate();
+    });
 /* 
     Future.delayed(Duration(seconds: 10), () {
       Timer.periodic(Duration.zero, (_) {
-        TabsController.to.allUnTaggedPicsMonth
-            .remove(TabsController.to.allUnTaggedPicsMonth.keys.toList()[1]);
-        TabsController.to.allUnTaggedPicsDay
-            .remove(TabsController.to.allUnTaggedPicsDay.keys.toList()[1]);
+        tabsController.allUnTaggedPicsMonth
+            .remove(tabsController.allUnTaggedPicsMonth.keys.toList()[1]);
+        tabsController.allUnTaggedPicsDay
+            .remove(tabsController.allUnTaggedPicsDay.keys.toList()[1]);
       });
     }); */
   }
@@ -64,9 +73,9 @@ class TagsController extends GetxController {
     }
   }
 
-  void selectTagKeyForFiltering(String tagKey) {
-    if (!selectedFilteringTagsKeys.contains(tagKey)) {
-      selectedFilteringTagsKeys.add(tagKey);
+  void addTagKeyForFiltering(String tagKey) {
+    if (selectedFilteringTagsKeys[tagKey] == null) {
+      selectedFilteringTagsKeys[tagKey] = '';
     }
     tagsSuggestionsCalculate();
   }
@@ -103,7 +112,7 @@ class TagsController extends GetxController {
             break;
           }
           if (multiPicTags[tagKey] != null ||
-              selectedFilteringTagsKeys.contains(tagKey) ||
+              selectedFilteringTagsKeys[tagKey] != null ||
               suggestionTags.contains(tagKey) ||
               tagKey == kSecretTagKey) {
             continue;
@@ -120,7 +129,7 @@ class TagsController extends GetxController {
         if (tagKey == kSecretTagKey) {
           continue;
         }
-        if (selectedFilteringTagsKeys.contains(tagKey)) {
+        if (selectedFilteringTagsKeys[tagKey] != null) {
           continue;
         }
 
@@ -149,7 +158,7 @@ class TagsController extends GetxController {
 
     // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
     if (multiPicTags[kSecretTagKey] == null &&
-        !selectedFilteringTagsKeys.contains(kSecretTagKey) &&
+        selectedFilteringTagsKeys[kSecretTagKey] == null &&
         PrivatePhotosController.to.showPrivate.value == true &&
         text == '') {
       suggestionTags.add(kSecretTagKey);
@@ -176,7 +185,7 @@ class TagsController extends GetxController {
   }
 
   void removeTagKeyFromFiltering(String tagKey) {
-    if (selectedFilteringTagsKeys.contains(tagKey)) {
+    if (selectedFilteringTagsKeys[tagKey] != null) {
       selectedFilteringTagsKeys.remove(tagKey);
     }
     tagsSuggestionsCalculate();
@@ -531,7 +540,6 @@ class TagsController extends GetxController {
   }
 
   Future<void> addTagsToSelectedPics() async {
-    final tabsController = Get.find<TabsController>();
     if (tabsController.currentTab.value == 0) {
       tabsController.isToggleBarVisible.value = false;
       tabsController.toggleIndexUntagged.value = 1;
@@ -541,7 +549,7 @@ class TagsController extends GetxController {
     if (tabsController.currentTab.value == 0) {
       selectedPicIds = tabsController.selectedMultiBarPics.keys.toList();
     } else if (tabsController.currentTab.value == 2) {
-      selectedPicIds = TaggedController.to.selectedMultiBarPics.keys.toList();
+      selectedPicIds = taggedController.selectedMultiBarPics.keys.toList();
     }
 
     final map = <String, Map<String, String>>{
@@ -554,7 +562,7 @@ class TagsController extends GetxController {
       if (tabsController.currentTab.value == 0) {
         tabsController.clearSelectedUntaggedPics();
       } else if (tabsController.currentTab.value == 2) {
-        TaggedController.to.selectedMultiBarPics.clear();
+        taggedController.selectedMultiBarPics.clear();
       }
 
       /// Also clear the multiPicTags as we have iterated and processed through it and
@@ -569,18 +577,18 @@ class TagsController extends GetxController {
 
   Future<void> removeTagFromPic(
       {required String picId, required String tagKey}) async {
-    var picStore = TabsController.to.picStoreMap[picId]?.value;
-    picStore ??= TabsController.to.explorPicStore(picId).value;
+    var picStore = tabsController.picStoreMap[picId]?.value;
+    picStore ??= tabsController.explorPicStore(picId).value;
     await picStore?.removeMultipleTagFromPic(
       acceptedTags: {tagKey: ''},
     );
 
     /// Refreshing the tagged pic map as a tag is removed from the picstore
-    await TaggedController.to.refreshTaggedPhotos();
+    await taggedController.refreshTaggedPhotos();
 
     if (picStore != null && picStore.tags.isEmpty) {
       /// tags are empty now the untagged list should be refreshed so that this picStore will be visible there
-      await TabsController.to.refreshUntaggedList();
+      await tabsController.refreshUntaggedList();
     }
   }
 
@@ -612,8 +620,6 @@ class TagsController extends GetxController {
 
     final tagKeyToPicId = <String, Map<String, String>>{};
 
-    final stopWatch = Stopwatch()..start();
-
     picIdToTagKey.forEach((pictureId, tagMap) {
       tagMap.keys.forEach((tagKey) {
         if (tagKeyToPicId[tagKey] == null) {
@@ -623,14 +629,10 @@ class TagsController extends GetxController {
         }
       });
     });
-    print('ran tag creation in :${stopWatch.elapsed}');
-    stopWatch.reset();
 
     await Future.forEach(tagKeyToPicId.keys, (String tagKey) async {
       await _addPhotoIdToLabel(tagKey, tagKeyToPicId[tagKey]!);
     });
-    print('ran tag insertion in :${stopWatch.elapsed}');
-    stopWatch.reset();
 
     await Future.forEach(picIdToTagKey.keys, (String picId) async {
       final map = picIdToTagKey[picId]!;
@@ -642,8 +644,6 @@ class TagsController extends GetxController {
         tabsController.allUnTaggedPicsMonth.remove(picId);
       });
     });
-    print('ran photo insertion in :${stopWatch.elapsed}');
-    /*  print('ran photos insertion in :${stopWatch.elapsed}'); */
   }
 
   void clearMultiPicTags() {

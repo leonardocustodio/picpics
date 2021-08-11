@@ -789,7 +789,7 @@ class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
   PicBlurHashsCompanion.insert({
     required String photoId,
     required String blurHash,
-  })  : photoId = Value(photoId),
+  })   : photoId = Value(photoId),
         blurHash = Value(blurHash);
   static Insertable<PicBlurHash> custom({
     Expression<String>? photoId,
