@@ -40,8 +40,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_tags": MessageLookupByLibrary.simpleMessage("Dodaj tagi"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "Organizuj wiele zdjęć jednocześnie"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
         "all_search_tags":
             MessageLookupByLibrary.simpleMessage("Wszystkie tagi wyszukiwania"),
         "always": MessageLookupByLibrary.simpleMessage("Zawsze"),
@@ -131,6 +129,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("Kolejny"),
         "no": MessageLookupByLibrary.simpleMessage("Nie"),
         "no_ads": MessageLookupByLibrary.simpleMessage("Bez reklam"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "There are no more photos to organize."),
         "no_previous_purchase":
             MessageLookupByLibrary.simpleMessage("Brak poprzedniego zakupu"),
         "no_tagged_photos": MessageLookupByLibrary.simpleMessage(

@@ -40,8 +40,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_tags": MessageLookupByLibrary.simpleMessage("टैग लगा दो"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "एक साथ कई फ़ोटो व्यवस्थित करें"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
         "all_search_tags": MessageLookupByLibrary.simpleMessage("सभी खोज टैग"),
         "always": MessageLookupByLibrary.simpleMessage("हमेशा"),
         "ask_photo_library_permission": MessageLookupByLibrary.simpleMessage(
@@ -128,6 +126,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("आगे"),
         "no": MessageLookupByLibrary.simpleMessage("नहीं"),
         "no_ads": MessageLookupByLibrary.simpleMessage("विज्ञापन नहीं"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "There are no more photos to organize."),
         "no_previous_purchase":
             MessageLookupByLibrary.simpleMessage("कोई पिछली खरीद नहीं"),
         "no_tagged_photos": MessageLookupByLibrary.simpleMessage(

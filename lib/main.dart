@@ -29,6 +29,7 @@ import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
+import 'package:picPics/stores/percentage_dialog_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 
@@ -66,6 +67,7 @@ void main() async {
   //Get.lazyPut(() => RefreshPicPicsController());
   //Get.lazyPut(() => GalleryStore());
   Get.lazyPut<BlurHashController>(() => BlurHashController());
+  Get.lazyPut<PercentageDialogController>(() => PercentageDialogController());
   Get.lazyPut<UserController>(() => UserController());
   Get.lazyPut<PrivatePhotosController>(() => PrivatePhotosController());
   Get.lazyPut<AllTagsController>(() => AllTagsController());
@@ -312,7 +314,6 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         PremiumScreen.id: (context) => PremiumScreen(),
         PinScreen.id: (context) => PinScreen(),
         EmailScreen.id: (context) => EmailScreen(),
-        //TagsScreen.id: (context) => TagsScreen(),
         MigrationScreen.id: (context) => MigrationScreen(),
       },
     );

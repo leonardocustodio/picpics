@@ -109,7 +109,7 @@ class PicTab extends GetWidget<SwiperTabController> {
               } else if (controller.swiperPicIdList.isEmpty) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).all_photos_were_tagged,
+                    message: S.of(context).no_photos_were_tagged,
                   ),
                 );
               }

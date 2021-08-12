@@ -39,8 +39,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_tags": MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
         "all_at_once":
             MessageLookupByLibrary.simpleMessage("จัดหลายรูปภาพในครั้งเดียว"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
         "all_search_tags":
             MessageLookupByLibrary.simpleMessage("แท็กที่ค้นหาทั้งหมด"),
         "always": MessageLookupByLibrary.simpleMessage("ตลอดเวลา"),
@@ -129,6 +127,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("ต่อไป"),
         "no": MessageLookupByLibrary.simpleMessage("ไม่"),
         "no_ads": MessageLookupByLibrary.simpleMessage("ไร้โฆษณา"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "There are no more photos to organize."),
         "no_previous_purchase": MessageLookupByLibrary.simpleMessage(
             "ไม่มีการสั่งซื้อครั้งก่อนหน้า"),
         "no_tagged_photos": MessageLookupByLibrary.simpleMessage(

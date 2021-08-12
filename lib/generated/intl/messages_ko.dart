@@ -36,8 +36,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_tag": MessageLookupByLibrary.simpleMessage("태그 추가"),
         "add_tags": MessageLookupByLibrary.simpleMessage("태그 추가"),
         "all_at_once": MessageLookupByLibrary.simpleMessage("한 번에 여러 장의 사진 정리"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
         "all_search_tags": MessageLookupByLibrary.simpleMessage("모든 검색 태그"),
         "always": MessageLookupByLibrary.simpleMessage("항상"),
         "ask_photo_library_permission": MessageLookupByLibrary.simpleMessage(
@@ -114,6 +112,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("다음"),
         "no": MessageLookupByLibrary.simpleMessage("아니요"),
         "no_ads": MessageLookupByLibrary.simpleMessage("광고 없음"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "There are no more photos to organize."),
         "no_previous_purchase":
             MessageLookupByLibrary.simpleMessage("이전 구매가 없습니다"),
         "no_tagged_photos":

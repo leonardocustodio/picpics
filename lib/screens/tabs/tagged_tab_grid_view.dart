@@ -1,4 +1,4 @@
-import 'dart:io';
+/* import 'dart:io';
 
 import 'package:expandable/expandable.dart';
 import 'package:extended_image/extended_image.dart';
@@ -12,6 +12,7 @@ import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/screens/tabs/tagged/select_all_widget.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
@@ -43,7 +44,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
         }
 
         return StaggeredGridView.countBuilder(
-            key: Key('Month'),
+            key: Key('$tagKey'),
             //controller: scrollControllerFirstTab,
             padding: EdgeInsets.only(top: 2),
             crossAxisCount: 5,
@@ -190,7 +191,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                   width: 20,
                                   decoration: BoxDecoration(
                                     gradient: kSecondaryGradient,
-                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Image.asset(
                                       'lib/images/checkwhiteico.png'),
@@ -209,7 +210,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                 height: 20,
                                 width: 20,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
                                     color: kGrayColor,
                                     width: 2.0,
@@ -579,135 +580,40 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
             color: kWhiteColor,
             child: SafeArea(
               child: Obx(() {
-                var hasPics =
-                    controller.taggedPicId[tagKey]?.isNotEmpty ?? false;
-                if (!controller.isTaggedPicsLoaded.value) {
-                  return Center(
-                    child: CircularProgressIndicator(
-                        // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-                        ),
-                  );
-                } else if (!hasPics) {
-                  return Stack(
-                    children: <Widget>[
-                      /* Container(
-                      height: 56.0,
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          CupertinoButton(
-                            onPressed: () {
-                              Get.to(() => SettingsScreen());
-                            },
-                            child: Image.asset('lib/images/settings.png'),
-                          ),
-                        ],
-                      ),
-                    ), */
-                      DeviceHasNoPics(
-                        message: S.of(context).device_has_no_pics,
-                      ),
-                    ],
-                  );
-                } else if (controller.isTaggedPicsLoaded.value && !hasPics) {
-                  return Stack(
-                    children: <Widget>[
-                      /* Container(
-                      height: 56.0,
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          CupertinoButton(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            onPressed: () {
-                              Get.to(() => SettingsScreen());
-                            },
-                            child: Image.asset('lib/images/settings.png'),
-                          ),
-                        ],
-                      ),
-                    ), */
-                      DeviceHasNoPics(
-                        message: S.of(context).all_photos_were_tagged,
-                      ),
-                    ],
-                  );
-                } else if (controller.isTaggedPicsLoaded.value && hasPics) {
-                  return Stack(
-                    children: <Widget>[
-                      Positioned.fill(child: _buildGridView(context)),
-                      /* Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          CupertinoButton(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            onPressed: () {
-                              Get.to(() => SettingsScreen());
-                            },
-                            child: Image.asset('lib/images/settings.png'),
-                          ),
-                        ],
-                      ),
-                    ), */
-                      /* Positioned(
-                      left: 16.0,
-                      top: 10.0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            controller.multiPicBar.value
-                                ? S.of(context).photo_gallery_count(
-                                    controller.selectedMultiBarPics.length)
-                                : S.of(context).photo_gallery_description,
-                            textScaleFactor: 1.0,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: Color(0xff979a9b),
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ), 
-                  AnimatedOpacity(
-                    opacity: controller.isScrolling.value ? 0.0 : 1.0,
-                    curve: Curves.linear,
-                    duration: Duration(milliseconds: 300),
-                    onEnd: () {
-                      controller.setIsToggleBarVisible(
-                          controller.isScrolling.value ? false : true);
-                    },
-                    child: Visibility(
-                      visible: controller.isScrolling.value
-                          ? controller.isToggleBarVisible.value
-                          : true,
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: ToggleBar(
-                            titleLeft: S.of(context).toggle_months,
-                            titleRight: S.of(context).toggle_days,
-                            activeToggle: controller.toggleIndexUntagged.value,
-                            onToggle: (index) {
-                              controller.setToggleIndexUntagged(index);
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ), */
-                    ],
-                  );
+                if (controller.isTaggedPicsLoaded.value == false) {
+                  return Center(child: CircularProgressIndicator());
                 }
-                return Container();
+
+                if (TabsController.to.assetEntityList.isNotEmpty) {
+                  ///
+                  /// Device has pics
+                  ///
+                  var hasTaggedPics =
+                      controller.taggedPicId[tagKey]?.isNotEmpty ?? false;
+                  if (hasTaggedPics) {
+                    ///
+                    /// Tagged Pics are available
+                    ///
+                    
+                    return Column(
+                      children: [
+                        if (controller.multiPicBar.value)
+                          SelectAllWidget(isSelected: false),
+                        Expanded(child: _buildGridView(context)),
+                      ],
+                    );
+                  }
+
+                  ///
+                  /// No Pics Tagged
+                  ///
+                  return DeviceHasNoPics(
+                      message: S.of(context).no_photos_were_tagged);
+                }
+
+                /// Device has no Pics
+                return DeviceHasNoPics(
+                    message: S.of(context).device_has_no_pics);
               }),
             ),
           ),
@@ -716,3 +622,4 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
     );
   }
 }
+ */

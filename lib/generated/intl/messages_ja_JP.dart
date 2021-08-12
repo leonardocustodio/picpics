@@ -42,8 +42,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "airplane_tag": MessageLookupByLibrary.simpleMessage("飛行機"),
         "alcohol_tag": MessageLookupByLibrary.simpleMessage("アルコール"),
         "all_at_once": MessageLookupByLibrary.simpleMessage("一度に複数の写真を整理"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
         "all_search_tags": MessageLookupByLibrary.simpleMessage("すべての検索タグ"),
         "always": MessageLookupByLibrary.simpleMessage("常時"),
         "aquarium_tag": MessageLookupByLibrary.simpleMessage("水族館"),
@@ -361,6 +359,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "nightclub_tag": MessageLookupByLibrary.simpleMessage("ナイトクラブ"),
         "no": MessageLookupByLibrary.simpleMessage("いいえ"),
         "no_ads": MessageLookupByLibrary.simpleMessage("広告なし"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "There are no more photos to organize."),
         "no_previous_purchase":
             MessageLookupByLibrary.simpleMessage("以前の購入はありません"),
         "no_tagged_photos":

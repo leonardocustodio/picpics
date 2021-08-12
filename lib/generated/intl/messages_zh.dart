@@ -36,8 +36,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_tag": MessageLookupByLibrary.simpleMessage("添加标签"),
         "add_tags": MessageLookupByLibrary.simpleMessage("添加标签"),
         "all_at_once": MessageLookupByLibrary.simpleMessage("一次整理多张照片"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
         "all_search_tags": MessageLookupByLibrary.simpleMessage("所有搜索标签"),
         "always": MessageLookupByLibrary.simpleMessage("总是"),
         "ask_photo_library_permission": MessageLookupByLibrary.simpleMessage(
@@ -107,6 +105,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("下一个"),
         "no": MessageLookupByLibrary.simpleMessage("否"),
         "no_ads": MessageLookupByLibrary.simpleMessage("无广告"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "There are no more photos to organize."),
         "no_previous_purchase": MessageLookupByLibrary.simpleMessage("没有之前的购买"),
         "no_tagged_photos":
             MessageLookupByLibrary.simpleMessage("您还没有添加了标签的照片"),

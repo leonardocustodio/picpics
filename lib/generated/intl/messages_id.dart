@@ -39,8 +39,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_tags": MessageLookupByLibrary.simpleMessage("Tambahkan tag"),
         "all_at_once":
             MessageLookupByLibrary.simpleMessage("Atur banyak foto sekaligus"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
         "all_search_tags":
             MessageLookupByLibrary.simpleMessage("Semua Tag Pencarian"),
         "always": MessageLookupByLibrary.simpleMessage("Selalu"),
@@ -132,6 +130,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("Berikutnya"),
         "no": MessageLookupByLibrary.simpleMessage("Tidak"),
         "no_ads": MessageLookupByLibrary.simpleMessage("Tanpa iklan"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "There are no more photos to organize."),
         "no_previous_purchase": MessageLookupByLibrary.simpleMessage(
             "Tidak Ada Pembelian Sebelumnya"),
         "no_tagged_photos": MessageLookupByLibrary.simpleMessage(

@@ -85,7 +85,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                           /// assuming that every picId is selected so the wh
                           var everySelected = false;
                           while (i < controller.allUnTaggedPicsMonth.length &&
-                              controller.allUnTaggedPicsMonth[i] is! DateTime) {
+                              controller.allUnTaggedPicsMonth[i] is String) {
                             if (controller.selectedMultiBarPics[
                                         controller.allUnTaggedPicsMonth[i]] ==
                                     null ||
@@ -108,7 +108,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                                         controller
                                             .allUnTaggedPicsMonth.length &&
                                     controller.allUnTaggedPicsMonth[i]
-                                        is! DateTime) {
+                                        is String) {
                                   controller.selectedMultiBarPics.remove(
                                       controller.allUnTaggedPicsMonth[i]);
                                   i++;
@@ -118,7 +118,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                                         controller
                                             .allUnTaggedPicsMonth.length &&
                                     controller.allUnTaggedPicsMonth[i]
-                                        is! DateTime) {
+                                        is String) {
                                   controller.selectedMultiBarPics[controller
                                       .allUnTaggedPicsMonth[i]] = true;
                                   i++;
@@ -217,7 +217,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                           /// assuming that every picId is selected so the wh
                           var everySelected = false;
                           while (i < controller.allUnTaggedPicsDay.length &&
-                              controller.allUnTaggedPicsDay[i] is! DateTime) {
+                              controller.allUnTaggedPicsDay[i] is String) {
                             if (controller.selectedMultiBarPics[
                                         controller.allUnTaggedPicsDay[i]] ==
                                     null ||
@@ -240,7 +240,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                                           controller
                                               .allUnTaggedPicsDay.length &&
                                       controller.allUnTaggedPicsDay[i]
-                                          is! DateTime) {
+                                          is String) {
                                     controller.selectedMultiBarPics.remove(
                                         controller.allUnTaggedPicsDay[i]);
                                     i++;
@@ -250,7 +250,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                                           controller
                                               .allUnTaggedPicsDay.length &&
                                       controller.allUnTaggedPicsDay[i]
-                                          is! DateTime) {
+                                          is String) {
                                     controller.selectedMultiBarPics[controller
                                         .allUnTaggedPicsDay[i]] = true;
                                     i++;
@@ -546,7 +546,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).all_photos_were_tagged,
+                  message: S.of(context).no_photos_were_tagged,
                 ),
               ],
             );

@@ -45,8 +45,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "alcohol_tag": MessageLookupByLibrary.simpleMessage("Álcool"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "Organize multiple photos at once"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "Não há mais nenhuma foto para organizar."),
         "all_search_tags":
             MessageLookupByLibrary.simpleMessage("Todas as tags da pesquisa"),
         "always": MessageLookupByLibrary.simpleMessage("Always"),
@@ -385,6 +383,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "nightclub_tag": MessageLookupByLibrary.simpleMessage("Boate"),
         "no": MessageLookupByLibrary.simpleMessage("Não"),
         "no_ads": MessageLookupByLibrary.simpleMessage("Sem propagandas"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "Não há mais nenhuma foto para organizar."),
         "no_previous_purchase":
             MessageLookupByLibrary.simpleMessage("Nenhuma compra encontrada"),
         "no_tagged_photos": MessageLookupByLibrary.simpleMessage(

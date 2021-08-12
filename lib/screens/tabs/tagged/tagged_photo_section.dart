@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/fade_image_builder.dart';
+import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key.dart';
 import 'package:picPics/screens/tabs/tagged/tagged_tab_date.dart';
 import 'package:picPics/screens/tabs/tagged_tab_grid_view.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
@@ -154,7 +155,7 @@ class TaggedPhotosSection extends GetWidget<TaggedController> {
                   return CupertinoButton(
                     padding: const EdgeInsets.all(0),
                     onPressed: () {
-                      Get.to(() => TaggedTabGridView(tagKey));
+                      Get.to(() => TaggedTabSelectiveTagKey(tagKey));
                     },
                     child: Obx(() {
                       Widget image = Positioned.fill(

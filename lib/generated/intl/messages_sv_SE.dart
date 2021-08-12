@@ -40,8 +40,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_tags": MessageLookupByLibrary.simpleMessage("Lägg till taggar"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "Organisera flera bilder samtidigt"),
-        "all_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
-            "There are no more photos to organize."),
         "all_search_tags":
             MessageLookupByLibrary.simpleMessage("Alla söktaggar"),
         "always": MessageLookupByLibrary.simpleMessage("Alltid"),
@@ -133,6 +131,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "next": MessageLookupByLibrary.simpleMessage("Nästa"),
         "no": MessageLookupByLibrary.simpleMessage("Nej"),
         "no_ads": MessageLookupByLibrary.simpleMessage("Inga annonser"),
+        "no_photos_were_tagged": MessageLookupByLibrary.simpleMessage(
+            "There are no more photos to organize."),
         "no_previous_purchase":
             MessageLookupByLibrary.simpleMessage("Inga tidigare köp"),
         "no_tagged_photos": MessageLookupByLibrary.simpleMessage(

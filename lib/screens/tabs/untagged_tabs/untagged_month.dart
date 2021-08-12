@@ -20,8 +20,8 @@ class UntaggedTabMonth extends GetWidget<TabsController> {
           addAutomaticKeepAlives: true,
           addRepaintBoundaries: true,
           key: Key('Month'),
+          controller: controller.untaggedScrollControllerMonth,
           padding: EdgeInsets.only(top: 2),
-          primary: true,
           shrinkWrap: true,
           crossAxisCount: 4,
           mainAxisSpacing: 0,
@@ -42,26 +42,20 @@ class UntaggedTabMonth extends GetWidget<TabsController> {
               () {
                 final object = controller.allUnTaggedPicsMonth[index];
                 if (object is DateTime) {
-                  var isSelected = false;
+                  var isSelected = true;
                   if (controller.multiPicBar.value) {
                     var i = index + 1;
 
-                    /// assuming that every picId is selected so the wh
-                    var everySelected = false;
                     while (i < controller.allUnTaggedPicsMonth.length &&
                         controller.allUnTaggedPicsMonth[i] is String) {
                       if (controller.selectedMultiBarPics[
-                                  controller.allUnTaggedPicsMonth[i]] ==
-                              null ||
-                          controller.selectedMultiBarPics[
-                                  controller.allUnTaggedPicsMonth[i]] ==
-                              false) {
-                        everySelected = true;
+                              controller.allUnTaggedPicsMonth[i]] ==
+                          null) {
+                        isSelected = false;
                         break;
                       }
                       i++;
                     }
-                    isSelected = !everySelected;
                   }
                   return GestureDetector(
                       onTap: () {

@@ -18,8 +18,8 @@ class UntaggedTabDay extends GetWidget<TabsController> {
     return Obx(
       () => StaggeredGridView.countBuilder(
         addAutomaticKeepAlives: true,
+        controller: controller.untaggedScrollControllerDay,
         key: Key('Day'),
-        primary: true,
         shrinkWrap: true,
         padding: EdgeInsets.only(top: 2),
         itemCount: controller.allUnTaggedPicsDay.length,
@@ -42,26 +42,20 @@ class UntaggedTabDay extends GetWidget<TabsController> {
             () {
               final object = controller.allUnTaggedPicsDay[index];
               if (object is DateTime) {
-                var isSelected = false;
+                var isSelected = true;
                 if (controller.multiPicBar.value) {
                   var i = index + 1;
 
-                  /// assuming that every picId is selected so the wh
-                  var everySelected = false;
                   while (i < controller.allUnTaggedPicsDay.length &&
                       controller.allUnTaggedPicsDay[i] is String) {
                     if (controller.selectedMultiBarPics[
-                                controller.allUnTaggedPicsDay[i]] ==
-                            null ||
-                        controller.selectedMultiBarPics[
-                                controller.allUnTaggedPicsDay[i]] ==
-                            false) {
-                      everySelected = true;
+                            controller.allUnTaggedPicsDay[i]] ==
+                        null) {
+                      isSelected = false;
                       break;
                     }
                     i++;
                   }
-                  isSelected = !everySelected;
                 }
                 return GestureDetector(
                     onTap: () {

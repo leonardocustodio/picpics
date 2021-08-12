@@ -839,7 +839,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).all_photos_were_tagged,
+                  message: S.of(context).no_photos_were_tagged,
                 ),
               ],
             );

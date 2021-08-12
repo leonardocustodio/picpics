@@ -13,6 +13,7 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
+import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/swiper_tab_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -57,6 +58,9 @@ class TabsController extends GetxController {
   final isUntaggedPicsLoaded = false.obs;
   final modalCard = false.obs;
   final status = Status.Loading.obs;
+
+  final untaggedScrollControllerMonth = ScrollController();
+  final untaggedScrollControllerDay = ScrollController();
 
   //var privatePhotoIdMap = <String, String>{};
   /* final secretPicIds = <String, bool>{}.obs;

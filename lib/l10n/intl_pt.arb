@@ -148,7 +148,7 @@
   "protect_with_encryption": "Protect your personal photos with encryption only accessible with a PIN password.",
 
 
-  "all_photos_were_tagged": "Não há mais nenhuma foto para organizar.",
+  "no_photos_were_tagged": "Não há mais nenhuma foto para organizar.",
   "daily_notification_title": "Desafio diário",
   "daily_notification_description": "Está na hora de completar o seu desáfio. Entre no picPics para completá-lo!",
   "unlimited_private_pics": "Fotos privadas ilimitadas",

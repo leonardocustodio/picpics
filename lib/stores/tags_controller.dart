@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/stores/percentage_dialog_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -536,6 +539,13 @@ class TagsController extends GetxController {
   }
 
   Future<void> addTagsToSelectedPics() async {
+    if (tabsController.toggleIndexUntagged.value == 0) {
+      await tabsController.untaggedScrollControllerMonth.animateTo(0.0,
+          duration: Duration(milliseconds: 300), curve: Curves.ease);
+    } else {
+      await tabsController.untaggedScrollControllerDay.animateTo(0.0,
+          duration: Duration(milliseconds: 300), curve: Curves.ease);
+    }
     final taggedController = Get.find<TaggedController>();
 
     var selectedPicIds = <String>[];
@@ -609,6 +619,9 @@ class TagsController extends GetxController {
 
   Future<void> addTagsToPics(
       {required Map<String, Map<String, String>> picIdToTagKey}) async {
+    final percentageController = Get.find<PercentageDialogController>();
+    percentageController.start(picIdToTagKey.keys.length + .0, 'Tagging...');
+
     /// iterate over the pictures and add tags to it
     final tabsController = Get.find<TabsController>();
 
@@ -627,16 +640,16 @@ class TagsController extends GetxController {
     await Future.forEach(tagKeyToPicId.keys, (String tagKey) async {
       await _addPhotoIdToLabel(tagKey, tagKeyToPicId[tagKey]!);
     });
-
     await Future.forEach(picIdToTagKey.keys, (String picId) async {
       final map = picIdToTagKey[picId]!;
 
       await tabsController.picStoreMap[picId]!.value
           .addMultipleTagsToPic(acceptedTagKeys: map);
-      await Future.delayed(Duration(milliseconds: 30), () {
-        tabsController.allUnTaggedPicsDay.remove(picId);
-        tabsController.allUnTaggedPicsMonth.remove(picId);
+      await Future.delayed(Duration.zero, () {
+        percentageController.increaseValue(1.0);
       });
+    }).then((_) {
+      percentageController.stop();
     });
   }
 

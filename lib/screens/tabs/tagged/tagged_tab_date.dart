@@ -38,26 +38,20 @@ class TaggedTabDate extends GetWidget<TaggedController> {
           },
           itemBuilder: (_, int index) {
             if (controller.allTaggedPicDateWiseList[index] is DateTime) {
-              var isSelected = false;
+              var isSelected = true;
               if (controller.multiPicBar.value) {
                 var i = index + 1;
 
-                /// assuming that every picId is selected so the wh
-                var everySelected = false;
                 while (i < controller.allTaggedPicDateWiseList.length &&
-                    controller.allTaggedPicDateWiseList[i] is! DateTime) {
+                    controller.allTaggedPicDateWiseList[i] is String) {
                   if (controller.selectedMultiBarPics[
-                              controller.allTaggedPicDateWiseList[i]] ==
-                          null ||
-                      controller.selectedMultiBarPics[
-                              controller.allTaggedPicDateWiseList[i]] ==
-                          false) {
-                    everySelected = true;
+                          controller.allTaggedPicDateWiseList[i]] ==
+                      null) {
+                    isSelected = false;
                     break;
                   }
                   i++;
                 }
-                isSelected = !everySelected;
               }
 
               return GestureDetector(
@@ -66,14 +60,14 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                     var i = index + 1;
                     if (isSelected) {
                       while (i < controller.allTaggedPicDateWiseList.length &&
-                          controller.allTaggedPicDateWiseList[i] is! DateTime) {
+                          controller.allTaggedPicDateWiseList[i] is String) {
                         controller.selectedMultiBarPics
                             .remove(controller.allTaggedPicDateWiseList[i]);
                         i++;
                       }
                     } else {
                       while (i < controller.allTaggedPicDateWiseList.length &&
-                          controller.allTaggedPicDateWiseList[i] is! DateTime) {
+                          controller.allTaggedPicDateWiseList[i] is String) {
                         controller.selectedMultiBarPics[
                             controller.allTaggedPicDateWiseList[i]] = true;
                         i++;
