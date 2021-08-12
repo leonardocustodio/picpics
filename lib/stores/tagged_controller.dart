@@ -20,6 +20,7 @@ class TaggedController extends GetxController {
 
   final allTaggedPicIdList = <String, String>{}.obs;
   final picWiseTags = <String, RxMap<String, String>>{}.obs;
+  final tagsController = Get.find<TagsController>();
   final isTaggedPicsLoaded = false.obs;
 
   final multiPicBar = false.obs;
@@ -175,8 +176,6 @@ class TaggedController extends GetxController {
     }
   }
 
-  final tagsController = Get.find<TagsController>();
-
   @override
   void onInit() {
     super.onInit();
@@ -224,7 +223,7 @@ class TaggedController extends GetxController {
 
   void setIsScrolling(bool value) => isScrolling.value = value;
 
-  final allTaggedPicDateWiseMap = <dynamic, dynamic>{}.obs;
+  final allTaggedPicDateWiseList = <dynamic>[].obs;
 
   Future<void> refreshTaggedPhotos() async {
     isTaggedPicsLoaded.value = false;
@@ -281,36 +280,36 @@ class TaggedController extends GetxController {
           previousDay = dateTime;
           previousMonth = dateTime;
 
-          allTaggedPicDateWiseMap[dateTime] = <String>[];
+          allTaggedPicDateWiseList.add(dateTime);
         }
 
         if (previousDay!.year != dateTime.year ||
             previousDay!.month != dateTime.month ||
             previousDay!.day != dateTime.day) {
           if (previousDay!.month != dateTime.month) {
-            allTaggedPicDateWiseMap[previousMonth] =
-                List<String>.from(previousDatePicIdList);
+            /* allTaggedPicDateWiseMap[previousMonth] =
+                List<String>.from(previousDatePicIdList); */
             previousDatePicIdList = <String>[];
-            allTaggedPicDateWiseMap[dateTime] = <String>[];
+            allTaggedPicDateWiseList.add(dateTime);
             previousMonth = dateTime;
           }
         }
-        allTaggedPicDateWiseMap[photo.id] = '';
+        allTaggedPicDateWiseList.add(photo.id);
         previousDatePicIdList.add(photo.id);
       }
     }).then((_) {
-      if (previousMonth != null) {
+      /* if (previousMonth != null) {
         allTaggedPicDateWiseMap[previousMonth] =
             List<String>.from(previousDatePicIdList);
-      }
+      } */
       isTaggedPicsLoaded.value = true;
     });
   }
 
-  void addPicIdToTaggedList(String tagKey, String taggedPicId) {
-    if (TaggedController.to.taggedPicId[tagKey] == null) {
-      TaggedController.to.taggedPicId[tagKey] = <String, String>{}.obs;
+  void addPicIdToTaggedList(String tagKey, String picId) {
+    if (taggedPicId[tagKey] == null) {
+      taggedPicId[tagKey] = <String, String>{}.obs;
     }
-    TaggedController.to.taggedPicId[tagKey]![taggedPicId] = '';
+    taggedPicId[tagKey]![picId] = '';
   }
 }

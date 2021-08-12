@@ -35,100 +35,64 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
   TextEditingController bottomTagsEditingController = TextEditingController();
 
   Widget _buildGridView(BuildContext context) {
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollNotification) {
-        /// Hiding Months on days from here by listening to the scrollNotification
-        if (scrollNotification is ScrollStartNotification) {
-          //print('Start scrolling');
-          controller.setIsScrolling(true);
-          return false;
-        } else if (scrollNotification is ScrollEndNotification) {
-          //print('End scrolling');
-          controller.setIsScrolling(false);
-          return true;
+    return Obx(
+      () {
+        var taggedPicIds = controller.taggedPicId[tagKey]?.keys.toList();
+        if (taggedPicIds == null || taggedPicIds.isEmpty) {
+          return Center(child: CircularProgressIndicator());
         }
-        return true;
-      },
-      child: Obx(
-        () {
-          var taggedPicIds = controller.taggedPicId[tagKey]?.keys.toList();
-          if (taggedPicIds == null || taggedPicIds.isEmpty) {
-            return Center(child: CircularProgressIndicator());
-          }
 
-          return StaggeredGridView.countBuilder(
-              addAutomaticKeepAlives: true,
-              key: Key('Month'),
-              //controller: scrollControllerFirstTab,
-              padding: EdgeInsets.only(top: 2),
-              crossAxisCount: 5,
-              mainAxisSpacing: 0,
-              crossAxisSpacing: 0,
-              itemCount: taggedPicIds.length,
-              staggeredTileBuilder: (_) {
-                return StaggeredTile.count(1, 1);
-              },
-              itemBuilder: (_, int index) {
-                return Obx(() {
-                  final picId = taggedPicIds[index];
+        return StaggeredGridView.countBuilder(
+            key: Key('Month'),
+            //controller: scrollControllerFirstTab,
+            padding: EdgeInsets.only(top: 2),
+            crossAxisCount: 5,
+            mainAxisSpacing: 0,
+            crossAxisSpacing: 0,
+            itemCount: taggedPicIds.length,
+            staggeredTileBuilder: (_) {
+              return StaggeredTile.count(1, 1);
+            },
+            itemBuilder: (_, int index) {
+              return Obx(() {
+                final picId = taggedPicIds[index];
 
-                  var blurHash = BlurHashController.to.blurHash[picId];
+                var blurHash = BlurHashController.to.blurHash[picId];
 
-                  return Stack(
-                    children: [
+                return Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Padding(
+                        padding: const EdgeInsets.all(2),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(6),
+                          child: null != blurHash
+                              ? BlurHash(
+                                  hash: blurHash,
+                                  color: Colors.transparent,
+                                )
+                              : greyWidget,
+                        ),
+                      ),
+                    ),
+                    if (TabsController.to.picStoreMap[picId]?.value != null)
                       Positioned.fill(
                         child: Padding(
                           padding: const EdgeInsets.all(2),
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(6),
-                            child: null != blurHash
-                                ? BlurHash(
-                                    hash: blurHash,
-                                    color: Colors.transparent,
-                                  )
-                                : greyWidget,
-                          ),
+                              borderRadius: BorderRadius.circular(6),
+                              child: _buildImageWidget(
+                                  TabsController.to.picStoreMap[picId]!.value,
+                                  picId)),
                         ),
                       ),
-                      if (TabsController.to.picStoreMap[picId]?.value != null)
-                        Positioned.fill(
-                          child: Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: _buildImageWidget(
-                                    TabsController.to.picStoreMap[picId]!.value,
-                                    picId)),
-                          ),
-                        ),
-                    ],
-
-                    /*  child: TabsController.to.picStoreMap[picId] == null
-                        ? greyWidget
-                        : Padding(
-                            padding: const EdgeInsets.all(2),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(6),
-                              child: Container(
-                                child: ,
-                              ),
-                            ),
-                          ), */
-                  );
-                });
+                  ],
+                );
               });
-        },
-      ),
+            });
+      },
     );
   }
-
-  Widget get _failedItem => Center(
-        child: Text(
-          'Failed loading',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 18.0),
-        ),
-      );
 
   Widget _buildImageWidget(PicStore picStore, String picId) {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
@@ -266,7 +230,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                 ),
               );
             case LoadState.failed:
-              return _failedItem;
+              return failedItem;
           }
         },
       ),
@@ -673,9 +637,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                 } else if (controller.isTaggedPicsLoaded.value && hasPics) {
                   return Stack(
                     children: <Widget>[
-                      GestureDetector(
-                        child: _buildGridView(context),
-                      ),
+                      Positioned.fill(child: _buildGridView(context)),
                       /* Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: Row(

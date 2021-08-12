@@ -69,11 +69,11 @@ void main() async {
   Get.lazyPut<UserController>(() => UserController());
   Get.lazyPut<PrivatePhotosController>(() => PrivatePhotosController());
   Get.lazyPut<AllTagsController>(() => AllTagsController());
+  Get.lazyPut<TagsController>(() => TagsController());
   Get.lazyPut<TaggedController>(() => TaggedController());
   Get.lazyPut<SwiperTabController>(() => SwiperTabController());
   Get.lazyPut<DatabaseController>(() => DatabaseController());
   Get.lazyPut<TabsController>(() => TabsController());
-  Get.lazyPut<TagsController>(() => TagsController());
   Get.lazyPut<PinController>(() => PinController());
   Get.lazyPut<LoginStore>(() => LoginStore());
   Get.lazyPut<PhotoScreenController>(() => PhotoScreenController());

@@ -1,13 +1,10 @@
 import 'dart:async';
-
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
-/* import 'package:picPics/stores/tagged_controller.dart'; */
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import '../constants.dart';
@@ -37,7 +34,6 @@ class TagsController extends GetxController {
   final _database = AppDatabase();
 
   final isSearching = false.obs;
-  final taggedController = Get.find<TaggedController>();
   final tabsController = Get.find<TabsController>();
 
   @override
@@ -49,7 +45,7 @@ class TagsController extends GetxController {
     });
 
     ever(selectedFilteringTagsKeys, (_) {
-      isSearching.value = taggedController.searchFocusNode.hasFocus ||
+      isSearching.value = TaggedController.to.searchFocusNode.hasFocus ||
           selectedFilteringTagsKeys.isNotEmpty;
     });
     ever(searchText, (_) {
@@ -540,10 +536,7 @@ class TagsController extends GetxController {
   }
 
   Future<void> addTagsToSelectedPics() async {
-    if (tabsController.currentTab.value == 0) {
-      tabsController.isToggleBarVisible.value = false;
-      tabsController.toggleIndexUntagged.value = 1;
-    }
+    final taggedController = Get.find<TaggedController>();
 
     var selectedPicIds = <String>[];
     if (tabsController.currentTab.value == 0) {
@@ -577,6 +570,7 @@ class TagsController extends GetxController {
 
   Future<void> removeTagFromPic(
       {required String picId, required String tagKey}) async {
+    final taggedController = Get.find<TaggedController>();
     var picStore = tabsController.picStoreMap[picId]?.value;
     picStore ??= tabsController.explorPicStore(picId).value;
     await picStore?.removeMultipleTagFromPic(

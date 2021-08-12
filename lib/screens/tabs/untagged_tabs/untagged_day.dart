@@ -1,11 +1,14 @@
-/* import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
-import 'package:picPics/screens/tabs/untagged_tabs/untagged_image_widgets.dart';
+import 'package:picPics/constants.dart';
+import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/date_header.dart';
+import 'package:picPics/widgets/photo_widget.dart';
 
 class UntaggedTabDay extends GetWidget<TabsController> {
   const UntaggedTabDay({Key? key}) : super(key: key);
@@ -28,16 +31,17 @@ class UntaggedTabDay extends GetWidget<TabsController> {
           if (controller.allUnTaggedPicsDay[index] is DateTime) {
             if (index + 1 < controller.allUnTaggedPicsDay.length &&
                 controller.allUnTaggedPicsDay[index + 1] is DateTime) {
-              return StaggeredTile.extent(3, 0);
+              return const StaggeredTile.extent(3, 0);
             }
-            return StaggeredTile.extent(3, 40);
+            return const StaggeredTile.extent(3, 40);
           }
-          return StaggeredTile.count(1, 1);
+          return const StaggeredTile.count(1, 1);
         },
         itemBuilder: (_, int index) {
           return Obx(
             () {
-              if (controller.allUnTaggedPicsDay[index] is DateTime) {
+              final object = controller.allUnTaggedPicsDay[index];
+              if (object is DateTime) {
                 var isSelected = false;
                 if (controller.multiPicBar.value) {
                   var i = index + 1;
@@ -45,7 +49,7 @@ class UntaggedTabDay extends GetWidget<TabsController> {
                   /// assuming that every picId is selected so the wh
                   var everySelected = false;
                   while (i < controller.allUnTaggedPicsDay.length &&
-                      controller.allUnTaggedPicsDay[i] is! DateTime) {
+                      controller.allUnTaggedPicsDay[i] is String) {
                     if (controller.selectedMultiBarPics[
                                 controller.allUnTaggedPicsDay[i]] ==
                             null ||
@@ -65,14 +69,14 @@ class UntaggedTabDay extends GetWidget<TabsController> {
                         var i = index + 1;
                         if (isSelected) {
                           while (i < controller.allUnTaggedPicsDay.length &&
-                              controller.allUnTaggedPicsDay[i] is! DateTime) {
+                              controller.allUnTaggedPicsDay[i] is String) {
                             controller.selectedMultiBarPics
                                 .remove(controller.allUnTaggedPicsDay[i]);
                             i++;
                           }
                         } else {
                           while (i < controller.allUnTaggedPicsDay.length &&
-                              controller.allUnTaggedPicsDay[i] is! DateTime) {
+                              controller.allUnTaggedPicsDay[i] is String) {
                             controller.selectedMultiBarPics[
                                 controller.allUnTaggedPicsDay[i]] = true;
                             i++;
@@ -81,55 +85,81 @@ class UntaggedTabDay extends GetWidget<TabsController> {
                       }
                     },
                     child: DateHeaderWidget(
-                        date: controller.allUnTaggedPicsDay[index],
+                        date: object,
                         isSelected: isSelected,
                         isMonth: controller.toggleIndexUntagged.value == 0));
               }
-              var blurHash = BlurHashController
-                  .to.blurHash[controller.allUnTaggedPicsDay[index]];
+              var blurHash = BlurHashController.to.blurHash[object];
+              final picStore = controller.picStoreMap[object]?.value;
+              return Padding(
+                padding: const EdgeInsets.all(4),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () async {
+                      if (controller.multiPicBar.value) {
+                        if (controller.selectedMultiBarPics[object] == null) {
+                          controller.selectedMultiBarPics[object] = true;
+                        } else {
+                          controller.selectedMultiBarPics.remove(object);
+                        }
+                        return;
+                      }
+                      await Get.to(() => PhotoScreen(
+                          picId: object,
+                          picIdList: controller.allUnTaggedPics.keys.toList()));
 
-              return Stack(
-                children: [
-                  Positioned.fill(
-                    child: Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: blurHash != null
-                            ? BlurHash(
-                                hash: blurHash,
-                                color: Colors.transparent,
-                              )
-                            : Container(
-                                padding: const EdgeInsets.all(12),
-                                color: Colors.grey[300],
-                              ),
-                      ),
-                    ),
-                  ),
-                  if (controller
-                          .picStoreMap[controller.allUnTaggedPicsDay[index]]
-                          ?.value !=
-                      null)
-                    Positioned.fill(
-                      child: Padding(
-                        padding: const EdgeInsets.all(2),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(6),
-                          child: Container(
-                            child: UntaggedImageWidgets(
-                              picStore: controller
-                                  .picStoreMap[
-                                      controller.allUnTaggedPicsDay[index]]!
-                                  .value,
-                              picId: controller.allUnTaggedPicsDay[index],
+                      await refresh_everything();
+                    },
+                    child: GestureDetector(
+                      onLongPress: () {
+                        if (controller.multiPicBar.value == false) {
+                          controller.setMultiPicBar(true);
+                          controller.selectedMultiBarPics[object] = true;
+                        }
+                      },
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: PhotoWidget(
+                              picStore: picStore,
                               hash: blurHash,
                             ),
                           ),
-                        ),
+                          if (controller.multiPicBar.value &&
+                              controller.selectedMultiBarPics[object] !=
+                                  null) ...[
+                            Container(
+                              constraints: BoxConstraints.expand(),
+                              decoration: BoxDecoration(
+                                color: kSecondaryColor.withOpacity(0.3),
+                                border: Border.all(
+                                  color: kSecondaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 8.0,
+                              top: 6.0,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  gradient: kSecondaryGradient,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child:
+                                    Image.asset('lib/images/checkwhiteico.png'),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                     ),
-                ],
+                  ),
+                ),
               );
             },
           );
@@ -138,4 +168,3 @@ class UntaggedTabDay extends GetWidget<TabsController> {
     );
   }
 }
- */

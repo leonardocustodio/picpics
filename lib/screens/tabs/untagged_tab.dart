@@ -9,9 +9,9 @@ import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/screens/tabs/untagged_tabs/untagged_image_widgets.dart';
+import 'package:picPics/screens/tabs/untagged_tabs/untagged_day.dart';
+import 'package:picPics/screens/tabs/untagged_tabs/untagged_month.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
-/* import 'package:picPics/stores/gallery_store.dart'; */
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
@@ -50,7 +50,8 @@ class UntaggedTab extends GetWidget<TabsController> {
             if (controller.allUnTaggedPicsMonth.isEmpty) {
               return Center(child: CircularProgressIndicator());
             }
-            return Obx(
+            return UntaggedTabMonth();
+            /*   return Obx(
               () => StaggeredGridView.countBuilder(
                   addAutomaticKeepAlives: true,
                   addRepaintBoundaries: true,
@@ -180,8 +181,10 @@ class UntaggedTab extends GetWidget<TabsController> {
                     });
                   }),
             );
+           */
           } else {
-            return Obx(
+            return UntaggedTabDay();
+            /*  return Obx(
               () => StaggeredGridView.countBuilder(
                 addAutomaticKeepAlives: true,
                 addRepaintBoundaries: true,
@@ -312,6 +315,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                 },
               ),
             );
+           */
           }
         },
       ),

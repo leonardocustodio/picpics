@@ -10,6 +10,13 @@ final greyWidget = Padding(
     color: Colors.grey[300],
   ),
 );
+final failedItem = Center(
+  child: Text(
+    'Failed loading',
+    textAlign: TextAlign.center,
+    style: const TextStyle(fontSize: 18.0),
+  ),
+);
 
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;
