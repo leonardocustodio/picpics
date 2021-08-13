@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,6 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key.dart';
 import 'package:picPics/screens/tabs/tagged/tagged_tab_date.dart';
-import 'package:picPics/screens/tabs/tagged_tab_grid_view.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
@@ -33,8 +33,6 @@ class TaggedPhotosSection extends GetWidget<TaggedController> {
           builder: (tagsController) {
             /// Show the tags tab
             final taggedKeys = controller.taggedPicId.keys.toList();
-            print(
-                'selectedFilteringTagsKeys:${tagsController.selectedFilteringTagsKeys.value}');
 
             return StaggeredGridView.countBuilder(
               addAutomaticKeepAlives: true,
@@ -48,63 +46,65 @@ class TaggedPhotosSection extends GetWidget<TaggedController> {
               crossAxisSpacing: 4,
               itemCount: taggedKeys.length,
               itemBuilder: (BuildContext context, int index) {
-                final tagKey = taggedKeys[index];
-                final showingPicId =
-                    controller.taggedPicId[taggedKeys[index]]?.keys.last;
-                Widget? originalImage;
+                return Obx(() {
+                  final tagKey = taggedKeys[index];
+                  final showingPicId =
+                      controller.taggedPicId[taggedKeys[index]]?.keys.last;
+                  Widget? originalImage;
 
-                final blurHash = BlurHashController.to.blurHash[showingPicId];
-                final ignore = tagsController.isSearching.value &&
-                    tagsController.selectedFilteringTagsKeys[tagKey] == null;
-
-                return IgnorePointer(
-                  ignoring: ignore,
-                  child: Opacity(
-                    opacity: ignore ? 0.3 : 1.0,
-                    child: Container(
-                      margin: const EdgeInsets.all(4),
-                      child: GetX<TabsController>(builder: (tabsController) {
-                        return Stack(
-                          children: [
-                            Positioned.fill(
-                              child: Padding(
-                                padding: const EdgeInsets.only(bottom: 25),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: null != blurHash
-                                      ? BlurHash(
-                                          hash: blurHash,
-                                          color: Colors.transparent,
-                                        )
-                                      : Padding(
-                                          padding: const EdgeInsets.all(2),
-                                          child: Container(
-                                            padding: const EdgeInsets.all(10),
-                                            color: Colors.grey[300],
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            ),
-                            if (originalImage == null &&
-                                showingPicId != null &&
-                                tabsController
-                                        .picStoreMap[showingPicId]?.value !=
-                                    null)
+                  final blurHash = BlurHashController.to.blurHash[showingPicId];
+                  final ignore = tagsController.isSearching.value &&
+                      tagsController.selectedFilteringTagsKeys[tagKey] == null;
+                  print('$ignore');
+                  return IgnorePointer(
+                    ignoring: ignore,
+                    child: Opacity(
+                      opacity: ignore ? 0.3 : 1.0,
+                      child: Container(
+                        margin: const EdgeInsets.all(4),
+                        child: GetX<TabsController>(builder: (tabsController) {
+                          return Stack(
+                            children: [
                               Positioned.fill(
-                                child: _buildPicItem(
-                                  tabsController
-                                      .picStoreMap[showingPicId]!.value,
-                                  showingPicId,
-                                  tagKey,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 25),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: null != blurHash
+                                        ? BlurHash(
+                                            hash: blurHash,
+                                            color: Colors.transparent,
+                                          )
+                                        : Padding(
+                                            padding: const EdgeInsets.all(2),
+                                            child: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              color: Colors.grey[300],
+                                            ),
+                                          ),
+                                  ),
                                 ),
                               ),
-                          ],
-                        );
-                      }),
+                              if (originalImage == null &&
+                                  showingPicId != null &&
+                                  tabsController
+                                          .picStoreMap[showingPicId]?.value !=
+                                      null)
+                                Positioned.fill(
+                                  child: _buildPicItem(
+                                    tabsController
+                                        .picStoreMap[showingPicId]!.value,
+                                    showingPicId,
+                                    tagKey,
+                                  ),
+                                ),
+                            ],
+                          );
+                        }),
+                      ),
                     ),
-                  ),
-                );
+                  );
+                });
               },
               staggeredTileBuilder: (_) {
                 return StaggeredTile.extent(1, height + 45);
@@ -216,21 +216,23 @@ class TaggedPhotosSection extends GetWidget<TaggedController> {
                           Container(
                             // color: Colors.brown.withOpacity(.9),
                             margin: const EdgeInsets.only(top: 5),
-                            child: RichText(
-                              text: TextSpan(
+                            child: AutoSizeText.rich(
+                              TextSpan(
                                   text:
                                       '${TagsController.to.allTags[tagKey]?.value.title ?? ''}',
                                   style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 19,
                                   ),
                                   children: [
                                     TextSpan(
                                       text:
                                           ' (${controller.taggedPicId[tagKey]?.keys.length ?? 0})',
-                                      style: TextStyle(fontSize: 17),
                                     )
                                   ]),
+                              maxFontSize: 20,
+                              minFontSize: 5,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                             ),
                           ),

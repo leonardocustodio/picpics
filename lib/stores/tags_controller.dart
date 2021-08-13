@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/percentage_dialog_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
@@ -54,15 +53,6 @@ class TagsController extends GetxController {
     ever(searchText, (_) {
       tagsSuggestionsCalculate();
     });
-/* 
-    Future.delayed(Duration(seconds: 10), () {
-      Timer.periodic(Duration.zero, (_) {
-        tabsController.allUnTaggedPicsMonth
-            .remove(tabsController.allUnTaggedPicsMonth.keys.toList()[1]);
-        tabsController.allUnTaggedPicsDay
-            .remove(tabsController.allUnTaggedPicsDay.keys.toList()[1]);
-      });
-    }); */
   }
 
   void setIsSearching(bool val) {
@@ -190,36 +180,6 @@ class TagsController extends GetxController {
     tagsSuggestionsCalculate();
   }
 
-/*   void searchForTagName(_) {
-    var text = searchText.value;
-    text = text.trim();
-    searchTagsResults.clear();
-    if (text == '') {
-      /* setShowSearchTagsResults(false); */
-      return;
-    }
-    var listOfLetters = text.toLowerCase().split('');
-
-    /* setShowSearchTagsResults(true); */
-
-    for (MapEntry<String, Rx<TagModel>> map in allTags.entries) {
-      TagModel tagStore = map.value.value;
-      if (tagStore.key == kSecretTagKey) {
-        continue;
-      }
-      if (selectedFilteringTagsKeys.contains(tagStore.key)) {
-        continue;
-      }
-
-      doCustomisedSearching(tagStore, listOfLetters, (matched) {
-        if (matched) searchTagsResults.add(tagStore);
-      });
-      /* if (Helpers.stripTag(tagStore.name).startsWith(Helpers.stripTag(text))) {
-        searchTagsResults.add(tagStore);
-      } */
-    }
-  } */
-
   Future<void> removeAllPrivatePics() async {
     /// TODO: implement the private pic section
     /*  for (PicStore private in privatePics) {
@@ -294,77 +254,6 @@ class TagsController extends GetxController {
     });
   }
 
-/*   //@action
-  Future<void> loadTags() async {
-    var tagsBox = await database.getAllLabel();
-    tags.clear();
-
-    for (Label tag in tagsBox) {
-      TagsStore tagsStore = TagsStore(
-        id: tag.key,
-        name: tag.title,
-        count: tag.counter,
-        time: tag.lastUsedAt,
-      );
-      addTag(tagsStore);
-    }
-
-    /* Label secretTag = tagsBox.firstWhere(
-      (Label element) => element.key == kSecretTagKey,
-      orElse: () => null,
-    ); */
-    if (tags[kSecretTagKey] == null) {
-      //print('Creating secret tag in db!');
-      Label createSecretLabel = Label(
-        key: kSecretTagKey,
-        title: 'Secret Pics',
-        photoId: [],
-        counter: 1,
-        lastUsedAt: DateTime.now(),
-      );
-      await database.createLabel(createSecretLabel);
-      //tagsBox.put(kSecretTagKey, createSecretTag);
-
-      TagsStore tagsStore = TagsStore(
-        id: kSecretTagKey,
-        name: 'Secret Pics',
-        count: 1,
-        time: DateTime.now(),
-      );
-      addTag(tagsStore);
-    }
-    loadMostUsedTags();
-    loadLastWeekUsedTags();
-    loadLastMonthUsedTags();
-
-    //print('******************* loaded tags **********');
-  } */
-
-  //@action
-/*   void addRecentTags(String tagKey) {
-    recentTags.add(tagKey);
-  } */
-
-  //@action
-/*   Future<void> editRecentTags(String oldTagKey, String newTagKey) async {
-    if (recentTags.contains(oldTagKey)) {
-      //print('updating tag name in recent tags');
-      int indexOfTag = recentTags.indexOf(oldTagKey);
-      recentTags[indexOfTag] = newTagKey;
-      /* var userBox = Hive.box('user');
-      User getUser = userBox.getAt(0); */
-      MoorUser currentUser = await database.getSingleMoorUser();
-      int indexOfRecentTag = currentUser.recentTags.indexOf(oldTagKey);
-      var tempTags = List<String>.from(currentUser.recentTags);
-      tempTags[indexOfRecentTag] = newTagKey;
-      await database.updateMoorUser(currentUser.copyWith(recentTags: tempTags));
-
-/* 
-      getUser.recentTags[indexOfRecentTag] = newTagKey;
-      userBox.putAt(0, getUser); */
-    }
-  } */
-
   Future<String> createTag(String tagName) async {
     //var tagsBox = Hive.box('tags');
     /*// //print(tagsBox.keys); */
@@ -400,94 +289,6 @@ class TagsController extends GetxController {
     return tagKey;
   }
 
-  /* Future<Map<String, String>> loadRecentTags() async {
-    //var userBox = Hive.box('user');
-    //var tagsBox = Hive.box('tags');
-    var tagsList = await _database.getAllLabel();
-
-    var getUser = await DatabaseController.to.getUser();
-
-    //List<String> multiPicTags = multiPicTagKeys.toList();
-    var suggestionTags = <String>[];
-    /* searchText.value = searchText.trim(); */
-
-    if (searchText.trim() == '') {
-      for (var recent in getUser.recentTags) {
-        // //print('Recent Tag: $recent');
-        if (multiPicTags[recent] != null || recent == kSecretTagKey) {
-          continue;
-        }
-        suggestionTags.add(recent);
-      }
-
-      // //print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
-
-//      while (suggestions.length < maxNumOfSuggestions) {
-//          if (excludeTags.contains('Hey}')) {
-//            continue;
-//          }
-      if (suggestionTags.length < kMaxNumOfSuggestions) {
-        for (var tag in tagsList) {
-          var tagKey = tag.key;
-          if (suggestionTags.length == kMaxNumOfSuggestions) {
-            break;
-          }
-          if (multiPicTags[tagKey] != null ||
-              suggestionTags.contains(tagKey) ||
-              tagKey == kSecretTagKey) {
-            continue;
-          }
-          // //print('Adding tag key: $tagKey');
-          suggestionTags.add(tagKey);
-        }
-      }
-//      }
-    } else {
-      var listOfLetters = searchText.toLowerCase().split('');
-      for (var tag in tagsList) {
-        var tagKey = tag.key;
-        if (tagKey == kSecretTagKey) continue;
-        if (allTags[tagKey] != null && multiPicTags[tagKey] == null) {
-          var tagsStoreValue = /* TagsController.to. */ allTags[tagKey]!.value;
-          doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
-            suggestionTags.add(tagKey);
-          });
-        }
-        /* String tagName = Helpers.decryptTag(tagKey);
-        if (tagName.startsWith(Helpers.stripTag(searchText))) {
-          suggestionTags.add(tagKey);
-        } */
-      }
-    }
-
-    // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
-    if (multiPicTags[kSecretTagKey] == null &&
-        /* !searchingTagsKeys.contains(kSecretTagKey) && */
-        PrivatePhotosController.to.showPrivate.value == true &&
-        searchText.value == '') {
-      suggestionTags.add(kSecretTagKey);
-    }
-
-    // //print('find suggestions: $searchText - exclude tags: $multiPicTags');
-    // //print(suggestionTags);
-    // //print('UserController Tags: ${TagsController.to.allTags}');
-    /* List<TagsStore> suggestions = TagsController.to.allTags
-        .where((element) => suggestionTags.contains(element.id))
-        .toList(); */
-    //var suggestionsTags = <String, String>{};
-    recentTagKeyList.clear();
-    suggestionTags.forEach((suggestedTag) {
-      if (allTags[suggestedTag] != null) {
-        recentTagKeyList[suggestedTag] = '';
-        //suggestions.add(TagsController.to.allTags[suggestedTag].value);
-      }
-    });
-    // //print('Suggestions Tag Store: $suggestions');
-    //tagsSuggestions.value = suggestions;
-    // ignore: invalid_use_of_protected_member
-    return recentTagKeyList.value;
-  }
- */
   /// load all the tags async
   Future<void> loadAllTags() async {
     var tagsBox = await _database.getAllLabel();
@@ -538,13 +339,104 @@ class TagsController extends GetxController {
     allTags[tagModel.key] = Rx<TagModel>(tagModel);
   }
 
+  ///
+  ///
+  /// ---------- START ----------
+  ///
+  /// Multiple Tags Removing Functionality
+  ///
+  ///
+  ///
+
+  Future<void> removeTagsFromPicsMainFunction(
+      {required List<String> picIds,
+      required Map<String, String> tagKeysMap}) async {
+    final taggedController = Get.find<TaggedController>();
+
+    final map = <String, Map<String, String>>{
+      for (var picId in picIds) picId: tagKeysMap,
+    };
+
+    await _removeTagsFromPicsPrivate(picIdToTagKey: map).then((_) async {
+      /// Clear the selectedUntaggedPics as now the processing is done
+      ///
+      taggedController.selectedMultiBarPics.clear();
+
+      /// Also clear the multiPicTags as we have iterated and processed through it and
+      /// now we have to make it empty for the next time
+      clearMultiPicTags();
+
+      /// refresh the untaggedList and at the same time the tagged pics will also be refreshed again
+      ///
+      await tabsController.refreshUntaggedList();
+    });
+  }
+
+  Future<void> _removeTagsFromPicsPrivate(
+      {required Map<String, Map<String, String>> picIdToTagKey}) async {
+    final percentageController = Get.find<PercentageDialogController>();
+    percentageController.start(picIdToTagKey.keys.length + .0, 'Un-tagging...');
+
+    /// iterate over the pictures and add tags to it
+    final tabsController = Get.find<TabsController>();
+
+    final tagKeyToPicId = <String, Map<String, String>>{};
+
+    picIdToTagKey.forEach((pictureId, tagMap) {
+      tagMap.keys.forEach((tagKey) {
+        if (tagKeyToPicId[tagKey] == null) {
+          tagKeyToPicId[tagKey] = <String, String>{pictureId: ''};
+        } else {
+          tagKeyToPicId[tagKey]![pictureId] = '';
+        }
+      });
+    });
+
+    await Future.forEach(tagKeyToPicId.keys, (String tagKey) async {
+      await _removePhotoIdFromLabel(tagKey, tagKeyToPicId[tagKey]!);
+    });
+    await Future.forEach(picIdToTagKey.keys, (String picId) async {
+      final map = picIdToTagKey[picId]!;
+
+      await tabsController.picStoreMap[picId]!.value
+          .removeMultipleTagsFromPicsForwadFromTagsController(
+              acceptedTagKeys: map);
+      await Future.delayed(Duration.zero, () {
+        percentageController.increaseValue(1.0);
+      });
+    }).then((_) {
+      percentageController.stop();
+    });
+  }
+
+  Future<void> _removePhotoIdFromLabel(
+      String tagKey, Map<String, String> picIdsMap) async {
+    final getTag = await _database.getLabelByLabelKey(tagKey);
+
+    if (getTag == null) {
+      return;
+    }
+    if (picIdsMap.isNotEmpty) {
+      getTag.photoId.removeWhere((picId, _) => picIdsMap[picId] != null);
+      await _database.updateLabel(getTag);
+    }
+  }
+
+  ///
+  /// Multiple Tags Removing Functionality
+  ///
+  /// ---------------------- END ----------------------
+  ///
+
   Future<void> addTagsToSelectedPics() async {
-    if (tabsController.toggleIndexUntagged.value == 0) {
-      await tabsController.untaggedScrollControllerMonth.animateTo(0.0,
-          duration: Duration(milliseconds: 300), curve: Curves.ease);
-    } else {
-      await tabsController.untaggedScrollControllerDay.animateTo(0.0,
-          duration: Duration(milliseconds: 300), curve: Curves.ease);
+    if (tabsController.currentTab.value == 0) {
+      if (tabsController.toggleIndexUntagged.value == 0) {
+        await tabsController.untaggedScrollControllerMonth.animateTo(0.0,
+            duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+      } else {
+        await tabsController.untaggedScrollControllerDay.animateTo(0.0,
+            duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+      }
     }
     final taggedController = Get.find<TaggedController>();
 

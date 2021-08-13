@@ -15,91 +15,94 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
   const TaggedTabSelectiveTagKeyGrid(this.tagKey, {Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    var taggedPicIds =
-        controller.taggedPicId[tagKey]?.keys.toList() ?? <String>[];
-    return StaggeredGridView.countBuilder(
-        key: Key('$tagKey'),
-        padding: EdgeInsets.only(top: 2),
-        crossAxisCount: 4,
-        mainAxisSpacing: 0,
-        crossAxisSpacing: 0,
-        itemCount: taggedPicIds.length,
-        staggeredTileBuilder: (_) {
-          return const StaggeredTile.count(1, 1);
-        },
-        itemBuilder: (_, int index) {
-          return Obx(() {
-            final picId = taggedPicIds[index];
+    return Obx(() {
+      var taggedPicIds =
+          controller.taggedPicId[tagKey]?.keys.toList() ?? <String>[];
+      return StaggeredGridView.countBuilder(
+          key: Key('$tagKey'),
+          padding: EdgeInsets.only(top: 2),
+          crossAxisCount: 4,
+          mainAxisSpacing: 0,
+          crossAxisSpacing: 0,
+          itemCount: taggedPicIds.length,
+          staggeredTileBuilder: (_) {
+            return const StaggeredTile.count(1, 1);
+          },
+          itemBuilder: (_, int index) {
+            return Obx(() {
+              final picId = taggedPicIds[index];
 
-            var blurHash = BlurHashController.to.blurHash[picId];
-            final picStore = TabsController.to.picStoreMap[picId]!.value;
-            return Padding(
-              padding: const EdgeInsets.all(4),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: CupertinoButton(
-                  padding: const EdgeInsets.all(0),
-                  onPressed: () async {
-                    if (controller.multiPicBar.value) {
-                      if (controller.selectedMultiBarPics[picId] == null) {
-                        controller.selectedMultiBarPics[picId] = true;
-                      } else {
-                        controller.selectedMultiBarPics.remove(picId);
+              var blurHash = BlurHashController.to.blurHash[picId];
+              final picStore = TabsController.to.picStoreMap[picId]!.value;
+              return Padding(
+                padding: const EdgeInsets.all(4),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: CupertinoButton(
+                    padding: const EdgeInsets.all(0),
+                    onPressed: () async {
+                      if (controller.multiPicBar.value) {
+                        if (controller.selectedMultiBarPics[picId] == null) {
+                          controller.selectedMultiBarPics[picId] = true;
+                        } else {
+                          controller.selectedMultiBarPics.remove(picId);
+                        }
+                        return;
                       }
-                      return;
-                    }
-                    await Get.to(() =>
-                        PhotoScreen(picId: picId, picIdList: taggedPicIds));
-                  },
-                  child: GestureDetector(
-                    onLongPress: () {
-                      if (controller.multiPicBar.value == false) {
-                        controller.selectedMultiBarPics[picId] = true;
-                        controller.setMultiPicBar(true);
-                      }
+                      await Get.to(() =>
+                          PhotoScreen(picId: picId, picIdList: taggedPicIds));
                     },
-                    child: Stack(
-                      children: [
-                        Positioned.fill(
-                          child: PhotoWidget(
-                            picStore: picStore,
-                            hash: blurHash,
-                          ),
-                        ),
-                        if (controller.multiPicBar.value &&
-                            controller.selectedMultiBarPics[picId] != null) ...[
-                          Container(
-                            constraints: BoxConstraints.expand(),
-                            decoration: BoxDecoration(
-                              color: kSecondaryColor.withOpacity(0.3),
-                              border: Border.all(
-                                color: kSecondaryColor,
-                                width: 2.0,
-                              ),
+                    child: GestureDetector(
+                      onLongPress: () {
+                        if (controller.multiPicBar.value == false) {
+                          controller.selectedMultiBarPics[picId] = true;
+                          controller.setMultiPicBar(true);
+                        }
+                      },
+                      child: Stack(
+                        children: [
+                          Positioned.fill(
+                            child: PhotoWidget(
+                              picStore: picStore,
+                              hash: blurHash,
                             ),
                           ),
-                          Positioned(
-                            left: 8.0,
-                            top: 6.0,
-                            child: Container(
-                              height: 20,
-                              width: 20,
+                          if (controller.multiPicBar.value &&
+                              controller.selectedMultiBarPics[picId] !=
+                                  null) ...[
+                            Container(
+                              constraints: BoxConstraints.expand(),
                               decoration: BoxDecoration(
-                                gradient: kSecondaryGradient,
-                                borderRadius: BorderRadius.circular(10.0),
+                                color: kSecondaryColor.withOpacity(0.3),
+                                border: Border.all(
+                                  color: kSecondaryColor,
+                                  width: 2.0,
+                                ),
                               ),
-                              child:
-                                  Image.asset('lib/images/checkwhiteico.png'),
                             ),
-                          ),
+                            Positioned(
+                              left: 8.0,
+                              top: 6.0,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  gradient: kSecondaryGradient,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child:
+                                    Image.asset('lib/images/checkwhiteico.png'),
+                              ),
+                            ),
+                          ],
                         ],
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
+              );
+            });
           });
-        });
+    });
   }
 }

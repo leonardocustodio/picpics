@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:expandable/expandable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -11,6 +13,7 @@ import 'tabs_controller.dart';
 
 class TaggedController extends GetxController {
   static TaggedController get to => Get.find();
+  final bottomOptionsBar = 0.obs;
 
   /// tagKey: {picId: ''}
   final taggedPicId = <String, RxMap<String, String>>{}.obs;
@@ -120,59 +123,103 @@ class TaggedController extends GetxController {
     return true;
   }
 
-  void setTabIndex(int index, String? tagKey) async {
-    if (selectedMultiBarPics.isEmpty) {
-      if (index == 0) {
-        setMultiPicBar(false);
-        clearSelectedUntaggedPics();
-        tagsController.clearMultiPicTags();
-        return;
-      }
-    }
-
-    if (index == 0) {
-      clearSelectedUntaggedPics();
-      //GalleryStore.to.clearSelectedPics();
-      setMultiPicBar(false);
-    } else if (index == 1) {
-      await tagsController.tagsSuggestionsCalculate();
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        setMultiTagSheet(true);
-        expandableController.value.expanded = true;
-        expandablePaddingController.value.expanded = true;
-      });
-    } else if (index == 2) {
-      if (selectedMultiBarPics.isEmpty) {
-        return;
-      }
-      await sharePics(picKeys: selectedMultiBarPics.keys.toList());
-    } else if (index == 3) {
-      if (selectedMultiBarPics.isEmpty) {
-        return;
-      }
-      await showDialog<void>(
+  void untagPicsFromTag(
+      {required String tagKey, required List<String> picIds}) async {
+    final tagName = tagsController.allTags[tagKey]?.value.title;
+    await showDialog<void>(
         context: Get.context!,
         barrierDismissible: true,
         builder: (_) {
-          return ConfirmPicDelete(onPressedDelete: () async {
-            await Analytics.sendEvent(Event.deleted_photo);
-            Get.back();
-            isTaggedPicsLoaded.value = false;
-            await TabsController.to
-                .trashMultiplePics(selectedMultiBarPics.keys.toList().toSet());
-            await refreshTaggedPhotos();
-            isTaggedPicsLoaded.value = true;
-            if (taggedPicId[tagKey]?.keys.isEmpty ?? true) {
-              /// If there are no pictures present related to this tagKey then
-              /// let's go back to previous screen
-              WidgetsBinding.instance?.addPostFrameCallback((_) {
-                print('going back');
-                Get.back();
+          return ConfirmationDialog(
+            headingText: 'Untag${tagName != null ? ('  ' + tagName) : ''}',
+            titleText:
+                'Are you sure you want to untag ${picIds.length} photos ?',
+            okText: 'Untag',
+            cancelText: 'Cancel',
+            onPressedOk: () async {
+              Get.back();
+              setMultiPicBar(false);
+              setMultiTagSheet(false);
+              await Future.delayed(Duration.zero, () async {
+                await tagsController.removeTagsFromPicsMainFunction(
+                    picIds: picIds, tagKeysMap: {tagKey: ''});
               });
-            }
-          });
-        },
-      );
+              if (taggedPicId[tagKey]?.keys.isEmpty ?? true) {
+                /// If there are no pictures present related to this tagKey then
+                /// let's go back to previous screen
+                WidgetsBinding.instance?.addPostFrameCallback((_) {
+                  print('going back');
+                  Get.back();
+                });
+              }
+            },
+          );
+        });
+  }
+
+  void setTabIndex(int idx, String? tagKey) async {
+    bottomOptionsBar.value = idx;
+
+    switch (bottomOptionsBar.value) {
+      case 0:
+
+        /// back button
+        setMultiPicBar(false);
+        clearSelectedUntaggedPics();
+        if (selectedMultiBarPics.isEmpty) {
+          tagsController.clearMultiPicTags();
+        }
+        return;
+      case 1:
+
+        /// tag adding button
+        await tagsController.tagsSuggestionsCalculate();
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          setMultiTagSheet(true);
+          expandableController.value.expanded = true;
+          expandablePaddingController.value.expanded = true;
+        });
+        return;
+      case 2:
+
+        /// tag sharing button
+        if (selectedMultiBarPics.isEmpty) {
+          return;
+        }
+        await sharePics(picKeys: selectedMultiBarPics.keys.toList());
+        return;
+      case 3:
+
+        /// tag deleting button
+        if (selectedMultiBarPics.isEmpty) {
+          return;
+        }
+        await showDialog<void>(
+          context: Get.context!,
+          barrierDismissible: true,
+          builder: (_) {
+            return ConfirmPicDelete(onPressedDelete: () async {
+              await Analytics.sendEvent(Event.deleted_photo);
+              Get.back();
+              isTaggedPicsLoaded.value = false;
+              await TabsController.to.trashMultiplePics(
+                  selectedMultiBarPics.keys.toList().toSet());
+              await refreshTaggedPhotos();
+              isTaggedPicsLoaded.value = true;
+              if (taggedPicId[tagKey]?.keys.isEmpty ?? true) {
+                /// If there are no pictures present related to this tagKey then
+                /// let's go back to previous screen
+                WidgetsBinding.instance?.addPostFrameCallback((_) {
+                  print('going back');
+                  Get.back();
+                });
+              }
+            });
+          },
+        );
+        return;
+      default:
+        return;
     }
   }
 
@@ -311,5 +358,179 @@ class TaggedController extends GetxController {
       taggedPicId[tagKey] = <String, String>{}.obs;
     }
     taggedPicId[tagKey]![picId] = '';
+  }
+}
+
+class ConfirmationDialog extends StatelessWidget {
+  final String titleText;
+  final String cancelText;
+  final String okText;
+  final String headingText;
+  final Function()? onPressedClose;
+  final Function() onPressedOk;
+
+  const ConfirmationDialog({
+    required this.headingText,
+    required this.titleText,
+    required this.okText,
+    required this.cancelText,
+    this.onPressedClose,
+    required this.onPressedOk,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: Get.width < 360
+          ? EdgeInsets.symmetric(horizontal: 20.0)
+          : EdgeInsets.symmetric(horizontal: 40.0),
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: Color(0xFFF1F3F5),
+          borderRadius: BorderRadius.vertical(
+            top: const Radius.circular(14),
+            bottom: const Radius.circular(19.0),
+          ),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const SizedBox(width: 40),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        headingText,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff979a9b),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w400,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    width: 40,
+                    child: CupertinoButton(
+                      onPressed: () {
+                        onPressedClose?.call();
+                        Get.back();
+                      },
+                      child: Image.asset('lib/images/closegrayico.png'),
+                    ),
+                  ),
+                ],
+              ),
+              /* Padding(
+                padding: const EdgeInsets.symmetric(vertical: 44.0),
+                child: Image.asset('lib/images/lockmodalico.png'),
+              ), */
+              Padding(
+                padding: const EdgeInsets.only(top: 10.0),
+                child: Text(
+                  titleText,
+                  textAlign: TextAlign.center,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: Color(0xff707070),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5.0, top: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Expanded(
+                      child: CupertinoButton(
+                        padding: const EdgeInsets.all(0),
+                        onPressed: () {
+                          /* if (keepAsking == false) {
+                            UserController.to.setKeepAskingToDelete(false);
+                          } */
+                          onPressedClose?.call();
+                          Get.back();
+                        },
+                        child: Container(
+                          height: 44.0,
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(color: kSecondaryColor, width: 1.0),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              cancelText,
+                              textScaleFactor: 1.0,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: TextStyle(
+                                color: kSecondaryColor,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'Lato',
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16.0,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      constraints: BoxConstraints(maxWidth: 16.0),
+                    ),
+                    Expanded(
+                      child: CupertinoButton(
+                        padding: const EdgeInsets.all(0),
+                        onPressed: () {
+                          /* if (keepAsking == false) {
+                            UserController.to.setKeepAskingToDelete(false);
+                          } */
+                          onPressedOk();
+                        },
+                        child: Container(
+                          height: 44.0,
+                          decoration: BoxDecoration(
+                            gradient: kPrimaryGradient,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              okText,
+                              textScaleFactor: 1.0,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 1,
+                              style: kLoginButtonTextStyle,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

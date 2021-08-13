@@ -550,6 +550,32 @@ class PicStore extends GetxController {
   }
 
   //@action
+  Future<void> removeMultipleTagsFromPicsForwadFromTagsController(
+      {required Map<String, String> acceptedTagKeys, String? name}) async {
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
+
+    if (getPic == null) {
+      return;
+    }
+
+    if (acceptedTagKeys.isEmpty) {
+      //print('this tag is already in this picture');
+      return;
+    }
+
+    getPic.tags.removeWhere((tagKey, _) => acceptedTagKeys[tagKey] != null);
+    //print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+    await database.updatePhoto(getPic);
+
+    if (name != null) {
+      await Analytics.sendEvent(
+        Event.removed_tag,
+        params: {'tagName': name},
+      );
+    }
+  }
+
+  //@action
   Future<void> addMultipleTagsToPic(
       {required Map<String, String> acceptedTagKeys, String? name}) async {
     var getPic = await database.getPhotoByPhotoId(photoId.value);

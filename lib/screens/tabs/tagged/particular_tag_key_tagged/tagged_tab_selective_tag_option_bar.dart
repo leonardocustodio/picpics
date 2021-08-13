@@ -180,14 +180,13 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                               tagsKeyList: tagsController
                                   .searchTagsResults.value
                                   .where((tag) =>
+                                      tag.key != tagKey &&
                                       tagsController.multiPicTags[tag.key] ==
-                                      null)
+                                          null)
                                   .toList()
                                   .map((e) => e.key)
                                   .toList(),
                               tagStyle: TagStyle.GrayOutlined,
-                              /* showEditTagModal: () =>
-                                                    showEditTagModal(context), */
                               onTap: (String tagKey) {
                                 /* if (!UserController
                                                       .to.isPremium.value) {
@@ -244,7 +243,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
           height: 0,
         );
       }
-      var listOfBottomNavigationItems = <BottomNavigationBarItem>[
+      final listOfBottomNavigationItems = <BottomNavigationBarItem>[
         BottomNavigationBarItem(
           label: 'Return',
           icon: Image.asset('lib/images/returntabbutton.png'),
@@ -276,12 +275,12 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
               onTap: (index) {
                 controller.setTabIndex(index, tagKey);
               },
-              iconSize: 24.0,
+              iconSize: 24,
               border:
                   Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
               items: listOfBottomNavigationItems)
           : SizedBox(
-              height: 64.0,
+              height: 64,
               child: BottomNavigationBar(
                   onTap: (index) {
                     controller.setTabIndex(index, tagKey);
