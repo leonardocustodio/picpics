@@ -9,111 +9,93 @@ import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key.dart';
-import 'package:picPics/screens/tabs/tagged/tagged_tab_date.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 
-class TaggedPhotosSection extends GetWidget<TaggedController> {
-  TaggedPhotosSection({Key? key}) : super(key: key);
+class TaggedPhotosGrouping extends GetWidget<TaggedController> {
+  TaggedPhotosGrouping({Key? key}) : super(key: key);
   final height = (Get.width / 3) - 20;
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () {
-        /// Show the date tab
-        if (controller.toggleIndexTagged.value == 0) {
-          return TaggedTabDate();
-        }
+    return GetX<TagsController>(builder: (tagsController) {
+      /// Show the tags tab
+      final taggedKeys = controller.taggedPicId.keys.toList();
 
-        return GetX<TagsController>(
-          builder: (tagsController) {
-            /// Show the tags tab
-            final taggedKeys = controller.taggedPicId.keys.toList();
+      return StaggeredGridView.countBuilder(
+        key: Key('tag'),
+        padding: EdgeInsets.only(left: 7, right: 7),
+        crossAxisCount: 3,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 4,
+        itemCount: taggedKeys.length,
+        itemBuilder: (BuildContext _, int index) {
+          return Obx(() {
+            final tagKey = taggedKeys[index];
+            final showingPicId =
+                controller.taggedPicId[taggedKeys[index]]?.keys.last;
+            Widget? originalImage;
 
-            return StaggeredGridView.countBuilder(
-              addAutomaticKeepAlives: true,
-              key: Key('tag'),
-              padding: EdgeInsets.only(left: 7, right: 7),
-              //physics: const CustomScrollPhysics(),
-              crossAxisCount: 3,
-
-              mainAxisSpacing: 8,
-
-              crossAxisSpacing: 4,
-              itemCount: taggedKeys.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Obx(() {
-                  final tagKey = taggedKeys[index];
-                  final showingPicId =
-                      controller.taggedPicId[taggedKeys[index]]?.keys.last;
-                  Widget? originalImage;
-
-                  final blurHash = BlurHashController.to.blurHash[showingPicId];
-                  final ignore = tagsController.isSearching.value &&
-                      tagsController.selectedFilteringTagsKeys[tagKey] == null;
-                  print('$ignore');
-                  return IgnorePointer(
-                    ignoring: ignore,
-                    child: Opacity(
-                      opacity: ignore ? 0.3 : 1.0,
-                      child: Container(
-                        margin: const EdgeInsets.all(4),
-                        child: GetX<TabsController>(builder: (tabsController) {
-                          return Stack(
-                            children: [
-                              Positioned.fill(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(bottom: 25),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: null != blurHash
-                                        ? BlurHash(
-                                            hash: blurHash,
-                                            color: Colors.transparent,
-                                          )
-                                        : Padding(
-                                            padding: const EdgeInsets.all(2),
-                                            child: Container(
-                                              padding: const EdgeInsets.all(10),
-                                              color: Colors.grey[300],
-                                            ),
-                                          ),
-                                  ),
-                                ),
-                              ),
-                              if (originalImage == null &&
-                                  showingPicId != null &&
-                                  tabsController
-                                          .picStoreMap[showingPicId]?.value !=
-                                      null)
-                                Positioned.fill(
-                                  child: _buildPicItem(
-                                    tabsController
-                                        .picStoreMap[showingPicId]!.value,
-                                    showingPicId,
-                                    tagKey,
-                                  ),
-                                ),
-                            ],
-                          );
-                        }),
-                      ),
-                    ),
-                  );
-                });
-              },
-              staggeredTileBuilder: (_) {
-                return StaggeredTile.extent(1, height + 45);
-              },
+            final blurHash = BlurHashController.to.blurHash[showingPicId];
+            final ignore = tagsController.isSearching.value &&
+                tagsController.selectedFilteringTagsKeys[tagKey] == null;
+            print('$ignore');
+            return IgnorePointer(
+              ignoring: ignore,
+              child: Opacity(
+                opacity: ignore ? 0.3 : 1.0,
+                child: Container(
+                  margin: const EdgeInsets.all(4),
+                  child: GetX<TabsController>(builder: (tabsController) {
+                    return Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 25),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: null != blurHash
+                                  ? BlurHash(
+                                      hash: blurHash,
+                                      color: Colors.transparent,
+                                    )
+                                  : Padding(
+                                      padding: const EdgeInsets.all(2),
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        color: Colors.grey[300],
+                                      ),
+                                    ),
+                            ),
+                          ),
+                        ),
+                        if (originalImage == null &&
+                            showingPicId != null &&
+                            tabsController.picStoreMap[showingPicId]?.value !=
+                                null)
+                          Positioned.fill(
+                            child: _buildPicItem(
+                              tabsController.picStoreMap[showingPicId]!.value,
+                              showingPicId,
+                              tagKey,
+                            ),
+                          ),
+                      ],
+                    );
+                  }),
+                ),
+              ),
             );
-          },
-        );
-      },
-    );
+          });
+        },
+        staggeredTileBuilder: (_) {
+          return StaggeredTile.extent(1, height + 45);
+        },
+      );
+    });
   }
 
   Widget _buildPicItem(PicStore? picStore, String picId, String tagKey) {

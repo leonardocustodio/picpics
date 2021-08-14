@@ -13,10 +13,8 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/tags_list.dart';
 
-class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
-  final String tagKey;
-  TaggedTabSelectiveTagOptionBar({required this.tagKey, Key? key})
-      : super(key: key);
+class TaggedTabOptionBar extends GetWidget<TaggedController> {
+  TaggedTabOptionBar({Key? key}) : super(key: key);
 
   final bottomTagsEditingController = TextEditingController();
   final tagsController = Get.find<TagsController>();
@@ -180,9 +178,8 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                               tagsKeyList: tagsController
                                   .searchTagsResults.value
                                   .where((tag) =>
-                                      tag.key != tagKey &&
                                       tagsController.multiPicTags[tag.key] ==
-                                          null)
+                                      null)
                                   .toList()
                                   .map((e) => e.key)
                                   .toList(),
@@ -273,7 +270,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
       return Platform.isIOS
           ? CupertinoTabBar(
               onTap: (index) {
-                controller.setTabIndexParticularTagKey(index, tagKey);
+                controller.setTabIndexAllTaggedKeys(index);
               },
               iconSize: 24,
               border:
@@ -283,7 +280,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
               height: 64,
               child: BottomNavigationBar(
                   onTap: (index) {
-                    controller.setTabIndexParticularTagKey(index, tagKey);
+                    controller.setTabIndexAllTaggedKeys(index);
                   },
                   type: BottomNavigationBarType.fixed,
                   showSelectedLabels: false,

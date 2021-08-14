@@ -19,10 +19,10 @@ class UntaggedTabMonth extends GetWidget<TabsController> {
       () => StaggeredGridView.countBuilder(
           addAutomaticKeepAlives: true,
           addRepaintBoundaries: true,
+          shrinkWrap: true,
           key: Key('Month'),
           controller: controller.untaggedScrollControllerMonth,
           padding: EdgeInsets.only(top: 2),
-          shrinkWrap: true,
           crossAxisCount: 4,
           mainAxisSpacing: 0,
           crossAxisSpacing: 0,
@@ -42,9 +42,10 @@ class UntaggedTabMonth extends GetWidget<TabsController> {
               () {
                 final object = controller.allUnTaggedPicsMonth[index];
                 if (object is DateTime) {
-                  var isSelected = true;
+                  var isSelected = false;
                   if (controller.multiPicBar.value) {
                     var i = index + 1;
+                    isSelected = true;
 
                     while (i < controller.allUnTaggedPicsMonth.length &&
                         controller.allUnTaggedPicsMonth[i] is String) {

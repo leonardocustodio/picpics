@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/stores/percentage_dialog_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/confirm_pic_delete.dart';
 
@@ -123,41 +124,153 @@ class TaggedController extends GetxController {
     return true;
   }
 
-  void untagPicsFromTag(
-      {required String tagKey, required List<String> picIds}) async {
-    final tagName = tagsController.allTags[tagKey]?.value.title;
+  Future<void> untagPicsFromTagFromDateOrGroupingCallable() async {
+    if (TabsController.to.selectedMultiBarPics.isEmpty) {
+      return;
+    }
+
+    if (toggleIndexTagged.value == 0) {
+      final picIdMapToTagKey = <String, Map<String, String>>{};
+      TabsController.to.selectedMultiBarPics.forEach((picId, value) {
+        if (picWiseTags.value[picId] != null) {
+          picIdMapToTagKey[picId] = picWiseTags.value[picId]!.value;
+        }
+      });
+      await untagPicsFromTag(picIdMapToTagKey: picIdMapToTagKey);
+    } else if (toggleIndexTagged.value == 1) {}
+  }
+
+  Future<void> untagPicsFromTag(
+      {Map<String, Map<String, String>>? tagKeyMapToPicId,
+      Map<String, Map<String, String>>? picIdMapToTagKey}) async {
+    assert(picIdMapToTagKey != null || tagKeyMapToPicId != null);
+
+    final percentageController = Get.find<PercentageDialogController>();
+    final tabsController = Get.find<TabsController>();
+    if (picIdMapToTagKey == null) {
+      picIdMapToTagKey = <String, Map<String, String>>{};
+
+      tagKeyMapToPicId!.forEach((tagKey, picMaps) {
+        picMaps.keys.forEach((picId) {
+          if (picIdMapToTagKey![picId] == null) {
+            picIdMapToTagKey[picId] = <String, String>{tagKey: ''};
+          } else {
+            picIdMapToTagKey[picId]![tagKey] = '';
+          }
+        });
+      });
+    } else {
+      tagKeyMapToPicId = <String, Map<String, String>>{};
+
+      picIdMapToTagKey.forEach((picId, tagMaps) {
+        tagMaps.keys.forEach((tagKey) {
+          if (tagKeyMapToPicId![tagKey] == null) {
+            tagKeyMapToPicId[tagKey] = <String, String>{picId: ''};
+          } else {
+            tagKeyMapToPicId[tagKey]![picId] = '';
+          }
+        });
+      });
+    }
     await showDialog<void>(
         context: Get.context!,
         barrierDismissible: true,
         builder: (_) {
           return ConfirmationDialog(
-            headingText: 'Untag${tagName != null ? ('  ' + tagName) : ''}',
+            headingText: 'Untag',
             titleText:
-                'Are you sure you want to untag ${picIds.length} photos ?',
+                'Are you sure you want to untag ${picIdMapToTagKey!.keys.length} photos ?',
             okText: 'Untag',
             cancelText: 'Cancel',
             onPressedOk: () async {
               Get.back();
-              setMultiPicBar(false);
-              setMultiTagSheet(false);
+              tabsController.setMultiPicBar(false);
+              tabsController.setMultiTagSheet(false);
+              tabsController.selectedMultiBarPics.clear();
               await Future.delayed(Duration.zero, () async {
+                percentageController.start(
+                    picIdMapToTagKey!.keys.length + .0, 'Un-tagging...');
                 await tagsController.removeTagsFromPicsMainFunction(
-                    picIds: picIds, tagKeysMap: {tagKey: ''});
+                  picIdMapToTagKey: picIdMapToTagKey,
+                  tagKeyMapToPicId: tagKeyMapToPicId!,
+                );
+                //await refreshTaggedPhotos();
               });
-              if (taggedPicId[tagKey]?.keys.isEmpty ?? true) {
+            },
+          );
+        });
+  }
+
+  void setTabIndexAllTaggedKeys(int idx) async {
+    bottomOptionsBar.value = idx;
+    final tabsController = Get.find<TabsController>();
+
+    switch (bottomOptionsBar.value) {
+      case 0:
+
+        /// back button
+        tabsController.setMultiPicBar(false);
+        clearSelectedUntaggedPics();
+        if (tabsController.selectedMultiBarPics.isEmpty) {
+          tagsController.clearMultiPicTags();
+        }
+        return;
+      case 1:
+
+        /// tag adding button
+        await tagsController.tagsSuggestionsCalculate();
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          tabsController.setMultiTagSheet(true);
+          tabsController.expandableController.value.expanded = true;
+          tabsController.expandablePaddingController.value.expanded = true;
+        });
+        return;
+      case 2:
+
+        /// tag sharing button
+        if (tabsController.selectedMultiBarPics.isEmpty) {
+          return;
+        }
+        await sharePics(
+            picKeys: tabsController.selectedMultiBarPics.keys.toList());
+        return;
+      case 3:
+
+        /// tag deleting button
+        if (tabsController.selectedMultiBarPics.isEmpty) {
+          return;
+        }
+        await showDialog<void>(
+          context: Get.context!,
+          barrierDismissible: true,
+          builder: (_) {
+            return ConfirmPicDelete(onPressedDelete: () async {
+              await Analytics.sendEvent(Event.deleted_photo);
+              Get.back();
+              isTaggedPicsLoaded.value = false;
+              await TabsController.to.trashMultiplePics(
+                  tabsController.selectedMultiBarPics.keys.toList().toSet());
+              await refreshTaggedPhotos();
+              isTaggedPicsLoaded.value = true;
+              /* 
+              if (picIds?.isEmpty ?? true) {
                 /// If there are no pictures present related to this tagKey then
                 /// let's go back to previous screen
                 WidgetsBinding.instance?.addPostFrameCallback((_) {
                   print('going back');
                   Get.back();
                 });
-              }
-            },
-          );
-        });
+              } */
+            });
+          },
+        );
+        return;
+      default:
+        return;
+    }
   }
 
-  void setTabIndex(int idx, String? tagKey) async {
+  void setTabIndexParticularTagKey(int idx, String? tagKey) async {
     bottomOptionsBar.value = idx;
 
     switch (bottomOptionsBar.value) {
@@ -277,6 +390,7 @@ class TaggedController extends GetxController {
     final taggedPhotoIdList = await database.getAllPhoto();
 
     allTaggedPicIdList.clear();
+    allTaggedPicDateWiseList.clear();
     taggedPicId.clear();
     picWiseTags.clear();
     await tagsController.loadAllTags();

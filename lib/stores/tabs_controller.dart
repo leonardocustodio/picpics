@@ -13,7 +13,7 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/stores/percentage_dialog_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/swiper_tab_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -371,12 +371,6 @@ class TabsController extends GetxController {
 
   void setCurrentTab(int value) {
     if (currentTab.value != value) {
-      /* if (currentTab.value == 1) {
-        GalleryStore.to.setSwipeIndex(GalleryStore.to.swipeIndex.value);
-      } else if (currentTab.value == 2) {
-        GalleryStore.to.clearSearchTags();
-      } */
-
       Analytics.sendCurrentTab(value);
       currentTab.value = value;
     }
@@ -483,10 +477,16 @@ class TabsController extends GetxController {
     }
 
     if (multiPicBar.value) {
+      if (currentTab.value == 2) {
+        TaggedController.to.setTabIndexAllTaggedKeys(index);
+        return;
+      }
       if (index == 0) {
         clearSelectedUntaggedPics();
         setMultiPicBar(false);
       } else if (index == 1) {
+        /// Tags adding button
+        await TagsController.to.tagsSuggestionsCalculate();
         WidgetsBinding.instance?.addPostFrameCallback((_) {
           setMultiTagSheet(true);
           expandableController.value.expanded = true;
@@ -521,11 +521,11 @@ class TabsController extends GetxController {
             );
           },
         );
+        return;
       }
-      return;
+    } else {
+      setCurrentTab(index);
     }
-
-    setCurrentTab(index);
   }
 
   Future<void> trashMultiplePics(Set<String> selectedPicsIds) async {
@@ -533,7 +533,8 @@ class TabsController extends GetxController {
         selectedPics.map((e) => e.photoId.value).toList(); */
 
     var deleted = false;
-
+    final percentageController = Get.find<PercentageDialogController>();
+    percentageController.stop();
     final result =
         await PhotoManager.editor.deleteWithIds(selectedPicsIds.toList());
     if (result.isNotEmpty) {
@@ -543,51 +544,46 @@ class TabsController extends GetxController {
     if (deleted) {
       /* var picsBox = Hive.box('pics');
       var tagsBox = Hive.box('tags'); */
+      percentageController.start(selectedPicsIds.length + .0);
 
-      await Future.wait([
-        Future.forEach(selectedPicsIds.toList(), (String picId) async {
-          var picStore = picStoreMap[picId]?.value;
-          picStore = explorPicStore(picId).value;
-          if (null != picStore) {
-            removePicFromUI(picId);
-            /* filteredPics.remove(picStore);
-          removePicFromTaggedPics(picStore: picStore, forceDelete: true);
-          swipePics.remove(picStore);
-          removePicFromUntaggedPics(picStore: picStore);
-          allPics.value.remove(picStore);
-          user.setDefaultWidgetImage(allPics.value[0].entity.value); */
-            var pic = await database.getPhotoByPhotoId(picStore.photoId.value);
+      await Future.forEach(selectedPicsIds.toList(), (String picId) async {
+        var picStore = picStoreMap[picId]?.value;
+        picStore = explorPicStore(picId).value;
+        if (null != picStore) {
+          removePicFromUI(picId);
 
-            if (pic != null && pic.tags.isNotEmpty) {
-              // //print('pic is in db... removing it from db!');
-              var picTags = List<String>.from(pic.tags.keys);
-              await Future.wait([
-                Future.forEach(picTags, (String tagKey) async {
-                  var tag = await database.getLabelByLabelKey(tagKey);
-                  if (tag != null) {
-                    if (picStore != null) {
-                      tag.photoId.remove(picStore.photoId);
-                    }
-                    // //print('removed ${picStore.photoId} from tag ${tag.title}');
-                    await database.updateLabel(tag);
-                    //tagsBox.put(tagKey, tag);
+          var pic = await database.getPhotoByPhotoId(picStore.photoId.value);
 
-                    if (tagKey == kSecretTagKey) {
-                      await picStore?.removePrivatePath();
-                      await picStore?.deleteEncryptedPic();
-                    }
-                  }
-                })
-              ]);
+          if (pic != null && pic.tags.isNotEmpty) {
+            // //print('pic is in db... removing it from db!');
+            var picTags = List<String>.from(pic.tags.keys);
+            await Future.forEach(picTags, (String tagKey) async {
+              var tag = await database.getLabelByLabelKey(tagKey);
+              if (tag != null) {
+                if (picStore != null) {
+                  tag.photoId.remove(picStore.photoId);
+                }
+                // //print('removed ${picStore.photoId} from tag ${tag.title}');
+                await database.updateLabel(tag);
+                //tagsBox.put(tagKey, tag);
 
-              //picsBox.delete(picStore.photoId);
-              await database.deletePhotoByPhotoId(picStore.photoId.value);
-              // //print('removed ${picStore.photoId} from database');
-            }
+                if (tagKey == kSecretTagKey) {
+                  await picStore?.removePrivatePath();
+                  await picStore?.deleteEncryptedPic();
+                }
+              }
+            });
+            //picsBox.delete(picStore.photoId);
+            await database.deletePhotoByPhotoId(picStore.photoId.value);
+            await Future.delayed(Duration.zero, () {
+              percentageController.value.value += 1.0;
+            });
+
+            // //print('removed ${picStore.photoId} from database');
           }
-        })
-      ]).then((_) {
-        TaggedController.to.refreshTaggedPhotos();
+        }
+      }).then((_) {
+        percentageController.stop();
         TabsController.to.refreshUntaggedList();
         SwiperTabController.to.refresh();
       });
@@ -601,13 +597,9 @@ class TabsController extends GetxController {
 
   void removePicFromUI(String picId) {
     assetMap.remove(picId);
-    allUnTaggedPicsMonth.remove(picId);
-    allUnTaggedPicsDay.remove(picId);
-    allUnTaggedPics.remove(picId);
     assetEntityList.removeWhere((element) => element.id == picId);
     var index = SwiperTabController.to.swipeIndex.value;
     SwiperTabController.to.swiperPicIdList.remove(picId);
-    TaggedController.to.picWiseTags.remove(picId);
     if (SwiperTabController.to.swiperPicIdList.isNotEmpty) {
       SwiperTabController.to.swipeIndex.value = index + 1;
     }

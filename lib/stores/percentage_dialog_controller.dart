@@ -24,7 +24,7 @@ class PercentageDialogController extends GetxController {
     }
   }
 
-  Future<void> stop() async {
+  void stop() {
     if (show.value) {
       show.value = false;
       value.value = .0;

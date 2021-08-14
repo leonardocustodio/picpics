@@ -8,9 +8,13 @@ import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/secret_switch.dart';
 
+typedef OnUntag = Function();
+
 class TopBar extends StatelessWidget {
   /* final GalleryStore galleryStore; */
   final FocusNode? searchFocusNode;
+  final bool showUntag;
+  final OnUntag? onUntag;
   final TextEditingController? searchEditingController;
   final void Function(String value)? onChanged;
   final void Function(String value)? onSubmitted;
@@ -20,7 +24,9 @@ class TopBar extends StatelessWidget {
   TopBar({
     required this.showSecretSwitch,
     this.searchEditingController,
+    this.showUntag = false,
     this.searchFocusNode,
+    this.onUntag,
     this.onSubmitted,
     this.onChanged,
     required this.children,
@@ -122,13 +128,19 @@ class TopBar extends StatelessWidget {
                         // galleryStore.removeAllPrivatePics();
                       }),
                 ),
-              CupertinoButton(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                onPressed: () {
-                  Get.to(() => SettingsScreen());
-                },
-                child: Image.asset('lib/images/settings.png'),
-              ),
+              showUntag
+                  ? GestureDetector(
+                      onTap: () {
+                        onUntag?.call();
+                      },
+                      child: Text('Untag'))
+                  : CupertinoButton(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      onPressed: () {
+                        Get.to(() => SettingsScreen());
+                      },
+                      child: Image.asset('lib/images/settings.png'),
+                    ),
             ],
           ),
         ),

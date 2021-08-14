@@ -349,16 +349,15 @@ class TagsController extends GetxController {
   ///
 
   Future<void> removeTagsFromPicsMainFunction(
-      {required List<String> picIds,
-      required Map<String, String> tagKeysMap}) async {
+      {required Map<String, Map<String, String>> picIdMapToTagKey,
+      required Map<String, Map<String, String>> tagKeyMapToPicId}) async {
     final taggedController = Get.find<TaggedController>();
 
-    final map = <String, Map<String, String>>{
-      for (var picId in picIds) picId: tagKeysMap,
-    };
-
-    await _removeTagsFromPicsPrivate(picIdToTagKey: map).then((_) async {
-      /// Clear the selectedUntaggedPics as now the processing is done
+    await _removeTagsFromPicsPrivate(
+            picIdMapToTagKey: picIdMapToTagKey,
+            tagKeyMapToTagKey: tagKeyMapToPicId)
+        .then((_) async {
+      /// Clear the selectedTaggedPics as now the processing is done
       ///
       taggedController.selectedMultiBarPics.clear();
 
@@ -373,30 +372,18 @@ class TagsController extends GetxController {
   }
 
   Future<void> _removeTagsFromPicsPrivate(
-      {required Map<String, Map<String, String>> picIdToTagKey}) async {
+      {required Map<String, Map<String, String>> picIdMapToTagKey,
+      required Map<String, Map<String, String>> tagKeyMapToTagKey}) async {
     final percentageController = Get.find<PercentageDialogController>();
-    percentageController.start(picIdToTagKey.keys.length + .0, 'Un-tagging...');
 
     /// iterate over the pictures and add tags to it
     final tabsController = Get.find<TabsController>();
 
-    final tagKeyToPicId = <String, Map<String, String>>{};
-
-    picIdToTagKey.forEach((pictureId, tagMap) {
-      tagMap.keys.forEach((tagKey) {
-        if (tagKeyToPicId[tagKey] == null) {
-          tagKeyToPicId[tagKey] = <String, String>{pictureId: ''};
-        } else {
-          tagKeyToPicId[tagKey]![pictureId] = '';
-        }
-      });
+    await Future.forEach(tagKeyMapToTagKey.keys, (String tagKey) async {
+      await _removePhotoIdFromLabel(tagKey, tagKeyMapToTagKey[tagKey]!);
     });
-
-    await Future.forEach(tagKeyToPicId.keys, (String tagKey) async {
-      await _removePhotoIdFromLabel(tagKey, tagKeyToPicId[tagKey]!);
-    });
-    await Future.forEach(picIdToTagKey.keys, (String picId) async {
-      final map = picIdToTagKey[picId]!;
+    await Future.forEach(picIdMapToTagKey.keys, (String picId) async {
+      final map = picIdMapToTagKey[picId]!;
 
       await tabsController.picStoreMap[picId]!.value
           .removeMultipleTagsFromPicsForwadFromTagsController(
@@ -444,7 +431,7 @@ class TagsController extends GetxController {
     if (tabsController.currentTab.value == 0) {
       selectedPicIds = tabsController.selectedMultiBarPics.keys.toList();
     } else if (tabsController.currentTab.value == 2) {
-      selectedPicIds = taggedController.selectedMultiBarPics.keys.toList();
+      selectedPicIds = tabsController.selectedMultiBarPics.keys.toList();
     }
 
     final map = <String, Map<String, String>>{

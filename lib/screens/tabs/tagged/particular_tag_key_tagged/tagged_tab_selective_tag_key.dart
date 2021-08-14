@@ -5,7 +5,7 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key_grid.dart';
 import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_option_bar.dart';
-import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/widgets/percentage_dialog.dart';
 import 'package:picPics/widgets/select_all_widget.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
@@ -34,9 +34,11 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                 CupertinoButton(
                   padding: const EdgeInsets.only(right: 10),
                   onPressed: () async {
-                    controller.untagPicsFromTag(
-                        tagKey: tagKey,
-                        picIds: controller.selectedMultiBarPics.keys.toList());
+                    await controller.untagPicsFromTag(
+                        tagKeyMapToPicId: <String, Map<String, String>>{
+                          tagKey: controller.selectedMultiBarPics
+                              .map((key, _) => MapEntry(key, ''))
+                        });
                   },
                   child: Text('Untag'),
                 ),
