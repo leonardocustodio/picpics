@@ -5662,6 +5662,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Finishing...`
+  String get finishing {
+    return Intl.message(
+      'Finishing...',
+      name: 'finishing',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

@@ -4,21 +4,16 @@
   "edit_tag": "Edit tag",
   "cancel": "Cancel",
   "notifications": "Notifications",
-
-
   "welcome": "Welcome!",
   "photos_always_organized": "Now your photos will be always organized",
-
   "continue_string": "Continue",
   "gallery_access_reason": "To organize your photos we need access to your photo gallery",
-
   "tutorial_daily_package": "We bring a daily package for you to gradually organize your library.",
   "next": "Next",
   "tutorial_however_you_want": "Organize your photos by adding tags, like \"family\", \"pets\", or whatever you want.",
   "close": "Close",
   "start": "Start",
   "tutorial_just_swipe": "After adding the tags to your photo, just swipe to go to the next one.",
-
   "settings": "Settings",
   "suggestions": "Suggestions",
   "photo_location": "Photo location",
@@ -26,23 +21,16 @@
   "add_tag": "Add tag",
   "add_tags": "Add tags",
   "full_screen": "Full Screen",
-
   "photo_gallery_title": "Photo Gallery",
   "photo_gallery_description": "Photos not yet organized",
   "photo_gallery_count": "{howMany, plural, zero{No photos selected} one{1 photo selected} other{{howMany} photos selected}}",
-
   "organized_photos_title": "Organized Photos",
   "organized_photos_description": "Photos that have already been tagged",
-
   "search": "Search...",
-
-
   "no_tagged_photos": "You don't have any tagged photos yet",
   "start_tagging": "Start tagging",
-
   "no_tags_found": "No tags found",
   "search_results": "Search results",
-
   "daily_challenge": "Daily challenge",
   "daily_goal": "Daily goal",
   "notification_time": "Notification time",
@@ -50,50 +38,34 @@
   "rate_this_app": "Rate this app",
   "how_many_pics": "How many pics",
   "time": "Time",
-
   "take_a_look": "Take a look at this app!",
   "take_a_look_description": "To organize all your photos go to {url}",
-
   "daily_challenge_permission_description": "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone",
-
-
   "you_are_premium": "You are premium!",
   "get_premium_now": "Get premium now!",
-
-
   "get_premium_title": "GET PREMIUM",
   "get_premium_description": "TO HAVE ALL THESE FEATURES",
-
-
   "no_ads": "No Ads",
   "export_all_gallery": "Export all gallery",
   "infinite_tags": "Infinite tags",
   "tag_multiple_photos_at_once": "Tag multiple photos at once",
-
   "sign": "Sign",
   "year": "year",
   "month": "month",
-
   "restore_purchase": "Restore purchase",
   "no_previous_purchase": "No Previous Purchase",
   "no_valid_subscription": "Could not find a valid subscription purchase.",
   "save": "save",
-
   "save_location": "Save location",
-
   "device_has_no_pics": "This device has no photo in the gallery, so there is no photo that can be tagged.",
   "open_gallery": "Open gallery",
-
   "gallery_access_permission": "Access permissions",
   "gallery_access_permission_description": "To start organizing your photos, we need authorization to access them",
-
   "export_library": "Export Library",
-
   "premium_modal_description": "You completed your {number} free daily pics, do you want to continue?",
   "premium_modal_watch_ad": "Watch video ad to continue",
   "premium_modal_get_premium_title": "Get Premium Account",
   "premium_modal_get_premium_description": "ALL FEATURES WITHOUT ADS",
-
   "family_tag": "Family",
   "travel_tag": "Travel",
   "pets_tag": "Pets",
@@ -104,19 +76,14 @@
   "home_tag": "Home",
   "work_tag": "Work",
   "parties_tag": "Parties",
-
   "terms_of_use": "Terms of Use",
   "privacy_policy": "Privacy Policy",
-
   "auto_renewable_first_part": "The subscription is ",
   "auto_renewable_second_part": "auto-renewable.",
   "cancel_anytime": "Cancel anytime",
-
   "language": "Language",
-
   "all_search_tags": "All Search Tags",
   "search_all_tags_not_found": "No pictures were found with all tags on it.",
-
   "picpics_photo_manager": "picPics - Photo Manager",
   "add_multiple_tags": "Adicione múltiplas tags",
   "ny_tag": "NY",
@@ -147,18 +114,14 @@
   "lock_your_photos": "Lock your photos",
   "lock_with_pin": "Lock down your private photos with a PIN passcode.",
   "protect_with_encryption": "Protect your personal photos with encryption only accessible with a PIN password.",
-
-
   "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Unlimited private photos",
-
-
   "team_tag": "Team",
   "bonfire_tag": "Bonfire",
   "comics_tag": "Comics",
-  "himalayan_tag": "Himalayan", 
+  "himalayan_tag": "Himalayan",
   "iceberg_tag": "Iceberg",
   "bento_tag": "Bento",
   "sink_tag": "Sink",
@@ -583,7 +546,6 @@
   "aerospace_engineering_tag": "Aerospace engineering",
   "storm_tag": "Storm",
   "helmet_tag": "Helmet",
-
   "toggle_months": "Months",
   "toggle_days": "Days",
   "toggle_date": "Date",
@@ -597,5 +559,6 @@
   "enable_faceid": "Enable Face ID",
   "enable_touchid": "Enable Touch ID",
   "enable_fingerprint": "Enable Fingerprint",
-  "enable_irisscanner": "Enable Iris Scanner"
+  "enable_irisscanner": "Enable Iris Scanner",
+  "finishing": "Finishing..."
 }

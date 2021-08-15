@@ -4,21 +4,16 @@
   "edit_tag": "แก้ไขแท็ก",
   "cancel": "ยกเลิก",
   "notifications": "การแจ้งเตือน",
-
-
   "welcome": "ยินดีต้อนรับ!",
   "photos_always_organized": "จากนี้ภาพถ่ายของคุณจะไม่กระจัดกระจายอีกต่อไปแล้ว",
-
   "continue_string": "ไปต่อ",
   "gallery_access_reason": "แอปจำเป็นต้องเข้าถึงคลังภาพเพื่อจัดหมวดหมู่ภาพถ่าย",
-
   "tutorial_daily_package": "เราเตรียมแพ็คเก็จประจำวันไว้ให้เพื่อที่คุณจะได้ค่อยๆจัดหมวดหมู่ในคลังไปเรื่อยๆ",
   "next": "ต่อไป",
   "tutorial_however_you_want": "จัดหมวดหมู่ภาพด้วยการติดแท็ก อย่างเช่น 'ครอบครัว' 'สัตว์เลี้ยง' หรืออะไรก็ได้ที่คุณต้องการ",
   "close": "ปิด",
   "start": "เริ่ม",
   "tutorial_just_swipe": "หลังจากเพิ่มแท็กแล้วก็แค่ปัดไปที่ภาพต่อไป",
-
   "settings": "การตั้งค่า",
   "suggestions": "แนะนำ",
   "photo_location": "สถานที่ที่ถ่ายภาพนี้",
@@ -26,23 +21,16 @@
   "add_tag": "เพิ่มแท็ก",
   "add_tags": "เพิ่มแท็ก",
   "full_screen": "เต็มจอ",
-
   "photo_gallery_title": "คลังภาพ",
   "photo_gallery_description": "ภาพถ่ายที่ยังไม่ได้รับการจัดหมวดหมู่",
   "photo_gallery_count": "{howMany, plural, zero{ไม่มีรูปที่เลือก} one{เลือก 1 ภาพ} other{เลือก {howMany} ภาพ}}",
-
   "organized_photos_title": "ภาพถ่ายที่จัดหมวดหมู่แล้ว",
   "organized_photos_description": "ภาพถ่ายติดแท็กแล้ว",
-
   "search": "ค้นหา...",
-
-
   "no_tagged_photos": "คุณยังไม่มีภาพถ่ายที่ติดแท็ก",
   "start_tagging": "เริ่มติดแท็กภาพถ่าย",
-
   "no_tags_found": "ไม่พบแท็ก",
   "search_results": "ผลการค้นหา",
-
   "daily_challenge": "คำท้าประจำวัน",
   "daily_goal": "เป้าหมายประจำวัน",
   "notification_time": "เวลาแจ้งเตือน",
@@ -50,50 +38,34 @@
   "rate_this_app": "ให้คะแนนแอป",
   "how_many_pics": "มีภาพถ่ายเท่าไร",
   "time": "เวลา",
-
   "take_a_look": "ดูแอปนี้!",
   "take_a_look_description": "ไปที่ {url} เพื่อจัดหมวดหมู่ภาพถ่ายทั้งหมด",
-
   "daily_challenge_permission_description": "เนื่องจากการส่งคำท้าประจำวันจำเป็นต้องได้รับอนุญาตในการส่งการแจ้งเตือนด้วย เพราะฉะนั้นผู้ใช้จึงจำเป็นต้องเปิดให้อนุญาตแจ้งเตือนในโทรศัพท์มือถือ",
-
-
   "you_are_premium": "คุณคือชาวพรีเมียม!",
   "get_premium_now": "เปลี่ยนไปใช้แบบพรีเมียมเลยตอนนี้!",
-
-
   "get_premium_title": "เปลี่ยนไปเป็นพรีเมียม",
   "get_premium_description": "เพื่อใช้คุณสมบัติทั้งหมดนี้",
-
-
   "no_ads": "ไร้โฆษณา",
   "export_all_gallery": "ส่งออกไปที่คลังภาพได้ทั้งหมด",
   "infinite_tags": "แท็กแบบอินฟินิตี้",
   "tag_multiple_photos_at_once": "ติดแท็กภาพถ่ายหลายภาพในครั้งเดียว",
-
   "sign": "ลงทะเบียบใช้แบบ",
   "year": "ปี",
   "month": "เดือน",
-
   "restore_purchase": "เรียกการซื้อคืน",
   "no_previous_purchase": "ไม่มีการสั่งซื้อครั้งก่อนหน้า",
   "no_valid_subscription": "ไม่พบการสมัครสมาชิกที่ใช้งานได้",
   "save": "บันทึก",
-
   "save_location": "บันทึกตำแหน่ง",
-
   "device_has_no_pics": "อุปกรณ์นี้ไม่มีภาพถ่ายในคลังภาพจึงไม่สามารถติดแท็กภาพถ่ายได้",
   "open_gallery": "เปิดคลังภาพ",
-
   "gallery_access_permission": "การให้สิทธิ์เข้าถึงข้อมูล",
   "gallery_access_permission_description": "แอปจำเป็นต้องได้รับอนุญาตการเข้าถึงข้อมูลเพื่อเริ่มขั้นตอนการจัดหมวดหมู่ภาพถ่าย",
-
   "export_library": "ส่งออกคลังภาพ",
-
   "premium_modal_description": "คุณทำภาพถ่ายฟรีประจำวันครบ {number} แล้ว ต้องการทำต่อไหม?",
   "premium_modal_watch_ad": "ดูวิดีโอโฆษณาเพื่อไปต่อ",
   "premium_modal_get_premium_title": "เปลี่ยนเป็นบัญชีแบบพรีเมียม",
   "premium_modal_get_premium_description": "ใช้ทุกคุณสมบัติแบบไร้โฆษณา",
-
   "family_tag": "ครอบครัว",
   "travel_tag": "ท่องเที่ยว",
   "pets_tag": "สัตว์เลี้ยง",
@@ -104,16 +76,12 @@
   "home_tag": "บ้าน",
   "work_tag": "ที่ทำงาน",
   "parties_tag": "ปาร์ตี้",
-
   "terms_of_use": "ข้อกำหนดการใช้งาน",
   "privacy_policy": "นโยบายความเป็นส่วนตัว",
-
   "auto_renewable_first_part": "การสมัครสมาชิกนี้",
   "auto_renewable_second_part": "มีการต่ออายุโดยอัตโนมัติ",
   "cancel_anytime": "ยกเลิกได้เสมอ",
-
   "language": "ภาษา",
-
   "all_search_tags": "แท็กที่ค้นหาทั้งหมด",
   "search_all_tags_not_found": "ไม่พบรูปภาพใดๆที่ใช้แท็กเหล่านี้",
   "picpics_photo_manager": "picPics - ตัวจัดการภาพ",
@@ -146,13 +114,10 @@
   "lock_your_photos": "ล็อกรูปภาพของคุณ",
   "lock_with_pin": "ล็อกรูปภาพส่วนตัวด้วยการใช้ PIN",
   "protect_with_encryption": "ใช้การเข้ารหัสที่เข้าถึงได้ด้วย PIN เพื่อปกป้องรูปภาพส่วนตัว",
-
-
   "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "รูปภาพส่วนตัวไม่ จำกัด",
-
   "toggle_months": "เดือน",
   "toggle_days": "วัน",
   "toggle_date": "วันที่",
@@ -166,6 +131,6 @@
   "enable_faceid": "เปิดใช้งาน Face ID",
   "enable_touchid": "เปิดใช้งาน Touch ID",
   "enable_fingerprint": "เปิดใช้งานลายนิ้วมือ",
-  "enable_irisscanner": "เปิดใช้งาน Iris Scanner"
-
+  "enable_irisscanner": "เปิดใช้งาน Iris Scanner",
+  "finishing": "Finishing..."
 }

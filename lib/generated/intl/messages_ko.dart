@@ -81,6 +81,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "feedback_bug_report":
             MessageLookupByLibrary.simpleMessage("피드백 및 버그 신고"),
         "find_easily": MessageLookupByLibrary.simpleMessage("쉽게 사진 찾기"),
+        "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "foods_tag": MessageLookupByLibrary.simpleMessage("음식"),
         "forgot_secret_key":
             MessageLookupByLibrary.simpleMessage("비밀 키를 잊으셨나요?"),

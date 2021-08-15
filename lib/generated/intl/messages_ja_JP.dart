@@ -220,6 +220,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "fiction_tag": MessageLookupByLibrary.simpleMessage("フィクション"),
         "field_tag": MessageLookupByLibrary.simpleMessage("フィールド"),
         "find_easily": MessageLookupByLibrary.simpleMessage("写真を簡単に見つける"),
+        "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "fire_tag": MessageLookupByLibrary.simpleMessage("火"),
         "fireworks_tag": MessageLookupByLibrary.simpleMessage("花火"),
         "fishing_tag": MessageLookupByLibrary.simpleMessage("釣り"),

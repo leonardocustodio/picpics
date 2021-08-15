@@ -23,7 +23,23 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
   Widget build(BuildContext context) {
     return GetX<TagsController>(builder: (tagsController) {
       /// Show the tags tab
-      final taggedKeys = controller.taggedPicId.keys.toList();
+
+      final tempTaggedStorage = controller.taggedPicId.keys.toList();
+      var taggedKeys = <String>[];
+      if (tagsController.selectedFilteringTagsKeys.isNotEmpty) {
+        final tempStorage = <String, String>{};
+        tagsController.selectedFilteringTagsKeys.forEach((key, _) {
+          taggedKeys.add(key);
+          tempStorage[key] = '';
+        });
+        tempTaggedStorage.forEach((tag) {
+          if (tempStorage[tag] == null) {
+            taggedKeys.add(tag);
+          }
+        });
+      } else {
+        taggedKeys = controller.taggedPicId.keys.toList();
+      }
 
       return StaggeredGridView.countBuilder(
         key: Key('tag'),
@@ -112,124 +128,118 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
         shape: BoxShape.rectangle,
         fit: BoxFit.cover,
         loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               if (null == hash) {
-                loader = ColoredBox(color: kGreyPlaceholder);
+                return Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: ColoredBox(color: kGreyPlaceholder),
+                  ),
+                );
               } else {
-                loader = BlurHash(
-                  hash: hash,
-                  color: Colors.transparent,
+                return Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: BlurHash(
+                      hash: hash,
+                      color: Colors.transparent,
+                    ),
+                  ),
                 );
               }
-              loader = Padding(
-                padding: const EdgeInsets.all(2),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: loader,
+            case LoadState.completed:
+              return FadeImageBuilder(
+                child: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () {
+                    Get.to(() => TaggedTabSelectiveTagKey(tagKey));
+                  },
+                  child: Obx(() {
+                    Widget image = Positioned.fill(
+                      child: ClipRRect(
+                          borderRadius: BorderRadius.circular(9),
+                          child: state.completedWidget),
+                    );
+
+                    final items = <Widget>[image];
+
+                    if (picStore.isPrivate.value == true) {
+                      items.add(
+                        Positioned(
+                          right: 8.0,
+                          top: 6.0,
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            padding: const EdgeInsets.only(bottom: 2.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10.0),
+                              gradient: LinearGradient(
+                                colors: [Color(0xffffcc00), Color(0xffffe98f)],
+                                stops: [0.2291666716337204, 1],
+                                begin: Alignment(-1.00, 0.00),
+                                end: Alignment(1.00, -0.00),
+                                // angle: 0,
+                                // scale: undefined,
+                              ),
+                            ),
+                            child: Image.asset('lib/images/smallwhitelock.png'),
+                          ),
+                        ),
+                      );
+                    }
+
+                    if (picStore.isStarred.value == true) {
+                      //print('Adding starred yellow ico');
+                      items.add(
+                        Positioned(
+                          left: 6.0,
+                          top: 6.0,
+                          child: Image.asset('lib/images/staryellowico.png'),
+                        ),
+                      );
+                    }
+
+                    return Container(
+                        child: Column(
+                      children: [
+                        Expanded(
+                          child: Stack(children: items),
+                        ),
+                        Container(
+                          // color: Colors.brown.withOpacity(.9),
+                          margin: const EdgeInsets.only(top: 5),
+                          child: AutoSizeText.rich(
+                            TextSpan(
+                                text:
+                                    '${TagsController.to.allTags[tagKey]?.value.title ?? ''}',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ),
+                                children: [
+                                  TextSpan(
+                                    text:
+                                        ' (${controller.taggedPicId[tagKey]?.keys.length ?? 0})',
+                                  )
+                                ]),
+                            maxFontSize: 20,
+                            minFontSize: 5,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ));
+                  }),
                 ),
               );
-              break;
-            case LoadState.completed:
-              loader = FadeImageBuilder(
-                child: () {
-                  return CupertinoButton(
-                    padding: const EdgeInsets.all(0),
-                    onPressed: () {
-                      Get.to(() => TaggedTabSelectiveTagKey(tagKey));
-                    },
-                    child: Obx(() {
-                      Widget image = Positioned.fill(
-                        child: ClipRRect(
-                            borderRadius: BorderRadius.circular(9),
-                            child: state.completedWidget),
-                      );
-
-                      final items = <Widget>[image];
-
-                      if (picStore.isPrivate.value == true) {
-                        items.add(
-                          Positioned(
-                            right: 8.0,
-                            top: 6.0,
-                            child: Container(
-                              height: 20,
-                              width: 20,
-                              padding: const EdgeInsets.only(bottom: 2.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Color(0xffffcc00),
-                                    Color(0xffffe98f)
-                                  ],
-                                  stops: [0.2291666716337204, 1],
-                                  begin: Alignment(-1.00, 0.00),
-                                  end: Alignment(1.00, -0.00),
-                                  // angle: 0,
-                                  // scale: undefined,
-                                ),
-                              ),
-                              child:
-                                  Image.asset('lib/images/smallwhitelock.png'),
-                            ),
-                          ),
-                        );
-                      }
-
-                      if (picStore.isStarred.value == true) {
-                        //print('Adding starred yellow ico');
-                        items.add(
-                          Positioned(
-                            left: 6.0,
-                            top: 6.0,
-                            child: Image.asset('lib/images/staryellowico.png'),
-                          ),
-                        );
-                      }
-
-                      return Container(
-                          child: Column(
-                        children: [
-                          Expanded(
-                            child: Stack(children: items),
-                          ),
-                          Container(
-                            // color: Colors.brown.withOpacity(.9),
-                            margin: const EdgeInsets.only(top: 5),
-                            child: AutoSizeText.rich(
-                              TextSpan(
-                                  text:
-                                      '${TagsController.to.allTags[tagKey]?.value.title ?? ''}',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text:
-                                          ' (${controller.taggedPicId[tagKey]?.keys.length ?? 0})',
-                                    )
-                                  ]),
-                              maxFontSize: 20,
-                              minFontSize: 5,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ));
-                    }),
-                  );
-                }(),
-              );
-              break;
             case LoadState.failed:
-              loader = Container();
-              break;
+              return Container();
           }
-          return loader;
         },
       ),
     );

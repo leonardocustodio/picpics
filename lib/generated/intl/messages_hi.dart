@@ -92,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("प्रतिक्रिया और बग रिपोर्ट"),
         "find_easily": MessageLookupByLibrary.simpleMessage(
             "आसानी से अपनी तस्वीरें खोजें"),
+        "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "foods_tag": MessageLookupByLibrary.simpleMessage("फूड्स"),
         "forgot_secret_key":
             MessageLookupByLibrary.simpleMessage("गुप्त कुंजी भूल गए?"),

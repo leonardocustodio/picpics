@@ -237,6 +237,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "field_tag": MessageLookupByLibrary.simpleMessage("Campo"),
         "find_easily":
             MessageLookupByLibrary.simpleMessage("Easily find your photos"),
+        "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "fire_tag": MessageLookupByLibrary.simpleMessage("Fogo"),
         "fireworks_tag":
             MessageLookupByLibrary.simpleMessage("Fogos de artifício"),

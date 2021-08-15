@@ -96,6 +96,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Feedback e bug"),
         "find_easily": MessageLookupByLibrary.simpleMessage(
             "Trova facilmente le tue foto"),
+        "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "foods_tag": MessageLookupByLibrary.simpleMessage("Alimenti"),
         "forgot_secret_key": MessageLookupByLibrary.simpleMessage(
             "Hai dimenticato la chiave segreta?"),

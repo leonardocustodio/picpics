@@ -92,6 +92,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("ข้อเสนอแนะและข้อบกพร่อง"),
         "find_easily": MessageLookupByLibrary.simpleMessage(
             "ค้นหารูปภาพของตัวเองได้อย่างง่ายดาย"),
+        "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "foods_tag": MessageLookupByLibrary.simpleMessage("อาหาร"),
         "forgot_secret_key":
             MessageLookupByLibrary.simpleMessage("ลืมรหัสลับ?"),

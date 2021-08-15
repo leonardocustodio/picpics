@@ -16,8 +16,10 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      var taggedPicIds =
-          controller.taggedPicId[tagKey]?.keys.toList() ?? <String>[];
+      final taggedPicIds =
+          controller.taggedPicId[tagKey]?.keys.toList().reversed.toList() ??
+              <String>[];
+
       return StaggeredGridView.countBuilder(
           key: Key('$tagKey'),
           padding: EdgeInsets.only(top: 2),

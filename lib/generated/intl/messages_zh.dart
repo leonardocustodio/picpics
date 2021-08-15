@@ -77,6 +77,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "family_tag": MessageLookupByLibrary.simpleMessage("家庭"),
         "feedback_bug_report": MessageLookupByLibrary.simpleMessage("反馈和错误"),
         "find_easily": MessageLookupByLibrary.simpleMessage("轻松找到您的照片"),
+        "finishing": MessageLookupByLibrary.simpleMessage("Finishing..."),
         "foods_tag": MessageLookupByLibrary.simpleMessage("食品"),
         "forgot_secret_key": MessageLookupByLibrary.simpleMessage("忘记密钥？"),
         "full_screen": MessageLookupByLibrary.simpleMessage("全屏"),
