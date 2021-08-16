@@ -29,8 +29,10 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
       if (tagsController.selectedFilteringTagsKeys.isNotEmpty) {
         final tempStorage = <String, String>{};
         tagsController.selectedFilteringTagsKeys.forEach((key, _) {
-          taggedKeys.add(key);
-          tempStorage[key] = '';
+          if (controller.taggedPicId[key] != null) {
+            taggedKeys.add(key);
+            tempStorage[key] = '';
+          }
         });
         tempTaggedStorage.forEach((tag) {
           if (tempStorage[tag] == null) {
