@@ -79,7 +79,10 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
 
                               controller.setMultiTagSheet(false);
                               controller.setMultiPicBar(false);
-                              await tagsController.addTagsToSelectedPics();
+                              await tagsController.addTagsToSelectedPics(
+                                  selectedPicIds: controller
+                                      .selectedMultiBarPics.keys
+                                      .toList());
                               await refresh_everything();
                             },
                             child: Container(

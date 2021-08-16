@@ -415,7 +415,7 @@ class TagsController extends GetxController {
   /// ---------------------- END ----------------------
   ///
 
-  Future<void> addTagsToSelectedPics() async {
+  Future<void> addTagsToSelectedPics({List<String>? selectedPicIds}) async {
     if (tabsController.currentTab.value == 0) {
       if (tabsController.toggleIndexUntagged.value == 0) {
         await tabsController.untaggedScrollControllerMonth.animateTo(0.0,
@@ -427,12 +427,14 @@ class TagsController extends GetxController {
     }
     final taggedController = Get.find<TaggedController>();
 
-    var selectedPicIds = <String>[];
-    if (tabsController.currentTab.value == 0) {
-      selectedPicIds = tabsController.selectedMultiBarPics.keys.toList();
-    } else if (tabsController.currentTab.value == 2) {
-      selectedPicIds = tabsController.selectedMultiBarPics.keys.toList();
+    if (selectedPicIds == null) {
+      if (tabsController.currentTab.value == 0) {
+        selectedPicIds = tabsController.selectedMultiBarPics.keys.toList();
+      } else if (tabsController.currentTab.value == 2) {
+        selectedPicIds = tabsController.selectedMultiBarPics.keys.toList();
+      }
     }
+    selectedPicIds ??= <String>[];
 
     final map = <String, Map<String, String>>{
       // ignore: invalid_use_of_protected_member
