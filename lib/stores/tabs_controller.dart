@@ -503,11 +503,10 @@ class TabsController extends GetxController {
       } else if (index == 1) {
         /// Tags adding button
         await TagsController.to.tagsSuggestionsCalculate();
-        WidgetsBinding.instance?.addPostFrameCallback((_) {
-          setMultiTagSheet(true);
-          expandableController.value.expanded = true;
-          expandablePaddingController.value.expanded = true;
-        });
+        setMultiTagSheet(true);
+        expandableController.value.expanded = true;
+        expandablePaddingController.value.expanded = true;
+        WidgetsBinding.instance?.addPostFrameCallback((_) {});
       } else if (index == 2) {
         if (selectedMultiBarPics.isEmpty) {
           return;
