@@ -100,10 +100,6 @@ class TaggedController extends GetxController {
     return TabsController.to.assetMap.isNotEmpty;
   }
 
-  void clearSelectedUntaggedPics() {
-    selectedMultiBarPics.clear();
-  }
-
   void onPoppingOut() {
     selectedMultiBarPics.clear();
     tagsController.multiPicTags.clear();
@@ -111,15 +107,20 @@ class TaggedController extends GetxController {
 
   Future<bool> shouldPopOut() async {
     /// if sheet is opened the don't allow popping and just
+    print('WillPopScope taggedController');
     if (multiTagSheet.value) {
+      print('WillPopScope multiPicTags');
       tagsController.multiPicTags.clear();
       multiTagSheet.value = false;
       return false;
     }
     if (multiPicBar.value) {
+      print('WillPopScope multiPicBar');
       multiPicBar.value = false;
       return false;
     }
+    
+    print('WillPopScope onPoppingOut');
     onPoppingOut();
     return true;
   }
@@ -210,7 +211,7 @@ class TaggedController extends GetxController {
 
         /// back button
         tabsController.setMultiPicBar(false);
-        clearSelectedUntaggedPics();
+        tabsController.clearSelectedPics();
         if (tabsController.selectedMultiBarPics.isEmpty) {
           tagsController.clearMultiPicTags();
         }
@@ -278,7 +279,7 @@ class TaggedController extends GetxController {
 
         /// back button
         setMultiPicBar(false);
-        clearSelectedUntaggedPics();
+    selectedMultiBarPics.clear();
         if (selectedMultiBarPics.isEmpty) {
           tagsController.clearMultiPicTags();
         }

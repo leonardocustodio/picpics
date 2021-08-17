@@ -112,8 +112,8 @@ class UntaggedTabMonth extends GetWidget<TabsController> {
                         onLongPress: () {
                           if (controller.multiPicBar.value == false) {
                             controller.setMultiPicBar(true);
-                            controller.selectedMultiBarPics[object] = true;
                           }
+                          controller.selectedMultiBarPics[object] = true;
                         },
                         child: Stack(
                           children: [

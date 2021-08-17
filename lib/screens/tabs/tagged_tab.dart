@@ -25,18 +25,27 @@ class TaggedTab extends GetView<TaggedController> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
+        print('WillPopScope  taggedTab');
         if (tabsController.multiTagSheet.value) {
+          print('WillPopScope  multiTagSheet');
           tabsController.multiTagSheet.value = false;
           return false;
         }
         if (tabsController.multiPicBar.value) {
+          print('WillPopScope  multiPicBar');
           tabsController.multiPicBar.value = false;
           return false;
         }
         if (tagsController.isSearching.value) {
+          print('WillPopScope  isSearching');
           tagsController.isSearching.value = false;
           return false;
         }
+        /* if (tabsController.currentTab.value != 0) {
+          print('WillPopScope  currentTab');
+          return false;
+        } */
+        print('WillPopScope  currentTab = 0');
         tabsController.currentTab.value = 0;
         return false;
       },

@@ -9,6 +9,7 @@ import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/login_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -169,7 +170,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: () async {
                             if (loginStore.slideIndex.value ==
                                 loginStore.totalSlides - 1) {
-                              await Get.toNamed(TabsScreen.id);
+                              await UserController.to
+                                  .setTutorialCompleted(true);
+                              await Get.offNamedUntil(
+                                  TabsScreen.id, (route) => false);
                               return;
                             }
                             //print('next');

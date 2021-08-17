@@ -105,16 +105,27 @@ class TabsController extends GetxController {
 
   Future<bool> shouldPopOut() async {
     /// if sheet is opened the don't allow popping and just
+    print('WillPopScope tabsController');
     if (multiTagSheet.value) {
+      print('WillPopScope multiTagSheet');
       TagsController.to.multiPicTags.clear();
       multiTagSheet.value = false;
       return false;
     }
-    if (multiPicBar.value) {
-      multiPicBar.value = false;
+    if (selectedMultiBarPics.isNotEmpty) {
       selectedMultiBarPics.clear();
       return false;
     }
+    if (multiPicBar.value) {
+      print('WillPopScope multiPicBar');
+      multiPicBar.value = false;
+      return false;
+    }
+    if (currentTab.value != 0) {
+      currentTab.value = 0;
+      return false;
+    }
+    print('WillPopScope onPoppingOut');
     onPoppingOut();
     return true;
   }
@@ -461,16 +472,21 @@ class TabsController extends GetxController {
     return assetMap.isNotEmpty;
   }
 
-  void clearSelectedUntaggedPics() {
+  void clearSelectedPics() {
     selectedMultiBarPics.clear();
   }
 
   void setTabIndex(int index) async {
     if (!deviceHasPics || selectedMultiBarPics.isEmpty) {
       if (index == 0) {
-        setMultiPicBar(false);
-        clearSelectedUntaggedPics();
+        clearSelectedPics();
         TagsController.to.clearMultiPicTags();
+        if (multiPicBar.value == true) {
+          setMultiPicBar(false);
+          if (currentTab.value == 2) {
+            return;
+          }
+        }
         setCurrentTab(0);
         return;
       }
@@ -482,7 +498,7 @@ class TabsController extends GetxController {
         return;
       }
       if (index == 0) {
-        clearSelectedUntaggedPics();
+        clearSelectedPics();
         setMultiPicBar(false);
       } else if (index == 1) {
         /// Tags adding button

@@ -57,9 +57,9 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
                     child: GestureDetector(
                       onLongPress: () {
                         if (controller.multiPicBar.value == false) {
-                          controller.selectedMultiBarPics[picId] = true;
                           controller.setMultiPicBar(true);
                         }
+                        controller.selectedMultiBarPics[picId] = true;
                       },
                       child: Stack(
                         children: [

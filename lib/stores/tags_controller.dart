@@ -444,7 +444,7 @@ class TagsController extends GetxController {
     await addTagsToPics(picIdToTagKey: map).then((_) async {
       /// Clear the selectedUntaggedPics as now the processing is done
       if (tabsController.currentTab.value == 0) {
-        tabsController.clearSelectedUntaggedPics();
+        tabsController.clearSelectedPics();
       } else if (tabsController.currentTab.value == 2) {
         taggedController.selectedMultiBarPics.clear();
       }
