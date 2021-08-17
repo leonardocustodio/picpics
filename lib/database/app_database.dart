@@ -516,7 +516,7 @@ class AppDatabase extends _$AppDatabase {
     );
   }
 
-  Future<void> insertAllLabelsList(List<Tag> tags) async {
+  /* Future<void> insertAllLabelsList(List<Tag> tags) async {
     final labelsCompanions = <LabelsCompanion>[];
 
     for (final tag in tags) {
@@ -533,7 +533,7 @@ class AppDatabase extends _$AppDatabase {
     await batch((batch) {
       batch.insertAll(labels, labelsCompanions);
     });
-  }
+  } */
 
   Future<void> insertAllPhotos(List<Photo> pics) async {
     final photosCompanions = <PhotosCompanion>[];

@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+/* import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/model/pic.dart';
@@ -48,3 +48,4 @@ class MigrationStore extends GetxController {
     setIsMigrating(false);
   }
 }
+ */

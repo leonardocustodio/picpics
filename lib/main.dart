@@ -13,11 +13,8 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/managers/admob_manager.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/add_location.dart';
@@ -26,7 +23,6 @@ import 'package:picPics/screens/login_screen.dart';
 import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/percentage_dialog_controller.dart';
@@ -79,102 +75,6 @@ void main() async {
   Get.lazyPut<PinController>(() => PinController());
   Get.lazyPut<LoginStore>(() => LoginStore());
   Get.lazyPut<PhotoScreenController>(() => PhotoScreenController());
-
-  await Hive.initFlutter();
-/*   Hive.registerAdapter(UserAdapter());
-  Hive.registerAdapter(PicAdapter());
-  Hive.registerAdapter(TagAdapter());
-  Hive.registerAdapter(SecretAdapter());
-  Hive.registerAdapter(UserKeyAdapter()); */
-
-  await Hive.openBox('user');
-  await Hive.openBox('pics');
-  await Hive.openBox('tags');
-  await Hive.openBox('secrets',
-      encryptionKey: Uint8List.fromList([
-        76,
-        224,
-        117,
-        70,
-        57,
-        101,
-        39,
-        29,
-        48,
-        239,
-        215,
-        240,
-        41,
-        149,
-        198,
-        69,
-        64,
-        5,
-        207,
-        227,
-        190,
-        126,
-        8,
-        133,
-        136,
-        234,
-        130,
-        91,
-        254,
-        104,
-        196,
-        158
-      ]));
-
-  /* var keyBox = */ await Hive.openBox('userkey',
-      encryptionKey: Uint8List.fromList([
-        71,
-        204,
-        179,
-        71,
-        12,
-        51,
-        19,
-        9,
-        98,
-        19,
-        225,
-        200,
-        1,
-        5,
-        6,
-        79,
-        55,
-        18,
-        13,
-        18,
-        19,
-        25,
-        6,
-        5,
-        18,
-        22,
-        135,
-        97,
-        22,
-        17,
-        188,
-        155
-      ]));
-
-  var userHiveBox = Hive.box('user');
-  var picsuserHiveBox = Hive.box('pics');
-  var tagsuserHiveBox = Hive.box('tags');
-  var secretuserHiveBox = Hive.box('secrets');
-  var keyuserHiveBox = Hive.box('userkey');
-
-  if (keyuserHiveBox.length > 0 ||
-      userHiveBox.length > 0 ||
-      picsuserHiveBox.length > 0 ||
-      tagsuserHiveBox.length > 0 ||
-      secretuserHiveBox.length > 0) {
-    initialRoute = MigrationScreen.id;
-  }
 
   // GestureBinding.instance.resamplingEnabled = true;
 
@@ -243,7 +143,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   void initState() {
     var tutorial = widget.user.tutorialCompleted.value;
-    if (initialRoute != MigrationScreen.id && tutorial) {
+    if (tutorial) {
       initialRoute = TabsScreen.id;
       //TODO: uncomment
       //Hive.deleteFromDisk();
@@ -310,7 +210,6 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         /* PremiumScreen.id: (context) => PremiumScreen(), */
         PinScreen.id: (context) => PinScreen(),
         EmailScreen.id: (context) => EmailScreen(),
-        MigrationScreen.id: (context) => MigrationScreen(),
       },
     );
   }
