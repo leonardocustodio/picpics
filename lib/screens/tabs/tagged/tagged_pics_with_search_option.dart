@@ -55,129 +55,127 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                   },
                   searchFocusNode: TaggedController.to.searchFocusNode,
                   children: <Widget>[
-                    if (controller.isSearching.value)
-                      Obx(() {
-                        if (controller.isSearching.value) {
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              if (controller
-                                  .selectedFilteringTagsKeys.isNotEmpty)
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 16.0, right: 16.0, bottom: 8.0),
-                                  child: TagsList(
-                                    tagsKeyList: controller
-                                        .selectedFilteringTagsKeys.keys
-                                        .toList(),
-                                    tagStyle: TagStyle.MultiColored,
-                                    onTap: (String tagKey) {
-                                      controller
-                                          .removeTagKeyFromFiltering(tagKey);
-                                    },
-                                    onPanEnd: (String tagKey) {
-                                      controller
-                                          .removeTagKeyFromFiltering(tagKey);
-                                    },
-                                    onDoubleTap: (String tagKey) {
-                                      //print('do nothing');
-                                    },
-                                    // showEditTagModal: showEditTagModal,
-                                  ),
-                                ),
-                              //                            if (GalleryStore.to.showSearchTagsResults) ...[
+                    Obx(() {
+                      if (controller.isSearching.value) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            if (controller.selectedFilteringTagsKeys.isNotEmpty)
                               Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
-                                child: Text(
-                                  controller.searchText.value != ''
-                                      /* GalleryStore.to.showSearchTagsResults.value */
-                                      ? S.current.search_results
-                                      : S.current.recent_tags,
-                                  textScaleFactor: 1.0,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff979a9b),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
-                                  ),
+                                padding: const EdgeInsets.only(
+                                    left: 16.0, right: 16.0, bottom: 8.0),
+                                child: TagsList(
+                                  tagsKeyList: controller
+                                      .selectedFilteringTagsKeys.keys
+                                      .toList(),
+                                  tagStyle: TagStyle.MultiColored,
+                                  onTap: (String tagKey) {
+                                    controller
+                                        .removeTagKeyFromFiltering(tagKey);
+                                  },
+                                  onPanEnd: (String tagKey) {
+                                    controller
+                                        .removeTagKeyFromFiltering(tagKey);
+                                  },
+                                  onDoubleTap: (String tagKey) {
+                                    //print('do nothing');
+                                  },
+                                  // showEditTagModal: showEditTagModal,
                                 ),
                               ),
-                              controller.searchTagsResults.isNotEmpty
-                                  //print('############ ${GalleryStore.to.tagsSuggestions}');
-                                  ? Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 16.0,
-                                          right: 16,
-                                          top: 8.0,
-                                          bottom: 16.0),
-                                      child: TagsList(
-                                        tagsKeyList: controller
-                                            .searchTagsResults
-                                            .map((e) => e.key)
-                                            .toList(),
-                                        tagStyle: TagStyle.GrayOutlined,
-                                        /* showEditTagModal: showEditTagModal, */
-                                        onTap: (tagKey) {
-                                          /* if (controller.toggleIndexTagged.value == 0) {
+                            //                            if (GalleryStore.to.showSearchTagsResults) ...[
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: Text(
+                                controller.searchText.value != ''
+                                    /* GalleryStore.to.showSearchTagsResults.value */
+                                    ? S.current.search_results
+                                    : S.current.recent_tags,
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: Color(0xff979a9b),
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w300,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
+                              ),
+                            ),
+                            controller.searchTagsResults.isNotEmpty
+                                //print('############ ${GalleryStore.to.tagsSuggestions}');
+                                ? Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 16.0,
+                                        right: 16,
+                                        top: 8.0,
+                                        bottom: 16.0),
+                                    child: TagsList(
+                                      tagsKeyList: controller.searchTagsResults
+                                          .map((e) => e.key)
+                                          .toList(),
+                                      tagStyle: TagStyle.GrayOutlined,
+                                      /* showEditTagModal: showEditTagModal, */
+                                      onTap: (tagKey) {
+                                        /* if (controller.toggleIndexTagged.value == 0) {
                                                           TabsController.to
                                                               .setToggleIndexTagged(1);
                                                         } */
 
-                                          controller
-                                              .addTagKeyForFiltering(tagKey);
-                                          /* searchEditingController.clear(); */
-                                          /* GalleryStore.to.searchResultsTags(
+                                        controller
+                                            .addTagKeyForFiltering(tagKey);
+                                        /* searchEditingController.clear(); */
+                                        /* GalleryStore.to.searchResultsTags(
                                                             searchEditingController.text); */
-                                        },
-                                        onDoubleTap: (String tagKey) {
-                                          //print('do nothing');
-                                        },
-                                        onPanEnd: (String tagKey) {
-                                          //print('do nothing');
-                                        },
-                                      ),
-                                    )
-                                  : Container(
-                                      padding: const EdgeInsets.only(
-                                          top: 10.0, left: 26.0, bottom: 10.0),
-                                      child: Text(
-                                        S.current.no_tags_found,
-                                        textScaleFactor: 1.0,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontFamily: 'Lato',
-                                          color: Color(0xff979a9b),
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w700,
-                                          fontStyle: FontStyle.normal,
-                                          letterSpacing: -0.4099999964237213,
-                                        ),
+                                      },
+                                      onDoubleTap: (String tagKey) {
+                                        //print('do nothing');
+                                      },
+                                      onPanEnd: (String tagKey) {
+                                        //print('do nothing');
+                                      },
+                                    ),
+                                  )
+                                : Container(
+                                    padding: const EdgeInsets.only(
+                                        top: 10.0, left: 26.0, bottom: 10.0),
+                                    child: Text(
+                                      S.current.no_tags_found,
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: Color(0xff979a9b),
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w700,
+                                        fontStyle: FontStyle.normal,
+                                        letterSpacing: -0.4099999964237213,
                                       ),
                                     ),
-                              Container(
-                                height: 1,
-                                color: kLightGrayColor,
-                              ),
-                            ],
-                          );
-                        }
-                        return Container();
-                      }),
+                                  ),
+                            Container(
+                              height: 1,
+                              color: kLightGrayColor,
+                            ),
+                          ],
+                        );
+                      }
+                      return Container();
+                    }),
                   ],
                 );
               }),
             ),
             Expanded(
-              child: GetX<TabsController>(builder: (tabsController) {
-                if (TaggedController.to.toggleIndexTagged.value == 0) {
-                  return TaggedTabDate();
-                } else {
+              child: GetX<TaggedController>(
+                builder: (taggedController) {
+                  if (taggedController.toggleIndexTagged.value == 0) {
+                    return TaggedTabDate();
+                  }
                   return TaggedPhotosGrouping();
-                }
-              }),
+                },
+              ),
             ),
           ],
         ),

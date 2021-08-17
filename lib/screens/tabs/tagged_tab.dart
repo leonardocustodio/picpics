@@ -70,21 +70,7 @@ class TaggedTab extends GetView<TaggedController> {
                         ///
                         /// Device has pics with tagged Pics
                         ///
-                        return NotificationListener<ScrollNotification>(
-                          onNotification: (scrollNotification) {
-                            if (scrollNotification is ScrollStartNotification) {
-                              //print('Start scrolling');
-                              TaggedController.to.setIsScrolling(true);
-                              return true;
-                            } else if (scrollNotification
-                                is ScrollEndNotification) {
-                              //print('End scrolling');
-                              TaggedController.to.setIsScrolling(false);
-                            }
-                            return false;
-                          },
-                          child: TaggedPicsInDeviceWithSearchOption(),
-                        );
+                        return TaggedPicsInDeviceWithSearchOption();
                       }
                     } else {
                       ///
@@ -92,6 +78,30 @@ class TaggedTab extends GetView<TaggedController> {
                       ///
                       return DeviceHasNoPics(
                           message: S.current.device_has_no_pics);
+                    }
+                  }),
+                ),
+                Positioned.fill(
+                  child: Obx(() {
+                    if (tabsController.deviceHasPics &&
+                        controller.allTaggedPicIdList.isNotEmpty) {
+                      return NotificationListener<ScrollNotification>(
+                        onNotification: (scrollNotification) {
+                          if (scrollNotification is ScrollStartNotification) {
+                            //print('Start scrolling');
+                            TaggedController.to.setIsScrolling(true);
+                            return true;
+                          } else if (scrollNotification
+                              is ScrollEndNotification) {
+                            //print('End scrolling');
+                            TaggedController.to.setIsScrolling(false);
+                          }
+                          return false;
+                        },
+                        child: Container(),
+                      );
+                    } else {
+                      return Container();
                     }
                   }),
                 ),

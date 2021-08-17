@@ -220,11 +220,9 @@ class TaggedController extends GetxController {
 
         /// tag adding button
         await tagsController.tagsSuggestionsCalculate();
-        WidgetsBinding.instance?.addPostFrameCallback((_) {
           tabsController.setMultiTagSheet(true);
           tabsController.expandableController.value.expanded = true;
           tabsController.expandablePaddingController.value.expanded = true;
-        });
         return;
       case 2:
 
@@ -287,12 +285,10 @@ class TaggedController extends GetxController {
       case 1:
 
         /// tag adding button
+        setMultiTagSheet(true);
         await tagsController.tagsSuggestionsCalculate();
-        WidgetsBinding.instance?.addPostFrameCallback((_) {
-          setMultiTagSheet(true);
-          expandableController.value.expanded = true;
-          expandablePaddingController.value.expanded = true;
-        });
+        expandableController.value.expanded = true;
+        expandablePaddingController.value.expanded = true;
         return;
       case 2:
 
