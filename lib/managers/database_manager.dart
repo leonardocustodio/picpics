@@ -9,7 +9,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 import 'package:picPics/utils/languages.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
+/* import 'package:purchases_flutter/purchases_flutter.dart'; */
 
 class DatabaseManager extends ChangeNotifier {
   DatabaseManager._();
@@ -102,7 +102,7 @@ class DatabaseManager extends ChangeNotifier {
     }
   }
 
-  Future<void> initPlatformState(String userId) async {
+  /* Future<void> initPlatformState(String userId) async {
     if (/* kDebugMode */ true) {
       await Purchases.setDebugLogsEnabled(true);
     }
@@ -110,9 +110,9 @@ class DatabaseManager extends ChangeNotifier {
       'FccxPqqfiDFQRbkTkvorJKTrokkeNUMu',
       appUserId: userId,
     );
-  }
+  } */
 
-  Future<bool?> checkPremiumStatus() async {
+  /* Future<bool?> checkPremiumStatus() async {
     try {
       final purchaserInfo = await Purchases.getPurchaserInfo();
       //print('### ${purchaserInfo.entitlements}');
@@ -135,7 +135,7 @@ class DatabaseManager extends ChangeNotifier {
       // Error fetching purchaser info
       return null;
     }
-  }
+  } */
 
   void loadRemoteConfig() async {
     //print('loading remote config....');

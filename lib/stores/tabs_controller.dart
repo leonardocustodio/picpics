@@ -176,11 +176,11 @@ class TabsController extends GetxController {
     }
 
     // Added for the case of buying premium from appstore
-    WidgetsBinding.instance?.addPostFrameCallback((_) async {
+    /* WidgetsBinding.instance?.addPostFrameCallback((_) async {
       if (UserController.to.tryBuyId != null) {
         await Get.to(() => PremiumScreen());
       }
-    });
+    }); */
   }
 
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {

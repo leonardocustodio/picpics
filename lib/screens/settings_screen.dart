@@ -999,7 +999,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   if (UserController.to.isPremium.value) {
                                     return;
                                   }
-                                  Get.to(() => PremiumScreen);
+                                 /*  Get.to(() => PremiumScreen); */
                                 },
                                 padding: const EdgeInsets.all(0),
                                 child: OutlineGradientButton(

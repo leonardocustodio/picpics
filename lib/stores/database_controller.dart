@@ -55,7 +55,6 @@ MoorUser getDefaultMoorUser({String? deviceLocale}) {
     goal: 20,
     hourOfDay: 20,
     minuteOfDay: 00,
-    isPremium: false,
     recentTags: [],
     tutorialCompleted: false,
     picsTaggedToday: 0,

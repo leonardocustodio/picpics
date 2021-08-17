@@ -102,7 +102,6 @@ class UserController extends GetxController {
     dailyChallenges.value = user.dailyChallenges;
     hourOfDay.value = user.hourOfDay;
     minutesOfDay.value = user.minuteOfDay;
-    isPremium.value = user.isPremium;
     tutorialCompleted.value = user.tutorialCompleted;
     appLanguage.value = user.appLanguage ?? 'en';
     hasGalleryPermission.value = user.hasGalleryPermission;
@@ -136,12 +135,8 @@ class UserController extends GetxController {
     // Executa primeira vez para ver se ainda tem permissão
     await checkNotificationPermission();
 
-    await DatabaseManager.instance.initPlatformState(user.id);
+    /* await DatabaseManager.instance.initPlatformState(user.id); */
     DatabaseManager.instance.loadRemoteConfig();
-
-    if (user.isPremium) {
-      await checkPremiumStatus();
-    }
 
     await checkAvailableBiometrics();
 
@@ -308,24 +303,6 @@ class UserController extends GetxController {
       //      PushNotificationsManager push = PushNotificationsManager();
       //      push.scheduleNotification();
       //print('rescheduling notifications....');
-    }
-  }
-
-  Future<void> setIsPremium(bool value) async {
-    isPremium.value = value;
-
-    final currentUser = await database.getSingleMoorUser();
-    await database.updateMoorUser(currentUser!.copyWith(isPremium: value));
-
-    if (isPremium.value == true) {
-      await setCanTagToday(true);
-    }
-  }
-
-  Future<void> checkPremiumStatus() async {
-    final premium = await DatabaseManager.instance.checkPremiumStatus();
-    if (premium == false) {
-      await setIsPremium(false);
     }
   }
 

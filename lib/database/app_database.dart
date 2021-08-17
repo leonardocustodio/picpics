@@ -127,7 +127,6 @@ class MoorUsers extends Table {
   IntColumn get minuteOfDay => integer().withDefault(const Constant(0))();
   IntColumn get picsTaggedToday => integer().withDefault(const Constant(0))();
 
-  BoolColumn get isPremium => boolean().withDefault(const Constant(false))();
   BoolColumn get tutorialCompleted =>
       boolean().withDefault(const Constant(false))();
   BoolColumn get canTagToday => boolean().withDefault(const Constant(true))();
@@ -494,7 +493,6 @@ class AppDatabase extends _$AppDatabase {
       goal: user.goal.moorValue,
       hourOfDay: user.hourOfDay.moorValue,
       minuteOfDay: user.minutesOfDay.moorValue,
-      isPremium: user.isPremium.moorValue,
       tutorialCompleted: user.tutorialCompleted.moorValue,
       picsTaggedToday: user.picsTaggedToday.moorValue,
       lastTaggedPicDate: user.lastTaggedPicDate.moorValue,

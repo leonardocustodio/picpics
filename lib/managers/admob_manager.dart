@@ -1,4 +1,4 @@
-import 'dart:io';
+/* import 'dart:io';
 
 class Ads {
   static final String appId = Platform.isAndroid
@@ -42,3 +42,4 @@ class Ads {
   //   testDevices: <String>['00008020-0009251E1A84002E', 'BBBB5C82882E2809449515237DD8EC25'],
   // );
 }
+ */

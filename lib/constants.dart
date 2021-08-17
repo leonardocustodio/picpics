@@ -154,7 +154,7 @@ const kBottomSheetTitleTextStyle = TextStyle(
   fontWeight: FontWeight.w300,
 );
 
-const kPremiumButtonTextStyle = TextStyle(
+/* const kPremiumButtonTextStyle = TextStyle(
   fontFamily: 'Lato',
   color: kPinkColor,
   fontSize: 16,
@@ -162,7 +162,7 @@ const kPremiumButtonTextStyle = TextStyle(
   fontStyle: FontStyle.normal,
   letterSpacing: -0.4099999964237213,
 );
-
+ */
 const kLoginDescriptionTextStyle = TextStyle(
   fontFamily: 'Lato',
   color: kWhiteColor,

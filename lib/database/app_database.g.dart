@@ -789,7 +789,7 @@ class PicBlurHashsCompanion extends UpdateCompanion<PicBlurHash> {
   PicBlurHashsCompanion.insert({
     required String photoId,
     required String blurHash,
-  })   : photoId = Value(photoId),
+  })  : photoId = Value(photoId),
         blurHash = Value(blurHash);
   static Insertable<PicBlurHash> custom({
     Expression<String>? photoId,
@@ -1656,7 +1656,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
   final int hourOfDay;
   final int minuteOfDay;
   final int picsTaggedToday;
-  final bool isPremium;
   final bool tutorialCompleted;
   final bool canTagToday;
   final bool hasGalleryPermission;
@@ -1685,7 +1684,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       required this.hourOfDay,
       required this.minuteOfDay,
       required this.picsTaggedToday,
-      required this.isPremium,
       required this.tutorialCompleted,
       required this.canTagToday,
       required this.hasGalleryPermission,
@@ -1733,8 +1731,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           .mapFromDatabaseResponse(data['${effectivePrefix}minute_of_day'])!,
       picsTaggedToday: const IntType().mapFromDatabaseResponse(
           data['${effectivePrefix}pics_tagged_today'])!,
-      isPremium: const BoolType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}is_premium'])!,
       tutorialCompleted: const BoolType().mapFromDatabaseResponse(
           data['${effectivePrefix}tutorial_completed'])!,
       canTagToday: const BoolType()
@@ -1797,7 +1793,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
     map['hour_of_day'] = Variable<int>(hourOfDay);
     map['minute_of_day'] = Variable<int>(minuteOfDay);
     map['pics_tagged_today'] = Variable<int>(picsTaggedToday);
-    map['is_premium'] = Variable<bool>(isPremium);
     map['tutorial_completed'] = Variable<bool>(tutorialCompleted);
     map['can_tag_today'] = Variable<bool>(canTagToday);
     map['has_gallery_permission'] = Variable<bool>(hasGalleryPermission);
@@ -1841,7 +1836,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       hourOfDay: Value(hourOfDay),
       minuteOfDay: Value(minuteOfDay),
       picsTaggedToday: Value(picsTaggedToday),
-      isPremium: Value(isPremium),
       tutorialCompleted: Value(tutorialCompleted),
       canTagToday: Value(canTagToday),
       hasGalleryPermission: Value(hasGalleryPermission),
@@ -1878,7 +1872,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       hourOfDay: serializer.fromJson<int>(json['hourOfDay']),
       minuteOfDay: serializer.fromJson<int>(json['minuteOfDay']),
       picsTaggedToday: serializer.fromJson<int>(json['picsTaggedToday']),
-      isPremium: serializer.fromJson<bool>(json['isPremium']),
       tutorialCompleted: serializer.fromJson<bool>(json['tutorialCompleted']),
       canTagToday: serializer.fromJson<bool>(json['canTagToday']),
       hasGalleryPermission:
@@ -1916,7 +1909,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       'hourOfDay': serializer.toJson<int>(hourOfDay),
       'minuteOfDay': serializer.toJson<int>(minuteOfDay),
       'picsTaggedToday': serializer.toJson<int>(picsTaggedToday),
-      'isPremium': serializer.toJson<bool>(isPremium),
       'tutorialCompleted': serializer.toJson<bool>(tutorialCompleted),
       'canTagToday': serializer.toJson<bool>(canTagToday),
       'hasGalleryPermission': serializer.toJson<bool>(hasGalleryPermission),
@@ -1948,7 +1940,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           int? hourOfDay,
           int? minuteOfDay,
           int? picsTaggedToday,
-          bool? isPremium,
           bool? tutorialCompleted,
           bool? canTagToday,
           bool? hasGalleryPermission,
@@ -1977,7 +1968,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
         hourOfDay: hourOfDay ?? this.hourOfDay,
         minuteOfDay: minuteOfDay ?? this.minuteOfDay,
         picsTaggedToday: picsTaggedToday ?? this.picsTaggedToday,
-        isPremium: isPremium ?? this.isPremium,
         tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
         canTagToday: canTagToday ?? this.canTagToday,
         hasGalleryPermission: hasGalleryPermission ?? this.hasGalleryPermission,
@@ -2010,7 +2000,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           ..write('hourOfDay: $hourOfDay, ')
           ..write('minuteOfDay: $minuteOfDay, ')
           ..write('picsTaggedToday: $picsTaggedToday, ')
-          ..write('isPremium: $isPremium, ')
           ..write('tutorialCompleted: $tutorialCompleted, ')
           ..write('canTagToday: $canTagToday, ')
           ..write('hasGalleryPermission: $hasGalleryPermission, ')
@@ -2062,14 +2051,14 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
                                                                   picsTaggedToday
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      isPremium
+                                                                      tutorialCompleted
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          tutorialCompleted
+                                                                          canTagToday
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              canTagToday.hashCode,
-                                                                              $mrjc(hasGalleryPermission.hashCode, $mrjc(loggedIn.hashCode, $mrjc(secretPhotos.hashCode, $mrjc(isPinRegistered.hashCode, $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, lastTaggedPicDate.hashCode))))))))))))))))))))))))))));
+                                                                              hasGalleryPermission.hashCode,
+                                                                              $mrjc(loggedIn.hashCode, $mrjc(secretPhotos.hashCode, $mrjc(isPinRegistered.hashCode, $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, lastTaggedPicDate.hashCode)))))))))))))))))))))))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2090,7 +2079,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           other.hourOfDay == this.hourOfDay &&
           other.minuteOfDay == this.minuteOfDay &&
           other.picsTaggedToday == this.picsTaggedToday &&
-          other.isPremium == this.isPremium &&
           other.tutorialCompleted == this.tutorialCompleted &&
           other.canTagToday == this.canTagToday &&
           other.hasGalleryPermission == this.hasGalleryPermission &&
@@ -2121,7 +2109,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
   final Value<int> hourOfDay;
   final Value<int> minuteOfDay;
   final Value<int> picsTaggedToday;
-  final Value<bool> isPremium;
   final Value<bool> tutorialCompleted;
   final Value<bool> canTagToday;
   final Value<bool> hasGalleryPermission;
@@ -2150,7 +2137,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     this.hourOfDay = const Value.absent(),
     this.minuteOfDay = const Value.absent(),
     this.picsTaggedToday = const Value.absent(),
-    this.isPremium = const Value.absent(),
     this.tutorialCompleted = const Value.absent(),
     this.canTagToday = const Value.absent(),
     this.hasGalleryPermission = const Value.absent(),
@@ -2180,7 +2166,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     this.hourOfDay = const Value.absent(),
     this.minuteOfDay = const Value.absent(),
     this.picsTaggedToday = const Value.absent(),
-    this.isPremium = const Value.absent(),
     this.tutorialCompleted = const Value.absent(),
     this.canTagToday = const Value.absent(),
     this.hasGalleryPermission = const Value.absent(),
@@ -2211,7 +2196,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     Expression<int>? hourOfDay,
     Expression<int>? minuteOfDay,
     Expression<int>? picsTaggedToday,
-    Expression<bool>? isPremium,
     Expression<bool>? tutorialCompleted,
     Expression<bool>? canTagToday,
     Expression<bool>? hasGalleryPermission,
@@ -2242,7 +2226,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       if (hourOfDay != null) 'hour_of_day': hourOfDay,
       if (minuteOfDay != null) 'minute_of_day': minuteOfDay,
       if (picsTaggedToday != null) 'pics_tagged_today': picsTaggedToday,
-      if (isPremium != null) 'is_premium': isPremium,
       if (tutorialCompleted != null) 'tutorial_completed': tutorialCompleted,
       if (canTagToday != null) 'can_tag_today': canTagToday,
       if (hasGalleryPermission != null)
@@ -2278,7 +2261,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       Value<int>? hourOfDay,
       Value<int>? minuteOfDay,
       Value<int>? picsTaggedToday,
-      Value<bool>? isPremium,
       Value<bool>? tutorialCompleted,
       Value<bool>? canTagToday,
       Value<bool>? hasGalleryPermission,
@@ -2307,7 +2289,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       hourOfDay: hourOfDay ?? this.hourOfDay,
       minuteOfDay: minuteOfDay ?? this.minuteOfDay,
       picsTaggedToday: picsTaggedToday ?? this.picsTaggedToday,
-      isPremium: isPremium ?? this.isPremium,
       tutorialCompleted: tutorialCompleted ?? this.tutorialCompleted,
       canTagToday: canTagToday ?? this.canTagToday,
       hasGalleryPermission: hasGalleryPermission ?? this.hasGalleryPermission,
@@ -2378,9 +2359,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     if (picsTaggedToday.present) {
       map['pics_tagged_today'] = Variable<int>(picsTaggedToday.value);
     }
-    if (isPremium.present) {
-      map['is_premium'] = Variable<bool>(isPremium.value);
-    }
     if (tutorialCompleted.present) {
       map['tutorial_completed'] = Variable<bool>(tutorialCompleted.value);
     }
@@ -2439,7 +2417,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
           ..write('hourOfDay: $hourOfDay, ')
           ..write('minuteOfDay: $minuteOfDay, ')
           ..write('picsTaggedToday: $picsTaggedToday, ')
-          ..write('isPremium: $isPremium, ')
           ..write('tutorialCompleted: $tutorialCompleted, ')
           ..write('canTagToday: $canTagToday, ')
           ..write('hasGalleryPermission: $hasGalleryPermission, ')
@@ -2622,14 +2599,6 @@ class $MoorUsersTable extends MoorUsers
         defaultValue: const Constant(0));
   }
 
-  final VerificationMeta _isPremiumMeta = const VerificationMeta('isPremium');
-  @override
-  late final GeneratedBoolColumn isPremium = _constructIsPremium();
-  GeneratedBoolColumn _constructIsPremium() {
-    return GeneratedBoolColumn('is_premium', $tableName, false,
-        defaultValue: const Constant(false));
-  }
-
   final VerificationMeta _tutorialCompletedMeta =
       const VerificationMeta('tutorialCompleted');
   @override
@@ -2752,7 +2721,6 @@ class $MoorUsersTable extends MoorUsers
         hourOfDay,
         minuteOfDay,
         picsTaggedToday,
-        isPremium,
         tutorialCompleted,
         canTagToday,
         hasGalleryPermission,
@@ -2850,10 +2818,6 @@ class $MoorUsersTable extends MoorUsers
           _picsTaggedTodayMeta,
           picsTaggedToday.isAcceptableOrUnknown(
               data['pics_tagged_today']!, _picsTaggedTodayMeta));
-    }
-    if (data.containsKey('is_premium')) {
-      context.handle(_isPremiumMeta,
-          isPremium.isAcceptableOrUnknown(data['is_premium']!, _isPremiumMeta));
     }
     if (data.containsKey('tutorial_completed')) {
       context.handle(

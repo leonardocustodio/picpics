@@ -205,10 +205,6 @@ void main() async {
   var user = UserController()..initiatedWithProduct = initiatedWithProduct;
   await user.initialize();
 
-  await Analytics.sendAppOpen();
-  Ads.initialize();
-  Ads.loadRewarded();
-
   // FlutterBranchSdk.setRequestMetadata(r'$google_analytics_user_id', userId);
   var streamSubscription = FlutterBranchSdk.initSession().listen((data) {
     if (data.containsKey('+clicked_branch_link') &&
@@ -311,7 +307,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
             ),
         SettingsScreen.id: (context) => SettingsScreen(),
         AddLocationScreen.id: (context) => AddLocationScreen(null),
-        PremiumScreen.id: (context) => PremiumScreen(),
+        /* PremiumScreen.id: (context) => PremiumScreen(), */
         PinScreen.id: (context) => PinScreen(),
         EmailScreen.id: (context) => EmailScreen(),
         MigrationScreen.id: (context) => MigrationScreen(),

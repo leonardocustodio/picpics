@@ -54,14 +54,14 @@ Future<void> showDeleteSecretModal(
     return;
   }
 
-  if (UserController.to.isPremium.value == false) {
+  /* if (UserController.to.isPremium.value == false) {
     final freePrivatePics = UserController.to.freePrivatePics;
     if (UserController.to.totalPrivatePics >= freePrivatePics &&
         picStore.isPrivate.value == false) {
       await Get.to(() => PremiumScreen());
       return;
     }
-  }
+  } */
 
   if (UserController.to.keepAskingToDelete.value == false &&
       picStore.isPrivate.value == false) {
