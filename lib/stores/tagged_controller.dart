@@ -119,7 +119,7 @@ class TaggedController extends GetxController {
       multiPicBar.value = false;
       return false;
     }
-    
+
     print('WillPopScope onPoppingOut');
     onPoppingOut();
     return true;
@@ -279,7 +279,7 @@ class TaggedController extends GetxController {
 
         /// back button
         setMultiPicBar(false);
-    selectedMultiBarPics.clear();
+        selectedMultiBarPics.clear();
         if (selectedMultiBarPics.isEmpty) {
           tagsController.clearMultiPicTags();
         }

@@ -45,11 +45,14 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
 
       return StaggeredGridView.countBuilder(
         key: Key('tag'),
-        padding: EdgeInsets.only(left: 7, right: 7),
+        padding: const EdgeInsets.only(left: 7, right: 7),
         crossAxisCount: 3,
         mainAxisSpacing: 8,
         crossAxisSpacing: 4,
         itemCount: taggedKeys.length,
+        staggeredTileBuilder: (_) {
+          return StaggeredTile.extent(1, height + 45);
+        },
         itemBuilder: (BuildContext _, int index) {
           return Obx(() {
             final tagKey = taggedKeys[index];
@@ -108,9 +111,6 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
               ),
             );
           });
-        },
-        staggeredTileBuilder: (_) {
-          return StaggeredTile.extent(1, height + 45);
         },
       );
     });

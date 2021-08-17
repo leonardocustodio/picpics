@@ -50,11 +50,9 @@ class TaggedTab extends GetView<TaggedController> {
         return false;
       },
       child: Scaffold(
-        body: Container(
-          padding: const EdgeInsets.only(bottom: 0.0),
-          //                    constraints: BoxConstraints.expand(),
-          //                    color: kWhiteColor,
-          child: SafeArea(
+        body: SafeArea(
+          child: Container(
+            padding: const EdgeInsets.only(bottom: 0.0),
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
@@ -72,7 +70,21 @@ class TaggedTab extends GetView<TaggedController> {
                         ///
                         /// Device has pics with tagged Pics
                         ///
-                        return TaggedPicsInDeviceWithSearchOption();
+                        return NotificationListener<ScrollNotification>(
+                          onNotification: (scrollNotification) {
+                            if (scrollNotification is ScrollStartNotification) {
+                              //print('Start scrolling');
+                              TaggedController.to.setIsScrolling(true);
+                              return true;
+                            } else if (scrollNotification
+                                is ScrollEndNotification) {
+                              //print('End scrolling');
+                              TaggedController.to.setIsScrolling(false);
+                            }
+                            return false;
+                          },
+                          child: TaggedPicsInDeviceWithSearchOption(),
+                        );
                       }
                     } else {
                       ///
