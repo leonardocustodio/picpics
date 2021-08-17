@@ -59,7 +59,7 @@ class TaggedController extends GetxController {
     multiTagSheet.value = value;
   }
 
-  Future<void> starredAction() async {
+  /* Future<void> starredAction() async {
     //await WidgetManager.saveData(picsStores: selectedUntaggedPics.toList());
 
     selectedMultiBarPics.forEach((picId, value) {
@@ -68,7 +68,7 @@ class TaggedController extends GetxController {
       picStore?.switchIsStarred();
     });
     returnAction();
-  }
+  } */
 
   void tagAction() {
     setMultiTagSheet(true);
@@ -212,19 +212,43 @@ class TaggedController extends GetxController {
         /// back button
         tabsController.setMultiPicBar(false);
         tabsController.clearSelectedPics();
-        if (tabsController.selectedMultiBarPics.isEmpty) {
-          tagsController.clearMultiPicTags();
-        }
+        tagsController.clearMultiPicTags();
         return;
       case 1:
+        final picIdList = tabsController.selectedMultiBarPics.keys.toList();
+        final percentageController = Get.find<PercentageDialogController>();
+        final map = <String, bool>{};
+        percentageController.start(picIdList.length + .0);
+        await Future.forEach(picIdList, (String picId) async {
+          final starred =
+              await tabsController.picStoreMap[picId]?.value.switchIsStarred();
+          if (starred != null) {
+            map[picId] = starred;
+          }
+          await Future.delayed(Duration.zero, () {
+            percentageController.value.value += 1.0;
+          });
+        }).then((_) async {
+          map.keys.forEach((String picId) {
+            tabsController.picStoreMap[picId]?.value.isStarred.value =
+                map[picId]!;
+          });
+          percentageController.stop();
+          tabsController.setMultiPicBar(false);
+          tabsController.setMultiTagSheet(false);
+          tabsController.clearSelectedPics();
+          tagsController.clearMultiPicTags();
+        });
+        return;
+      case 2:
 
         /// tag adding button
         await tagsController.tagsSuggestionsCalculate();
-          tabsController.setMultiTagSheet(true);
-          tabsController.expandableController.value.expanded = true;
-          tabsController.expandablePaddingController.value.expanded = true;
+        tabsController.setMultiTagSheet(true);
+        tabsController.expandableController.value.expanded = true;
+        tabsController.expandablePaddingController.value.expanded = true;
         return;
-      case 2:
+      case 3:
 
         /// tag sharing button
         if (tabsController.selectedMultiBarPics.isEmpty) {
@@ -233,7 +257,7 @@ class TaggedController extends GetxController {
         await sharePics(
             picKeys: tabsController.selectedMultiBarPics.keys.toList());
         return;
-      case 3:
+      case 4:
 
         /// tag deleting button
         if (tabsController.selectedMultiBarPics.isEmpty) {

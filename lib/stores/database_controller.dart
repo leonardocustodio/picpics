@@ -69,7 +69,7 @@ MoorUser getDefaultMoorUser({String? deviceLocale}) {
     tourCompleted: false,
     isBiometricActivated: false,
     shouldDeleteOnPrivate: false,
-    starredPhotos: <String, String>{},
+    /* starredPhotos: <String, String>{}, */
     defaultWidgetImage: null,
   );
 }

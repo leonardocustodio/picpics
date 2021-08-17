@@ -340,11 +340,11 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                           //title: Container(),
                           icon: Image.asset('lib/images/returntabbutton.png'),
                         ),
-                        /* if (controller.currentTab.value == 2)
-                        BottomNavigationBarItem(
-                          //title: Container(),
-                          icon: Image.asset('lib/images/starico.png'),
-                        ), */
+                        if (controller.currentTab.value == 2)
+                          BottomNavigationBarItem(
+                            //title: Container(),
+                            icon: Image.asset('lib/images/starico.png'),
+                          ),
                         BottomNavigationBarItem(
                           //title: Container(),
                           icon: Image.asset('lib/images/tagtabbutton.png'),
@@ -387,11 +387,11 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                             label: 'Return',
                             icon: Image.asset('lib/images/returntabbutton.png'),
                           ),
-                          /* if (controller.currentTab.value == 2)
-                          BottomNavigationBarItem(
-                            label: 'Feature',
-                            icon: Image.asset('lib/images/starico.png'),
-                          ), */
+                          if (controller.currentTab.value == 2)
+                            BottomNavigationBarItem(
+                              label: 'Feature',
+                              icon: Image.asset('lib/images/starico.png'),
+                            ),
                           BottomNavigationBarItem(
                             label: 'Tag',
                             icon: TabsController.to.selectedMultiBarPics.isEmpty

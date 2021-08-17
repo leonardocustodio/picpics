@@ -119,7 +119,7 @@ class MoorUsers extends Table {
   TextColumn get appLanguage => text().nullable()();
   TextColumn get appVersion => text().nullable()();
   TextColumn get secretKey => text().nullable()();
-  TextColumn get starredPhotos => text().map(MapStringConvertor())();
+  //TextColumn get starredPhotos => text().map(MapStringConvertor())();
   TextColumn get defaultWidgetImage => text().nullable()();
 
   IntColumn get goal => integer().withDefault(const Constant(20))();
@@ -485,7 +485,7 @@ class AppDatabase extends _$AppDatabase {
       customPrimaryKey: const Value(0),
       id: user.id.moorValue,
       recentTags: user.recentTags,
-      starredPhotos: user.starredPhotos,
+      /* starredPhotos: user.starredPhotos, */
       email: user.email.moorValue,
       password: user.password.moorValue,
       notification: user.notifications.moorValue,
@@ -598,16 +598,4 @@ class AppDatabase extends _$AppDatabase {
       batch.insertAll(photos, photosCompanions);
     });
   }
-
-  ///
-  ///
-  ///
-  ///
-  ///
-  ///Migration queries Start
-  ///
-  ///
-  ///
-  ///
-  ///
 }

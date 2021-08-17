@@ -29,9 +29,9 @@ class WidgetManager {
 
       var currentUser = (await appDatabase.getSingleMoorUser())!;
 
-      final starredPhotos = currentUser.starredPhotos;
+      /* final starredPhotos = currentUser.starredPhotos; */
       //print('Number of starred photos: ${starredPhotos.length}');
-
+/* 
       String? baseString;
 
       if (starredPhotos.isEmpty) {
@@ -52,7 +52,7 @@ class WidgetManager {
 
       //print('Send base string!');
       await Future.wait(
-          [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]);
+          [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]); */
       return;
     } catch (exception) {
       //print('Error Sending Data. $exception');

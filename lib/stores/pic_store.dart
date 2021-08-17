@@ -94,39 +94,34 @@ class PicStore extends GetxController {
   } */
 
   //@action
-  Future<void> switchIsStarred() async {
-    isStarred.value = !isStarred.value;
-    //print('Setting starred photo $photoId to $value');
-
-    //var picsBox = Hive.box('pics');
+  Future<bool?> switchIsStarred() async {
     var pic = await database.getPhotoByPhotoId(photoId.value);
     if (pic == null) {
-      return;
+      return null;
     }
+    await database.updatePhoto(
+      pic.copyWith(isStarred: !isStarred.value),
+    );
+    return !isStarred.value;
     //pic.isStarred = value;
-    String? base64encoded;
+    /* String? base64encoded;
     //print('teste');
     if (isStarred.value) {
-      var bytes = await entity.value?.thumbDataWithSize(300, 300);
+      //var bytes = await entity.value?.thumbDataWithSize(300, 300);
 
       /// TODO: what to do in this case scenario
-      if (bytes == null) {
+      /* if (bytes == null) {
         return;
-      }
-      var encoded = base64.encode(bytes);
-      base64encoded = encoded;
-      await UserController.to.addToStarredPhotos(photoId.value);
+      } */
+      /* var encoded = base64.encode(bytes);
+      base64encoded = encoded; */
+      /* await UserController.to.addToStarredPhotos(photoId.value); */
     } else {
-      await UserController.to.removeFromStarredPhotos(photoId.value);
-    }
+      /* await UserController.to.removeFromStarredPhotos(photoId.value); */
+    } */
 
     /// Do the database writting
-    await database.updatePhoto(
-      pic.copyWith(
-        base64encoded: base64encoded,
-        isStarred: isStarred.value,
-      ),
-    );
+
     //print('isStarred value: $isStarred');
   }
 

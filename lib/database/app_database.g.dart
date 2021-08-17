@@ -1650,7 +1650,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
   final String? appLanguage;
   final String? appVersion;
   final String? secretKey;
-  final Map<String, String> starredPhotos;
   final String? defaultWidgetImage;
   final int goal;
   final int hourOfDay;
@@ -1678,7 +1677,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       this.appLanguage,
       this.appVersion,
       this.secretKey,
-      required this.starredPhotos,
       this.defaultWidgetImage,
       required this.goal,
       required this.hourOfDay,
@@ -1719,8 +1717,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           .mapFromDatabaseResponse(data['${effectivePrefix}app_version']),
       secretKey: const StringType()
           .mapFromDatabaseResponse(data['${effectivePrefix}secret_key']),
-      starredPhotos: $MoorUsersTable.$converter1.mapToDart(const StringType()
-          .mapFromDatabaseResponse(data['${effectivePrefix}starred_photos']))!,
       defaultWidgetImage: const StringType().mapFromDatabaseResponse(
           data['${effectivePrefix}default_widget_image']),
       goal: const IntType()
@@ -1781,11 +1777,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
     if (!nullToAbsent || secretKey != null) {
       map['secret_key'] = Variable<String?>(secretKey);
     }
-    {
-      final converter = $MoorUsersTable.$converter1;
-      map['starred_photos'] =
-          Variable<String>(converter.mapToSql(starredPhotos)!);
-    }
     if (!nullToAbsent || defaultWidgetImage != null) {
       map['default_widget_image'] = Variable<String?>(defaultWidgetImage);
     }
@@ -1828,7 +1819,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       secretKey: secretKey == null && nullToAbsent
           ? const Value.absent()
           : Value(secretKey),
-      starredPhotos: Value(starredPhotos),
       defaultWidgetImage: defaultWidgetImage == null && nullToAbsent
           ? const Value.absent()
           : Value(defaultWidgetImage),
@@ -1864,8 +1854,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       appLanguage: serializer.fromJson<String?>(json['appLanguage']),
       appVersion: serializer.fromJson<String?>(json['appVersion']),
       secretKey: serializer.fromJson<String?>(json['secretKey']),
-      starredPhotos:
-          serializer.fromJson<Map<String, String>>(json['starredPhotos']),
       defaultWidgetImage:
           serializer.fromJson<String?>(json['defaultWidgetImage']),
       goal: serializer.fromJson<int>(json['goal']),
@@ -1903,7 +1891,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
       'appLanguage': serializer.toJson<String?>(appLanguage),
       'appVersion': serializer.toJson<String?>(appVersion),
       'secretKey': serializer.toJson<String?>(secretKey),
-      'starredPhotos': serializer.toJson<Map<String, String>>(starredPhotos),
       'defaultWidgetImage': serializer.toJson<String?>(defaultWidgetImage),
       'goal': serializer.toJson<int>(goal),
       'hourOfDay': serializer.toJson<int>(hourOfDay),
@@ -1934,7 +1921,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           String? appLanguage,
           String? appVersion,
           String? secretKey,
-          Map<String, String>? starredPhotos,
           String? defaultWidgetImage,
           int? goal,
           int? hourOfDay,
@@ -1962,7 +1948,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
         appLanguage: appLanguage ?? this.appLanguage,
         appVersion: appVersion ?? this.appVersion,
         secretKey: secretKey ?? this.secretKey,
-        starredPhotos: starredPhotos ?? this.starredPhotos,
         defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
         goal: goal ?? this.goal,
         hourOfDay: hourOfDay ?? this.hourOfDay,
@@ -1994,7 +1979,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           ..write('appLanguage: $appLanguage, ')
           ..write('appVersion: $appVersion, ')
           ..write('secretKey: $secretKey, ')
-          ..write('starredPhotos: $starredPhotos, ')
           ..write('defaultWidgetImage: $defaultWidgetImage, ')
           ..write('goal: $goal, ')
           ..write('hourOfDay: $hourOfDay, ')
@@ -2037,28 +2021,28 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
                                       $mrjc(
                                           secretKey.hashCode,
                                           $mrjc(
-                                              starredPhotos.hashCode,
+                                              defaultWidgetImage.hashCode,
                                               $mrjc(
-                                                  defaultWidgetImage.hashCode,
+                                                  goal.hashCode,
                                                   $mrjc(
-                                                      goal.hashCode,
+                                                      hourOfDay.hashCode,
                                                       $mrjc(
-                                                          hourOfDay.hashCode,
+                                                          minuteOfDay.hashCode,
                                                           $mrjc(
-                                                              minuteOfDay
+                                                              picsTaggedToday
                                                                   .hashCode,
                                                               $mrjc(
-                                                                  picsTaggedToday
+                                                                  tutorialCompleted
                                                                       .hashCode,
                                                                   $mrjc(
-                                                                      tutorialCompleted
+                                                                      canTagToday
                                                                           .hashCode,
                                                                       $mrjc(
-                                                                          canTagToday
+                                                                          hasGalleryPermission
                                                                               .hashCode,
                                                                           $mrjc(
-                                                                              hasGalleryPermission.hashCode,
-                                                                              $mrjc(loggedIn.hashCode, $mrjc(secretPhotos.hashCode, $mrjc(isPinRegistered.hashCode, $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, lastTaggedPicDate.hashCode)))))))))))))))))))))))))));
+                                                                              loggedIn.hashCode,
+                                                                              $mrjc(secretPhotos.hashCode, $mrjc(isPinRegistered.hashCode, $mrjc(keepAskingToDelete.hashCode, $mrjc(shouldDeleteOnPrivate.hashCode, $mrjc(tourCompleted.hashCode, $mrjc(isBiometricActivated.hashCode, lastTaggedPicDate.hashCode))))))))))))))))))))))))));
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -2073,7 +2057,6 @@ class MoorUser extends DataClass implements Insertable<MoorUser> {
           other.appLanguage == this.appLanguage &&
           other.appVersion == this.appVersion &&
           other.secretKey == this.secretKey &&
-          other.starredPhotos == this.starredPhotos &&
           other.defaultWidgetImage == this.defaultWidgetImage &&
           other.goal == this.goal &&
           other.hourOfDay == this.hourOfDay &&
@@ -2103,7 +2086,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
   final Value<String?> appLanguage;
   final Value<String?> appVersion;
   final Value<String?> secretKey;
-  final Value<Map<String, String>> starredPhotos;
   final Value<String?> defaultWidgetImage;
   final Value<int> goal;
   final Value<int> hourOfDay;
@@ -2131,7 +2113,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     this.appLanguage = const Value.absent(),
     this.appVersion = const Value.absent(),
     this.secretKey = const Value.absent(),
-    this.starredPhotos = const Value.absent(),
     this.defaultWidgetImage = const Value.absent(),
     this.goal = const Value.absent(),
     this.hourOfDay = const Value.absent(),
@@ -2160,7 +2141,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     this.appLanguage = const Value.absent(),
     this.appVersion = const Value.absent(),
     this.secretKey = const Value.absent(),
-    required Map<String, String> starredPhotos,
     this.defaultWidgetImage = const Value.absent(),
     this.goal = const Value.absent(),
     this.hourOfDay = const Value.absent(),
@@ -2177,8 +2157,7 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     this.tourCompleted = const Value.absent(),
     this.isBiometricActivated = const Value.absent(),
     this.lastTaggedPicDate = const Value.absent(),
-  })  : recentTags = Value(recentTags),
-        starredPhotos = Value(starredPhotos);
+  }) : recentTags = Value(recentTags);
   static Insertable<MoorUser> custom({
     Expression<int>? customPrimaryKey,
     Expression<String>? id,
@@ -2190,7 +2169,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     Expression<String?>? appLanguage,
     Expression<String?>? appVersion,
     Expression<String?>? secretKey,
-    Expression<Map<String, String>>? starredPhotos,
     Expression<String?>? defaultWidgetImage,
     Expression<int>? goal,
     Expression<int>? hourOfDay,
@@ -2219,7 +2197,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       if (appLanguage != null) 'app_language': appLanguage,
       if (appVersion != null) 'app_version': appVersion,
       if (secretKey != null) 'secret_key': secretKey,
-      if (starredPhotos != null) 'starred_photos': starredPhotos,
       if (defaultWidgetImage != null)
         'default_widget_image': defaultWidgetImage,
       if (goal != null) 'goal': goal,
@@ -2255,7 +2232,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       Value<String?>? appLanguage,
       Value<String?>? appVersion,
       Value<String?>? secretKey,
-      Value<Map<String, String>>? starredPhotos,
       Value<String?>? defaultWidgetImage,
       Value<int>? goal,
       Value<int>? hourOfDay,
@@ -2283,7 +2259,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
       appLanguage: appLanguage ?? this.appLanguage,
       appVersion: appVersion ?? this.appVersion,
       secretKey: secretKey ?? this.secretKey,
-      starredPhotos: starredPhotos ?? this.starredPhotos,
       defaultWidgetImage: defaultWidgetImage ?? this.defaultWidgetImage,
       goal: goal ?? this.goal,
       hourOfDay: hourOfDay ?? this.hourOfDay,
@@ -2338,11 +2313,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
     }
     if (secretKey.present) {
       map['secret_key'] = Variable<String?>(secretKey.value);
-    }
-    if (starredPhotos.present) {
-      final converter = $MoorUsersTable.$converter1;
-      map['starred_photos'] =
-          Variable<String>(converter.mapToSql(starredPhotos.value)!);
     }
     if (defaultWidgetImage.present) {
       map['default_widget_image'] = Variable<String?>(defaultWidgetImage.value);
@@ -2411,7 +2381,6 @@ class MoorUsersCompanion extends UpdateCompanion<MoorUser> {
           ..write('appLanguage: $appLanguage, ')
           ..write('appVersion: $appVersion, ')
           ..write('secretKey: $secretKey, ')
-          ..write('starredPhotos: $starredPhotos, ')
           ..write('defaultWidgetImage: $defaultWidgetImage, ')
           ..write('goal: $goal, ')
           ..write('hourOfDay: $hourOfDay, ')
@@ -2537,18 +2506,6 @@ class $MoorUsersTable extends MoorUsers
       'secret_key',
       $tableName,
       true,
-    );
-  }
-
-  final VerificationMeta _starredPhotosMeta =
-      const VerificationMeta('starredPhotos');
-  @override
-  late final GeneratedTextColumn starredPhotos = _constructStarredPhotos();
-  GeneratedTextColumn _constructStarredPhotos() {
-    return GeneratedTextColumn(
-      'starred_photos',
-      $tableName,
-      false,
     );
   }
 
@@ -2715,7 +2672,6 @@ class $MoorUsersTable extends MoorUsers
         appLanguage,
         appVersion,
         secretKey,
-        starredPhotos,
         defaultWidgetImage,
         goal,
         hourOfDay,
@@ -2790,7 +2746,6 @@ class $MoorUsersTable extends MoorUsers
       context.handle(_secretKeyMeta,
           secretKey.isAcceptableOrUnknown(data['secret_key']!, _secretKeyMeta));
     }
-    context.handle(_starredPhotosMeta, const VerificationResult.success());
     if (data.containsKey('default_widget_image')) {
       context.handle(
           _defaultWidgetImageMeta,
@@ -2901,8 +2856,6 @@ class $MoorUsersTable extends MoorUsers
 
   static TypeConverter<List<String>, String> $converter0 =
       ListStringConvertor();
-  static TypeConverter<Map<String, String>, String> $converter1 =
-      MapStringConvertor();
 }
 
 abstract class _$AppDatabase extends GeneratedDatabase {

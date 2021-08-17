@@ -433,7 +433,7 @@ class TabsController extends GetxController {
     setMultiPicBar(false);
   }
 
-  Future<void> starredAction() async {
+  /* Future<void> starredAction() async {
     //await WidgetManager.saveData(picsStores: selectedUntaggedPics.toList());
 
     selectedMultiBarPics.forEach((picId, value) {
@@ -442,7 +442,7 @@ class TabsController extends GetxController {
       picStore?.switchIsStarred();
     });
     returnAction();
-  }
+  } */
 
   void tagAction() {
     setMultiTagSheet(true);

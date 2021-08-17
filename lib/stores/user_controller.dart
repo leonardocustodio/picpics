@@ -49,7 +49,7 @@ class UserController extends GetxController {
   final isMenuExpanded = true.obs;
   final isBiometricActivated = false.obs;
 
-  final starredPhotos = <String, String>{}.obs;
+  /* final starredPhotos = <String, String>{}.obs; */
 
   //String initialRoute;
   String? tryBuyId;
@@ -115,7 +115,7 @@ class UserController extends GetxController {
     email = user.email;
     tourCompleted.value = user.tourCompleted;
     isBiometricActivated.value = user.isBiometricActivated;
-    starredPhotos.value = Map<String, String>.from(user.starredPhotos);
+    /* starredPhotos.value = Map<String, String>.from(user.starredPhotos); */
 
     // if (secretBox.length > 0) {
     //   Secret secret = secretBox.getAt(0);
@@ -157,7 +157,7 @@ class UserController extends GetxController {
         .updateMoorUser(currentUser!.copyWith(defaultWidgetImage: encoded));
   }
 
-  Future<void> addToStarredPhotos(String photoId) async {
+  /* Future<void> addToStarredPhotos(String photoId) async {
     if (starredPhotos[photoId] != null) {
       return;
     }
@@ -179,7 +179,7 @@ class UserController extends GetxController {
     await database
         .updateMoorUser(currentUser!.copyWith(starredPhotos: starredPhotos));
   }
-
+ */
   int get freePrivatePics {
     final remoteConfig = RemoteConfig.instance;
     return remoteConfig.getInt('free_private_pics');
