@@ -255,6 +255,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
               ),
             )
           : Obx(() {
+              final ignore = TabsController.to.selectedMultiBarPics.isEmpty;
               if (!controller.multiPicBar.value) {
                 return Platform.isIOS
                     ? CupertinoTabBar(
@@ -343,33 +344,35 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                         if (controller.currentTab.value == 2)
                           BottomNavigationBarItem(
                             //title: Container(),
-                            icon: Image.asset('lib/images/starico.png'),
+                            icon: AnimatedOpacity(
+                              opacity: ignore ? 0.3 : 1,
+                              duration: Duration(seconds: 1),
+                              child: Image.asset('lib/images/starico.png'),
+                            ),
                           ),
                         BottomNavigationBarItem(
                           //title: Container(),
-                          icon: Image.asset('lib/images/tagtabbutton.png'),
+                          icon: AnimatedOpacity(
+                            opacity: ignore ? 0.3 : 1,
+                            duration: Duration(seconds: 1),
+                            child: Image.asset('lib/images/tagtabbutton.png'),
+                          ),
                         ),
                         BottomNavigationBarItem(
                           //title: Container(),
-                          icon: controller.selectedMultiBarPics
-                                  .isEmpty /* GalleryStore.to.selectedPics.isEmpty */
-                              ? Opacity(
-                                  opacity: 0.2,
-                                  child: Image.asset(
-                                      'lib/images/sharetabbutton.png'),
-                                )
-                              : Image.asset('lib/images/sharetabbutton.png'),
+                          icon: AnimatedOpacity(
+                            opacity: ignore ? 0.3 : 1,
+                            duration: Duration(seconds: 1),
+                            child: Image.asset('lib/images/sharetabbutton.png'),
+                          ),
                         ),
                         BottomNavigationBarItem(
                           //title: Container(),
-                          icon: controller.selectedMultiBarPics
-                                  .isEmpty // GalleryStore.to.selectedPics.isEmpty
-                              ? Opacity(
-                                  opacity: 0.3,
-                                  child: Image.asset(
-                                      'lib/images/trashtabbutton.png'),
-                                )
-                              : Image.asset('lib/images/trashtabbutton.png'),
+                          icon: AnimatedOpacity(
+                            opacity: ignore ? 0.3 : 1,
+                            duration: Duration(seconds: 1),
+                            child: Image.asset('lib/images/trashtabbutton.png'),
+                          ),
                         ),
                       ],
                     )
@@ -390,37 +393,37 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                           if (controller.currentTab.value == 2)
                             BottomNavigationBarItem(
                               label: 'Feature',
-                              icon: Image.asset('lib/images/starico.png'),
+                              icon: AnimatedOpacity(
+                                opacity: ignore ? 0.3 : 1,
+                                duration: Duration(seconds: 1),
+                                child: Image.asset('lib/images/starico.png'),
+                              ),
                             ),
                           BottomNavigationBarItem(
                             label: 'Tag',
-                            icon: TabsController.to.selectedMultiBarPics.isEmpty
-                                ? Opacity(
-                                    opacity: 0.3,
-                                    child: Image.asset(
-                                        'lib/images/tagtabbutton.png'),
-                                  )
-                                : Image.asset('lib/images/tagtabbutton.png'),
+                            icon: AnimatedOpacity(
+                              opacity: ignore ? 0.3 : 1,
+                              duration: Duration(seconds: 1),
+                              child: Image.asset('lib/images/tagtabbutton.png'),
+                            ),
                           ),
                           BottomNavigationBarItem(
                             label: 'Share',
-                            icon: TabsController.to.selectedMultiBarPics.isEmpty
-                                ? Opacity(
-                                    opacity: 0.3,
-                                    child: Image.asset(
-                                        'lib/images/sharetabbutton.png'),
-                                  )
-                                : Image.asset('lib/images/sharetabbutton.png'),
+                            icon: AnimatedOpacity(
+                              opacity: ignore ? 0.3 : 1,
+                              duration: Duration(seconds: 1),
+                              child:
+                                  Image.asset('lib/images/sharetabbutton.png'),
+                            ),
                           ),
                           BottomNavigationBarItem(
                             label: 'Trash',
-                            icon: TabsController.to.selectedMultiBarPics.isEmpty
-                                ? Opacity(
-                                    opacity: 0.3,
-                                    child: Image.asset(
-                                        'lib/images/trashtabbutton.png'),
-                                  )
-                                : Image.asset('lib/images/trashtabbutton.png'),
+                            icon: AnimatedOpacity(
+                              opacity: ignore ? 0.3 : 1,
+                              duration: Duration(seconds: 1),
+                              child:
+                                  Image.asset('lib/images/trashtabbutton.png'),
+                            ),
                           ),
                         ],
                       ),

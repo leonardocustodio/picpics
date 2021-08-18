@@ -81,11 +81,10 @@ class PicStore extends GetxController {
     this.originalLatitude,
     this.originalLongitude,
     this.deletedFromCameraRoll = false,
-    bool isStarredValue = false,
   }) {
     this.photoId.value = photoId;
-    isStarred.value = isStarredValue;
     entity.value = entityValue;
+    isStar();
   }
   /*  {
     //print('loading pic info......');
@@ -93,7 +92,12 @@ class PicStore extends GetxController {
     loadPicInfo();
   } */
 
-  //@action
+  Future<bool> isStar() async {
+    final photo = await database.getPhotoByPhotoId(photoId.value);
+    isStarred.value = photo?.isStarred ?? false;
+    return isStarred.value;
+  }
+
   Future<bool?> switchIsStarred() async {
     var pic = await database.getPhotoByPhotoId(photoId.value);
     if (pic == null) {
@@ -102,7 +106,7 @@ class PicStore extends GetxController {
     await database.updatePhoto(
       pic.copyWith(isStarred: !isStarred.value),
     );
-    return !isStarred.value;
+    return await isStar();
     //pic.isStarred = value;
     /* String? base64encoded;
     //print('teste');

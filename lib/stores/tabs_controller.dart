@@ -479,14 +479,15 @@ class TabsController extends GetxController {
   void setTabIndex(int index) async {
     if (!deviceHasPics || selectedMultiBarPics.isEmpty) {
       if (index == 0) {
+        if (multiPicBar.value == true && currentTab.value == 2) {
+          setMultiPicBar(false);
+          clearSelectedPics();
+          TagsController.to.clearMultiPicTags();
+          return;
+        }
+        setMultiPicBar(false);
         clearSelectedPics();
         TagsController.to.clearMultiPicTags();
-        if (multiPicBar.value == true) {
-          setMultiPicBar(false);
-          if (currentTab.value == 2) {
-            return;
-          }
-        }
         setCurrentTab(0);
         return;
       }
@@ -498,8 +499,8 @@ class TabsController extends GetxController {
         return;
       }
       if (index == 0) {
-        clearSelectedPics();
         setMultiPicBar(false);
+        clearSelectedPics();
       } else if (index == 1) {
         /// Tags adding button
         await TagsController.to.tagsSuggestionsCalculate();

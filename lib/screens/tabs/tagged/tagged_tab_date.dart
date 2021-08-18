@@ -170,6 +170,32 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                                     Image.asset('lib/images/checkwhiteico.png'),
                               ),
                             ),
+                            if (picStore?.isPrivate.value ?? false)
+                              Positioned(
+                                right: 8.0,
+                                top: 6.0,
+                                child: Container(
+                                  height: 20,
+                                  width: 20,
+                                  padding: const EdgeInsets.only(bottom: 2.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Color(0xffffcc00),
+                                        Color(0xffffe98f)
+                                      ],
+                                      stops: [0.2291666716337204, 1],
+                                      begin: Alignment(-1.0, 0.0),
+                                      end: Alignment(1.0, -0.0),
+                                      // angle: 0,
+                                      // scale: undefined,
+                                    ),
+                                  ),
+                                  child: Image.asset(
+                                      'lib/images/smallwhitelock.png'),
+                                ),
+                              ),
                           ],
                         ],
                       ),

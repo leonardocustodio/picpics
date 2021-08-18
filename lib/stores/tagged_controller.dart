@@ -218,7 +218,7 @@ class TaggedController extends GetxController {
         final picIdList = tabsController.selectedMultiBarPics.keys.toList();
         final percentageController = Get.find<PercentageDialogController>();
         final map = <String, bool>{};
-        percentageController.start(picIdList.length + .0);
+        percentageController.start(picIdList.length + .0, 'Processing...');
         await Future.forEach(picIdList, (String picId) async {
           final starred =
               await tabsController.picStoreMap[picId]?.value.switchIsStarred();

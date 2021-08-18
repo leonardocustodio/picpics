@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/stores/percentage_dialog_controller.dart';
 
 // ignore: must_be_immutable
