@@ -663,14 +663,16 @@ class NumberPad extends StatelessWidget {
       for (var y = 0; y < 3; y++) {
         if (pin == 10) {
           number.add(
-            GestureDetector(
-              onTap: () {
-                onPinTapped('\u0008');
-              },
-              child: Container(
-                height: 44.0,
-                width: 44.0,
-                child: Image.asset('lib/images/backspacewhite.png'),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  onPinTapped('\u0008');
+                },
+                child: Container(
+                  margin: const EdgeInsets.all(2),
+                  color: Colors.teal,
+                  child: Image.asset('lib/images/backspacewhite.png'),
+                ),
               ),
             ),
           );
@@ -680,25 +682,27 @@ class NumberPad extends StatelessWidget {
 
         var value = pin;
         number.add(
-          GestureDetector(
-            // padding: const EdgeInsets.all(0),
-            //minSize: 44.0,
-            onTap: () {
-              onPinTapped('${value == 11 ? '0' : value}');
-            },
-            child: Container(
-              width: 44,
-              height: 44,
-              child: Center(
-                child: Text(
-                  '${pin == 11 ? '0' : pin}',
-                  style: TextStyle(
-                    fontFamily: 'Lato',
-                    color: pin == 12 ? Colors.transparent : kWhiteColor,
-                    fontSize: 24,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.normal,
-                    letterSpacing: -0.4099999964237213,
+          Expanded(
+            child: GestureDetector(
+              // padding: const EdgeInsets.all(0),
+              //minSize: 44.0,
+              onTap: () {
+                onPinTapped('${value == 11 ? '0' : value}');
+              },
+              child: Container(
+                margin: const EdgeInsets.all(2),
+                color: Colors.teal,
+                child: Center(
+                  child: Text(
+                    '${pin == 11 ? '0' : pin}',
+                    style: TextStyle(
+                      fontFamily: 'Lato',
+                      color: pin == 12 ? Colors.transparent : kWhiteColor,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.normal,
+                      letterSpacing: -0.4099999964237213,
+                    ),
                   ),
                 ),
               ),
@@ -709,10 +713,12 @@ class NumberPad extends StatelessWidget {
       }
 
       items.add(
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          mainAxisSize: MainAxisSize.max,
-          children: number,
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisSize: MainAxisSize.max,
+            children: number,
+          ),
         ),
       );
     }

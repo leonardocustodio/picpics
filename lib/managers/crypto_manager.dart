@@ -78,44 +78,61 @@ class Crypto {
 
   static Future<bool> checkRecoveryKey(String encryptedRecoveryKey,
       String recoveryCode, String randomIv, UserController appStore) async {
-    final storage = FlutterSecureStorage();
-    final hpkey = await storage.read(key: 'hpkey');
-
-    final generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
-    final recoveryIv =
-        '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
-
-    /// preparing the algorithm
-    final algorithm = cryptography.AesCtr.with256bits(
-        macAlgorithm: cryptography.Hmac.sha256());
-
-    final picKey = await algorithm
-        .newSecretKeyFromBytes(utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'));
-    final ivRecovery = utf8.encode(recoveryIv);
-    final ivGenerated = utf8.encode(generatedIv);
-
-    var encryptedValue = hex.decode(encryptedRecoveryKey);
-    print(
-        'Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
-
     try {
-      final secretBoxFirstStep = cryptography.SecretBox(encryptedValue,
-          nonce: ivRecovery,
-          mac: await cryptography.MacAlgorithm.empty
-              .calculateMac(encryptedValue, secretKey: picKey));
+      final storage = FlutterSecureStorage();
+      final hpkey = await storage.read(key: 'hpkey');
+
+      final generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
+      final recoveryIv =
+          '$recoveryCode${recoveryCode.substring(0, 4)}$recoveryCode';
+
+      /// preparing the algorithm
+      final algorithm = cryptography.AesCtr.with256bits(
+          macAlgorithm: cryptography.Hmac.sha256());
+
+      final picKey = await algorithm.newSecretKeyFromBytes(
+          utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'));
+      final ivRecovery = utf8.encode(recoveryIv);
+
+      var encryptedValue = hex.decode(encryptedRecoveryKey);
+      print(
+          'Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
+
+      final firstStepMac = await cryptography.Hmac.sha256().calculateMac(
+        encryptedValue,
+        secretKey: picKey,
+        nonce: ivRecovery,
+      );
+      final secretBoxFirstStep = cryptography.SecretBox(
+        encryptedValue,
+        nonce: ivRecovery,
+        mac: firstStepMac,
+      );
 
       final decryptedFirstData =
           await algorithm.decrypt(secretBoxFirstStep, secretKey: picKey);
 
-      print('First Step Decrypted: $decryptedFirstData');
+      print(
+          'First Step Decrypted: $decryptedFirstData : ${decryptedFirstData.length}');
 
-      final secretBoxFinalStep = cryptography.SecretBox(decryptedFirstData,
-          nonce: ivGenerated,
-          mac: await cryptography.MacAlgorithm.empty
-              .calculateMac(encryptedValue, secretKey: picKey));
+      final ivGenerated = utf8.encode(generatedIv);
+
+      final finalStepMac = await cryptography.Hmac.sha256().calculateMac(
+        decryptedFirstData,
+        secretKey: picKey,
+        nonce: ivGenerated,
+      );
+
+      final secretBoxFinalStep = cryptography.SecretBox(
+        decryptedFirstData,
+        mac: finalStepMac,
+        nonce: ivGenerated,
+      );
 
       final decryptedFinal =
           await algorithm.decrypt(secretBoxFinalStep, secretKey: picKey);
+
+      print('Final decryptedFinal: $decryptedFinal :${decryptedFinal.length}');
       final decryptedData = utf8.decode(decryptedFinal);
       print('Final decrypted value: $decryptedData');
       print('Hp Key: $hpkey');
@@ -140,9 +157,10 @@ class Crypto {
       print('Not the real key');
       return false;
     } catch (error) {
-      print('Not the real key');
+      print('Not the real key: $error');
       return false;
     }
+    return false;
   }
 
   static Future<bool> checkIsPinValid(
@@ -171,8 +189,11 @@ class Crypto {
 
       final secretBox = cryptography.SecretBox(encryptedValue,
           nonce: iv,
-          mac: await cryptography.MacAlgorithm.empty
-              .calculateMac(encryptedValue, secretKey: picKey));
+          mac: await cryptography.Hmac.sha256().calculateMac(
+            encryptedValue,
+            secretKey: picKey,
+            nonce: iv,
+          ));
 
       final decryptedData =
           await algorithm.decrypt(secretBox, secretKey: picKey);
