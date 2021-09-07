@@ -2,10 +2,11 @@ import 'dart:io';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/enum.dart';
@@ -50,7 +51,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                 child: Container(
                                   width: 80.0,
                                   child: Text(
-                                    S.of(context).cancel,
+                                    LangControl.to.S.value.cancel,
                                     textScaleFactor: 1.0,
                                     style: TextStyle(
                                       color: Color(0xff707070),
@@ -88,7 +89,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                 child: Container(
                                   width: 80.0,
                                   child: Text(
-                                    S.of(context).ok,
+                                    LangControl.to.S.value.ok,
                                     textScaleFactor: 1.0,
                                     textAlign: TextAlign.end,
                                     style: TextStyle(
@@ -188,10 +189,10 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: TagsList(
-                                  title:
-                                      TagsController.to.searchText.value != ''
-                                          ? S.of(context).search_results
-                                          : S.of(context).recent_tags,
+                                  title: TagsController.to.searchText.value !=
+                                          ''
+                                      ? LangControl.to.S.value.search_results
+                                      : LangControl.to.S.value.recent_tags,
                                   tagsKeyList: TagsController
                                       .to.searchTagsResults.value
                                       .where((tag) =>

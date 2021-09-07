@@ -132,5 +132,6 @@
   "enable_touchid": "เปิดใช้งาน Touch ID",
   "enable_fingerprint": "เปิดใช้งานลายนิ้วมือ",
   "enable_irisscanner": "เปิดใช้งาน Iris Scanner",
-  "finishing": "Finishing..."
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

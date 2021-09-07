@@ -11,7 +11,8 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:picPics/generated/l10n.dart';
+
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 
@@ -284,16 +285,18 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         ),
                         height: 44.0,
                         child: Center(
-                          child: Text(
-                            S.of(context).save_location,
-                            textScaleFactor: 1.0,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: kWhiteColor,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
+                          child: Obx(
+                            () => Text(
+                              LangControl.to.S.value.save_location,
+                              textScaleFactor: 1.0,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
                           ),
                         ),
@@ -306,37 +309,39 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
             Container(
               color: kWhiteColor,
               child: SafeArea(
-                child: SearchMapPlaceWidget(
-                  apiKey: kGoogleApiKey,
-                  placeholder: S.of(context).search,
-                  language: UserController.to.appLanguage.value
-                      .split('_')[0], // arrumar isso
-                  onSelected: (place) async {
-                    final geolocation = await place.geolocation;
-                    selectedGeolocation = geolocation;
+                child: Obx(
+                  () => SearchMapPlaceWidget(
+                    apiKey: kGoogleApiKey,
+                    placeholder: LangControl.to.S.value.search,
+                    language: UserController.to.appLanguage.value
+                        .split('_')[0], // arrumar isso
+                    onSelected: (place) async {
+                      final geolocation = await place.geolocation;
+                      selectedGeolocation = geolocation;
 
-                    final destination = Marker(
-                      markerId: MarkerId('user-destination'),
-                      icon: await BitmapDescriptor.fromAssetImage(
-                        ImageConfiguration(
-                          devicePixelRatio: 2.5,
+                      final destination = Marker(
+                        markerId: MarkerId('user-destination'),
+                        icon: await BitmapDescriptor.fromAssetImage(
+                          ImageConfiguration(
+                            devicePixelRatio: 2.5,
+                          ),
+                          'lib/images/pin.png',
                         ),
-                        'lib/images/pin.png',
-                      ),
-                      position: geolocation.coordinates,
-                    );
+                        position: geolocation.coordinates,
+                      );
 
-                    final controller = await _mapController.future;
-                    _markers.clear();
-                    setState(() {
-                      _markers.add(destination);
-                    });
+                      final controller = await _mapController.future;
+                      _markers.clear();
+                      setState(() {
+                        _markers.add(destination);
+                      });
 
-                    await controller.animateCamera(
-                        CameraUpdate.newLatLng(geolocation.coordinates));
-                    await controller.animateCamera(
-                        CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
-                  },
+                      await controller.animateCamera(
+                          CameraUpdate.newLatLng(geolocation.coordinates));
+                      await controller.animateCamera(
+                          CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
+                    },
+                  ),
                 ),
               ),
             ),

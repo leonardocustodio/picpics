@@ -7,7 +7,7 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/screens/tabs/untagged_tabs/untagged_day.dart';
 import 'package:picPics/screens/tabs/untagged_tabs/untagged_month.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
@@ -520,7 +520,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).device_has_no_pics,
+                  message: LangControl.to.S.value.device_has_no_pics,
                 ),
               ],
             );
@@ -544,7 +544,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).no_photos_were_tagged,
+                  message: LangControl.to.S.value.no_photos_were_tagged,
                 ),
               ],
             );
@@ -553,13 +553,15 @@ class UntaggedTab extends GetWidget<TabsController> {
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 48.0),
-                  child: GestureDetector(
-//                              onScaleUpdate: (update) {
-/* //print(update.scale); */
-//                                DatabaseManager.instance.gridScale(update.scale);
-//                              },
-                    child: _buildGridView(context),
-                  ),
+                  child:
+                      /* GestureDetector( 
+                              onScaleUpdate: (update) { 
+                                print(update.scale); 
+                                //DatabaseManager.instance.gridScale(update.scale);
+                              },
+                       child: */
+                      _buildGridView(context),
+                  /*  ), */
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -584,9 +586,9 @@ class UntaggedTab extends GetWidget<TabsController> {
                     children: <Widget>[
                       Text(
                         controller.multiPicBar.value
-                            ? S.of(context).photo_gallery_count(
+                            ? LangControl.to.S.value.photo_gallery_count(
                                 controller.selectedMultiBarPics.length)
-                            : S.of(context).photo_gallery_description,
+                            : LangControl.to.S.value.photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -616,8 +618,8 @@ class UntaggedTab extends GetWidget<TabsController> {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: ToggleBar(
-                          titleLeft: S.of(context).toggle_months,
-                          titleRight: S.of(context).toggle_days,
+                          titleLeft: LangControl.to.S.value.toggle_months,
+                          titleRight: LangControl.to.S.value.toggle_days,
                           activeToggle: controller.toggleIndexUntagged.value,
                           onToggle: (index) {
                             controller.setToggleIndexUntagged(index);

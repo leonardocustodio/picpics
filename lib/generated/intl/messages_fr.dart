@@ -39,6 +39,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Ajouter une étiquette"),
         "add_tags":
             MessageLookupByLibrary.simpleMessage("Ajouter des étiquettes"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "Organisez plusieurs photos à la fois"),
         "all_search_tags": MessageLookupByLibrary.simpleMessage(

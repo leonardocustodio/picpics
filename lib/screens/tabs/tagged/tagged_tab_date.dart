@@ -39,7 +39,7 @@ class TaggedTabDate extends GetWidget<TaggedController> {
             }
             return const StaggeredTile.count(1, 1);
           },
-          itemBuilder: (BuildContext _, int index) {
+          itemBuilder: (_, int index) {
             return Obx(() {
               if (controller.allTaggedPicDateWiseList[index] is DateTime) {
                 var isSelected = false;

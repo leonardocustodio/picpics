@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/language_controller.dart';
+
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -63,15 +65,17 @@ class CustomisedTagsList extends StatelessWidget {
               ? [
                   Container(
                     padding: const EdgeInsets.all(10),
-                    child: Text(
-                      S.of(context).no_tags_found,
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff979a9b),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                        letterSpacing: -0.4099999964237213,
+                    child: Obx(
+                      () => Text(
+                        LangControl.to.S.value.no_tags_found,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff979a9b),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
                       ),
                     ),
                   )

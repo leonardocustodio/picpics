@@ -7,8 +7,9 @@ import 'package:flutter_animator/animation/animator_play_states.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/email_screen.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pin_controller.dart';
@@ -43,18 +44,18 @@ class PinScreen extends GetWidget<PinController> {
         title = 'Recovery Code';
         key = controller.shakeRecovery;
       } else if (index == 1) {
-        title = S.current.new_secret_key;
+        title = LangControl.to.S.value.new_secret_key;
         key = controller.shakeKey;
       } else {
-        title = S.current.confirm_secret_key;
+        title = LangControl.to.S.value.confirm_secret_key;
         key = controller.shakeKeyConfirm;
       }
     } else {
       if (index == 0) {
-        title = S.current.new_secret_key;
+        title = LangControl.to.S.value.new_secret_key;
         key = controller.shakeKey;
       } else {
-        title = S.current.confirm_secret_key;
+        title = LangControl.to.S.value.confirm_secret_key;
         key = controller.shakeKeyConfirm;
       }
     }
@@ -354,7 +355,7 @@ class PinScreen extends GetWidget<PinController> {
                               restorePurchase();
                           },
                           child: Text(
-                            S.current.restore_purchase,
+                            LangControl.to.S.value.restore_purchase,
                             textScaleFactor: 1.0,
                             style: const TextStyle(
                               fontWeight: FontWeight.w700,
@@ -442,15 +443,17 @@ class PinScreen extends GetWidget<PinController> {
                         return Column(
                           children: [
                             Spacer(),
-                            Text(
-                              S.current.your_secret_key,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: kSecondaryColor,
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
+                            Obx(
+                              () => Text(
+                                LangControl.to.S.value.your_secret_key,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kSecondaryColor,
+                                  fontSize: 24.0,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
                               ),
                             ),
                             Spacer(
@@ -486,14 +489,16 @@ class PinScreen extends GetWidget<PinController> {
                                 onPressed: () {
                                   controller.recoverPin();
                                 },
-                                child: Text(
-                                  S.current.forgot_secret_key,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: kWhiteColor,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.normal,
+                                child: Obx(
+                                  () => Text(
+                                    LangControl.to.S.value.forgot_secret_key,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: kWhiteColor,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.normal,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -524,31 +529,35 @@ class PinScreen extends GetWidget<PinController> {
                       return Column(
                         children: [
                           Spacer(),
-                          Text(
-                            controller.invalidAccessCode.value
-                                ? 'Invalid Access Code'
-                                : S.current.access_code,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: kSecondaryColor,
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
+                          Obx(
+                            () => Text(
+                              controller.invalidAccessCode.value
+                                  ? 'Invalid Access Code'
+                                  : LangControl.to.S.value.access_code,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kSecondaryColor,
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(top: 16.0),
-                            child: Text(
-                              S.current.access_code_sent(
-                                  '${controller.email.value.isEmpty ? 'user@email.com' : controller.email.value.isEmpty}'),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: kWhiteColor,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.access_code_sent(
+                                    '${controller.email.value.isEmpty ? 'user@email.com' : controller.email.value.isEmpty}'),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kWhiteColor,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w400,
+                                  fontStyle: FontStyle.normal,
+                                ),
                               ),
                             ),
                           ),

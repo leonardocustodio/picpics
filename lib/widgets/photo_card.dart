@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/constants.dart';
@@ -21,7 +22,7 @@ import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/tags_list.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:intl/intl.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
@@ -79,7 +80,10 @@ class _PhotoCardState extends State<PhotoCard> {
     if ((picStore.originalLatitude == null ||
             picStore.originalLongitude == null) ||
         (picStore.originalLatitude == 0 && picStore.originalLongitude == 0)) {
-      return [S.of(context).photo_location, '  ${S.of(context).country}'];
+      return [
+        LangControl.to.S.value.photo_location,
+        '  ${LangControl.to.S.value.country}'
+      ];
     }
 
     var placemark = await placemarkFromCoordinates(
@@ -101,7 +105,10 @@ class _PhotoCardState extends State<PhotoCard> {
       return [placemark[0].locality!, '  ${placemark[0].country}'];
     }
 
-    return [S.of(context).photo_location, '  ${S.of(context).country}'];
+    return [
+      LangControl.to.S.value.photo_location,
+      '  ${LangControl.to.S.value.country}'
+    ];
   }
 
   void focusTagsEditingController() {}
@@ -327,7 +334,7 @@ class _PhotoCardState extends State<PhotoCard> {
                               TextSpan(
                                 text: picStore.specificLocation.value
                                         ?.toString() ??
-                                    S.of(context).photo_location,
+                                    LangControl.to.S.value.photo_location,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -339,7 +346,7 @@ class _PhotoCardState extends State<PhotoCard> {
                               ),
                               TextSpan(
                                 text:
-                                    '  ${picStore.generalLocation.value ?? S.of(context).country}',
+                                    '  ${picStore.generalLocation.value ?? LangControl.to.S.value.country}',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -381,7 +388,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     textFocusNode: tagsFocusNode,
                     //showEditTagModal: widget.showEditTagModal,
                     shouldChangeToSwipeMode: true,
-                    aiButtonTitle: 'All Tags',
+                    aiButtonTitle: LangControl.to.S.value.allTags,
                     onAiButtonTap: () {
                       Get.to(() => AllTagsScreen(picStore: picStore));
                       //print('ai button tapped');
@@ -454,7 +461,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              S.of(context).suggestions,
+                              LangControl.to.S.value.suggestions,
                               textScaleFactor: 1.0,
                               style: TextStyle(
                                 fontFamily: 'Lato',
@@ -479,11 +486,11 @@ class _PhotoCardState extends State<PhotoCard> {
                         );
                       }
 
-                      suggestionsTitle = S.of(context).suggestions;
+                      suggestionsTitle = LangControl.to.S.value.suggestions;
                     } else if (picStore.searchText.value != '') {
-                      suggestionsTitle = S.of(context).search_results;
+                      suggestionsTitle = LangControl.to.S.value.search_results;
                     } else {
-                      suggestionsTitle = S.of(context).recent_tags;
+                      suggestionsTitle = LangControl.to.S.value.recent_tags;
                     }
 
                     //print('${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');

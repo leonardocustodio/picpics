@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -66,48 +67,51 @@ class TopBar extends StatelessWidget {
                             TagsController.to.tagsSuggestionsCalculate();
                           }
                         },
-                        child: TextField(
-                          controller: searchEditingController,
-                          focusNode: searchFocusNode,
-                          onChanged: (text) {
-                            //print('searching: $text');
-                            onChanged?.call(text);
-                            /* TagsController.to.searchText.value = text; */
-                          },
-                          onSubmitted: (text) {
-                            //print('return');
-                            onSubmitted?.call(text);
-                            searchEditingController?.clear();
-                            /* TagsController.to.searchTagsResults.clear(); */
-                            //                          DatabaseManager.instance.searchResults = null;
-                          },
-                          keyboardType: TextInputType.text,
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff606566),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
-                          ),
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(right: 2.0),
-                            enabledBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            focusedBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            border:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            prefixIcon: Image.asset('lib/images/searchico.png'),
-                            hintText: S.of(context).search,
-                            hintStyle: TextStyle(
+                        child: Obx(
+                          () => TextField(
+                            controller: searchEditingController,
+                            focusNode: searchFocusNode,
+                            onChanged: (text) {
+                              //print('searching: $text');
+                              onChanged?.call(text);
+                              /* TagsController.to.searchText.value = text; */
+                            },
+                            onSubmitted: (text) {
+                              //print('return');
+                              onSubmitted?.call(text);
+                              searchEditingController?.clear();
+                              /* TagsController.to.searchTagsResults.clear(); */
+                              //                          DatabaseManager.instance.searchResults = null;
+                            },
+                            keyboardType: TextInputType.text,
+                            maxLines: 1,
+                            style: TextStyle(
                               fontFamily: 'Lato',
-                              color: kGrayColor,
+                              color: Color(0xff606566),
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                               letterSpacing: -0.4099999964237213,
+                            ),
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.only(right: 2.0),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              prefixIcon:
+                                  Image.asset('lib/images/searchico.png'),
+                              hintText: LangControl.to.S.value.search,
+                              hintStyle: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kGrayColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
                           ),
                         ),

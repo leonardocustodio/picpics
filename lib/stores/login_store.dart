@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:picPics/generated/l10n.dart';
+
+import 'package:picPics/stores/language_controller.dart';
 
 import 'user_controller.dart';
 
@@ -41,15 +42,15 @@ extension SelectedBoard on Board {
   String? displayDescription(BuildContext context) {
     switch (this) {
       case Board.introduction:
-        return S.current.welcome;
+        return LangControl.to.S.value.welcome;
       case Board.createTags:
-        return S.current.tutorial_however_you_want;
+        return LangControl.to.S.value.tutorial_however_you_want;
       case Board.swipeRight:
-        return S.current.tutorial_just_swipe;
+        return LangControl.to.S.value.tutorial_just_swipe;
       case Board.keepSecret:
-        return S.current.tutorial_secret;
+        return LangControl.to.S.value.tutorial_secret;
       case Board.multiSelect:
-        return S.current.tutorial_multiselect;
+        return LangControl.to.S.value.tutorial_multiselect;
       default:
         return null;
     }

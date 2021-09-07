@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
@@ -281,19 +282,21 @@ class PinController extends GetxController {
       context: Get.context!,
       barrierDismissible: true,
       builder: (BuildContext buildContext) {
-        return CupertinoInputDialog(
-          alertInputController: alertInputController,
-          title: 'Type your email',
-          destructiveButtonTitle: S.current.cancel,
-          onPressedDestructive: () {
-            Get.back();
-          },
-          defaultButtonTitle: S.current.ok,
-          onPressedDefault: () {
-            setEmail(alertInputController.text);
-            Get.back();
-            recoverPin();
-          },
+        return Obx(
+          () => CupertinoInputDialog(
+            alertInputController: alertInputController,
+            title: 'Type your email',
+            destructiveButtonTitle: LangControl.to.S.value.cancel,
+            onPressedDestructive: () {
+              Get.back();
+            },
+            defaultButtonTitle: LangControl.to.S.value.ok,
+            onPressedDefault: () {
+              setEmail(alertInputController.text);
+              Get.back();
+              recoverPin();
+            },
+          ),
         );
       },
     );

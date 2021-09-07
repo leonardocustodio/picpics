@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Tagi Adicione múltiplas"),
         "add_tag": MessageLookupByLibrary.simpleMessage("Dodaj tag"),
         "add_tags": MessageLookupByLibrary.simpleMessage("Dodaj tagi"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "Organizuj wiele zdjęć jednocześnie"),
         "all_search_tags":

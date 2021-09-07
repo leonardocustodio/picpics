@@ -43,6 +43,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "airliner_tag": MessageLookupByLibrary.simpleMessage("Avión de línea"),
         "airplane_tag": MessageLookupByLibrary.simpleMessage("Avión"),
         "alcohol_tag": MessageLookupByLibrary.simpleMessage("Alcohol"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "Organiza varias fotos a la vez"),
         "all_search_tags": MessageLookupByLibrary.simpleMessage(

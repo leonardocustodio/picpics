@@ -7,7 +7,6 @@ import 'package:path/path.dart' as p;
 import 'dart:io';
 import 'package:picPics/model/pic.dart';
 import 'package:picPics/model/secret.dart';
-import 'package:picPics/model/tag.dart';
 import 'package:picPics/model/user.dart';
 import 'package:picPics/model/user_key.dart';
 import 'package:picPics/stores/database_controller.dart';

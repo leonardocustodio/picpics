@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key_grid.dart';
 import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_option_bar.dart';
 import 'package:picPics/widgets/percentage_dialog.dart';
 import 'package:picPics/widgets/select_all_widget.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -130,13 +131,17 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                   ///
                   /// No Pics Tagged
                   ///
-                  return DeviceHasNoPics(
-                      message: S.of(context).no_photos_were_tagged);
+                  return Obx(
+                    () => DeviceHasNoPics(
+                        message: LangControl.to.S.value.no_photos_were_tagged),
+                  );
                 }
 
                 /// Device has no Pics
-                return DeviceHasNoPics(
-                    message: S.of(context).device_has_no_pics);
+                return Obx(
+                  () => DeviceHasNoPics(
+                      message: LangControl.to.S.value.device_has_no_pics),
+                );
               }),
             ),
           ),

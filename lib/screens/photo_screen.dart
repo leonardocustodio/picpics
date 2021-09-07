@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -15,7 +16,7 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:intl/intl.dart';
 import 'package:extended_image/extended_image.dart';
 
@@ -383,8 +384,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                           ?.value
                                                           .specificLocation
                                                           .value ??
-                                                      S
-                                                          .of(context)
+                                                      LangControl.to.S.value
                                                           .photo_location,
                                                   style: TextStyle(
                                                     fontFamily: 'NotoSans',
@@ -397,7 +397,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   )),
                                               TextSpan(
                                                 text:
-                                                    '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value.generalLocation.value ?? S.of(context).country}',
+                                                    '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value.generalLocation.value ?? LangControl.to.S.value.country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,

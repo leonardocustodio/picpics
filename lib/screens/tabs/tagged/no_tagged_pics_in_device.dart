@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/widgets/top_bar.dart';
@@ -31,16 +32,18 @@ class NoTaggedPicsInDevice extends StatelessWidget {
               SizedBox(
                 height: 21.0,
               ),
-              Text(
-                S.current.no_tagged_photos,
-                textScaleFactor: 1.0,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff979a9b),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
+              Obx(
+                () => Text(
+                  LangControl.to.S.value.no_tagged_photos,
+                  textScaleFactor: 1.0,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: Color(0xff979a9b),
+                    fontSize: 18,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
               ),
               SizedBox(
@@ -57,16 +60,18 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Center(
-                    child: Text(
-                      S.current.start_tagging,
-                      textScaleFactor: 1.0,
-                      style: TextStyle(
-                        fontFamily: 'Lato',
-                        color: kWhiteColor,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        fontStyle: FontStyle.normal,
-                        letterSpacing: -0.4099999964237213,
+                    child: Obx(
+                      () => Text(
+                        LangControl.to.S.value.start_tagging,
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                          fontFamily: 'Lato',
+                          color: kWhiteColor,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
                       ),
                     ),
                   ),

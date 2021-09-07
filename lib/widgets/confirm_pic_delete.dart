@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/language_controller.dart';
 
 class ConfirmPicDelete extends StatelessWidget {
   final String deleteText;
@@ -110,10 +110,12 @@ class ConfirmPicDelete extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Center(
-                            child: Text(
-                              S.of(context).cancel,
-                              textScaleFactor: 1.0,
-                              style: kLoginButtonTextStyle,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.cancel,
+                                textScaleFactor: 1.0,
+                                style: kLoginButtonTextStyle,
+                              ),
                             ),
                           ),
                         ),
@@ -139,15 +141,17 @@ class ConfirmPicDelete extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Center(
-                            child: Text(
-                              S.of(context).delete,
-                              textScaleFactor: 1.0,
-                              style: TextStyle(
-                                color: kSecondaryColor,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Lato',
-                                fontStyle: FontStyle.normal,
-                                fontSize: 16.0,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.delete,
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                  color: kSecondaryColor,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Lato',
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 16.0,
+                                ),
                               ),
                             ),
                           ),

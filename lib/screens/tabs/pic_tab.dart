@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/swiper_tab_controller.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/enum.dart';
@@ -103,13 +104,13 @@ class PicTab extends GetWidget<SwiperTabController> {
               } else if (!TabsController.to.deviceHasPics) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).device_has_no_pics,
+                    message: LangControl.to.S.value.device_has_no_pics,
                   ),
                 );
               } else if (controller.swiperPicIdList.isEmpty) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).no_photos_were_tagged,
+                    message: LangControl.to.S.value.no_photos_were_tagged,
                   ),
                 );
               }

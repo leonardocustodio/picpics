@@ -6,7 +6,7 @@ import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
@@ -216,7 +216,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                         left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
                     child: Text(
                       index == 1
-                          ? S.of(context).search_all_tags_not_found
+                          ? LangControl.to.S.value.search_all_tags_not_found
                           : 'No photos found with this tag',
                       textScaleFactor: 1.0,
                       style: TextStyle(
@@ -323,7 +323,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
           Text(
             taggedPicsStore != null
                 ? taggedPicsStore.tag.name
-                : S.of(context).all_search_tags,
+                : LangControl.to.S.value.all_search_tags,
             textScaleFactor: 1.0,
             style: TextStyle(
               fontFamily: 'Lato',
@@ -556,7 +556,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
             Observer(builder: (_) {
               if (!galleryStore.deviceHasPics) {
                 return DeviceHasNoPics(
-                  message: S.of(context).device_has_no_pics,
+                  message: LangControl.to.S.value.device_has_no_pics,
                 );
               } else if (galleryStore.taggedPics.length == 0 &&
                   galleryStore.deviceHasPics) {
@@ -579,7 +579,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                               height: 21.0,
                             ),
                             Text(
-                              S.of(context).no_tagged_photos,
+                              LangControl.to.S.value.no_tagged_photos,
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -605,7 +605,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                 ),
                                 child: Center(
                                   child: Text(
-                                    S.of(context).start_tagging,
+                                    LangControl.to.S.value.start_tagging,
                                     textScaleFactor: 1.0,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
@@ -675,8 +675,8 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                   const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Text(
                                 galleryStore.showSearchTagsResults
-                                    ? S.of(context).search_results
-                                    : S.of(context).recent_tags,
+                                    ? LangControl.to.S.value.search_results
+                                    : LangControl.to.S.value.recent_tags,
                                 textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -727,7 +727,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                     padding: const EdgeInsets.only(
                                         top: 10.0, left: 26.0, bottom: 10.0),
                                     child: Text(
-                                      S.of(context).no_tags_found,
+                                      LangControl.to.S.value.no_tags_found,
                                       textScaleFactor: 1.0,
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
@@ -804,9 +804,9 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                     children: <Widget>[
                       Text(
                         tabsStore.multiPicBar
-                            ? S.of(context).photo_gallery_count(
+                            ? LangControl.to.S.value.photo_gallery_count(
                                 galleryStore.selectedPics.length)
-                            : S.of(context).organized_photos_title,
+                            : LangControl.to.S.value.organized_photos_title,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -845,8 +845,8 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: ToggleBar(
-                        titleLeft: S.of(context).toggle_date,
-                        titleRight: S.of(context).toggle_tags,
+                        titleLeft: LangControl.to.S.value.toggle_date,
+                        titleRight: LangControl.to.S.value.toggle_tags,
                         activeToggle: tabsStore.toggleIndexTagged,
                         onToggle: (index) {
                           if (galleryStore.isSearching && index == 0) {

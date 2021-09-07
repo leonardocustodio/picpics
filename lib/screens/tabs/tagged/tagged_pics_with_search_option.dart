@@ -2,9 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/tabs/tagged/tagged_photo_grouping.dart';
 import 'package:picPics/screens/tabs/tagged/tagged_tab_date.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:picPics/stores/tabs_controller.dart';
@@ -87,19 +88,21 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 16.0),
-                              child: Text(
-                                controller.searchText.value != ''
-                                    /* GalleryStore.to.showSearchTagsResults.value */
-                                    ? S.current.search_results
-                                    : S.current.recent_tags,
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff979a9b),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
+                              child: Obx(
+                                () => Text(
+                                  controller.searchText.value != ''
+                                      /* GalleryStore.to.showSearchTagsResults.value */
+                                      ? LangControl.to.S.value.search_results
+                                      : LangControl.to.S.value.recent_tags,
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: Color(0xff979a9b),
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w300,
+                                    fontStyle: FontStyle.normal,
+                                    letterSpacing: -0.4099999964237213,
+                                  ),
                                 ),
                               ),
                             ),
@@ -140,17 +143,19 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                 : Container(
                                     padding: const EdgeInsets.only(
                                         top: 10.0, left: 26.0, bottom: 10.0),
-                                    child: Text(
-                                      S.current.no_tags_found,
-                                      textScaleFactor: 1.0,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff979a9b),
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w700,
-                                        fontStyle: FontStyle.normal,
-                                        letterSpacing: -0.4099999964237213,
+                                    child: Obx(
+                                      () => Text(
+                                        LangControl.to.S.value.no_tags_found,
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff979a9b),
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w700,
+                                          fontStyle: FontStyle.normal,
+                                          letterSpacing: -0.4099999964237213,
+                                        ),
                                       ),
                                     ),
                                   ),

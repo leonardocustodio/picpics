@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -126,7 +127,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                         GestureDetector(
                             onTap: () {
                               if (!focusNode.hasFocus)
-                                Focus.of(context).requestFocus(focusNode);
+                                FocuLangControl.to.S.value.requestFocus(focusNode);
                             },
                             child:  */
                           Image.asset('lib/images/searchico.png'),
@@ -428,15 +429,17 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
-                          child: Text(
-                            'All Tags',
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: Color(0xff979a9b),
-                              fontSize: 33,
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.normal,
-                              letterSpacing: -0.4099999964237213,
+                          child: Obx(
+                            () => Text(
+                              LangControl.to.S.value.allTags,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff979a9b),
+                                fontSize: 33,
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
                           ),
                         ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 
 class DeleteSecretModal extends StatefulWidget {
@@ -57,15 +59,17 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
                   ),
-                  Text(
-                    S.of(context).secret_photos,
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff979a9b),
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      letterSpacing: -0.4099999964237213,
+                  Obx(
+                    () => Text(
+                      LangControl.to.S.value.secret_photos,
+                      style: TextStyle(
+                        fontFamily: 'Lato',
+                        color: Color(0xff979a9b),
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        letterSpacing: -0.4099999964237213,
+                      ),
                     ),
                   ),
                   CupertinoButton(
@@ -78,15 +82,17 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                 padding: const EdgeInsets.symmetric(vertical: 44.0),
                 child: Image.asset('lib/images/lockmodalico.png'),
               ),
-              Text(
-                S.of(context).keep_safe,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff707070),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
+              Obx(
+                () => Text(
+                  LangControl.to.S.value.keep_safe,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: Color(0xff707070),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
               ),
               Padding(
@@ -131,14 +137,16 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                                 ? Image.asset('lib/images/checkwhiteico.png')
                                 : null,
                           ),
-                          Text(
-                            S.of(context).keep_asking,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: Color(0xff707070),
-                              fontSize: 11.0,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
+                          Obx(
+                            () => Text(
+                              LangControl.to.S.value.keep_asking,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff707070),
+                                fontSize: 11.0,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                              ),
                             ),
                           ),
                         ],
@@ -184,14 +192,16 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                                 ? Image.asset('lib/images/checkwhiteico.png')
                                 : null,
                           ),
-                          Text(
-                            S.of(context).dont_ask_again,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: Color(0xff707070),
-                              fontSize: 11.0,
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
+                          Obx(
+                            () => Text(
+                              LangControl.to.S.value.dont_ask_again,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: Color(0xff707070),
+                                fontSize: 11.0,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                              ),
                             ),
                           ),
                         ],
@@ -223,15 +233,17 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Center(
-                            child: Text(
-                              S.of(context).no,
-                              textScaleFactor: 1.0,
-                              style: TextStyle(
-                                color: kSecondaryColor,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Lato',
-                                fontStyle: FontStyle.normal,
-                                fontSize: 16.0,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.no,
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                  color: kSecondaryColor,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Lato',
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 16.0,
+                                ),
                               ),
                             ),
                           ),
@@ -257,10 +269,12 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Center(
-                            child: Text(
-                              S.of(context).yes,
-                              textScaleFactor: 1.0,
-                              style: kLoginButtonTextStyle,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.yes,
+                                textScaleFactor: 1.0,
+                                style: kLoginButtonTextStyle,
+                              ),
                             ),
                           ),
                         ),
@@ -269,15 +283,17 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                   ],
                 ),
               ),
-              Text(
-                S.of(context).view_hidden_photos,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff707070),
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
+              Obx(
+                () => Text(
+                  LangControl.to.S.value.view_hidden_photos,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: Color(0xff707070),
+                    fontSize: 12,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
               ),
             ],

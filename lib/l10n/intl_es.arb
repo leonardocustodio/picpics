@@ -560,5 +560,6 @@
   "enable_touchid": "Habilitar Touch ID",
   "enable_fingerprint": "Habilitar Huella Digital",
   "enable_irisscanner": "habilitar Escáner de Iris",
-  "finishing": "Finishing..."
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

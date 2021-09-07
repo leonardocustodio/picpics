@@ -41,6 +41,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "airliner_tag": MessageLookupByLibrary.simpleMessage("旅客機"),
         "airplane_tag": MessageLookupByLibrary.simpleMessage("飛行機"),
         "alcohol_tag": MessageLookupByLibrary.simpleMessage("アルコール"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once": MessageLookupByLibrary.simpleMessage("一度に複数の写真を整理"),
         "all_search_tags": MessageLookupByLibrary.simpleMessage("すべての検索タグ"),
         "always": MessageLookupByLibrary.simpleMessage("常時"),

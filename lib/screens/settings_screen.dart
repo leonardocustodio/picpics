@@ -2,11 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/languages.dart';
@@ -14,7 +15,7 @@ import 'package:picPics/widgets/fadein.dart';
 import 'package:picPics/widgets/secret_switch.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:local_auth/local_auth.dart';
@@ -28,8 +29,6 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen>
     with WidgetsBindingObserver {
-  /* GalleryStore galleryStore; */
-
   @override
   void dispose() {
     super.dispose();
@@ -51,13 +50,13 @@ class _SettingsScreenState extends State<SettingsScreen>
     launch(_emailLaunchUri.toString());
   }
 
-  RateMyApp rateMyApp = RateMyApp(
+  final rateMyApp = RateMyApp(
     googlePlayIdentifier: 'br.com.inovatso.picPics',
     appStoreIdentifier: '1503352127',
   );
 
   void shareApp(BuildContext context) {
-    Share.share(S.of(context).take_a_look,
+    Share.share(LangControl.to.S.value.take_a_look,
         subject: S
             .of(context)
             .take_a_look_description('https://picpics.link/share'));
@@ -103,10 +102,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        textScaleFactor: 1.0,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.cancel,
+                          textScaleFactor: 1.0,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -122,11 +123,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.end,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.ok,
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.end,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -189,17 +192,21 @@ class _SettingsScreenState extends State<SettingsScreen>
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        textScaleFactor: 1.0,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.cancel,
+                          textScaleFactor: 1.0,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
-                  Text(
-                    S.of(context).language,
-                    textScaleFactor: 1.0,
-                    style: kBottomSheetTitleTextStyle,
+                  Obx(
+                    () => Text(
+                      LangControl.to.S.value.language,
+                      textScaleFactor: 1.0,
+                      style: kBottomSheetTitleTextStyle,
+                    ),
                   ),
                   CupertinoButton(
                     onPressed: () {
@@ -223,8 +230,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                           .changeUserLanguage(
                               supportedLocales[temporaryLanguage].toString())
                           .then((_) {
-                        S
-                            .load(supportedLocales[temporaryLanguage])
+                        LangControl.to
+                            .changeLanguageTo(
+                                supportedLocales[temporaryLanguage].toString())
                             .then((value) {
                           setState(() {});
                           Navigator.pop(context);
@@ -234,11 +242,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.end,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.ok,
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.end,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -296,14 +306,14 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                    child: Container(
 //                      width: 80.0,
 //                      child: Text(
-//                        S.of(context).cancel,
+//                        LangControl.to.S.value.cancel,
 //                        textScaleFactor: 1.0,
 //                        style: kBottomSheetTextStyle,
 //                      ),
 //                    ),
 //                  ),
 //                  Text(
-//                    S.of(context).how_many_pics,
+//                    LangControl.to.S.value.how_many_pics,
 //                    textScaleFactor: 1.0,
 //                    style: kBottomSheetTitleTextStyle,
 //                  ),
@@ -315,7 +325,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                    child: Container(
 //                      width: 80.0,
 //                      child: Text(
-//                        S.of(context).ok,
+//                        LangControl.to.S.value.ok,
 //                        textScaleFactor: 1.0,
 //                        textAlign: TextAlign.end,
 //                        style: kBottomSheetTextStyle,
@@ -377,17 +387,21 @@ class _SettingsScreenState extends State<SettingsScreen>
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        textScaleFactor: 1.0,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.cancel,
+                          textScaleFactor: 1.0,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
-                  Text(
-                    S.of(context).time,
-                    textScaleFactor: 1.0,
-                    style: kBottomSheetTitleTextStyle,
+                  Obx(
+                    () => Text(
+                      LangControl.to.S.value.time,
+                      textScaleFactor: 1.0,
+                      style: kBottomSheetTitleTextStyle,
+                    ),
                   ),
                   CupertinoButton(
                     onPressed: () {
@@ -397,11 +411,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.end,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.ok,
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.end,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -434,14 +450,14 @@ class _SettingsScreenState extends State<SettingsScreen>
 //        builder: (BuildContext context) {
 //          return PlatformAlertDialog(
 //            title: Text(
-//              S.of(context).notifications,
+//              LangControl.to.S.value.notifications,
 //              textScaleFactor: 1.0,
 //            ),
 //            content: SingleChildScrollView(
 //              child: ListBody(
 //                children: <Widget>[
 //                  Text(
-//                    S.of(context).daily_challenge_permission_description,
+//                    LangControl.to.S.value.daily_challenge_permission_description,
 //                    textScaleFactor: 1.0,
 //                  ),
 //                ],
@@ -450,7 +466,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //            actions: <Widget>[
 //              PlatformDialogAction(
 //                child: Text(
-//                  S.of(context).ok,
+//                  LangControl.to.S.value.ok,
 //                  textScaleFactor: 1.0,
 //                ),
 //                actionType: ActionType.Preferred,
@@ -503,10 +519,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onPressed: () => Get.back(),
                     child: Image.asset('lib/images/backarrowgray.png'),
                   ),
-                  Text(
-                    S.of(context).settings,
-                    textScaleFactor: 1.0,
-                    style: kGraySettingsBoldTextStyle,
+                  Obx(
+                    () => Text(
+                      LangControl.to.S.value.settings,
+                      textScaleFactor: 1.0,
+                      style: kGraySettingsBoldTextStyle,
+                    ),
                   ),
                   CupertinoButton(
                     onPressed: () {
@@ -561,7 +579,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                             MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
-                                            S.of(context).private_photos,
+                                            LangControl
+                                                .to.S.value.private_photos,
                                             textScaleFactor: 1.0,
                                             style: kGraySettingsFieldTextStyle,
                                           ),
@@ -614,18 +633,20 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     if (UserController.to.availableBiometrics
                                         .contains(BiometricType.face)) {
                                       enableBiometric =
-                                          S.of(context).enable_faceid;
+                                          LangControl.to.S.value.enable_faceid;
                                     } else if (UserController
                                         .to.availableBiometrics
                                         .contains(BiometricType.iris)) {
-                                      enableBiometric =
-                                          S.of(context).enable_irisscanner;
+                                      enableBiometric = LangControl
+                                          .to.S.value.enable_irisscanner;
                                     } else if (UserController
                                         .to.availableBiometrics
                                         .contains(BiometricType.fingerprint)) {
                                       enableBiometric = Platform.isIOS
-                                          ? S.of(context).enable_touchid
-                                          : S.of(context).enable_fingerprint;
+                                          ? LangControl
+                                              .to.S.value.enable_touchid
+                                          : LangControl
+                                              .to.S.value.enable_fingerprint;
                                     }
 
                                     return FadeIn(
@@ -798,15 +819,15 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //       pressedOpacity: 1.0,
                                 //       onPressed: () {
                                 //         UserController.to.switchDailyChallenges(
-                                //           notificationTitle: S.of(context).daily_notification_title,
-                                //           notificationDescription: S.of(context).daily_notification_description,
+                                //           notificationTitle: LangControl.to.S.value.daily_notification_title,
+                                //           notificationDescription: LangControl.to.S.value.daily_notification_description,
                                 //         );
                                 //       },
                                 //       child: Row(
                                 //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 //         children: <Widget>[
                                 //           Text(
-                                //             S.of(context).daily_challenge,
+                                //             LangControl.to.S.value.daily_challenge,
                                 //             textScaleFactor: 1.0,
                                 //             style: kGraySettingsFieldTextStyle,
                                 //           ),
@@ -817,8 +838,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //                 activeColor: kSecondaryColor,
                                 //                 onChanged: (value) {
                                 //                   UserController.to.switchDailyChallenges(
-                                //                     notificationTitle: S.of(context).daily_notification_title,
-                                //                     notificationDescription: S.of(context).daily_notification_description,
+                                //                     notificationTitle: LangControl.to.S.value.daily_notification_title,
+                                //                     notificationDescription: LangControl.to.S.value.daily_notification_description,
                                 //                   );
                                 //                 },
                                 //               );
@@ -844,7 +865,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 //         children: <Widget>[
                                 //           Text(
-                                //             S.of(context).notification_time,
+                                //             LangControl.to.S.value.notification_time,
                                 //             textScaleFactor: 1.0,
                                 //             style: kGraySettingsFieldTextStyle,
                                 //           ),
@@ -873,7 +894,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                            children: <Widget>[
 //                              Text(
-//                                S.of(context).daily_goal,
+//                                LangControl.to.S.value.daily_goal,
 //                                textScaleFactor: 1.0,
 //                                style: kGraySettingsFieldTextStyle,
 //                              ),
@@ -904,10 +925,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
-                                          Text(
-                                            S.of(context).language,
-                                            textScaleFactor: 1.0,
-                                            style: kGraySettingsFieldTextStyle,
+                                          Obx(
+                                            () => Text(
+                                              LangControl.to.S.value.language,
+                                              textScaleFactor: 1.0,
+                                              style:
+                                                  kGraySettingsFieldTextStyle,
+                                            ),
                                           ),
                                           Obx(
                                             () {
@@ -944,7 +968,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         width: 15.0,
                                       ),
                                       Text(
-                                        S.of(context).share_with_friends,
+                                        LangControl
+                                            .to.S.value.share_with_friends,
                                         textScaleFactor: 1.0,
                                         style: kGraySettingsBoldTextStyle,
                                       ),
@@ -960,10 +985,12 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       SizedBox(
                                         width: 15.0,
                                       ),
-                                      Text(
-                                        S.of(context).rate_this_app,
-                                        textScaleFactor: 1.0,
-                                        style: kGraySettingsBoldTextStyle,
+                                      Obx(
+                                        () => Text(
+                                          LangControl.to.S.value.rate_this_app,
+                                          textScaleFactor: 1.0,
+                                          style: kGraySettingsBoldTextStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -978,7 +1005,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         width: 15.0,
                                       ),
                                       Text(
-                                        S.of(context).feedback_bug_report,
+                                        LangControl
+                                            .to.S.value.feedback_bug_report,
                                         textScaleFactor: 1.0,
                                         style: kGraySettingsBoldTextStyle,
                                       ),
@@ -1108,15 +1136,18 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 8.0),
                                       minSize: 32.0,
-                                      child: Text(
-                                        S.of(context).privacy_policy,
-                                        style: const TextStyle(
-                                          color: Color(0xff606566),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'Lato',
-                                          fontStyle: FontStyle.normal,
-                                          decoration: TextDecoration.underline,
-                                          fontSize: 10.0,
+                                      child: Obx(
+                                        () => Text(
+                                          LangControl.to.S.value.privacy_policy,
+                                          style: const TextStyle(
+                                            color: Color(0xff606566),
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: 'Lato',
+                                            fontStyle: FontStyle.normal,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontSize: 10.0,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1138,15 +1169,18 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       padding: const EdgeInsets.symmetric(
                                           vertical: 10.0),
                                       minSize: 32.0,
-                                      child: Text(
-                                        S.of(context).terms_of_use,
-                                        style: const TextStyle(
-                                          color: Color(0xff606566),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: 'Lato',
-                                          fontStyle: FontStyle.normal,
-                                          decoration: TextDecoration.underline,
-                                          fontSize: 10.0,
+                                      child: Obx(
+                                        () => Text(
+                                          LangControl.to.S.value.terms_of_use,
+                                          style: const TextStyle(
+                                            color: Color(0xff606566),
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: 'Lato',
+                                            fontStyle: FontStyle.normal,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontSize: 10.0,
+                                          ),
                                         ),
                                       ),
                                     ),

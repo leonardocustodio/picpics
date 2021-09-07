@@ -5,9 +5,9 @@ import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/login_store.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
@@ -68,15 +68,20 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Spacer(
                                         flex: 1,
                                       ),
-                                      Text(
-                                        S.of(context).welcome,
-                                        textScaleFactor: 1.0,
-                                        style: kLoginDescriptionTextStyle,
+                                      Obx(
+                                        () => Text(
+                                          LangControl.to.S.value.welcome,
+                                          textScaleFactor: 1.0,
+                                          style: kLoginDescriptionTextStyle,
+                                        ),
                                       ),
-                                      Text(
-                                        S.of(context).photos_always_organized,
-                                        textScaleFactor: 1.0,
-                                        style: kLoginDescriptionTextStyle,
+                                      Obx(
+                                        () => Text(
+                                          LangControl.to.S.value
+                                              .photos_always_organized,
+                                          textScaleFactor: 1.0,
+                                          style: kLoginDescriptionTextStyle,
+                                        ),
                                       ),
                                       Spacer(
                                         flex: 2,
@@ -189,20 +194,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             alignment: Alignment.center,
-                            child: Text(
-                              loginStore.slideIndex.value ==
-                                      loginStore.totalSlides - 1
-                                  ? S.of(context).start.toUpperCase()
-                                  : S.of(context).next.toUpperCase(),
-                              textScaleFactor: 1.0,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: kWhiteColor,
-                                fontSize: 22,
-                                fontWeight: FontWeight.w700,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
+                            child: Obx(
+                              () => Text(
+                                loginStore.slideIndex.value ==
+                                        loginStore.totalSlides - 1
+                                    ? LangControl.to.S.value.start.toUpperCase()
+                                    : LangControl.to.S.value.next.toUpperCase(),
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kWhiteColor,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
                               ),
                             ),
                           ),

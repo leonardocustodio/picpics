@@ -19,7 +19,7 @@ class S {
 
   static S get current {
     assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+        'No instance of S was loaded. Try to initialize the S delegate before accessing LangControl.to.S.value.');
     return _current!;
   }
 
@@ -5668,6 +5668,16 @@ class S {
     return Intl.message(
       'Finishing...',
       name: 'finishing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Tags`
+  String get allTags {
+    return Intl.message(
+      'All Tags',
+      name: 'allTags',
       desc: '',
       args: [],
     );

@@ -11,7 +11,7 @@ import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/tabs/tagged/select_all_widget.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -274,7 +274,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                     child: Container(
                                       width: 80.0,
                                       child: Text(
-                                        S.of(context).cancel,
+                                        LangControl.to.S.value.cancel,
                                         textScaleFactor: 1.0,
                                         style: TextStyle(
                                           color: Color(0xff707070),
@@ -309,7 +309,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                     child: Container(
                                       width: 80.0,
                                       child: Text(
-                                        S.of(context).ok,
+                                        LangControl.to.S.value.ok,
                                         textScaleFactor: 1.0,
                                         textAlign: TextAlign.end,
                                         style: TextStyle(
@@ -417,8 +417,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       title:
                                           TagsController.to.searchText.value !=
                                                   ''
-                                              ? S.of(context).search_results
-                                              : S.of(context).recent_tags,
+                                              ? LangControl.to.S.value.search_results
+                                              : LangControl.to.S.value.recent_tags,
                                       tagsKeyList: TagsController
                                           .to.searchTagsResults.value
                                           .where((tag) =>
@@ -608,12 +608,12 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                   /// No Pics Tagged
                   ///
                   return DeviceHasNoPics(
-                      message: S.of(context).no_photos_were_tagged);
+                      message: LangControl.to.S.value.no_photos_were_tagged);
                 }
 
                 /// Device has no Pics
                 return DeviceHasNoPics(
-                    message: S.of(context).device_has_no_pics);
+                    message: LangControl.to.S.value.device_has_no_pics);
               }),
             ),
           ),

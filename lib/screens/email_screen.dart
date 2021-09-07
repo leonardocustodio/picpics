@@ -6,8 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/pin_screen.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pin_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
@@ -112,14 +113,16 @@ class _EmailScreenState extends State<EmailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            S.of(context).confirm_email,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: kWhiteColor,
-                              fontSize: size.width < 400 ? 22.0 : 28.0,
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.normal,
+                          Obx(
+                            () => Text(
+                              LangControl.to.S.value.confirm_email,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: size.width < 400 ? 22.0 : 28.0,
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                              ),
                             ),
                           ),
                           Spacer(),
@@ -133,15 +136,17 @@ class _EmailScreenState extends State<EmailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  S.of(context).email,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff606566),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
+                                Obx(
+                                  () => Text(
+                                    LangControl.to.S.value.email,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff606566),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w300,
+                                      fontStyle: FontStyle.normal,
+                                      letterSpacing: -0.4099999964237213,
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -201,10 +206,12 @@ class _EmailScreenState extends State<EmailScreen> {
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               child: Center(
-                                child: Text(
-                                  S.of(context).continue_string,
-                                  textScaleFactor: 1.0,
-                                  style: kLoginButtonTextStyle,
+                                child: Obx(
+                                  () => Text(
+                                    LangControl.to.S.value.continue_string,
+                                    textScaleFactor: 1.0,
+                                    style: kLoginButtonTextStyle,
+                                  ),
                                 ),
                               ),
                             ),

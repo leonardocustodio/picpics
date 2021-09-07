@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("अनंत टैग जोड़ें"),
         "add_tag": MessageLookupByLibrary.simpleMessage("टैग जोड़ो"),
         "add_tags": MessageLookupByLibrary.simpleMessage("टैग लगा दो"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "एक साथ कई फ़ोटो व्यवस्थित करें"),
         "all_search_tags": MessageLookupByLibrary.simpleMessage("सभी खोज टैग"),

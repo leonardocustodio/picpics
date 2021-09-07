@@ -37,6 +37,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("เพิ่มแท็กหลายรายการ"),
         "add_tag": MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
         "add_tags": MessageLookupByLibrary.simpleMessage("เพิ่มแท็ก"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once":
             MessageLookupByLibrary.simpleMessage("จัดหลายรูปภาพในครั้งเดียว"),
         "all_search_tags":

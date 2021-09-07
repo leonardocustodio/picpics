@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/stores/tagged_controller.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/functions.dart';
@@ -51,14 +52,16 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                             },
                             child: Container(
                               width: 80.0,
-                              child: Text(
-                                S.of(context).cancel,
-                                textScaleFactor: 1.0,
-                                style: TextStyle(
-                                  color: Color(0xff707070),
-                                  fontSize: 16,
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w700,
+                              child: Obx(
+                                () => Text(
+                                  LangControl.to.S.value.cancel,
+                                  textScaleFactor: 1.0,
+                                  style: TextStyle(
+                                    color: Color(0xff707070),
+                                    fontSize: 16,
+                                    fontFamily: 'Lato',
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
                             ),
@@ -87,15 +90,17 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                             },
                             child: Container(
                               width: 80.0,
-                              child: Text(
-                                S.of(context).ok,
-                                textScaleFactor: 1.0,
-                                textAlign: TextAlign.end,
-                                style: TextStyle(
-                                  color: Color(0xff707070),
-                                  fontSize: 16,
-                                  fontFamily: 'Lato',
-                                  fontWeight: FontWeight.w700,
+                              child: Obx(
+                                () => Text(
+                                  LangControl.to.S.value.ok,
+                                  textScaleFactor: 1.0,
+                                  textAlign: TextAlign.end,
+                                  style: TextStyle(
+                                    color: Color(0xff707070),
+                                    fontSize: 16,
+                                    fontFamily: 'Lato',
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
                               ),
                             ),
@@ -176,50 +181,52 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                               }),
                           Padding(
                             padding: const EdgeInsets.only(top: 8.0),
-                            child: TagsList(
-                              title: tagsController.searchText.value != ''
-                                  ? S.of(context).search_results
-                                  : S.of(context).recent_tags,
-                              tagsKeyList: tagsController
-                                  .searchTagsResults.value
-                                  .where((tag) =>
-                                      tag.key != tagKey &&
-                                      tagsController.multiPicTags[tag.key] ==
-                                          null)
-                                  .toList()
-                                  .map((e) => e.key)
-                                  .toList(),
-                              tagStyle: TagStyle.GrayOutlined,
-                              onTap: (String tagKey) {
-                                /* if (!UserController
+                            child: Obx(
+                              () => TagsList(
+                                title: tagsController.searchText.value != ''
+                                    ? LangControl.to.S.value.search_results
+                                    : LangControl.to.S.value.recent_tags,
+                                tagsKeyList: tagsController
+                                    .searchTagsResults.value
+                                    .where((tag) =>
+                                        tag.key != tagKey &&
+                                        tagsController.multiPicTags[tag.key] ==
+                                            null)
+                                    .toList()
+                                    .map((e) => e.key)
+                                    .toList(),
+                                tagStyle: TagStyle.GrayOutlined,
+                                onTap: (String tagKey) {
+                                  /* if (!UserController
                                                       .to.isPremium.value) {
                                                     Get.to(() => PremiumScreen);
                                                     return;
                                                   } */
 
-                                bottomTagsEditingController.clear();
-                                tagsController.searchText.value = '';
-                                //GalleryStore.to.setSearchText('');
-                                tagsController.multiPicTags[tagKey] = '';
-                                tagsController.tagsSuggestionsCalculate();
-                                //GalleryStore.to.addToMultiPicTags(tagKey);
-                              },
-                              onDoubleTap: (String tagKey) {
-                                /* if (!UserController
+                                  bottomTagsEditingController.clear();
+                                  tagsController.searchText.value = '';
+                                  //GalleryStore.to.setSearchText('');
+                                  tagsController.multiPicTags[tagKey] = '';
+                                  tagsController.tagsSuggestionsCalculate();
+                                  //GalleryStore.to.addToMultiPicTags(tagKey);
+                                },
+                                onDoubleTap: (String tagKey) {
+                                  /* if (!UserController
                                                       .to.isPremium.value) {
                                                     Get.to(() => PremiumScreen);
                                                     return;
                                                   } */
-                                print('do nothing');
-                              },
-                              onPanEnd: (String tagKey) {
-                                /* if (!UserController
+                                  print('do nothing');
+                                },
+                                onPanEnd: (String tagKey) {
+                                  /* if (!UserController
                                                       .to.isPremium.value) {
                                                     Get.to(() => PremiumScreen);
                                                     return;
                                                   } */
-                                print('do nothing');
-                              },
+                                  print('do nothing');
+                                },
+                              ),
                             ),
                           ),
                         ],

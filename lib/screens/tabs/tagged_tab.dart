@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/tabs/tagged/no_tagged_pics_in_device.dart';
 import 'package:picPics/screens/tabs/tagged/tagged_pics_with_search_option.dart';
-import 'package:picPics/screens/tabs/tagged/tagged_tab_option_bar.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -77,7 +77,7 @@ class TaggedTab extends GetView<TaggedController> {
                       /// Device has no pics
                       ///
                       return DeviceHasNoPics(
-                          message: S.current.device_has_no_pics);
+                          message: LangControl.to.S.value.device_has_no_pics);
                     }
                   }),
                 ),
@@ -130,8 +130,8 @@ class TaggedTab extends GetView<TaggedController> {
                         child: Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
                           child: ToggleBar(
-                            titleLeft: S.current.toggle_date,
-                            titleRight: S.current.toggle_tags,
+                            titleLeft: LangControl.to.S.value.toggle_date,
+                            titleRight: LangControl.to.S.value.toggle_tags,
                             activeToggle: controller.toggleIndexTagged.value,
                             onToggle: (index) {
                               controller.toggleIndexTagged.value = index;

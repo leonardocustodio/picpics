@@ -6,7 +6,7 @@ import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:extended_image/extended_image.dart';
@@ -71,7 +71,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                 height: 21.0,
                               ),
                               Text(
-                                S.current.no_tagged_photos,
+                                LangControl.to.S.value.no_tagged_photos,
                                 textScaleFactor: 1.0,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
@@ -98,7 +98,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                   ),
                                   child: Center(
                                     child: Text(
-                                      S.current.start_tagging,
+                                      LangControl.to.S.value.start_tagging,
                                       textScaleFactor: 1.0,
                                       style: TextStyle(
                                         fontFamily: 'Lato',
@@ -177,7 +177,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                         left: 10.0, right: 10.0, top: 10.0, bottom: 10.0),
                     child: Text(
                       index == 1
-                          ? S.current.search_all_tags_not_found
+                          ? LangControl.to.S.value.search_all_tags_not_found
                           : 'No photos found with this tag',
                       textScaleFactor: 1.0,
                       style: TextStyle(

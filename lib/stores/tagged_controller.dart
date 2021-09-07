@@ -447,7 +447,6 @@ class TaggedController extends GetxController {
       return year;
     });
 
-    DateTime? previousDay;
     DateTime? previousMonth;
 
     var previousDatePicIdList = <String>[];
@@ -458,17 +457,16 @@ class TaggedController extends GetxController {
 
         var dateTime = DateTime.utc(
             photo.createdAt.year, photo.createdAt.month, photo.createdAt.day);
-        if (previousDay == null || previousMonth == null) {
-          previousDay = dateTime;
+        if (previousMonth == null) {
           previousMonth = dateTime;
 
           allTaggedPicDateWiseList.add(dateTime);
         }
 
-        if (previousDay!.year != dateTime.year ||
-            previousDay!.month != dateTime.month ||
-            previousDay!.day != dateTime.day) {
-          if (previousDay!.month != dateTime.month) {
+        if (previousMonth!.year != dateTime.year ||
+            previousMonth!.month != dateTime.month ||
+            previousMonth!.day != dateTime.day) {
+          if (previousMonth!.month != dateTime.month) {
             /* allTaggedPicDateWiseMap[previousMonth] =
                 List<String>.from(previousDatePicIdList); */
             previousDatePicIdList = <String>[];

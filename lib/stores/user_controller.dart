@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_device_locale/flutter_device_locale.dart';
 import 'package:get/get.dart';
 import 'package:notification_permissions/notification_permissions.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:package_info/package_info.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
@@ -14,7 +15,7 @@ import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/stores/database_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
@@ -89,6 +90,7 @@ class UserController extends GetxController {
       lang = 'en';
     }
     appLocale.value = lang;
+    LangControl.to.changeLanguageTo(lang);
 
     var local = LanguageLocal();
     currentLanguage.value = '${local.getDisplayLanguage(lang)['nativeName']}';
@@ -442,62 +444,62 @@ class UserController extends GetxController {
     var tag1 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).family_tag),
-        title: S.of(context).family_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.family_tag),
+        title: LangControl.to.S.value.family_tag,
         photoId: <String, String>{});
     var tag2 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).travel_tag),
-        title: S.of(context).travel_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.travel_tag),
+        title: LangControl.to.S.value.travel_tag,
         photoId: <String, String>{});
     var tag3 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).pets_tag),
-        title: S.of(context).pets_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.pets_tag),
+        title: LangControl.to.S.value.pets_tag,
         photoId: <String, String>{});
     var tag4 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).work_tag),
-        title: S.of(context).work_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.work_tag),
+        title: LangControl.to.S.value.work_tag,
         photoId: <String, String>{});
     var tag5 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).selfies_tag),
-        title: S.of(context).selfies_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.selfies_tag),
+        title: LangControl.to.S.value.selfies_tag,
         photoId: <String, String>{});
     var tag6 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).parties_tag),
-        title: S.of(context).parties_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.parties_tag),
+        title: LangControl.to.S.value.parties_tag,
         photoId: <String, String>{});
     var tag7 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).sports_tag),
-        title: S.of(context).sports_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.sports_tag),
+        title: LangControl.to.S.value.sports_tag,
         photoId: <String, String>{});
     var tag8 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).home_tag),
-        title: S.of(context).home_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.home_tag),
+        title: LangControl.to.S.value.home_tag,
         photoId: <String, String>{});
     var tag9 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).foods_tag),
-        title: S.of(context).foods_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.foods_tag),
+        title: LangControl.to.S.value.foods_tag,
         photoId: <String, String>{});
     var tag10 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
-        key: Helpers.encryptTag(S.of(context).screenshots_tag),
-        title: S.of(context).screenshots_tag,
+        key: Helpers.encryptTag(LangControl.to.S.value.screenshots_tag),
+        title: LangControl.to.S.value.screenshots_tag,
         photoId: <String, String>{});
 
     var entries = <Label>[

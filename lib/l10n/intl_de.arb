@@ -560,5 +560,6 @@
   "enable_touchid": "Touch ID aktivieren",
   "enable_fingerprint": "Fingerabdruck aktivieren",
   "enable_irisscanner": "Iris-Scanner aktivieren",
-  "finishing": "Finishing..."
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

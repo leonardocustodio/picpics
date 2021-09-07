@@ -132,5 +132,6 @@
   "enable_touchid": "Aktivera Touch ID",
   "enable_fingerprint": "Aktivera fingeravtryck",
   "enable_irisscanner": "Aktivera Iris Scanner",
-  "finishing": "Finishing..."
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

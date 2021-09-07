@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -72,15 +74,17 @@ class _TagsListState extends State<TagsList> {
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.only(top: 10.0, left: 18.0, bottom: 8.0),
-          child: Text(
-            S.of(context).no_tags_found,
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: Color(0xff979a9b),
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.normal,
-              letterSpacing: -0.4099999964237213,
+          child: Obx(
+            () => Text(
+              LangControl.to.S.value.no_tags_found,
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff979a9b),
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
             ),
           ),
         ),
@@ -279,12 +283,14 @@ class _TagsListState extends State<TagsList> {
                           ),
                           Opacity(
                             opacity: thirdOpct,
-                            child: Text(
-                              S.of(context).delete,
-                              textScaleFactor: 1.0,
-                              style: widget.tagStyle == TagStyle.MultiColored
-                                  ? kWhiteTextStyle
-                                  : kGrayTextStyle,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.delete,
+                                textScaleFactor: 1.0,
+                                style: widget.tagStyle == TagStyle.MultiColored
+                                    ? kWhiteTextStyle
+                                    : kGrayTextStyle,
+                              ),
                             ),
                           ),
                         ],
@@ -317,16 +323,18 @@ class _TagsListState extends State<TagsList> {
               SizedBox(
                 width: 4.0,
               ),
-              Text(
-                S.of(context).add_tag,
-                textScaleFactor: 1.0,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: kGrayColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: -0.4099999964237213,
+              Obx(
+                () => Text(
+                  LangControl.to.S.value.add_tag,
+                  textScaleFactor: 1.0,
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: kGrayColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: -0.4099999964237213,
+                  ),
                 ),
               ),
             ],
@@ -355,38 +363,40 @@ class _TagsListState extends State<TagsList> {
                     children: <Widget>[
                       Image.asset('lib/images/smalladdtag.png'),
                       Expanded(
-                        child: TextField(
-                          controller: widget.textEditingController,
-                          focusNode: widget.textFocusNode,
-                          onChanged: widget.onChanged,
-                          onSubmitted: widget.onSubmitted,
-                          keyboardType: TextInputType.text,
-                          textAlignVertical: TextAlignVertical.center,
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff606566),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
-                          ),
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(left: 6.0),
-                            enabledBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            focusedBorder:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            border:
-                                OutlineInputBorder(borderSide: BorderSide.none),
-                            hintText: S.of(context).add_tags,
-                            hintStyle: TextStyle(
+                        child: Obx(
+                          () => TextField(
+                            controller: widget.textEditingController,
+                            focusNode: widget.textFocusNode,
+                            onChanged: widget.onChanged,
+                            onSubmitted: widget.onSubmitted,
+                            keyboardType: TextInputType.text,
+                            textAlignVertical: TextAlignVertical.center,
+                            maxLines: 1,
+                            style: TextStyle(
                               fontFamily: 'Lato',
-                              color: kGrayColor,
+                              color: Color(0xff606566),
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                               letterSpacing: -0.4099999964237213,
+                            ),
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.only(left: 6.0),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              hintText: LangControl.to.S.value.add_tags,
+                              hintStyle: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kGrayColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
                           ),
                         ),

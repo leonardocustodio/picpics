@@ -6,13 +6,13 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs/tabs_screen_bottom_navigation_bar.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
 import 'package:picPics/widgets/percentage_dialog.dart';
-import 'package:picPics/generated/l10n.dart';
 
 // ignore_for_file: unused_local_variable, must_be_immutable
 class TabsScreen extends GetWidget<TabsController> {
@@ -100,18 +100,19 @@ class TabsScreen extends GetWidget<TabsController> {
                                     SizedBox(
                                       height: 21.0,
                                     ),
-                                    Text(
-                                      S
-                                          .of(context)
-                                          .gallery_access_permission_description,
-                                      textScaleFactor: 1.0,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        fontFamily: 'Lato',
-                                        color: Color(0xff979a9b),
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w400,
-                                        fontStyle: FontStyle.normal,
+                                    Obx(
+                                      () => Text(
+                                        LangControl.to.S.value
+                                            .gallery_access_permission_description,
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: 'Lato',
+                                          color: Color(0xff979a9b),
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w400,
+                                          fontStyle: FontStyle.normal,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
@@ -145,19 +146,20 @@ class TabsScreen extends GetWidget<TabsController> {
                                               BorderRadius.circular(8),
                                         ),
                                         child: Center(
-                                          child: Text(
-                                            S
-                                                .of(context)
-                                                .gallery_access_permission,
-                                            textScaleFactor: 1.0,
-                                            style: TextStyle(
-                                              fontFamily: 'Lato',
-                                              color: kWhiteColor,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w700,
-                                              fontStyle: FontStyle.normal,
-                                              letterSpacing:
-                                                  -0.4099999964237213,
+                                          child: Obx(
+                                            () => Text(
+                                              LangControl.to.S.value
+                                                  .gallery_access_permission,
+                                              textScaleFactor: 1.0,
+                                              style: TextStyle(
+                                                fontFamily: 'Lato',
+                                                color: kWhiteColor,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w700,
+                                                fontStyle: FontStyle.normal,
+                                                letterSpacing:
+                                                    -0.4099999964237213,
+                                              ),
                                             ),
                                           ),
                                         ),

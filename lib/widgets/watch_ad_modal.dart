@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
+import 'package:picPics/stores/language_controller.dart';
 import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/stores/user_controller.dart';
 
@@ -36,7 +37,7 @@ class WatchAdModal extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: 52.0, vertical: 32.0),
                   child: Text(
-                    S.of(context).premium_modal_description(
+                    LangControl.to.S.value.premium_modal_description(
                         UserController.to.dailyPicsForAds),
                     textScaleFactor: 1.0,
                     style: TextStyle(
@@ -59,7 +60,7 @@ class WatchAdModal extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          S.of(context).premium_modal_watch_ad,
+                          LangControl.to.S.value.premium_modal_watch_ad,
                           textScaleFactor: 1.0,
                           style: TextStyle(
                             fontFamily: 'Lato',
@@ -92,7 +93,8 @@ class WatchAdModal extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              S.of(context).premium_modal_get_premium_title,
+                              LangControl
+                                  .to.S.value.premium_modal_get_premium_title,
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: TextStyle(
@@ -140,3 +142,4 @@ class WatchAdModal extends StatelessWidget {
     );
   }
 }
+ */

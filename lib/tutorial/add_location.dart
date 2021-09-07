@@ -10,7 +10,7 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -288,7 +288,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                         height: 44.0,
                         child: Center(
                           child: Text(
-                            S.of(context).save_location,
+                            LangControl.to.S.value.save_location,
                             textScaleFactor: 1.0,
                             style: TextStyle(
                               fontFamily: 'Lato',
@@ -311,7 +311,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
               child: SafeArea(
                 child: SearchMapPlaceWidget(
                   apiKey: kGoogleApiKey,
-                  placeholder: S.of(context).search,
+                  placeholder: LangControl.to.S.value.search,
                   language: appStore.appLanguage.split('_')[0], // arrumar isso
                   onSelected: (place) async {
                     final geolocation = await place.geolocation;

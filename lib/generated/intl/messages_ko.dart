@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_multiple_tags": MessageLookupByLibrary.simpleMessage("다수의 태그 추가"),
         "add_tag": MessageLookupByLibrary.simpleMessage("태그 추가"),
         "add_tags": MessageLookupByLibrary.simpleMessage("태그 추가"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once": MessageLookupByLibrary.simpleMessage("한 번에 여러 장의 사진 정리"),
         "all_search_tags": MessageLookupByLibrary.simpleMessage("모든 검색 태그"),
         "always": MessageLookupByLibrary.simpleMessage("항상"),

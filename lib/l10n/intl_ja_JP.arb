@@ -560,5 +560,6 @@
   "enable_touchid": "Touch IDを有効にする",
   "enable_fingerprint": "指紋を有効にする",
   "enable_irisscanner": "アイリススキャナーを有効にする",
-  "finishing": "Finishing..."
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

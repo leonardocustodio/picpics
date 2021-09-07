@@ -12,7 +12,6 @@ import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/stores/percentage_dialog_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/swiper_tab_controller.dart';

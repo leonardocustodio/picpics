@@ -10,7 +10,7 @@ import 'package:picPics/stores/user_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/screens/tabs_screen.dart';
@@ -53,7 +53,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(S.of(context).ok),
+              child: Text(LangControl.to.S.value.ok),
             ),
           ],
         );
@@ -194,8 +194,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
         }
       }
       showError(
-          title: S.of(context).no_previous_purchase,
-          description: S.of(context).no_valid_subscription);
+          title: LangControl.to.S.value.no_previous_purchase,
+          description: LangControl.to.S.value.no_valid_subscription);
     } on PlatformException catch (e) {
       var errorCode = PurchasesErrorHelper.getErrorCode(e);
       if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
@@ -235,7 +235,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       // ),
 
       // Text(
-      //   S.of(context).get_premium_title,
+      //   LangControl.to.S.value.get_premium_title,
       //   textScaleFactor: 1.0,
       //   maxLines: 2,
       //   textAlign: TextAlign.left,
@@ -253,7 +253,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       // ),
       // Flexible(
       //   child: Text(
-      //     S.of(context).get_premium_description,
+      //     LangControl.to.S.value.get_premium_description,
       //     maxLines: 2,
       //     textAlign: TextAlign.left,
       //     textScaleFactor: 1.0,
@@ -306,7 +306,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             Flexible(
               child: Text(
-                S.of(context).unlimited_private_pics,
+                LangControl.to.S.value.unlimited_private_pics,
                 textScaleFactor: 1.0,
                 maxLines: 2,
                 textAlign: TextAlign.left,
@@ -332,7 +332,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //       ),
       //       Flexible(
       //         child: Text(
-      //           S.of(context).no_ads,
+      //           LangControl.to.S.value.no_ads,
       //           textScaleFactor: 1.0,
       //           maxLines: 2,
       //           textAlign: TextAlign.left,
@@ -358,7 +358,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             Flexible(
               child: Text(
-                S.of(context).infinite_tags,
+                LangControl.to.S.value.infinite_tags,
                 maxLines: 2,
                 textAlign: TextAlign.left,
                 textScaleFactor: 1.0,
@@ -384,7 +384,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             Flexible(
               child: Text(
-                S.of(context).tag_multiple_photos_at_once,
+                LangControl.to.S.value.tag_multiple_photos_at_once,
                 textScaleFactor: 1.0,
                 maxLines: 2,
                 textAlign: TextAlign.left,
@@ -410,7 +410,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //       ),
       //       Flexible(
       //         child: Text(
-      //           S.of(context).cancel_anytime,
+      //           LangControl.to.S.value.cancel_anytime,
       //           maxLines: 2,
       //           textAlign: TextAlign.left,
       //           textScaleFactor: 1.0,
@@ -495,7 +495,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               ),
               TextSpan(
                 text:
-                    'Then ${yearSub!.product.priceString}/${S.of(context).year}',
+                    'Then ${yearSub!.product.priceString}/${LangControl.to.S.value.year}',
                 style: const TextStyle(
                   color: Color(0xff606566),
                   fontWeight: FontWeight.w300,
@@ -589,7 +589,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         },
         child: Center(
           child: Text(
-            S.of(context).restore_purchase,
+            LangControl.to.S.value.restore_purchase,
             textScaleFactor: 1.0,
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -672,7 +672,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   ),
                   child: Center(
                     child: Text(
-                      '${S.of(context).sign} ${monthSubs?.product.priceString}\n${S.of(context).month}',
+                      '${LangControl.to.S.value.sign} ${monthSubs?.product.priceString}\n${LangControl.to.S.value.month}',
                       textScaleFactor: 1.0,
                       textAlign: TextAlign.center,
                       style:
@@ -708,7 +708,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           ),
                           child: Center(
                             child: Text(
-                              '${S.of(context).sign} ${yearSubs?.product.priceString}\n${S.of(context).year}',
+                              '${LangControl.to.S.value.sign} ${yearSubs?.product.priceString}\n${LangControl.to.S.value.year}',
                               textScaleFactor: 1.0,
                               textAlign: TextAlign.center,
                               style: kPremiumButtonTextStyle,
@@ -731,7 +731,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             height: 24.0,
                             child: Center(
                               child: Text(
-                                '   ${S.of(context).save} ${save.round()}%',
+                                '   ${LangControl.to.S.value.save} ${save.round()}%',
                                 textScaleFactor: 1.0,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -757,7 +757,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: S.of(context).auto_renewable_first_part,
+                  text: LangControl.to.S.value.auto_renewable_first_part,
                   style: const TextStyle(
                     color: Color(0xff606566),
                     fontWeight: FontWeight.w400,
@@ -767,7 +767,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   ),
                 ),
                 TextSpan(
-                  text: S.of(context).auto_renewable_second_part,
+                  text: LangControl.to.S.value.auto_renewable_second_part,
                   style: const TextStyle(
                     color: Color(0xff606566),
                     fontWeight: FontWeight.w700,
@@ -918,7 +918,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                   const EdgeInsets.symmetric(vertical: 8.0),
                               minSize: 32.0,
                               child: Text(
-                                S.of(context).privacy_policy,
+                                LangControl.to.S.value.privacy_policy,
                                 style: const TextStyle(
                                   color: Color(0xff606566),
                                   fontWeight: FontWeight.w600,
@@ -947,7 +947,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                                   const EdgeInsets.symmetric(vertical: 10.0),
                               minSize: 32.0,
                               child: Text(
-                                S.of(context).terms_of_use,
+                                LangControl.to.S.value.terms_of_use,
                                 style: const TextStyle(
                                   color: Color(0xff606566),
                                   fontWeight: FontWeight.w600,

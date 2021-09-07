@@ -35,6 +35,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "add_multiple_tags": MessageLookupByLibrary.simpleMessage("添加多个标签"),
         "add_tag": MessageLookupByLibrary.simpleMessage("添加标签"),
         "add_tags": MessageLookupByLibrary.simpleMessage("添加标签"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once": MessageLookupByLibrary.simpleMessage("一次整理多张照片"),
         "all_search_tags": MessageLookupByLibrary.simpleMessage("所有搜索标签"),
         "always": MessageLookupByLibrary.simpleMessage("总是"),

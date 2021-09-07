@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:typed_data';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,17 +13,17 @@ import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 
-import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/generated/l10n.dart' as lang;
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/login_screen.dart';
-import 'package:picPics/screens/migration/migration_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/percentage_dialog_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
@@ -62,9 +61,15 @@ void main() async {
 
   //Get.lazyPut(() => RefreshPicPicsController());
   //Get.lazyPut(() => GalleryStore());
+
+  Get.lazyPut<LangControl>(() => LangControl());
+
   Get.lazyPut<BlurHashController>(() => BlurHashController());
   Get.lazyPut<PercentageDialogController>(() => PercentageDialogController());
   Get.lazyPut<UserController>(() => UserController());
+  await lang.S.load(Locale(UserController.to.appLanguage.value)).then((value) {
+    LangControl.to.S = Rx<lang.S>(value);
+  });
   Get.lazyPut<PrivatePhotosController>(() => PrivatePhotosController());
   Get.lazyPut<AllTagsController>(() => AllTagsController());
   Get.lazyPut<TagsController>(() => TagsController());
@@ -187,13 +192,13 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     print('lang: ${widget.user.appLocale.value}');
     return GetMaterialApp(
       localizationsDelegates: [
-        S.delegate,
+        lang.S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
       locale: Locale(widget.user.appLocale.value),
-      supportedLocales: S.delegate.supportedLocales,
+      supportedLocales: lang.S.delegate.supportedLocales,
       debugShowCheckedModeBanner: kDebugMode,
       initialRoute: initialRoute,
       navigatorObservers: [Analytics.observer],

@@ -30,7 +30,7 @@ import 'package:picPics/managers/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -371,7 +371,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                       child: Container(
                                         width: 80.0,
                                         child: Text(
-                                          S.of(context).cancel,
+                                          LangControl.to.S.value.cancel,
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
                                             color: Color(0xff707070),
@@ -404,7 +404,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                       child: Container(
                                         width: 80.0,
                                         child: Text(
-                                          S.of(context).ok,
+                                          LangControl.to.S.value.ok,
                                           textScaleFactor: 1.0,
                                           textAlign: TextAlign.end,
                                           style: TextStyle(
@@ -494,8 +494,8 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
                                         title: galleryStore.searchText != ''
-                                            ? S.of(context).search_results
-                                            : S.of(context).recent_tags,
+                                            ? LangControl.to.S.value.search_results
+                                            : LangControl.to.S.value.recent_tags,
                                         tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
                                         showEditTagModal: () =>
@@ -916,7 +916,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Text(
-                            S.of(context).welcome,
+                            LangControl.to.S.value.welcome,
                             textScaleFactor: 1.0,
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -939,16 +939,16 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                 Image image;
 
                                 if (index == 0) {
-                                  text = S.of(context).tutorial_just_swipe;
+                                  text = LangControl.to.S.value.tutorial_just_swipe;
                                   image = Image.asset(
                                       'lib/images/tutorialthirdimage.png');
                                 } else if (index == 1) {
                                   text =
-                                      S.of(context).tutorial_however_you_want;
+                                      LangControl.to.S.value.tutorial_however_you_want;
                                   image = Image.asset(
                                       'lib/images/tutorialsecondimage.png');
                                 } else {
-                                  text = S.of(context).tutorial_daily_package;
+                                  text = LangControl.to.S.value.tutorial_daily_package;
                                   image = Image.asset(
                                       'lib/images/tutorialfirstimage.png');
                                 }
@@ -1067,8 +1067,8 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                               child: Center(
                                 child: Text(
                                   tabsStore.tutorialIndex == 2
-                                      ? S.of(context).start
-                                      : S.of(context).next,
+                                      ? LangControl.to.S.value.start
+                                      : LangControl.to.S.value.next,
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(

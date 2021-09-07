@@ -8,7 +8,7 @@ import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
@@ -418,7 +418,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
           //         centerTitle: false,
           //         titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
           //         title: Text(
-          //           tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+          //           tabsStore.multiPicBar ? LangControl.to.S.value.photo_gallery_count(galleryStore.selectedPics.length) : LangControl.to.S.value.photo_gallery_description,
           //           textScaleFactor: 1.0,
           //           style: TextStyle(
           //             fontFamily: 'Lato',
@@ -814,7 +814,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).device_has_no_pics,
+                  message: LangControl.to.S.value.device_has_no_pics,
                 ),
               ],
             );
@@ -839,7 +839,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).no_photos_were_tagged,
+                  message: LangControl.to.S.value.no_photos_were_tagged,
                 ),
               ],
             );
@@ -880,9 +880,9 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                     children: <Widget>[
                       Text(
                         tabsStore.multiPicBar
-                            ? S.of(context).photo_gallery_count(
+                            ? LangControl.to.S.value.photo_gallery_count(
                                 galleryStore.selectedPics.length)
-                            : S.of(context).photo_gallery_description,
+                            : LangControl.to.S.value.photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -912,8 +912,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: ToggleBar(
-                          titleLeft: S.of(context).toggle_months,
-                          titleRight: S.of(context).toggle_days,
+                          titleLeft: LangControl.to.S.value.toggle_months,
+                          titleRight: LangControl.to.S.value.toggle_days,
                           activeToggle: tabsStore.toggleIndexUntagged,
                           onToggle: (index) {
                             tabsStore.setToggleIndexUntagged(index);

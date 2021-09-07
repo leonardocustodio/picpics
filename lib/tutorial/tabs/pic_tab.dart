@@ -1,7 +1,7 @@
 /* import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
@@ -106,13 +106,13 @@ class _TutsPicTabState extends State<TutsPicTab> {
               } else if (!galleryStore.deviceHasPics) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).device_has_no_pics,
+                    message: LangControl.to.S.value.device_has_no_pics,
                   ),
                 );
               } else if (galleryStore.swipePics.isEmpty) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).no_photos_were_tagged,
+                    message: LangControl.to.S.value.no_photos_were_tagged,
                   ),
                 );
               }

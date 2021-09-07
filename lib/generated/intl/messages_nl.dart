@@ -38,6 +38,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Voeg meerdere tags toe"),
         "add_tag": MessageLookupByLibrary.simpleMessage("Tag toevoegen"),
         "add_tags": MessageLookupByLibrary.simpleMessage("Voeg tags toe"),
+        "allTags": MessageLookupByLibrary.simpleMessage("All Tags"),
         "all_at_once": MessageLookupByLibrary.simpleMessage(
             "Orden meerdere foto\'s tegelijk"),
         "all_search_tags":

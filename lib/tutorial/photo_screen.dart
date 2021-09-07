@@ -14,7 +14,7 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:intl/intl.dart';
 
 import 'package:extended_image/extended_image.dart';
@@ -341,7 +341,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                                   )),
                                               TextSpan(
                                                 text:
-                                                    '  ${galleryStore.currentThumbnailPic.generalLocation ?? S.of(context).country}',
+                                                    '  ${galleryStore.currentThumbnailPic.generalLocation ?? LangControl.to.S.value.country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,

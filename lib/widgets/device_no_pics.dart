@@ -59,7 +59,7 @@ class DeviceHasNoPics extends StatelessWidget {
 //              ),
 //              child: Center(
 //                child: Text(
-//                  S.of(context).open_gallery,
+//                  LangControl.to.S.value.open_gallery,
 //                  textScaleFactor: 1.0,
 //                  style: TextStyle(
 //                    fontFamily: 'Lato',
