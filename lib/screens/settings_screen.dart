@@ -725,7 +725,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                       PopPinScreenTo
                                                                           .SettingsScreen;
                                                                   await Get.to(() =>
-                                                                      PinScreen);
+                                                                      PinScreen());
                                                                   return;
                                                                 }
 
@@ -1016,7 +1016,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                               ],
                             ),
                             // Spacer(),
-                            Padding(
+                            /* Padding(
                               padding: const EdgeInsets.only(
                                   left: 32.0,
                                   right: 32.0,
@@ -1078,7 +1078,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ),
                               ),
                             ),
-                            // Spacer(),
+                             */// Spacer(),
                             Column(
                               children: [
                                 Row(

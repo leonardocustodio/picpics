@@ -56,8 +56,8 @@ class Crypto {
 
     appStore.setEncryptionKey(encryptionKey);
 
-    final picKey =
-        await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
+    final picKey = await _retrieveSecretKey(
+        algorithm); //await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
 
     final ivString =
         stringToBase64.encode('$userPin${appStore.email}').substring(0, 16);
@@ -66,9 +66,10 @@ class Crypto {
     final ivKey = utf8.encode(ivString);
 
     final encryptedData = await algorithm.encrypt(
-        utf8.encode(appStore.tempEncryptionKey!),
-        secretKey: picKey,
-        nonce: ivKey);
+      utf8.encode(appStore.tempEncryptionKey!),
+      secretKey: picKey,
+      nonce: ivKey,
+    );
     final hexData = hex.encode(encryptedData.cipherText);
 
     print('New key encrypted with new pin: $hexData');
@@ -118,13 +119,13 @@ class Crypto {
       final ivGenerated = utf8.encode(generatedIv);
 
       final finalStepMac = await cryptography.Hmac.sha256().calculateMac(
-        decryptedFirstData,
+        hex.decode(utf8.decode(decryptedFirstData)),
         secretKey: picKey,
         nonce: ivGenerated,
       );
 
       final secretBoxFinalStep = cryptography.SecretBox(
-        decryptedFirstData,
+        hex.decode(utf8.decode(decryptedFirstData)),
         mac: finalStepMac,
         nonce: ivGenerated,
       );
@@ -179,8 +180,8 @@ class Crypto {
     final algorithm = cryptography.AesCtr.with256bits(
         macAlgorithm: cryptography.Hmac.sha256());
 
-    final picKey =
-        await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
+    final picKey = await _retrieveSecretKey(
+        algorithm); // await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
 
     final iv = utf8.encode(ivString);
 
@@ -218,7 +219,7 @@ class Crypto {
       print('The key is invalid');
       return false;
     } catch (error) {
-      print('Failed to decrypt key invalid padblock!');
+      print('Failed to decrypt key invalid padblock!: $error');
       return false;
     }
   }
@@ -314,8 +315,11 @@ class Crypto {
     final secretBox = cryptography.SecretBox(
       encryptedValue,
       nonce: ivAccess,
-      mac: await cryptography.MacAlgorithm.empty
-          .calculateMac(encryptedValue, secretKey: picAccessKey),
+      mac: await cryptography.MacAlgorithm.empty.calculateMac(
+        encryptedValue,
+        secretKey: picAccessKey,
+        nonce: ivAccess,
+      ),
     );
 
     final decryptedKey =
@@ -333,8 +337,9 @@ class Crypto {
     print('Saving hashed spKey: $digest');
     await storage.write(key: 'hpkey', value: digest);
 
-    final picKey =
-        await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
+    final picKey = await _retrieveSecretKey(
+        algorithm); //await algorithm.newSecretKeyFromBytes(utf8.encode('1HxMbQeThWmZq3t6'));
+
     final ivString =
         stringToBase64.encode('$userPin$userEmail').substring(0, 16);
     print('New generated IV for encryption: $ivString');
@@ -348,6 +353,33 @@ class Crypto {
 
     await storage.write(key: 'spkey', value: encryptedData);
     print('key saved to storage!');
+  }
+
+  ///
+  /// by @justkawal
+  /// A replacer function to generate on device key in order to protect the decryption of every possible device
+  /// replaced static by 1HxMbQeThWmZq3t6
+  static Future<cryptography.SecretKey> _retrieveSecretKey(
+      cryptography.AesCtr algorithm) async {
+    final storage = FlutterSecureStorage();
+    var picKey = await storage.read(key: 'picKey');
+    cryptography.SecretKey? secretKey;
+
+    if (picKey != null) {
+      final key = hex.decode(picKey);
+      if (key.length == 32) {
+        print('on device key: $picKey');
+        secretKey = await algorithm.newSecretKeyFromBytes(key);
+        return secretKey;
+      }
+    }
+
+    secretKey = await algorithm.newSecretKey();
+    final key = hex.encode(await secretKey.extractBytes());
+    print('on device key: $key');
+    await storage.write(key: 'picKey', value: key);
+
+    return secretKey;
   }
 
   static Future<void> encryptImage(
