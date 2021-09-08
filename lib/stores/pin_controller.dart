@@ -112,14 +112,10 @@ class PinController extends GetxController {
       }
 
       return result.data;
-    } on FirebaseFunctionsException catch (_) {
-      //print('caught firebase functions exception');
-      //print(e.code);
-      //print(e.message);
-      //print(e.details);
+    } on FirebaseFunctionsException catch (e) {
+      print('caught firebase functions exception: ${e.message}:${e.details}');
     } catch (e) {
-      //print('caught generic exception');
-      //print(e);
+      print('caught generic exception: $e');
     }
 
     return false;
@@ -223,25 +219,25 @@ class PinController extends GetxController {
   }
 
   //@action
-  Future<bool> isPinValid(UserController appStore) async {
-    var valid = await Crypto.checkIsPinValid(pinTemp.value, appStore);
+  Future<bool> isPinValid() async {
+    var valid = await Crypto.checkIsPinValid(pinTemp.value);
     return valid;
   }
 
   //@action
-  Future<void> activateBiometric(UserController appStore) async {
-    await Crypto.saveEncryptedPin(pinTemp.value, appStore);
+  Future<void> activateBiometric() async {
+    await Crypto.saveEncryptedPin(pinTemp.value);
   }
 
   //@action
-  Future<bool> isBiometricValidated(UserController appStore) async {
-    var pin = await Crypto.getEncryptedPin(appStore);
+  Future<bool> isBiometricValidated() async {
+    var pin = await Crypto.getEncryptedPin();
     if (pin == null) {
       return false;
     }
 
     pinTemp.value = pin;
-    var valid = await isPinValid(appStore);
+    var valid = await isPinValid();
     if (valid == false) {
       return false;
     }
@@ -379,7 +375,7 @@ class PinController extends GetxController {
       );
 
       if (authenticated == true) {
-        var valid = await isBiometricValidated(UserController.to);
+        var valid = await isBiometricValidated();
 
         if (valid == true) {
           await PrivatePhotosController.to.switchSecretPhotos();

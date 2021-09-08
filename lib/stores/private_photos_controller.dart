@@ -8,7 +8,7 @@ class PrivatePhotosController extends GetxController {
 
   final showPrivate = false.obs;
 
-  /// privatePhotoId = '';
+  /// picId
   final privateMap = <String, String>{}.obs;
 
   final _appDatabase = AppDatabase();

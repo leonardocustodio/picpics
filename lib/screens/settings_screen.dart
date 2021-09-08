@@ -1078,7 +1078,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 ),
                               ),
                             ),
-                             */// Spacer(),
+                             */ // Spacer(),
                             Column(
                               children: [
                                 Row(

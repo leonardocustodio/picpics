@@ -36,8 +36,6 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                     TaggedController.to
                         .untagPicsFromTagFromDateOrGroupingCallable();
                   },
-                  showSecretSwitch:
-                      PrivatePhotosController.to.showPrivate.value,
                   searchEditingController:
                       TaggedController.to.searchEditingController,
                   onChanged: (String value) {

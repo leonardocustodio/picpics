@@ -22,8 +22,6 @@ import 'package:local_auth/local_auth.dart';
 class PinScreen extends GetWidget<PinController> {
   static const String id = 'pin_screen';
 
-  bool isLoading = false;
-
   CarouselController carouselController = CarouselController();
   int carouselPage = 0;
 
@@ -147,16 +145,16 @@ class PinScreen extends GetWidget<PinController> {
     );
   }
 
-  void pinTapped(String value) async {
+  void pinTapped(String value, bool backspace) async {
     //print('Value: ${controller.recoveryCode}${value}');
     if (controller.isWaitingRecoveryKey.value == true) {
       if (carouselPage == 0) {
-        if (value == '\u0008') {
+        if (backspace) {
           controller.setRecoveryCode(
               Helpers.removeLastCharacter(controller.recoveryCode.value));
           return;
         }
-        controller.setRecoveryCode('${controller.recoveryCode}$value');
+        controller.setRecoveryCode('${controller.recoveryCode.value}$value');
 
         if (controller.recoveryCode.value.length == 6) {
           // set true
@@ -176,12 +174,12 @@ class PinScreen extends GetWidget<PinController> {
       }
 
       if (carouselPage == 1) {
-        if (value == '\u0008') {
+        if (backspace) {
           controller.setPinTemp(
               Helpers.removeLastCharacter(controller.pinTemp.value));
           return;
         }
-        controller.setPinTemp('${controller.pinTemp}$value');
+        controller.setPinTemp('${controller.pinTemp.value}$value');
 
         if (controller.pinTemp.value.length == 6) {
           carouselPage = 2;
@@ -190,15 +188,15 @@ class PinScreen extends GetWidget<PinController> {
         return;
       }
 
-      if (value == '\u0008') {
+      if (backspace) {
         controller.setConfirmPinTemp(
             Helpers.removeLastCharacter(controller.confirmPinTemp.value));
         return;
       }
-      controller.setConfirmPinTemp('${controller.confirmPinTemp}$value');
+      controller.setConfirmPinTemp('${controller.confirmPinTemp.value}$value');
 
       if (controller.confirmPinTemp.value.length == 6) {
-        if (controller.pinTemp == controller.confirmPinTemp) {
+        if (controller.pinTemp.value == controller.confirmPinTemp.value) {
           //print('Setting new pin!!!!!');
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
@@ -231,20 +229,20 @@ class PinScreen extends GetWidget<PinController> {
     }
 
     if (UserController.to.isPinRegistered.value == true) {
-      if (value == '\u0008') {
+      if (backspace) {
         controller
             .setPinTemp(Helpers.removeLastCharacter(controller.pinTemp.value));
         return;
       }
-      controller.setPinTemp('${controller.pinTemp}$value');
+      controller.setPinTemp('${controller.pinTemp.value}$value');
 
       if (controller.pinTemp.value.length == 6) {
         // set true
-        final valid = await controller.isPinValid(UserController.to);
+        final valid = await controller.isPinValid();
 
         if (valid) {
           if (UserController.to.wantsToActivateBiometric) {
-            await controller.activateBiometric(UserController.to);
+            await controller.activateBiometric();
             await UserController.to.setIsBiometricActivated(true);
 
             controller.setPinTemp('');
@@ -270,12 +268,12 @@ class PinScreen extends GetWidget<PinController> {
     }
 
     if (UserController.to.waitingAccessCode.value == true) {
-      if (value == '\u0008') {
+      if (backspace) {
         controller.setAccessCode(
             Helpers.removeLastCharacter(controller.accessCode.value));
         return;
       }
-      controller.setAccessCode('${controller.accessCode}$value');
+      controller.setAccessCode('${controller.accessCode.value}$value');
 
       if (controller.accessCode.value.length == 6) {
         await controller.validateAccessCode();
@@ -284,7 +282,12 @@ class PinScreen extends GetWidget<PinController> {
     }
 
     if (carouselPage == 0) {
-      controller.setPinTemp('${controller.pinTemp}$value');
+      if (backspace) {
+        controller
+            .setPinTemp(Helpers.removeLastCharacter(controller.pinTemp.value));
+        return;
+      }
+      controller.setPinTemp('${controller.pinTemp.value}$value');
 
       if (controller.pinTemp.value.length == 6) {
         carouselPage = 1;
@@ -293,15 +296,16 @@ class PinScreen extends GetWidget<PinController> {
       return;
     }
 
-    if (value == '\u0008') {
+    if (backspace) {
       controller.setConfirmPinTemp(
           Helpers.removeLastCharacter(controller.confirmPinTemp.value));
       return;
     }
-    controller.setConfirmPinTemp('${controller.confirmPinTemp}$value');
+
+    controller.setConfirmPinTemp('${controller.confirmPinTemp.value}$value');
 
     if (controller.confirmPinTemp.value.length == 6) {
-      if (controller.pinTemp == controller.confirmPinTemp) {
+      if (controller.pinTemp.value == controller.confirmPinTemp.value) {
         carouselPage = 0;
         controller.pin = controller.pinTemp.value;
         controller.setPinTemp('');
@@ -325,127 +329,217 @@ class PinScreen extends GetWidget<PinController> {
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: Stack(
-          children: <Widget>[
-            ColorAnimatedBackground(
-              moveByX: 60.0,
-              moveByY: 40.0,
-            ),
-            SafeArea(
-              bottom: false,
-              child: Column(
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      CupertinoButton(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 5.0, vertical: 10.0),
-                        onPressed: () {
-                          if (controller.isWaitingRecoveryKey.value == true) {
-                            controller.setIsWaitingRecoveryKey(false);
-                          }
-                          Get.back();
-                        },
-                        child: Image.asset(
-                            'lib/images/backarrowwithdropshadow.png'),
-                      ),
-                      /*  CupertinoButton(
+        child: Obx(
+          () => Stack(
+            children: <Widget>[
+              ColorAnimatedBackground(
+                moveByX: 60.0,
+                moveByY: 40.0,
+              ),
+              SafeArea(
+                bottom: false,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        CupertinoButton(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5.0, vertical: 10.0),
                           onPressed: () {
-                              restorePurchase();
+                            if (controller.isWaitingRecoveryKey.value == true) {
+                              controller.setIsWaitingRecoveryKey(false);
+                            }
+                            Get.back();
                           },
-                          child: Text(
-                            LangControl.to.S.value.restore_purchase,
-                            textScaleFactor: 1.0,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff979a9b),
-                              decoration: TextDecoration.underline,
-                              fontFamily: "Lato",
-                              fontStyle: FontStyle.normal,
-                              fontSize: 14.0,
-                              letterSpacing: -0.4099999964237213,
+                          child: Image.asset(
+                              'lib/images/backarrowwithdropshadow.png'),
+                        ),
+                        /*  CupertinoButton(
+                            onPressed: () {
+                                restorePurchase();
+                            },
+                            child: Text(
+                              LangControl.to.S.value.restore_purchase,
+                              textScaleFactor: 1.0,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xff979a9b),
+                                decoration: TextDecoration.underline,
+                                fontFamily: "Lato",
+                                fontStyle: FontStyle.normal,
+                                fontSize: 14.0,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
-                          ),
-                        ), */
-                    ],
-                  ),
-                  Expanded(
-                    child: Obx(() {
-                      if (controller.isWaitingRecoveryKey.value == true) {
-                        return CarouselSlider.builder(
-                          carouselController: carouselController,
-                          itemCount: 3,
-                          itemBuilder:
-                              (BuildContext context, int index, int _) {
-                            return _buildPinPad(context, index);
-                          },
-                          options: CarouselOptions(
-                            initialPage: 0,
-                            enableInfiniteScroll: false,
-                            height: double.maxFinite,
-                            viewportFraction: 1.0,
-                            scrollPhysics: NeverScrollableScrollPhysics(),
-                          ),
-                        );
+                          ), */
+                      ],
+                    ),
+                    Expanded(
+                      child: Obx(() {
+                        if (controller.isWaitingRecoveryKey.value == true) {
+                          return CarouselSlider.builder(
+                            carouselController: carouselController,
+                            itemCount: 3,
+                            itemBuilder:
+                                (BuildContext context, int index, int _) {
+                              return _buildPinPad(context, index);
+                            },
+                            options: CarouselOptions(
+                              initialPage: 0,
+                              enableInfiniteScroll: false,
+                              height: double.maxFinite,
+                              viewportFraction: 1.0,
+                              scrollPhysics: NeverScrollableScrollPhysics(),
+                            ),
+                          );
 
-                        // return Column(
-                        //   children: [
-                        //     Spacer(),
-                        //     Text(
-                        //       'Recovery Code',
-                        //       style: TextStyle(
-                        //         fontFamily: 'Lato',
-                        //         color: kSecondaryColor,
-                        //         fontSize: 24.0,
-                        //         fontWeight: FontWeight.w400,
-                        //         fontStyle: FontStyle.normal,
-                        //         letterSpacing: -0.4099999964237213,
-                        //       ),
-                        //     ),
-                        //     Spacer(),
-                        //     Shake(
-                        //       key: controller.shakeRecovery,
-                        //       preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
-                        //       child: Observer(builder: (_) {
-                        //         return PinPlaceholder(
-                        //           filledPositions: controller.recoveryCode.length,
-                        //           totalPositions: 6,
-                        //         );
-                        //       }),
-                        //     ),
-                        //     Spacer(),
-                        //     NumberPad(
-                        //       onPinTapped: pinTapped,
-                        //     ),
-                        //     Spacer(),
-                        //   ],
-                        // );
-                      }
-
-                      if (UserController.to.isPinRegistered.value == true) {
-                        String? assetImage;
-
-                        if (UserController.to.isBiometricActivated.value ==
-                            true) {
-                          if (UserController.to.availableBiometrics
-                              .contains(BiometricType.face)) {
-                            assetImage = 'lib/images/faceidwhiteico.png';
-                          } else if (UserController.to.availableBiometrics
-                              .contains(BiometricType.iris)) {
-                            assetImage = 'lib/images/irisscannerwhiteico.png';
-                          } else if (UserController.to.availableBiometrics
-                              .contains(BiometricType.fingerprint)) {
-                            assetImage = 'lib/images/fingerprintwhiteico.png';
-                          }
+                          // return Column(
+                          //   children: [
+                          //     Spacer(),
+                          //     Text(
+                          //       'Recovery Code',
+                          //       style: TextStyle(
+                          //         fontFamily: 'Lato',
+                          //         color: kSecondaryColor,
+                          //         fontSize: 24.0,
+                          //         fontWeight: FontWeight.w400,
+                          //         fontStyle: FontStyle.normal,
+                          //         letterSpacing: -0.4099999964237213,
+                          //       ),
+                          //     ),
+                          //     Spacer(),
+                          //     Shake(
+                          //       key: controller.shakeRecovery,
+                          //       preferences: AnimationPreferences(autoPlay: AnimationPlayStates.None),
+                          //       child: Observer(builder: (_) {
+                          //         return PinPlaceholder(
+                          //           filledPositions: controller.recoveryCode.length,
+                          //           totalPositions: 6,
+                          //         );
+                          //       }),
+                          //     ),
+                          //     Spacer(),
+                          //     NumberPad(
+                          //       onPinTapped: pinTapped,
+                          //     ),
+                          //     Spacer(),
+                          //   ],
+                          // );
                         }
 
+                        if (UserController.to.isPinRegistered.value == true) {
+                          String? assetImage;
+
+                          if (UserController.to.isBiometricActivated.value ==
+                              true) {
+                            if (UserController.to.availableBiometrics
+                                .contains(BiometricType.face)) {
+                              assetImage = 'lib/images/faceidwhiteico.png';
+                            } else if (UserController.to.availableBiometrics
+                                .contains(BiometricType.iris)) {
+                              assetImage = 'lib/images/irisscannerwhiteico.png';
+                            } else if (UserController.to.availableBiometrics
+                                .contains(BiometricType.fingerprint)) {
+                              assetImage = 'lib/images/fingerprintwhiteico.png';
+                            }
+                          }
+
+                          return Column(
+                            children: [
+                              Spacer(),
+                              Obx(
+                                () => Text(
+                                  LangControl.to.S.value.your_secret_key,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: kSecondaryColor,
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                    letterSpacing: -0.4099999964237213,
+                                  ),
+                                ),
+                              ),
+                              Spacer(
+                                flex: 2,
+                              ),
+                              Shake(
+                                key: controller.shakeKey,
+                                preferences: AnimationPreferences(
+                                    autoPlay: AnimationPlayStates.None),
+                                child: Obx(() {
+                                  return PinPlaceholder(
+                                    filledPositions:
+                                        controller.pinTemp.value.length,
+                                    totalPositions: 6,
+                                  );
+                                }),
+                              ),
+                              Spacer(),
+                              NumberPad(
+                                onPinTapped: pinTapped,
+                              ),
+                              Spacer(),
+                              if (assetImage != null)
+                                CupertinoButton(
+                                  onPressed: () {
+                                    controller.authenticate();
+                                  },
+                                  child: Image.asset(assetImage),
+                                ),
+                              if (UserController.to.wantsToActivateBiometric !=
+                                  true)
+                                CupertinoButton(
+                                  onPressed: () {
+                                    controller.recoverPin();
+                                  },
+                                  child: Obx(
+                                    () => Text(
+                                      LangControl.to.S.value.forgot_secret_key,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: kWhiteColor,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w400,
+                                        fontStyle: FontStyle.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              Spacer(
+                                flex: 2,
+                              ),
+                            ],
+                          );
+                        }
+
+                        if (UserController.to.waitingAccessCode.value ==
+                            false) {
+                          return CarouselSlider.builder(
+                            carouselController: carouselController,
+                            itemCount: 2,
+                            itemBuilder:
+                                (BuildContext context, int index, int _) {
+                              return _buildPinPad(context, index);
+                            },
+                            options: CarouselOptions(
+                              initialPage: 0,
+                              enableInfiniteScroll: false,
+                              height: double.maxFinite,
+                              viewportFraction: 1.0,
+                              scrollPhysics: NeverScrollableScrollPhysics(),
+                            ),
+                          );
+                        }
                         return Column(
                           children: [
                             Spacer(),
                             Obx(
                               () => Text(
-                                LangControl.to.S.value.your_secret_key,
+                                controller.invalidAccessCode.value
+                                    ? 'Invalid Access Code'
+                                    : LangControl.to.S.value.access_code,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: kSecondaryColor,
@@ -456,149 +550,62 @@ class PinScreen extends GetWidget<PinController> {
                                 ),
                               ),
                             ),
-                            Spacer(
-                              flex: 2,
+                            Padding(
+                              padding: const EdgeInsets.only(top: 16.0),
+                              child: Obx(
+                                () => Text(
+                                  LangControl.to.S.value.access_code_sent(
+                                      '${controller.email.value.isEmpty ? 'user@email.com' : controller.email.value.isEmpty}'),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontFamily: 'Lato',
+                                    color: kWhiteColor,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.w400,
+                                    fontStyle: FontStyle.normal,
+                                  ),
+                                ),
+                              ),
                             ),
+                            Spacer(),
                             Shake(
                               key: controller.shakeKey,
                               preferences: AnimationPreferences(
                                   autoPlay: AnimationPlayStates.None),
-                              child: Obx(() {
-                                return PinPlaceholder(
-                                  filledPositions:
-                                      controller.pinTemp.value.length,
-                                  totalPositions: 6,
-                                );
-                              }),
+                              child: Obx(
+                                () {
+                                  return PinPlaceholder(
+                                    filledPositions:
+                                        controller.accessCode.value.length,
+                                    totalPositions: 6,
+                                  );
+                                },
+                              ),
                             ),
                             Spacer(),
                             NumberPad(
                               onPinTapped: pinTapped,
                             ),
                             Spacer(),
-                            if (assetImage != null)
-                              CupertinoButton(
-                                onPressed: () {
-                                  controller.authenticate();
-                                },
-                                child: Image.asset(assetImage),
-                              ),
-                            if (UserController.to.wantsToActivateBiometric !=
-                                true)
-                              CupertinoButton(
-                                onPressed: () {
-                                  controller.recoverPin();
-                                },
-                                child: Obx(
-                                  () => Text(
-                                    LangControl.to.S.value.forgot_secret_key,
-                                    style: TextStyle(
-                                      fontFamily: 'Lato',
-                                      color: kWhiteColor,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w400,
-                                      fontStyle: FontStyle.normal,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            Spacer(
-                              flex: 2,
-                            ),
                           ],
                         );
-                      }
-
-                      if (UserController.to.waitingAccessCode.value == false) {
-                        return CarouselSlider.builder(
-                          carouselController: carouselController,
-                          itemCount: 2,
-                          itemBuilder:
-                              (BuildContext context, int index, int _) {
-                            return _buildPinPad(context, index);
-                          },
-                          options: CarouselOptions(
-                            initialPage: 0,
-                            enableInfiniteScroll: false,
-                            height: double.maxFinite,
-                            viewportFraction: 1.0,
-                            scrollPhysics: NeverScrollableScrollPhysics(),
-                          ),
-                        );
-                      }
-                      return Column(
-                        children: [
-                          Spacer(),
-                          Obx(
-                            () => Text(
-                              controller.invalidAccessCode.value
-                                  ? 'Invalid Access Code'
-                                  : LangControl.to.S.value.access_code,
-                              style: TextStyle(
-                                fontFamily: 'Lato',
-                                color: kSecondaryColor,
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.normal,
-                                letterSpacing: -0.4099999964237213,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 16.0),
-                            child: Obx(
-                              () => Text(
-                                LangControl.to.S.value.access_code_sent(
-                                    '${controller.email.value.isEmpty ? 'user@email.com' : controller.email.value.isEmpty}'),
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: kWhiteColor,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Spacer(),
-                          Shake(
-                            key: controller.shakeKey,
-                            preferences: AnimationPreferences(
-                                autoPlay: AnimationPlayStates.None),
-                            child: Obx(
-                              () {
-                                return PinPlaceholder(
-                                  filledPositions:
-                                      controller.accessCode.value.length,
-                                  totalPositions: 6,
-                                );
-                              },
-                            ),
-                          ),
-                          Spacer(),
-                          NumberPad(
-                            onPinTapped: pinTapped,
-                          ),
-                          Spacer(),
-                        ],
-                      );
-                    }),
-                  ),
-                ],
-              ),
-            ),
-            if (isLoading)
-              Container(
-                color: Colors.black.withOpacity(0.7),
-                child: Center(
-                  child: SpinKitChasingDots(
-                    color: kPrimaryColor,
-                    size: 80.0,
-                  ),
+                      }),
+                    ),
+                  ],
                 ),
               ),
-          ],
+              if (controller.isLoading.value)
+                Container(
+                  color: Colors.black.withOpacity(0.7),
+                  child: Center(
+                    child: SpinKitChasingDots(
+                      color: kPrimaryColor,
+                      size: 80.0,
+                    ),
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
@@ -647,7 +654,7 @@ class PinPlaceholder extends StatelessWidget {
 }
 
 class NumberPad extends StatelessWidget {
-  final Function onPinTapped;
+  final Function(String, bool) onPinTapped;
 
   const NumberPad({
     required this.onPinTapped,
@@ -656,49 +663,50 @@ class NumberPad extends StatelessWidget {
   List<Widget> _buildPinNumbers() {
     final items = <Widget>[];
 
-    var pin = 1;
-    for (var x = 0; x < 4; x++) {
+    for (var x = 1; x < 13; (x += 3)) {
       final number = <Widget>[];
-
       for (var y = 0; y < 3; y++) {
+        var pin = x + y;
         if (pin == 10) {
           number.add(
             Expanded(
               child: GestureDetector(
                 onTap: () {
-                  onPinTapped('\u0008');
+                  onPinTapped('', true);
                 },
                 child: Container(
                   margin: const EdgeInsets.all(2),
-                  color: Colors.teal,
                   child: Image.asset('lib/images/backspacewhite.png'),
                 ),
               ),
             ),
           );
-          pin++;
           continue;
         }
-
-        var value = pin;
+        if (pin == 12) {
+          number.add(Expanded(
+              child: Container(
+            margin: const EdgeInsets.all(2),
+          )));
+          continue;
+        }
         number.add(
           Expanded(
             child: GestureDetector(
               // padding: const EdgeInsets.all(0),
               //minSize: 44.0,
               onTap: () {
-                onPinTapped('${value == 11 ? '0' : value}');
+                onPinTapped('${pin == 11 ? '0' : pin}', false);
               },
               child: Container(
                 margin: const EdgeInsets.all(2),
-                color: Colors.teal,
                 child: Center(
                   child: Text(
                     '${pin == 11 ? '0' : pin}',
                     style: TextStyle(
                       fontFamily: 'Lato',
-                      color: pin == 12 ? Colors.transparent : kWhiteColor,
-                      fontSize: 24,
+                      color: kWhiteColor,
+                      fontSize: 25,
                       fontWeight: FontWeight.w400,
                       fontStyle: FontStyle.normal,
                       letterSpacing: -0.4099999964237213,
@@ -709,7 +717,6 @@ class NumberPad extends StatelessWidget {
             ),
           ),
         );
-        pin++;
       }
 
       items.add(

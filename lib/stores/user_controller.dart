@@ -110,7 +110,6 @@ class UserController extends GetxController {
     canTagToday.value = user.canTagToday;
     loggedIn.value = user.loggedIn;
     tryBuyId = initiatedWithProduct;
-    PrivatePhotosController.to.showPrivate.value = user.secretPhotos;
     isPinRegistered.value = user.isPinRegistered;
     keepAskingToDelete.value = user.keepAskingToDelete;
     shouldDeleteOnPrivate.value = user.shouldDeleteOnPrivate;
@@ -645,11 +644,8 @@ class UserController extends GetxController {
     ));
   }
 
-  String getSecretKey() {
-    var secret;
-    Future.value(database.getSingleMoorUser())
-        .then((MoorUser? user) => secret = user!.secretKey);
-    return secret;
+  Future<String?> getSecretKey() async {
+    return (await database.getSingleMoorUser())!.secretKey;
   }
 
   //@action

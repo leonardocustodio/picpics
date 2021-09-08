@@ -20,10 +20,8 @@ class TopBar extends StatelessWidget {
   final void Function(String value)? onChanged;
   final void Function(String value)? onSubmitted;
   final List<Widget> children;
-  final bool showSecretSwitch;
 
   TopBar({
-    required this.showSecretSwitch,
     this.searchEditingController,
     this.showUntag = false,
     this.searchFocusNode,
@@ -119,19 +117,19 @@ class TopBar extends StatelessWidget {
                     ),
                   ),
                 ),
-              if (showSecretSwitch == true)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                  child: SecretSwitch(
-                      value: true,
-                      onChanged: (value) {
-                        //print('turn off');
-                        PrivatePhotosController.to.switchSecretPhotos();
-
-                        /// TODO: implement this functionality
-                        // galleryStore.removeAllPrivatePics();
-                      }),
-                ),
+              GetX<PrivatePhotosController>(builder: (privateController) {
+                return privateController.showPrivate.value
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: SecretSwitch(
+                            value: privateController.showPrivate.value,
+                            onChanged: (value) {
+                              //print('turn off');
+                              privateController.switchSecretPhotos();
+                            }),
+                      )
+                    : Container();
+              }),
               showUntag
                   ? GestureDetector(
                       onTap: () {

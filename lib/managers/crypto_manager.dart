@@ -164,8 +164,8 @@ class Crypto {
     return false;
   }
 
-  static Future<bool> checkIsPinValid(
-      String userPin, UserController appStore) async {
+  static Future<bool> checkIsPinValid(String userPin) async {
+    final userController = UserController.to;
     final storage = FlutterSecureStorage();
     final ppkey = await storage.read(key: 'ppkey') ?? '';
     final hpkey = await storage.read(key: 'hpkey');
@@ -173,8 +173,9 @@ class Crypto {
 
     final stringToBase64 = utf8.fuse(base64);
 
-    final ivString =
-        stringToBase64.encode('$userPin${appStore.email}').substring(0, 16);
+    final ivString = stringToBase64
+        .encode('$userPin${userController.email}')
+        .substring(0, 16);
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
@@ -211,7 +212,7 @@ class Crypto {
         print('The key is valid!');
         print('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
         print('Decrypted Key: $decryptedData');
-        appStore.setEncryptionKey(
+        userController.setEncryptionKey(
             await algorithm.newSecretKeyFromBytes(decryptedData));
         return true;
       }
@@ -224,10 +225,13 @@ class Crypto {
     }
   }
 
-  static Future<String?> getEncryptedPin(UserController appStore) async {
+  static Future<String?> getEncryptedPin() async {
     final storage = FlutterSecureStorage();
 
-    final secretString = appStore.getSecretKey();
+    final secretString = await UserController.to.getSecretKey();
+    if (secretString == null) {
+      return null;
+    }
     final nounceString = await storage.read(key: 'npkey') ?? '';
     final encryptedPin = await storage.read(key: 'epkey') ?? '';
 
@@ -244,8 +248,11 @@ class Crypto {
       final encryptedValue = hex.decode(encryptedPin);
       final secretBox = cryptography.SecretBox(encryptedValue,
           nonce: ivKey,
-          mac: await cryptography.MacAlgorithm.empty
-              .calculateMac(encryptedValue, secretKey: picKey));
+          mac: await cryptography.MacAlgorithm.empty.calculateMac(
+            encryptedValue,
+            secretKey: picKey,
+            nonce: ivKey,
+          ));
       final decryptedData =
           await algorithm.decrypt(secretBox, secretKey: picKey);
       print('Pin: ${utf8.decode(decryptedData)}');
@@ -262,8 +269,7 @@ class Crypto {
     await storage.delete(key: 'npkey');
   }
 
-  static Future<bool> saveEncryptedPin(
-      String userPin, UserController appStore) async {
+  static Future<bool> saveEncryptedPin(String userPin) async {
     final storage = FlutterSecureStorage();
 
     /// preparing the algorithm
@@ -277,7 +283,8 @@ class Crypto {
         secretKey: picKey, nonce: ivKey);
     final hexData = hex.encode(encryptedData.cipherText);
 
-    await appStore.saveSecretKey(hex.encode(await picKey.extractBytes()));
+    await UserController.to
+        .saveSecretKey(hex.encode(await picKey.extractBytes()));
     await storage.write(key: 'epkey', value: hexData);
     await storage.write(key: 'npkey', value: hex.encode(ivKey));
 

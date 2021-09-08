@@ -19,7 +19,6 @@ class NoTaggedPicsInDevice extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TopBar(
-          showSecretSwitch: PrivatePhotosController.to.showPrivate.value,
           children: <Widget>[],
         ),
         Expanded(
