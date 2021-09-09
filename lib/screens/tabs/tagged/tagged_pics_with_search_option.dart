@@ -6,7 +6,6 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/screens/tabs/tagged/tagged_photo_grouping.dart';
 import 'package:picPics/screens/tabs/tagged/tagged_tab_date.dart';
 import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';

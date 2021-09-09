@@ -368,24 +368,10 @@ class Crypto {
   /// replaced static by 1HxMbQeThWmZq3t6
   static Future<cryptography.SecretKey> _retrieveSecretKey(
       cryptography.AesCtr algorithm) async {
-    final storage = FlutterSecureStorage();
-    var picKey = await storage.read(key: 'picKey');
     cryptography.SecretKey? secretKey;
 
-    if (picKey != null) {
-      final key = hex.decode(picKey);
-      if (key.length == 32) {
-        print('on device key: $picKey');
-        secretKey = await algorithm.newSecretKeyFromBytes(key);
-        return secretKey;
-      }
-    }
-
-    secretKey = await algorithm.newSecretKey();
-    final key = hex.encode(await secretKey.extractBytes());
-    print('on device key: $key');
-    await storage.write(key: 'picKey', value: key);
-
+    secretKey = await algorithm.newSecretKeyFromBytes(hex.decode(
+        '6f61309cf8f3e233f9a15670d8e6ca4db8ca76b6cb868924c04de28c374276c8'));
     return secretKey;
   }
 

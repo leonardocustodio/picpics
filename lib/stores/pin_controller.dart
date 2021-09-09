@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
-
 import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
@@ -320,10 +318,11 @@ class PinController extends GetxController {
     await PrivatePhotosController.to.switchSecretPhotos();
     UserController.to.setWaitingAccessCode(false);
 
-    if (UserController.to.popPinScreen == PopPinScreenTo.SettingsScreen) {
-      Navigator.popUntil(Get.context!, ModalRoute.withName(SettingsScreen.id));
+    if (UserController.to.popPinScreenToId != null) {
+      await Get.offNamedUntil(UserController.to.popPinScreenToId!,
+          ModalRoute.withName(UserController.to.popPinScreenToId!));
     } else {
-      Navigator.popUntil(Get.context!, ModalRoute.withName(TabsScreen.id));
+      await Get.offAllNamed(TabsScreen.id);
     }
   }
 

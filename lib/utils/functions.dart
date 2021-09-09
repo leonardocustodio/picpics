@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/screens/pin_screen.dart';
+import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -48,7 +49,7 @@ void showDeleteSecretModalForMultiPic() async {
 Future<void> showDeleteSecretModal(
     /* BuildContext context, */ PicStore picStore) async {
   if (true != PrivatePhotosController.to.showPrivate.value) {
-    UserController.to.popPinScreen = PopPinScreenTo.TabsScreen;
+    UserController.to.popPinScreenToId = TabsScreen.id;
     await Get.to(() => PinScreen());
     return;
   }

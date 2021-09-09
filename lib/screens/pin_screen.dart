@@ -700,17 +700,17 @@ class NumberPad extends StatelessWidget {
               },
               child: Container(
                 margin: const EdgeInsets.all(2),
-                child: Center(
-                  child: Text(
-                    '${pin == 11 ? '0' : pin}',
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: kWhiteColor,
-                      fontSize: 25,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      letterSpacing: -0.4099999964237213,
-                    ),
+                height: double.infinity,
+                alignment: Alignment.center,
+                child: Text(
+                  '${pin == 11 ? '0' : pin}',
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: kWhiteColor,
+                    fontSize: 25,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: -0.4099999964237213,
                   ),
                 ),
               ),

@@ -2,9 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-
 import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/widgets/top_bar.dart';
 

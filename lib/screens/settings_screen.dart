@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/screens/pin_screen.dart';
 import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
@@ -570,8 +569,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           //galleryStore.removeAllPrivatePics();
                                           return;
                                         }
-                                        UserController.to.popPinScreen =
-                                            PopPinScreenTo.SettingsScreen;
+                                        UserController.to.popPinScreenToId =
+                                            SettingsScreen.id;
                                         await Get.toNamed(PinScreen.id);
                                       },
                                       child: Row(
@@ -602,9 +601,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                           .wantsToActivateBiometric =
                                                       false;
                                                   UserController
-                                                          .to.popPinScreen =
-                                                      PopPinScreenTo
-                                                          .SettingsScreen;
+                                                          .to.popPinScreenToId =
+                                                      SettingsScreen.id;
                                                   await Get.toNamed(
                                                       PinScreen.id);
                                                 },
@@ -679,9 +677,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                   .wantsToActivateBiometric =
                                                               true;
                                                           UserController.to
-                                                                  .popPinScreen =
-                                                              PopPinScreenTo
-                                                                  .SettingsScreen;
+                                                                  .popPinScreenToId =
+                                                              SettingsScreen.id;
                                                           Get.to(
                                                               () => PinScreen);
                                                           return;
@@ -721,9 +718,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                       true;
                                                                   UserController
                                                                           .to
-                                                                          .popPinScreen =
-                                                                      PopPinScreenTo
-                                                                          .SettingsScreen;
+                                                                          .popPinScreenToId =
+                                                                      SettingsScreen
+                                                                          .id;
                                                                   await Get.to(() =>
                                                                       PinScreen());
                                                                   return;

@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
+import 'package:picPics/screens/pin_screen.dart';
 
 import 'user_controller.dart';
 
@@ -23,9 +24,8 @@ class PrivatePhotosController extends GetxController {
   Future<void> switchSecretPhotos() async {
     showPrivate.value = !showPrivate.value;
 
-    if (showPrivate.value == false) {
-      //print('Cleared encryption key in memory!!!');
-      UserController.to.setEncryptionKey(null);
+    if (showPrivate.value == true && UserController.to.encryptionKey == null) {
+      await Get.toNamed(PinScreen.id);
     }
 
     final currentUser = await _appDatabase.getSingleMoorUser();

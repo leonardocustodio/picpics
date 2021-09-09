@@ -15,10 +15,8 @@ import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/managers/database_manager.dart';
-
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/stores/database_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:local_auth/local_auth.dart';
@@ -568,7 +566,7 @@ class UserController extends GetxController {
 
   bool hasObserver = false;
 
-  PopPinScreenTo? popPinScreen;
+  String? popPinScreenToId;
 
   cryptography.SecretKey? encryptionKey;
   void setEncryptionKey(cryptography.SecretKey? value) => encryptionKey = value;
