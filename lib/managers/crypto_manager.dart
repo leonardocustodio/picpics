@@ -226,41 +226,40 @@ class Crypto {
   }
 
   static Future<String?> getEncryptedPin() async {
-    final storage = FlutterSecureStorage();
-
-    final secretString = await UserController.to.getSecretKey();
-    if (secretString == null) {
-      return null;
-    }
-    final nounceString = await storage.read(key: 'npkey') ?? '';
-    final encryptedPin = await storage.read(key: 'epkey') ?? '';
-
-    /// preparing the algorithm
-    final algorithm = cryptography.AesCtr.with256bits(
-        macAlgorithm: cryptography.Hmac.sha256());
-
-    final sec = hex.decode(secretString);
-
-    final picKey = await algorithm.newSecretKeyFromBytes(sec);
     try {
-      final ivKey = utf8.encode(nounceString);
-      final encryptedValue = utf8.encode(encryptedPin);
-      final secretBox = cryptography.SecretBox(hex.decode(encryptedPin),
+      final storage = FlutterSecureStorage();
+
+      final secretString = await UserController.to.getSecretKey();
+      if (secretString == null) {
+        return null;
+      }
+      final nounceString = (await storage.read(key: 'npkey')) ?? '';
+      final encryptedPin = (await storage.read(key: 'epkey')) ?? '';
+
+      /// preparing the algorithm
+      final algorithm = cryptography.AesCtr.with256bits(
+          macAlgorithm: cryptography.Hmac.sha256());
+
+      final sec = hex.decode(secretString);
+
+      final picKey = await algorithm.newSecretKeyFromBytes(sec);
+      final ivKey = hex.decode(nounceString);
+      final encryptedValue = hex.decode(encryptedPin);
+      final secretBox = cryptography.SecretBox(encryptedValue,
           nonce: ivKey,
-          mac: await cryptography.MacAlgorithm.empty.calculateMac(
+          mac: await algorithm.macAlgorithm.calculateMac(
             encryptedValue,
             secretKey: picKey,
             nonce: ivKey,
           ));
       final decryptedData =
           await algorithm.decrypt(secretBox, secretKey: picKey);
-      print('Pin: ${utf8.decode(decryptedData)}');
-      return utf8.decode(decryptedData);
+      print('Pin: ${hex.encode(decryptedData)}');
+      return hex.encode(decryptedData);
     } catch (error) {
       print('error: $error');
       return null;
     }
-    return null;
   }
 
   static Future<void> deleteEncryptedPin() async {
@@ -277,19 +276,51 @@ class Crypto {
     final algorithm = cryptography.AesCtr.with256bits(
         macAlgorithm: cryptography.Hmac.sha256());
 
-    final picKey = await algorithm.newSecretKey();
+    final secretKey = await algorithm.newSecretKey();
     final ivKey = algorithm.newNonce();
 
-    final encryptedData = await algorithm.encrypt(utf8.encode(userPin),
-        secretKey: picKey, nonce: ivKey);
-    final hexData = hex.encode(encryptedData.cipherText);
-    final bytes = hex.encode(await picKey.extractBytes());
+    final encryptedData = await algorithm.encrypt(hex.decode(userPin),
+        secretKey: secretKey, nonce: ivKey);
+
+    /// hex.encode is necessary here.
+    final encryptedBytes = encryptedData.cipherText;
+    final encrypted = hex.encode(encryptedBytes);
+
+    /// hex.encode is necessary here.
+    final b = await secretKey.extractBytes();
+    final bytes = hex.encode(b);
 
     await UserController.to.saveSecretKey(bytes);
-    await storage.write(key: 'epkey', value: hexData);
-    await storage.write(key: 'npkey', value: hex.encode(ivKey));
+    await storage.write(key: 'epkey', value: encrypted);
+
+    /// hex.encode is necessary here.
+    final svingIvKey = hex.encode(ivKey);
+    await storage.write(key: 'npkey', value: svingIvKey);
 
     return true;
+
+    /// Let's decrypt
+    ///
+/* 
+    final sk = hex.decode(bytes);
+    final secreetKey = await algorithm.newSecretKeyFromBytes(sk);
+
+    final iv = hex.decode(svingIvKey);
+    final encryptedDataT = hex.decode(encrypted);
+
+    final secretBox = cryptography.SecretBox(
+      encryptedDataT,
+      nonce: iv,
+      mac: await algorithm.macAlgorithm.calculateMac(
+        encryptedDataT,
+        nonce: iv,
+        secretKey: secreetKey,
+      ),
+    );
+    final letsDecrypt =
+        await algorithm.decrypt(secretBox, secretKey: secreetKey);
+    final data = hex.encode(letsDecrypt);
+    print('decrypt Data: $data'); */
   }
 
   static Future<void> saveSaltKey() async {
