@@ -222,7 +222,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      //print('LongPress');
+                      print('LongPress');
                       if (false == controller.multiPicBar.value) {
                         controller.selectedTaggedPics[picId] = true;
                         controller.multiPicBar.value = true;
@@ -358,11 +358,11 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                           picStore: picStore,
                           picIsTagged: true,
                         );
-                        //print('Pics Selected Length: ${GalleryStore.to.selectedPics.length}');
+                        print('Pics Selected Length: ${GalleryStore.to.selectedPics.length}');
                         return;
                       } */
 
-                      //print('Selected photo: ${picStore.photoId}');
+                      print('Selected photo: ${picStore.photoId}');
                       /* GalleryStore.to.setCurrentPic(picStore);
                       GalleryStore.to.setInitialSelectedThumbnail(picStore); */
                       Get.to(() => PhotoScreen(
@@ -461,7 +461,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                         );
                       }
                       if (picStore.isStarred == true) {
-                        //print('Adding starred yellow ico');
+                        print('Adding starred yellow ico');
                         items.add(
                           Positioned(
                             left: 6.0,

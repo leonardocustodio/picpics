@@ -96,14 +96,14 @@ class PinController extends GetxController {
         },
       );
 
-      //print(result.data);
+      print(result.data);
 
       if (result.data != false) {
-        //print('Recovery Key Encrypted: ${result.data}');
+        print('Recovery Key Encrypted: ${result.data}');
         encryptedRecoveryKey = result.data;
         setIsWaitingRecoveryKey(true);
-        //print('Saving ${result.data} with access ');
-        //print('code $accessCode and pin $pin');
+        print('Saving ${result.data} with access ');
+        print('code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
         // await Crypto.saveSpKey(accessCode, result.data, pin);
         return true;
@@ -121,7 +121,7 @@ class PinController extends GetxController {
 
   //@action
   Future<bool> isRecoveryCodeValid(UserController appStore) async {
-    //print('Typed Recovery Code: $recoveryCode');
+    print('Typed Recovery Code: $recoveryCode');
 
     var valid = await Crypto.checkRecoveryKey(
         encryptedRecoveryKey, recoveryCode.value, generatedIv, appStore);
@@ -137,12 +137,12 @@ class PinController extends GetxController {
     appStore.setTempEncryptionKey(null);
     pin = '';
     setIsWaitingRecoveryKey(false);
-    //print('Saved new pin!!!');
+    print('Saved new pin!!!');
   }
 
   //@action
   Future<Map<String, dynamic>> register() async {
-    //print('Email: $email - Pin: $pin');
+    print('Email: $email - Pin: $pin');
 
     var result = <String, dynamic>{};
 
@@ -162,13 +162,13 @@ class PinController extends GetxController {
         return result;
       }
     } catch (error) {
-      //print('Error creating user: $error');
+      print('Error creating user: $error');
       result['success'] = false;
       result['errorCode'] = error;
       return result;
     }
 
-    //print('User: $user');
+    print('User: $user');
     result['success'] = true;
     return result;
   }
@@ -191,11 +191,11 @@ class PinController extends GetxController {
           'random_iv': randomNumber,
         },
       );
-      //print(result.data);
+      print(result.data);
 
       if (result.data != false) {
-        //print('Saving ${result.data} with access code ');
-        //print('$accessCode and pin $pin');
+        print('Saving ${result.data} with access code ');
+        print('$accessCode and pin $pin');
         await Crypto.saveSaltKey();
         await Crypto.saveSpKey(
             accessCode.value, result.data, pin, email.value, appStore);
@@ -203,14 +203,14 @@ class PinController extends GetxController {
       }
 
       return result.data;
-    } on FirebaseFunctionsException catch (_) {
-      //print('caught firebase functions exception');
-      //print(e.code);
-      //print(e.message);
-      //print(e.details);
+    } on FirebaseFunctionsException catch (e) {
+      print('caught firebase functions exception');
+      print(e.code);
+      print(e.message);
+      print(e.details);
     } catch (e) {
-      //print('caught generic exception');
-      //print(e);
+      print('caught generic exception');
+      print(e);
     }
 
     return false;
@@ -257,7 +257,7 @@ class PinController extends GetxController {
     isLoading.value = false;
 
     if (valid) {
-      //print('Is valid: $valid');
+      print('Is valid: $valid');
       showCreatedKeyModal();
     } else {
       shakeKey.currentState?.forward();
@@ -267,11 +267,11 @@ class PinController extends GetxController {
   }
 
   void askEmail() async {
-    //print('asking email');
+    print('asking email');
 
     var alertInputController = TextEditingController();
 
-    //print('showModal');
+    print('showModal');
     await showDialog<void>(
       context: Get.context!,
       barrierDismissible: true,
@@ -390,7 +390,7 @@ class PinController extends GetxController {
         setConfirmPinTemp('');
       }
     } on PlatformException catch (_) {
-      //print(e);
+      print(e);
       shakeKey.currentState?.forward();
       setPinTemp('');
       setConfirmPinTemp('');

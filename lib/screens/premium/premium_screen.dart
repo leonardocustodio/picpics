@@ -97,8 +97,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
         if (UserController.to.tryBuyId != null) {
           if (getPackage != null) {
-            //print(getPackage);
-            //print('making purchase!!!');
+            print(getPackage);
+            print('making purchase!!!');
             makePurchase(context, getPackage);
 
             UserController.to.setTryBuyId(null);
@@ -185,7 +185,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             isLoading = false;
           });
           // Unlock that great "pro" content
-          //print('now you are fucking pro!');
+          print('now you are fucking pro!');
           await UserController.to.setIsPremium(true);
           // Get.back();
           await Navigator.pushNamedAndRemoveUntil(
@@ -210,7 +210,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      //print('Could not launch $url');
+      print('Could not launch $url');
     }
   }
 
@@ -471,7 +471,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       }
     }
 
-    //print(yearSub);
+    print(yearSub);
     var daysFree = yearSub?.product.introductoryPrice == null
         ? 3
         : yearSub!.product.introductoryPrice!.introPricePeriodNumberOfUnits;
@@ -651,7 +651,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     var save = yearSubs == null || monthSubs == null
         ? 0
         : 100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
-    //print('Save: $save');
+    print('Save: $save');
 
     return Column(
       children: [

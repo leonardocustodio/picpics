@@ -37,7 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      //print('Could not launch $url');
+      print('Could not launch $url');
     }
   }
 
@@ -527,7 +527,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      //print('do nothing');
+                      print('do nothing');
                     },
                     child: Container(),
                   ),

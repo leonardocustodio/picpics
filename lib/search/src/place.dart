@@ -17,7 +17,7 @@ class Place {
       types = place['types'];
       fullJSON = place;
     } catch (e) {
-      //print("The argument you passed for Place is not compatible.");
+      print("The argument you passed for Place is not compatible.");
     }
   }
 

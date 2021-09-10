@@ -12,6 +12,7 @@ import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
+import 'package:home_widget/home_widget.dart';
 
 import 'package:picPics/generated/l10n.dart' as lang;
 import 'package:picPics/managers/analytics_manager.dart';
@@ -39,7 +40,7 @@ import 'stores/tagged_controller.dart';
 import 'stores/tags_controller.dart';
 
 Future<String?> checkForUserControllerInitiatedProducts() async {
-  //print('Checking if appstore initiated products');
+  print('Checking if appstore initiated products');
   var appStoreProducts =
       await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
   if (appStoreProducts.isNotEmpty) {
@@ -49,7 +50,7 @@ Future<String?> checkForUserControllerInitiatedProducts() async {
 }
 
 void backgroundFetchHeadlessTask(String taskId) async {
-  //print('[BackgroundFetch] Headless event received.');
+  print('[BackgroundFetch] Headless event received.');
   await WidgetManager.sendAndUpdate();
   BackgroundFetch.finish(taskId);
 }
@@ -101,8 +102,6 @@ void main() async {
     );
   }).sendPort);
 
-  //print('Device Locale: $deviceLocale');
-
   String? initiatedWithProduct;
   if (Platform.isIOS) {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
@@ -115,16 +114,17 @@ void main() async {
     if (data.containsKey('+clicked_branch_link') &&
         data['+clicked_branch_link'] == true) {
       //Link clicked. Add logic to get link data
-      //print('Custom string: ${data["custom_string"]}');
+      print('Custom string: ${data["custom_string"]}');
     }
   }, onError: (error) {
     //PlatformException platformException = error as PlatformException;
-    //print('InitSession error: ${platformException.code}');
-    //print(' - ${platformException.message}');
+    print('InitSession error: ${error.code}');
+    print(' - ${error.message}');
   });
 
-  //bool setAppGroup = await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
-  //print('Has setted app group: $setAppGroup');
+  var setAppGroup =
+      await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
+  print('Has setted app group: $setAppGroup');
 
   await BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   runZonedGuarded<void>(() {
@@ -170,12 +170,12 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      //print('&&&& Here lifecycle!');
+      print('&&&& Here lifecycle!');
       WidgetManager.sendAndUpdate();
     }
 
     if (state == AppLifecycleState.resumed) {
-      //print('&&&&&&&&& App got back from background');
+      print('&&&&&&&&& App got back from background');
       // if (appStore.secretPhotos) {
       //   appStore.switchSecretPhotos();
       //   galleryStore.removeAllPrivatePics();
@@ -188,7 +188,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    //print('Main Build!!!');
+    print('Main Build!!!');
     print('lang: ${widget.user.appLocale.value}');
     return GetMaterialApp(
       localizationsDelegates: [

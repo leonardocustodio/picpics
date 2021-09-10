@@ -16,7 +16,7 @@ class ClassificationStore {
       final text = label.text;
       final entityId = label.entityId;
       final confidence = label.confidence;
-      //print('Text: $text - Entity: $entityId - Confidence: $confidence');
+      print('Text: $text - Entity: $entityId - Confidence: $confidence');
     }
 
     cloudLabeler.close();

@@ -133,7 +133,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
               return FadeImageBuilder(
                 child: GestureDetector(
                   onLongPress: () {
-                    //print('LongPress');
+                    print('LongPress');
                     if (controller.multiPicBar.value == false) {
                       controller.selectedMultiBarPics[picId] = true;
                       controller.setMultiPicBar(true);
@@ -152,8 +152,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                   picStore: picStore,
                   picIsTagged: false,
                 ); */
-                        //print('Pics Selected Length: ');
-                        //print('${GalleryStore.to.selectedPics.length}');
+                        print('Pics Selected Length: ');
+                        print('${GalleryStore.to.selectedPics.length}');
                         return;
                       }
                       var list = controller.taggedPicId[tagKey]?.keys.toList();

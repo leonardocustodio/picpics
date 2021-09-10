@@ -33,8 +33,8 @@ class Crypto {
 
     final hexData = hex.encode(encryptedData.cipherText);
 
-    //print('Encrypting $encryptValue - With ivString: $ivString');
-    //print('Encrypted value: $hexData');
+    print('Encrypting $encryptValue - With ivString: $ivString');
+    print('Encrypted value: $hexData');
 
     return hexData;
   }
@@ -46,7 +46,7 @@ class Crypto {
     final ppkey = await storage.read(key: 'ppkey') ?? '';
     final stringToBase64 = utf8.fuse(base64);
 
-    //print('Decrypted spKey is: ${appStore.tempEncryptionKey}');
+    print('Decrypted spKey is: ${appStore.tempEncryptionKey}');
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
@@ -63,7 +63,7 @@ class Crypto {
     final ivString =
         stringToBase64.encode('$userPin${appStore.email}').substring(0, 16);
 
-    //print('New generated IV for encryption: $ivString');
+    print('New generated IV for encryption: $ivString');
     final ivKey = utf8.encode(ivString);
 
     final encryptedData = await algorithm.encrypt(
@@ -72,9 +72,9 @@ class Crypto {
         nonce: ivKey);
     final hexData = hex.encode(encryptedData.cipherText);
 
-    //print('New key encrypted with new pin: $hexData');
+    print('New key encrypted with new pin: $hexData');
     await storage.write(key: 'spkey', value: hexData);
-    //print('New key saved to storage!');
+    print('New key saved to storage!');
   }
 
   static Future<bool> checkRecoveryKey(String encryptedRecoveryKey,
@@ -96,28 +96,28 @@ class Crypto {
     final ivGenerated = utf8.encode(generatedIv);
 
     var encryptedValue = hex.decode(encryptedRecoveryKey);
-    //print('Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
+    print('Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
 
     try {
       final secretBox = cryptography.SecretBox.
       final decryptedFirstData = await algorithm.decrypt(encryptedValue,
           secretKey: picKey, nonce: ivRecovery);
       final decryptedFirstStep = utf8.decode(decryptedFirstData);
-      //print('First Step Decrypted: $decryptedFirstStep');
+      print('First Step Decrypted: $decryptedFirstStep');
 
       final decryptedFinal = await aesCtr.decrypt(
           hex.decode(decryptedFirstStep),
           secretKey: picKey,
           nonce: ivGenerated);
       final decryptedData = utf8.decode(decryptedFinal);
-      //print('Final decrypted value: $decryptedData');
-      //print('Hp Key: $hpkey');
+      print('Final decrypted value: $decryptedData');
+      print('Hp Key: $hpkey');
 
       final digest = hex.encode((await sha256.hash(decryptedFinal)).bytes);
-      //print('Final key hashed: $digest');
-      //print('Saved hash: $hpkey');
+      print('Final key hashed: $digest');
+      print('Saved hash: $hpkey');
 
-      //print('Final key hash');
+      print('Final key hash');
       if (hpkey == null) {
         await storage.write(key: 'hpkey', value: digest);
         appStore.setTempEncryptionKey(decryptedData);
@@ -129,10 +129,10 @@ class Crypto {
         return true;
       }
 
-      //print('Not the real key');
+      print('Not the real key');
       return false;
     } catch (error) {
-      //print('Not the real key');
+      print('Not the real key');
       return false;
     }
   }
@@ -155,24 +155,24 @@ class Crypto {
           await aesCtr.decrypt(hex.decode(spkey), secretKey: picKey, nonce: iv);
       final decryptedString = hex.encode(decryptedData);
 
-      //print('Server key after decrypt: $decryptedString');
+      print('Server key after decrypt: $decryptedString');
 
-      //print('Hasing it to check if it is the correct key');
+      print('Hasing it to check if it is the correct key');
       final digest = hex.encode((await sha256.hash(decryptedData)).bytes);
-      //print('Hashed key is: $digest');
+      print('Hashed key is: $digest');
 
       if (digest == hpkey) {
-        //print('The key is valid!');
-        //print('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
-        //print('Decrypted Key: $decryptedData');
+        print('The key is valid!');
+        print('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
+        print('Decrypted Key: $decryptedData');
         appStore.setEncryptionKey(SecretKey(decryptedData));
         return true;
       }
 
-      //print('The key is invalid');
+      print('The key is invalid');
       return false;
     } catch (error) {
-      //print('Failed to decrypt key invalid padblock!');
+      print('Failed to decrypt key invalid padblock!');
       return false;
     }
   }
@@ -190,7 +190,7 @@ class Crypto {
     try {
       final decryptedData = await aesCtr.decrypt(hex.decode(encryptedPin),
           secretKey: picKey, nonce: ivKey);
-      //print('Pin: ${utf8.decode(decryptedData)}');
+      print('Pin: ${utf8.decode(decryptedData)}');
       return utf8.decode(decryptedData);
     } catch (error) {
       return null;
@@ -228,7 +228,7 @@ class Crypto {
     final String secretSalt =
         stringToBase64.encode(Uuid().v4()).substring(0, 16);
     await storage.write(key: 'ppkey', value: secretSalt);
-    //print('Secret salt: $secretSalt');
+    print('Secret salt: $secretSalt');
   }
 
   static Future<void> saveSpKey(String accessKey, String spKey, String userPin,
@@ -243,40 +243,40 @@ class Crypto {
         SecretKey(utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'));
     final Nonce ivAccess = Nonce(utf8.encode(generateIv));
 
-    //print('SpKey: $spKey');
-    //print('Encrypted: $spKey');
+    print('SpKey: $spKey');
+    print('Encrypted: $spKey');
 
     final decryptedKey = await aesCtr.decrypt(hex.decode(spKey),
         secretKey: picAccessKey, nonce: ivAccess);
     final hexData = hex.encode(decryptedKey);
 
-    //print('Decrypted spKey is: $hexData');
+    print('Decrypted spKey is: $hexData');
     appStore.setEncryptionKey(SecretKey(decryptedKey));
 
-    //print('Before digest....');
+    print('Before digest....');
     final digest = hex.encode((await sha256.hash(decryptedKey)).bytes);
-    //print('Saving hashed spKey: $digest');
+    print('Saving hashed spKey: $digest');
     await storage.write(key: 'hpkey', value: digest);
 
     final SecretKey picKey = SecretKey(utf8.encode('1HxMbQeThWmZq3t6'));
     final String ivString =
         stringToBase64.encode('${userPin}${userEmail}').substring(0, 16);
-    //print('New generated IV for encryption: $ivString');
+    print('New generated IV for encryption: $ivString');
 
     final Nonce ivKey = Nonce(utf8.encode(ivString));
     final encrypted =
         await aesCtr.encrypt(decryptedKey, secretKey: picKey, nonce: ivKey);
     final encryptedData = hex.encode(encrypted);
 
-    //print('New key encrypted with pin: $encryptedData');
+    print('New key encrypted with pin: $encryptedData');
 
     await storage.write(key: 'spkey', value: encryptedData);
-    //print('key saved to storage!');
+    print('key saved to storage!');
   }
 
   static Future<void> encryptImage(
       PicStore picStore, SecretKey secretKey) async {
-    //print('Going to encrypt image with encryption key');
+    print('Going to encrypt image with encryption key');
 
     Uint8List assetData = await picStore.entity.value.originBytes;
     Uint8List thumbData = await picStore.entity.value
@@ -286,8 +286,8 @@ class Crypto {
         ? picStore.entity.value.title
         : await picStore.entity.value.titleAsync;
 
-    //print('Asset Name: ${picStore.entity.id}');
-    //print('Origin file: $title');
+    print('Asset Name: ${picStore.entity.id}');
+    print('Origin file: $title');
 
     if (assetData == null) {
       return;
@@ -308,7 +308,7 @@ class Crypto {
     String finalPhotoPath = p.join(appDocumentsDir.path, photosPath);
     String finalThumbPath = p.join(appDocumentsDir.path, thumbnailsPath);
 
-    //print('Encrypting....');
+    print('Encrypting....');
     // Using 96 bytes nonce
     final Nonce nonce = Nonce.randomBytes(12);
 
@@ -326,17 +326,17 @@ class Crypto {
           await aesGcm.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
     }
 
-    //print('Saving to file...');
+    print('Saving to file...');
 
     final File savedPicFile = File(finalPhotoPath);
     final File savedThumbFile = File(finalThumbPath);
     savedPicFile.writeAsBytes(encryptedPicData);
     savedThumbFile.writeAsBytes(encryptedThumbData);
-    //print('Writing to ${savedPicFile.path}');
-    //print('Writing to ${savedThumbFile.path}');
+    print('Writing to ${savedPicFile.path}');
+    print('Writing to ${savedThumbFile.path}');
 
-    //print('Saved file: $title to ${savedPicFile.path}');
-    // //print('File sizes: ${savedPicFile.lengthSync()} - Thumb Size: ${savedThumbFile.lengthSync()}');
+    print('Saved file: $title to ${savedPicFile.path}');
+    // print('File sizes: ${savedPicFile.lengthSync()} - Thumb Size: ${savedThumbFile.lengthSync()}');
 
     await picStore.setPrivatePath(
         photosPath, thumbnailsPath, hex.encode(nonce.bytes));
@@ -349,13 +349,13 @@ class Crypto {
 
     final File file = File(filePath);
 
-    //print('Secret Key: ${secretKey.toString()}');
-    //print('Nonce: ${nonce.toString()}');
-    //print('File exists: ${await file.exists()}');
-    //print('App Support Dir: ${(await getApplicationDocumentsDirectory()).path}');
+    print('Secret Key: ${secretKey.toString()}');
+    print('Nonce: ${nonce.toString()}');
+    print('File exists: ${await file.exists()}');
+    print('App Support Dir: ${(await getApplicationDocumentsDirectory()).path}');
 
     Uint8List decryptedData;
-    //print('Decrypting image: $filePath');
+    print('Decrypting image: $filePath');
     if (Platform.isAndroid) {
       decryptedData = await aesCtr.decrypt(
         file.readAsBytesSync(),
@@ -369,7 +369,7 @@ class Crypto {
         nonce: nonce,
       );
     }
-    //print('Decrypted');
+    print('Decrypted');
 
     return decryptedData;
   }

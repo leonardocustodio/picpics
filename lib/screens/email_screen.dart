@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
@@ -57,15 +58,16 @@ class _EmailScreenState extends State<EmailScreen> {
       UserController.to.setWaitingAccessCode(true);
       await Get.toNamed(PinScreen.id);
     } else {
-      //print('Result: $result');
-      if (result['errorCode'] == 'email-already-in-use') {
+      print('Result: $result');
+      if ((result['errorCode'] as FirebaseAuthException).code ==
+          'email-already-in-use') {
         PinController.to.showErrorModal(
             'This e-mail is already in use by another account.');
-        //print('Error !!!');
+        print('Error !!!');
       } else {
         PinController.to
             .showErrorModal('An error has occured. Please try again!');
-        //print('Error !!!');
+        print('Error !!!');
       }
     }
   }
@@ -73,7 +75,7 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    //print('Height: ${size.height} - Width: ${size.width}');
+    print('Height: ${size.height} - Width: ${size.width}');
 
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(

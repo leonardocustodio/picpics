@@ -35,9 +35,7 @@ class _TagsScreen_State extends State<TagsScreen_> {
                         child: Image.asset('lib/images/backarrowgray.png'),
                       ),
                       Image.asset('lib/images/searchico.png'),
-                      SizedBox(
-                        width: 10.0,
-                      ),
+                      const SizedBox(width: 10.0),
                       Expanded(
                         child: TextField(
                           // controller: _textEditingController,

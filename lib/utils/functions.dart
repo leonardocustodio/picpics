@@ -18,7 +18,7 @@ void showDeleteSecretModalForMultiPic() async {
     return;
   }
 
-  //print('showModal');
+  print('showModal');
   await showDialog<void>(
     context: Get.context!,
     barrierDismissible: true,
@@ -69,7 +69,7 @@ Future<void> showDeleteSecretModal(
     return;
   }
 
-  //print('showModal');
+  print('showModal');
   await showDialog<void>(
     context: Get.context!,
     barrierDismissible: true,

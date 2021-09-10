@@ -44,7 +44,7 @@ class ConfirmPicDelete extends StatelessWidget {
                     child: CupertinoButton(
                       onPressed: () {
                         Get.back();
-                        //print('teste');
+                        print('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),

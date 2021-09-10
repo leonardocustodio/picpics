@@ -81,19 +81,15 @@ class TagsController extends GetxController {
 
     if (text.trim() == '') {
       for (var recent in getUser!.recentTags) {
-        // //print('Recent Tag: $recent');
-        if (multiPicTags[recent] != null || recent == kSecretTagKey) {
+        // print('Recent Tag: $recent');
+        if (multiPicTags[recent] != null ||
+            (PrivatePhotosController.to.showPrivate.value == false &&
+                recent == kSecretTagKey)) {
           continue;
         }
         suggestionTags.add(recent);
       }
 
-      // //print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
-
-//      while (suggestions.length < maxNumOfSuggestions) {
-//          if (excludeTags.contains('Hey}')) {
-//            continue;
-//          }
       if (suggestionTags.length < kMaxNumOfSuggestions) {
         for (var tag in tagsList) {
           var tagKey = tag.key;
@@ -103,19 +99,20 @@ class TagsController extends GetxController {
           if (multiPicTags[tagKey] != null ||
               selectedFilteringTagsKeys[tagKey] != null ||
               suggestionTags.contains(tagKey) ||
-              tagKey == kSecretTagKey) {
+              (PrivatePhotosController.to.showPrivate.value == false &&
+                  tagKey == kSecretTagKey)) {
             continue;
           }
-          // //print('Adding tag key: $tagKey');
+          // print('Adding tag key: $tagKey');
           suggestionTags.add(tagKey);
         }
       }
-//      }
     } else {
       var listOfLetters = text.toLowerCase().split('');
       for (var tag in tagsList) {
         var tagKey = tag.key;
-        if (tagKey == kSecretTagKey) {
+        if (PrivatePhotosController.to.showPrivate.value == false &&
+            tagKey == kSecretTagKey) {
           continue;
         }
         if (selectedFilteringTagsKeys[tagKey] != null) {
@@ -145,7 +142,7 @@ class TagsController extends GetxController {
       }
     }
 
-    // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
+    // print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
     if (multiPicTags[kSecretTagKey] == null &&
         selectedFilteringTagsKeys[kSecretTagKey] == null &&
         PrivatePhotosController.to.showPrivate.value == true &&
@@ -153,9 +150,9 @@ class TagsController extends GetxController {
       suggestionTags.add(kSecretTagKey);
     }
 
-    // //print('find suggestions: $searchText - exclude tags: $multiPicTags');
-    // //print(suggestionTags);
-    // //print('UserController Tags: ${TagsController.to.allTags}');
+    // print('find suggestions: $searchText - exclude tags: $multiPicTags');
+    // print(suggestionTags);
+    // print('UserController Tags: ${TagsController.to.allTags}');
     /* List<TagsStore> suggestions = TagsController.to.allTags
         .where((element) => suggestionTags.contains(element.id))
         .toList(); */
@@ -165,7 +162,7 @@ class TagsController extends GetxController {
         suggestions.add(TagsController.to.allTags[suggestedTag]!.value);
       }
     });
-    // //print('Suggestions Tag Store: $suggestions');
+    // print('Suggestions Tag Store: $suggestions');
     searchTagsResults.clear();
     searchTagsResults.value = List<TagModel>.from(suggestions);
     print('$suggestions:');
@@ -256,19 +253,19 @@ class TagsController extends GetxController {
 
   Future<String> createTag(String tagName) async {
     //var tagsBox = Hive.box('tags');
-    /*// //print(tagsBox.keys); */
+    /*// print(tagsBox.keys); */
 
     var tagKey = Helpers.encryptTag(tagName);
-    // //print('Adding tag: $tagName');
+    // print('Adding tag: $tagName');
 
     final lab = await _database.getLabelByLabelKey(tagKey);
 
     if (lab != null) {
-      // //print('user already has this tag');
+      // print('user already has this tag');
       return tagKey;
     }
 
-    // //print('adding tag to database...');
+    // print('adding tag to database...');
     await _database.createLabel(Label(
         key: tagKey,
         title: tagName,
@@ -304,7 +301,7 @@ class TagsController extends GetxController {
     }
 
     if (allTags[kSecretTagKey] == null) {
-      //print('Creating secret tag in db!');
+      print('Creating secret tag in db!');
       var createSecretLabel = Label(
         key: kSecretTagKey,
         title: 'Secret Pics',
@@ -636,7 +633,7 @@ class TagsController extends GetxController {
             pic.tags[oldTagKey] = newTagKey;
             await _database.updatePhoto(pic);
             //picsBox.put(photoId, pic);
-            // //print('updated tag in pic ${pic.id}');
+            // print('updated tag in pic ${pic.id}');
           }
         })
       ],
@@ -653,17 +650,17 @@ class TagsController extends GetxController {
     var label = await _database.getLabelByLabelKey(tagKey);
 
     if (label != null && allTags[tagKey] != null) {
-      // //print('found tag going to delete it');
+      // print('found tag going to delete it');
       // Remove a tag das fotos já taggeadas
       var tagsStore = allTags[tagKey]!.value;
-      // //print('TagsStore Tag: ${tagsStore.name}');
+      // print('TagsStore Tag: ${tagsStore.name}');
       /*  TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);
       for (PicStore picTagged in taggedPicsStore.pics) {
-        // //print('Tagged Pic Store Pics: ${picTagged.photoId}');
+        // print('Tagged Pic Store Pics: ${picTagged.photoId}');
         await picTagged.removeTagFromPic(tagKey: tagsStore.id);
         if (picTagged.tags.length == 0 && picTagged != currentPic) {
-          // //print('this pic is not tagged anymore!');
+          // print('this pic is not tagged anymore!');
           addPicToUntaggedPics(picStore: picTagged);
         }
       }
@@ -673,7 +670,7 @@ class TagsController extends GetxController {
       removeTag(tagModel: tagsStore);
       await _database.deleteLabelByLabelId(tagKey); */
       //tagsBox.delete(tagKey);
-      // //print('deleted from tags db');
+      // print('deleted from tags db');
       await Analytics.sendEvent(Event.deleted_tag);
       removeOldTagReferences(tagKey);
     }

@@ -123,6 +123,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           TagsList(
+                              tagStyle: TagStyle.MultiColored,
                               tagsKeyList:
                                   tagsController.multiPicTags.keys.toList(),
                               addTagField: true,

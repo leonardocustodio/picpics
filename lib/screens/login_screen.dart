@@ -181,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   TabsScreen.id, (route) => false);
                               return;
                             }
-                            //print('next');
+                            print('next');
                             await swiperController.next(animation: true);
                           },
                           padding: const EdgeInsets.all(0),

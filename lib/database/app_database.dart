@@ -194,7 +194,7 @@ LazyDatabase _openConnection() {
     // for your app.
     final dbFolder = await getApplicationSupportDirectory();
     //final path = p.join(dbFolder.path, 'db.sqlite');
-    ////print('db:path:-$path');
+    //print('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return VmDatabase(file, setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");

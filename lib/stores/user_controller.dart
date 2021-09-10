@@ -301,7 +301,7 @@ class UserController extends GetxController {
     if (dailyChallenges.value == true) {
       //      PushNotificationsManager push = PushNotificationsManager();
       //      push.scheduleNotification();
-      //print('rescheduling notifications....');
+      print('rescheduling notifications....');
     }
   }
 
@@ -364,14 +364,15 @@ class UserController extends GetxController {
     var lastTaggedPicNewDate = dateNow;
     if (DateUtils.isSameDay(lastTaggedPicDate, dateNow)) {
       picsTaggedToday += 1;
-      //print('same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
+      print(
+          'same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
 
       final remoteConfig = RemoteConfig.instance;
       dailyPicsForAds.value = remoteConfig.getInt('daily_pics_for_ads');
       var mod = currentUser.picsTaggedToday % dailyPicsForAds.value;
 
       if (mod == 0) {
-        //print('### CALL ADS!!!');
+        print('### CALL ADS!!!');
 
         await database.updateMoorUser(currentUser.copyWith(
           picsTaggedToday: picsTaggedToday,
@@ -381,7 +382,7 @@ class UserController extends GetxController {
         return;
       }
     } else {
-      //print('(date might be null) or (not same day... resetting counter....)');
+      print('(date might be null) or (not same day... resetting counter....)');
       picsTaggedToday = 1;
     }
     await database.updateMoorUser(currentUser.copyWith(
@@ -433,11 +434,11 @@ class UserController extends GetxController {
 
     if (tagsBox.length > 1 || context == null) {
       // Criada a secret tag aqui por isso 1
-      //print('Default tags already created');
+      print('Default tags already created');
       return;
     }
 
-    //print('adding default tags...');
+    print('adding default tags...');
     var tag1 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
@@ -518,7 +519,7 @@ class UserController extends GetxController {
 
   //@action
   Future<void> addTagToRecent({required String tagKey}) async {
-    //print('adding tag to recent: $tagKey');
+    print('adding tag to recent: $tagKey');
 
     /* var userBox = Hive.box('user');
     User getUser = userBox.getAt(0); */
@@ -530,12 +531,12 @@ class UserController extends GetxController {
       getUser!.recentTags.remove(tagKey);
       getUser.recentTags.insert(0, tagKey);
       await database.updateMoorUser(getUser);
-      //print('final tags in recent: ${getUser.recentTags}');
+      print('final tags in recent: ${getUser.recentTags}');
       return;
     }
 
     while (recentTags.length >= kMaxNumOfRecentTags) {
-      //print('removing last');
+      print('removing last');
       recentTags.removeLast();
       getUser!.recentTags.removeLast();
     }
@@ -543,7 +544,7 @@ class UserController extends GetxController {
     recentTags.insert(0, tagKey);
     getUser!.recentTags.insert(0, tagKey);
     await database.updateMoorUser(getUser);
-    //print('final tags in recent: ${getUser.recentTags}');
+    print('final tags in recent: ${getUser.recentTags}');
   }
 
   //@action
@@ -557,7 +558,7 @@ class UserController extends GetxController {
       getUser!.recentTags.remove(tagKey);
       await database.updateMoorUser(getUser);
       /* userBox.putAt(0, getUser); */
-      //print('recent tags after removed: ${getUser.recentTags}');
+      print('recent tags after removed: ${getUser.recentTags}');
     }
   }
 
@@ -624,11 +625,11 @@ class UserController extends GetxController {
             availableBiometrics.value = List<BiometricType>.from(val);
           });
         } catch (e) {
-          //print(e);
+          print(e);
         }
       }
     } catch (e) {
-      //print(e);
+      print(e);
     }
   }
 
@@ -655,7 +656,7 @@ class UserController extends GetxController {
     final user = await database.getSingleMoorUser();
     await database.updateMoorUser(user!.copyWith(secretKey: ''));
 
-    //print('Deleted encrypted info!');
+    print('Deleted encrypted info!');
   }
 
   //@action

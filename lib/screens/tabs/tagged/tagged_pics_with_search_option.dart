@@ -76,7 +76,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                         .removeTagKeyFromFiltering(tagKey);
                                   },
                                   onDoubleTap: (String tagKey) {
-                                    //print('do nothing');
+                                    print('do nothing');
                                   },
                                   // showEditTagModal: showEditTagModal,
                                 ),
@@ -103,8 +103,8 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                 ),
                               ),
                             ),
+
                             controller.searchTagsResults.isNotEmpty
-                                //print('############ ${GalleryStore.to.tagsSuggestions}');
                                 ? Padding(
                                     padding: const EdgeInsets.only(
                                         left: 16.0,
@@ -130,10 +130,10 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                                             searchEditingController.text); */
                                       },
                                       onDoubleTap: (String tagKey) {
-                                        //print('do nothing');
+                                        print('do nothing');
                                       },
                                       onPanEnd: (String tagKey) {
-                                        //print('do nothing');
+                                        print('do nothing');
                                       },
                                     ),
                                   )

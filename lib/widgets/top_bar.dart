@@ -48,7 +48,7 @@ class TopBar extends StatelessWidget {
                   child: FocusScope(
                     child: Focus(
                       onFocusChange: (focus) {
-                        //print('hasFocus: ${searchFocusNode.hasFocus}');
+                        print('hasFocus: $focus');
                         /* if (TagsController.to.isSearching.value == false) {
                           TagsController.to.setIsSearching(true);
                           TagsController.to.tagsSuggestionsCalculate();
@@ -70,12 +70,12 @@ class TopBar extends StatelessWidget {
                             controller: searchEditingController,
                             focusNode: searchFocusNode,
                             onChanged: (text) {
-                              //print('searching: $text');
+                              print('searching: $text');
                               onChanged?.call(text);
                               /* TagsController.to.searchText.value = text; */
                             },
                             onSubmitted: (text) {
-                              //print('return');
+                              print('return');
                               onSubmitted?.call(text);
                               searchEditingController?.clear();
                               /* TagsController.to.searchTagsResults.clear(); */
@@ -124,7 +124,7 @@ class TopBar extends StatelessWidget {
                         child: SecretSwitch(
                             value: privateController.showPrivate.value,
                             onChanged: (value) {
-                              //print('turn off');
+                              print('turn off');
                               privateController.switchSecretPhotos();
                             }),
                       )

@@ -6,14 +6,14 @@
                               onIndexChanged: (index) async {
                                 DatabaseManager.instance.setSwiperIndex(index);
                                 picSwiper = index;
-//print('picSwiper = $index');
+print('picSwiper = $index');
                                 bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
                                 if (shouldShowAds) {
                                   showWatchAdModal(context);
                                 }
                               },
                               itemBuilder: (BuildContext context, int index) {
-//print('calling index $index');
+print('calling index $index');
                                 return _buildPhotoSlider(context, index);
                               },
                               layout: SwiperLayout.DEFAULT,

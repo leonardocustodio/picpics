@@ -27,7 +27,7 @@ class TabsScreen extends GetWidget<TabsController> {
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
-    //print('Language Code: ${myLocale.languageCode}');
+    print('Language Code: ${myLocale.languageCode}');
 
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     var height = MediaQuery.of(context).size.height;
@@ -208,7 +208,7 @@ class TabsScreen extends GetWidget<TabsController> {
                             itemBuilder: (BuildContext context, int index) {
                               return GestureDetector(
                                 onTap: () {
-                                  //print('ignore');
+                                  print('ignore');
                                 },
                                 child: Container(
                                   margin: EdgeInsets.only(

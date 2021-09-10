@@ -31,11 +31,11 @@ class UntaggedTab extends GetWidget<TabsController> {
       onNotification: (scrollNotification) {
         /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
-          //print('Start scrolling');
+          print('Start scrolling');
           controller.setIsScrolling(true);
           return false;
         } else if (scrollNotification is ScrollEndNotification) {
-          //print('End scrolling');
+          print('End scrolling');
           controller.setIsScrolling(false);
           return true;
         }
@@ -330,7 +330,7 @@ class UntaggedTab extends GetWidget<TabsController> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
-    //print('Date Time Formatting: $dateTime');
+    print('Date Time Formatting: $dateTime');
 
     /// More Optimized code
     if (controller.toggleIndexUntagged.value == 0) {
@@ -419,7 +419,7 @@ class UntaggedTab extends GetWidget<TabsController> {
               milliseconds: 200,
               child: GestureDetector(
                 onLongPress: () {
-                  //print('LongPress');
+                  print('LongPress');
                   if (controller.multiPicBar.value == false) {
                     controller.setMultiPicBar(true);
                     controller.selectedMultiBarPics[picId] = true;

@@ -239,14 +239,13 @@ class Crypto {
     final algorithm = cryptography.AesCtr.with256bits(
         macAlgorithm: cryptography.Hmac.sha256());
 
-    final picKey =
-        await algorithm.newSecretKeyFromBytes(hex.decode(secretString));
+    final sec = hex.decode(secretString);
 
-    final ivKey = hex.decode(nounceString);
-
+    final picKey = await algorithm.newSecretKeyFromBytes(sec);
     try {
-      final encryptedValue = hex.decode(encryptedPin);
-      final secretBox = cryptography.SecretBox(encryptedValue,
+      final ivKey = utf8.encode(nounceString);
+      final encryptedValue = utf8.encode(encryptedPin);
+      final secretBox = cryptography.SecretBox(hex.decode(encryptedPin),
           nonce: ivKey,
           mac: await cryptography.MacAlgorithm.empty.calculateMac(
             encryptedValue,
@@ -258,8 +257,10 @@ class Crypto {
       print('Pin: ${utf8.decode(decryptedData)}');
       return utf8.decode(decryptedData);
     } catch (error) {
+      print('error: $error');
       return null;
     }
+    return null;
   }
 
   static Future<void> deleteEncryptedPin() async {
@@ -282,9 +283,9 @@ class Crypto {
     final encryptedData = await algorithm.encrypt(utf8.encode(userPin),
         secretKey: picKey, nonce: ivKey);
     final hexData = hex.encode(encryptedData.cipherText);
+    final bytes = hex.encode(await picKey.extractBytes());
 
-    await UserController.to
-        .saveSecretKey(hex.encode(await picKey.extractBytes()));
+    await UserController.to.saveSecretKey(bytes);
     await storage.write(key: 'epkey', value: hexData);
     await storage.write(key: 'npkey', value: hex.encode(ivKey));
 
@@ -410,35 +411,34 @@ class Crypto {
     final finalThumbPath = p.join(appDocumentsDir.path, thumbnailsPath);
 
     print('Encrypting....');
-    // Using 96 bytes nonce
+
+    /// Using 96 bytes nonce
     final nonce = encrypt.Key.fromSecureRandom(12).bytes;
 
-    var encryptedPicData;
-    var encryptedThumbData;
-    if (Platform.isAndroid) {
-      /// preparing the algorithm
-      final algorithm = cryptography.AesCtr.with256bits(
-          macAlgorithm: cryptography.Hmac.sha256());
-      encryptedPicData = await algorithm.encrypt(assetData,
-          secretKey: secretKey, nonce: nonce);
-      encryptedThumbData = await algorithm.encrypt(thumbData,
-          secretKey: secretKey, nonce: nonce);
-    } else {
-      /// preparing the algorithm
-      final algorithm = cryptography.AesGcm.with256bits();
+    late cryptography.SecretBox encryptedPicData;
+    late cryptography.SecretBox encryptedThumbData;
+    late cryptography.StreamingCipher algorithm;
 
-      encryptedPicData = await algorithm.encrypt(assetData,
-          secretKey: secretKey, nonce: nonce);
-      encryptedThumbData = await algorithm.encrypt(thumbData,
-          secretKey: secretKey, nonce: nonce);
+    /// Select whether to using it on android or on iOS !!
+    if (Platform.isAndroid) {
+      algorithm = cryptography.AesCtr.with256bits(
+          macAlgorithm: cryptography.Hmac.sha256());
+    } else {
+      algorithm = cryptography.AesGcm.with256bits();
     }
 
-    print('Saving to file...');
+    /// Let's start processing the image files to start encrypting.
+    ///
+    encryptedPicData =
+        await algorithm.encrypt(assetData, secretKey: secretKey, nonce: nonce);
+    encryptedThumbData =
+        await algorithm.encrypt(thumbData, secretKey: secretKey, nonce: nonce);
 
     final savedPicFile = File(finalPhotoPath);
     final savedThumbFile = File(finalThumbPath);
-    await savedPicFile.writeAsBytes(encryptedPicData);
-    await savedThumbFile.writeAsBytes(encryptedThumbData);
+    print('Saving to file...');
+    await savedPicFile.writeAsBytes(encryptedPicData.cipherText);
+    await savedThumbFile.writeAsBytes(encryptedThumbData.cipherText);
     print('Writing to ${savedPicFile.path}');
     print('Writing to ${savedThumbFile.path}');
 

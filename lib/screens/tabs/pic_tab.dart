@@ -128,7 +128,7 @@ class PicTab extends GetWidget<SwiperTabController> {
                           /* if (index < controller.swipeCutOff) {
                             return Container();
                           } */
-                          //print('calling index $index');
+                          print('calling index $index');
                           return _buildPhotoSlider(index);
                         },
                         options: CarouselOptions(
@@ -144,12 +144,12 @@ class PicTab extends GetWidget<SwiperTabController> {
                           },
                           onScrolled: (double? val) {
 //                              if (controller.swipeIndex <= controller.swipeCutOff && controller.swipeIndex != 0) {
-                            //print('changing scroll physics');
+                            print('changing scroll physics');
 //                                setState(() {
 //                                  scrollPhysics = NeverScrollableScrollPhysics();
 //                                });
 //                              }
-                            //print('scrolled $double');
+                            print('scrolled $double');
                           },
                         ),
                       );

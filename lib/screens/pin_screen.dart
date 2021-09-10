@@ -32,7 +32,7 @@ class PinScreen extends GetWidget<PinController> {
   } */
 
   Widget _buildPinPad(BuildContext context, int index) {
-    //print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
+    print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
     String title;
     GlobalKey<AnimatorWidgetState> key;
@@ -146,7 +146,7 @@ class PinScreen extends GetWidget<PinController> {
   }
 
   void pinTapped(String value, bool backspace) async {
-    //print('Value: ${controller.recoveryCode}${value}');
+    print('Value: ${controller.recoveryCode}${value}');
     if (controller.isWaitingRecoveryKey.value == true) {
       if (carouselPage == 0) {
         if (backspace) {
@@ -197,7 +197,7 @@ class PinScreen extends GetWidget<PinController> {
 
       if (controller.confirmPinTemp.value.length == 6) {
         if (controller.pinTemp.value == controller.confirmPinTemp.value) {
-          //print('Setting new pin!!!!!');
+          print('Setting new pin!!!!!');
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
           await UserController.to.setEmail(controller.email

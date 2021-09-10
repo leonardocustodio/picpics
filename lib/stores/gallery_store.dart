@@ -99,7 +99,7 @@ class GalleryStore extends GetxController {
     ever(shouldRefreshTaggedGallery, (_) {
       if (shouldRefreshTaggedGallery.value) {
         refreshItems();
-        //print('##### Rebuild everything!');
+        print('##### Rebuild everything!');
       }
     });
 
@@ -110,17 +110,17 @@ class GalleryStore extends GetxController {
   final isTitleWidget = <bool>[].obs;
 
   void refreshItems() {
-    //print('Calling refresh items!!!');
+    print('Calling refresh items!!!');
     /* if (isTitleWidget.isEmpty || shouldRefreshTaggedGallery.value == true) {
       taggedItems.value = [];
       isTitleWidget.value = <bool>[];
 
-      //print('Refreshing tagged library!!!!!');
+      print('Refreshing tagged library!!!!!');
       clearPicThumbnails();
 
       if (searchingTagsKeys.isNotEmpty) {
         if (filteredPics.isEmpty) {
-          //print('Filtered Pics is empty');
+          print('Filtered Pics is empty');
           isTitleWidget.addAll([true, true]);
           taggedItems.addAll([null, null]);
         } else {
@@ -148,7 +148,7 @@ class GalleryStore extends GetxController {
 
           for (TaggedPicsStore taggedPicsStore in taggedPicsStores) {
             if (taggedPicsStore.pics.isEmpty) {
-              //print('&&&& IS EMPTY &&&&');
+              print('&&&& IS EMPTY &&&&');
               isTitleWidget.add(true);
               taggedItems.add(taggedPicsStore);
               isTitleWidget.add(true);
@@ -174,7 +174,7 @@ class GalleryStore extends GetxController {
         }
       }
 
-      //print('@@@@@ Tagged Items Length: ${taggedItems.length}');
+      print('@@@@@ Tagged Items Length: ${taggedItems.length}');
       setShouldRefreshTaggedGallery(false);
     } */
   }
@@ -187,7 +187,7 @@ class GalleryStore extends GetxController {
       taggedPics.add(taggedPicsStore);
     } */
 
-    //print('finished adding all tagged pics stores!');
+    print('finished adding all tagged pics stores!');
   }
 
   void runTotalTaggedPicsComputation(_) {
@@ -211,7 +211,7 @@ class GalleryStore extends GetxController {
     taggedPics.forEach((element) {
       tags.add(element.tag.id);
     });
-    // //print('Tagged Keys: ${tags}');
+    // print('Tagged Keys: ${tags}');
     return tags.toList();
   } */
 
@@ -252,7 +252,7 @@ class GalleryStore extends GetxController {
 
   /*  @computed
   List<String> get searchingTagsKeys {
-    //print('${count++} :searchingTagsKeys');
+    print('${count++} :searchingTagsKeys');
     return searchingTags.map((element) => element.id).toList();
   } */
 
@@ -273,7 +273,7 @@ class GalleryStore extends GetxController {
 //      int val = value - 5;
 //      if (val > swipeCutOff) {
 //        swipeCutOff = value - 5;
-    // //print('&&&&&&&&& setting cutoff to $swipeCutOff');
+    // print('&&&&&&&&& setting cutoff to $swipeCutOff');
 //      }
 //    }
 
@@ -406,7 +406,7 @@ class GalleryStore extends GetxController {
 
     if (searchText == '') {
       for (var recent in getUser.recentTags) {
-        // //print('Recent Tag: $recent');
+        // print('Recent Tag: $recent');
         if (multiPicTags[recent] != null ||
             (PrivatePhotosController.to.showPrivate == false &&
                 recent == kSecretTagKey)) {
@@ -415,7 +415,7 @@ class GalleryStore extends GetxController {
         suggestionTags.add(recent);
       }
 
-      // //print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
+      // print('Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
 
 //      while (suggestions.length < maxNumOfSuggestions) {
 //          if (excludeTags.contains('Hey}')) {
@@ -432,7 +432,7 @@ class GalleryStore extends GetxController {
               (PrivatePhotosController.to.showPrivate == false && tagKey == kSecretTagKey)) {
             continue;
           }
-          // //print('Adding tag key: $tagKey');
+          // print('Adding tag key: $tagKey');
           suggestionTags.add(tagKey);
         }
       }
@@ -454,7 +454,7 @@ class GalleryStore extends GetxController {
       }
     }
 
-    // //print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
+    // print('%%%%%%%%%% Before adding secret tag: ${suggestionTags}');
     if (multiPicTags[kSecretTagKey] == null &&
         !searchingTagsKeys.contains(kSecretTagKey) &&
         user.secretPhotos == true &&
@@ -462,9 +462,9 @@ class GalleryStore extends GetxController {
       suggestionTags.add(kSecretTagKey);
     }
 
-    // //print('find suggestions: $searchText - exclude tags: $multiPicTags');
-    // //print(suggestionTags);
-    // //print('UserController Tags: ${TagsController.to.allTags}');
+    // print('find suggestions: $searchText - exclude tags: $multiPicTags');
+    // print(suggestionTags);
+    // print('UserController Tags: ${TagsController.to.allTags}');
     /* List<TagsStore> suggestions = TagsController.to.allTags
         .where((element) => suggestionTags.contains(element.id))
         .toList(); */
@@ -474,7 +474,7 @@ class GalleryStore extends GetxController {
         suggestions.add(TagsController.to.allTags[suggestedTag].value);
       }
     });
-    // //print('Suggestions Tag Store: $suggestions');
+    // print('Suggestions Tag Store: $suggestions');
     tagsSuggestions.value = suggestions;
     return suggestions;
   }
@@ -501,7 +501,7 @@ class GalleryStore extends GetxController {
       }
     }
 
-    // //print('Find right place to add tagged ${picStore.photoId}');
+    // print('Find right place to add tagged ${picStore.photoId}');
     DateTime picDate = picStore.createdAt;
     TaggedDatePicsStore taggedDatePicsStore = taggedDatePics.firstWhere(
         (element) => Utils.isSameDay(element.date, picDate),
@@ -510,20 +510,20 @@ class GalleryStore extends GetxController {
       taggedDatePicsStore = TaggedDatePicsStore(date: picDate);
 
       if (taggedDatePics.length == 0) {
-        // //print('Adding picStore from $picDate to index 0');
+        // print('Adding picStore from $picDate to index 0');
         taggedDatePics.add(taggedDatePicsStore);
       } else {
         bool hasAdded = false;
         for (int x = 0; x < taggedDatePics.length; x++) {
           if (taggedDatePics[x].date.isBefore(picDate)) {
-            // //print('Adding picStore from $picDate to index $x');
+            // print('Adding picStore from $picDate to index $x');
             taggedDatePics.insert(x, taggedDatePicsStore);
             hasAdded = true;
             break;
           }
         }
         if (hasAdded == false) {
-          // //print('Adding picStore from $picDate to last index');
+          // print('Adding picStore from $picDate to last index');
           taggedDatePics.add(taggedDatePicsStore);
         }
       }
@@ -536,16 +536,16 @@ class GalleryStore extends GetxController {
         taggedGridPics.indexWhere((element) => element.date == date);
 
     if (gridPicIndex != -1) {
-      // //print('Different than null');
+      // print('Different than null');
       taggedGridPics.insert(gridPicIndex + 1, newPicStore);
     } else {
-      // //print('Is null');
+      // print('Is null');
       for (int x = 0; x < taggedGridPics.length; x++) {
         if (taggedGridPics[x].date == null) {
           continue;
         }
         if (taggedGridPics[x].date.isBefore(date)) {
-          // //print('Date is before');
+          // print('Date is before');
           var newDateStore = TaggedGridPicStore(date: date);
           taggedGridPics.insert(x, newPicStore);
           taggedGridPics.insert(x, newDateStore);
@@ -560,18 +560,18 @@ class GalleryStore extends GetxController {
 
   //@action
   void removePicFromTaggedPics({PicStore picStore, bool forceDelete = false}) {
-    // //print('removePicFromTaggedPics');
+    // print('removePicFromTaggedPics');
     /*  List<TaggedPicsStore> toDelete = [];
 
     for (TaggedPicsStore taggedPicsStore in taggedPics) {
       if (picStore.tags[taggedPicsStore.tag.value.key] != null &&
           forceDelete == false) {
-        // //print('this tag should not be removed');
+        // print('this tag should not be removed');
         continue;
       }
 
       if (taggedPicsStore.pics.contains(picStore)) {
-        // //print('Removed ${picStore.photoId} from ${taggedPicsStore.tag.name}');
+        // print('Removed ${picStore.photoId} from ${taggedPicsStore.tag.name}');
         taggedPicsStore.pics.remove(picStore);
         if (taggedPicsStore.pics.isEmpty) {
           toDelete.add(taggedPicsStore);
@@ -589,10 +589,10 @@ class GalleryStore extends GetxController {
 
   //@action
   void deleteEntity(String entityId) {
-    // //print('Deleting entity...');
+    // print('Deleting entity...');
 
     if (allPics.value[entityId] == null) {
-      // //print('This pic is not on picPics!!!');
+      // print('This pic is not on picPics!!!');
       return;
     }
 
@@ -603,15 +603,15 @@ class GalleryStore extends GetxController {
     swipePics.remove(picStore);
     allPics.value.remove(picStore);
 
-    // //print('#@#@#@# Total photos: ${allPics.value.length}');
+    // print('#@#@#@# Total photos: ${allPics.value.length}');
   }
 
   //@action
   Future<void> addEntity(AssetEntity entity) async {
-    // //print('Adding new entity....');
+    // print('Adding new entity....');
 
     if (allPics.value[entity.id] != null) {
-      // //print('This pic is already in picPics!!!');
+      // print('This pic is already in picPics!!!');
       return;
     }
 
@@ -627,21 +627,21 @@ class GalleryStore extends GetxController {
     await pic.loadPicInfo();
 
     if (pic.isPrivate == true) {
-      // //print('This pic is private not loading it!');
+      // print('This pic is private not loading it!');
       return;
     }
 
     allPics.value[pic.photoId.value] = pic;
     if (pic.tags.length > 0) {
-      //print('has pic info! and this pic has tags in it!!!!');
+      print('has pic info! and this pic has tags in it!!!!');
       addPicToTaggedPics(picStore: pic, toInitialIndex: true);
     } else {
-      //print('has pic info! and this pic doesnt have tag!!!!');
+      print('has pic info! and this pic doesnt have tag!!!!');
       swipePics.insert(0, pic);
       addPicToUntaggedPics(picStore: pic);
     }
 
-    // //print('#@#@#@# Total photos: ${allPics.value.length}');
+    // print('#@#@#@# Total photos: ${allPics.value.length}');
   }
 
   //@action
@@ -655,20 +655,20 @@ class GalleryStore extends GetxController {
       untaggedPicsStore = UntaggedPicsStore(date: picDate);
 
       if (untaggedPics.length == 0) {
-        // //print('Adding picStore from $picDate to index 0');
+        // print('Adding picStore from $picDate to index 0');
         untaggedPics.add(untaggedPicsStore);
       } else {
         bool hasAdded = false;
         for (int x = 0; x < untaggedPics.length; x++) {
           if (untaggedPics[x].date.isBefore(picDate)) {
-            // //print('Adding picStore from $picDate to index $x');
+            // print('Adding picStore from $picDate to index $x');
             untaggedPics.insert(x, untaggedPicsStore);
             hasAdded = true;
             break;
           }
         }
         if (hasAdded == false) {
-          // //print('Adding picStore from $picDate to last index');
+          // print('Adding picStore from $picDate to last index');
           untaggedPics.add(untaggedPicsStore);
         }
       }
@@ -687,16 +687,16 @@ class GalleryStore extends GetxController {
         untaggedGridPics.indexWhere((element) => element.date == date);
 
     if (gridPicIndex != -1) {
-      // //print('Different than null');
+      // print('Different than null');
       untaggedGridPics.insert(gridPicIndex + 1, newPicStore);
     } else {
-      // //print('Is null');
+      // print('Is null');
       for (int x = 0; x < untaggedGridPics.length; x++) {
         if (untaggedGridPics[x].date == null) {
           continue;
         }
         if (untaggedGridPics[x].date.isBefore(date)) {
-          // //print('Date is Before');
+          // print('Date is Before');
           var newDateStore = UntaggedGridPicStore(date: date);
           untaggedGridPics.insert(x, newPicStore);
           untaggedGridPics.insert(x, newDateStore);
@@ -735,7 +735,7 @@ class GalleryStore extends GetxController {
 
     for (var untaggedPicStore in untaggedPics) {
       if (untaggedPicStore.picStores[picStore.photoId] != null) {
-        // //print('Removing ${picStore.photoId} from untagged pic store');
+        // print('Removing ${picStore.photoId} from untagged pic store');
         untaggedPicStore.removePicStore(picStore);
         untaggedGridPics.removeWhere((element) => element.picStore == picStore);
         var dateTime =
@@ -747,7 +747,7 @@ class GalleryStore extends GetxController {
             .removeWhere((element) => element.picStore == picStore); */
 
         if (untaggedPicStore.picStores.length == 0) {
-          // //print('Removing untaggedPicStore since there are no more pics in it');
+          // print('Removing untaggedPicStore since there are no more pics in it');
           toDelete.add(untaggedPicStore);
         }
         break;
@@ -763,7 +763,7 @@ class GalleryStore extends GetxController {
           element.date ==
           DateTime.utc(
               untaggedPicStore.date.year, untaggedPicStore.date.month)); */
-      // //print('Index of Month: $indexOfMonth');
+      // print('Index of Month: $indexOfMonth');
 
       /* if (indexOfMonth >= untaggedGridPicsByMonth.length - 1) {
         continue;
@@ -815,12 +815,12 @@ class GalleryStore extends GetxController {
     isLoaded.value = true;
 
     //DateTime currentDate = DateTime(1000);
-    // //print(entity.id);
-    // debug//print('Created At: ${entity.modifiedDateTime}');
+    // print(entity.id);
+    // debugprint('Created At: ${entity.modifiedDateTime}');
     Future.delayed(Duration(milliseconds: 20), () {
       Future.forEach(list, (entity) async {
         if (privatePhotoIdMap[entity.id] == null) {
-          //print('This pic is not private loading it!');
+          print('This pic is not private loading it!');
 
           PicStore pic = PicStore(
             isStarredValue: null,
@@ -836,10 +836,10 @@ class GalleryStore extends GetxController {
           allPics.value[pic.photoId.value] = pic;
 
           if (pic.tags.length > 0) {
-            // //print('has pic info! and this pic has tags in it!!!!');
+            // print('has pic info! and this pic has tags in it!!!!');
             addPicToTaggedPics(picStore: pic);
           } else {
-            // //print('has pic info! and this pic doesnt have tag!!!!');
+            // print('has pic info! and this pic doesnt have tag!!!!');
             addPicToUntaggedPics(picStore: pic);
 
             swipePics.add(pic);
@@ -856,7 +856,7 @@ class GalleryStore extends GetxController {
 /* 
     
  */
-    // //print('#@#@#@# Total photos: ${allPics.value.length}');
+    // print('#@#@#@# Total photos: ${allPics.value.length}');
   }
 
   //@action
@@ -887,7 +887,7 @@ class GalleryStore extends GetxController {
       if (currentMonth != monthDate) {
         untaggedGridPicsByMonth.add(UntaggedGridPicStore(date: monthDate));
         currentMonth = monthDate;
-        // //print('Adding month date: $monthDate');
+        // print('Adding month date: $monthDate');
       }
 
       for (var picStore in untaggedPic.picStores.values) {
@@ -915,7 +915,7 @@ class GalleryStore extends GetxController {
       filterOption: filterOptionGroup,
     );
     assetsPath.addAll(assets);
-    // //print('#@#@#@# Total galleries: ${assetsPath.length}');
+    // print('#@#@#@# Total galleries: ${assetsPath.length}');
     isLoaded.value = true;
     await loadEntities();
     await loadPrivateAssets();
@@ -926,7 +926,7 @@ class GalleryStore extends GetxController {
   //@action
   Future<void> loadPrivateAssets() async {
     if (user.secretPhotos != true) {
-      // //print('Secret photos is off - not loading private pics');
+      // print('Secret photos is off - not loading private pics');
       return;
     }
 /* 
@@ -948,21 +948,21 @@ class GalleryStore extends GetxController {
       allPics.value[pic.photoId.value] = pic;
 
       if (pic.tags.length > 0) {
-        // //print('has pic info! and this pic has tags in it!!!!');
+        // print('has pic info! and this pic has tags in it!!!!');
         addPicToTaggedPics(picStore: pic);
       } else {
-        // //print('has pic info! and this pic doesnt have tag!!!!');
+        // print('has pic info! and this pic doesnt have tag!!!!');
         swipePics.insert(0, pic);
         addPicToUntaggedPics(picStore: pic);
       }
 
       if (pic.isPrivate == true) {
-        // //print('Adding pic to private pics!!!');
+        // print('Adding pic to private pics!!!');
         privatePics.add(pic);
       }
     }
 
-    // //print('#@#@#@# Total photos with private photos: ${allPics.value.length}');
+    // print('#@#@#@# Total photos with private photos: ${allPics.value.length}');
   }
 
   //@action
@@ -990,13 +990,13 @@ class GalleryStore extends GetxController {
           Photo pic = await database.getPhotoByPhotoId(picStore.photoId.value);
 
           if (pic != null) {
-            // //print('pic is in db... removing it from db!');
+            // print('pic is in db... removing it from db!');
             List<String> picTags = List<String>.from(pic.tags);
             Future.wait([
               Future.forEach(picTags, (tagKey) async {
                 Label tag = await database.getLabelByLabelKey(tagKey);
                 tag.photoId.remove(picStore.photoId);
-                // //print('removed ${picStore.photoId} from tag ${tag.title}');
+                // print('removed ${picStore.photoId} from tag ${tag.title}');
                 await database.updateLabel(tag);
                 //tagsBox.put(tagKey, tag);
 
@@ -1009,7 +1009,7 @@ class GalleryStore extends GetxController {
 
             //picsBox.delete(picStore.photoId);
             await database.deletePhotoByPhotoId(picStore.photoId.value);
-            // //print('removed ${picStore.photoId} from database');
+            // print('removed ${picStore.photoId} from database');
           }
 
           filteredPics.remove(picStore);
@@ -1022,7 +1022,7 @@ class GalleryStore extends GetxController {
       ]);
 
       Analytics.sendEvent(Event.deleted_photo);
-      // //print('Reaction!');
+      // print('Reaction!');
       selectedPics.clear();
       setTrashedPic(true);
     }
@@ -1030,9 +1030,9 @@ class GalleryStore extends GetxController {
 
   //@action
   Future<void> trashPic(PicStore picStore) async {
-    // //print('Going to trash pic!');
+    // print('Going to trash pic!');
     bool deleted = await picStore.deletePic();
-    // //print('Deleted pic: $deleted');
+    // print('Deleted pic: $deleted');
 
     if (deleted) {
       filteredPics.remove(picStore);
@@ -1044,7 +1044,7 @@ class GalleryStore extends GetxController {
     }
 
     Analytics.sendEvent(Event.deleted_photo);
-    // //print('Reaction!');
+    // print('Reaction!');
     setTrashedPic(true);
   }
 
@@ -1077,11 +1077,11 @@ class GalleryStore extends GetxController {
           Photo pic = await database.getPhotoByPhotoId(photoId);
           //Pic pic = picsBox.get(photoId);
           int indexOfOldTag = pic.tags.indexOf(oldTagKey);
-          // //print('Tags in this picture: ${pic.tags}');
+          // print('Tags in this picture: ${pic.tags}');
           pic.tags[indexOfOldTag] = newTagKey;
           await database.updatePhoto(pic);
           //picsBox.put(photoId, pic);
-          // //print('updated tag in pic ${pic.id}');
+          // print('updated tag in pic ${pic.id}');
         })
       ],
     );
@@ -1096,7 +1096,7 @@ class GalleryStore extends GetxController {
     await database.deleteLabelByLabelId(oldTagKey);
     //tagsBox.delete(oldTagKey);
 
-    // //print('finished updating all tags');
+    // print('finished updating all tags');
     Analytics.sendEvent(Event.edited_tag);
   }
 
@@ -1108,7 +1108,7 @@ class GalleryStore extends GetxController {
 
     TagModel tagsStore = TagsController.to.allTags[tagKey].value;
     searchingTags.add(tagsStore);
-    // //print('searching tags: $searchingTags');
+    // print('searching tags: $searchingTags');
     searchPicsWithTags();
   }
 
@@ -1116,7 +1116,7 @@ class GalleryStore extends GetxController {
     if (searchingTagsKeys.contains(tagKey)) {
       TagModel tagsStore = TagsController.to.allTags[tagKey].value;
       searchingTags.remove(tagsStore);
-      // //print('searching tags: $searchingTags');
+      // print('searching tags: $searchingTags');
       searchPicsWithTags();
     }
   }
@@ -1124,7 +1124,7 @@ class GalleryStore extends GetxController {
   //@action
   Future<void> searchPicsWithTags() async {
     //var tagsBox = Hive.box('tags');
-    /*// //print('%%%% Tags Keys: ${tagsBox.keys}'); */
+    /*// print('%%%% Tags Keys: ${tagsBox.keys}'); */
 
     filteredPics.clear();
 
@@ -1134,26 +1134,26 @@ class GalleryStore extends GetxController {
     Future.wait(
       [
         Future.forEach(searchingTagsKeys, (tagKey) async {
-          // //print('filtering tag: $tagKey');
+          // print('filtering tag: $tagKey');
           Label getTag = await database.getLabelByLabelKey(tagKey);
           //Tag getTag = tagsBox.get(tagKey);
           List<String> photosIds = getTag.photoId;
-          // //print('photos Ids in this tag: $photosIds');
+          // print('photos Ids in this tag: $photosIds');
 
           if (firstInteraction) {
-            // //print('adding all photos because it is firt interaction');
+            // print('adding all photos because it is firt interaction');
             tempPhotosIds.addAll(photosIds);
             firstInteraction = false;
           } else {
-            // //print('tempPhotoId: $tempPhotosIds');
+            // print('tempPhotoId: $tempPhotosIds');
             List<String> auxArray = [];
             auxArray.addAll(tempPhotosIds);
 
             for (var photoId in tempPhotosIds) {
-              // //print('checking if photoId is there: $photoId');
+              // print('checking if photoId is there: $photoId');
               if (!photosIds.contains(photoId)) {
                 auxArray.remove(photoId);
-                // //print('removing $photoId because doesnt have $tagKey');
+                // print('removing $photoId because doesnt have $tagKey');
               }
             }
             tempPhotosIds = auxArray;
@@ -1162,14 +1162,14 @@ class GalleryStore extends GetxController {
       ],
     );
 
-    // //print('Temp photos ids: $tempPhotosIds');
-    // //print('All Pics: ${allPics.valueKeys}');
+    // print('Temp photos ids: $tempPhotosIds');
+    // print('All Pics: ${allPics.valueKeys}');
     filteredPics.addAll(tempPhotosIds
         .where((photoId) => allPics.value[photoId] != null)
         .map((e) => allPics.value[e])
         .toList()); // Verificar essa classe para otimizar
-    // //print('Search Photos: $filteredPics');
-    // //print('Searcing Tags Keys: $searchingTags');
+    // print('Search Photos: $filteredPics');
+    // print('Searcing Tags Keys: $searchingTags');
 
     setShouldRefreshTaggedGallery(true);
     Analytics.sendEvent(Event.searched_photos);
@@ -1206,19 +1206,19 @@ class GalleryStore extends GetxController {
   // Create tag for using in multipic
   Future<void> createTag(String tagName) async {
     //var tagsBox = Hive.box('tags');
-    /*// //print(tagsBox.keys); */
+    /*// print(tagsBox.keys); */
 
     String tagKey = Helpers.encryptTag(tagName);
-    // //print('Adding tag: $tagName');
+    // print('Adding tag: $tagName');
 
     Label lab = await database.getLabelByLabelKey(tagKey);
 
     if (lab != null) {
-      // //print('user already has this tag');
+      // print('user already has this tag');
       return;
     }
 
-    // //print('adding tag to database...');
+    // print('adding tag to database...');
     await database.createLabel(Label(
         key: tagKey,
         title: tagName,
@@ -1240,29 +1240,29 @@ class GalleryStore extends GetxController {
 
 //  void registerObserve() {
 //    try {
-/*// //print('%%%%%% Registered change notifier'); */
+/*// print('%%%%%% Registered change notifier'); */
 //      PhotoManager.addChangeCallback(_onAssetChange);
 //      PhotoManager.startChangeNotify();
 //    } catch (e) {
-/*// //print('Error when registering assets callback: $e'); */
+/*// print('Error when registering assets callback: $e'); */
 //    }
 //  }
 
   //@action
   Future<void> _onAssetChange(MethodCall call) async {
-    // //print('#!#!#!#!#!#! asset changed: ${call.arguments}');
+    // print('#!#!#!#!#!#! asset changed: ${call.arguments}');
 //
 //    List<dynamic> createdPics = call.arguments['create'];
 //    List<dynamic> deletedPics = call.arguments['delete'];
 //
 //    return;
 //
-/*// //print(deletedPics); */
+/*// print(deletedPics); */
 //
 //    if (deletedPics.length > 0) {
-    // //print('### deleted pics from library!');
+    // print('### deleted pics from library!');
 //      for (var pic in deletedPics) {
-/*// //print('Pic deleted Id: ${pic['id']}'); */
+/*// print('Pic deleted Id: ${pic['id']}'); */
 ////        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 ////        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
 ////
@@ -1278,7 +1278,7 @@ class GalleryStore extends GetxController {
 //
 //    if (createdPics.length > 0) {
 //      for (var pic in createdPics) {
-/*// //print('Pic created Id: ${pic['id']}'); */
+/*// print('Pic created Id: ${pic['id']}'); */
 //        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
 //        addEntity(picEntity);
 //      }
@@ -1301,7 +1301,7 @@ class GalleryStore extends GetxController {
 
   //@action
   Future<void> checkIsLibraryUpdated() async {
-    // //print('Scanning library again....');
+    // print('Scanning library again....');
     return;
 
     final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
@@ -1318,18 +1318,18 @@ class GalleryStore extends GetxController {
         SetEquality().equals(entitiesIds, allPics.value.keys.toSet());
 
     if (isEqual) {
-      // //print('Library is updated!!!!!!');
-      // //print('#@#@#@# Total photos: ${allPics.value.length}');
+      // print('Library is updated!!!!!!');
+      // print('#@#@#@# Total photos: ${allPics.value.length}');
     } else {
-      // //print('Library not updated!!!');
+      // print('Library not updated!!!');
 
       final Set<String> createdPics =
           entitiesIds.difference(allPics.value.keys.toSet());
       final Set<String> deletedPics =
           allPics.value.keys.toSet().difference(entitiesIds);
 
-      // //print('Created: $createdPics');
-      // //print('Deleted: $deletedPics');
+      // print('Created: $createdPics');
+      // print('Deleted: $deletedPics');
 
       for (String created in createdPics) {
         AssetEntity entity = await AssetEntity.fromId(created);
@@ -1355,7 +1355,7 @@ class GalleryStore extends GetxController {
 
     if (picStore.tags.isEmpty) {
       addPicToUntaggedPics(picStore: picStore);
-      // //print('this pic now doesnt have tags!');
+      // print('this pic now doesnt have tags!');
     }
     await tagsSuggestionsCalculate();
   }
@@ -1363,7 +1363,7 @@ class GalleryStore extends GetxController {
   //@action
   Future<void> addTagToPic({PicStore picStore, String tagName}) async {
     if (picStore.tags.isEmpty) {
-      // //print('this pic now has tags!');
+      // print('this pic now has tags!');
       removePicFromUntaggedPics(picStore: picStore);
     }
 
@@ -1382,11 +1382,11 @@ class GalleryStore extends GetxController {
       if (!privatePics.contains(currentPic)) {
         await Crypto.encryptImage(picStore, user.encryptionKey);
 
-        // //print('this pic now is private');
+        // print('this pic now is private');
         privatePics.add(currentPic);
 
         if (currentPic.tags.length == 1) {
-          // //print('this pic now has tags!');
+          // print('this pic now has tags!');
           removePicFromUntaggedPics(picStore: currentPic);
         }
 
@@ -1394,17 +1394,17 @@ class GalleryStore extends GetxController {
       }
     } else {
       if (privatePics.contains(currentPic)) {
-        // //print('removing pic from private pics');
+        // print('removing pic from private pics');
         privatePics.remove(currentPic);
         removePicFromTaggedPics(picStore: currentPic);
 
         if (currentPic.tags.isEmpty) {
           addPicToUntaggedPics(picStore: currentPic);
-          // //print('this pic now doesnt have tags!');
+          // print('this pic now doesnt have tags!');
         }
         // else {
         //   if (originalPhotoId != currentPic.photoId) {
-        // //print('##### PHOTO ID HAS CHANGED... REFRESHING IDS IN TAGS');
+        // print('##### PHOTO ID HAS CHANGED... REFRESHING IDS IN TAGS');
         //     // setShouldRefreshTaggedGallery(true);
         //
         //     for (TagsStore tagStore in currentPic.tags) {
@@ -1412,16 +1412,16 @@ class GalleryStore extends GetxController {
         //           (element) => element.tag == tagStore,
         //           orElse: () => null);
         //       if (taggedPicsStore != null) {
-        /*// //print('Replacing id in ${taggedPicsStore.tag.name}'); */
+        /*// print('Replacing id in ${taggedPicsStore.tag.name}'); */
         //         PicStore picStore = taggedPicsStore.pics.firstWhere(
         //             (e) => e.photoId == currentPic.photoId,
         //             orElse: () => null);
         //         if (picStore != null) {
-        /*// //print(         'Found pic ${currentPic.photoId} in taggedPicsStore ${taggedPicsStore.tag.name}'); */
+        /*// print(         'Found pic ${currentPic.photoId} in taggedPicsStore ${taggedPicsStore.tag.name}'); */
         //           var tagsBox = Hive.box('tags');
         //           Tag tag = tagsBox.get(taggedPicsStore.tag.id);
-        /*// //print(               'Tag contains new photo id: ${tag.photoId.contains(currentPic.photoId)}');
-       // //print(           'Tag contains original photo id: ${tag.photoId.contains(originalPhotoId)}'); */
+        /*// print(               'Tag contains new photo id: ${tag.photoId.contains(currentPic.photoId)}');
+       // print(           'Tag contains original photo id: ${tag.photoId.contains(originalPhotoId)}'); */
         //         }
         //       }
         //     }

@@ -88,12 +88,12 @@ class TaggedTab extends GetView<TaggedController> {
                       return NotificationListener<ScrollNotification>(
                         onNotification: (scrollNotification) {
                           if (scrollNotification is ScrollStartNotification) {
-                            //print('Start scrolling');
+                            print('Start scrolling');
                             TaggedController.to.setIsScrolling(true);
                             return true;
                           } else if (scrollNotification
                               is ScrollEndNotification) {
-                            //print('End scrolling');
+                            print('End scrolling');
                             TaggedController.to.setIsScrolling(false);
                           }
                           return false;

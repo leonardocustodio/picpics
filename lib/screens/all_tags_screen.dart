@@ -310,7 +310,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            //print('do nothing');
+                            print('do nothing');
                           },
                           //showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -342,7 +342,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               await doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            //print('do nothing');
+                            print('do nothing');
                           },
                           // showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -378,7 +378,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               await doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            //print('do nothing');
+                            print('do nothing');
                           },
                           //showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -415,7 +415,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               await doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            //print('do nothing');
+                            print('do nothing');
                           },
                           //showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -450,7 +450,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               await doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            //print('do nothing');
+                            print('do nothing');
                           },
                           //showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -467,7 +467,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
 
   Future<void> doTagging(
       String tagId, String tagName, int count, DateTime time) async {
-    //print('do nothing');
+    print('do nothing');
     // TODO: Enable it to show ads
     //if (!UserController.to.canTagToday.value) {
     //  showWatchAdModal();

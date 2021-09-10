@@ -115,7 +115,7 @@ class TabsController extends GetxController {
 
     /*    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
       if (showModal) {
-        //print('show delete secret modal!!!');
+        print('show delete secret modal!!!');
 //        setState(() {
 //          showEditTagModal();
 //        });
@@ -237,7 +237,7 @@ class TabsController extends GetxController {
 
     Photo pic = await database.getPhotoByPhotoId(assetMap[picId].id);
     if (pic != null) {
-      //print('pic $photoId exists, loading data....');
+      print('pic $photoId exists, loading data....');
       //Pic pic = picsBox.get(photoId);
 
       /* latitude.value = pic.latitude;
@@ -248,11 +248,11 @@ class TabsController extends GetxController {
       deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
       isStarred.value = pic.isStarred ?? false; */
 
-      //print('Is private: $isPrivate');
+      print('Is private: $isPrivate');
       /* for (String tagKey in pic.tags) {
         TagsStore tagsStore = UserController.to.tags[tagKey];
         if (tagsStore == null) {
-          //print('&&&&##### DID NOT FIND TAG: ${tagKey}');
+          print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
         }
 
@@ -267,7 +267,7 @@ class TabsController extends GetxController {
           var nonce = secretPic.nonce;
           secretPicIds[assetMap[picId].id] = true;
           secretPicData[assetMap[picId].id] = secretPic;
-          //print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
+          print('Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
           /* picAssetOriginBytesMap[assetMap[picId].id] =
               assetOriginBytes(true, assetMap[picId], nonce, photoPath); */
           //await Crypto.decryptImage(photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
@@ -289,7 +289,7 @@ class TabsController extends GetxController {
     if (isPrivate == false && entity != null) {
       return await entity.originBytes;
     }
-    //print('Returning decrypt image in privatePath: $photoPath');
+    print('Returning decrypt image in privatePath: $photoPath');
     return await Crypto.decryptImage(
         photoPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
   }
@@ -300,7 +300,7 @@ class TabsController extends GetxController {
       return await entity.thumbDataWithSize(
           kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
     }
-    //print('Returning decrypt image in privatePath: $thumbPath');
+    print('Returning decrypt image in privatePath: $thumbPath');
     return await Crypto.decryptImage(
         thumbPath, UserController.to.encryptionKey, Nonce(hex.decode(nonce)));
   }
@@ -346,7 +346,7 @@ class TabsController extends GetxController {
             requiresDeviceIdle: false,
             requiredNetworkType: NetworkType.NONE), (String taskId) async {
       // This is the fetch-event callback.
-      //print("[BackgroundFetch] Event received $taskId");
+      print("[BackgroundFetch] Event received $taskId");
 
       await WidgetManager.sendAndUpdate();
 
@@ -354,9 +354,9 @@ class TabsController extends GetxController {
       // for taking too long in the background.
       BackgroundFetch.finish(taskId);
     }).then((int status) {
-      //print('[BackgroundFetch] configure success: $status');
+      print('[BackgroundFetch] configure success: $status');
     }).catchError((e) {
-      //print('[BackgroundFetch] configure ERROR: $e');
+      print('[BackgroundFetch] configure ERROR: $e');
     });
 
     // Optionally query the current BackgroundFetch status.
@@ -487,7 +487,7 @@ class TabsController extends GetxController {
     if (GalleryStore.to.selectedPics.isEmpty) {
       return;
     }
-    //print('sharing selected pics....');
+    print('sharing selected pics....');
     setIsLoading(true);
     await GalleryStore.to
         .sharePics(picsStores: GalleryStore.to.selectedPics.toList());
@@ -521,7 +521,7 @@ class TabsController extends GetxController {
         if (GalleryStore.to.selectedPics.isEmpty) {
           return;
         }
-        //print('sharing selected pics....');
+        print('sharing selected pics....');
         setIsLoading(true);
         await GalleryStore.to
             .sharePics(picsStores: GalleryStore.to.selectedPics.toList());

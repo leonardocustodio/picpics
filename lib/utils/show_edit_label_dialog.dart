@@ -7,13 +7,13 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import '../constants.dart';
 
-Future<void> showEditTagModal(String tagKey, [bool checkSecret = true]) async {
-  if (tagKey != '' && (!checkSecret || tagKey != kSecretTagKey)) {
+Future<void> showEditTagModal(String tagKey) async {
+  if (tagKey.trim().isNotEmpty && tagKey != kSecretTagKey) {
     final alertInputController = TextEditingController();
     final tagName = await DatabaseManager.instance.getTagName(tagKey);
     alertInputController.text = tagName ?? '';
 
-    //print('showModal');
+    print('showModal');
     await showDialog<void>(
       context: Get.context!,
       barrierDismissible: true,
@@ -30,7 +30,8 @@ Future<void> showEditTagModal(String tagKey, [bool checkSecret = true]) async {
             },
             defaultButtonTitle: LangControl.to.S.value.ok,
             onPressedDefault: () {
-//print(Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
+              print(
+                  'Editing tag - Old name: $tagKey - New name: ${alertInputController.text}');
               if (tagName != alertInputController.text) {
                 TagsController.to.editTagName(
                     oldTagKey: tagKey, newName: alertInputController.text);

@@ -5,8 +5,6 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
 import 'package:picPics/stores/language_controller.dart';
-
-import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/show_edit_label_dialog.dart';
@@ -34,9 +32,6 @@ class CustomisedTagsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    tagsKeyList.removeWhere((element) =>
-        PrivatePhotosController.to.showPrivate.value == false &&
-        element == kSecretTagKey);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[

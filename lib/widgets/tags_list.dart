@@ -20,7 +20,7 @@ typedef OnEmptyTap = Function();
 
 class TagsList extends StatefulWidget {
   final List<String> tagsKeyList;
-  TextEditingController? textEditingController;
+  final TextEditingController? textEditingController;
   final FocusNode? textFocusNode;
   final bool addTagField;
   final Function()? addTagButton;
@@ -37,9 +37,9 @@ class TagsList extends StatefulWidget {
   final Function()? onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
-  TagsList({
+  const TagsList({
     required this.tagsKeyList,
-    this.tagStyle = TagStyle.MultiColored,
+    required this.tagStyle, //= TagStyle.MultiColored,
     this.textEditingController,
     this.textFocusNode,
     this.addTagField = false,
@@ -68,7 +68,7 @@ class _TagsListState extends State<TagsList> {
 
   Widget _buildTagsWidget(BuildContext context, List<String> tags) {
     var tagsWidgets = <Widget>[];
-    //print('Tags in TagsList: ${tags}');
+    print('Tags in TagsList: ${tags}');
 
     if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
@@ -130,7 +130,7 @@ class _TagsListState extends State<TagsList> {
             showEditTagModal(tagKey);
           },
           onPanStart: (details) {
-            //print('Started pan on tag: ${tag.key}');
+            print('Started pan on tag: $tagKey');
             tagBeingPanned = tagKey;
           },
           onPanUpdate: (details) {
@@ -140,7 +140,7 @@ class _TagsListState extends State<TagsList> {
 
             if (details.delta.dy < 0) {
               // swiping in right direction
-              //print(details.delta.dy);
+              print(details.delta.dy);
               swipedRightDirection = true;
             }
           },

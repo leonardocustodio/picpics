@@ -81,10 +81,11 @@ class TaggedController extends GetxController {
     if (selectedMultiBarPics.isEmpty) {
       return;
     }
-    //print('sharing selected pics....');
+    print('sharing selected pics....');
     //setIsLoading(true);
-    await sharePics(picKeys: selectedMultiBarPics.keys.toList()
-        /* picsStores: GalleryStore.to.selectedPics.toList() */);
+    await sharePics(
+        picKeys: selectedMultiBarPics.keys
+            .toList() /* picsStores: GalleryStore.to.selectedPics.toList() */);
     //setIsLoading(false);
   }
 

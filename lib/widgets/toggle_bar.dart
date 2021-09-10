@@ -81,7 +81,7 @@ class _ToggleBarState extends State<ToggleBar> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         onPressed: () {
-                          //print('Teste');
+                          print('Teste');
                           widget.onToggle(0);
                         },
                         child: Text(
@@ -99,7 +99,7 @@ class _ToggleBarState extends State<ToggleBar> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         onPressed: () {
-                          //print('Teste');
+                          print('Teste');
                           widget.onToggle(1);
                         },
                         child: Text(

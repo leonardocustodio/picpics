@@ -89,13 +89,13 @@ class _PhotoCardState extends State<PhotoCard> {
     var placemark = await placemarkFromCoordinates(
         picStore.originalLatitude!, picStore.originalLongitude!);
 
-    //print('Placemark: ${placemark.length}');
+    print('Placemark: ${placemark.length}');
     for (var place in placemark) {
-      //print('${place.name} - ${place.locality} - ${place.country}');
+      print('${place.name} - ${place.locality} - ${place.country}');
     }
 
     if (placemark.isNotEmpty) {
-      //print('Saving pic!!!');
+      print('Saving pic!!!');
       await picStore.saveLocation(
         lat: picStore.originalLatitude!,
         long: picStore.originalLongitude!,
@@ -116,7 +116,7 @@ class _PhotoCardState extends State<PhotoCard> {
   void getSizeAndPosition() {
     var _cardBox =
         _photoSpaceKey.currentContext?.findRenderObject() as RenderBox;
-    //print('Card Box Size: ${_cardBox.size.height}');
+    print('Card Box Size: ${_cardBox.size.height}');
     UserController.to.setPhotoHeightInCardWidget(_cardBox.size.height);
   }
 
@@ -130,7 +130,7 @@ class _PhotoCardState extends State<PhotoCard> {
     tagsFocusNode = FocusNode();
 
     /* if (KeyboardVisibility.isVisible) {
-      //print('#### keyboard is visible!!!!');
+      print('#### keyboard is visible!!!!');
       tagsFocusNode.requestFocus();
     } */
   }
@@ -146,17 +146,18 @@ class _PhotoCardState extends State<PhotoCard> {
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
     photoSize = <int>[height, height];
 
-    //print('Did Change Dep!!!');
+    print('Did Change Dep!!!');
   } */
 
   @override
   Widget build(BuildContext context) {
 /*     final height = MediaQuery.of(context).size.height;
- */ //print('Pic Store Photo Id: ${picStore.photoId}');
-    //print('Other info: ${picStore.photoPath}');
+ */
+    print('Pic Store Photo Id: ${picStore.photoId}');
+    print('Other info: ${picStore.photoPath}');
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
-    /* //print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
+    /* print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
     var imageProvider = AssetEntityImageProvider(picStore,
         thumbSize: kDefaultPhotoSize, isOriginal: false);
     return Container(
@@ -238,7 +239,6 @@ class _PhotoCardState extends State<PhotoCard> {
                     ),
                   ),
                 ),
-                //print('Photo Height: ${UserController.to.photoHeightInCardWidget}');
                 CircularMenu(
                   // UserController.to: UserController.to,
                   isExpanded: UserController.to.isMenuExpanded.value,
@@ -377,6 +377,7 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Obx(() {
                   return TagsList(
+                    tagStyle: TagStyle.MultiColored,
                     tagsKeyList: TaggedController
                             .to
                             .picWiseTags[picStore.photoId.value.toString()]
@@ -391,14 +392,14 @@ class _PhotoCardState extends State<PhotoCard> {
                     aiButtonTitle: LangControl.to.S.value.allTags,
                     onAiButtonTap: () {
                       Get.to(() => AllTagsScreen(picStore: picStore));
-                      //print('ai button tapped');
+                      print('ai button tapped');
                       // picStore.switchAiTags(context);
                     },
                     onTap: (String key) {
-                      //print('do nothing');
+                      print('do nothing');
                     },
                     onDoubleTap: (String value) {
-                      //print('do nothing');
+                      print('do nothing');
                     },
                     onPanEnd: (String selectedTagKey) async {
                       /* if (!UserController.to.canTagToday.value) {
@@ -422,7 +423,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       await TagsController.to.tagsSuggestionsCalculate();
                     },
                     onSubmitted: (text) async {
-                      //print('return');
+                      print('return');
 
                       if (text != '') {
                         /* if (!UserController.to.canTagToday.value) {
@@ -493,7 +494,8 @@ class _PhotoCardState extends State<PhotoCard> {
                       suggestionsTitle = LangControl.to.S.value.recent_tags;
                     }
 
-                    //print('${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');
+                    print(
+                        '${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');
                     TagsController.to.tagsSuggestionsCalculate();
                     return Obx(
                       () => TagsList(
@@ -563,10 +565,10 @@ class _PhotoCardState extends State<PhotoCard> {
                           picStore.setSearchText(''); */
                         },
                         onDoubleTap: (tagKey) {
-                          //print('do nothing');
+                          print('do nothing');
                         },
                         onPanEnd: (tagKey) {
-                          //print('do nothing');
+                          print('do nothing');
                         },
                       ),
                     );

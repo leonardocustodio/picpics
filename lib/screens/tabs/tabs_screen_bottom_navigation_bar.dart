@@ -119,6 +119,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               TagsList(
+                                  tagStyle: TagStyle.MultiColored,
                                   tagsKeyList: TagsController
                                       .to.multiPicTags.keys
                                       .toList(),

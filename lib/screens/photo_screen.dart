@@ -525,14 +525,14 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                   Get.back();
                 },
                 onTap: (String tagKey) {
-                  //print('ignore click');
+                  print('ignore click');
                 },
                 onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                 },
                 onPanEnd: (String tagKey) {
-                  //print('teste');
+                  print('teste');
                 },
                 /* showEditTagModal: () =>
                                                     showEditTagModal(context, false), */
@@ -565,14 +565,14 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                   Get.back();
                 },
                 onTap: (String tagKey) {
-                  //print('ignore click');
+                  print('ignore click');
                 },
                 onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                 },
                 onPanEnd: (String tagKey) {
-                  //print('teste');
+                  print('teste');
                 },
                 /* showEditTagModal: () =>
                                                     showEditTagModal(context, false), */

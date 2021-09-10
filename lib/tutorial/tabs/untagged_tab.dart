@@ -79,7 +79,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      //print('LongPress');
+                      print('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -96,7 +96,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          //print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -185,7 +185,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
   }
 
 //   Widget _buildNewItem(BuildContext context, int index, double size) {
-/* //print('Curret Index: $index'); */
+/* print('Curret Index: $index'); */
 //
 //     List<Widget> childs = [];
 //     int endIndex = (index + 1) * 3;
@@ -258,7 +258,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                     child: () {
 //                       return GestureDetector(
 //                         onLongPress: () {
-/* //print('LongPress'); */
+/* print('LongPress'); */
 //                           if (tabsStore.multiPicBar == false) {
 //                             galleryStore.setSelectedPics(
 //                               picStore: picStore,
@@ -275,7 +275,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                                 picStore: picStore,
 //                                 picIsTagged: false,
 //                               );
-/* //print('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
+/* print('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
 //                               return;
 //                             }
 //
@@ -370,7 +370,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //   }
 
   Widget _buildGridView(BuildContext context) {
-    //print('&&&&& Building grid view');
+    print('&&&&& Building grid view');
     // List<Widget> sliverGrids = [];
     //
     // for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
@@ -398,10 +398,10 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollStartNotification) {
-          //print('Start scrolling');
+          print('Start scrolling');
           tabsStore.setIsScrolling(true);
         } else if (scrollNotification is ScrollEndNotification) {
-          //print('End scrolling');
+          print('End scrolling');
           tabsStore.setIsScrolling(false);
         }
         return;
@@ -608,7 +608,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
-    //print('Date Time Formatting: $dateTime');
+    print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
       formatter = tabsStore.toggleIndexUntagged == 0
@@ -666,7 +666,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      //print('LongPress');
+                      print('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -683,7 +683,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          //print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -784,7 +784,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     });
     refreshGridPositionFirstTab(); */
 
-    //print('change dependencies!');
+    print('change dependencies!');
     galleryStore.refreshPicThumbnails();
   }
 
@@ -850,7 +850,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   padding: const EdgeInsets.only(top: 48.0),
                   child: GestureDetector(
 //                              onScaleUpdate: (update) {
-/* //print(update.scale); */
+/* print(update.scale); */
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
                     child: _buildGridView(context),

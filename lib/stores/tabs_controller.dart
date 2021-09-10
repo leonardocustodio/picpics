@@ -171,7 +171,7 @@ class TabsController extends GetxController {
 
     /*    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
       if (showModal) {
-        //print('show delete secret modal!!!');
+        print('show delete secret modal!!!');
 //        setState(() {
 //          showEditTagModal();
 //        });
@@ -354,7 +354,7 @@ class TabsController extends GetxController {
             requiresDeviceIdle: false,
             requiredNetworkType: NetworkType.NONE), (String taskId) async {
       // This is the fetch-event callback.
-      //print("[BackgroundFetch] Event received $taskId");
+      print("[BackgroundFetch] Event received $taskId");
 
       await WidgetManager.sendAndUpdate();
 
@@ -362,9 +362,9 @@ class TabsController extends GetxController {
       // for taking too long in the background.
       BackgroundFetch.finish(taskId);
     }).then((int status) {
-      //print('[BackgroundFetch] configure success: $status');
+      print('[BackgroundFetch] configure success: $status');
     }).catchError((e) {
-      //print('[BackgroundFetch] configure ERROR: $e');
+      print('[BackgroundFetch] configure ERROR: $e');
     });
 
     // Optionally query the current BackgroundFetch status.
@@ -454,7 +454,7 @@ class TabsController extends GetxController {
     if (selectedMultiBarPics.isEmpty) {
       return;
     }
-    //print('sharing selected pics....');
+    print('sharing selected pics....');
     setIsLoading(true);
     await sharePics(picKeys: selectedMultiBarPics.keys.toList());
     setIsLoading(false);
@@ -511,7 +511,7 @@ class TabsController extends GetxController {
         if (selectedMultiBarPics.isEmpty) {
           return;
         }
-        //print('sharing selected pics....');
+        print('sharing selected pics....');
         setIsLoading(true);
         await sharePics(picKeys: selectedMultiBarPics.keys.toList());
         setIsLoading(false);
@@ -570,7 +570,7 @@ class TabsController extends GetxController {
           var pic = await database.getPhotoByPhotoId(picStore.photoId.value);
 
           if (pic != null && pic.tags.isNotEmpty) {
-            // //print('pic is in db... removing it from db!');
+            // print('pic is in db... removing it from db!');
             var picTags = List<String>.from(pic.tags.keys);
             await Future.forEach(picTags, (String tagKey) async {
               var tag = await database.getLabelByLabelKey(tagKey);
@@ -578,7 +578,7 @@ class TabsController extends GetxController {
                 if (picStore != null) {
                   tag.photoId.remove(picStore.photoId);
                 }
-                // //print('removed ${picStore.photoId} from tag ${tag.title}');
+                // print('removed ${picStore.photoId} from tag ${tag.title}');
                 await database.updateLabel(tag);
                 //tagsBox.put(tagKey, tag);
 
@@ -594,7 +594,7 @@ class TabsController extends GetxController {
               percentageController.value.value += 1.0;
             });
 
-            // //print('removed ${picStore.photoId} from database');
+            // print('removed ${picStore.photoId} from database');
           }
         }
       }).then((_) {
@@ -604,7 +604,7 @@ class TabsController extends GetxController {
       });
 
       await Analytics.sendEvent(Event.deleted_photo);
-      // //print('Reaction!');
+      // print('Reaction!');
       selectedMultiBarPics.clear();
       //setTrashedPic(true);
     }
@@ -624,9 +624,9 @@ class TabsController extends GetxController {
     var picStore = picStoreMap[picId]?.value;
     picStore ??= explorPicStore(picId).value;
     if (null != picStore) {
-      // //print('Going to trash pic!');
+      // print('Going to trash pic!');
       await picStore.deletePic();
-      // //print('Deleted pic: $deleted');
+      // print('Deleted pic: $deleted');
 
       /* if (deleted) {
       filteredPics.remove(picStore);
@@ -639,7 +639,7 @@ class TabsController extends GetxController {
 
       await Analytics.sendEvent(Event.deleted_photo);
     }
-    // //print('Reaction!');
+    // print('Reaction!');
     //setTrashedPic(true);
   }
 }
@@ -690,8 +690,8 @@ Future<void> sharePics({required List<String> picKeys}) async {
 //      x++;
   }
 
-  // //print('Image List: $imageList');
-  // //print('Mime List: $mimeList');
+  // print('Image List: $imageList');
+  // print('Mime List: $mimeList');
 
   await Analytics.sendEvent(Event.shared_photos);
 
@@ -706,7 +706,7 @@ Future<void> sharePics({required List<String> picKeys}) async {
 }
 
 /* Future<void> checkIsLibraryUpdated() async {
-  // //print('Scanning library again....');
+  // print('Scanning library again....');
 
   final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
     hasAll: true,
@@ -722,18 +722,18 @@ Future<void> sharePics({required List<String> picKeys}) async {
       SetEquality().equals(entitiesIds, allPics.value.keys.toSet());
 
   if (isEqual) {
-    // //print('Library is updated!!!!!!');
-    // //print('#@#@#@# Total photos: ${allPics.value.length}');
+    // print('Library is updated!!!!!!');
+    // print('#@#@#@# Total photos: ${allPics.value.length}');
   } else {
-    // //print('Library not updated!!!');
+    // print('Library not updated!!!');
 
     final Set<String> createdPics =
         entitiesIds.difference(allPics.value.keys.toSet());
     final Set<String> deletedPics =
         allPics.value.keys.toSet().difference(entitiesIds);
 
-    // //print('Created: $createdPics');
-    // //print('Deleted: $deletedPics');
+    // print('Created: $createdPics');
+    // print('Deleted: $deletedPics');
 
     for (String created in createdPics) {
       AssetEntity entity = await AssetEntity.fromId(created);
