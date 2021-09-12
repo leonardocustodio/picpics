@@ -15,13 +15,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "22.0.0"
-  after_layout:
-    dependency: "direct main"
-    description:
-      name: after_layout
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.0"
   analyzer:
     dependency: transitive
     description:
@@ -230,7 +223,7 @@ packages:
     source: hosted
     version: "4.1.0"
   collection:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: collection
       url: "https://pub.dartlang.org"
@@ -244,7 +237,7 @@ packages:
     source: hosted
     version: "3.0.0"
   crypto:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: crypto
       url: "https://pub.dartlang.org"
@@ -257,15 +250,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.2"
-  cryptography_flutter:
-    dependency: "direct main"
-    description:
-      path: cryptography_flutter
-      ref: HEAD
-      resolved-ref: d09adc4f7ba8ca94b7ffa0979f53c89a558cafba
-      url: "https://github.com/justkawal/cryptography.git"
-    source: git
-    version: "2.0.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -518,13 +502,6 @@ packages:
       url: "https://github.com/justkawal/flutter_device_locale.git"
     source: git
     version: "0.4.0"
-  flutter_inapp_purchase:
-    dependency: "direct main"
-    description:
-      name: flutter_inapp_purchase
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.0.1"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:
@@ -833,13 +810,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.2"
-  moor_db_viewer:
-    dependency: "direct main"
-    description:
-      name: moor_db_viewer
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.0"
   moor_ffi:
     dependency: "direct overridden"
     description:
@@ -854,13 +824,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.1"
-  nested:
-    dependency: transitive
-    description:
-      name: nested
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   notification_permissions:
     dependency: "direct main"
     description:
@@ -1010,13 +973,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.3"
-  provider:
-    dependency: transitive
-    description:
-      name: provider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.0.0"
   pub_semver:
     dependency: transitive
     description:
@@ -1031,13 +987,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  pull_to_refresh:
-    dependency: "direct main"
-    description:
-      name: pull_to_refresh
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   rate_my_app:
     dependency: "direct main"
     description:
@@ -1122,13 +1071,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  showcaseview:
-    dependency: "direct main"
-    description:
-      name: showcaseview
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   simple_animations:
     dependency: "direct main"
     description:

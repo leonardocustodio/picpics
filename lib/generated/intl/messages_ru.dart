@@ -24,10 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: 'Фотографии не выбраны', one: 'Выбрано 1 фото', other: 'Выбрано ${howMany} фотографий')}";
 
-  static String m2(number) =>
-      "Вы обработали свои ${number} бесплатных ежедневных фото. Хотите продолжить?";
-
-  static String m3(url) =>
+  static String m2(url) =>
       "Чтобы упорядочить все свои фотографии, перейдите по ссылке ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -108,12 +105,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Для организации ваших фотографий нам нужна авторизация доступа к ним."),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "Для организации ваших фотографий нам нужен доступ к вашей фотогалерее"),
-        "get_premium_description": MessageLookupByLibrary.simpleMessage(
-            "ЧТОБЫ ПОЛУЧИТЬ ВСЕ ЭТИ ФУНКЦИИ"),
-        "get_premium_now":
-            MessageLookupByLibrary.simpleMessage("Получите Премиум сейчас!"),
-        "get_premium_title":
-            MessageLookupByLibrary.simpleMessage("ПОЛУЧИТЕ ПРЕМИУМ"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Дом"),
         "how_many_pics": MessageLookupByLibrary.simpleMessage("Сколько фото"),
         "infinite_tags":
@@ -165,13 +156,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Теперь ваши фотографии будут всегда упорядочены"),
         "picpics_photo_manager": MessageLookupByLibrary.simpleMessage(
             "picPics - Менеджер фотографий"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage("ВСЕ ФУНКЦИИ БЕЗ РЕКЛАМЫ"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("Получить Премиум-аккаунт"),
-        "premium_modal_watch_ad": MessageLookupByLibrary.simpleMessage(
-            "Для продолжения просмотрите видео-рекламу"),
         "privacy_policy":
             MessageLookupByLibrary.simpleMessage("Политика конфиденциальности"),
         "private_photos":
@@ -211,7 +195,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Разметка нескольких фото одновременно"),
         "take_a_look": MessageLookupByLibrary.simpleMessage(
             "Взгляните на это приложение!"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use":
             MessageLookupByLibrary.simpleMessage("Условия использования"),
         "time": MessageLookupByLibrary.simpleMessage("Время"),
@@ -241,8 +225,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 мин"),
         "year": MessageLookupByLibrary.simpleMessage("год"),
         "yes": MessageLookupByLibrary.simpleMessage("Да"),
-        "you_are_premium":
-            MessageLookupByLibrary.simpleMessage("Вы получили Премиум!"),
         "your_secret_key":
             MessageLookupByLibrary.simpleMessage("Ваш секретный ключ")
       };

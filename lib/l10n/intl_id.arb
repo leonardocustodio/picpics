@@ -41,10 +41,7 @@
   "take_a_look": "Lihatlah aplikasi ini!",
   "take_a_look_description": "Untuk mengatur semua foto Anda, buka {url}",
   "daily_challenge_permission_description": "Agar kami dapat mengirimkan tantangan harian, kami memerlukan izin untuk mengirim notifikasi. Karena itu, Anda harus mengizinkan notifikasi pada opsi ponsel Anda.",
-  "you_are_premium": "Anda adalah pengguna premium!",
-  "get_premium_now": "Berlangganan premium sekarang!",
-  "get_premium_title": "BERLANGGANAN PREMIUM",
-  "get_premium_description": "UNTUK MEMILIKI SEMUA FITUR INI",
+
   "no_ads": "Tanpa iklan",
   "export_all_gallery": "Ekspor semua galeri",
   "infinite_tags": "Tag tanpa batas",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "Izin akses",
   "gallery_access_permission_description": "Untuk mulai mengatur foto Anda, kami butuh izin untuk mengaksesnya",
   "export_library": "Ekspor Koleksi",
-  "premium_modal_description": "Anda menyelesaikan {number} foto harian gratis Anda, apakah Anda ingin melanjutkan?",
-  "premium_modal_watch_ad": "Tonton iklan video untuk melanjutkan",
-  "premium_modal_get_premium_title": "Dapatkan Akun Premium",
-  "premium_modal_get_premium_description": "SEMUA FITUR TANPA IKLAN",
+
   "family_tag": "Keluarga",
   "travel_tag": "Perjalanan",
   "pets_tag": "Hewan peliharaan",

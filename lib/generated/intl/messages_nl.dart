@@ -25,10 +25,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: 'Geen foto\'s geselecteerd', one: '1 foto geselecteerd', other: '${howMany} foto\'s geselecteerd')}";
 
-  static String m2(number) =>
-      "U heeft uw ${number} gratis dagelijkse foto\'s voltooid, wilt u doorgaan?";
-
-  static String m3(url) => "Ga naar ${url} om al uw foto\'s te ordenen";
+  static String m2(url) => "Ga naar ${url} om al uw foto\'s te ordenen";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -108,12 +105,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Om te beginnen met het organiseren van uw foto\'s, hebben we toestemming nodig om ze te openen"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "Om uw foto\'s te ordenen, hebben we toegang tot uw fotogalerij nodig"),
-        "get_premium_description": MessageLookupByLibrary.simpleMessage(
-            "OM AL DEZE FUNCTIES TE HEBBEN"),
-        "get_premium_now":
-            MessageLookupByLibrary.simpleMessage("Krijg nu premium!"),
-        "get_premium_title":
-            MessageLookupByLibrary.simpleMessage("KRIJG PREMIUM"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Huis"),
         "how_many_pics":
             MessageLookupByLibrary.simpleMessage("Hoeveel foto\'s"),
@@ -164,14 +155,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Nu worden uw foto\'s altijd geordend"),
         "picpics_photo_manager":
             MessageLookupByLibrary.simpleMessage("picPics - Fotomanager"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage(
-                "ALLE FUNCTIES ZONDER ADVERTENTIES"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("Krijg Premium Account"),
-        "premium_modal_watch_ad": MessageLookupByLibrary.simpleMessage(
-            "Bekijk videoadvertentie om door te gaan"),
         "privacy_policy": MessageLookupByLibrary.simpleMessage("Privacybeleid"),
         "private_photos": MessageLookupByLibrary.simpleMessage("Prive-foto\'s"),
         "protect_with_encryption": MessageLookupByLibrary.simpleMessage(
@@ -210,7 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Label meerdere foto\'s tegelijk"),
         "take_a_look":
             MessageLookupByLibrary.simpleMessage("Bekijk deze app eens!"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use":
             MessageLookupByLibrary.simpleMessage("Gebruiksvoorwaarden"),
         "time": MessageLookupByLibrary.simpleMessage("Tijd"),
@@ -240,8 +223,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 minuten"),
         "year": MessageLookupByLibrary.simpleMessage("jaar"),
         "yes": MessageLookupByLibrary.simpleMessage("Ja"),
-        "you_are_premium":
-            MessageLookupByLibrary.simpleMessage("U bent premium!"),
         "your_secret_key":
             MessageLookupByLibrary.simpleMessage("Uw geheime sleutel")
       };

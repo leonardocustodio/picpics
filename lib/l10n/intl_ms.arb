@@ -41,10 +41,7 @@
   "take_a_look": "Lihatlah aplikasi ini!",
   "take_a_look_description": "Untuk menguruskan semua gambar anda, pergi ke {url}",
   "daily_challenge_permission_description": "Supaya kami dapat menghantar cabaran harian anda, kami memerlukan kebenaran untuk menghantar pemberitahuan, jadi, anda perlu memberi kebenaran pemberitahuan dalam pilihan peranti mudah alih anda",
-  "you_are_premium": "Anda premium!",
-  "get_premium_now": "Dapatkan premium sekarang!",
-  "get_premium_title": "DAPATKAN PREMIUM",
-  "get_premium_description": "UNTUK MEMILIKI SEMUA CIRI-CIRI INI",
+
   "no_ads": "Tiada Iklan",
   "export_all_gallery": "Eksport semua galeri",
   "infinite_tags": "Tag tanpa had",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "Kebenaran akses",
   "gallery_access_permission_description": "Untuk mula menguruskan gambar anda, kami memerlukan kebenaran untuk mengaksesnya",
   "export_library": "Eksport Perpustakaan",
-  "premium_modal_description": "Anda telah melengkapkan {number} gambar harian percuma anda, adakah anda ingin teruskan?",
-  "premium_modal_watch_ad": "Tontoni iklan video untuk teruskan",
-  "premium_modal_get_premium_title": "Dapatkan Akaun Premium",
-  "premium_modal_get_premium_description": "SEMUA CIRI TANPA IKLAN",
+
   "family_tag": "Keluarga",
   "travel_tag": "Pengembaraan",
   "pets_tag": "Haiwan Peliharaan",

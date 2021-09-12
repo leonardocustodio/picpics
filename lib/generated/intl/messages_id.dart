@@ -24,10 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: 'Tidak ada foto yang dipilih', one: '1 foto dipilih', other: '${howMany} foto dipilih')}";
 
-  static String m2(number) =>
-      "Anda menyelesaikan ${number} foto harian gratis Anda, apakah Anda ingin melanjutkan?";
-
-  static String m3(url) => "Untuk mengatur semua foto Anda, buka ${url}";
+  static String m2(url) => "Untuk mengatur semua foto Anda, buka ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -107,12 +104,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Untuk mulai mengatur foto Anda, kami butuh izin untuk mengaksesnya"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "Untuk mengatur foto, kami memerlukan akses ke galeri foto Anda"),
-        "get_premium_description": MessageLookupByLibrary.simpleMessage(
-            "UNTUK MEMILIKI SEMUA FITUR INI"),
-        "get_premium_now": MessageLookupByLibrary.simpleMessage(
-            "Berlangganan premium sekarang!"),
-        "get_premium_title":
-            MessageLookupByLibrary.simpleMessage("BERLANGGANAN PREMIUM"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Rumah"),
         "how_many_pics":
             MessageLookupByLibrary.simpleMessage("Berapa banyak foto"),
@@ -164,13 +155,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Kini, foto Anda akan selalu teratur"),
         "picpics_photo_manager":
             MessageLookupByLibrary.simpleMessage("picPics - Pengatur Foto"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage("SEMUA FITUR TANPA IKLAN"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("Dapatkan Akun Premium"),
-        "premium_modal_watch_ad": MessageLookupByLibrary.simpleMessage(
-            "Tonton iklan video untuk melanjutkan"),
         "privacy_policy":
             MessageLookupByLibrary.simpleMessage("Kebijakan Privasi"),
         "private_photos": MessageLookupByLibrary.simpleMessage("Foto Pribadi"),
@@ -209,7 +193,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Beri tag banyak foto sekaligus"),
         "take_a_look":
             MessageLookupByLibrary.simpleMessage("Lihatlah aplikasi ini!"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use":
             MessageLookupByLibrary.simpleMessage("Ketentuan Penggunaan"),
         "time": MessageLookupByLibrary.simpleMessage("Waktu"),
@@ -239,8 +223,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 mnt"),
         "year": MessageLookupByLibrary.simpleMessage("tahun"),
         "yes": MessageLookupByLibrary.simpleMessage("Ya"),
-        "you_are_premium": MessageLookupByLibrary.simpleMessage(
-            "Anda adalah pengguna premium!"),
         "your_secret_key":
             MessageLookupByLibrary.simpleMessage("Kode rahasia Anda")
       };

@@ -24,10 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: 'Inga foton har valts', one: '1 foto valt', other: '${howMany} foton valda')}";
 
-  static String m2(number) =>
-      "Du har slutfört dina ${number} gratis dagliga bilder, vill du fortsätta?";
-
-  static String m3(url) =>
+  static String m2(url) =>
       "För att organisera alla dina foton går du till ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -108,11 +105,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "För att börja organisera dina foton behöver vi behörighet för att komma åt dem"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "För att organisera dina bilder behöver vi tillgång till ditt fotogalleri"),
-        "get_premium_description": MessageLookupByLibrary.simpleMessage(
-            "FÖR ATT HA ALLA FUNKTIONERNA"),
-        "get_premium_now":
-            MessageLookupByLibrary.simpleMessage("Få premium nu!"),
-        "get_premium_title": MessageLookupByLibrary.simpleMessage("FÅ PREMIUM"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Hem"),
         "how_many_pics":
             MessageLookupByLibrary.simpleMessage("Hur många bilder"),
@@ -165,14 +157,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Nu är dina foton alltid organiserade"),
         "picpics_photo_manager":
             MessageLookupByLibrary.simpleMessage("picPics - Photo Manager"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage(
-                "ALLA FUNKTIONER UTAN ANNONSER"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("Skaffa premiumkonto"),
-        "premium_modal_watch_ad": MessageLookupByLibrary.simpleMessage(
-            "Se videoannonsen för att fortsätta"),
         "privacy_policy":
             MessageLookupByLibrary.simpleMessage("Integritetspolicy"),
         "private_photos": MessageLookupByLibrary.simpleMessage("Privata foton"),
@@ -208,7 +192,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Tagga flera foton samtidigt"),
         "take_a_look":
             MessageLookupByLibrary.simpleMessage("Ta en titt på appen!"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use": MessageLookupByLibrary.simpleMessage("Användarvillkor"),
         "time": MessageLookupByLibrary.simpleMessage("Tid"),
         "toggle_date": MessageLookupByLibrary.simpleMessage("Datum"),
@@ -237,8 +221,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 min"),
         "year": MessageLookupByLibrary.simpleMessage("år"),
         "yes": MessageLookupByLibrary.simpleMessage("Ja"),
-        "you_are_premium":
-            MessageLookupByLibrary.simpleMessage("Du har premium!"),
         "your_secret_key":
             MessageLookupByLibrary.simpleMessage("Din hemliga nyckel")
       };

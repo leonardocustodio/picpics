@@ -14,7 +14,6 @@ import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/stores/database_controller.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -27,7 +26,6 @@ class UserController extends GetxController {
   static UserController get to => Get.find();
   final appVersion = ''.obs;
   final deviceLocale = ''.obs;
-  String? initiatedWithProduct;
   final LocalAuthentication biometricAuth = LocalAuthentication();
   AppDatabase database = AppDatabase();
 
@@ -36,13 +34,11 @@ class UserController extends GetxController {
   final isPinRegistered = false.obs;
   final keepAskingToDelete = false.obs;
   final shouldDeleteOnPrivate = false.obs;
-  final isPremium = false.obs;
   final picsTaggedToday = 0.obs;
   final lastTaggedPicDate = Rxn<DateTime>();
 
   final loggedIn = false.obs;
   final tutorialCompleted = false.obs;
-  final canTagToday = false.obs;
   final hasGalleryPermission = false.obs;
   final waitingAccessCode = false.obs;
   final isMenuExpanded = true.obs;
@@ -51,9 +47,6 @@ class UserController extends GetxController {
   /* final starredPhotos = <String, String>{}.obs; */
 
   //String initialRoute;
-  String? tryBuyId;
-  final dailyPicsForAds = 25.obs;
-  // int freePrivatePics = 20;
   final tourCompleted = false.obs;
   // observable integers
   final requireSecret = 0.obs;
@@ -105,9 +98,7 @@ class UserController extends GetxController {
     tutorialCompleted.value = user.tutorialCompleted;
     appLanguage.value = user.appLanguage ?? 'en';
     hasGalleryPermission.value = user.hasGalleryPermission;
-    canTagToday.value = user.canTagToday;
     loggedIn.value = user.loggedIn;
-    tryBuyId = initiatedWithProduct;
     isPinRegistered.value = user.isPinRegistered;
     keepAskingToDelete.value = user.keepAskingToDelete;
     shouldDeleteOnPrivate.value = user.shouldDeleteOnPrivate;
@@ -135,7 +126,7 @@ class UserController extends GetxController {
     await checkNotificationPermission();
 
     /* await DatabaseManager.instance.initPlatformState(user.id); */
-    DatabaseManager.instance.loadRemoteConfig();
+    /* DatabaseManager.instance.loadRemoteConfig(); */
 
     await checkAvailableBiometrics();
 
@@ -179,20 +170,18 @@ class UserController extends GetxController {
         .updateMoorUser(currentUser!.copyWith(starredPhotos: starredPhotos));
   }
  */
-  int get freePrivatePics {
+  /* int get freePrivatePics {
     final remoteConfig = RemoteConfig.instance;
     return remoteConfig.getInt('free_private_pics');
-  }
+  } */
 
-  int get totalPrivatePics {
+  /* int get totalPrivatePics {
     var len = 0;
-    Future.value([database.getAllPrivate()]).then((secretBox) {
+    database.getAllPrivate().then((secretBox) {
       len = secretBox.length;
     });
     return len;
-  }
-
-  void setTryBuyId(String? value) => tryBuyId = value;
+  } */
 
   Future<void> requestNotificationPermission() async {
     var push = PushNotificationsManager();
@@ -335,24 +324,6 @@ class UserController extends GetxController {
   }
 
   //@action
-  Future<void> setCanTagToday(bool value) async {
-    if (isPremium.value) {
-      canTagToday.value = true;
-    } else {
-      canTagToday.value = value;
-    }
-
-    /* var userBox = Hive.box('user');
-    User currentUser = userBox.getAt(0);
-    currentUser.canTagToday = canTagToday;
-    currentUser.save(); */
-
-    final currentUser = await database.getSingleMoorUser();
-    await database
-        .updateMoorUser(currentUser!.copyWith(canTagToday: canTagToday.value));
-  }
-
-  //@action
   Future<void> increaseTodayTaggedPics() async {
     /* var userBox = Hive.box('user');
     User currentUser = userBox.getAt(0); */
@@ -366,21 +337,6 @@ class UserController extends GetxController {
       picsTaggedToday += 1;
       print(
           'same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
-
-      final remoteConfig = RemoteConfig.instance;
-      dailyPicsForAds.value = remoteConfig.getInt('daily_pics_for_ads');
-      var mod = currentUser.picsTaggedToday % dailyPicsForAds.value;
-
-      if (mod == 0) {
-        print('### CALL ADS!!!');
-
-        await database.updateMoorUser(currentUser.copyWith(
-          picsTaggedToday: picsTaggedToday,
-          lastTaggedPicDate: lastTaggedPicNewDate,
-        ));
-        await setCanTagToday(false);
-        return;
-      }
     } else {
       print('(date might be null) or (not same day... resetting counter....)');
       picsTaggedToday = 1;
@@ -389,7 +345,6 @@ class UserController extends GetxController {
       picsTaggedToday: picsTaggedToday,
       lastTaggedPicDate: lastTaggedPicNewDate,
     ));
-    await setCanTagToday(true);
   }
 
   //@action

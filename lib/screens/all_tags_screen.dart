@@ -468,11 +468,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
   Future<void> doTagging(
       String tagId, String tagName, int count, DateTime time) async {
     print('do nothing');
-    // TODO: Enable it to show ads
-    //if (!UserController.to.canTagToday.value) {
-    //  showWatchAdModal();
-    //  return;
-    //}
+
     if (controller.selectedTags.value[tagId] != null) {
       controller.selectedTags.value.remove(tagId);
       //

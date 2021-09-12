@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 import 'dart:isolate';
 
 import 'package:background_fetch/background_fetch.dart';
@@ -9,7 +8,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:home_widget/home_widget.dart';
@@ -39,7 +37,7 @@ import 'stores/tabs_controller.dart';
 import 'stores/tagged_controller.dart';
 import 'stores/tags_controller.dart';
 
-Future<String?> checkForUserControllerInitiatedProducts() async {
+/* Future<String?> checkForUserControllerInitiatedProducts() async {
   print('Checking if appstore initiated products');
   var appStoreProducts =
       await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
@@ -47,7 +45,7 @@ Future<String?> checkForUserControllerInitiatedProducts() async {
     return appStoreProducts.last.productId;
   }
   return null;
-}
+} */
 
 void backgroundFetchHeadlessTask(String taskId) async {
   print('[BackgroundFetch] Headless event received.');
@@ -102,11 +100,10 @@ void main() async {
     );
   }).sendPort);
 
-  String? initiatedWithProduct;
-  if (Platform.isIOS) {
+  /* if (Platform.isIOS) {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
-  }
-  var user = UserController()..initiatedWithProduct = initiatedWithProduct;
+  } */
+  var user = UserController();
   await user.initialize();
 
   // FlutterBranchSdk.setRequestMetadata(r'$google_analytics_user_id', userId);
@@ -212,7 +209,6 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
             ),
         SettingsScreen.id: (context) => SettingsScreen(),
         AddLocationScreen.id: (context) => AddLocationScreen(null),
-        /* PremiumScreen.id: (context) => PremiumScreen(), */
         PinScreen.id: (context) => PinScreen(),
         EmailScreen.id: (context) => EmailScreen(),
       },

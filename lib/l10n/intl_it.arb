@@ -41,10 +41,7 @@
   "take_a_look": "Dai un'occhiata a questa app!",
   "take_a_look_description": "Per organizzare tutte le tue foto vai a {url}",
   "daily_challenge_permission_description": "Per poter inviare le tue sfide quotidiane abbiamo bisogno dell'autorizzazione per inviare notifiche, quindi è necessario autorizzare le notifiche nelle opzioni del tuo cellulare",
-  "you_are_premium": "Sei premium!",
-  "get_premium_now": "Ottieni la versione premium ora!",
-  "get_premium_title": "OTTIENI LA VERSIONE PREMIUM",
-  "get_premium_description": "PER AVERE TUTTE QUESTE CARATTERISTICHE",
+
   "no_ads": "Nessuna pubblicità",
   "export_all_gallery": "Esporta tutta la galleria",
   "infinite_tags": "Tag infiniti",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "Autorizzazioni di accesso",
   "gallery_access_permission_description": "Per iniziare a organizzare le tue foto, abbiamo bisogno dell'autorizzazione per accedervi",
   "export_library": "Esporta libreria",
-  "premium_modal_description": "Hai completato {number} immagini giornaliere gratuite, vuoi continuare?",
-  "premium_modal_watch_ad": "Guarda l'annuncio video per continuare",
-  "premium_modal_get_premium_title": "Ottieni un account Premium",
-  "premium_modal_get_premium_description": "TUTTE LE CARATTERISTICHE SENZA ANNUNCI",
+
   "family_tag": "Famiglia",
   "travel_tag": "Viaggio",
   "pets_tag": "Animali",

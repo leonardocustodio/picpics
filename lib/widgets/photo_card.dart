@@ -402,11 +402,6 @@ class _PhotoCardState extends State<PhotoCard> {
                       print('do nothing');
                     },
                     onPanEnd: (String selectedTagKey) async {
-                      /* if (!UserController.to.canTagToday.value) {
-                        showWatchAdModal();
-                        return;
-                      } */
-
                       await TagsController.to.removeTagFromPic(
                           picId: picStore.photoId.value.toString(),
                           tagKey: selectedTagKey);
@@ -426,17 +421,6 @@ class _PhotoCardState extends State<PhotoCard> {
                       print('return');
 
                       if (text != '') {
-                        /* if (!UserController.to.canTagToday.value) {
-                          tagsEditingController.clear();
-                          picStore.setSearchText('');
-                          showWatchAdModal();
-                          return;
-                        } */
-
-                        /* await GalleryStore.to.addTagToPic(
-                          picStore: picStore,
-                          tagName: text,
-                        ); */
                         var tagKey = await TagsController.to.createTag(text);
                         await picStore.addMultipleTagsToPic(
                             acceptedTagKeys: {tagKey: ''});
@@ -524,11 +508,6 @@ class _PhotoCardState extends State<PhotoCard> {
                         tagStyle: TagStyle.GrayOutlined,
                         //showEditTagModal: widget.showEditTagModal,
                         onTap: (tagKey) async {
-                          /* if (!UserController.to.canTagToday.value) {
-                            showWatchAdModal();
-                            return;
-                          } */
-
                           await picStore.addMultipleTagsToPic(
                               acceptedTagKeys: {tagKey: ''});
                           await TagsController.to

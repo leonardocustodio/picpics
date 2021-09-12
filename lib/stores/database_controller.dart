@@ -25,11 +25,7 @@ class DatabaseController extends GetxController {
   }
 
   Future<void> setDeletedFromCameraRoll(String picId, bool value) async {
-    //var picsBox = Hive.box('pics');
-    //Pic pic = picsBox.get(photoId);
     final pic = await _database.getPhotoByPhotoId(picId);
-    //pic.deletedFromCameraRoll = value;
-    //pic.save();
     if (pic != null) {
       await _database.updatePhoto(pic.copyWith(deletedFromCameraRoll: value));
     }
@@ -59,7 +55,6 @@ MoorUser getDefaultMoorUser({String? deviceLocale}) {
     tutorialCompleted: false,
     picsTaggedToday: 0,
     lastTaggedPicDate: DateTime.now(),
-    canTagToday: true,
     appLanguage: deviceLocale ?? '',
     hasGalleryPermission: false,
     loggedIn: false,

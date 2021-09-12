@@ -24,10 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: 'कोई फ़ोटो नहीं चुना गया', one: '1 फ़ोटो चयनित', other: '${howMany} फ़ोटो चयनित')}";
 
-  static String m2(number) =>
-      "आपने अपनी ${number} निःशुल्क दैनिक तस्वीरें पूरी कर ली हैं, क्या आप जारी रखना चाहते हैं?";
-
-  static String m3(url) =>
+  static String m2(url) =>
       "अपनी सभी तस्वीरों को व्यवस्थित करने के लिए ${url} पर जाएं";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -105,12 +102,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "अपनी तस्वीरों को व्यवस्थित करने के लिए, हमें उन्हें एक्सेस करने के लिए प्राधिकरण की आवश्यकता है"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "अपनी तस्वीरों को व्यवस्थित करने के लिए हमें आपकी फोटो गैलरी तक पहुंचने की आवश्यकता है"),
-        "get_premium_description":
-            MessageLookupByLibrary.simpleMessage("सभी फीचर्स हैं"),
-        "get_premium_now":
-            MessageLookupByLibrary.simpleMessage("अब प्रीमियम प्राप्त करें!"),
-        "get_premium_title":
-            MessageLookupByLibrary.simpleMessage("प्रीमियम प्राप्त करें"),
         "home_tag": MessageLookupByLibrary.simpleMessage("घर"),
         "how_many_pics": MessageLookupByLibrary.simpleMessage("कितने पिक्स"),
         "infinite_tags": MessageLookupByLibrary.simpleMessage("अनंत टैग"),
@@ -160,14 +151,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "अब आपकी तस्वीरें हमेशा व्यवस्थित रहेंगी"),
         "picpics_photo_manager":
             MessageLookupByLibrary.simpleMessage("पिकपिक्स - फोटो मैनेजर"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage(
-                "विज्ञापन के बिना सभी विशेषताएं"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("प्रीमियम खाता प्राप्त करें"),
-        "premium_modal_watch_ad": MessageLookupByLibrary.simpleMessage(
-            "जारी रखने के लिए वीडियो विज्ञापन देखें"),
         "privacy_policy": MessageLookupByLibrary.simpleMessage("गोपनीयता नीति"),
         "private_photos": MessageLookupByLibrary.simpleMessage("निजी तस्वीरें"),
         "protect_with_encryption": MessageLookupByLibrary.simpleMessage(
@@ -203,7 +186,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("एक साथ कई फ़ोटो टैग करें"),
         "take_a_look":
             MessageLookupByLibrary.simpleMessage("इस ऐप पर एक नज़र डालें!"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use": MessageLookupByLibrary.simpleMessage("उपयोग की शर्तें"),
         "time": MessageLookupByLibrary.simpleMessage("समय"),
         "toggle_date": MessageLookupByLibrary.simpleMessage("दिनांक"),
@@ -232,8 +215,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("बीस मिनट"),
         "year": MessageLookupByLibrary.simpleMessage("साल"),
         "yes": MessageLookupByLibrary.simpleMessage("हाँ"),
-        "you_are_premium":
-            MessageLookupByLibrary.simpleMessage("आप प्रीमियम हैं!"),
         "your_secret_key":
             MessageLookupByLibrary.simpleMessage("आपकी गुप्त कुंजी")
       };

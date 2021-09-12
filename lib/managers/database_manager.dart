@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 import 'package:picPics/utils/languages.dart';
@@ -19,7 +18,7 @@ class DatabaseManager extends ChangeNotifier {
     return _instance ??= DatabaseManager._();
   }
 
-  List<String> slideThumbPhotoIds = [];
+  /* List<String> slideThumbPhotoIds = []; */
   List<double> lastLocationRequest = [0.0, 0.0];
 
   String currentPhotoCity = '';
@@ -30,11 +29,11 @@ class DatabaseManager extends ChangeNotifier {
   //String selectedTagKey;
   late MoorUser userSettings;
 
-  double adOffset = 48.0;
-  AppDatabase database = AppDatabase();
+  /* double adOffset = 48.0; */
+  final database = AppDatabase();
 
-  bool adsIsLoaded = false;
-  bool showShowAdAfterReload = false;
+  /* bool adsIsLoaded = false;
+  bool showShowAdAfterReload = false; */
 
   void requestNotification() async {
     // TODO: commented below line
@@ -43,7 +42,7 @@ class DatabaseManager extends ChangeNotifier {
     userSettings = (await database.getSingleMoorUser())!;
 
     print('requesting notification...');
-    print('dailyChallenges: ${userSettings}');
+    print('dailyChallenges: $userSettings');
 
     if (Platform.isIOS) {
       final _firebaseMessaging = FirebaseMessaging.instance;
@@ -136,7 +135,7 @@ print('got token this mean it did accept notification');
     }
   } */
 
-  void loadRemoteConfig() async {
+  /* void loadRemoteConfig() async {
     print('loading remote config....');
     final remoteConfig = RemoteConfig.instance;
     // Enable developer mode to relax fetch throttling
@@ -160,7 +159,7 @@ print('got token this mean it did accept notification');
           'Unable to fetch remote config. Cached or default values will be used');
     }
   }
-
+ */
   Future<void> changeUserLanguage(String appLanguage,
       {bool notify = true}) async {
     await database.updateMoorUser(

@@ -41,10 +41,7 @@
   "take_a_look": "इस ऐप पर एक नज़र डालें!",
   "take_a_look_description": "अपनी सभी तस्वीरों को व्यवस्थित करने के लिए {url} पर जाएं",
   "daily_challenge_permission_description": "हमें आपकी दैनिक चुनौतियों को भेजने में सक्षम होने के लिए, हमें सूचनाएं भेजने के लिए प्राधिकरण की आवश्यकता है, इसलिए, यह आवश्यक है कि आप अपने सेल फोन के विकल्पों में सूचनाओं को अधिकृत करें.",
-  "you_are_premium": "आप प्रीमियम हैं!",
-  "get_premium_now": "अब प्रीमियम प्राप्त करें!",
-  "get_premium_title": "प्रीमियम प्राप्त करें",
-  "get_premium_description": "सभी फीचर्स हैं",
+
   "no_ads": "विज्ञापन नहीं",
   "export_all_gallery": "सभी गैलरी निर्यात करें",
   "infinite_tags": "अनंत टैग",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "पहुंच की अनुमति",
   "gallery_access_permission_description": "अपनी तस्वीरों को व्यवस्थित करने के लिए, हमें उन्हें एक्सेस करने के लिए प्राधिकरण की आवश्यकता है",
   "export_library": "निर्यात लाइब्रेरी",
-  "premium_modal_description": "आपने अपनी {number} निःशुल्क दैनिक तस्वीरें पूरी कर ली हैं, क्या आप जारी रखना चाहते हैं?",
-  "premium_modal_watch_ad": "जारी रखने के लिए वीडियो विज्ञापन देखें",
-  "premium_modal_get_premium_title": "प्रीमियम खाता प्राप्त करें",
-  "premium_modal_get_premium_description": "विज्ञापन के बिना सभी विशेषताएं",
+
   "family_tag": "परिवार",
   "travel_tag": "यात्रा",
   "pets_tag": "पालतू जानवर",

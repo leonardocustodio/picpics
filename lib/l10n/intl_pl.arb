@@ -41,10 +41,7 @@
   "take_a_look": "Spójrz na tę aplikację!",
   "take_a_look_description": "Aby uporządkować wszystkie zdjęcia, przejdź do {url}",
   "daily_challenge_permission_description": "Abyśmy mogli wysyłać codzienne wyzwania, potrzebujemy autoryzacji do wysyłania powiadomień, dlatego konieczne jest, abyś autoryzował powiadomienia w opcjach swojego telefonu komórkowego",
-  "you_are_premium": "Jesteś premium!",
-  "get_premium_now": "Zdobądź premię już teraz!",
-  "get_premium_title": "POBIERZ PREMIUM",
-  "get_premium_description": "MIEĆ WSZYSTKIE TE CECHY",
+
   "no_ads": "Bez reklam",
   "export_all_gallery": "Eksportuj całą galerię",
   "infinite_tags": "Nieskończone tagi",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "Uprawnienia dostępu",
   "gallery_access_permission_description": "Aby rozpocząć porządkowanie zdjęć, potrzebujemy autoryzacji, aby uzyskać do nich dostęp",
   "export_library": "Eksportuj bibliotekę",
-  "premium_modal_description": "Skończyłeś swoje {number} codzienne zdjęcia, czy chcesz kontynuować?",
-  "premium_modal_watch_ad": "Obejrzyj reklamę wideo, aby kontynuować",
-  "premium_modal_get_premium_title": "Uzyskaj konto premium",
-  "premium_modal_get_premium_description": "WSZYSTKIE FUNKCJE BEZ REKLAM",
+
   "family_tag": "Rodzina",
   "travel_tag": "Podróżować",
   "pets_tag": "Zwierzęta",

@@ -121,9 +121,7 @@ class UnhideSecretModal extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 16.0,
-                    ),
+                    const SizedBox(width: 16.0),
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),

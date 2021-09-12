@@ -24,10 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: 'Keine Fotos ausgewählt', one: '1 Foto ausgewählt', other: '${howMany} Fotos ausgewählt')}";
 
-  static String m2(number) =>
-      "Sie haben die ${number} Ihrer täglich kostenlosen Bilder fertiggestellt, möchten Sie fortfahren?";
-
-  static String m3(url) =>
+  static String m2(url) =>
       "Gehen Sie zu ${url}, um alle Ihre Fotos zu organisieren.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
@@ -271,12 +268,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "garden_tag": MessageLookupByLibrary.simpleMessage("Garten"),
         "gelato_tag": MessageLookupByLibrary.simpleMessage("Gelato"),
         "gerbil_tag": MessageLookupByLibrary.simpleMessage("Rennmaus"),
-        "get_premium_description": MessageLookupByLibrary.simpleMessage(
-            "ERHALTEN SIE ALLE DIESE FUNKTIONEN"),
-        "get_premium_now": MessageLookupByLibrary.simpleMessage(
-            "Holen Sie sich jetzt Premium!"),
-        "get_premium_title":
-            MessageLookupByLibrary.simpleMessage("PREMIUM HOLEN"),
         "glacier_tag": MessageLookupByLibrary.simpleMessage("Gletscher"),
         "glasses_tag": MessageLookupByLibrary.simpleMessage("Brille"),
         "glitter_tag": MessageLookupByLibrary.simpleMessage("Funkeln"),
@@ -456,14 +447,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "porcelain_tag": MessageLookupByLibrary.simpleMessage("Porzellan"),
         "poster_tag": MessageLookupByLibrary.simpleMessage("Poster"),
         "prairie_tag": MessageLookupByLibrary.simpleMessage("Prärie"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage(
-                "ALLE FUNKTIONEN OHNE WERBUNG"),
-        "premium_modal_get_premium_title": MessageLookupByLibrary.simpleMessage(
-            "Holen Sie sich ein Premium-Konto"),
-        "premium_modal_watch_ad": MessageLookupByLibrary.simpleMessage(
-            "Sehen Sie sich die Videoanzeige an, um fortzufahren."),
         "presentation_tag":
             MessageLookupByLibrary.simpleMessage("Präsentation"),
         "privacy_policy":
@@ -605,7 +588,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Kennzeichnen Sie mehrere Fotos gleichzeitig."),
         "take_a_look": MessageLookupByLibrary.simpleMessage(
             "Schauen Sie sich diese App an!"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "tattoo_tag": MessageLookupByLibrary.simpleMessage("Tätowierung"),
         "team_tag": MessageLookupByLibrary.simpleMessage("Mannschaft"),
         "television_tag": MessageLookupByLibrary.simpleMessage("Fernsehen"),
@@ -683,8 +666,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 Minuten"),
         "year": MessageLookupByLibrary.simpleMessage("Jahr"),
         "yes": MessageLookupByLibrary.simpleMessage("Ja"),
-        "you_are_premium":
-            MessageLookupByLibrary.simpleMessage("Du bist Premium!"),
         "your_secret_key":
             MessageLookupByLibrary.simpleMessage("Ihr Geheimschlüssel")
       };

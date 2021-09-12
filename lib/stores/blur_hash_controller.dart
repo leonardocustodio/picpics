@@ -39,7 +39,6 @@ class BlurHashController extends GetxController {
   ///
 
   Future<void> createBlurHash(String photoId, Uint8List imageBytes) async {
-    return;
     if (null != _blurHashesQueue[photoId] || null != masterHash[photoId]) {
       return;
     }

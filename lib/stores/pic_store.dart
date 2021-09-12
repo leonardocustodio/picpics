@@ -203,7 +203,7 @@ class PicStore extends GetxController {
       return null;
     }
     return await Crypto.decryptImage(
-        photoPath, UserController.to.encryptionKey!, hex.decode(nonce));
+        thumbPath, UserController.to.encryptionKey!, hex.decode(nonce));
   }
 
   String photoPath;

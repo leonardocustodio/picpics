@@ -3,8 +3,7 @@ class User {
   final List<String> recentTags;
   String email, password, appLanguage, appVersion, defaultWidgetImage;
   int goal, hourOfDay, minutesOfDay, picsTaggedToday;
-  bool canTagToday,
-      hasGalleryPermission,
+  bool hasGalleryPermission,
       loggedIn,
       secretPhotos,
       isPinRegistered,
@@ -12,7 +11,6 @@ class User {
       shouldDeleteOnPrivate,
       tourCompleted,
       isBiometricActivated,
-      isPremium,
       notifications,
       dailyChallenges,
       tutorialCompleted;
@@ -27,12 +25,10 @@ class User {
     required this.goal,
     required this.hourOfDay,
     required this.minutesOfDay,
-    required this.isPremium,
     required this.recentTags,
     required this.tutorialCompleted,
     required this.picsTaggedToday,
     required this.lastTaggedPicDate,
-    required this.canTagToday,
     required this.appLanguage,
     required this.appVersion,
     required this.hasGalleryPermission,

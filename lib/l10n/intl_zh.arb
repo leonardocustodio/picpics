@@ -41,10 +41,7 @@
   "take_a_look": "看看这个App！",
   "take_a_look_description": "要整理所有照片，请访问{url}",
   "daily_challenge_permission_description": "为了让我们能够发送您的每日挑战，我们需要授权来发送通知，因此您需要在手机选项中授权通知权限",
-  "you_are_premium": "您是高级版用户！",
-  "get_premium_now": "立即获取高级版！",
-  "get_premium_title": "获取高级版",
-  "get_premium_description": "享受所有这些功能",
+
   "no_ads": "无广告",
   "export_all_gallery": "导出所有图库",
   "infinite_tags": "无限标签",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "访问权限",
   "gallery_access_permission_description": "要开始整理您的照片，我们需要授权以访问它们",
   "export_library": "导出图库",
-  "premium_modal_description": "您已完成您的{number}张免费每日图片，是否要继续？",
-  "premium_modal_watch_ad": "观看视频广告以继续",
-  "premium_modal_get_premium_title": "获取高级账户",
-  "premium_modal_get_premium_description": "所有功能，无广告",
+
   "family_tag": "家庭",
   "travel_tag": "旅行",
   "pets_tag": "宠物",

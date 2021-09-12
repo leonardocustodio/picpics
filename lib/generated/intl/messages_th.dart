@@ -24,10 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: 'ไม่มีรูปที่เลือก', one: 'เลือก 1 ภาพ', other: 'เลือก ${howMany} ภาพ')}";
 
-  static String m2(number) =>
-      "คุณทำภาพถ่ายฟรีประจำวันครบ ${number} แล้ว ต้องการทำต่อไหม?";
-
-  static String m3(url) => "ไปที่ ${url} เพื่อจัดหมวดหมู่ภาพถ่ายทั้งหมด";
+  static String m2(url) => "ไปที่ ${url} เพื่อจัดหมวดหมู่ภาพถ่ายทั้งหมด";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -105,12 +102,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "แอปจำเป็นต้องได้รับอนุญาตการเข้าถึงข้อมูลเพื่อเริ่มขั้นตอนการจัดหมวดหมู่ภาพถ่าย"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "แอปจำเป็นต้องเข้าถึงคลังภาพเพื่อจัดหมวดหมู่ภาพถ่าย"),
-        "get_premium_description":
-            MessageLookupByLibrary.simpleMessage("เพื่อใช้คุณสมบัติทั้งหมดนี้"),
-        "get_premium_now": MessageLookupByLibrary.simpleMessage(
-            "เปลี่ยนไปใช้แบบพรีเมียมเลยตอนนี้!"),
-        "get_premium_title":
-            MessageLookupByLibrary.simpleMessage("เปลี่ยนไปเป็นพรีเมียม"),
         "home_tag": MessageLookupByLibrary.simpleMessage("บ้าน"),
         "how_many_pics":
             MessageLookupByLibrary.simpleMessage("มีภาพถ่ายเท่าไร"),
@@ -160,13 +151,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "จากนี้ภาพถ่ายของคุณจะไม่กระจัดกระจายอีกต่อไปแล้ว"),
         "picpics_photo_manager":
             MessageLookupByLibrary.simpleMessage("picPics - ตัวจัดการภาพ"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage("ใช้ทุกคุณสมบัติแบบไร้โฆษณา"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("เปลี่ยนเป็นบัญชีแบบพรีเมียม"),
-        "premium_modal_watch_ad":
-            MessageLookupByLibrary.simpleMessage("ดูวิดีโอโฆษณาเพื่อไปต่อ"),
         "privacy_policy":
             MessageLookupByLibrary.simpleMessage("นโยบายความเป็นส่วนตัว"),
         "private_photos": MessageLookupByLibrary.simpleMessage("รูปภาพส่วนตัว"),
@@ -201,7 +185,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tag_multiple_photos_at_once": MessageLookupByLibrary.simpleMessage(
             "ติดแท็กภาพถ่ายหลายภาพในครั้งเดียว"),
         "take_a_look": MessageLookupByLibrary.simpleMessage("ดูแอปนี้!"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use":
             MessageLookupByLibrary.simpleMessage("ข้อกำหนดการใช้งาน"),
         "time": MessageLookupByLibrary.simpleMessage("เวลา"),
@@ -231,8 +215,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 นาที"),
         "year": MessageLookupByLibrary.simpleMessage("ปี"),
         "yes": MessageLookupByLibrary.simpleMessage("ใช่"),
-        "you_are_premium":
-            MessageLookupByLibrary.simpleMessage("คุณคือชาวพรีเมียม!"),
         "your_secret_key": MessageLookupByLibrary.simpleMessage("รหัสลับของคุณ")
       };
 }

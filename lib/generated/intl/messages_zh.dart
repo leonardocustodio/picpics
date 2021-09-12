@@ -24,9 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: '未选择照片', one: '已选择1张照片', other: '已选择${howMany}张照片')}";
 
-  static String m2(number) => "您已完成您的${number}张免费每日图片，是否要继续？";
-
-  static String m3(url) => "要整理所有照片，请访问${url}";
+  static String m2(url) => "要整理所有照片，请访问${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -88,10 +86,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("要开始整理您的照片，我们需要授权以访问它们"),
         "gallery_access_reason":
             MessageLookupByLibrary.simpleMessage("要整理您的照片，我们需要访问您的照片库"),
-        "get_premium_description":
-            MessageLookupByLibrary.simpleMessage("享受所有这些功能"),
-        "get_premium_now": MessageLookupByLibrary.simpleMessage("立即获取高级版！"),
-        "get_premium_title": MessageLookupByLibrary.simpleMessage("获取高级版"),
         "home_tag": MessageLookupByLibrary.simpleMessage("居家"),
         "how_many_pics": MessageLookupByLibrary.simpleMessage("多少图片"),
         "infinite_tags": MessageLookupByLibrary.simpleMessage("无限标签"),
@@ -135,13 +129,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("现在，您的照片将始终井井有条"),
         "picpics_photo_manager":
             MessageLookupByLibrary.simpleMessage("picPics - 照片管理器"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage("所有功能，无广告"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("获取高级账户"),
-        "premium_modal_watch_ad":
-            MessageLookupByLibrary.simpleMessage("观看视频广告以继续"),
         "privacy_policy": MessageLookupByLibrary.simpleMessage("隐私政策"),
         "private_photos": MessageLookupByLibrary.simpleMessage("私人照片"),
         "protect_with_encryption":
@@ -170,7 +157,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tag_multiple_photos_at_once":
             MessageLookupByLibrary.simpleMessage("一次给多张照片添加标签"),
         "take_a_look": MessageLookupByLibrary.simpleMessage("看看这个App！"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use": MessageLookupByLibrary.simpleMessage("使用条款"),
         "time": MessageLookupByLibrary.simpleMessage("时间"),
         "toggle_date": MessageLookupByLibrary.simpleMessage("日期"),
@@ -199,7 +186,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20分钟"),
         "year": MessageLookupByLibrary.simpleMessage("年"),
         "yes": MessageLookupByLibrary.simpleMessage("是"),
-        "you_are_premium": MessageLookupByLibrary.simpleMessage("您是高级版用户！"),
         "your_secret_key": MessageLookupByLibrary.simpleMessage("您的密钥")
       };
 }

@@ -8,7 +8,6 @@ enum Screen {
   settings_screen,
   add_location_screen,
   photo_screen,
-  premium_screen,
   login_screen,
 }
 
@@ -74,17 +73,6 @@ class Analytics {
     );
   }
 
-  static Future<void> sendAdClick() async {}
-
-  static Future<void> sendAdImpression() async {
-    if (/* kDebugMode */ true) {
-      return;
-    }
-
-    await analytics.logEvent(name: '${enumToString(Event.ad_impression)}');
-    await facebookAppEvents.logEvent(name: 'AdImpression');
-  }
-
   static Future<void> sendAppOpen() async {
     if (/* kDebugMode */ true) {
       return;
@@ -113,40 +101,6 @@ class Analytics {
     await facebookAppEvents.logEvent(name: 'fb_mobile_tutorial_completion');
   }
 
-  static Future<void> sendPresentOffer({
-    required String itemId,
-    required String itemName,
-    required String itemCategory,
-    required int quantity,
-    required double price,
-    required String currency,
-  }) async {
-    if (/* kDebugMode */ true) {
-      return;
-    }
-
-    await analytics.logPresentOffer(
-      itemId: itemId,
-      itemName: itemName,
-      itemCategory: itemCategory,
-      quantity: quantity,
-      price: price,
-      currency: currency,
-    );
-
-    await facebookAppEvents.logEvent(
-      name: '${enumToString(Event.present_offer)}',
-      parameters: {
-        'itemId': itemId,
-        'itemName': itemName,
-        'itemCategory': itemCategory,
-        'quantity': quantity,
-        'price': price,
-        'currency': currency,
-      },
-    );
-  }
-
   static Future<void> sendBeginCheckout(
       {required String currency, required double price}) async {
     if (/* kDebugMode */ true) {
@@ -164,23 +118,6 @@ class Analytics {
         FacebookAppEvents.paramNameContent: price,
         'fb_currency': currency,
       },
-    );
-  }
-
-  static Future<void> sendPurchase(
-      {required String currency, required double price}) async {
-    if (/* kDebugMode */ true) {
-      return;
-    }
-
-    await analytics.logEcommercePurchase(
-      currency: currency,
-      value: price,
-    );
-
-    await facebookAppEvents.logPurchase(
-      currency: currency,
-      amount: price,
     );
   }
 

@@ -41,10 +41,7 @@
   "take_a_look": "Ta en titt på appen!",
   "take_a_look_description": "För att organisera alla dina foton går du till {url}",
   "daily_challenge_permission_description": "För att vi ska kunna skicka dina dagliga utmaningar behöver vi behörighet för att skicka aviseringar, vilket innebär att du måste godkänna aviseringar i din mobiltelefons inställningar",
-  "you_are_premium": "Du har premium!",
-  "get_premium_now": "Få premium nu!",
-  "get_premium_title": "FÅ PREMIUM",
-  "get_premium_description": "FÖR ATT HA ALLA FUNKTIONERNA",
+
   "no_ads": "Inga annonser",
   "export_all_gallery": "Exportera hela galleriet",
   "infinite_tags": "Oändliga taggar",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "Åtkomstbehörigheter",
   "gallery_access_permission_description": "För att börja organisera dina foton behöver vi behörighet för att komma åt dem",
   "export_library": "Exportera bibliotek",
-  "premium_modal_description": "Du har slutfört dina {number} gratis dagliga bilder, vill du fortsätta?",
-  "premium_modal_watch_ad": "Se videoannonsen för att fortsätta",
-  "premium_modal_get_premium_title": "Skaffa premiumkonto",
-  "premium_modal_get_premium_description": "ALLA FUNKTIONER UTAN ANNONSER",
+
   "family_tag": "Familj",
   "travel_tag": "Resa",
   "pets_tag": "Husdjur",

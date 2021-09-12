@@ -41,10 +41,7 @@
   "take_a_look": "Schauen Sie sich diese App an!",
   "take_a_look_description": "Gehen Sie zu {url}, um alle Ihre Fotos zu organisieren.",
   "daily_challenge_permission_description": "Damit wir Ihre täglichen Herausforderungen senden können, benötigen wir eine Autorisierung zum Senden von Benachrichtigungen. Daher ist es erforderlich, dass Sie die Benachrichtigungen in den Optionen Ihres Mobiltelefons autorisieren.",
-  "you_are_premium": "Du bist Premium!",
-  "get_premium_now": "Holen Sie sich jetzt Premium!",
-  "get_premium_title": "PREMIUM HOLEN",
-  "get_premium_description": "ERHALTEN SIE ALLE DIESE FUNKTIONEN",
+
   "no_ads": "Keine Werbung",
   "export_all_gallery": "Alle Galerien exportieren",
   "infinite_tags": "Unendliche Tags",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "Zugriffsberechtigungen",
   "gallery_access_permission_description": "Um Ihre Fotos organisieren zu können, benötigen wir eine Berechtigung für den Zugriff.",
   "export_library": "Bibliothek exportieren",
-  "premium_modal_description": "Sie haben die {number} Ihrer täglich kostenlosen Bilder fertiggestellt, möchten Sie fortfahren?",
-  "premium_modal_watch_ad": "Sehen Sie sich die Videoanzeige an, um fortzufahren.",
-  "premium_modal_get_premium_title": "Holen Sie sich ein Premium-Konto",
-  "premium_modal_get_premium_description": "ALLE FUNKTIONEN OHNE WERBUNG",
+
   "family_tag": "Familie",
   "travel_tag": "Reise",
   "pets_tag": "Haustiere",

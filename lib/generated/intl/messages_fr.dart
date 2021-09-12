@@ -24,10 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: 'Aucune photo sélectionnée', one: '1 photo sélectionnée', other: '${howMany} photos sélectionnées')}";
 
-  static String m2(number) =>
-      "Vous avez terminé vos ${number} photos quotidiennes gratuites, voulez-vous continuer ?";
-
-  static String m3(url) => "Pour organiser toutes vos photos, accédez à ${url}";
+  static String m2(url) => "Pour organiser toutes vos photos, accédez à ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -111,12 +108,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Pour commencer à organiser vos photos, nous avons besoin d\'une autorisation pour y accéder"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "Pour organiser vos photos, nous devons avoir accès à votre galerie de photos"),
-        "get_premium_description": MessageLookupByLibrary.simpleMessage(
-            "POUR AVOIR TOUTES CES FONCTIONNALITÉS"),
-        "get_premium_now": MessageLookupByLibrary.simpleMessage(
-            "Devenez un utilisateur Premium maintenant !"),
-        "get_premium_title":
-            MessageLookupByLibrary.simpleMessage("DEVENEZ PREMIUM"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Accueil"),
         "how_many_pics":
             MessageLookupByLibrary.simpleMessage("Combien de photos"),
@@ -171,14 +162,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Désormais, vos photos seront toujours organisées"),
         "picpics_photo_manager": MessageLookupByLibrary.simpleMessage(
             "picPics - Gestionnaire de photos"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage(
-                "TOUTES LES FONCTIONNALITÉS SANS PUBLICITÉ"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("Obtenez un compte premium"),
-        "premium_modal_watch_ad": MessageLookupByLibrary.simpleMessage(
-            "Regardez l\'annonce vidéo pour continuer"),
         "privacy_policy": MessageLookupByLibrary.simpleMessage(
             "Politique de confidentialité"),
         "private_photos":
@@ -221,7 +204,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Étiqueter plusieurs photos à la fois"),
         "take_a_look": MessageLookupByLibrary.simpleMessage(
             "Jetez un oeil à cette application !"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use":
             MessageLookupByLibrary.simpleMessage("Conditions d\'utilisation"),
         "time": MessageLookupByLibrary.simpleMessage("Heure"),
@@ -251,8 +234,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 min"),
         "year": MessageLookupByLibrary.simpleMessage("an"),
         "yes": MessageLookupByLibrary.simpleMessage("Oui"),
-        "you_are_premium": MessageLookupByLibrary.simpleMessage(
-            "Vous êtes utilisateur Premium !"),
         "your_secret_key":
             MessageLookupByLibrary.simpleMessage("Votre clé secrète")
       };

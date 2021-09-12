@@ -128,7 +128,6 @@ class MoorUsers extends Table {
 
   BoolColumn get tutorialCompleted =>
       boolean().withDefault(const Constant(false))();
-  BoolColumn get canTagToday => boolean().withDefault(const Constant(true))();
   BoolColumn get hasGalleryPermission =>
       boolean().withDefault(const Constant(false))();
   BoolColumn get loggedIn => boolean().withDefault(const Constant(false))();
@@ -484,7 +483,6 @@ class AppDatabase extends _$AppDatabase {
       customPrimaryKey: const Value(0),
       id: user.id.moorValue,
       recentTags: user.recentTags,
-      /* starredPhotos: user.starredPhotos, */
       email: user.email.moorValue,
       password: user.password.moorValue,
       notification: user.notifications.moorValue,
@@ -495,7 +493,6 @@ class AppDatabase extends _$AppDatabase {
       tutorialCompleted: user.tutorialCompleted.moorValue,
       picsTaggedToday: user.picsTaggedToday.moorValue,
       lastTaggedPicDate: user.lastTaggedPicDate.moorValue,
-      canTagToday: user.canTagToday.moorValue,
       appLanguage: user.appLanguage.moorValue,
       appVersion: user.appVersion.moorValue,
       hasGalleryPermission: user.hasGalleryPermission.moorValue,

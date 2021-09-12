@@ -24,9 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: '선택된 사진이 없습니다', one: '사진 1장이 선택됨', other: '사진 ${howMany}장이 선택됨')}";
 
-  static String m2(number) => "${number} 무료 일일 사진을 완성했습니다. 계속 하시겠습니까?";
-
-  static String m3(url) => "모든 사진을 정리정돈하려면 ${url}로 이동하십시오.";
+  static String m2(url) => "모든 사진을 정리정돈하려면 ${url}로 이동하십시오.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -94,11 +92,6 @@ class MessageLookup extends MessageLookupByLibrary {
                 "사진 정리정돈을 시작하려면 사진에 액세스 할 수 있는 권한이 필요합니다"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "사진을 정리정돈하려면 사진 갤러리에 액세스해야 합니다"),
-        "get_premium_description":
-            MessageLookupByLibrary.simpleMessage("이 모든 기능을 사용할 수 있습니다"),
-        "get_premium_now":
-            MessageLookupByLibrary.simpleMessage("지금 프리미엄 가입하기!"),
-        "get_premium_title": MessageLookupByLibrary.simpleMessage("프리미엄 가입하기"),
         "home_tag": MessageLookupByLibrary.simpleMessage("집"),
         "how_many_pics": MessageLookupByLibrary.simpleMessage("사진 장수"),
         "infinite_tags": MessageLookupByLibrary.simpleMessage("무한 태그"),
@@ -143,13 +136,6 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("이제 항상 사진을 정리정돈할 수 있습니다"),
         "picpics_photo_manager":
             MessageLookupByLibrary.simpleMessage("picPics - 사진 관리자"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage("ADS가 없는 모든 기능"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("프리미엄 계정 가입"),
-        "premium_modal_watch_ad":
-            MessageLookupByLibrary.simpleMessage("계속하려면 비디오 광고를 시청하세요"),
         "privacy_policy": MessageLookupByLibrary.simpleMessage("개인정보 보호정책"),
         "private_photos": MessageLookupByLibrary.simpleMessage("개인 사진"),
         "protect_with_encryption": MessageLookupByLibrary.simpleMessage(
@@ -180,7 +166,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tag_multiple_photos_at_once":
             MessageLookupByLibrary.simpleMessage("한 번에 여러 장의 사진에 태그 달기"),
         "take_a_look": MessageLookupByLibrary.simpleMessage("이 앱을 살펴보세요!"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "terms_of_use": MessageLookupByLibrary.simpleMessage("이용 약관"),
         "time": MessageLookupByLibrary.simpleMessage("시간"),
         "toggle_date": MessageLookupByLibrary.simpleMessage("날짜 별"),
@@ -209,8 +195,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20분"),
         "year": MessageLookupByLibrary.simpleMessage("년"),
         "yes": MessageLookupByLibrary.simpleMessage("예"),
-        "you_are_premium":
-            MessageLookupByLibrary.simpleMessage("귀하는 프리미엄 고객입니다!"),
         "your_secret_key": MessageLookupByLibrary.simpleMessage("내 비밀 키")
       };
 }

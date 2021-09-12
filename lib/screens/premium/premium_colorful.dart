@@ -1,4 +1,4 @@
-import 'package:picPics/constants.dart';
+/* import 'package:picPics/constants.dart';
 import 'package:flutter/material.dart';
 
 class ColorfulPremium extends CustomPainter {
@@ -76,3 +76,4 @@ class ColorfulPremium extends CustomPainter {
   @override
   bool shouldRepaint(CustomPainter oldDelegate) => true;
 }
+ */

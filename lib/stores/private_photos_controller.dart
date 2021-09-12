@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
-import 'package:picPics/screens/pin_screen.dart';
+import 'package:picPics/managers/analytics_manager.dart';
 
 import 'user_controller.dart';
 
@@ -24,14 +24,12 @@ class PrivatePhotosController extends GetxController {
   Future<void> switchSecretPhotos() async {
     showPrivate.value = !showPrivate.value;
 
-    if (showPrivate.value == true && UserController.to.encryptionKey == null) {
-      await Get.toNamed(PinScreen.id);
+    if (showPrivate.value == false) {
+      UserController.to.setEncryptionKey(null);
+      return;
     }
 
-    final currentUser = await _appDatabase.getSingleMoorUser();
-    await _appDatabase
-        .updateMoorUser(currentUser!.copyWith(secretPhotos: showPrivate.value));
-
-    //    Analytics.sendEvent(Event.notification_switch);
+    // ignore: unawaited_futures
+    Analytics.sendEvent(Event.notification_switch);
   }
 }

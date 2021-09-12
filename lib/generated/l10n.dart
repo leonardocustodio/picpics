@@ -473,46 +473,6 @@ class S {
     );
   }
 
-  /// `You are premium!`
-  String get you_are_premium {
-    return Intl.message(
-      'You are premium!',
-      name: 'you_are_premium',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Get premium now!`
-  String get get_premium_now {
-    return Intl.message(
-      'Get premium now!',
-      name: 'get_premium_now',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GET PREMIUM`
-  String get get_premium_title {
-    return Intl.message(
-      'GET PREMIUM',
-      name: 'get_premium_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `TO HAVE ALL THESE FEATURES`
-  String get get_premium_description {
-    return Intl.message(
-      'TO HAVE ALL THESE FEATURES',
-      name: 'get_premium_description',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No Ads`
   String get no_ads {
     return Intl.message(
@@ -678,46 +638,6 @@ class S {
     return Intl.message(
       'Export Library',
       name: 'export_library',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You completed your {number} free daily pics, do you want to continue?`
-  String premium_modal_description(Object number) {
-    return Intl.message(
-      'You completed your $number free daily pics, do you want to continue?',
-      name: 'premium_modal_description',
-      desc: '',
-      args: [number],
-    );
-  }
-
-  /// `Watch video ad to continue`
-  String get premium_modal_watch_ad {
-    return Intl.message(
-      'Watch video ad to continue',
-      name: 'premium_modal_watch_ad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Get Premium Account`
-  String get premium_modal_get_premium_title {
-    return Intl.message(
-      'Get Premium Account',
-      name: 'premium_modal_get_premium_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ALL FEATURES WITHOUT ADS`
-  String get premium_modal_get_premium_description {
-    return Intl.message(
-      'ALL FEATURES WITHOUT ADS',
-      name: 'premium_modal_get_premium_description',
       desc: '',
       args: [],
     );

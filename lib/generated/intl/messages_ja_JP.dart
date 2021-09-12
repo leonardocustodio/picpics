@@ -24,9 +24,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m1(howMany) =>
       "${Intl.plural(howMany, zero: '写真が選択されていません', one: '1 枚の写真を選択しました', other: '${howMany} 枚の写真を選択しました')}";
 
-  static String m2(number) => "${number}無料のデイリー写真を完了しました。続けますか？";
-
-  static String m3(url) => "すべての写真を整理するには、${url} にアクセスしてください";
+  static String m2(url) => "すべての写真を整理するには、${url} にアクセスしてください";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -253,11 +251,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "garden_tag": MessageLookupByLibrary.simpleMessage("庭園"),
         "gelato_tag": MessageLookupByLibrary.simpleMessage("ジェラート"),
         "gerbil_tag": MessageLookupByLibrary.simpleMessage("スナネズミ"),
-        "get_premium_description":
-            MessageLookupByLibrary.simpleMessage("これらのすべての機能を利用する"),
-        "get_premium_now":
-            MessageLookupByLibrary.simpleMessage("今すぐプレミアムを購入しましょう！"),
-        "get_premium_title": MessageLookupByLibrary.simpleMessage("プレミアムを購入"),
         "glacier_tag": MessageLookupByLibrary.simpleMessage("氷河"),
         "glasses_tag": MessageLookupByLibrary.simpleMessage("眼鏡"),
         "glitter_tag": MessageLookupByLibrary.simpleMessage("キラキラ"),
@@ -424,13 +417,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "porcelain_tag": MessageLookupByLibrary.simpleMessage("磁器"),
         "poster_tag": MessageLookupByLibrary.simpleMessage("ポスター"),
         "prairie_tag": MessageLookupByLibrary.simpleMessage("草原"),
-        "premium_modal_description": m2,
-        "premium_modal_get_premium_description":
-            MessageLookupByLibrary.simpleMessage("広告なしのすべての機能"),
-        "premium_modal_get_premium_title":
-            MessageLookupByLibrary.simpleMessage("プレミアムアカウントを購入"),
-        "premium_modal_watch_ad":
-            MessageLookupByLibrary.simpleMessage("続行するにはビデオ広告をご覧ください"),
         "presentation_tag": MessageLookupByLibrary.simpleMessage("プレゼンテーション"),
         "privacy_policy": MessageLookupByLibrary.simpleMessage("プライバシーポリシー"),
         "private_photos": MessageLookupByLibrary.simpleMessage("プライベート写真"),
@@ -558,7 +544,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tag_multiple_photos_at_once":
             MessageLookupByLibrary.simpleMessage("一度に複数の写真にタグを付ける"),
         "take_a_look": MessageLookupByLibrary.simpleMessage("このアプリを見てください！"),
-        "take_a_look_description": m3,
+        "take_a_look_description": m2,
         "tattoo_tag": MessageLookupByLibrary.simpleMessage("入れ墨"),
         "team_tag": MessageLookupByLibrary.simpleMessage("チーム"),
         "television_tag": MessageLookupByLibrary.simpleMessage("テレビ"),
@@ -632,8 +618,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 分"),
         "year": MessageLookupByLibrary.simpleMessage("年"),
         "yes": MessageLookupByLibrary.simpleMessage("はい"),
-        "you_are_premium":
-            MessageLookupByLibrary.simpleMessage("プレミアムのユーザーになりました！"),
         "your_secret_key": MessageLookupByLibrary.simpleMessage("秘密の鍵")
       };
 }

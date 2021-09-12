@@ -41,10 +41,7 @@
   "take_a_look": "Взгляните на это приложение!",
   "take_a_look_description": "Чтобы упорядочить все свои фотографии, перейдите по ссылке {url}",
   "daily_challenge_permission_description": "Чтобы мы могли отправлять вам ежедневные задания, нам нужно разрешение на отправку уведомлений, поэтому вам необходимо разрешить уведомления в настройках вашего мобильного телефона.",
-  "you_are_premium": "Вы получили Премиум!",
-  "get_premium_now": "Получите Премиум сейчас!",
-  "get_premium_title": "ПОЛУЧИТЕ ПРЕМИУМ",
-  "get_premium_description": "ЧТОБЫ ПОЛУЧИТЬ ВСЕ ЭТИ ФУНКЦИИ",
+
   "no_ads": "Без рекламы",
   "export_all_gallery": "Экспорт всей галереи",
   "infinite_tags": "Бесконечные теги",
@@ -62,10 +59,7 @@
   "gallery_access_permission": "Права доступа",
   "gallery_access_permission_description": "Для организации ваших фотографий нам нужна авторизация доступа к ним.",
   "export_library": "Экспорт библиотеки",
-  "premium_modal_description": "Вы обработали свои {number} бесплатных ежедневных фото. Хотите продолжить?",
-  "premium_modal_watch_ad": "Для продолжения просмотрите видео-рекламу",
-  "premium_modal_get_premium_title": "Получить Премиум-аккаунт",
-  "premium_modal_get_premium_description": "ВСЕ ФУНКЦИИ БЕЗ РЕКЛАМЫ",
+
   "family_tag": "Семья",
   "travel_tag": "Путешествия",
   "pets_tag": "Питомцы",
