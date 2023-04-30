@@ -1,165 +1,81 @@
 name: picPics
-description: picPics application.
+description: picPics Application
 publish_to: 'none'
-version: 1.9.0-kawal28
+version: 2.0.0+1
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: '>=2.19.3 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  #autocomplete_textfield: 1.7.3
-  #blurhash_dart: 0.2.3
-  #bubble_bottom_bar: 1.2.0
-  #collection: 1.15.0
-  #cryptography_flutter: 2.0.0
-  #extended_image: ^1.3.0
-  #firebase_core: 1.3.0
-  #firebase_ml_vision: 0.12.0
-  #flutter_inapp_purchase: 5.0.1
-  #flutter_mobx: ^1.1.0+2
-  #flutter_sticky_header: ^0.6.0
-  #flutter_swiper: 1.1.6
-  #flutter_vibrate: 1.0.0
-  #get: ^3.26.0
-  #google_ml_kit: ^0.6.0
-  #hive: 2.0.4
-  #lottie: 1.0.1
-  #metadata: 1.0.2
-  #moor_db_viewer: 4.0.0
-  #mobx: ^1.2.1+4
-  #provider: ^4.3.2+4
-  #purchases_flutter: 3.3.0
-  #shimmer: 1.1.2
-  #showcaseview: 1.0.0
-  #sqlite3_flutter_libs: ^0.3.0
-  #tflite_flutter: ^0.5.0
-  #tflite: ^1.1.1
-  #visibility_detector: 0.2.0
-  #after_layout: 1.1.0
-  auto_size_text: 3.0.0-nullsafety.0
-  background_fetch: 1.0.0
-  carousel_slider: 4.0.0-nullsafety.0
-  cloud_functions: 1.1.2
-  cryptography: 2.0.2
-  cupertino_icons: 1.0.3
-  date_utils: 0.2.0
-  diacritic: 0.1.3
-  email_validator: 2.0.1
-  encrypt: 5.0.0
-  expandable: 5.0.1
-  extended_image: 4.1.0
-  facebook_app_events: 0.12.0
-  firebase_analytics: 8.1.2
-  firebase_auth: 1.4.1
-  firebase_crashlytics: 2.0.6
-  firebase_messaging: 10.0.2
-  firebase_remote_config: 0.10.0+2
-  flare_flutter: 3.0.1
-  flutter_animator: 3.1.1
-  flutter_blurhash: 0.6.0
-  flutter_branch_sdk: 3.2.0
-  flutter_keyboard_visibility: 5.0.2
-  flutter_secure_storage: 4.2.0
-  flutter_spinkit: 5.0.0
-  flutter_staggered_grid_view: 0.4.0
-  geocoding: 2.0.0
-  geolocator: 7.1.0
-  get: ^4.3.0
-  google_maps_flutter: 2.0.6
-  home_widget: 0.1.2+1
-  image: 3.0.2
-  local_auth: 1.1.6
-  mime: 1.0.0
-  notification_permissions: 0.5.0
-  outline_gradient_button: 2.0.0+1
-  package_info: 2.0.2
-  path: 1.8.0
-  percent_indicator: 3.3.0-nullsafety.1
-  photo_manager: 1.2.2
-  photo_view: 0.11.1
-  rate_my_app: 1.1.0+1
-  share_extend: 2.0.0
-  share: 2.0.4
-  simple_animations: 3.1.1
-  sliver_tools: 0.2.5
-  url_launcher: 6.0.6
-  uuid: 3.0.4
-  flutter_vibrate:
-    git:
-      url: https://github.com/justkawal/flutter_vibrate.git
-  autocomplete_textfield:
-    git:
-      url: https://github.com/justkawal/flutter-autocomplete-textfield.git
-  bubble_bottom_bar:
-    git:
-      url: https://github.com/justkawal/bubble_bottom_bar.git
-  platform_alert_dialog:
-    git:
-      url: https://github.com/justkawal/platform_alert_dialog
-  flutter_device_locale:
-    git:
-      url: https://github.com/justkawal/flutter_device_locale.git
-  flutter_swiper:
-    git:
-      url: https://github.com/justkawal/flutter_swiper.git
-  #cryptography_flutter:
-  #  git:
-  #    url: https://github.com/justkawal/cryptography.git
-  #    path: cryptography_flutter
-  #flutter_staggered_grid_view:
-  #  git:
-  #    url: git://github.com/justkawal/flutter_staggered_grid_view.git
-  #home_widget:
-  #  git:
-  #    url: git://github.com/leonardocustodio/home_widget.git
-  #    ref: fix-build-ios
-
-dependency_overrides:
-  #hive_flutter: ^1.0.0
-  #sqlcipher_flutter_libs: ^0.5.0
-  #moor_ffi:
-  #  git:
-  #    url: git://github.com/justkawal/moor.git
-  #    #ref: beta 
-  #    ref: 85206d
-  #    path: moor_ffi
-  #hive_flutter:
-  #  git:
-  #    url: git://github.com/justkawal/hive.git
-  #    path: hive_flutter
-  #    ref: 59ad5403593283233d922f62f76832c64fa33a3b
-  intl: 0.17.0
-  flutter_local_notifications: 7.0.0-dev.1
-  flutter_local_notifications_platform_interface: 4.0.0
-  path_provider: 2.0.0
-  convert: 3.0.0
-  moor: 4.3.2
-  #crypto: 3.0.1
-  sqflite:
-    git:
-      url: git://github.com/justkawal/sqflite_sqlcipher.git
-      path: sqflite 
-      ref: bb2b0a
-      #ref: fmdb_override
-  moor_ffi: 0.8.0
-  ffi: 1.1.2
+  cupertino_icons: ^1.0.2
+  firebase_core: ^2.10.0
+  firebase_analytics: ^10.2.1
+  firebase_auth: ^4.4.2
+  firebase_crashlytics: ^3.1.2
+  firebase_messaging: ^14.4.1
+  firebase_remote_config: ^4.0.2
+  cloud_functions: ^4.1.1
+  get: ^4.6.5
+  supercharged: ^2.1.1
+  simple_animations: ^5.0.0+3
+  flutter_swiper_view: ^1.1.8
+  cryptography: ^2.5.0
+  photo_manager: ^2.6.0
+  package_info_plus: ^3.1.2
+  notification_permissions: ^0.6.1
+  local_auth: ^2.1.6
+  date_utils: ^0.2.0
+  devicelocale: ^0.6.0
+  diacritic: ^0.1.3
+  encrypt: ^5.0.1
+  uuid: ^3.0.7
+  geocoding: ^2.1.0
+  drift: ^2.7.0
+  path_provider: ^2.0.14
+  path: ^1.8.2
+  sqlite3_flutter_libs: ^0.5.13
+  image: ^4.0.16
+  flutter_branch_sdk: ^6.6.0
+  facebook_app_events: ^0.18.3
+  flutter_secure_storage: ^8.0.0
+  home_widget: ^0.2.0+1
+  flutter_local_notifications: ^14.0.0+1
+  timezone: ^0.9.2
+  flutter_vibrate: ^1.3.0
+  google_maps_flutter: ^2.2.5
+  extended_image: ^7.0.2
+  geolocator: ^9.0.2
+  email_validator: ^2.1.17
+  flutter_spinkit: ^5.1.0
+  flare_flutter: ^3.0.2
+  photo_view: ^0.14.0
+  flutter_animator: ^3.2.2
+  flutter_blurhash: ^0.7.0
+  expandable: ^5.0.1
+  background_fetch: ^1.1.5
+  flutter_localization: ^0.1.10
+  carousel_slider: ^4.2.1
+  share_extend: ^2.0.0
+  flutter_keyboard_visibility: ^5.4.1
+  rate_my_app: ^1.1.4
+  url_launcher: ^6.1.10
+  share_plus: ^4.5.3
+  percent_indicator: ^4.2.3
+  auto_size_text: ^3.0.0
+  convert: ^3.1.1
+  googleapis: ^11.0.0
+  googleapis_auth: ^1.4.0
+  strings: ^1.0.0
+  flutter_staggered_grid_view: ^0.4.0
 
 dev_dependencies:
-  #faker: 1.2.1
-  #hive_generator: 1.1.0
-  #image: ^2.1.4
-  #mobx_codegen: ^1.1.2
-  #mockito: 4.1.2
-  #test: 1.16.0-nullsafety.5
-  build_runner: 2.0.4
-  googleapis_auth: 1.1.0
-  googleapis: 3.0.0
-  moor_generator: 4.3.1
-  strings: 0.2.1
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+  drift_dev: ^2.7.0
+  build_runner: ^2.3.3
 
 flutter:
   uses-material-design: true
@@ -200,6 +116,3 @@ flutter:
           weight: 300
         - asset: lib/fonts/NotoSans-Regular.ttf
           weight: 400
-
-flutter_intl:
-  enabled: true

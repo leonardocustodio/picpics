@@ -83,7 +83,7 @@ class BlurHashController extends GetxController {
         ///
         /// get image bytes
         ///
-        final image = img.decodeImage(object.value.toList());
+        final image = img.decodeImage(object.value);
         if (null != image) {
           ///
           /// calculate blurHash

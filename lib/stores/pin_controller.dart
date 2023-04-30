@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/screens/tabs_screen.dart';
 import 'package:picPics/stores/language_controller.dart';
@@ -368,9 +369,11 @@ class PinController extends GetxController {
     try {
       var authenticated = await UserController.to.biometricAuth.authenticate(
         localizedReason: 'Scan your fingerprint to authenticate',
-        useErrorDialogs: true,
-        biometricOnly: true,
-        stickyAuth: true,
+        options: const AuthenticationOptions(
+          useErrorDialogs: true,
+          biometricOnly: true,
+          stickyAuth: true,
+        ),
       );
 
       if (authenticated == true) {

@@ -106,7 +106,7 @@ class BlurHash {
       );
     }
 
-    final data = image.getBytes(format: Format.rgba);
+    final data = image.getBytes();
     final components = List.generate(
       numCompY,
       (i) => List<ColorTriplet>.filled(numCompX, ColorTriplet(0, 0, 0)),
@@ -157,7 +157,8 @@ class BlurHash {
     assert(width > 0);
     assert(height > 0);
     final data = _transform(width, height, components);
-    return Image.fromBytes(width, height, data, format: Format.rgba);
+    // TODO: Check
+    return Image.fromBytes(width: width, height: height, bytes: data.buffer);
   }
 }
 
@@ -171,7 +172,7 @@ Uint8List decodeBlurHash(
   double punch = 1.0,
 }) {
   final hash = BlurHash.decode(blurHash, punch: punch);
-  return hash.toImage(width, height).getBytes(format: Format.rgba);
+  return hash.toImage(width, height).getBytes();
 }
 
 /// Deprecated. Please use [BlurHash.encode] instead.
@@ -184,7 +185,8 @@ String encodeBlurHash(
   int numCompX = 4,
   int numpCompY = 3,
 }) {
-  final image = Image.fromBytes(width, height, data, format: Format.rgba);
+  // TODO: Conferir se ta certo
+  final image = Image.fromBytes(width: width, height: height, bytes: data.buffer);
   final hash = BlurHash.encode(image, numCompX: numCompX, numCompY: numpCompY);
   return hash.hash;
 }

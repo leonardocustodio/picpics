@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:googleapis/translate/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
 /* import 'package:metadata/metadata.dart' as md; */
@@ -195,8 +196,7 @@ class PicStore extends GetxController {
 
   Future<Uint8List?> get assetThumbBytes async {
     if (isPrivate.value == false) {
-      return await entity.value?.thumbDataWithSize(
-          kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+      return await entity.value?.thumbnailDataWithSize(ThumbnailSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]));
     }
     print('Returning decrypt image in privatePath: $photoPath');
     if (UserController.to.encryptionKey == null) {
@@ -290,7 +290,10 @@ class PicStore extends GetxController {
       if (null == picData) {
         return;
       }
-      final imageEntity = await PhotoManager.editor.saveImage(picData);
+      final imageEntity = await PhotoManager.editor.saveImage(
+          picData,
+          title: '',
+      );
 
       /// TODO: what to do if the imageEntity is null ??
       /// doing temporary thing
@@ -652,11 +655,7 @@ class PicStore extends GetxController {
         var bytes = await assetOriginBytes;
         path = await _writeByteToImageFile(bytes);
       } else {
-        var bytes = await entity.value!.thumbDataWithSize(
-          entity.value!.size.width.toInt(),
-          entity.value!.size.height.toInt(),
-          format: ThumbFormat.jpeg,
-        );
+        var bytes = await entity.value!.thumbnailDataWithSize(ThumbnailSize(entity.value!.size.width.toInt(), entity.value!.size.height.toInt()));
         path = await _writeByteToImageFile(bytes);
       }
     }
@@ -756,10 +755,10 @@ class PicStore extends GetxController {
       //getPic.generalLocation = general;
       //getPic.save();
       await database.updatePhoto(getPic.copyWith(
-        latitude: lat,
-        longitude: long,
-        specificLocation: specific,
-        generalLocation: general,
+        latitude: drift.Value(lat),
+        longitude: drift.Value(long),
+        specificLocation: drift.Value(specific),
+        generalLocation: drift.Value(general),
       ));
       print('updated pic with new values');
     } else {
@@ -849,7 +848,7 @@ class PicStore extends GetxController {
       if (translations != null) {
         translations.forEach((element) {
           if (element.translatedText != null) {
-            translatedStrings.add(capitalize(element.translatedText!));
+            translatedStrings.add(Strings.properCase(element.translatedText!));
           }
         });
       }

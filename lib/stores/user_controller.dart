@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:drift/drift.dart' as drift;
 import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_device_locale/flutter_device_locale.dart';
+import 'package:devicelocale/devicelocale.dart';
 import 'package:get/get.dart';
 import 'package:notification_permissions/notification_permissions.dart';
 import 'package:picPics/stores/language_controller.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
@@ -62,10 +63,8 @@ class UserController extends GetxController {
   final appLocale = RxString('en');
 
   @override
-  void onReady() {
-    DeviceLocale.getCurrentLocale().then((Locale locale) {
-      deviceLocale.value = locale.toString();
-    });
+  void onReady() async {
+    deviceLocale.value = (await Devicelocale.currentLocale) ?? 'en';
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
       appVersion.value = packageInfo.version;
     });
@@ -134,7 +133,7 @@ class UserController extends GetxController {
   }
 
   Future<void> setDefaultWidgetImage(AssetEntity entity) async {
-    var bytes = await entity.thumbDataWithSize(300, 300);
+    var bytes = await entity.thumbnailDataWithSize(const ThumbnailSize.square(300));
 
     /// TODO: I wants to know what to do in this case scenario
     if (bytes == null) {
@@ -144,7 +143,7 @@ class UserController extends GetxController {
 
     final currentUser = await database.getSingleMoorUser();
     await database
-        .updateMoorUser(currentUser!.copyWith(defaultWidgetImage: encoded));
+        .updateMoorUser(currentUser!.copyWith(defaultWidgetImage: drift.Value(encoded)));
   }
 
   /* Future<void> addToStarredPhotos(String photoId) async {
@@ -349,8 +348,8 @@ class UserController extends GetxController {
 
   //@action
   Future<bool> requestGalleryPermission() async {
-    var result = await PhotoManager.requestPermission();
-    if (result) {
+    var result = await PhotoManager.requestPermissionExtend();
+    if (result.isAuth) {
       hasGalleryPermission.value = true;
     }
 
@@ -360,10 +359,10 @@ class UserController extends GetxController {
     currentUser.save(); */
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
-      hasGalleryPermission: result,
+      hasGalleryPermission: result.isAuth,
     ));
 
-    return result;
+    return result.isAuth;
   }
 
   //@action
@@ -377,7 +376,7 @@ class UserController extends GetxController {
 
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
-      appLanguage: language,
+      appLanguage: drift.Value(language),
     ));
 
     await Analytics.sendEvent(Event.changed_language);
@@ -539,7 +538,7 @@ class UserController extends GetxController {
 
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
-      email: value,
+      email: drift.Value(value),
     ));
 
     email = value;
@@ -594,7 +593,7 @@ class UserController extends GetxController {
     userBox.put(0, userKey); */
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
-      secretKey: value,
+      secretKey: drift.Value(value),
     ));
   }
 
@@ -609,7 +608,7 @@ class UserController extends GetxController {
     /* var userBox = Hive.box('userkey');
     userBox.delete(0); */
     final user = await database.getSingleMoorUser();
-    await database.updateMoorUser(user!.copyWith(secretKey: ''));
+    await database.updateMoorUser(user!.copyWith(secretKey: drift.Value('')));
 
     print('Deleted encrypted info!');
   }

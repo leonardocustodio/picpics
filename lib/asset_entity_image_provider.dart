@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
@@ -80,7 +81,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       data = picStore.isPrivate.value
           ? await key.picStore.assetThumbBytes
           : await key.picStore.entity.value
-              ?.thumbDataWithSize(thumbSize[0], thumbSize[1]);
+              ?.thumbnailDataWithSize(ThumbnailSize(thumbSize[0], thumbSize[1]));
 
       if (BlurHashController.to.blurHash[picStore.photoId.value] == null) {
         if (data != null) {

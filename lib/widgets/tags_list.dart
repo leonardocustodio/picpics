@@ -201,12 +201,12 @@ class _TagsListState extends State<TagsList> {
                             ? Image.asset('lib/images/locktagwhite.png')
                             : Image.asset('lib/images/locktaggray.png'),
                       )
-                : CustomAnimation<double>(
-                    control: CustomAnimationControl.loop,
+                : CustomAnimationBuilder<double>(
+                    control: Control.loop,
                     tween: 0.0.tweenTo(600.0),
                     duration: 7.seconds,
                     startPosition: 0.0,
-                    builder: (context, child, value) {
+                    builder: (context, value, _) {
                       var firstOpct = 0.0;
                       var secondOpct = 0.0;
                       var thirdOpct = 0.0;

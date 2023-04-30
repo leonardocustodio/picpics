@@ -50,7 +50,7 @@ enum Event {
 
 class Analytics {
   static FacebookAppEvents facebookAppEvents = FacebookAppEvents();
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
 
@@ -79,7 +79,7 @@ class Analytics {
     }
 
     await analytics.logAppOpen();
-    await facebookAppEvents.logActivatedApp();
+    // await facebookAppEvents.logActivatedApp();
   }
 
   static Future<void> sendTutorialBegin() async {
@@ -126,7 +126,7 @@ class Analytics {
       return;
     }
 
-    await analytics.setUserId(userId);
+    // await analytics.setUserId({id: userId});
     await facebookAppEvents.setUserID(userId);
     FlutterBranchSdk.setIdentity(userId);
   }

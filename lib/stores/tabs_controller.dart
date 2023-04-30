@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
-import 'package:moor/moor.dart';
+import 'package:drift/drift.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/database/app_database.dart';
@@ -21,7 +21,7 @@ import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/confirm_pic_delete.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'dart:async';
 
 import '../constants.dart';

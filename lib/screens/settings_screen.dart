@@ -15,7 +15,7 @@ import 'package:picPics/widgets/secret_switch.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
 
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:local_auth/local_auth.dart';
 

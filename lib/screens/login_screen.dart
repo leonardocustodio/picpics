@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';

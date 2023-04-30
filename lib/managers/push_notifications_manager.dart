@@ -42,7 +42,7 @@ class PushNotificationsManager {
 
       var initializationSettingsAndroid =
           AndroidInitializationSettings('ic_launcher');
-      var initializationSettingsIOS = IOSInitializationSettings(
+      var initializationSettingsIOS = DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
           requestSoundPermission: false);
@@ -137,8 +137,7 @@ print('subscribed to topic: all_users');
       description,
       _nextInstanceOfTime(time),
       const NotificationDetails(
-        android: AndroidNotificationDetails('0', 'Daily Goal',
-            'Notification for remembering your picPics daily goal'),
+        android: AndroidNotificationDetails('0', 'Daily Goal', channelDescription: 'Notification for remembering your picPics daily goal'),
       ),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:

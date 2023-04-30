@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:drift/drift.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -164,7 +165,7 @@ print('got token this mean it did accept notification');
       {bool notify = true}) async {
     await database.updateMoorUser(
       userSettings.copyWith(
-        appLanguage: appLanguage,
+        appLanguage: Value(appLanguage),
       ),
     );
 

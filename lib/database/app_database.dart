@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:moor/moor.dart';
-import 'package:moor/ffi.dart';
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'dart:io';
@@ -149,7 +149,7 @@ class MoorUsers extends Table {
 
 class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
   @override
-  Map<String, String> mapToDart(String? fromDb) {
+  Map<String, String> fromSql(String fromDb) {
     if (fromDb == null) {
       return <String, String>{};
     }
@@ -162,14 +162,14 @@ class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
   }
 
   @override
-  String mapToSql(Map<String, String>? value) {
+  String toSql(Map<String, String> value) {
     return json.encode(value ?? <String, String>{});
   }
 }
 
 class ListStringConvertor extends TypeConverter<List<String>, String> {
   @override
-  List<String> mapToDart(String? fromDb) {
+  List<String> fromSql(String fromDb) {
     if (fromDb == null) {
       return <String>[];
     }
@@ -181,7 +181,7 @@ class ListStringConvertor extends TypeConverter<List<String>, String> {
   }
 
   @override
-  String mapToSql(List<String>? value) {
+  String toSql(List<String> value) {
     return json.encode(value ?? <String>[]);
   }
 }
@@ -195,13 +195,13 @@ LazyDatabase _openConnection() {
     //final path = p.join(dbFolder.path, 'db.sqlite');
     //print('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
-    return VmDatabase(file, setup: (rawDb) {
+    return NativeDatabase(file, setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");
     });
   });
 }
 
-@UseMoor(tables: [Photos, PicBlurHashs, Privates, Labels, MoorUsers])
+@DriftDatabase(tables: [Photos, PicBlurHashs, Privates, Labels, MoorUsers])
 class AppDatabase extends _$AppDatabase {
   static final AppDatabase _singleton = AppDatabase._internal();
 

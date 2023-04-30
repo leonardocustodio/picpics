@@ -413,7 +413,7 @@ class Crypto {
 
     final assetData = await picStore.entity.value?.originBytes;
     final thumbData = await picStore.entity.value
-        ?.thumbDataWithSize(150, 150, format: ThumbFormat.jpeg, quality: 90);
+        ?.thumbnailDataWithSize(const ThumbnailSize.square(150), quality: 90);
 
     final title = Platform.isAndroid
         ? picStore.entity.value?.title
@@ -455,7 +455,8 @@ class Crypto {
       algorithm = cryptography.AesCtr.with256bits(
           macAlgorithm: cryptography.Hmac.sha256());
     } else {
-      algorithm = cryptography.AesGcm.with256bits();
+      // TODO: Check if this will work
+      algorithm = cryptography.AesGcm.with256bits() as cryptography.StreamingCipher;
     }
 
     /// Let's start processing the image files to start encrypting.

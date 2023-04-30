@@ -1,5 +1,0 @@
-{
-    "dart.debugExternalLibraries": true,
-    "dart.debugSdkLibraries": true,
-    "debug.allowBreakpointsEverywhere": true
-}

@@ -17,7 +17,7 @@ class SecretSwitch extends StatefulWidget {
 }
 
 class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
-  CustomAnimationControl control = CustomAnimationControl.play;
+  Control control = Control.play;
   bool goingRight = true;
   late bool initRight;
   late bool positionRight;
@@ -33,9 +33,9 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
     setState(() {
       goingRight = !goingRight;
       positionRight = widget.value;
-      control = (control == CustomAnimationControl.play
-          ? CustomAnimationControl.playReverse
-          : CustomAnimationControl.play);
+      control = (control == Control.play
+          ? Control.playReverse
+          : Control.play);
     });
   }
 
@@ -54,12 +54,12 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
             widget.onChanged(value);
           },
         ),
-        CustomAnimation<double>(
+        CustomAnimationBuilder<double>(
           control: control,
           tween: (-11.0).tweenTo(11.0),
           duration: 200.milliseconds,
           curve: goingRight ? Curves.easeOutCubic : Curves.easeInCubic,
-          builder: (context, child, value) {
+          builder: (context, value, _) {
             return Positioned(
               right: 25 + (initRight ? -value : value),
               top: 12,
