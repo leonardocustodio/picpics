@@ -1,4 +1,10 @@
-//package br.com.inovatso.picPics
+package br.com.inovatso.picPics
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity() {
+}
+
 //
 //import androidx.annotation.NonNull;
 //import io.flutter.embedding.android.FlutterFragmentActivity

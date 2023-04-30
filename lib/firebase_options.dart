@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCOi_EL0ROIiKFpFqqzGm6FnREYTMdhiwY',
-    appId: '1:782873848258:android:a0ad94bf97e1c2871f8e5b',
+    appId: '1:782873848258:android:9c6e970f39f436db1f8e5b',
     messagingSenderId: '782873848258',
     projectId: 'picpics',
     databaseURL: 'https://picpics.firebaseio.com',
@@ -60,13 +60,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAhp_u5mFTZiedLTOtaLoD20w55Ya6JSLM',
-    appId: '1:782873848258:ios:7ed97274a6a05e121f8e5b',
+    appId: '1:782873848258:ios:7db595160b6b6e9e1f8e5b',
     messagingSenderId: '782873848258',
     projectId: 'picpics',
     databaseURL: 'https://picpics.firebaseio.com',
     storageBucket: 'picpics.appspot.com',
     androidClientId: '782873848258-sqj0psl71h0v1ou6ubjovtae0bssdobg.apps.googleusercontent.com',
-    iosClientId: '782873848258-6r6v31dhe5oa92hdvn6at5f738e5hvla.apps.googleusercontent.com',
-    iosBundleId: 'com.example.picpics',
+    iosClientId: '782873848258-1r809shqf1tg3n1hpabgmlqfngtf41bk.apps.googleusercontent.com',
+    iosBundleId: 'br.com.inovatso.picPics',
   );
 }
