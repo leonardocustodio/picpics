@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/language_controller.dart';
 
 class UnhideSecretModal extends StatelessWidget {
-  final Function onPressedDelete;
-  final Function onPressedOk;
+  final Function() onPressedDelete;
+  final Function() onPressedOk;
 
   UnhideSecretModal({
-    @required this.onPressedDelete,
-    @required this.onPressedOk,
+    required this.onPressedDelete,
+    required this.onPressedOk,
   });
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
+    final width = MediaQuery.of(context).size.width;
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: width < 360 ? EdgeInsets.symmetric(horizontal: 20.0) : EdgeInsets.symmetric(horizontal: 40.0),
+      insetPadding: width < 360
+          ? EdgeInsets.symmetric(horizontal: 20.0)
+          : EdgeInsets.symmetric(horizontal: 40.0),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
@@ -45,15 +48,17 @@ class UnhideSecretModal extends StatelessWidget {
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
                   ),
-                  Text(
-                    S.of(context).secret_photos,
-                    style: TextStyle(
-                      fontFamily: 'Lato',
-                      color: Color(0xff979a9b),
-                      fontSize: 24,
-                      fontWeight: FontWeight.w400,
-                      fontStyle: FontStyle.normal,
-                      letterSpacing: -0.4099999964237213,
+                  Obx(
+                    () => Text(
+                      LangControl.to.S.value.secret_photos,
+                      style: TextStyle(
+                        fontFamily: 'Lato',
+                        color: Color(0xff979a9b),
+                        fontSize: 24,
+                        fontWeight: FontWeight.w400,
+                        fontStyle: FontStyle.normal,
+                        letterSpacing: -0.4099999964237213,
+                      ),
                     ),
                   ),
                   CupertinoButton(
@@ -68,15 +73,17 @@ class UnhideSecretModal extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 44.0),
                 child: Image.asset('lib/images/lockmodalico.png'),
               ),
-              Text(
-                S.of(context).disable_secret,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: Color(0xff707070),
-                  fontSize: 15,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
+              Obx(
+                () => Text(
+                  LangControl.to.S.value.disable_secret,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: Color(0xff707070),
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                  ),
                 ),
               ),
               Padding(
@@ -92,28 +99,29 @@ class UnhideSecretModal extends StatelessWidget {
                         child: Container(
                           height: 44.0,
                           decoration: BoxDecoration(
-                            border: Border.all(color: kSecondaryColor, width: 1.0),
+                            border:
+                                Border.all(color: kSecondaryColor, width: 1.0),
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Center(
-                            child: Text(
-                              S.of(context).no,
-                              textScaleFactor: 1.0,
-                              style: TextStyle(
-                                color: kSecondaryColor,
-                                fontWeight: FontWeight.w700,
-                                fontFamily: 'Lato',
-                                fontStyle: FontStyle.normal,
-                                fontSize: 16.0,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.no,
+                                textScaleFactor: 1.0,
+                                style: TextStyle(
+                                  color: kSecondaryColor,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Lato',
+                                  fontStyle: FontStyle.normal,
+                                  fontSize: 16.0,
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                    SizedBox(
-                      width: 16.0,
-                    ),
+                    const SizedBox(width: 16.0),
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),
@@ -125,10 +133,12 @@ class UnhideSecretModal extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8.0),
                           ),
                           child: Center(
-                            child: Text(
-                              S.of(context).yes,
-                              textScaleFactor: 1.0,
-                              style: kLoginButtonTextStyle,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.yes,
+                                textScaleFactor: 1.0,
+                                style: kLoginButtonTextStyle,
+                              ),
                             ),
                           ),
                         ),

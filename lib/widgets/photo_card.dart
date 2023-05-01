@@ -1,47 +1,49 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:get/get.dart';
+import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/managers/admob_manager.dart';
-import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:picPics/screens/add_location.dart';
+import 'package:picPics/screens/all_tags_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/managers/database_manager.dart';
-import 'package:picPics/screens/premium_screen.dart';
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/blur_hash_controller.dart';
+import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/tagged_controller.dart';
+import 'package:picPics/stores/tags_controller.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/functions.dart';
+import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/tags_list.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:intl/intl.dart';
-import 'package:geocoding_platform_interface/geocoding_platform_interface.dart';
-import 'package:picPics/widgets/watch_ad_modal.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:provider/provider.dart';
+
+//typedef EditTagModalTypeDef = dynamic Function(String tagKey);
 
 class PhotoCard extends StatefulWidget {
   final PicStore picStore;
 
-  final Function showEditTagModal;
-  final Function showDeleteSecretModal;
+  //final EditTagModalTypeDef showEditTagModal;
+  //final Function showDeleteSecretModal;
   final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
   PhotoCard({
-    this.picStore,
-    this.showEditTagModal,
-    this.showDeleteSecretModal,
-    this.picsInThumbnails,
-    this.picsInThumbnailIndex,
+    required this.picStore,
+    //this.showEditTagModal,
+    //this.showDeleteSecretModal,
+    required this.picsInThumbnails,
+    required this.picsInThumbnailIndex,
   });
 
   @override
@@ -51,37 +53,15 @@ class PhotoCard extends StatefulWidget {
 class _PhotoCardState extends State<PhotoCard> {
   final GlobalKey _photoSpaceKey = GlobalKey();
 
-  AppStore appStore;
-  TabsStore tabsStore;
-  GalleryStore galleryStore;
+  //TabsController tabsStore;
   PicStore get picStore => widget.picStore;
 
-  List<int> photoSize;
+  //List<int> photoSize;
 
   BoxFit boxFit = BoxFit.cover;
 
   TextEditingController tagsEditingController = TextEditingController();
-  FocusNode tagsFocusNode;
-
-  showWatchAdModal(BuildContext context) {
-    Analytics.sendEvent(Event.watch_ads_modal);
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return WatchAdModal(
-          onPressedWatchAdd: () {
-            Navigator.pop(context);
-            Ads.showRewarded();
-            Analytics.sendAdImpression();
-          },
-          onPressedGetPremium: () {
-            Navigator.popAndPushNamed(context, PremiumScreen.id);
-          },
-        );
-      },
-    );
-  }
+  late FocusNode tagsFocusNode;
 
   String dateFormat(DateTime dateTime) {
     var formatter = DateFormat.yMMMEd();
@@ -89,15 +69,25 @@ class _PhotoCardState extends State<PhotoCard> {
   }
 
   Future<List<String>> reverseGeocoding(BuildContext context) async {
-    if (picStore.specificLocation != null && picStore.generalLocation != null) {
-      return [picStore.specificLocation, '  ${picStore.generalLocation}'];
+    if (picStore.specificLocation.value != null &&
+        picStore.generalLocation.value != null) {
+      return [
+        picStore.specificLocation.value!,
+        '  ${picStore.generalLocation.value}'
+      ];
     }
 
-    if ((picStore.originalLatitude == null || picStore.originalLongitude == null) || (picStore.originalLatitude == 0 && picStore.originalLongitude == 0)) {
-      return [S.of(context).photo_location, '  ${S.of(context).country}'];
+    if ((picStore.originalLatitude == null ||
+            picStore.originalLongitude == null) ||
+        (picStore.originalLatitude == 0 && picStore.originalLongitude == 0)) {
+      return [
+        LangControl.to.S.value.photo_location,
+        '  ${LangControl.to.S.value.country}'
+      ];
     }
 
-    List<Placemark> placemark = await placemarkFromCoordinates(picStore.originalLatitude, picStore.originalLongitude);
+    var placemark = await placemarkFromCoordinates(
+        picStore.originalLatitude!, picStore.originalLongitude!);
 
     print('Placemark: ${placemark.length}');
     for (var place in placemark) {
@@ -106,67 +96,70 @@ class _PhotoCardState extends State<PhotoCard> {
 
     if (placemark.isNotEmpty) {
       print('Saving pic!!!');
-      picStore.saveLocation(
-        lat: picStore.originalLatitude,
-        long: picStore.originalLongitude,
+      await picStore.saveLocation(
+        lat: picStore.originalLatitude!,
+        long: picStore.originalLongitude!,
         specific: placemark[0].locality,
         general: placemark[0].country,
       );
-      return [placemark[0].locality, '  ${placemark[0].country}'];
+      return [placemark[0].locality!, '  ${placemark[0].country}'];
     }
 
-    return [S.of(context).photo_location, '  ${S.of(context).country}'];
+    return [
+      LangControl.to.S.value.photo_location,
+      '  ${LangControl.to.S.value.country}'
+    ];
   }
 
   void focusTagsEditingController() {}
 
   void getSizeAndPosition() {
-    RenderBox _cardBox = _photoSpaceKey.currentContext.findRenderObject();
+    var _cardBox =
+        _photoSpaceKey.currentContext?.findRenderObject() as RenderBox;
     print('Card Box Size: ${_cardBox.size.height}');
-    appStore.setPhotoHeightInCardWidget(_cardBox.size.height);
+    UserController.to.setPhotoHeightInCardWidget(_cardBox.size.height);
   }
+
+  String? hash;
 
   @override
   void initState() {
     super.initState();
+
+    hash = BlurHashController.to.blurHash[picStore.photoId.value];
     tagsFocusNode = FocusNode();
 
-    if (KeyboardVisibility.isVisible) {
+    /* if (KeyboardVisibility.isVisible) {
       print('#### keyboard is visible!!!!');
       tagsFocusNode.requestFocus();
-    }
+    } */
   }
 
-  @override
-  void dispose() {
-    tagsFocusNode = FocusNode();
-    super.dispose();
-  }
-
-  @override
+/*   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    UserController.to = Provider.of<UserController>(context);
     tabsStore = Provider.of<TabsStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
-    // galleryStore.setCurrentPic(widget.picStore);
+    GalleryStore.to = Provider.of<GalleryStore>(context);
+    // GalleryStore.to.setCurrentPic(widget.picStore);
 
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
     photoSize = <int>[height, height];
 
     print('Did Change Dep!!!');
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+/*     final height = MediaQuery.of(context).size.height;
+ */
     print('Pic Store Photo Id: ${picStore.photoId}');
     print('Other info: ${picStore.photoPath}');
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
-    // print('In secret db: ${secret.photoId} - ${secret.photoPath}');
-
-    AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, thumbSize: photoSize ?? kDefaultPhotoSize, isOriginal: false);
+    /* print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
+    var imageProvider = AssetEntityImageProvider(picStore,
+        thumbSize: kDefaultPhotoSize, isOriginal: false);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
       decoration: BoxDecoration(
@@ -187,6 +180,11 @@ class _PhotoCardState extends State<PhotoCard> {
           Expanded(
             child: Stack(
               children: [
+                if (null != hash)
+                  BlurHash(
+                    hash: hash!,
+                    color: Colors.transparent,
+                  ),
                 ClipRRect(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(12.0),
@@ -194,117 +192,129 @@ class _PhotoCardState extends State<PhotoCard> {
                   ),
                   child: RepaintBoundary(
                     child: ExtendedImage(
+                      gaplessPlayback: true,
+                      clearMemoryCacheWhenDispose: true,
+                      handleLoadingProgress: true,
                       key: _photoSpaceKey,
                       afterPaintImage: (canvas, rect, image, paint) {
-                        WidgetsBinding.instance.addPostFrameCallback((_) => getSizeAndPosition());
+                        WidgetsBinding.instance
+                            ?.addPostFrameCallback((_) => getSizeAndPosition());
                       },
                       image: imageProvider,
                       fit: boxFit,
                       loadStateChanged: (ExtendedImageState state) {
-                        Widget loader;
                         switch (state.extendedImageLoadState) {
                           case LoadState.loading:
-                            loader = const ColoredBox(color: kGreyPlaceholder);
-                            break;
+                            if (null == hash) {
+                              return ColoredBox(color: kGreyPlaceholder);
+                            } else {
+                              return BlurHash(
+                                hash: hash!,
+                                color: Colors.transparent,
+                              );
+                            }
                           case LoadState.completed:
-                            loader = FadeImageBuilder(
-                              child: () {
-                                return GestureDetector(
-                                  onDoubleTap: () {
-                                    if (boxFit == BoxFit.cover) {
-                                      setState(() {
-                                        boxFit = BoxFit.contain;
-                                      });
-                                    } else {
-                                      setState(() {
-                                        boxFit = BoxFit.cover;
-                                      });
-                                    }
-                                  },
-                                  child: RepaintBoundary(
-                                    child: Container(
-                                      color: Colors.black,
-                                      constraints: BoxConstraints.expand(),
-                                      child: state.completedWidget,
-                                    ),
+                            return FadeImageBuilder(
+                              child: GestureDetector(
+                                onDoubleTap: () {
+                                  setState(() {
+                                    boxFit = (boxFit == BoxFit.cover)
+                                        ? BoxFit.contain
+                                        : BoxFit.cover;
+                                  });
+                                },
+                                child: RepaintBoundary(
+                                  child: Container(
+                                    color: Colors.black,
+                                    constraints: BoxConstraints.expand(),
+                                    child: state.completedWidget,
                                   ),
-                                );
-                              }(),
+                                ),
+                              ),
                             );
-                            break;
                           case LoadState.failed:
-                            loader = Container();
-                            break;
+                            return Container();
                         }
-                        return loader;
                       },
                     ),
                   ),
                 ),
-                Observer(
-                  builder: (_) {
-                    print('Photo Height: ${appStore.photoHeightInCardWidget}');
-                    return CircularMenu(
-                      // appStore: appStore,
-                      isExpanded: appStore.isMenuExpanded,
-                      useInHorizontal: appStore.photoHeightInCardWidget < 280 ? true : false,
-                      alignment: Alignment.bottomRight,
-                      radius: 52,
-                      toggleButtonOnPressed: () {
-                        appStore.switchIsMenuExpanded();
-                      },
-                      toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
-                      toggleButtonBoxShadow: [
-                        BoxShadow(color: Colors.black12, blurRadius: 3, spreadRadius: 3),
-                      ],
-                      toggleButtonIconColor: Colors.white,
-                      toggleButtonMargin: 12.0,
-                      toggleButtonPadding: 8.0,
-                      toggleButtonSize: 19.2,
-                      items: [
-                        CircularMenuItem(
-                          image: Image.asset('lib/images/trashmenu.png'),
-                          color: kWarningColor,
-                          iconSize: 19.2,
-                          onTap: () {
-                            galleryStore.trashPic(picStore);
-                          },
-                        ),
-                        CircularMenuItem(
-                          image: picStore.isPrivate == true ? Image.asset('lib/images/openlockmenu.png') : Image.asset('lib/images/lockmenu.png'),
-                          color: picStore.isPrivate == true ? Color(0xFFF5FAFA) : kYellowColor,
-                          iconSize: 19.2,
-                          onTap: () {
-                            widget.showDeleteSecretModal(picStore);
-                          },
-                        ),
-                        CircularMenuItem(
-                          image: Image.asset('lib/images/sharemenu.png'),
-                          color: kPrimaryColor,
-                          iconSize: 19.2,
-                          onTap: () {
-                            picStore.sharePic();
-                          },
-                        ),
-                        CircularMenuItem(
-                          image: Image.asset('lib/images/expandmenu.png'),
-                          color: kSecondaryColor,
-                          iconSize: 19.2,
-                          onTap: () {
-                            galleryStore.setInitialSelectedThumbnail(picStore);
-                            Navigator.pushNamed(context, PhotoScreen.id);
-                          },
-                        ),
-                      ],
-                      backgroundWidget: Container(),
-                    );
+                CircularMenu(
+                  // UserController.to: UserController.to,
+                  isExpanded: UserController.to.isMenuExpanded.value,
+                  useInHorizontal:
+                      UserController.to.photoHeightInCardWidget < 280
+                          ? true
+                          : false,
+                  alignment: Alignment.bottomRight,
+                  radius: 52,
+                  toggleButtonOnPressed: () {
+                    UserController.to.switchIsMenuExpanded();
                   },
+                  toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
+                  toggleButtonBoxShadow: [
+                    BoxShadow(
+                        color: Colors.black12, blurRadius: 3, spreadRadius: 3),
+                  ],
+                  toggleButtonIconColor: Colors.white,
+                  toggleButtonMargin: 12.0,
+                  toggleButtonPadding: 8.0,
+                  toggleButtonSize: 19.2,
+                  items: [
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/trashmenu.png'),
+                      color: kWarningColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        //GalleryStore.to.trashPic(picStore);
+                        TabsController.to
+                            .removePicFromUI(picStore.photoId.value);
+                        TabsController.to.trashPic(picStore.photoId.value);
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: picStore.isPrivate.value == true
+                          ? Image.asset('lib/images/openlockmenu.png')
+                          : Image.asset('lib/images/lockmenu.png'),
+                      color: picStore.isPrivate.value == true
+                          ? Color(0xFFF5FAFA)
+                          : kYellowColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        showDeleteSecretModal(picStore);
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/sharemenu.png'),
+                      color: kPrimaryColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        picStore.sharePic();
+                      },
+                    ),
+                    CircularMenuItem(
+                      image: Image.asset('lib/images/expandmenu.png'),
+                      color: kSecondaryColor,
+                      iconSize: 19.2,
+                      onTap: () {
+                        /* GalleryStore.to
+                                .setInitialSelectedThumbnail(picStore); */
+                        var result = Get.to(() => PhotoScreen(
+                            picIdList: [], picId: picStore.photoId.value));
+                        if (null == result) {
+                          refresh_everything();
+                        }
+                      },
+                    ),
+                  ],
+                  backgroundWidget: Container(),
                 ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+            padding:
+                const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -313,16 +323,18 @@ class _PhotoCardState extends State<PhotoCard> {
                   children: <Widget>[
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
-                      onPressed: () async {
-                        Navigator.pushNamed(context, AddLocationScreen.id);
+                      onPressed: () {
+                        Get.to(() => AddLocationScreen(picStore));
                       },
-                      child: Observer(builder: (_) {
+                      child: Obx(() {
                         return RichText(
                           textScaleFactor: 1.0,
-                          text: new TextSpan(
+                          text: TextSpan(
                             children: [
                               TextSpan(
-                                text: picStore.specificLocation ?? S.of(context).photo_location,
+                                text: picStore.specificLocation.value
+                                        ?.toString() ??
+                                    LangControl.to.S.value.photo_location,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -333,7 +345,8 @@ class _PhotoCardState extends State<PhotoCard> {
                                 ),
                               ),
                               TextSpan(
-                                text: '  ${picStore.generalLocation ?? S.of(context).country}',
+                                text:
+                                    '  ${picStore.generalLocation.value ?? LangControl.to.S.value.country}',
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
@@ -354,7 +367,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       style: TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff606566),
-                        fontSize: 12,
+                        fontSize: 14.5,
                         fontWeight: FontWeight.w300,
                         fontStyle: FontStyle.normal,
                         letterSpacing: -0.4099999964237213,
@@ -362,70 +375,78 @@ class _PhotoCardState extends State<PhotoCard> {
                     ),
                   ],
                 ),
-                Observer(builder: (_) {
+                Obx(() {
                   return TagsList(
-                    tags: galleryStore.tagsFromPic(picStore: picStore),
+                    tagStyle: TagStyle.MultiColored,
+                    tagsKeyList: TaggedController
+                            .to
+                            .picWiseTags[picStore.photoId.value.toString()]
+                            ?.keys
+                            .toList() ??
+                        <String>[],
                     addTagField: true,
                     textEditingController: tagsEditingController,
                     textFocusNode: tagsFocusNode,
-                    showEditTagModal: widget.showEditTagModal,
+                    //showEditTagModal: widget.showEditTagModal,
                     shouldChangeToSwipeMode: true,
-                    aiButtonTitle: picStore.aiTags ? 'Recent' : S.of(context).suggestions,
+                    aiButtonTitle: LangControl.to.S.value.allTags,
                     onAiButtonTap: () {
+                      Get.to(() => AllTagsScreen(picStore: picStore));
                       print('ai button tapped');
-                      picStore.switchAiTags(context);
+                      // picStore.switchAiTags(context);
                     },
-                    onTap: (tagName) {
+                    onTap: (String key) {
                       print('do nothing');
                     },
-                    onDoubleTap: () {
+                    onDoubleTap: (String value) {
                       print('do nothing');
                     },
-                    onPanEnd: () {
-                      if (!appStore.canTagToday) {
-                        showWatchAdModal(context);
-                        return;
-                      }
+                    onPanEnd: (String selectedTagKey) async {
+                      await TagsController.to.removeTagFromPic(
+                          picId: picStore.photoId.value.toString(),
+                          tagKey: selectedTagKey);
 
-                      galleryStore.removeTagFromPic(picStore: picStore, tagKey: DatabaseManager.instance.selectedTagKey);
+                      /* await GalleryStore.to.removeTagFromPic(
+                          picStore: picStore, tagKey: selectedTagKey); */
+
+                      await picStore.tagsSuggestionsCalculate();
+                      await TaggedController.to.refreshTaggedPhotos();
+                      await TabsController.to.refreshUntaggedList();
                     },
-                    onChanged: (text) {
-                      picStore.setSearchText(text);
+                    onChanged: (text) async {
+                      TagsController.to.searchText.value = text;
+                      await TagsController.to.tagsSuggestionsCalculate();
                     },
                     onSubmitted: (text) async {
                       print('return');
 
                       if (text != '') {
-                        if (!appStore.canTagToday) {
-                          tagsEditingController.clear();
-                          picStore.setSearchText('');
-                          showWatchAdModal(context);
-                          return;
-                        }
+                        var tagKey = await TagsController.to.createTag(text);
+                        await picStore.addMultipleTagsToPic(
+                            acceptedTagKeys: {tagKey: ''});
 
-                        await galleryStore.addTagToPic(
-                          picStore: picStore,
-                          tagName: text,
-                        );
                         Vibrate.feedback(FeedbackType.success);
                         tagsEditingController.clear();
-                        picStore.setSearchText('');
+                        TagsController.to.searchText.value = '';
+                        await TagsController.to.tagsSuggestionsCalculate();
+                        await TaggedController.to.refreshTaggedPhotos();
+                        await TabsController.to.refreshUntaggedList();
                       }
                     },
                   );
                 }),
                 Padding(
                   padding: const EdgeInsets.only(top: 8.0),
-                  child: Observer(builder: (_) {
+                  child: Obx(() {
                     String suggestionsTitle;
 
-                    if (picStore.aiTags == true) {
-                      if (picStore.aiTagsLoaded == false) {
+                    if (picStore.aiTags.value) {
+                      if (picStore.aiTagsLoaded.value == false) {
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              S.of(context).suggestions,
+                              LangControl.to.S.value.suggestions,
                               textScaleFactor: 1.0,
                               style: TextStyle(
                                 fontFamily: 'Lato',
@@ -438,9 +459,11 @@ class _PhotoCardState extends State<PhotoCard> {
                             ),
                             Center(
                               child: Padding(
-                                padding: const EdgeInsets.only(top: 32.0, bottom: 32.0),
+                                padding: const EdgeInsets.only(
+                                    top: 32.0, bottom: 32.0),
                                 child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      kSecondaryColor),
                                 ),
                               ),
                             ),
@@ -448,37 +471,85 @@ class _PhotoCardState extends State<PhotoCard> {
                         );
                       }
 
-                      suggestionsTitle = S.of(context).suggestions;
-                    } else if (picStore.searchText != '') {
-                      suggestionsTitle = S.of(context).search_results;
+                      suggestionsTitle = LangControl.to.S.value.suggestions;
+                    } else if (picStore.searchText.value != '') {
+                      suggestionsTitle = LangControl.to.S.value.search_results;
                     } else {
-                      suggestionsTitle = S.of(context).recent_tags;
+                      suggestionsTitle = LangControl.to.S.value.recent_tags;
                     }
 
-                    return TagsList(
-                      title: suggestionsTitle,
-                      tags: picStore.aiTags ? picStore.aiSuggestions : picStore.tagsSuggestions,
-                      tagStyle: TagStyle.GrayOutlined,
-                      showEditTagModal: widget.showEditTagModal,
-                      onTap: (tagId, tagName) async {
-                        if (!appStore.canTagToday) {
-                          showWatchAdModal(context);
-                          return;
-                        }
+                    print(
+                        '${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');
+                    TagsController.to.tagsSuggestionsCalculate();
+                    return Obx(
+                      () => TagsList(
+                        title: suggestionsTitle,
+                        tagsKeyList:
+                            /* 
+                            picStore.aiTags.value
+                            ? picStore.aiSuggestions.value
+                            : */
+                            TagsController.to.searchTagsResults
+                                .map((e) => e.key)
+                                .toList()
+                                .where((tagKey) {
+                          if (TaggedController.to.picWiseTags[
+                                      picStore.photoId.value.toString()] !=
+                                  null &&
+                              TaggedController.to.picWiseTags[
+                                          picStore.photoId.value.toString()]
+                                      ?[tagKey] !=
+                                  null) {
+                            return false;
+                          }
 
-                        await galleryStore.addTagToPic(
-                          picStore: picStore,
-                          tagName: tagName,
-                        );
-                        tagsEditingController.clear();
-                        picStore.setSearchText('');
-                      },
-                      onDoubleTap: () {
-                        print('do nothing');
-                      },
-                      onPanEnd: () {
-                        print('do nothing');
-                      },
+                          return true;
+                        }).toList(),
+                        tagStyle: TagStyle.GrayOutlined,
+                        //showEditTagModal: widget.showEditTagModal,
+                        onTap: (tagKey) async {
+                          await picStore.addMultipleTagsToPic(
+                              acceptedTagKeys: {tagKey: ''});
+                          await TagsController.to
+                              .tagsSuggestionsCalculate()
+                              .then((value) async {
+                            await TaggedController.to.refreshTaggedPhotos();
+                            var newList = value.where((element) {
+                              if (TaggedController.to.picWiseTags[
+                                          picStore.photoId.value.toString()] !=
+                                      null &&
+                                  TaggedController.to.picWiseTags[
+                                              picStore.photoId.value.toString()]
+                                          ?[element.key] ==
+                                      null) {
+                                return true;
+                              }
+                              return false;
+                            }).toList();
+                            if (TagsController.to.searchText.value != '' &&
+                                newList.isEmpty) {
+                              TagsController.to.searchText.value = '';
+                              await TagsController.to
+                                  .tagsSuggestionsCalculate();
+                            }
+                          });
+                          await TaggedController.to.refreshTaggedPhotos();
+                          await TabsController.to.refreshUntaggedList();
+                          /* 
+                          await GalleryStore.to.addTagToPic(
+                              picStore: picStore,
+                              tagName: TagsController
+                                  .to.allTags[tagKey].value.title); */
+                          /* tagsEditingController.clear();
+                          picStore.setSearchText(''); */
+                        },
+                        onDoubleTap: (tagKey) {
+                          print('do nothing');
+                        },
+                        onPanEnd: (tagKey) {
+                          print('do nothing');
+                        },
+                      ),
                     );
                   }),
                 ),

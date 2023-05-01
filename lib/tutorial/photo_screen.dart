@@ -1,24 +1,22 @@
-import 'dart:ui';
-
+/* import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/managers/database_manager.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
+
 import 'package:extended_image/extended_image.dart';
 
 class TutsPhotoScreen extends StatefulWidget {
@@ -63,43 +61,6 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
     }
   }
 
-  showEditTagModal() {
-    if (DatabaseManager.instance.selectedTagKey != '') {
-      TextEditingController alertInputController = TextEditingController();
-      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
-      alertInputController.text = tagName;
-
-      print('showModal');
-      showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext buildContext) {
-          return CupertinoInputDialog(
-            prefixImage: Image.asset('lib/images/smalladdtag.png'),
-            alertInputController: alertInputController,
-            title: S.of(context).edit_tag,
-            destructiveButtonTitle: S.of(context).delete,
-            onPressedDestructive: () {
-              galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
-              Navigator.of(context).pop();
-            },
-            defaultButtonTitle: S.of(context).ok,
-            onPressedDefault: () {
-              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
-              if (tagName != alertInputController.text) {
-                galleryStore.editTag(
-                  oldTagKey: DatabaseManager.instance.selectedTagKey,
-                  newName: alertInputController.text,
-                );
-              }
-              Navigator.of(context).pop();
-            },
-          );
-        },
-      );
-    }
-  }
-
   String dateFormat(DateTime dateTime) {
     var formatter = DateFormat.yMMMEd();
     return formatter.format(dateTime);
@@ -107,7 +68,8 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
 
   PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
     PicStore picStore = galleryStore.thumbnailsPics[index];
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: true);
 
     return PhotoViewGalleryPageOptions.customChild(
       child: Container(
@@ -164,7 +126,9 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
   }
 
   Widget _buildThumbnails(BuildContext context, int index) {
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(galleryStore.thumbnailsPics[index], isOriginal: false);
+    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(
+        galleryStore.thumbnailsPics[index],
+        isOriginal: false);
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
@@ -217,7 +181,8 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
     super.didChangeDependencies();
     galleryStore = Provider.of<GalleryStore>(context);
     tabsStore = Provider.of<TabsStore>(context);
-    galleryPageController = PageController(initialPage: galleryStore.selectedThumbnail);
+    galleryPageController =
+        PageController(initialPage: galleryStore.selectedThumbnail);
   }
 
   @override
@@ -239,7 +204,10 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                     width: 20.0,
                     height: 20.0,
                     child: CircularProgressIndicator(
-                      value: event == null ? 0 : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                      value: event == null
+                          ? 0
+                          : event.cumulativeBytesLoaded /
+                              event.expectedTotalBytes,
                     ),
                   ),
                 ),
@@ -264,13 +232,19 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                         sigmaY: 2.0,
                       ),
                       child: Container(
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                              Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                              Colors.black
+                                  .withOpacity(0.7)
+                                  .withOpacity(0.37)
+                                  .withOpacity(0.3),
+                              Colors.black
+                                  .withOpacity(1.0)
+                                  .withOpacity(0.37)
+                                  .withOpacity(0.3)
                             ],
                             stops: [0, 0.40625],
                           ),
@@ -281,18 +255,22 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
                               CupertinoButton(
-                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Get.back();
                                 },
-                                child: Image.asset('lib/images/backarrowwithdropshadow.png'),
+                                child: Image.asset(
+                                    'lib/images/backarrowwithdropshadow.png'),
                               ),
                               CupertinoButton(
-                                padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
                                   galleryStore.currentThumbnailPic.sharePic();
                                 },
-                                child: Image.asset('lib/images/sharebuttonwithdropshadow.png'),
+                                child: Image.asset(
+                                    'lib/images/sharebuttonwithdropshadow.png'),
                               ),
                             ],
                           ),
@@ -312,13 +290,19 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                           constraints: BoxConstraints(
                             minHeight: 184.0,
                           ),
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
-                                Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                                Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                                Colors.black
+                                    .withOpacity(0.7)
+                                    .withOpacity(0.37)
+                                    .withOpacity(0.3),
+                                Colors.black
+                                    .withOpacity(1.0)
+                                    .withOpacity(0.37)
+                                    .withOpacity(0.3)
                               ],
                               stops: [0, 0.40625],
                             ),
@@ -332,38 +316,48 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                 children: <Widget>[
                                   Observer(builder: (_) {
                                     return Row(
-                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         RichText(
                                           textScaleFactor: 1.0,
-                                          text: new TextSpan(
+                                          text: TextSpan(
                                             children: [
-                                              new TextSpan(
-                                                  text: galleryStore.currentThumbnailPic.specificLocation ?? S.of(context).photo_location,
+                                              TextSpan(
+                                                  text: galleryStore
+                                                          .currentThumbnailPic
+                                                          .specificLocation ??
+                                                      S
+                                                          .of(context)
+                                                          .photo_location,
                                                   style: TextStyle(
                                                     fontFamily: 'NotoSans',
                                                     color: kWhiteColor,
                                                     fontSize: 17,
                                                     fontWeight: FontWeight.w400,
                                                     fontStyle: FontStyle.normal,
-                                                    letterSpacing: -0.4099999964237213,
+                                                    letterSpacing:
+                                                        -0.4099999964237213,
                                                   )),
-                                              new TextSpan(
-                                                text: '  ${galleryStore.currentThumbnailPic.generalLocation ?? S.of(context).country}',
+                                              TextSpan(
+                                                text:
+                                                    '  ${galleryStore.currentThumbnailPic.generalLocation ?? LangControl.to.S.value.country}',
                                                 style: TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,
                                                   fontSize: 12,
                                                   fontWeight: FontWeight.w300,
                                                   fontStyle: FontStyle.normal,
-                                                  letterSpacing: -0.4099999964237213,
+                                                  letterSpacing:
+                                                      -0.4099999964237213,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
                                         Text(
-                                          dateFormat(galleryStore.currentThumbnailPic.createdAt),
+                                          dateFormat(galleryStore
+                                              .currentThumbnailPic.createdAt),
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
@@ -381,15 +375,19 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                     return Padding(
                                       padding: const EdgeInsets.only(top: 16.0),
                                       child: TagsList(
-                                        tags: galleryStore.currentThumbnailPic.tags,
+                                        tags: galleryStore
+                                            .currentThumbnailPic.tags.values
+                                            .toList(),
                                         tagStyle: TagStyle.MultiColored,
                                         addTagButton: () {
-                                          galleryStore.setCurrentPic(galleryStore.currentThumbnailPic);
+                                          galleryStore.setCurrentPic(
+                                              galleryStore.currentThumbnailPic);
 
                                           if (!tabsStore.modalCard) {
                                             tabsStore.setModalCard(true);
                                           }
-                                          Navigator.pop(context, 'show_keyboard');
+                                          Navigator.pop(
+                                              context, 'show_keyboard');
                                         },
                                         onTap: (tagName) {
                                           print('ignore click');
@@ -401,7 +399,9 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                         onPanEnd: () {
                                           print('teste');
                                         },
-                                        showEditTagModal: showEditTagModal,
+                                        showEditTagModal: () =>
+                                            showEditTagModal(
+                                                context, galleryStore, false),
                                       ),
                                     );
                                   }),
@@ -415,13 +415,19 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                   if (showSlideshow)
                     ClipRect(
                       child: Container(
-                        decoration: new BoxDecoration(
+                        decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
-                              Colors.black.withOpacity(0.7).withOpacity(0.37).withOpacity(0.3),
-                              Colors.black.withOpacity(1.0).withOpacity(0.37).withOpacity(0.3)
+                              Colors.black
+                                  .withOpacity(0.7)
+                                  .withOpacity(0.37)
+                                  .withOpacity(0.3),
+                              Colors.black
+                                  .withOpacity(1.0)
+                                  .withOpacity(0.37)
+                                  .withOpacity(0.3)
                             ],
                             stops: [0, 0.40625],
                           ),
@@ -438,7 +444,8 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                   child: ListView.builder(
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: _buildThumbnails,
-                                    itemCount: galleryStore.thumbnailsPics.length,
+                                    itemCount:
+                                        galleryStore.thumbnailsPics.length,
                                     padding: const EdgeInsets.only(left: 8.0),
                                   ),
                                 ),
@@ -456,3 +463,4 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
     );
   }
 }
+ */

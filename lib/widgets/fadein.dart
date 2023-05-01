@@ -9,26 +9,28 @@ class FadeIn extends StatelessWidget {
   final Widget child;
 
   FadeIn({
-    this.delay,
-    this.child,
+    required this.delay,
+    required this.child,
   });
 
   @override
   Widget build(BuildContext context) {
-    final tween = MultiTween<_AniProps>()..add(_AniProps.opacity, 0.0.tweenTo(1.0))..add(_AniProps.translateY, 0.0.tweenTo(76.0));
+    final tween = MovieTween()
+      ..tween(_AniProps.opacity, 0.0.tweenTo(1.0))
+      ..tween(_AniProps.translateY, 0.0.tweenTo(76.0));
 
-    return PlayAnimation<MultiTweenValues<_AniProps>>(
+    return PlayAnimationBuilder<Movie>(
       delay: (300 * delay).round().milliseconds,
       duration: 120.milliseconds,
       tween: tween,
-      child: child,
-      builder: (context, child, value) => Opacity(
+      builder: (context, value, _) => Opacity(
         opacity: value.get(_AniProps.opacity),
         child: Container(
           height: value.get(_AniProps.translateY),
           child: child,
         ),
       ),
+      child: child,
     );
   }
 }

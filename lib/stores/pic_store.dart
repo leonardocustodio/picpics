@@ -1,126 +1,164 @@
 import 'dart:io';
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
-import 'package:cryptography_flutter/cryptography.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:hive/hive.dart';
-import 'package:mobx/mobx.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/model/pic.dart';
-import 'package:picPics/model/secret.dart';
-import 'package:picPics/model/tag.dart';
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/tags_store.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/labels.dart';
-import 'package:share_extend/share_extend.dart';
-import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:get/get.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:googleapis/translate/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
-import 'package:strings/strings.dart';
+/* import 'package:metadata/metadata.dart' as md; */
 import 'package:path/path.dart' as p;
-// import 'package:tflite_flutter/tflite_flutter.dart' as tfl;
-// import 'package:image/image.dart' as img;
-import 'package:metadata/metadata.dart' as md;
-// import 'package:exif/exif.dart';
-// import 'package:edit_exif/edit_exif.dart';
-// import 'package:psd_sdk/psd_sdk.dart' as psd;
-// import 'package:tflite/tflite.dart';
-import 'dart:convert';
+import 'package:path_provider/path_provider.dart';
+import 'package:photo_manager/photo_manager.dart';
+import 'package:picPics/managers/crypto_manager.dart';
+import 'package:picPics/model/tag_model.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
+import 'package:share_extend/share_extend.dart';
+import 'package:strings/strings.dart';
+import 'package:picPics/constants.dart';
+import 'package:picPics/database/app_database.dart';
+import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picPics/stores/user_controller.dart';
+import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/labels.dart';
 
-part 'pic_store.g.dart';
+import 'tags_controller.dart';
 
-class PicStore = _PicStore with _$PicStore;
-
-abstract class _PicStore with Store {
-  final AppStore appStore;
+class PicStore extends GetxController {
   final DateTime createdAt;
-  final double originalLatitude;
-  final double originalLongitude;
+  final double? originalLatitude;
+  final double? originalLongitude;
 
-  _PicStore({
-    this.appStore,
-    this.entity,
-    this.photoPath,
-    this.thumbPath,
-    this.photoId,
-    this.createdAt,
+  final AppDatabase database = AppDatabase();
+
+  //ObservableMap<String, tagModel> tags = ObservableMap<String, tagModel>();
+  var tags = <String, Rx<TagModel>>{}.obs;
+
+  //var aiSuggestions = <tagModel>[];
+
+  // @observable
+  final aiTags = false.obs;
+
+  // @observable
+  final aiTagsLoaded = false.obs;
+
+  // @observable
+  final searchText = ''.obs;
+
+  // @observable
+  final latitude = RxnDouble(null);
+
+  // @observable
+  final longitude = RxnDouble(null);
+
+  // @observable
+  final specificLocation = RxnString(null);
+
+  // @observable
+  final generalLocation = RxnString(null);
+
+  String nonce = '';
+
+  // @observable
+  final isPrivate = false.obs;
+
+  // @observable
+  final isStarred = false.obs;
+
+  // @observable
+  final photoId = ''.obs;
+
+  // @observable
+  final entity = Rxn<AssetEntity>();
+
+  final tagsSuggestions = <TagModel>[].obs;
+
+  PicStore({
+    required AssetEntity entityValue,
+    required this.photoPath,
+    required this.thumbPath,
+    required String photoId,
+    required this.createdAt,
     this.originalLatitude,
     this.originalLongitude,
-    this.deletedFromCameraRoll,
-    this.isStarred,
+    this.deletedFromCameraRoll = false,
   }) {
-    // print('loading pic info......');
+    this.photoId.value = photoId;
+    entity.value = entityValue;
+    isStar();
+  }
+  /*  {
+    print('loading pic info......');
+    tagsSuggestionsCalculate();
     loadPicInfo();
+  } */
 
-    autorun((_) {});
+  Future<bool> isStar() async {
+    final photo = await database.getPhotoByPhotoId(photoId.value);
+    isStarred.value = photo?.isStarred ?? false;
+    return isStarred.value;
   }
 
-  @observable
-  bool isStarred;
-
-  @action
-  Future<void> switchIsStarred() async {
-    bool value = isStarred == null ? true : !isStarred;
-    print('Setting starred photo $photoId to $value');
-
-    var picsBox = Hive.box('pics');
-    Pic pic = picsBox.get(photoId);
-    pic.isStarred = value;
-
-    print('teste');
-    if (value == true) {
-      var bytes = await entity.thumbDataWithSize(300, 300);
-      String encoded = base64.encode(bytes);
-      pic.base64encoded = encoded;
-      appStore.addToStarredPhotos(photoId);
-    } else {
-      pic.base64encoded = null;
-      appStore.removeFromStarredPhotos(photoId);
+  Future<bool?> switchIsStarred() async {
+    var pic = await database.getPhotoByPhotoId(photoId.value);
+    if (pic == null) {
+      return null;
     }
+    await database.updatePhoto(
+      pic.copyWith(isStarred: !isStarred.value),
+    );
+    return await isStar();
+    //pic.isStarred = value;
+    /* String? base64encoded;
+    print('teste');
+    if (isStarred.value) {
+      //var bytes = await entity.value?.thumbDataWithSize(300, 300);
 
-    isStarred = value;
-    pic.save();
+      /// TODO: what to do in this case scenario
+      /* if (bytes == null) {
+        return;
+      } */
+      /* var encoded = base64.encode(bytes);
+      base64encoded = encoded; */
+      /* await UserController.to.addToStarredPhotos(photoId.value); */
+    } else {
+      /* await UserController.to.removeFromStarredPhotos(photoId.value); */
+    } */
+
+    /// Do the database writting
+
     print('isStarred value: $isStarred');
   }
 
-  @observable
-  String photoId;
+  //@action
+  Future<void> setChangePhotoId(String value) async {
+    //var tagsBox = Hive.box('tags');
 
-  @action
-  void setChangePhotoId(String value) {
-    var tagsBox = Hive.box('tags');
+    var tagKeys = tags.keys.toList();
+    tagKeys.forEach((tKeys) async {
+      final getTag = await database.getLabelByLabelKey(tKeys);
+      if (getTag != null) {
+        getTag.photoId.remove(photoId);
+        getTag.photoId[value] = '';
+        print('Replaced tag in ${getTag.title} tagsbox');
+        await database.updateLabel(getTag);
+      }
+    });
 
-    for (String tagsKeys in tagsKeys) {
-      Tag getTag = tagsBox.get(tagsKeys);
-
-      getTag.photoId.remove(photoId);
-      getTag.photoId.add(value);
-      print('Replaced tag in ${getTag.name} tagsbox');
-      getTag.save();
-    }
-
-    photoId = value;
+    photoId.value = value;
   }
 
-  @observable
-  AssetEntity entity;
-
-  @action
-  void changeAssetEntity(AssetEntity picEntity) {
+  //@action
+  Future<void> changeAssetEntity(AssetEntity picEntity) async {
     print('Changing asset entity of $photoId to ${picEntity.id}');
 
-    var picsBox = Hive.box('pics');
-    Pic picOld = picsBox.get(photoId);
+    //var picsBox = Hive.box('pics');
+    //Pic picOld = picsBox.get(photoId);
+    var picOld = await database.getPhotoByPhotoId(photoId.value);
 
     if (picOld != null) {
-      Pic createPic = Pic(
-        photoId: picEntity.id,
+      var createPic = Photo(
+        id: picEntity.id,
         createdAt: picOld.createdAt,
         originalLatitude: picOld.originalLatitude,
         originalLongitude: picOld.originalLongitude,
@@ -129,94 +167,111 @@ abstract class _PicStore with Store {
         specificLocation: picOld.specificLocation,
         generalLocation: picOld.generalLocation,
         tags: picOld.tags,
+        isPrivate: picOld.isPrivate,
+        deletedFromCameraRoll: picOld.deletedFromCameraRoll,
+        isStarred: picOld.isStarred,
       );
-      picsBox.put(picEntity.id, createPic);
-      picOld.delete();
+      //picsBox.put(picEntity.id, createPic);
+      await database.createPhoto(createPic);
+      //picOld.delete();
+      await database.deletePhoto(picOld);
     }
 
-    entity = picEntity;
-    setChangePhotoId(picEntity.id);
+    entity.value = picEntity;
+    await setChangePhotoId(picEntity.id);
     print('Changed asset entity');
   }
 
-  Future<Uint8List> get assetOriginBytes async {
-    if (isPrivate == false && entity != null) {
-      return await entity.originBytes;
+  Future<Uint8List?> get assetOriginBytes async {
+    if (isPrivate.value == false) {
+      return await entity.value?.originBytes;
     }
     print('Returning decrypt image in privatePath: $photoPath');
+    if (UserController.to.encryptionKey == null) {
+      return null;
+    }
     return await Crypto.decryptImage(
-        photoPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+        photoPath, UserController.to.encryptionKey!, hex.decode(nonce));
   }
 
-  Future<Uint8List> get assetThumbBytes async {
-    if (isPrivate == false && entity != null) {
-      return await entity.thumbDataWithSize(
-          kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]);
+  Future<Uint8List?> get assetThumbBytes async {
+    if (isPrivate.value == false) {
+      return await entity.value?.thumbnailDataWithSize(ThumbnailSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]));
     }
-    print('Returning decrypt image in privatePath: $thumbPath');
+    print('Returning decrypt image in privatePath: $photoPath');
+    if (UserController.to.encryptionKey == null) {
+      return null;
+    }
     return await Crypto.decryptImage(
-        thumbPath, appStore.encryptionKey, Nonce(hex.decode(nonce)));
+        thumbPath, UserController.to.encryptionKey!, hex.decode(nonce));
   }
 
   String photoPath;
   String thumbPath;
-  bool deletedFromCameraRoll;
+  bool deletedFromCameraRoll = false;
 
-  void setDeletedFromCameraRoll(bool value) {
+  Future<void> setDeletedFromCameraRoll(bool value) async {
     print('Setting deleted from camera roll as $value');
     deletedFromCameraRoll = value;
 
-    var picsBox = Hive.box('pics');
-    Pic pic = picsBox.get(photoId);
-    pic.deletedFromCameraRoll = value;
-    pic.save();
+    //var picsBox = Hive.box('pics');
+    //Pic pic = picsBox.get(photoId);
+    var pic = await database.getPhotoByPhotoId(photoId.value);
+    //pic.deletedFromCameraRoll = value;
+    //pic.save();
+
+    await database.updatePhoto(pic!.copyWith(deletedFromCameraRoll: value));
   }
 
-  @action
-  Future<void> setPrivatePath(
+  //@action
+  Future<bool?> setPrivatePath(
       String picPath, String thumbnailPath, String picNonce) async {
-    var secretBox = Hive.box('secrets');
-    Secret secret = Secret(
-      photoId: photoId,
-      photoPath: picPath,
+    //var secretBox = Hive.box('secrets');
+    var secret = Private(
+      id: photoId.value,
+      path: picPath,
       thumbPath: thumbnailPath,
       originalLatitude: originalLatitude,
       originalLongitude: originalLongitude,
       createDateTime: createdAt,
       nonce: picNonce,
     );
-    secretBox.put(photoId, secret);
+    //secretBox.put(photoId, secret);
+    await database.updatePrivate(secret);
     photoPath = picPath;
     thumbPath = thumbnailPath;
     nonce = picNonce;
 
-    if (appStore.shouldDeleteOnPrivate == true) {
+    if (UserController.to.shouldDeleteOnPrivate.value == true &&
+        entity.value != null) {
       print('**** Deleted original pic!!!');
       if (Platform.isAndroid) {
-        PhotoManager.editor.deleteWithIds([entity.id]);
+        await PhotoManager.editor.deleteWithIds([entity.value!.id]);
       } else {
-        final List<String> result =
-            await PhotoManager.editor.deleteWithIds([entity.id]);
+        final result =
+            await PhotoManager.editor.deleteWithIds([entity.value!.id]);
         if (result.isEmpty) {
           return false;
         }
       }
-      setDeletedFromCameraRoll(true);
-      entity = null;
-      return;
+      await setDeletedFromCameraRoll(true);
+      entity.value = null;
+      return null;
     }
-    setDeletedFromCameraRoll(false);
+    await setDeletedFromCameraRoll(false);
   }
 
-  @action
+  //@action
   Future<void> removePrivatePath() async {
     print('Removing pic from secrets box...');
 
-    var secretBox = Hive.box('secrets');
-    Secret secretPic = secretBox.get(photoId);
+    //var secretBox = Hive.box('secrets');
+    //Secret secretPic = secretBox.get(photoId);
+    var secretPic = await database.getPrivateByPhotoId(photoId.value);
 
     if (secretPic != null) {
-      secretPic.delete();
+      //secretPic.delete();
+      await database.deletePrivate(secretPic);
       print('Pic deleted from secrets box!!!');
       return;
     }
@@ -226,97 +281,93 @@ abstract class _PicStore with Store {
 
   Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
     print('Deleting $photoPath and $thumbPath');
-    Directory appDocumentsDir = await getApplicationDocumentsDirectory();
-
-    File photoFile = File(p.join(appDocumentsDir.path, photoPath));
-    File thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
       print('Pic has entity? ${entity == null ? false : true}');
-      Uint8List picData = await assetOriginBytes;
-      final AssetEntity imageEntity =
-          await PhotoManager.editor.saveImage(picData);
-      changeAssetEntity(imageEntity);
+      var picData = await assetOriginBytes;
+
+      /// TODO: returning is picData is null
+      if (null == picData) {
+        return;
+      }
+      final imageEntity = await PhotoManager.editor.saveImage(
+          picData,
+          title: '',
+      );
+
+      /// TODO: what to do if the imageEntity is null ??
+      /// doing temporary thing
+      if (null == imageEntity) {
+        return;
+      }
+      await changeAssetEntity(imageEntity);
       print('copied image back to gallery with id: ${imageEntity.id}');
     }
+    var appDocumentsDir = await getApplicationDocumentsDirectory();
 
-    photoFile.delete();
-    thumbFile.delete();
+    var photoFile = File(p.join(appDocumentsDir.path, photoPath));
+    var thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
+
+    await photoFile.delete();
+    await thumbFile.delete();
     print('Removed both files...');
   }
 
-  Future<void> loadExifData() async {
-    File originFile = await entity.originFile;
+/*   Future<void> loadExifData() async {
+    File originFile = await entity.value.originFile;
     var originBytes = originFile.readAsBytesSync();
 
     var mapResult = md.MetaData.extractXMP(originBytes, raw: true);
     print(mapResult['dc:subject']);
-  }
+  } */
 
-  @action
-  void loadPicInfo() {
+  //@action
+  Future<void> loadPicInfo() async {
     // loadExifData();
 
-    var picsBox = Hive.box('pics');
-    var secretBox = Hive.box('secrets');
+    //var picsBox = Hive.box('pics');
+    //var secretBox = Hive.box('secrets');
+    var pic = await database.getPhotoByPhotoId(photoId.value);
+    if (pic != null) {
+      print('pic $photoId exists, loading data....');
+      //Pic pic = picsBox.get(photoId);
 
-    if (picsBox.containsKey(photoId)) {
-      // print('pic $photoId exists, loading data....');
-      Pic pic = picsBox.get(photoId);
-
-      latitude = pic.latitude;
-      longitude = pic.longitude;
-      specificLocation = pic.specificLocation;
-      generalLocation = pic.generalLocation;
-      isPrivate = pic.isPrivate;
-      deletedFromCameraRoll = pic.deletedFromCameraRoll ?? false;
-      isStarred = pic.isStarred ?? false;
+      latitude.value = pic.latitude;
+      longitude.value = pic.longitude;
+      specificLocation.value = pic.specificLocation;
+      generalLocation.value = pic.generalLocation;
+      isPrivate.value = pic.isPrivate;
+      deletedFromCameraRoll = pic.deletedFromCameraRoll;
+      isStarred.value = pic.isStarred;
 
       print('Is private: $isPrivate');
-      if (isPrivate == true) {
-        Secret secretPic = secretBox.get(photoId);
+      if (isPrivate.value == true) {
+        var secretPic = await database.getPrivateByPhotoId(photoId.value);
 
         if (secretPic != null) {
-          photoPath = secretPic.photoPath;
-          thumbPath = secretPic.thumbPath;
+          photoPath = secretPic.path;
+          thumbPath = secretPic.thumbPath!;
           nonce = secretPic.nonce;
           print(
               'Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
         }
       }
 
-      for (String tagKey in pic.tags) {
-        TagsStore tagsStore = appStore.tags
-            .firstWhere((element) => element.id == tagKey, orElse: () => null);
-        if (tagsStore == null) {
+      for (var tagKey in pic.tags.keys) {
+        var tagModel = TagsController.to.allTags[tagKey];
+        if (tagModel == null) {
           print('&&&&##### DID NOT FIND TAG: ${tagKey}');
           continue;
         }
-        tags.add(tagsStore);
+        tags[tagKey] = tagModel;
       }
-    } else {
-      // print('pic $photoId doesnt exists in database');
     }
+    /* else {
+      print('pic $photoId doesnt exists in database');
+    } */
   }
 
-  @observable
-  double latitude;
-
-  @observable
-  double longitude;
-
-  @observable
-  String specificLocation;
-
-  @observable
-  String generalLocation;
-
-  String nonce;
-
-  @observable
-  bool isPrivate = false;
-
-  @action
+  //@action
   Future<void> setIsPrivate(bool value) async {
     if (value) {
       await addSecretTagToPic();
@@ -325,205 +376,178 @@ abstract class _PicStore with Store {
       await deleteEncryptedPic(copyToCameraRoll: true);
     }
 
-    isPrivate = value;
+    isPrivate.value = value;
     print('Pic isPrivate: $value');
     print('Pic Entity Exists: ${entity == null ? false : true}');
-    print(
-        'Photo Id: ${photoId} - Entity Id: ${entity != null ? entity.id : null}');
+    print('Photo Id: ${photoId} - Entity Id: ${entity.value?.id}');
 
-    var picsBox = Hive.box('pics');
-    Pic getPic = picsBox.get(photoId);
-    getPic.isPrivate = value;
-    picsBox.put(photoId, getPic);
+    //var picsBox = Hive.box('pics');
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
+    //getPic.isPrivate = value;
+    //picsBox.put(photoId, getPic);
+    if (getPic != null) {
+      await database.updatePhoto(getPic.copyWith(isPrivate: value));
+    }
   }
 
   Future<void> addSecretTagToPic() async {
-    var tagsBox = Hive.box('tags');
-    Tag getTag = tagsBox.get(kSecretTagKey);
-
-    if (getTag.photoId.contains(photoId)) {
-      print('this tag is already in this picture');
-      return;
-    }
-
-    getTag.photoId.add(photoId);
-    tagsBox.put(kSecretTagKey, getTag);
-
-    await addTagToPic(
-      tagKey: kSecretTagKey,
-      photoId: photoId,
+    await addMultipleTagsToPic(
+      acceptedTagKeys: {kSecretTagKey: ''},
     );
+    await tagsSuggestionsCalculate();
     print('Added secret tag to pic!');
   }
 
   Future<void> removeSecretTagFromPic() async {
-    await removeTagFromPic(tagKey: kSecretTagKey);
+    await removeMultipleTagFromPic(
+        acceptedTags: <String, String>{kSecretTagKey: ''});
+    await tagsSuggestionsCalculate();
     print('Added secret tag to pic!');
   }
 
-  @observable
-  String searchText = '';
-
-  @action
+  //@action
   void setSearchText(String value) {
-    searchText = value;
-    aiTags = false;
+    searchText.value = value;
+    setAiTags(false);
+    tagsSuggestionsCalculate();
   }
 
-  ObservableList<TagsStore> tags = ObservableList<TagsStore>();
+  Future<List<TagModel>> tagsSuggestionsCalculate() async {
+    //var tagsBox = Hive.box('tags');
+    var tagsBox = await database.getAllLabel();
+    var tagsBoxKeys = tagsBox.map((e) => e.key).toSet().toList();
+    tagsSuggestions.clear();
+    searchText.value = searchText.trim();
 
-  @computed
-  List<String> get tagsKeys {
-    print('####!!!! Tags Keys: $tags');
-    return tags.map((element) => element.id).toList();
-  }
+    if (searchText.value == '') {
+      var suggestions = <TagModel>[];
+      var suggestionTags = <String>[];
+      var tagsKeys = tags.keys.toList();
 
-  @computed
-  List<TagsStore> get tagsSuggestions {
-    var tagsBox = Hive.box('tags');
-    List<String> suggestionTags = [];
-
-    if (searchText == '') {
-      for (var recent in appStore.recentTags) {
-        if (tagsKeys.contains(recent)) {
+      for (var recent in UserController.to.recentTags) {
+        if (tagsKeys.contains(recent) ||
+            suggestionTags.contains(recent) ||
+            (PrivatePhotosController.to.showPrivate.value == false &&
+                recent == kSecretTagKey)) {
           continue;
         }
         suggestionTags.add(recent);
       }
 
-      print(
-          'Sugestion Length: ${suggestionTags.length} - Num of Suggestions: ${kMaxNumOfSuggestions}');
-
-//      while (suggestions.length < maxNumOfSuggestions) {
-//          if (excludeTags.contains('Hey}')) {
-//            continue;
-//          }
       if (suggestionTags.length < kMaxNumOfSuggestions) {
-        for (var tagKey in tagsBox.keys) {
-          if (suggestionTags.length == kMaxNumOfSuggestions) {
-            break;
-          }
+        for (var tagKey in tagsBoxKeys) {
           if (tagsKeys.contains(tagKey) ||
               suggestionTags.contains(tagKey) ||
-              tagKey == kSecretTagKey) {
+              (PrivatePhotosController.to.showPrivate.value == false &&
+                  tagKey == kSecretTagKey)) {
             continue;
           }
           suggestionTags.add(tagKey);
+          if (suggestionTags.length == kMaxNumOfSuggestions) {
+            break;
+          }
         }
       }
-//      }
+
+      for (var tagId in suggestionTags) {
+        if (TagsController.to.allTags[tagId] != null) {
+          suggestions.add(TagsController.to.allTags[tagId]!.value);
+        }
+      }
+
+      tagsSuggestions.value = suggestions;
     } else {
-      for (var tagKey in tagsBox.keys) {
-        if (tagKey == kSecretTagKey) continue;
+      var listOfLetters = searchText.toLowerCase().split('');
+      for (var tagKey in tagsBoxKeys) {
+        /// check whether it is a kSecretTagKey
+        if (tagKey == kSecretTagKey) {
+          ///
+          /// check whether the secret tag is to be shown or not
+          ///
+          if (PrivatePhotosController.to.showPrivate.value == false) {
+            /// If no then continue
+            continue;
+          }
 
-        String tagName = Helpers.decryptTag(tagKey);
-        if (tagName.startsWith(Helpers.stripTag(searchText))) {
-          suggestionTags.add(tagKey);
+          /// come here if the showPrivate is set to True.
+          tagsSuggestions.add(TagsController.to.allTags[tagKey]!.value);
+          continue;
         }
+        var tagName = Helpers.decryptTag(tagKey);
+        doCustomisedSearching(
+          tagName,
+          listOfLetters,
+          (matched) {
+            if (matched && TagsController.to.allTags[tagKey] != null) {
+              tagsSuggestions.add(TagsController.to.allTags[tagKey]!.value);
+            }
+          },
+        );
       }
     }
-    print('find suggestions: $searchText - exclude: $tagsKeys');
-    print(suggestionTags);
+    print('find suggestions: $searchText');
 
-    List<TagsStore> suggestions = [];
-    for (String tagId in suggestionTags) {
-      suggestions
-          .add(appStore.tags.firstWhere((element) => element.id == tagId));
-    }
-    return suggestions;
+    return <TagModel>[];
   }
 
-  @action
-  Future<void> addTag({String tagName}) async {
-    var tagsBox = Hive.box('tags');
-    print(tagsBox.keys);
+  //@action
+  /* Future<void> addTag({required String tagName}) async {
+    //var tagsBox = Hive.box('tags');
+    /* print(tagsBox.keys); */
 
-    String tagKey = Helpers.encryptTag(tagName);
+    var tagKey = Helpers.encryptTag(tagName);
     print('Adding tag: $tagName');
+    final getTag = await database.getLabelByLabelKey(tagKey);
 
-    if (tagsBox.containsKey(tagKey)) {
-      print('user already has this tag');
-
-      Tag getTag = tagsBox.get(tagKey);
-
-      if (getTag.photoId.contains(photoId)) {
-        print('this tag is already in this picture');
-        return;
-      }
-
-      getTag.photoId.add(photoId);
-      tagsBox.put(tagKey, getTag);
-      await addTagToPic(
-        tagKey: tagKey,
-        photoId: photoId,
+    if (getTag != null) {
+      TagsController.to.addTag(
+        TagModel(
+          key: tagKey,
+          title: tagName,
+          count: 1,
+          time: DateTime.now(),
+        ),
       );
 
-      appStore.addTagToRecent(tagKey: tagKey);
-      print('updated pictures in tag');
-      print('Tag photos ids: ${getTag.photoId}');
-      return;
+      await database.createLabel(Label(
+          key: tagKey,
+          title: tagName,
+          photoId: <String, String>{photoId.value: ''},
+          counter: 1,
+          lastUsedAt: DateTime.now()));
     }
 
-    Analytics.sendEvent(
+    print('adding tag to database...');
+
+    await addMultipleTagsToPic(acceptedTagKeys: <String, String>{tagKey: ''});
+    await UserController.to.addTagToRecent(tagKey: tagKey);
+    await Analytics.sendEvent(
       Event.created_tag,
       params: {'tagName': tagName},
     );
-    print('adding tag to database...');
-    TagsStore tagsStore = TagsStore(id: tagKey, name: tagName);
-    appStore.addTag(tagsStore);
+  }
+ */
 
-    tagsBox.put(tagKey, Tag(tagName, [photoId]));
-    await addTagToPic(
-      tagKey: tagKey,
-      photoId: photoId,
-    );
-    appStore.addTagToRecent(tagKey: tagKey);
+  /// Will remove the photoId from the labels Table
+  Future<String> _removePhotoIdFromLabel(
+      Map<String, String> selectedTags) async {
+    final list = <String>[];
+    selectedTags.forEach((tagKey, _) async {
+      final getTag = await database.getLabelByLabelKey(tagKey);
+
+      if (getTag != null) {
+        list.add(getTag.title);
+        getTag.photoId.remove(photoId.value);
+        await database.updateLabel(getTag);
+      }
+    });
+
+    return list.join(', ');
   }
 
-  @action
-  Future<void> addTagToPic(
-      {String tagKey,
-      String tagNameX,
-      String photoId,
-      List<AssetEntity> entities}) async {
-    var picsBox = Hive.box('pics');
-
-    if (picsBox.containsKey(photoId)) {
-      print('this picture is in db going to update');
-
-      Pic getPic = picsBox.get(photoId);
-
-      if (getPic.tags.contains(tagKey)) {
-        print('this tag is already in this picture');
-        return;
-      }
-
-      getPic.tags.add(tagKey);
-      print('photoId: ${getPic.photoId} - tags: ${getPic.tags}');
-      picsBox.put(photoId, getPic);
-      print('updated picture');
-
-      TagsStore tagsStore =
-          appStore.tags.firstWhere((element) => element.id == tagKey);
-
-      tags.add(tagsStore);
-
-      Analytics.sendEvent(
-        Event.added_tag,
-        params: {'tagName': tagsStore.name},
-      );
-      return;
-    }
-
-    print('this picture is not in db, adding it...');
-    print('Photo Id: $photoId');
-
-    TagsStore tagsStore =
-        appStore.tags.firstWhere((element) => element.id == tagKey);
-    tags.add(tagsStore);
-
-    Pic pic = Pic(
-      photoId: photoId,
+  Photo photoObject(Map<String, String> tagsMap, bool isPrivate) {
+    return Photo(
+      id: photoId.value,
       createdAt: createdAt,
       originalLatitude: originalLatitude,
       originalLongitude: originalLongitude,
@@ -531,47 +555,107 @@ abstract class _PicStore with Store {
       longitude: null,
       specificLocation: null,
       generalLocation: null,
-      tags: [tagKey],
-      isPrivate: tagKey == kSecretTagKey ? true : false,
-    );
-
-    await picsBox.put(photoId, pic);
-    print('@@@@@@@@ tagsKey: ${tagKey}');
-
-    // Increase today tagged pics everytime it adds a new pic to database.
-    appStore.increaseTodayTaggedPics();
-    Analytics.sendEvent(
-      Event.added_tag,
-      params: {'tagName': tagsStore.name},
+      tags: tagsMap,
+      isStarred: false,
+      deletedFromCameraRoll: false,
+      isPrivate: isPrivate,
     );
   }
 
-  Future<String> _writeByteToImageFile(Uint8List byteData) async {
-    Directory tempDir = await getTemporaryDirectory();
-    File imageFile = new File(
+  //@action
+  Future<void> removeMultipleTagsFromPicsForwadFromTagsController(
+      {required Map<String, String> acceptedTagKeys, String? name}) async {
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
+
+    if (getPic == null) {
+      return;
+    }
+
+    if (acceptedTagKeys.isEmpty) {
+      print('this tag is already in this picture');
+      return;
+    }
+
+    getPic.tags.removeWhere((tagKey, _) => acceptedTagKeys[tagKey] != null);
+    print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+    await database.updatePhoto(getPic);
+
+    if (name != null) {
+      await Analytics.sendEvent(
+        Event.removed_tag,
+        params: {'tagName': name},
+      );
+    }
+  }
+
+  //@action
+  Future<void> addMultipleTagsToPic(
+      {required Map<String, String> acceptedTagKeys, String? name}) async {
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
+
+    if (getPic != null) {
+      print('this picture is in db going to update');
+
+      if (acceptedTagKeys.isEmpty) {
+        print('this tag is already in this picture');
+        return;
+      }
+
+      getPic.tags.addAll(acceptedTagKeys);
+      print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+      await database.updatePhoto(getPic);
+
+      if (name != null) {
+        await Analytics.sendEvent(
+          Event.added_tag,
+          params: {'tagName': name},
+        );
+      }
+      return;
+    }
+
+    print('this picture is not in db, adding it...');
+    print('Photo Id: $photoId');
+
+    var pic =
+        photoObject(acceptedTagKeys, acceptedTagKeys[kSecretTagKey] != null);
+
+    await database.createPhoto(pic);
+
+    if (name != null) {
+      await Analytics.sendEvent(
+        Event.added_tag,
+        params: {'tagName': name},
+      );
+    }
+  }
+
+  Future<String?> _writeByteToImageFile(Uint8List? byteData) async {
+    if (byteData == null) {
+      return null;
+    }
+    var tempDir = await getTemporaryDirectory();
+    var imageFile = File(
         '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
     return imageFile.path;
   }
 
-  @action
+  //@action
   Future<void> sharePic() async {
-    String path = '';
+    String? path;
 
     if (Platform.isAndroid) {
-      path = await _writeByteToImageFile(
-          entity == null ? await assetOriginBytes : await entity.originBytes);
+      path = await _writeByteToImageFile(entity.value == null
+          ? await assetOriginBytes
+          : await entity.value!.originBytes);
     } else {
-      if (entity == null) {
+      if (entity.value == null) {
         var bytes = await assetOriginBytes;
         path = await _writeByteToImageFile(bytes);
       } else {
-        var bytes = await entity.thumbDataWithSize(
-          entity.size.width.toInt(),
-          entity.size.height.toInt(),
-          format: ThumbFormat.jpeg,
-        );
+        var bytes = await entity.value!.thumbnailDataWithSize(ThumbnailSize(entity.value!.size.width.toInt(), entity.value!.size.height.toInt()));
         path = await _writeByteToImageFile(bytes);
       }
     }
@@ -580,153 +664,156 @@ abstract class _PicStore with Store {
       return;
     }
 
-    Analytics.sendEvent(Event.shared_photo);
-    ShareExtend.share(path, "image");
+    await Analytics.sendEvent(Event.shared_photo);
+    await ShareExtend.share(path, 'image');
   }
 
-  @action
+  //@action
   Future<bool> deletePic() async {
-    print('Before photo manager delete: ${entity.id}');
+    print('Before photo manager delete: ${entity.value?.id}');
 
+    /// TODO: Is this I am doing, This I will check once again
+    if (entity.value == null) {
+      return false;
+    }
     if (Platform.isAndroid) {
-      PhotoManager.editor.deleteWithIds([entity.id]);
+      await PhotoManager.editor.deleteWithIds([entity.value!.id]);
     } else {
-      final List<String> result =
-          await PhotoManager.editor.deleteWithIds([entity.id]);
+      final result =
+          await PhotoManager.editor.deleteWithIds([entity.value!.id]);
       if (result.isEmpty) {
         return false;
       }
     }
 
-    var picsBox = Hive.box('pics');
-    Pic pic = picsBox.get(photoId);
+    //var picsBox = Hive.box('pics');
+    //Pic pic = picsBox.get(photoId);
+    var pic = await database.getPhotoByPhotoId(photoId.value);
 
     if (pic != null) {
       print('pic is in db... removing it from db!');
-      List<String> picTags = List.of(pic.tags);
-      for (String tagKey in picTags) {
-        removeTagFromPic(tagKey: tagKey);
+      var picTags = List<String>.from(pic.tags.keys);
+      for (var tagKey in picTags) {
+        await removeMultipleTagFromPic(
+          acceptedTags: <String, String>{tagKey: ''},
+        );
 
         if (tagKey == kSecretTagKey) {
-          deleteEncryptedPic();
+          await deleteEncryptedPic();
         }
       }
-      picsBox.delete(photoId);
+      //picsBox.delete(photoId);
+      await database.deletePhotoByPhotoId(photoId.value);
       print('removed ${photoId} from database');
     }
 
     return true;
   }
 
-  @action
-  void removeTagFromPic({String tagKey}) {
-    print('removing tag: $tagKey from pic $photoId');
-    var tagsBox = Hive.box('tags');
-    var picsBox = Hive.box('pics');
+  //@action
+  Future<void> removeMultipleTagFromPic(
+      {required Map<String, String> acceptedTags}) async {
+    var title = await _removePhotoIdFromLabel(acceptedTags);
 
-    Tag getTag = tagsBox.get(tagKey);
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
 
-    print('Tag photos ids: ${getTag.photoId}');
-    int indexOfPicInTag = getTag.photoId.indexOf(photoId);
-    print('Tag index to remove: $indexOfPicInTag');
-    if (indexOfPicInTag != null) {
-      getTag.photoId.removeAt(indexOfPicInTag);
-      tagsBox.put(tagKey, getTag);
-      print('removed pic from tag');
+    if (getPic != null) {
+      getPic.tags.removeWhere((key, _) => acceptedTags[key] != null);
+      await database.updatePhoto(getPic);
+      tags.removeWhere((key, _) => acceptedTags[key] != null);
+
+      if (acceptedTags[kSecretTagKey] != null) {
+        await removePrivatePath();
+      }
     }
 
-    Pic getPic = picsBox.get(photoId);
-    int indexOfTagInPic = getPic.tags.indexOf(tagKey);
+    await tagsSuggestionsCalculate();
 
-    if (indexOfTagInPic != null) {
-      getPic.tags.removeAt(indexOfTagInPic);
-      picsBox.put(photoId, getPic);
-      print('removed tag from pic');
-      tags.removeWhere((element) => element.id == tagKey);
-    }
-
-    if (tagKey == kSecretTagKey) {
-      removePrivatePath();
-    }
-
-    Analytics.sendEvent(
+    await Analytics.sendEvent(
       Event.removed_tag,
-      params: {'tagName': getTag.name},
+      params: {'tagName': title},
     );
   }
 
-  @action
-  void saveLocation(
-      {double lat, double long, String specific, String general}) {
-    var picsBox = Hive.box('pics');
+  //@action
+  Future<void> saveLocation(
+      {required double lat,
+      required double long,
+      String? specific,
+      String? general}) async {
+    //var picsBox = Hive.box('pics');
 
-    Pic getPic = picsBox.get(photoId);
+    //Pic getPic = picsBox.get(photoId);
+    var getPic = await database.getPhotoByPhotoId(photoId.value);
+
     if (getPic != null) {
       print('found pic');
 
-      getPic.latitude = lat;
-      getPic.longitude = long;
-      getPic.specificLocation = specific;
-      getPic.generalLocation = general;
-      getPic.save();
+      //getPic.latitude = lat;
+      //getPic.longitude = long;
+      //getPic.specificLocation = specific;
+      //getPic.generalLocation = general;
+      //getPic.save();
+      await database.updatePhoto(getPic.copyWith(
+        latitude: drift.Value(lat),
+        longitude: drift.Value(long),
+        specificLocation: drift.Value(specific),
+        generalLocation: drift.Value(general),
+      ));
       print('updated pic with new values');
     } else {
       print('Did not found pic!');
-      Pic createPic = Pic(
-        photoId: photoId,
+      var createPic = Photo(
+        id: photoId.value,
         createdAt: createdAt,
         originalLatitude: originalLatitude,
         originalLongitude: originalLongitude,
-        latitude: latitude,
-        longitude: longitude,
-        specificLocation: specificLocation,
-        generalLocation: generalLocation,
-        tags: [],
+        latitude: latitude.value,
+        longitude: longitude.value,
+        specificLocation: specificLocation.value,
+        generalLocation: generalLocation.value,
+        tags: <String, String>{},
+        isStarred: false,
+        isPrivate: false,
+        deletedFromCameraRoll: false,
       );
-      picsBox.put(photoId, createPic);
+      //picsBox.put(photoId, createPic);
+      await database.createPhoto(createPic);
       print('Saved pic to database!');
     }
 
-    latitude = lat;
-    longitude = long;
-    specificLocation = specific;
-    generalLocation = general;
+    latitude.value = lat;
+    longitude.value = long;
+    specificLocation.value = specific;
+    generalLocation.value = general;
   }
 
-  @observable
-  bool aiTags = false;
+  //@action
+  void setAiTags(bool value) => aiTags.value = value;
 
-  @action
-  void setAiTags(bool value) => aiTags = value;
+  //@action
+  void switchAiTags() {
+    aiTags.value = !aiTags.value;
 
-  @action
-  void switchAiTags(BuildContext context) {
-    aiTags = !aiTags;
-
-    if (aiTags == true) {
-      getAiSuggestions(context);
+    if (aiTags.value == true) {
+      //getAiSuggestions(context);
     }
   }
 
-  List<TagsStore> aiSuggestions = [];
-
-  @observable
-  bool aiTagsLoaded = false;
-
-  @action
-  void setAiTagsLoaded(bool value) => aiTagsLoaded = value;
+  //@action
+  void setAiTagsLoaded(bool value) => aiTagsLoaded.value = value;
 
   Future<List<String>> translateTags(
       List<String> tagsText, BuildContext context) async {
-    if (appStore.appLanguage.split('_')[0] == 'pt' ||
-        appStore.appLanguage.split('_')[0] == 'es' ||
-        appStore.appLanguage.split('_')[0] == 'de' ||
-        appStore.appLanguage.split('_')[0] == 'ja') {
+    var lang = UserController.to.appLanguage.split('_')[0];
+    if (lang == 'pt' || lang == 'es' || lang == 'de' || lang == 'ja') {
       print('Offline translating it...');
-      return tagsText.map((e) => Labels.labelTranslation(e, context)).toList();
+      return tagsText
+          .map((e) => PredefinedLabels.labelTranslation(e, context))
+          .toList();
     }
 
-    final _credentials = new ServiceAccountCredentials.fromJson(r'''
+    final _credentials = ServiceAccountCredentials.fromJson(r'''
 {
   "type": "service_account",
   "project_id": "picpics",
@@ -741,8 +828,8 @@ abstract class _PicStore with Store {
 }
 ''');
 
-    const _SCOPES = const [TranslateApi.CloudTranslationScope];
-    List<String> translatedStrings;
+    final _SCOPES = [TranslateApi.cloudTranslationScope];
+    var translatedStrings = <String>[];
 
     await clientViaServiceAccount(_credentials, _SCOPES)
         .then((http_client) async {
@@ -751,14 +838,20 @@ abstract class _PicStore with Store {
       request.contents = tagsText;
       request.mimeType = 'text/plain';
       request.sourceLanguageCode = 'en-US';
-      request.targetLanguageCode = appStore.appLanguage.replaceAll('_', '-');
+      request.targetLanguageCode =
+          UserController.to.appLanguage.replaceAll('_', '-');
       request.model = 'projects/picpics/locations/global/models/general/nmt';
 
       var response =
           await translate.projects.translateText(request, 'projects/picpics');
       var translations = response.translations;
-      translatedStrings =
-          translations.map((e) => capitalize(e.translatedText)).toList();
+      if (translations != null) {
+        translations.forEach((element) {
+          if (element.translatedText != null) {
+            translatedStrings.add(Strings.properCase(element.translatedText!));
+          }
+        });
+      }
     });
 
     return translatedStrings;
@@ -811,7 +904,7 @@ abstract class _PicStore with Store {
   //   double minValue = buffer.reduce(min);
   //   double maxValue = buffer.reduce(max);
   //
-  //   print('Min: $minValue - Max: $maxValue - Mean: $mean');
+  /* print('Min: $minValue - Max: $maxValue - Mean: $mean'); */
   //
   //   return convertedBytes.buffer.asFloat32List();
   // }
@@ -842,8 +935,8 @@ abstract class _PicStore with Store {
 //     return img.decodeJpg(imageBytes.asUint8List());
 //   }
 
-  @action
-  Future<void> getAiSuggestions(BuildContext context) async {
+  //@action
+  /* Future<void> getAiSuggestions(BuildContext context) async {
     if (aiTagsLoaded == true) {
       return;
     }
@@ -858,20 +951,20 @@ abstract class _PicStore with Store {
     // var imageBytes = (await entity.file).readAsBytesSync().buffer;
     // var resizedImage = resizeImage(imageBytes, inputSize);
     // var input = imageToByteListFloat32(resizedImage, inputSize, 127.5, 255).reshape([1, 224, 224, 3]);
-    // print('Input: $input');
+    /* print('Input: $input'); */
     //
-    // // print(input.)
+    // print(input.)
     //
     // final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
     // var output = List(1 * 1000).reshape([1, 1000]);
     //
     // interpreter.run(input, output);
-    // print(output);
+    /* print(output); */
     // interpreter.close();
-    // print('doSomething() executed in ${stopwatch.elapsed}');
+    /* print('doSomething() executed in ${stopwatch.elapsed}'); */
 
     final FirebaseVisionImage visionImage =
-        FirebaseVisionImage.fromFile(await entity.file);
+        FirebaseVisionImage.fromFile(await entity.value.file);
     final ImageLabeler labeler = FirebaseVision.instance.imageLabeler();
     final List<ImageLabel> labels = await labeler.processImage(visionImage);
 
@@ -884,23 +977,22 @@ abstract class _PicStore with Store {
       tags.add(labelText);
     }
 
-    List<String> translatedTags = appStore.appLanguage.split('_')[0] != 'en'
+    List<String> translatedTags = UserController.to.appLanguage.split('_')[0] != 'en'
         ? await translateTags(tags, context)
         : tags;
 
     for (String translated in translatedTags) {
       String tagKey = Helpers.encryptTag(translated);
-      TagsStore tagStore = appStore.tags
-          .firstWhere((element) => element.id == tagKey, orElse: () => null);
+      tagModel tagStore = UserController.to.tags[tagKey];
       if (tagStore == null) {
-        tagStore = TagsStore(
+        tagStore = tagModel(
           id: tagKey,
           name: translated,
         );
       }
       aiSuggestions.add(tagStore);
     }
-    aiTagsLoaded = true;
+    aiTagsLoaded.value = true;
     labeler.close();
-  }
+  } */
 }

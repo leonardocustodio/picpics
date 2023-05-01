@@ -10,28 +10,43 @@ import 'intl/messages_all.dart';
 
 // ignore_for_file: non_constant_identifier_names, lines_longer_than_80_chars
 // ignore_for_file: join_return_with_assignment, prefer_final_in_for_each
-// ignore_for_file: avoid_redundant_argument_values
+// ignore_for_file: avoid_redundant_argument_values, avoid_escaping_inner_quotes
 
 class S {
   S();
-  
-  static S current;
-  
-  static const AppLocalizationDelegate delegate =
-    AppLocalizationDelegate();
+
+  static S? _current;
+
+  static S get current {
+    assert(_current != null,
+        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    return _current!;
+  }
+
+  static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false) ? locale.languageCode : locale.toString();
-    final localeName = Intl.canonicalizedLocale(name); 
+    final name = (locale.countryCode?.isEmpty ?? false)
+        ? locale.languageCode
+        : locale.toString();
+    final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
-      S.current = S();
-      
-      return S.current;
+      final instance = S();
+      S._current = instance;
+
+      return instance;
     });
-  } 
+  }
 
   static S of(BuildContext context) {
+    final instance = S.maybeOf(context);
+    assert(instance != null,
+        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    return instance!;
+  }
+
+  static S? maybeOf(BuildContext context) {
     return Localizations.of<S>(context, S);
   }
 
@@ -458,46 +473,6 @@ class S {
     );
   }
 
-  /// `You are premium!`
-  String get you_are_premium {
-    return Intl.message(
-      'You are premium!',
-      name: 'you_are_premium',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Get premium now!`
-  String get get_premium_now {
-    return Intl.message(
-      'Get premium now!',
-      name: 'get_premium_now',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `GET PREMIUM`
-  String get get_premium_title {
-    return Intl.message(
-      'GET PREMIUM',
-      name: 'get_premium_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `TO HAVE ALL THESE FEATURES`
-  String get get_premium_description {
-    return Intl.message(
-      'TO HAVE ALL THESE FEATURES',
-      name: 'get_premium_description',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `No Ads`
   String get no_ads {
     return Intl.message(
@@ -663,46 +638,6 @@ class S {
     return Intl.message(
       'Export Library',
       name: 'export_library',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `You completed your {number} free daily pics, do you want to continue?`
-  String premium_modal_description(Object number) {
-    return Intl.message(
-      'You completed your $number free daily pics, do you want to continue?',
-      name: 'premium_modal_description',
-      desc: '',
-      args: [number],
-    );
-  }
-
-  /// `Watch video ad to continue`
-  String get premium_modal_watch_ad {
-    return Intl.message(
-      'Watch video ad to continue',
-      name: 'premium_modal_watch_ad',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Get Premium Account`
-  String get premium_modal_get_premium_title {
-    return Intl.message(
-      'Get Premium Account',
-      name: 'premium_modal_get_premium_title',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `ALL FEATURES WITHOUT ADS`
-  String get premium_modal_get_premium_description {
-    return Intl.message(
-      'ALL FEATURES WITHOUT ADS',
-      name: 'premium_modal_get_premium_description',
       desc: '',
       args: [],
     );
@@ -1189,10 +1124,10 @@ class S {
   }
 
   /// `There are no more photos to organize.`
-  String get all_photos_were_tagged {
+  String get no_photos_were_tagged {
     return Intl.message(
       'There are no more photos to organize.',
-      name: 'all_photos_were_tagged',
+      name: 'no_photos_were_tagged',
       desc: '',
       args: [],
     );
@@ -5647,6 +5582,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Finishing...`
+  String get finishing {
+    return Intl.message(
+      'Finishing...',
+      name: 'finishing',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All Tags`
+  String get allTags {
+    return Intl.message(
+      'All Tags',
+      name: 'allTags',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
@@ -5682,11 +5637,9 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   bool shouldReload(AppLocalizationDelegate old) => false;
 
   bool _isSupported(Locale locale) {
-    if (locale != null) {
-      for (var supportedLocale in supportedLocales) {
-        if (supportedLocale.languageCode == locale.languageCode) {
-          return true;
-        }
+    for (var supportedLocale in supportedLocales) {
+      if (supportedLocale.languageCode == locale.languageCode) {
+        return true;
       }
     }
     return false;

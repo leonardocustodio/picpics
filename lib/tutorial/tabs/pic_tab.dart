@@ -1,17 +1,14 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
-import 'package:provider/provider.dart';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
-import 'package:flare_flutter/flare_actor.dart';
 
 class TutsPicTab extends StatefulWidget {
   static const id = 'tuts_pic_tab';
@@ -20,8 +17,8 @@ class TutsPicTab extends StatefulWidget {
   final Function showEditTagModal;
 
   TutsPicTab({
-    @required this.showEditTagModal,
-    @required this.showDeleteSecretModal,
+    required this.showEditTagModal,
+    required this.showDeleteSecretModal,
   });
 
   @override
@@ -29,7 +26,7 @@ class TutsPicTab extends StatefulWidget {
 }
 
 class _TutsPicTabState extends State<TutsPicTab> {
-  AppStore appStore;
+  UserController appStore;
   GalleryStore galleryStore;
   CarouselController carouselController = CarouselController();
   ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
@@ -53,7 +50,7 @@ class _TutsPicTabState extends State<TutsPicTab> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = Provider.of<UserController>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
     disposer = reaction((_) => galleryStore.trashedPic, (trashedPic) {
@@ -69,9 +66,10 @@ class _TutsPicTabState extends State<TutsPicTab> {
     return Container(
       padding: const EdgeInsets.only(bottom: 0.0),
       constraints: BoxConstraints.expand(),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.1), BlendMode.dstATop),
           image: AssetImage('lib/images/background.png'),
           fit: BoxFit.cover,
         ),
@@ -88,7 +86,7 @@ class _TutsPicTabState extends State<TutsPicTab> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     onPressed: () {
-                      Navigator.pushNamed(context, SettingsScreen.id);
+                      Get.to(() =>  SettingsScreen());
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),
@@ -100,20 +98,21 @@ class _TutsPicTabState extends State<TutsPicTab> {
                 return Expanded(
                   child: Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(kSecondaryColor),
                     ),
                   ),
                 );
               } else if (!galleryStore.deviceHasPics) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).device_has_no_pics,
+                    message: LangControl.to.S.value.device_has_no_pics,
                   ),
                 );
               } else if (galleryStore.swipePics.isEmpty) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).all_photos_were_tagged,
+                    message: LangControl.to.S.value.no_photos_were_tagged,
                   ),
                 );
               }
@@ -147,12 +146,12 @@ class _TutsPicTabState extends State<TutsPicTab> {
                           },
                           onScrolled: (double) {
 //                              if (galleryStore.swipeIndex <= galleryStore.swipeCutOff && galleryStore.swipeIndex != 0) {
-//                                print('changing scroll physics');
+                            print('changing scroll physics');
 //                                setState(() {
 //                                  scrollPhysics = NeverScrollableScrollPhysics();
 //                                });
 //                              }
-//                              print('scrolled $double');
+                            print('scrolled $double');
                           },
                         ),
                       );
@@ -167,3 +166,4 @@ class _TutsPicTabState extends State<TutsPicTab> {
     );
   }
 }
+ */

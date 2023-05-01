@@ -1,4 +1,4 @@
-import 'dart:math' as math;
+/* import 'dart:math' as math;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
@@ -6,71 +6,83 @@ import 'package:flutter/material.dart';
 const double _kBottomMargin = 8.0;
 enum CustomBubbleBottomBarFabLocation { end, center }
 
+// ignore: must_be_immutable
 class CustomBubbleBottomBar extends StatefulWidget {
   CustomBubbleBottomBar(
-      {Key key,
-      @required this.items,
+      {Key? key,
+      required this.items,
       this.onTap,
       this.currentIndex = 0,
-      @required this.opacity,
+      required this.opacity,
       this.iconSize = 24.0,
       this.borderRadius,
       this.elevation,
       this.backgroundColor,
       this.hasNotch = false,
       this.hasInk = false,
-      this.inkColor,
-      this.fabLocation})
-      : assert(items != null),
+      required this.inkColor,
+      required this.fabLocation})
+      : //assert(items != null),
         assert(items.length >= 2),
         assert(0 <= currentIndex && currentIndex < items.length),
-        assert(iconSize != null),
+        //assert(iconSize != null),
         super(key: key);
 
   final List<CustomBubbleBottomBarItem> items;
-  final ValueChanged<int> onTap;
+  final ValueChanged<int>? onTap;
   int currentIndex;
   final double iconSize;
   final double opacity;
-  final BorderRadius borderRadius;
-  final double elevation;
-  final Color backgroundColor;
+  final BorderRadius? borderRadius;
+  final double? elevation;
+  final Color? backgroundColor;
   final bool hasNotch;
   final bool hasInk;
   final CustomBubbleBottomBarFabLocation fabLocation;
   final Color inkColor;
 
   @override
-  _CustomBottomNavigationBarState createState() => _CustomBottomNavigationBarState();
+  _CustomBottomNavigationBarState createState() =>
+      _CustomBottomNavigationBarState();
 }
 
 class _CustomBottomNavigationTile extends StatelessWidget {
-  const _CustomBottomNavigationTile(this.item, this.opacity, this.animation, this.iconSize,
-      {this.onTap, this.colorTween, this.flex, this.selected = false, this.indexLabel, this.ink = false, this.inkColor})
-      : assert(selected != null);
-
   final CustomBubbleBottomBarItem item;
   final Animation<double> animation;
   final double iconSize;
   final VoidCallback onTap;
-  final ColorTween colorTween;
+  final ColorTween? colorTween;
   final double flex;
   final bool selected;
   final String indexLabel;
   final double opacity;
   final bool ink;
-  final Color inkColor;
+  final Color? inkColor;
+
+  const _CustomBottomNavigationTile(
+    this.item,
+    this.opacity,
+    this.animation,
+    this.iconSize, {
+    required this.onTap,
+    this.colorTween,
+    required this.flex,
+    this.selected = false,
+    required this.indexLabel,
+    this.ink = false,
+    this.inkColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    int size;
+    /* int size;
     Widget label;
     size = (flex * 1000.0).round();
     label = _Label(
       animation: animation,
       item: item,
       color: item.backgroundColor,
-    );
+    ); */
 
     return Expanded(
       flex: 1,
@@ -87,12 +99,16 @@ class _CustomBottomNavigationTile extends StatelessWidget {
               ),
               containedInkWell: true,
               onTap: onTap,
-              splashColor: ink ? inkColor != null ? inkColor : Theme.of(context).splashColor : Colors.transparent,
+              splashColor: ink
+                  ? inkColor ?? Theme.of(context).splashColor
+                  : Colors.transparent,
               highlightColor: Colors.transparent,
               child: Container(
                 height: 48.0,
                 decoration: BoxDecoration(
-                    color: selected ? item.backgroundColor.withOpacity(opacity) : Colors.transparent,
+                    color: selected
+                        ? item.backgroundColor.withOpacity(opacity)
+                        : Colors.transparent,
                     borderRadius: BorderRadius.horizontal(
                       right: Radius.circular(50),
                       left: Radius.circular(50),
@@ -124,20 +140,20 @@ class _CustomBottomNavigationTile extends StatelessWidget {
 }
 
 class _TileIcon extends StatelessWidget {
-  const _TileIcon({
-    Key key,
-    @required this.colorTween,
-    @required this.animation,
-    @required this.iconSize,
-    @required this.selected,
-    @required this.item,
-  }) : super(key: key);
-
-  final ColorTween colorTween;
+  final ColorTween? colorTween;
   final Animation<double> animation;
   final double iconSize;
   final bool selected;
   final CustomBubbleBottomBarItem item;
+
+  const _TileIcon({
+    Key? key,
+    this.colorTween,
+    required this.animation,
+    required this.iconSize,
+    required this.selected,
+    required this.item,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -159,17 +175,16 @@ class _TileIcon extends StatelessWidget {
   }
 }
 
-class _Label extends StatelessWidget {
-  _Label({
-    Key key,
-    @required this.animation,
-    @required this.item,
-    @required this.color,
-  }) : super(key: key);
-
+/* class _Label extends StatelessWidget {
   final Animation<double> animation;
   final CustomBubbleBottomBarItem item;
   final Color color;
+  _Label({
+    Key? key,
+    required this.animation,
+    required this.item,
+    required this.color,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -185,35 +200,46 @@ class _Label extends StatelessWidget {
     );
   }
 }
+ */
 
-class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with TickerProviderStateMixin {
-  List<AnimationController> _controllers = <AnimationController>[];
-  List<CurvedAnimation> _animations;
-  Color _backgroundColor;
-  ValueListenable<ScaffoldGeometry> geometryListenable;
+class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar>
+    with TickerProviderStateMixin {
+  /// list
+  var _controllers = <AnimationController>[];
+  var _animations = <CurvedAnimation>[];
+  Color? _backgroundColor;
   bool fabExists = false;
-  CustomBubbleBottomBar holder;
-  Animatable<double> _flexTween;
+
+  /// late
+  late ValueListenable<ScaffoldGeometry> geometryListenable;
+  late Animatable<double> _flexTween;
+  //CustomBubbleBottomBar holder;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     geometryListenable = Scaffold.geometryOf(context);
-    _flexTween = widget.hasNotch ? Tween<double>(begin: 1.15, end: 2.0) : Tween<double>(begin: 1.15, end: 1.75);
+    _flexTween = widget.hasNotch
+        ? Tween<double>(begin: 1.15, end: 2.0)
+        : Tween<double>(begin: 1.15, end: 1.75);
   }
 
 //  Animatable<double> _flexTween = widget.hasNotch ? Tween<double>(begin: 1.15, end: 2.0) : Tween<double>(begin: 1.15, end: 1.75);
 
   void _resetState() {
-    for (AnimationController controller in _controllers) controller.dispose();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
 
-    _controllers = List<AnimationController>.generate(widget.items.length, (int index) {
+    _controllers =
+        List<AnimationController>.generate(widget.items.length, (int index) {
       return AnimationController(
         duration: Duration(milliseconds: 200),
         vsync: this,
       )..addListener(_rebuild);
     });
-    _animations = List<CurvedAnimation>.generate(widget.items.length, (int index) {
+    _animations =
+        List<CurvedAnimation>.generate(widget.items.length, (int index) {
       return CurvedAnimation(
         parent: _controllers[index],
         curve: Curves.fastOutSlowIn,
@@ -236,11 +262,14 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with 
 
   @override
   void dispose() {
-    for (AnimationController controller in _controllers) controller.dispose();
+    for (var controller in _controllers) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
-  double _evaluateFlex(Animation<double> animation) => _flexTween.evaluate(animation);
+  double _evaluateFlex(Animation<double> animation) =>
+      _flexTween.evaluate(animation);
 
   @override
   void didUpdateWidget(CustomBubbleBottomBar oldWidget) {
@@ -256,8 +285,8 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with 
       _controllers[widget.currentIndex].forward();
 
       if (widget.fabLocation == CustomBubbleBottomBarFabLocation.center) {
-        CustomBubbleBottomBarItem _currentItem = widget.items[oldWidget.currentIndex];
-        CustomBubbleBottomBarItem _nextItem = widget.items[widget.currentIndex];
+        var _currentItem = widget.items[oldWidget.currentIndex];
+        var _nextItem = widget.items[widget.currentIndex];
 
         widget.items[0] = _nextItem;
         widget.items[widget.currentIndex] = _currentItem;
@@ -267,16 +296,18 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with 
         _resetState();
       }
     } else {
-      if (_backgroundColor != widget.items[widget.currentIndex].backgroundColor)
+      if (_backgroundColor !=
+          widget.items[widget.currentIndex].backgroundColor) {
         _backgroundColor = widget.items[widget.currentIndex].backgroundColor;
+      }
     }
   }
 
   List<Widget> _createTiles() {
-    final MaterialLocalizations localizations = MaterialLocalizations.of(context);
-    assert(localizations != null);
-    final List<Widget> children = <Widget>[];
-    for (int i = 0; i < widget.items.length; i += 1) {
+    final localizations = MaterialLocalizations.of(context);
+
+    final children = <Widget>[];
+    for (var i = 0; i < widget.items.length; i += 1) {
       children.add(
         _CustomBottomNavigationTile(
           widget.items[i],
@@ -284,11 +315,12 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with 
           _animations[i],
           widget.iconSize,
           onTap: () {
-            if (widget.onTap != null) widget.onTap(i);
+            /* if (widget.onTap != null) */ widget.onTap?.call(i);
           },
           flex: _evaluateFlex(_animations[i]),
           selected: i == widget.currentIndex,
-          indexLabel: localizations.tabLabel(tabIndex: i + 1, tabCount: widget.items.length),
+          indexLabel: localizations.tabLabel(
+              tabIndex: i + 1, tabCount: widget.items.length),
           ink: widget.hasInk,
           inkColor: widget.inkColor,
         ),
@@ -313,12 +345,17 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with 
         horizontal: 10,
       ),
       child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: kBottomNavigationBarHeight + additionalBottomPadding),
+        constraints: BoxConstraints(
+            minHeight: kBottomNavigationBarHeight + additionalBottomPadding),
         child: Material(
           type: MaterialType.transparency,
           child: Padding(
             padding: EdgeInsets.only(
-                bottom: additionalBottomPadding, right: widget.fabLocation == CustomBubbleBottomBarFabLocation.end ? 72 : 0),
+                bottom: additionalBottomPadding,
+                right:
+                    widget.fabLocation == CustomBubbleBottomBarFabLocation.end
+                        ? 72
+                        : 0),
             child: MediaQuery.removePadding(
               context: context,
               removeBottom: true,
@@ -334,13 +371,14 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with 
   Widget build(BuildContext context) {
     assert(debugCheckHasDirectionality(context));
     assert(debugCheckHasMaterialLocalizations(context));
-    final double additionalBottomPadding = math.max(MediaQuery.of(context).padding.bottom - _kBottomMargin, 0.0);
+    final additionalBottomPadding =
+        math.max(MediaQuery.of(context).padding.bottom - _kBottomMargin, 0.0);
     return Semantics(
         explicitChildNodes: true,
         child: widget.hasNotch
             ? PhysicalShape(
-                elevation: widget.elevation != null ? widget.elevation : 8.0,
-                color: widget.backgroundColor != null ? widget.backgroundColor : Colors.white,
+                elevation: widget.elevation ?? 8.0,
+                color: widget.backgroundColor ?? Colors.white,
                 clipper: _CustomBubbleBottomBarClipper(
                   shape: CircularNotchedRectangle(),
                   geometry: geometryListenable,
@@ -349,22 +387,21 @@ class _CustomBottomNavigationBarState extends State<CustomBubbleBottomBar> with 
                 child: _inner(additionalBottomPadding),
               )
             : Material(
-                elevation: widget.elevation != null ? widget.elevation : 8.0,
-                color: widget.backgroundColor != null ? widget.backgroundColor : Colors.white,
+                elevation: widget.elevation ?? 8.0,
+                color: widget.backgroundColor ?? Colors.white,
+                borderRadius: widget.borderRadius ?? BorderRadius.zero,
                 child: _inner(additionalBottomPadding),
-                borderRadius: widget.borderRadius != null ? widget.borderRadius : BorderRadius.zero,
               ));
   }
 }
 
 class CustomBubbleBottomBarItem {
   const CustomBubbleBottomBarItem({
-    @required this.icon,
+    required this.icon,
 //    this.title,
-    Widget activeIcon,
-    this.backgroundColor,
-  })  : activeIcon = activeIcon ?? icon,
-        assert(icon != null);
+    Widget? activeIcon,
+    required this.backgroundColor,
+  }) : activeIcon = activeIcon ?? icon;
   final Widget icon;
   final Widget activeIcon;
 //  final Widget title;
@@ -372,24 +409,23 @@ class CustomBubbleBottomBarItem {
 }
 
 class _CustomBubbleBottomBarClipper extends CustomClipper<Path> {
-  const _CustomBubbleBottomBarClipper({
-    @required this.geometry,
-    @required this.shape,
-    @required this.notchMargin,
-  })  : assert(geometry != null),
-        assert(shape != null),
-        assert(notchMargin != null),
-        super(reclip: geometry);
-
   final ValueListenable<ScaffoldGeometry> geometry;
   final NotchedShape shape;
   final double notchMargin;
+  const _CustomBubbleBottomBarClipper({
+    required this.geometry,
+    required this.shape,
+    required this.notchMargin,
+  }) : /*  : assert(geometry != null),
+        assert(shape != null),
+        assert(notchMargin != null), */
+        super(reclip: geometry);
 
   @override
   Path getClip(Size size) {
-    final Rect button = geometry.value.floatingActionButtonArea?.translate(
+    final button = geometry.value.floatingActionButtonArea?.translate(
       0.0,
-      geometry.value.bottomNavigationBarTop * -1.0,
+      (geometry.value.bottomNavigationBarTop ?? .0) * -1.0,
     );
 
     return shape.getOuterPath(Offset.zero & size, button?.inflate(notchMargin));
@@ -397,6 +433,9 @@ class _CustomBubbleBottomBarClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(_CustomBubbleBottomBarClipper oldClipper) {
-    return oldClipper.geometry != geometry || oldClipper.shape != shape || oldClipper.notchMargin != notchMargin;
+    return oldClipper.geometry != geometry ||
+        oldClipper.shape != shape ||
+        oldClipper.notchMargin != notchMargin;
   }
 }
+ */

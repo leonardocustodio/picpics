@@ -1,15 +1,13 @@
-import 'dart:async';
+/* import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/screens/premium_screen.dart';
+import 'package:picPics/screens/premium/premium_screen.dart';
 import 'package:picPics/managers/push_notifications_manager.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/app_store.dart';
@@ -19,23 +17,22 @@ import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/screens/tabs/pic_tab.dart';
 import 'package:picPics/screens/tabs/tagged_tab.dart';
 import 'package:picPics/screens/tabs/untagged_tab.dart';
+import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/photo_card.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
-import 'package:provider/provider.dart';
+
 import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/throttle.dart';
-import 'package:picPics/managers/admob_manager.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:picPics/generated/l10n.dart';
-import 'package:firebase_admob/firebase_admob.dart';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:picPics/widgets/cupertino_input_dialog.dart';
 
 class TutsTabsScreen extends StatefulWidget {
   static const id = 'tuts_tabs_screen';
@@ -44,8 +41,9 @@ class TutsTabsScreen extends StatefulWidget {
   _TutsTabsScreenState createState() => _TutsTabsScreenState();
 }
 
-class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObserver {
-  AppStore appStore;
+class _TutsTabsScreenState extends State<TutsTabsScreen>
+    with WidgetsBindingObserver {
+  UserController appStore;
   TabsStore tabsStore;
   GalleryStore galleryStore;
 
@@ -54,8 +52,10 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
   ReactionDisposer disposer3;
   ReactionDisposer disposer4;
 
-  ExpandableController expandableController = ExpandableController(initialExpanded: false);
-  ExpandableController expandablePaddingController = ExpandableController(initialExpanded: false);
+  ExpandableController expandableController =
+      ExpandableController(initialExpanded: false);
+  ExpandableController expandablePaddingController =
+      ExpandableController(initialExpanded: false);
 
   // Swiper do Tutorial
   SwiperController tutorialSwiperController = SwiperController();
@@ -104,14 +104,15 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
   Future<void> showDeleteSecretModal(PicStore picStore) async {
     if (appStore.secretPhotos != true) {
       appStore.popPinScreen = PopPinScreenTo.TabsScreen;
-      Navigator.pushNamed(context, PinScreen.id);
+      Get.to(() =>  PinScreen());
       return;
     }
 
     if (appStore.isPremium == false) {
       int freePrivatePics = await appStore.freePrivatePics;
-      if (appStore.totalPrivatePics >= freePrivatePics && picStore.isPrivate == false) {
-        Navigator.pushNamed(context, PremiumScreen.id);
+      if (appStore.totalPrivatePics >= freePrivatePics &&
+          picStore.isPrivate == false) {
+        Get.to(() =>  PremiumScreen());
         return;
       }
     }
@@ -156,56 +157,18 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
     );
   }
 
-  showEditTagModal() {
-    if (DatabaseManager.instance.selectedTagKey != '' && DatabaseManager.instance.selectedTagKey != kSecretTagKey) {
-      TextEditingController alertInputController = TextEditingController();
-//      Pic getPic = galleryStore.currentPic  DatabaseManager.instance.getPicInfo(DatabaseManager.instance.selectedPhoto.id);
-      String tagName = DatabaseManager.instance.getTagName(DatabaseManager.instance.selectedTagKey);
-      alertInputController.text = tagName;
-
-      print('showModal');
-      showDialog<void>(
-        context: context,
-        barrierDismissible: true,
-        builder: (BuildContext buildContext) {
-          return CupertinoInputDialog(
-            prefixImage: Image.asset('lib/images/smalladdtag.png'),
-            alertInputController: alertInputController,
-            title: S.of(context).edit_tag,
-            destructiveButtonTitle: S.of(context).delete,
-            onPressedDestructive: () {
-              print('Deleting tag: ${DatabaseManager.instance.selectedTagKey}');
-              galleryStore.deleteTag(tagKey: DatabaseManager.instance.selectedTagKey);
-              Navigator.of(context).pop();
-            },
-            defaultButtonTitle: S.of(context).ok,
-            onPressedDefault: () {
-              print('Editing tag - Old name: ${DatabaseManager.instance.selectedTagKey} - New name: ${alertInputController.text}');
-              if (tagName != alertInputController.text) {
-                galleryStore.editTag(
-                  oldTagKey: DatabaseManager.instance.selectedTagKey,
-                  newName: alertInputController.text,
-                );
-              }
-              Navigator.of(context).pop();
-            },
-          );
-        },
-      );
-    }
-  }
-
   @override
   void initState() {
     super.initState();
+    // ignore: deprecated_member_use
     KeyboardVisibility.onChange.listen((bool visible) {
       print('keyboard: $visible');
 
-      if (visible && tabsStore.multiTagSheet) {
+      if (visible && tabsStore.multiTagSheet.value) {
         setState(() {
           expandablePaddingController.expanded = true;
         });
-      } else if (!visible && tabsStore.multiTagSheet) {
+      } else if (!visible && tabsStore.multiTagSheet.value) {
         setState(() {
           expandablePaddingController.expanded = false;
         });
@@ -215,27 +178,27 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
 //    _changeThrottle = Throttle(onCall: _onAssetChange);
 //    PhotoManager.addChangeCallback(_changeThrottle.call);
 
-    RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
-      if (event == RewardedVideoAdEvent.loaded) {
-        print('@@@ loaded');
-      }
-
-      if (event == RewardedVideoAdEvent.rewarded) {
-        print('@@@ rewarded');
-        appStore.setCanTagToday(true);
-      }
-
-      if (event == RewardedVideoAdEvent.closed) {
-        print('@@@@ closed');
-        DatabaseManager.instance.adsIsLoaded = false;
-        Ads.loadRewarded();
-      }
-
-      if (event == RewardedVideoAdEvent.failedToLoad) {
-        print('@@@ failed');
-        DatabaseManager.instance.adsIsLoaded = false;
-      }
-    };
+    // RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
+    //   if (event == RewardedVideoAdEvent.loaded) {
+    print('@@@ loaded');
+    //   }
+    //
+    //   if (event == RewardedVideoAdEvent.rewarded) {
+    print('@@@ rewarded');
+    //     appStore.setCanTagToday(true);
+    //   }
+    //
+    //   if (event == RewardedVideoAdEvent.closed) {
+    print('@@@@ closed');
+    //     DatabaseManager.instance.adsIsLoaded = false;
+    //     Ads.loadRewarded();
+    //   }
+    //
+    //   if (event == RewardedVideoAdEvent.failedToLoad) {
+    print('@@@ failed');
+    //     DatabaseManager.instance.adsIsLoaded = false;
+    //   }
+    // };
   }
 
   @override
@@ -254,43 +217,6 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
     super.dispose();
   }
 
-  setTabIndex(int index) async {
-    if (!galleryStore.deviceHasPics) {
-      tabsStore.setCurrentTab(index);
-      return;
-    }
-
-    if (tabsStore.multiPicBar) {
-      if (index == 0) {
-        galleryStore.clearSelectedPics();
-        tabsStore.setMultiPicBar(false);
-      } else if (index == 1) {
-        tabsStore.setMultiTagSheet(true);
-        Future.delayed(Duration(milliseconds: 200), () {
-          setState(() {
-            expandableController.expanded = true;
-          });
-        });
-      } else if (index == 2) {
-        if (galleryStore.selectedPics.isEmpty) {
-          return;
-        }
-        print('sharing selected pics....');
-        tabsStore.setIsLoading(true);
-        await galleryStore.sharePics(picsStores: galleryStore.selectedPics.toList());
-        tabsStore.setIsLoading(false);
-      } else if (index == 3) {
-        if (galleryStore.selectedPics.isEmpty) {
-          return;
-        }
-        galleryStore.trashMultiplePics(galleryStore.selectedPics);
-      }
-      return;
-    }
-
-    tabsStore.setCurrentTab(index);
-  }
-
   Widget _buildLoading() {
     return Padding(
       padding: const EdgeInsets.all(5.0),
@@ -306,7 +232,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = Provider.of<UserController>(context);
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
@@ -364,7 +290,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
     // Added for the case of buying premium from appstore
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (appStore.tryBuyId != null) {
-        Navigator.pushNamed(context, PremiumScreen.id);
+        Get.to(() =>  PremiumScreen());
       }
     });
   }
@@ -426,7 +352,8 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                             padding: const EdgeInsets.all(0),
                             onPressed: () {
                               setState(() {
-                                expandableController.expanded = !expandableController.expanded;
+                                expandableController.expanded =
+                                    !expandableController.expanded;
                               });
                             },
                             child: SafeArea(
@@ -434,7 +361,8 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                               child: Container(
                                 color: Color(0xFFF1F3F5),
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: <Widget>[
                                     CupertinoButton(
                                       onPressed: () {
@@ -443,7 +371,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                       child: Container(
                                         width: 80.0,
                                         child: Text(
-                                          S.of(context).cancel,
+                                          LangControl.to.S.value.cancel,
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
                                             color: Color(0xff707070),
@@ -458,12 +386,13 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                     CupertinoButton(
                                       onPressed: () {
                                         // if (!appStore.isPremium) {
-                                        //   Navigator.pushNamed(
-                                        //       context, PremiumScreen.id);
+                                        //   Get.to(() =>   PremiumScreen());
                                         //   return;
                                         // }
 
-                                        if (galleryStore.multiPicTagKeys.contains(kSecretTagKey)) {
+                                        if (galleryStore
+                                                .multiPicTags[kSecretTagKey] !=
+                                            null) {
                                           showDeleteSecretModalForMultiPic();
                                           return;
                                         }
@@ -475,7 +404,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                       child: Container(
                                         width: 80.0,
                                         child: Text(
-                                          S.of(context).ok,
+                                          LangControl.to.S.value.ok,
                                           textScaleFactor: 1.0,
                                           textAlign: TextAlign.end,
                                           style: TextStyle(
@@ -503,30 +432,33 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     TagsList(
-                                        tags: galleryStore.multiPicTags.toList(),
+                                        tags: galleryStore.multiPicTags.values
+                                            .toList(),
                                         addTagField: true,
-                                        textEditingController: bottomTagsEditingController,
-                                        showEditTagModal: showEditTagModal,
+                                        textEditingController:
+                                            bottomTagsEditingController,
+                                        showEditTagModal: () =>
+                                            showEditTagModal(
+                                                context, galleryStore, true),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
-                                          galleryStore.removeFromMultiPicTags(DatabaseManager.instance.selectedTagKey);
+                                          galleryStore.removeFromMultiPicTags(
+                                              DatabaseManager
+                                                  .instance.selectedTagKey);
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //  Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           print('do nothing');
@@ -536,35 +468,42 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                         },
                                         onSubmitted: (text) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           if (text != '') {
                                             bottomTagsEditingController.clear();
                                             galleryStore.setSearchText('');
-                                            String tagKey = Helpers.encryptTag(text);
+                                            String tagKey =
+                                                Helpers.encryptTag(text);
 
-                                            if (!galleryStore.multiPicTagKeys.contains(tagKey)) {
-                                              if (appStore.tags.firstWhere((element) => element.id == tagKey, orElse: () => null) == null) {
+                                            if (galleryStore
+                                                    .multiPicTags[tagKey] ==
+                                                null) {
+                                              if (appStore.tags[tagKey] ==
+                                                  null) {
                                                 print('tag does not exist! creating it!');
                                                 galleryStore.createTag(text);
                                               }
-                                              galleryStore.addToMultiPicTags(tagKey);
+                                              galleryStore
+                                                  .addToMultiPicTags(tagKey);
                                             }
                                           }
                                         }),
                                     Padding(
                                       padding: const EdgeInsets.only(top: 8.0),
                                       child: TagsList(
-                                        title: galleryStore.searchText != '' ? S.of(context).search_results : S.of(context).recent_tags,
+                                        title: galleryStore.searchText != ''
+                                            ? LangControl.to.S.value.search_results
+                                            : LangControl.to.S.value.recent_tags,
                                         tags: galleryStore.tagsSuggestions,
                                         tagStyle: TagStyle.GrayOutlined,
-                                        showEditTagModal: showEditTagModal,
+                                        showEditTagModal: () =>
+                                            showEditTagModal(
+                                                context, galleryStore, true),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //  Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
 
@@ -574,16 +513,14 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           print('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
-                                          //   Navigator.pushNamed(
-                                          //       context, PremiumScreen.id);
+                                          //   Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           print('do nothing');
@@ -614,22 +551,30 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                 setTabIndex(index);
                               },
                               iconSize: 32.0,
-                              border: Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+                              border: Border(
+                                  top: BorderSide(
+                                      color: Color(0xFFE2E4E5), width: 1.0)),
                               items: <BottomNavigationBarItem>[
                                 BottomNavigationBarItem(
                                   title: Container(),
-                                  icon: Image.asset('lib/images/untaggedtabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/untaggedtabactive.png'),
+                                  icon: Image.asset(
+                                      'lib/images/untaggedtabinactive.png'),
+                                  activeIcon: Image.asset(
+                                      'lib/images/untaggedtabactive.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   title: Container(),
-                                  icon: Image.asset('lib/images/pictabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/pictabactive.png'),
+                                  icon: Image.asset(
+                                      'lib/images/pictabinactive.png'),
+                                  activeIcon: Image.asset(
+                                      'lib/images/pictabactive.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   title: Container(),
-                                  icon: Image.asset('lib/images/taggedtabinactive.png'),
-                                  activeIcon: Image.asset('lib/images/taggedtabactive.png'),
+                                  icon: Image.asset(
+                                      'lib/images/taggedtabinactive.png'),
+                                  activeIcon: Image.asset(
+                                      'lib/images/taggedtabactive.png'),
                                 ),
                               ],
                             )
@@ -647,18 +592,24 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                 items: <BottomNavigationBarItem>[
                                   BottomNavigationBarItem(
                                     label: 'Untagged photos',
-                                    icon: Image.asset('lib/images/untaggedtabinactive.png'),
-                                    activeIcon: Image.asset('lib/images/untaggedtabactive.png'),
+                                    icon: Image.asset(
+                                        'lib/images/untaggedtabinactive.png'),
+                                    activeIcon: Image.asset(
+                                        'lib/images/untaggedtabactive.png'),
                                   ),
                                   BottomNavigationBarItem(
                                     label: 'Swipe photos',
-                                    icon: Image.asset('lib/images/pictabinactive.png'),
-                                    activeIcon: Image.asset('lib/images/pictabactive.png'),
+                                    icon: Image.asset(
+                                        'lib/images/pictabinactive.png'),
+                                    activeIcon: Image.asset(
+                                        'lib/images/pictabactive.png'),
                                   ),
                                   BottomNavigationBarItem(
                                     label: 'Tagged photos',
-                                    icon: Image.asset('lib/images/taggedtabinactive.png'),
-                                    activeIcon: Image.asset('lib/images/taggedtabactive.png'),
+                                    icon: Image.asset(
+                                        'lib/images/taggedtabinactive.png'),
+                                    activeIcon: Image.asset(
+                                        'lib/images/taggedtabactive.png'),
                                   ),
                                 ],
                               ),
@@ -670,11 +621,14 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                               setTabIndex(index);
                             },
                             iconSize: 24.0,
-                            border: Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+                            border: Border(
+                                top: BorderSide(
+                                    color: Color(0xFFE2E4E5), width: 1.0)),
                             items: <BottomNavigationBarItem>[
                               BottomNavigationBarItem(
                                 title: Container(),
-                                icon: Image.asset('lib/images/returntabbutton.png'),
+                                icon: Image.asset(
+                                    'lib/images/returntabbutton.png'),
                               ),
                               // BottomNavigationBarItem(
                               //   title: Container(),
@@ -682,25 +636,30 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                               // ),
                               BottomNavigationBarItem(
                                 title: Container(),
-                                icon: Image.asset('lib/images/tagtabbutton.png'),
+                                icon:
+                                    Image.asset('lib/images/tagtabbutton.png'),
                               ),
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: galleryStore.selectedPics.isEmpty
                                     ? Opacity(
                                         opacity: 0.2,
-                                        child: Image.asset('lib/images/sharetabbutton.png'),
+                                        child: Image.asset(
+                                            'lib/images/sharetabbutton.png'),
                                       )
-                                    : Image.asset('lib/images/sharetabbutton.png'),
+                                    : Image.asset(
+                                        'lib/images/sharetabbutton.png'),
                               ),
                               BottomNavigationBarItem(
                                 title: Container(),
                                 icon: galleryStore.selectedPics.isEmpty
                                     ? Opacity(
                                         opacity: 0.3,
-                                        child: Image.asset('lib/images/trashtabbutton.png'),
+                                        child: Image.asset(
+                                            'lib/images/trashtabbutton.png'),
                                       )
-                                    : Image.asset('lib/images/trashtabbutton.png'),
+                                    : Image.asset(
+                                        'lib/images/trashtabbutton.png'),
                               ),
                             ],
                           )
@@ -716,7 +675,8 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                               items: <BottomNavigationBarItem>[
                                 BottomNavigationBarItem(
                                   label: 'Return',
-                                  icon: Image.asset('lib/images/returntabbutton.png'),
+                                  icon: Image.asset(
+                                      'lib/images/returntabbutton.png'),
                                 ),
                                 // BottomNavigationBarItem(
                                 //   label: 'Lock',
@@ -724,25 +684,30 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                 // ),
                                 BottomNavigationBarItem(
                                   label: 'Tag',
-                                  icon: Image.asset('lib/images/tagtabbutton.png'),
+                                  icon: Image.asset(
+                                      'lib/images/tagtabbutton.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Share',
                                   icon: galleryStore.selectedPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
-                                          child: Image.asset('lib/images/sharetabbutton.png'),
+                                          child: Image.asset(
+                                              'lib/images/sharetabbutton.png'),
                                         )
-                                      : Image.asset('lib/images/sharetabbutton.png'),
+                                      : Image.asset(
+                                          'lib/images/sharetabbutton.png'),
                                 ),
                                 BottomNavigationBarItem(
                                   label: 'Trash',
                                   icon: galleryStore.selectedPics.isEmpty
                                       ? Opacity(
                                           opacity: 0.3,
-                                          child: Image.asset('lib/images/trashtabbutton.png'),
+                                          child: Image.asset(
+                                              'lib/images/trashtabbutton.png'),
                                         )
-                                      : Image.asset('lib/images/trashtabbutton.png'),
+                                      : Image.asset(
+                                          'lib/images/trashtabbutton.png'),
                                 ),
                               ],
                             ),
@@ -755,7 +720,8 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
               children: <Widget>[
                 Observer(builder: (_) {
                   Widget wgt;
-                  if (appStore.hasGalleryPermission == null || appStore.hasGalleryPermission == false) {
+                  if (appStore.hasGalleryPermission == null ||
+                      appStore.hasGalleryPermission == false) {
                     wgt = Container(
                       constraints: BoxConstraints.expand(),
                       color: kWhiteColor,
@@ -763,16 +729,19 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                         child: Stack(
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: <Widget>[
                                   CupertinoButton(
-                                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
                                     onPressed: () {
-                                      Navigator.pushNamed(context, SettingsScreen.id);
+                                      Get.to(() =>   SettingsScreen());
                                     },
-                                    child: Image.asset('lib/images/settings.png'),
+                                    child:
+                                        Image.asset('lib/images/settings.png'),
                                   ),
                                 ],
                               ),
@@ -784,15 +753,19 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                   Padding(
                                     padding: const EdgeInsets.only(right: 30.0),
                                     child: Container(
-                                      constraints: BoxConstraints(maxHeight: height / 2),
-                                      child: Image.asset('lib/images/nogalleryauth.png'),
+                                      constraints:
+                                          BoxConstraints(maxHeight: height / 2),
+                                      child: Image.asset(
+                                          'lib/images/nogalleryauth.png'),
                                     ),
                                   ),
                                   SizedBox(
                                     height: 21.0,
                                   ),
                                   Text(
-                                    S.of(context).gallery_access_permission_description,
+                                    S
+                                        .of(context)
+                                        .gallery_access_permission_description,
                                     textScaleFactor: 1.0,
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
@@ -808,8 +781,13 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                   ),
                                   CupertinoButton(
                                     padding: const EdgeInsets.all(0),
-                                    onPressed: () {
-                                      PhotoManager.openSetting();
+                                    onPressed: () async {
+                                      bool photoPermission = await PhotoManager
+                                          .requestPermission();
+
+                                      if (photoPermission == false) {
+                                        PhotoManager.openSetting();
+                                      }
                                     },
                                     child: Container(
                                       width: 201.0,
@@ -820,7 +798,9 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                       ),
                                       child: Center(
                                         child: Text(
-                                          S.of(context).gallery_access_permission,
+                                          S
+                                              .of(context)
+                                              .gallery_access_permission,
                                           textScaleFactor: 1.0,
                                           style: TextStyle(
                                             fontFamily: 'Lato',
@@ -841,14 +821,19 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                         ),
                       ),
                     );
-                  } else if (tabsStore.currentTab == 0 && appStore.hasGalleryPermission)
+                  } else if (tabsStore.currentTab == 0 &&
+                      appStore.hasGalleryPermission)
                     wgt = UntaggedTab();
-                  else if (tabsStore.currentTab == 1 && appStore.hasGalleryPermission)
+                  else if (tabsStore.currentTab == 1 &&
+                      appStore.hasGalleryPermission)
                     wgt = PicTab(
-                      showEditTagModal: showEditTagModal,
+                      showEditTagModal: () =>
+                          showEditTagModal(context, galleryStore, true),
                       showDeleteSecretModal: showDeleteSecretModal,
                     );
-                  else if (tabsStore.currentTab == 2 && appStore.hasGalleryPermission) wgt = TaggedTab(showEditTagModal: showEditTagModal);
+                  else if (tabsStore.currentTab == 2 &&
+                      appStore.hasGalleryPermission)
+                    wgt = TaggedTab(showEditTagModal: showEditTagModal);
                   return wgt ?? Container();
                 }),
               ],
@@ -881,7 +866,8 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                           child: PhotoCard(
                             picStore: galleryStore.currentPic,
                             picsInThumbnails: PicSource.UNTAGGED,
-                            showEditTagModal: showEditTagModal,
+                            showEditTagModal: () =>
+                                showEditTagModal(context, galleryStore, true),
                             showDeleteSecretModal: showDeleteSecretModal,
                           ),
                         ),
@@ -930,7 +916,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: <Widget>[
                           Text(
-                            S.of(context).welcome,
+                            LangControl.to.S.value.welcome,
                             textScaleFactor: 1.0,
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -946,34 +932,40 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                             height: 40.0,
                           ),
                           Expanded(
-                            child: new Swiper(
+                            child: Swiper(
                               loop: false,
                               itemBuilder: (BuildContext context, int index) {
-                                String text = '';
+                                String text;
                                 Image image;
 
                                 if (index == 0) {
-                                  text = S.of(context).tutorial_just_swipe;
-                                  image = Image.asset('lib/images/tutorialthirdimage.png');
+                                  text = LangControl.to.S.value.tutorial_just_swipe;
+                                  image = Image.asset(
+                                      'lib/images/tutorialthirdimage.png');
                                 } else if (index == 1) {
-                                  text = S.of(context).tutorial_however_you_want;
-                                  image = Image.asset('lib/images/tutorialsecondimage.png');
+                                  text =
+                                      LangControl.to.S.value.tutorial_however_you_want;
+                                  image = Image.asset(
+                                      'lib/images/tutorialsecondimage.png');
                                 } else {
-                                  text = S.of(context).tutorial_daily_package;
-                                  image = Image.asset('lib/images/tutorialfirstimage.png');
+                                  text = LangControl.to.S.value.tutorial_daily_package;
+                                  image = Image.asset(
+                                      'lib/images/tutorialfirstimage.png');
                                 }
 
                                 return Column(
                                   children: <Widget>[
                                     Container(
-                                      constraints: BoxConstraints(maxHeight: height / 2 - 20),
+                                      constraints: BoxConstraints(
+                                          maxHeight: height / 2 - 20),
                                       child: image,
                                     ),
                                     SizedBox(
                                       height: 28.0,
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0),
                                       child: Text(
                                         text,
                                         textScaleFactor: 1.0,
@@ -995,36 +987,48 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                               onIndexChanged: (index) {
                                 tabsStore.setTutorialIndex(index);
                               },
-                              pagination: new SwiperCustomPagination(
-                                builder: (BuildContext context, SwiperPluginConfig config) {
+                              pagination: SwiperCustomPagination(
+                                builder: (BuildContext context,
+                                    SwiperPluginConfig config) {
                                   return Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: <Widget>[
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
                                           decoration: BoxDecoration(
-                                            color: config.activeIndex == 0 ? kSecondaryColor : kGrayColor,
-                                            borderRadius: BorderRadius.circular(4.0),
+                                            color: config.activeIndex == 0
+                                                ? kSecondaryColor
+                                                : kGrayColor,
+                                            borderRadius:
+                                                BorderRadius.circular(4.0),
                                           ),
                                         ),
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
-                                          margin: const EdgeInsets.only(left: 24.0, right: 24.0),
+                                          margin: const EdgeInsets.only(
+                                              left: 24.0, right: 24.0),
                                           decoration: BoxDecoration(
-                                            color: config.activeIndex == 1 ? kSecondaryColor : kGrayColor,
-                                            borderRadius: BorderRadius.circular(4.0),
+                                            color: config.activeIndex == 1
+                                                ? kSecondaryColor
+                                                : kGrayColor,
+                                            borderRadius:
+                                                BorderRadius.circular(4.0),
                                           ),
                                         ),
                                         Container(
                                           height: 8.0,
                                           width: 8.0,
                                           decoration: BoxDecoration(
-                                            color: config.activeIndex == 2 ? kSecondaryColor : kGrayColor,
-                                            borderRadius: BorderRadius.circular(4.0),
+                                            color: config.activeIndex == 2
+                                                ? kSecondaryColor
+                                                : kGrayColor,
+                                            borderRadius:
+                                                BorderRadius.circular(4.0),
                                           ),
                                         ),
                                       ],
@@ -1043,7 +1047,8 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                                 print('Requesting notification....');
 
                                 await appStore.requestNotificationPermission();
-                                await appStore.checkNotificationPermission(firstPermissionCheck: true);
+                                await appStore.checkNotificationPermission(
+                                    firstPermissionCheck: true);
                                 await appStore.setTutorialCompleted(true);
                                 await galleryStore.loadAssetsPath();
                                 return;
@@ -1053,14 +1058,17 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
                             padding: const EdgeInsets.all(0),
                             child: Container(
                               height: 44.0,
-                              margin: const EdgeInsets.symmetric(horizontal: 16.0),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
                               decoration: BoxDecoration(
                                 gradient: kPrimaryGradient,
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               child: Center(
                                 child: Text(
-                                  tabsStore.tutorialIndex == 2 ? S.of(context).start : S.of(context).next,
+                                  tabsStore.tutorialIndex == 2
+                                      ? LangControl.to.S.value.start
+                                      : LangControl.to.S.value.next,
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
@@ -1089,3 +1097,4 @@ class _TutsTabsScreenState extends State<TutsTabsScreen> with WidgetsBindingObse
     );
   }
 }
+ */

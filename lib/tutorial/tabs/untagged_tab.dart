@@ -1,9 +1,6 @@
-import 'dart:math';
-
-import 'package:extended_image/extended_image.dart';
+/* import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:intl/intl.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
@@ -11,13 +8,12 @@ import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
-import 'package:provider/provider.dart';
 
 class TutsUntaggedTab extends StatefulWidget {
   static const id = 'tuts_untagged_tab';
@@ -30,7 +26,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
   TabsStore tabsStore;
   GalleryStore galleryStore;
 
-  ScrollController scrollControllerFirstTab;
+  //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
 
   // List<Widget> _buildSlivers(BuildContext context) {
@@ -43,8 +39,10 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
   //   return slivers;
   // }
 
-  void refreshGridPositionFirstTab() {
-    var offset = scrollControllerFirstTab.hasClients ? scrollControllerFirstTab.offset : scrollControllerFirstTab.initialScrollOffset;
+/*   void refreshGridPositionFirstTab() {
+    var offset = scrollControllerFirstTab.hasClients
+        ? scrollControllerFirstTab.offset
+        : scrollControllerFirstTab.initialScrollOffset;
 
     if (offset >= 86) {
       tabsStore.setTopOffsetFirstTab(10.0);
@@ -57,14 +55,15 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     if (scrollControllerFirstTab.hasClients) {
       tabsStore.offsetFirstTab = scrollControllerFirstTab.offset;
     }
-  }
+  } */
 
   Widget _buildSliverGridItem(BuildContext context, PicStore picStore) {
     if (picStore == null) {
       return Container();
     }
 
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: false);
     return RepaintBoundary(
       child: ExtendedImage(
         image: imageProvider,
@@ -136,7 +135,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                                       gradient: kSecondaryGradient,
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                    child: Image.asset('lib/images/checkwhiteico.png'),
+                                    child: Image.asset(
+                                        'lib/images/checkwhiteico.png'),
                                   ),
                                 ),
                               ],
@@ -185,7 +185,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
   }
 
 //   Widget _buildNewItem(BuildContext context, int index, double size) {
-//     print('Curret Index: $index');
+/* print('Curret Index: $index'); */
 //
 //     List<Widget> childs = [];
 //     int endIndex = (index + 1) * 3;
@@ -258,7 +258,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                     child: () {
 //                       return GestureDetector(
 //                         onLongPress: () {
-//                           print('LongPress');
+/* print('LongPress'); */
 //                           if (tabsStore.multiPicBar == false) {
 //                             galleryStore.setSelectedPics(
 //                               picStore: picStore,
@@ -275,7 +275,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                                 picStore: picStore,
 //                                 picIsTagged: false,
 //                               );
-//                               print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+/* print('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
 //                               return;
 //                             }
 //
@@ -418,7 +418,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
           //         centerTitle: false,
           //         titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
           //         title: Text(
-          //           tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+          //           tabsStore.multiPicBar ? LangControl.to.S.value.photo_gallery_count(galleryStore.selectedPics.length) : LangControl.to.S.value.photo_gallery_description,
           //           textScaleFactor: 1.0,
           //           style: TextStyle(
           //             fontFamily: 'Lato',
@@ -499,7 +499,52 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 
           Observer(builder: (_) {
         if (tabsStore.toggleIndexUntagged == 0) {
-          return StaggeredGridView.countBuilder(
+          List<DateTime> keys = galleryStore.isLoaded
+              ? galleryStore.untaggedGridPicsByMonth.keys.toList()
+              : <DateTime>[];
+          keys.sort((a, b) {
+            var year = b.year.compareTo(a.year);
+            if (year == 0) return b.month.compareTo(a.month);
+            return year;
+          });
+          ListView.builder(
+              itemCount: keys.length,
+              itemBuilder: (context, index) {
+                DateTime dateTime = keys[index];
+                var innerMap = galleryStore.untaggedGridPicsByMonth[dateTime];
+                var innerKeys = innerMap.keys.toList();
+                return Column(
+                  children: [
+                    buildDateHeader(dateTime),
+                    StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
+                      key: Key(dateTime.toString()),
+                      //controller: scrollControllerFirstTab,
+                      physics: const NeverScrollableScrollPhysics(),
+                      padding: const EdgeInsets.only(top: 82.0),
+                      crossAxisCount: 5,
+                      mainAxisSpacing: 2.0,
+                      crossAxisSpacing: 2.0,
+                      itemCount: innerKeys?.length ?? 0,
+                      itemBuilder: (BuildContext context, int innerIndex) {
+                        PicStore picStore = innerMap[innerKeys[index]];
+                        if (picStore == null)
+                          return ColoredBox(color: kGreyPlaceholder);
+                        return _buildItem(picStore, index);
+                      },
+                      staggeredTileBuilder: (int _) {
+                        return StaggeredTile.fit(5);
+                        /* PicStore picStore =
+                      galleryStore.untaggedGridPicsByMonth[index].picStore;
+              if (picStore == null) {
+                    
+              }
+              return StaggeredTile.count(1, 1); */
+                      },
+                    ),
+                  ],
+                );
+              });
+          /* StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
             key: Key('month'),
             controller: scrollControllerFirstTab,
             physics: const CustomScrollPhysics(),
@@ -507,31 +552,39 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
             crossAxisCount: 5,
             mainAxisSpacing: 2.0,
             crossAxisSpacing: 2.0,
-            itemCount: galleryStore.isLoaded ? galleryStore.untaggedGridPicsByMonth.length : 0,
+            itemCount: galleryStore.isLoaded
+                ? galleryStore.untaggedGridPicsByMonth.length
+                : 0,
             itemBuilder: (BuildContext context, int index) {
               return _buildItem(context, index);
             },
             staggeredTileBuilder: (int index) {
-              PicStore picStore = galleryStore.untaggedGridPicsByMonth[index].picStore;
+              PicStore picStore =
+                  galleryStore.untaggedGridPicsByMonth[index].picStore;
               if (picStore == null) {
                 return StaggeredTile.fit(5);
               }
               return StaggeredTile.count(1, 1);
             },
-          );
+          ); */
         }
 
-        return StaggeredGridView.countBuilder(
+        return StaggeredGridView.countBuilder(addAutomaticKeepAlives: true,
           key: Key('day'),
-          controller: scrollControllerFirstTab,
+          //controller: scrollControllerFirstTab,
           physics: const CustomScrollPhysics(),
           padding: EdgeInsets.only(top: 82.0),
           crossAxisCount: 3,
           mainAxisSpacing: 2.0,
           crossAxisSpacing: 2.0,
-          itemCount: galleryStore.isLoaded ? galleryStore.untaggedGridPics.length : 0,
+          itemCount:
+              galleryStore.isLoaded ? galleryStore.untaggedGridPics.length : 0,
           itemBuilder: (BuildContext context, int index) {
-            return _buildItem(context, index);
+            var untaggedPicsStore = galleryStore.untaggedGridPics;
+            PicStore picStore = untaggedPicsStore[index].picStore;
+            if (picStore == null)
+              return buildDateHeader(untaggedPicsStore[index].date);
+            return _buildItem(picStore, index);
           },
           staggeredTileBuilder: (int index) {
             PicStore picStore = galleryStore.untaggedGridPics[index].picStore;
@@ -558,43 +611,45 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     print('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
-      formatter = tabsStore.toggleIndexUntagged == 0 ? DateFormat.MMMM() : DateFormat.MMMEd();
+      formatter = tabsStore.toggleIndexUntagged == 0
+          ? DateFormat.MMMM()
+          : DateFormat.MMMEd();
     } else {
-      formatter = tabsStore.toggleIndexUntagged == 0 ? DateFormat.yMMMM() : DateFormat.yMMMEd();
+      formatter = tabsStore.toggleIndexUntagged == 0
+          ? DateFormat.yMMMM()
+          : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
   }
 
-  Widget _buildItem(BuildContext context, int index) {
-    var untaggedPicsStore = tabsStore.toggleIndexUntagged == 0 ? galleryStore.untaggedGridPicsByMonth : galleryStore.untaggedGridPics;
-    PicStore picStore = untaggedPicsStore[index].picStore;
-
-    if (picStore == null) {
-      return Container(
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        height: 40.0,
-        child: Row(
-          children: [
-            Text(
-              '${dateFormat(untaggedPicsStore[index].date)}',
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
+  Widget buildDateHeader(DateTime date) {
+    return Container(
+      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+      height: 40.0,
+      child: Row(
+        children: [
+          Text(
+            '${date}',
+            textScaleFactor: 1.0,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: Color(0xff606566),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
             ),
-          ],
-        ),
-      );
-    }
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildItem(PicStore picStore, int index) {
 //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
 
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: false);
 
     return RepaintBoundary(
       child: ExtendedImage(
@@ -667,7 +722,8 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                                       gradient: kSecondaryGradient,
                                       borderRadius: BorderRadius.circular(10.0),
                                     ),
-                                    child: Image.asset('lib/images/checkwhiteico.png'),
+                                    child: Image.asset(
+                                        'lib/images/checkwhiteico.png'),
                                   ),
                                 ),
                               ],
@@ -721,11 +777,12 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     tabsStore = Provider.of<TabsStore>(context);
     galleryStore = Provider.of<GalleryStore>(context);
 
-    scrollControllerFirstTab = ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
+    /* scrollControllerFirstTab =
+        ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
     scrollControllerFirstTab.addListener(() {
       refreshGridPositionFirstTab();
     });
-    refreshGridPositionFirstTab();
+    refreshGridPositionFirstTab(); */
 
     print('change dependencies!');
     galleryStore.refreshPicThumbnails();
@@ -749,7 +806,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.to(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -757,11 +814,12 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).device_has_no_pics,
+                  message: LangControl.to.S.value.device_has_no_pics,
                 ),
               ],
             );
-          } else if (galleryStore.isLoaded && galleryStore.untaggedPics.isEmpty) {
+          } else if (galleryStore.isLoaded &&
+              galleryStore.untaggedPics.isEmpty) {
             return Stack(
               children: <Widget>[
                 Container(
@@ -773,7 +831,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.to(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -781,7 +839,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).all_photos_were_tagged,
+                  message: LangControl.to.S.value.no_photos_were_tagged,
                 ),
               ],
             );
@@ -792,7 +850,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   padding: const EdgeInsets.only(top: 48.0),
                   child: GestureDetector(
 //                              onScaleUpdate: (update) {
-//                                print(update.scale);
+/* print(update.scale); */
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
                     child: _buildGridView(context),
@@ -807,7 +865,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.to(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -821,7 +879,10 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+                        tabsStore.multiPicBar
+                            ? LangControl.to.S.value.photo_gallery_count(
+                                galleryStore.selectedPics.length)
+                            : LangControl.to.S.value.photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
@@ -839,17 +900,20 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   curve: Curves.linear,
                   duration: Duration(milliseconds: 300),
                   onEnd: () {
-                    tabsStore.setIsToggleBarVisible(tabsStore.isScrolling ? false : true);
+                    tabsStore.setIsToggleBarVisible(
+                        tabsStore.isScrolling ? false : true);
                   },
                   child: Visibility(
-                    visible: tabsStore.isScrolling ? tabsStore.isToggleBarVisible : true,
+                    visible: tabsStore.isScrolling
+                        ? tabsStore.isToggleBarVisible
+                        : true,
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: ToggleBar(
-                          titleLeft: S.of(context).toggle_months,
-                          titleRight: S.of(context).toggle_days,
+                          titleLeft: LangControl.to.S.value.toggle_months,
+                          titleRight: LangControl.to.S.value.toggle_days,
                           activeToggle: tabsStore.toggleIndexUntagged,
                           onToggle: (index) {
                             tabsStore.setToggleIndexUntagged(index);
@@ -868,3 +932,4 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     );
   }
 }
+ */

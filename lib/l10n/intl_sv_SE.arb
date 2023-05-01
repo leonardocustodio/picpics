@@ -4,21 +4,16 @@
   "edit_tag": "Redigera tagg",
   "cancel": "Avbryt",
   "notifications": "Aviseringar",
-
-
   "welcome": "Välkommen!",
   "photos_always_organized": "Nu är dina foton alltid organiserade",
-
   "continue_string": "Fortsätt",
   "gallery_access_reason": "För att organisera dina bilder behöver vi tillgång till ditt fotogalleri",
-
   "tutorial_daily_package": "Vi ger dig ett dagligt paket för att successivt organisera ditt bibliotek.",
   "next": "Nästa",
   "tutorial_however_you_want": "Organisera dina foton genom att lägga till taggar, som \"familj\", \"husdjur\" eller vad du vill.",
   "close": "Stäng",
   "start": "Starta",
   "tutorial_just_swipe": "Efter du har lagt till taggar på ditt foto, sveper du för att gå vidare till nästa.",
-
   "settings": "Inställningar",
   "suggestions": "Förslag",
   "photo_location": "Fotoplats",
@@ -26,23 +21,16 @@
   "add_tag": "Lägg till tagg",
   "add_tags": "Lägg till taggar",
   "full_screen": "Helskärm",
-
   "photo_gallery_title": "Fotogalleri",
   "photo_gallery_description": "Foton ännu inte organiserade",
   "photo_gallery_count": "{howMany, plural, zero{Inga foton har valts} one{1 foto valt} other{{howMany} foton valda}}",
-
   "organized_photos_title": "Organiserade foton",
   "organized_photos_description": "Foton som redan har taggats",
-
   "search": "Sök...",
-
-
   "no_tagged_photos": "Du har inga taggade foton än",
   "start_tagging": "Börja tagga",
-
   "no_tags_found": "Inga taggar hittades",
   "search_results": "Sökresultat",
-
   "daily_challenge": "Daglig utmaning",
   "daily_goal": "Dagligt mål",
   "notification_time": "Aviseringstid",
@@ -50,49 +38,27 @@
   "rate_this_app": "Betygsätt appen",
   "how_many_pics": "Hur många bilder",
   "time": "Tid",
-
   "take_a_look": "Ta en titt på appen!",
   "take_a_look_description": "För att organisera alla dina foton går du till {url}",
-
   "daily_challenge_permission_description": "För att vi ska kunna skicka dina dagliga utmaningar behöver vi behörighet för att skicka aviseringar, vilket innebär att du måste godkänna aviseringar i din mobiltelefons inställningar",
-
-
-  "you_are_premium": "Du har premium!",
-  "get_premium_now": "Få premium nu!",
-
-
-  "get_premium_title": "FÅ PREMIUM",
-  "get_premium_description": "FÖR ATT HA ALLA FUNKTIONERNA",
-
 
   "no_ads": "Inga annonser",
   "export_all_gallery": "Exportera hela galleriet",
   "infinite_tags": "Oändliga taggar",
   "tag_multiple_photos_at_once": "Tagga flera foton samtidigt",
-
   "sign": "Tecken",
   "year": "år",
   "month": "månad",
-
   "restore_purchase": "Återställ köp",
   "no_previous_purchase": "Inga tidigare köp",
   "no_valid_subscription": "Det gick inte att hitta ett giltigt prenumerationsköp.",
   "save": "spara",
-
   "save_location": "Spara plats",
-
   "device_has_no_pics": "Den här enheten har inga foton i galleriet, så det finns inga foton som kan taggas.",
   "open_gallery": "Öppna galleriet",
-
   "gallery_access_permission": "Åtkomstbehörigheter",
   "gallery_access_permission_description": "För att börja organisera dina foton behöver vi behörighet för att komma åt dem",
-
   "export_library": "Exportera bibliotek",
-
-  "premium_modal_description": "Du har slutfört dina {number} gratis dagliga bilder, vill du fortsätta?",
-  "premium_modal_watch_ad": "Se videoannonsen för att fortsätta",
-  "premium_modal_get_premium_title": "Skaffa premiumkonto",
-  "premium_modal_get_premium_description": "ALLA FUNKTIONER UTAN ANNONSER",
 
   "family_tag": "Familj",
   "travel_tag": "Resa",
@@ -104,16 +70,12 @@
   "home_tag": "Hem",
   "work_tag": "Arbete",
   "parties_tag": "Fester",
-
   "terms_of_use": "Användarvillkor",
   "privacy_policy": "Integritetspolicy",
-
   "auto_renewable_first_part": "Prenumerationen är ",
   "auto_renewable_second_part": "auto-förnybar.",
   "cancel_anytime": "Avbryt när som helst",
-
   "language": "Språk",
-
   "all_search_tags": "Alla söktaggar",
   "search_all_tags_not_found": "Inga bilder hittades med alla taggar på",
   "picpics_photo_manager": "picPics - Photo Manager",
@@ -146,13 +108,10 @@
   "lock_your_photos": "Lås dina foton",
   "lock_with_pin": "Lås dina privata foton med enPIN-kod.",
   "protect_with_encryption": "Skydda dina personliga foton med kryptering, endast tillgängliga med en PIN-kod.",
-
-
-  "all_photos_were_tagged": "There are no more photos to organize.",
+  "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Obegränsat med privata foton",
-
   "toggle_months": "Månader",
   "toggle_days": "Dagar",
   "toggle_date": "Datum",
@@ -166,6 +125,7 @@
   "enable_faceid": "Aktivera Face ID",
   "enable_touchid": "Aktivera Touch ID",
   "enable_fingerprint": "Aktivera fingeravtryck",
-  "enable_irisscanner": "Aktivera Iris Scanner"
-
+  "enable_irisscanner": "Aktivera Iris Scanner",
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

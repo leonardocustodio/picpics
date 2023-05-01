@@ -4,21 +4,16 @@
   "edit_tag": "Sunting tag",
   "cancel": "Batalkan",
   "notifications": "Pemberitahuan",
-
-
   "welcome": "Selamat Datang!",
   "photos_always_organized": "Kini gambar anda akan sentiasa terurus",
-
   "continue_string": "Teruskan",
   "gallery_access_reason": "Untuk menguruskan gambar anda, kami memerlukan akses ke galeri gambar anda",
-
   "tutorial_daily_package": "Kami membawa pakej harian untuk anda bagi menguruskan perpustakaan anda secara beransur-ansur.",
   "next": "Seterusnya",
   "tutorial_however_you_want": "Susun gambar anda dengan menambahkan tag, seperti 'keluarga', 'binatang peliharaan', atau apa sahaja yang anda mahukan.",
   "close": "Tutup",
   "start": "Mulakan",
   "tutorial_just_swipe": "Setelah menambahkan tag pada gambar anda, leret sahaja untuk pergi ke gambar seterusnya.",
-
   "settings": "Tetapan",
   "suggestions": "Cadangan",
   "photo_location": "Lokasi gambar",
@@ -26,23 +21,16 @@
   "add_tag": "Tambah tag",
   "add_tags": "Tambah tag",
   "full_screen": "Skrin Penuh",
-
   "photo_gallery_title": "Galeri Gambar",
   "photo_gallery_description": "Gambar belum diuruskan",
   "photo_gallery_count": "{howMany, plural, zero{Tiada gambar yang dipilih} one{1 gambar dipilih} other{{howMany} gambar dipilih}}",
-
   "organized_photos_title": "Gambar Terurus",
   "organized_photos_description": "Gambar yang sudah ditag",
-
   "search": "Cari...",
-
-
   "no_tagged_photos": "Anda belum ada gambar yang ditag",
   "start_tagging": "Mula tag",
-
   "no_tags_found": "Tiada tag dijumpai",
   "search_results": "Keputusan carian",
-
   "daily_challenge": "Cabaran harian",
   "daily_goal": "Matlamat harian",
   "notification_time": "Masa pemberitahuan",
@@ -50,49 +38,27 @@
   "rate_this_app": "Nilaikan aplikasi ini",
   "how_many_pics": "Berapa banyak gambar",
   "time": "Masa",
-
   "take_a_look": "Lihatlah aplikasi ini!",
   "take_a_look_description": "Untuk menguruskan semua gambar anda, pergi ke {url}",
-
   "daily_challenge_permission_description": "Supaya kami dapat menghantar cabaran harian anda, kami memerlukan kebenaran untuk menghantar pemberitahuan, jadi, anda perlu memberi kebenaran pemberitahuan dalam pilihan peranti mudah alih anda",
-
-
-  "you_are_premium": "Anda premium!",
-  "get_premium_now": "Dapatkan premium sekarang!",
-
-
-  "get_premium_title": "DAPATKAN PREMIUM",
-  "get_premium_description": "UNTUK MEMILIKI SEMUA CIRI-CIRI INI",
-
 
   "no_ads": "Tiada Iklan",
   "export_all_gallery": "Eksport semua galeri",
   "infinite_tags": "Tag tanpa had",
   "tag_multiple_photos_at_once": "ag banyak gambar sekaligus",
-
   "sign": "Tanda",
   "year": "tahun",
   "month": "bulan",
-
   "restore_purchase": "Pulihkan pembelian",
   "no_previous_purchase": "Tiada Pembelian Sebelumnya",
   "no_valid_subscription": "Tidak dapat mencari pembelian langganan yang sah.",
   "save": "simpan",
-
   "save_location": "Simpan lokasi",
-
   "device_has_no_pics": "Peranti ini tiada gambar di galeri, jadi tiada gambar yang dapat ditag.",
   "open_gallery": "Buka galeri",
-
   "gallery_access_permission": "Kebenaran akses",
   "gallery_access_permission_description": "Untuk mula menguruskan gambar anda, kami memerlukan kebenaran untuk mengaksesnya",
-
   "export_library": "Eksport Perpustakaan",
-
-  "premium_modal_description": "Anda telah melengkapkan {number} gambar harian percuma anda, adakah anda ingin teruskan?",
-  "premium_modal_watch_ad": "Tontoni iklan video untuk teruskan",
-  "premium_modal_get_premium_title": "Dapatkan Akaun Premium",
-  "premium_modal_get_premium_description": "SEMUA CIRI TANPA IKLAN",
 
   "family_tag": "Keluarga",
   "travel_tag": "Pengembaraan",
@@ -104,16 +70,12 @@
   "home_tag": "Rumah",
   "work_tag": "Kerja",
   "parties_tag": "Pesta",
-
   "terms_of_use": "Syarat Penggunaan",
   "privacy_policy": "Dasar Privasi",
-
   "auto_renewable_first_part": "Langganan adalah ",
   "auto_renewable_second_part": "boleh diperbaharui secara automatik.",
   "cancel_anytime": "Batalkan bila-bila",
-
   "language": "Bahasa",
-
   "all_search_tags": "Semua Tag Carian",
   "search_all_tags_not_found": "Tiada gambar dijumpai dengan semua tag padanya",
   "picpics_photo_manager": "picPics - Pengurus Gambar",
@@ -146,13 +108,10 @@
   "lock_your_photos": "Kunci gambar anda",
   "lock_with_pin": "Kunci gambar peribadi anda dengan kod PIN.",
   "protect_with_encryption": "Lindungi gambar peribadi anda dengan penyulitan yang hanya dapat diakses dengan kata laluan PIN.",
-
-
-  "all_photos_were_tagged": "There are no more photos to organize.",
+  "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Foto peribadi tanpa had",
-
   "toggle_months": "Bulan",
   "toggle_days": "Hari",
   "toggle_date": "Tarikh",
@@ -166,5 +125,7 @@
   "enable_faceid": "Dayakan Face ID",
   "enable_touchid": "Dayakan Touch ID",
   "enable_fingerprint": "Dayakan Cap Jari",
-  "enable_irisscanner": "Dayakan Pengimbas Iris"
+  "enable_irisscanner": "Dayakan Pengimbas Iris",
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

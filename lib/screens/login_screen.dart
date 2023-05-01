@@ -1,16 +1,16 @@
 import 'dart:ui';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/components/colorful_background.dart';
-import 'package:picPics/managers/analytics_manager.dart';
+import 'package:flutter_swiper_view/flutter_swiper_view.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/stores/app_store.dart';
+
 import 'package:picPics/screens/tabs_screen.dart';
-import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/stores/login_store.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
-import 'package:provider/provider.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -20,23 +20,13 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  AppStore appStore;
-
-  @override
-  void initState() {
-    super.initState();
-    Analytics.sendCurrentScreen(Screen.login_screen);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    appStore.createDefaultTags(context);
-  }
+  SwiperController swiperController = SwiperController();
 
   @override
   Widget build(BuildContext context) {
+    final loginStore = LoginStore();
+    var height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
@@ -48,58 +38,187 @@ class _LoginScreenState extends State<LoginScreen> {
               blurFilter: false,
             ),
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Spacer(
-                      flex: 2,
-                    ),
-                    Image.asset('lib/images/picpics_small.png'),
-                    Spacer(
-                      flex: 1,
-                    ),
-                    Text(
-                      S.of(context).welcome,
-                      textScaleFactor: 1.0,
-                      style: kLoginDescriptionTextStyle,
-                    ),
-                    Text(
-                      S.of(context).photos_always_organized,
-                      textScaleFactor: 1.0,
-                      style: kLoginDescriptionTextStyle,
-                    ),
-                    Spacer(
-                      flex: 2,
-                    ),
-                    CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () async {
-                        appStore.setLoggedIn(true);
-                        Navigator.pushReplacementNamed(context, TabsScreen.id);
-                      },
-                      child: Container(
-                        height: 44.0,
-                        decoration: BoxDecoration(
-                          gradient: kPrimaryGradient,
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Center(
-                          child: Text(
-                            S.of(context).continue_string,
-                            textScaleFactor: 1.0,
-                            style: kLoginButtonTextStyle,
+              child: Obx(() {
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        if (loginStore.slideIndex.value != 0)
+                          Image.asset('lib/images/picpics_small.png'),
+                        Expanded(
+                          child: Swiper(
+                            loop: false,
+                            itemBuilder: (BuildContext context, int index) {
+                              if (index == 0) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 26.0,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Spacer(
+                                        flex: 2,
+                                      ),
+                                      Image.asset(
+                                          'lib/images/picpics_small.png'),
+                                      Spacer(
+                                        flex: 1,
+                                      ),
+                                      Obx(
+                                        () => Text(
+                                          LangControl.to.S.value.welcome,
+                                          textScaleFactor: 1.0,
+                                          style: kLoginDescriptionTextStyle,
+                                        ),
+                                      ),
+                                      Obx(
+                                        () => Text(
+                                          LangControl.to.S.value
+                                              .photos_always_organized,
+                                          textScaleFactor: 1.0,
+                                          style: kLoginDescriptionTextStyle,
+                                        ),
+                                      ),
+                                      Spacer(
+                                        flex: 2,
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+
+                              return Column(
+                                children: <Widget>[
+                                  Spacer(
+                                    flex: 1,
+                                  ),
+                                  Container(
+                                    constraints: BoxConstraints(
+                                        maxHeight: height / 3 - 20),
+                                    child: loginStore.getImage(index),
+                                  ),
+                                  Spacer(
+                                    flex: 2,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 16.0,
+                                      right: 16,
+                                      bottom: 48.0,
+                                    ),
+                                    child: Text(
+                                      loginStore.getDescription(
+                                              context, index) ??
+                                          '',
+                                      textScaleFactor: 1.0,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontFamily: 'Lato',
+                                        color: kWhiteColor,
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                        fontStyle: FontStyle.normal,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                            itemCount: loginStore.totalSlides,
+                            controller: swiperController,
+                            onIndexChanged: (index) {
+                              loginStore.setSlideIndex(index);
+                            },
+                            pagination: SwiperCustomPagination(
+                              builder: (BuildContext context,
+                                  SwiperPluginConfig? config) {
+                                var navIndicators = <Widget>[];
+
+                                for (var x = 0;
+                                    x < loginStore.totalSlides;
+                                    x++) {
+                                  navIndicators.add(
+                                    Container(
+                                      height: 8.0,
+                                      width: 8.0,
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 7.0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: config?.activeIndex == x
+                                            ? kWhiteColor
+                                            : kGrayColor,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
+                                      ),
+                                    ),
+                                  );
+                                }
+
+                                return Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: navIndicators,
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
+                        SizedBox(height: 64.0),
+                        CupertinoButton(
+                          onPressed: () async {
+                            if (loginStore.slideIndex.value ==
+                                loginStore.totalSlides - 1) {
+                              await UserController.to
+                                  .setTutorialCompleted(true);
+                              await Get.offNamedUntil(
+                                  TabsScreen.id, (route) => false);
+                              return;
+                            }
+                            print('next');
+                            await swiperController.next(animation: true);
+                          },
+                          padding: const EdgeInsets.all(0),
+                          child: Container(
+                            height: 66.0,
+                            margin:
+                                const EdgeInsets.symmetric(horizontal: 16.0),
+                            decoration: BoxDecoration(
+                              gradient: kPrimaryGradient,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            alignment: Alignment.center,
+                            child: Obx(
+                              () => Text(
+                                loginStore.slideIndex.value ==
+                                        loginStore.totalSlides - 1
+                                    ? LangControl.to.S.value.start.toUpperCase()
+                                    : LangControl.to.S.value.next.toUpperCase(),
+                                textScaleFactor: 1.0,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontFamily: 'Lato',
+                                  color: kWhiteColor,
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w700,
+                                  fontStyle: FontStyle.normal,
+                                  letterSpacing: -0.4099999964237213,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    SizedBox(
-                      height: 40.0,
-                    ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              }),
             ),
           ],
         ),
@@ -107,3 +226,11 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+
+// appStore.setLoggedIn(true);
+// Navigator.pushReplacementNamed(context, TabsScreen());
+// await appStore.requestNotificationPermission();
+// await appStore.checkNotificationPermission(
+//     firstPermissionCheck: true);
+// await appStore.setTutorialCompleted(true);
+// await galleryStore.loadAssetsPath();

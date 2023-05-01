@@ -4,20 +4,16 @@
   "edit_tag": "टैग संपादित करें",
   "cancel": "रद्द करें",
   "notifications": "सूचनाएं",
-
   "welcome": "स्वागत!",
   "photos_always_organized": "अब आपकी तस्वीरें हमेशा व्यवस्थित रहेंगी",
-
   "continue_string": "जारी रखें",
   "gallery_access_reason": "अपनी तस्वीरों को व्यवस्थित करने के लिए हमें आपकी फोटो गैलरी तक पहुंचने की आवश्यकता है",
-
   "tutorial_daily_package": "हम धीरे-धीरे आपके पुस्तकालय को व्यवस्थित करने के लिए एक दैनिक पैकेज लाते हैं.",
   "next": "आगे",
   "tutorial_however_you_want": "टैग जोड़कर अपनी तस्वीरों को व्यवस्थित करें, जैसे 'परिवार', 'पालतू जानवर', या जो भी आप चाहते हैं.",
   "close": "बंद करें",
   "start": "शुरू करें",
   "tutorial_just_swipe": "अपनी फ़ोटो में टैग जोड़ने के बाद, बस अगले एक पर जाने के लिए स्वाइप करें.",
-
   "settings": "समायोजन",
   "suggestions": "सुझाव",
   "photo_location": "फोटो स्थान",
@@ -25,23 +21,16 @@
   "add_tag": "टैग जोड़ो",
   "add_tags": "टैग लगा दो",
   "full_screen": "पूर्ण स्क्रीन",
-
   "photo_gallery_title": "चित्र प्रदर्शनी",
   "photo_gallery_description": "तस्वीरें अभी तक व्यवस्थित नहीं हैं",
   "photo_gallery_count": "{howMany, plural, zero{कोई फ़ोटो नहीं चुना गया} one{1 फ़ोटो चयनित} other{{howMany} फ़ोटो चयनित}}",
-
   "organized_photos_title": "आयोजित फोटो",
   "organized_photos_description": "तस्वीरें जो पहले ही टैग की जा चुकी हैं",
-
   "search": "खोज...",
-
-
   "no_tagged_photos": "आपके पास अभी तक कोई टैग फ़ोटो नहीं है",
   "start_tagging": "टैग करना शुरू करें",
-
   "no_tags_found": "कोई टैग नहीं मिला",
   "search_results": "खोज परिणाम",
-
   "daily_challenge": "दैनिक चुनौती",
   "daily_goal": "दैनिक लक्ष्य",
   "notification_time": "अधिसूचना का समय",
@@ -49,49 +38,27 @@
   "rate_this_app": "इस ऐप्लिकेशन को रेट करें",
   "how_many_pics": "कितने पिक्स",
   "time": "समय",
-
   "take_a_look": "इस ऐप पर एक नज़र डालें!",
   "take_a_look_description": "अपनी सभी तस्वीरों को व्यवस्थित करने के लिए {url} पर जाएं",
-
   "daily_challenge_permission_description": "हमें आपकी दैनिक चुनौतियों को भेजने में सक्षम होने के लिए, हमें सूचनाएं भेजने के लिए प्राधिकरण की आवश्यकता है, इसलिए, यह आवश्यक है कि आप अपने सेल फोन के विकल्पों में सूचनाओं को अधिकृत करें.",
-
-
-  "you_are_premium": "आप प्रीमियम हैं!",
-  "get_premium_now": "अब प्रीमियम प्राप्त करें!",
-
-
-  "get_premium_title": "प्रीमियम प्राप्त करें",
-  "get_premium_description": "सभी फीचर्स हैं",
-
 
   "no_ads": "विज्ञापन नहीं",
   "export_all_gallery": "सभी गैलरी निर्यात करें",
   "infinite_tags": "अनंत टैग",
   "tag_multiple_photos_at_once": "एक साथ कई फ़ोटो टैग करें",
-
   "sign": "संकेत",
   "year": "साल",
   "month": "महीना",
-
   "restore_purchase": "पुनःस्थापन क्रय",
   "no_previous_purchase": "कोई पिछली खरीद नहीं",
   "no_valid_subscription": "मान्य सदस्यता खरीद नहीं मिली.",
   "save": "सहेजें",
-
   "save_location": "स्थान सहेजें",
-
   "device_has_no_pics": "इस डिवाइस में गैलरी में कोई फोटो नहीं है, इसलिए कोई भी फोटो नहीं है जिसे टैग किया जा सके.",
   "open_gallery": "गैलरी खोलें",
-
   "gallery_access_permission": "पहुंच की अनुमति",
   "gallery_access_permission_description": "अपनी तस्वीरों को व्यवस्थित करने के लिए, हमें उन्हें एक्सेस करने के लिए प्राधिकरण की आवश्यकता है",
-
   "export_library": "निर्यात लाइब्रेरी",
-
-  "premium_modal_description": "आपने अपनी {number} निःशुल्क दैनिक तस्वीरें पूरी कर ली हैं, क्या आप जारी रखना चाहते हैं?",
-  "premium_modal_watch_ad": "जारी रखने के लिए वीडियो विज्ञापन देखें",
-  "premium_modal_get_premium_title": "प्रीमियम खाता प्राप्त करें",
-  "premium_modal_get_premium_description": "विज्ञापन के बिना सभी विशेषताएं",
 
   "family_tag": "परिवार",
   "travel_tag": "यात्रा",
@@ -103,16 +70,12 @@
   "home_tag": "घर",
   "work_tag": "काम",
   "parties_tag": "दल",
-
   "terms_of_use": "उपयोग की शर्तें",
   "privacy_policy": "गोपनीयता नीति",
-
   "auto_renewable_first_part": "सदस्यता है ",
   "auto_renewable_second_part": "ऑटो-नवीकरणीय",
   "cancel_anytime": "कभी भी रद्द करें",
-
   "language": "भाषा",
-
   "all_search_tags": "सभी खोज टैग",
   "search_all_tags_not_found": "इस पर सभी टैग के साथ कोई चित्र नहीं मिला",
   "picpics_photo_manager": "पिकपिक्स - फोटो मैनेजर",
@@ -145,13 +108,10 @@
   "lock_your_photos": "अपनी तस्वीरों को लॉक करें",
   "lock_with_pin": "पिन पासकोड के साथ अपनी निजी तस्वीरें लॉक करें.",
   "protect_with_encryption": "केवल पिन पासवर्ड के साथ पहुंच योग्य एन्क्रिप्शन वाली अपनी निजी फ़ोटो को सुरक्षित रखें.",
-
-
-  "all_photos_were_tagged": "There are no more photos to organize.",
+  "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "असीमित निजी तस्वीरें",
-
   "toggle_months": "महीने",
   "toggle_days": "दिन",
   "toggle_date": "दिनांक",
@@ -165,5 +125,7 @@
   "enable_faceid": "Face ID सक्षम",
   "enable_touchid": "Touch ID सक्षम",
   "enable_fingerprint": "फिंगरप्रिंट सक्षम करें",
-  "enable_irisscanner": "आईरिस स्कैनर सक्षम करें"
+  "enable_irisscanner": "आईरिस स्कैनर सक्षम करें",
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

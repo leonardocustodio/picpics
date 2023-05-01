@@ -4,21 +4,30 @@ import 'package:flutter/material.dart';
 
 class ColorfulBackground extends CustomPainter {
   final Point moveBy;
-  ColorfulBackground({@required this.moveBy});
+  ColorfulBackground({required this.moveBy});
 
   @override
   void paint(Canvas canvas, Size size) {
-    Paint primaryGradient = Paint()..shader = kPrimaryGradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    Paint secondaryGradient = Paint()..shader = kSecondaryGradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    Paint pinkGradient = Paint()..shader = kPinkGradient.createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    var primaryGradient = Paint()
+      ..shader = kPrimaryGradient
+          .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    var secondaryGradient = Paint()
+      ..shader = kSecondaryGradient
+          .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+    var pinkGradient = Paint()
+      ..shader = kPinkGradient
+          .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    Paint yellowPaint = Paint()
+    var yellowPaint = Paint()
       ..color = kYellowColor
       ..style = PaintingStyle.fill;
 
-    Path secondaryPath = getSecondaryPath(size.width, size.height, moveBy.x - 20, moveBy.y * 2);
-    Path pinkPath = getPinkPath(size.width, size.height, -(moveBy.x / 3), -(moveBy.y / 2 - 30));
-    Path yellowPath = getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y);
+    var secondaryPath =
+        getSecondaryPath(size.width, size.height, moveBy.x - 20, moveBy.y * 2);
+    var pinkPath = getPinkPath(
+        size.width, size.height, -(moveBy.x / 3), -(moveBy.y / 2 - 30));
+    var yellowPath =
+        getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y + .0);
 
     canvas.drawPaint(primaryGradient);
     canvas.drawPath(pinkPath, pinkGradient);
@@ -29,7 +38,8 @@ class ColorfulBackground extends CustomPainter {
   Path getPinkPath(double x, double y, double moveByX, double moveByY) {
     return Path()
       ..moveTo(x * 1, y * 0.35 + moveByY)
-      ..quadraticBezierTo(x * 0.5 + moveByX, y * 0.4 + moveByY, 0 + moveByX, y * 0.3 + moveByY)
+      ..quadraticBezierTo(
+          x * 0.5 + moveByX, y * 0.4 + moveByY, 0 + moveByX, y * 0.3 + moveByY)
       ..lineTo(0 * x + moveByX, 1 * y + moveByY)
       ..lineTo(1 * x, y * 1 + moveByY)
       ..close();
@@ -46,7 +56,8 @@ class ColorfulBackground extends CustomPainter {
   Path getSecondaryPath(double x, double y, double moveByX, double moveByY) {
     return Path()
       ..moveTo(0, y * 0.25 + moveByY / 3)
-      ..quadraticBezierTo(x * 0.75 + moveByX, y * 0.3 + moveByY, x, y * 0.5 - moveByY / 2)
+      ..quadraticBezierTo(
+          x * 0.75 + moveByX, y * 0.3 + moveByY, x, y * 0.5 - moveByY / 2)
       ..lineTo(x * 1, y * 1)
       ..lineTo(0, y * 1)
       ..close();

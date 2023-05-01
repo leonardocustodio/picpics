@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 
 import 'package:picPics/components/circular_menu.dart';
 
@@ -7,10 +7,11 @@ class MultiCircularMenu extends StatelessWidget {
   final List<CircularMenu> menus;
 
   /// widget holds actual page content
-  final Widget backgroundWidget;
-  const MultiCircularMenu({@required this.menus, this.backgroundWidget})
+  final Widget? backgroundWidget;
+  const MultiCircularMenu({required this.menus, this.backgroundWidget})
       : assert(menus.length != 0, 'menus can not be empty list'),
-        assert(menus.length > 1, 'no need to use MultiCircularMenu you can directly use CircularMenu');
+        assert(menus.length > 1,
+            'no need to use MultiCircularMenu you can directly use CircularMenu');
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -21,3 +22,4 @@ class MultiCircularMenu extends StatelessWidget {
     );
   }
 }
+ */

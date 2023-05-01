@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+import 'package:picPics/stores/language_controller.dart';
 
 class GeneralModal extends StatelessWidget {
   final String message;
-  final Function onPressedDelete;
-  final Function onPressedOk;
+  final Function() onPressedDelete;
+  final Function() onPressedOk;
 
   GeneralModal({
-    @required this.message,
-    @required this.onPressedDelete,
-    @required this.onPressedOk,
+    required this.message,
+    required this.onPressedDelete,
+    required this.onPressedOk,
   });
 
   @override
@@ -73,10 +74,12 @@ class GeneralModal extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: Center(
-                    child: Text(
-                      S.of(context).continue_string,
-                      textScaleFactor: 1.0,
-                      style: kLoginButtonTextStyle,
+                    child: Obx(
+                      () => Text(
+                        LangControl.to.S.value.continue_string,
+                        textScaleFactor: 1.0,
+                        style: kLoginButtonTextStyle,
+                      ),
                     ),
                   ),
                 ),

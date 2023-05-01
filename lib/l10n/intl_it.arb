@@ -4,21 +4,16 @@
   "edit_tag": "Modifica tag",
   "cancel": "Annulla",
   "notifications": "Notifiche",
-
-
   "welcome": "Benvenuto!",
   "photos_always_organized": "Ora le tue foto saranno sempre organizzate",
-
   "continue_string": "Continua",
   "gallery_access_reason": "Per organizzare le tue foto abbiamo bisogno di accedere alla tua galleria fotografica",
-
   "tutorial_daily_package": "Ti offriamo un pacchetto giornaliero per organizzare gradualmente la tua biblioteca.",
   "next": "Successivo",
   "tutorial_however_you_want": "Organizza le tue foto aggiungendo tag, come \"famiglia\", \"animali domestici\" o qualsiasi cosa tu voglia.",
   "close": "Chiudi",
   "start": "Inizia",
   "tutorial_just_swipe": "Dopo aver aggiunto i tag alla tua foto, basta scorrere per passare al successivo.",
-
   "settings": "Impostazioni",
   "suggestions": "Suggerimenti",
   "photo_location": "Posizione della foto",
@@ -26,23 +21,16 @@
   "add_tag": "Aggiungi Tag",
   "add_tags": "Aggiungi i tag",
   "full_screen": "A schermo intero",
-
   "photo_gallery_title": "Galleria foto",
   "photo_gallery_description": "Foto non ancora organizzate",
   "photo_gallery_count": "{howMany, plural, zero{Nessuna foto selezionata} one{1 foto selezionata} other{{howMany} foto selezionate}}",
-
   "organized_photos_title": "Foto organizzate",
   "organized_photos_description": "Foto che sono già state taggate",
-
   "search": "Ricerca...",
-
-
   "no_tagged_photos": "Non hai ancora foto taggate",
   "start_tagging": "Inizia a taggare",
-
   "no_tags_found": "Nessun tag trovato",
   "search_results": "Risultati di ricerca",
-
   "daily_challenge": "Sfida quotidiana",
   "daily_goal": "Obiettivo giornaliero",
   "notification_time": "Tempo di notifica",
@@ -50,49 +38,27 @@
   "rate_this_app": "Valuta questa applicazione",
   "how_many_pics": "Quante foto",
   "time": "Orario",
-
   "take_a_look": "Dai un'occhiata a questa app!",
   "take_a_look_description": "Per organizzare tutte le tue foto vai a {url}",
-
   "daily_challenge_permission_description": "Per poter inviare le tue sfide quotidiane abbiamo bisogno dell'autorizzazione per inviare notifiche, quindi è necessario autorizzare le notifiche nelle opzioni del tuo cellulare",
-
-
-  "you_are_premium": "Sei premium!",
-  "get_premium_now": "Ottieni la versione premium ora!",
-
-
-  "get_premium_title": "OTTIENI LA VERSIONE PREMIUM",
-  "get_premium_description": "PER AVERE TUTTE QUESTE CARATTERISTICHE",
-
 
   "no_ads": "Nessuna pubblicità",
   "export_all_gallery": "Esporta tutta la galleria",
   "infinite_tags": "Tag infiniti",
   "tag_multiple_photos_at_once": "Tagga più foto contemporaneamente",
-
   "sign": "Registrati",
   "year": "anno",
   "month": "mese",
-
   "restore_purchase": "Ripristina acquisto",
   "no_previous_purchase": "Nessun acquisto precedente",
   "no_valid_subscription": "Impossibile trovare un acquisto in abbonamento valido.",
   "save": "Salva",
-
   "save_location": "Salva la posizione",
-
   "device_has_no_pics": "Questo dispositivo non ha foto nella galleria, quindi non ci sono foto che possono essere taggate.",
   "open_gallery": "Galleria aperta",
-
   "gallery_access_permission": "Autorizzazioni di accesso",
   "gallery_access_permission_description": "Per iniziare a organizzare le tue foto, abbiamo bisogno dell'autorizzazione per accedervi",
-
   "export_library": "Esporta libreria",
-
-  "premium_modal_description": "Hai completato {number} immagini giornaliere gratuite, vuoi continuare?",
-  "premium_modal_watch_ad": "Guarda l'annuncio video per continuare",
-  "premium_modal_get_premium_title": "Ottieni un account Premium",
-  "premium_modal_get_premium_description": "TUTTE LE CARATTERISTICHE SENZA ANNUNCI",
 
   "family_tag": "Famiglia",
   "travel_tag": "Viaggio",
@@ -104,16 +70,12 @@
   "home_tag": "Casa",
   "work_tag": "Lavoro",
   "parties_tag": "Feste",
-
   "terms_of_use": "Condizioni d'uso",
   "privacy_policy": "Informativa sulla privacy",
-
   "auto_renewable_first_part": "L'abbonamento è ",
   "auto_renewable_second_part": "rinnovabile automaticamente.",
   "cancel_anytime": "Annulla in qualsiasi momento",
-
   "language": "Linguaggio",
-
   "all_search_tags": "Tutti i tag di ricerca",
   "search_all_tags_not_found": "Non sono state trovate immagini con tutti i tag su di essa",
   "picpics_photo_manager": "picPics - Gestore di foto",
@@ -146,13 +108,10 @@
   "lock_your_photos": "Blocca le tue foto",
   "lock_with_pin": "Blocca le tue foto private con un codice PIN.",
   "protect_with_encryption": "Proteggi le tue foto personali con la crittografia accessibile solo con una password PIN.",
-
-
-  "all_photos_were_tagged": "There are no more photos to organize.",
+  "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Foto private illimitates",
-
   "toggle_months": "Mesi",
   "toggle_days": "Giorni",
   "toggle_date": "Data",
@@ -166,5 +125,7 @@
   "enable_faceid": "Abilita Face ID",
   "enable_touchid": "Abilita Touch ID",
   "enable_fingerprint": "Abilita Impronta Digitale",
-  "enable_irisscanner": "Abilita Scanner Dell'Iride"
+  "enable_irisscanner": "Abilita Scanner Dell'Iride",
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

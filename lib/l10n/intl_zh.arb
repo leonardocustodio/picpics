@@ -4,21 +4,16 @@
   "edit_tag": "编辑标签",
   "cancel": "取消",
   "notifications": "通知",
-
-
   "welcome": "欢迎！",
   "photos_always_organized": "现在，您的照片将始终井井有条",
-
   "continue_string": "继续",
   "gallery_access_reason": "要整理您的照片，我们需要访问您的照片库",
-
   "tutorial_daily_package": "我们为您带来每日包，以逐步整理您的图库。",
   "next": "下一个",
   "tutorial_however_you_want": "通过添加标签（例如“家庭”、“宠物”或任何您想要的标签）来整理照片。",
   "close": "关闭",
   "start": "开始",
   "tutorial_just_swipe": "将标签添加到照片后，只需滑动即可前往下一个。",
-
   "settings": "设置",
   "suggestions": "建议",
   "photo_location": "照片位置",
@@ -26,23 +21,16 @@
   "add_tag": "添加标签",
   "add_tags": "添加标签",
   "full_screen": "全屏",
-
   "photo_gallery_title": "照片库",
   "photo_gallery_description": "尚未整理的照片",
   "photo_gallery_count": "{howMany, plural, zero{未选择照片} one{已选择1张照片} other{已选择{howMany}张照片}}",
-
   "organized_photos_title": "已整理的照片",
   "organized_photos_description": "已添加标签的照片",
-
   "search": "搜索...",
-
-
   "no_tagged_photos": "您还没有添加了标签的照片",
   "start_tagging": "开始添加标签",
-
   "no_tags_found": "未找到标签",
   "search_results": "搜索结果",
-
   "daily_challenge": "每日挑战",
   "daily_goal": "每日目标",
   "notification_time": "通知时间",
@@ -50,49 +38,27 @@
   "rate_this_app": "评价这个App",
   "how_many_pics": "多少图片",
   "time": "时间",
-
   "take_a_look": "看看这个App！",
   "take_a_look_description": "要整理所有照片，请访问{url}",
-
   "daily_challenge_permission_description": "为了让我们能够发送您的每日挑战，我们需要授权来发送通知，因此您需要在手机选项中授权通知权限",
-
-
-  "you_are_premium": "您是高级版用户！",
-  "get_premium_now": "立即获取高级版！",
-
-
-  "get_premium_title": "获取高级版",
-  "get_premium_description": "享受所有这些功能",
-
 
   "no_ads": "无广告",
   "export_all_gallery": "导出所有图库",
   "infinite_tags": "无限标签",
   "tag_multiple_photos_at_once": "一次给多张照片添加标签",
-
   "sign": "签",
   "year": "年",
   "month": "月",
-
   "restore_purchase": "恢复购买",
   "no_previous_purchase": "没有之前的购买",
   "no_valid_subscription": "找不到有效的订阅购买。",
   "save": "保存",
-
   "save_location": "保存位置",
-
   "device_has_no_pics": "此设备的图库中没有照片，因此没有可以添加标签的照片。",
   "open_gallery": "打开图库",
-
   "gallery_access_permission": "访问权限",
   "gallery_access_permission_description": "要开始整理您的照片，我们需要授权以访问它们",
-
   "export_library": "导出图库",
-
-  "premium_modal_description": "您已完成您的{number}张免费每日图片，是否要继续？",
-  "premium_modal_watch_ad": "观看视频广告以继续",
-  "premium_modal_get_premium_title": "获取高级账户",
-  "premium_modal_get_premium_description": "所有功能，无广告",
 
   "family_tag": "家庭",
   "travel_tag": "旅行",
@@ -104,16 +70,12 @@
   "home_tag": "居家",
   "work_tag": "工作",
   "parties_tag": "派对",
-
   "terms_of_use": "使用条款",
   "privacy_policy": "隐私政策",
-
   "auto_renewable_first_part": "订阅为",
   "auto_renewable_second_part": "自动续订。",
   "cancel_anytime": "随时取消",
-
   "language": "语言",
-
   "all_search_tags": "所有搜索标签",
   "search_all_tags_not_found": "未找到带有所有标签的图片",
   "picpics_photo_manager": "picPics - 照片管理器",
@@ -146,13 +108,10 @@
   "lock_your_photos": "锁定您的照片",
   "lock_with_pin": "使用PIN密码锁定您的私人照片。",
   "protect_with_encryption": "通过只能使用PIN密码进行访问的加密保护您的个人照片。",
-
-
-  "all_photos_were_tagged": "There are no more photos to organize.",
+  "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "无限的私人照片",
-
   "toggle_months": "月",
   "toggle_days": "日",
   "toggle_date": "日期",
@@ -166,5 +125,7 @@
   "enable_faceid": "启用Face ID",
   "enable_touchid": "启用Touch ID",
   "enable_fingerprint": "启用指纹",
-  "enable_irisscanner": "启用虹膜扫描仪"
+  "enable_irisscanner": "启用虹膜扫描仪",
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

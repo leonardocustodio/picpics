@@ -1,864 +1,507 @@
-import 'dart:math';
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:mobx/mobx.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/custom_scroll_physics.dart';
 import 'package:picPics/fade_image_builder.dart';
+import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/generated/l10n.dart';
-import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/screens/tabs/untagged_tabs/untagged_day.dart';
+import 'package:picPics/screens/tabs/untagged_tabs/untagged_month.dart';
+import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
+import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
-import 'package:provider/provider.dart';
 
-class UntaggedTab extends StatefulWidget {
+import '../../asset_entity_image_provider.dart';
+
+// ignore: must_be_immutable
+class UntaggedTab extends GetWidget<TabsController> {
   static const id = 'untagged_tab';
 
-  @override
-  _UntaggedTabState createState() => _UntaggedTabState();
-}
-
-class MyDynamicHeader extends SliverPersistentHeaderDelegate {
-  final String headerTitle;
-
-  MyDynamicHeader({
-    this.headerTitle,
-  });
-
-  int index = 0;
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Container(
-        padding: const EdgeInsets.only(left: 14.0, right: 8.0),
-        height: constraints.maxHeight,
-        child: Row(
-          children: [
-            Text(
-              headerTitle,
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate _) => true;
-
-  @override
-  double get maxExtent => 46.0;
-
-  @override
-  double get minExtent => 0.0;
-}
-
-class MySliverAppBar extends SliverPersistentHeaderDelegate {
-  final double expandedHeight;
-  final String title;
-
-  MySliverAppBar({@required this.expandedHeight, this.title});
-
-  double _minMax(num _min, num _max, num actual) {
-    if (_min == null && _max == null) {
-      return actual.toDouble();
-    }
-
-    if (_min == null) {
-      return min(_max.toDouble(), actual.toDouble());
-    }
-
-    if (_max == null) {
-      return max(_min.toDouble(), actual.toDouble());
-    }
-
-    return min(_max.toDouble(), max(_min.toDouble(), actual.toDouble()));
-  }
-
-  @override
-  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
-    return Stack(
-      fit: StackFit.expand,
-      overflow: Overflow.visible,
-      children: [
-        // shrinkOffset / expandedHeight
-        Positioned(
-          bottom: 20.0,
-          child: Text(
-            title,
-            textScaleFactor: _minMax(1.0, 1.5, 1 * (expandedHeight / minExtent)),
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: Color(0xff979a9b),
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.normal,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  @override
-  double get maxExtent => expandedHeight;
-
-  @override
-  double get minExtent => kToolbarHeight;
-
-  @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
-}
-
-class _UntaggedTabState extends State<UntaggedTab> {
-  TabsStore tabsStore;
-  GalleryStore galleryStore;
-
-  ScrollController scrollControllerFirstTab;
+  //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
-  ReactionDisposer disposer;
 
-  // List<Widget> _buildSlivers(BuildContext context) {
-  //   List<Widget> slivers = [];
-  //
-  //   for (var untaggedPic in galleryStore.untaggedPics) {
-  //     slivers.add();
-  //   }
-  //
-  //   return slivers;
-  // }
-
-  void refreshGridPositionFirstTab() {
-    var offset = scrollControllerFirstTab.hasClients ? scrollControllerFirstTab.offset : scrollControllerFirstTab.initialScrollOffset;
-
-    if (offset >= 86) {
-      tabsStore.setTopOffsetFirstTab(10.0);
-    } else if (offset >= 32) {
-      tabsStore.setTopOffsetFirstTab(64.0 - (offset - 32.0));
-    } else if (offset <= 0) {
-      tabsStore.setTopOffsetFirstTab(64.0);
-    }
-
-    if (scrollControllerFirstTab.hasClients) {
-      tabsStore.offsetFirstTab = scrollControllerFirstTab.offset;
-    }
-  }
-
-  Widget _buildSliverGridItem(BuildContext context, PicStore picStore) {
-    if (picStore == null) {
-      return Container();
-    }
-
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
-    return RepaintBoundary(
-      child: ExtendedImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = const ColoredBox(color: kGreyPlaceholder);
-              break;
-            case LoadState.completed:
-              loader = FadeImageBuilder(
-                child: () {
-                  return GestureDetector(
-                    onLongPress: () {
-                      print('LongPress');
-                      if (tabsStore.multiPicBar == false) {
-                        galleryStore.setSelectedPics(
-                          picStore: picStore,
-                          picIsTagged: false,
-                        );
-                        tabsStore.setMultiPicBar(true);
+  Widget _buildGridView(BuildContext context) {
+    return NotificationListener<ScrollNotification>(
+      onNotification: (scrollNotification) {
+        /// Hiding Months on days from here by listening to the scrollNotification
+        if (scrollNotification is ScrollStartNotification) {
+          print('Start scrolling');
+          controller.setIsScrolling(true);
+          return false;
+        } else if (scrollNotification is ScrollEndNotification) {
+          print('End scrolling');
+          controller.setIsScrolling(false);
+          return true;
+        }
+        return true;
+      },
+      child: Obx(
+        () {
+          var isMonth = controller.toggleIndexUntagged.value == 0;
+          if (isMonth) {
+            if (controller.allUnTaggedPicsMonth.isEmpty) {
+              return Center(child: CircularProgressIndicator());
+            }
+            return UntaggedTabMonth();
+            /*   return Obx(
+              () => StaggeredGridView.countBuilder(
+                  addAutomaticKeepAlives: true,
+                  addRepaintBoundaries: true,
+                  primary: true,
+                  shrinkWrap: true,
+                  key: Key('Month'),
+                  padding: const EdgeInsets.only(top: 2),
+                  crossAxisCount: 4,
+                  mainAxisSpacing: 0,
+                  crossAxisSpacing: 0,
+                  itemCount: controller.allUnTaggedPicsMonth.length,
+                  staggeredTileBuilder: (int index) {
+                    if (controller.allUnTaggedPicsMonth[index] is DateTime) {
+                      if (index + 1 < controller.allUnTaggedPicsMonth.length &&
+                          controller.allUnTaggedPicsMonth[index + 1]
+                              is DateTime) {
+                        return const StaggeredTile.extent(4, 0);
                       }
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        if (tabsStore.multiPicBar) {
-                          galleryStore.setSelectedPics(
-                            picStore: picStore,
-                            picIsTagged: false,
-                          );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-                          return;
-                        }
+                      return const StaggeredTile.extent(4, 40);
+                    }
+                    return const StaggeredTile.count(1, 1);
+                  },
+                  itemBuilder: (_, int index) {
+                    return Obx(() {
+                      if (index == 0 ||
+                          controller.allUnTaggedPicsMonth[index] is DateTime) {
+                        var isSelected = false;
+                        if (controller.multiPicBar.value) {
+                          var i = index + 1;
 
-                        tagsEditingController.text = '';
-                        galleryStore.setCurrentPic(picStore);
-                        tabsStore.setModalCard(true);
-                      },
-                      child: Observer(builder: (_) {
-                        Widget image = Positioned.fill(
-                          child: RepaintBoundary(
-                            child: state.completedWidget,
+                          /// assuming that every picId is selected so the wh
+                          var everySelected = false;
+                          while (i < controller.allUnTaggedPicsMonth.length &&
+                              controller.allUnTaggedPicsMonth[i] is String) {
+                            if (controller.selectedMultiBarPics[
+                                        controller.allUnTaggedPicsMonth[i]] ==
+                                    null ||
+                                controller.selectedMultiBarPics[
+                                        controller.allUnTaggedPicsMonth[i]] ==
+                                    false) {
+                              everySelected = true;
+                              break;
+                            }
+                            i++;
+                          }
+                          isSelected = !everySelected;
+                        }
+                        return GestureDetector(
+                          onTap: () {
+                            if (controller.multiPicBar.value) {
+                              var i = index + 1;
+                              if (isSelected) {
+                                while (i <
+                                        controller
+                                            .allUnTaggedPicsMonth.length &&
+                                    controller.allUnTaggedPicsMonth[i]
+                                        is String) {
+                                  controller.selectedMultiBarPics.remove(
+                                      controller.allUnTaggedPicsMonth[i]);
+                                  i++;
+                                }
+                              } else {
+                                while (i <
+                                        controller
+                                            .allUnTaggedPicsMonth.length &&
+                                    controller.allUnTaggedPicsMonth[i]
+                                        is String) {
+                                  controller.selectedMultiBarPics[controller
+                                      .allUnTaggedPicsMonth[i]] = true;
+                                  i++;
+                                }
+                              }
+                            }
+                          },
+                          child: buildDateHeader(
+                            controller.allUnTaggedPicsMonth[index],
+                            isSelected,
                           ),
                         );
-                        if (tabsStore.multiPicBar) {
-                          if (galleryStore.selectedPics.contains(picStore)) {
-                            return Stack(
-                              children: [
-                                image,
-                                Container(
-                                  constraints: BoxConstraints.expand(),
-                                  decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
-                                    border: Border.all(
-                                      color: kSecondaryColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 8.0,
-                                  top: 6.0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      gradient: kSecondaryGradient,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Image.asset('lib/images/checkwhiteico.png'),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                          return Stack(
-                            children: [
-                              image,
-                              Positioned(
-                                left: 8.0,
-                                top: 6.0,
+                      }
+
+                      var blurHash = BlurHashController
+                          .to.blurHash[controller.allUnTaggedPicsMonth[index]];
+
+                      return Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: blurHash != null
+                                    ? BlurHash(
+                                        hash: blurHash,
+                                        color: Colors.transparent,
+                                      )
+                                    : Container(
+                                        padding: EdgeInsets.all(12),
+                                        color: Colors.grey[300],
+                                      ),
+                              ),
+                            ),
+                          ),
+                          if (controller
+                                  .picStoreMap[
+                                      controller.allUnTaggedPicsMonth[index]]
+                                  ?.value !=
+                              null)
+                            Positioned.fill(
+                                child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
                                 child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: kGrayColor,
-                                      width: 2.0,
-                                    ),
+                                    child: _buildImageWidget(
+                                        picStore: controller
+                                            .picStoreMap[controller
+                                                .allUnTaggedPicsMonth[index]]!
+                                            .value,
+                                        picId: controller
+                                            .allUnTaggedPicsMonth[index],
+                                        hash: blurHash)),
+                              ),
+                            )),
+                        ],
+                      );
+                    });
+                  }),
+            );
+           */
+          } else {
+            return UntaggedTabDay();
+            /*  return Obx(
+              () => StaggeredGridView.countBuilder(
+                addAutomaticKeepAlives: true,
+                addRepaintBoundaries: true,
+                primary: true,
+                shrinkWrap: true,
+                key: Key('Day'),
+                padding: const EdgeInsets.only(top: 2),
+                itemCount: controller.allUnTaggedPicsDay.length,
+                crossAxisCount: 3,
+                mainAxisSpacing: 0,
+                crossAxisSpacing: 0,
+                staggeredTileBuilder: (int index) {
+                  if (controller.allUnTaggedPicsDay[index] is DateTime) {
+                    if (index + 1 < controller.allUnTaggedPicsDay.length &&
+                        controller.allUnTaggedPicsDay[index + 1] is DateTime) {
+                      return const StaggeredTile.extent(3, 0);
+                    }
+                    return const StaggeredTile.extent(3, 40);
+                  }
+                  return const StaggeredTile.count(1, 1);
+                },
+                itemBuilder: (_, int index) {
+                  return Obx(
+                    () {
+                      if (controller.allUnTaggedPicsDay[index] is DateTime) {
+                        var isSelected = false;
+                        if (controller.multiPicBar.value) {
+                          var i = index + 1;
+
+                          /// assuming that every picId is selected so the wh
+                          var everySelected = false;
+                          while (i < controller.allUnTaggedPicsDay.length &&
+                              controller.allUnTaggedPicsDay[i] is String) {
+                            if (controller.selectedMultiBarPics[
+                                        controller.allUnTaggedPicsDay[i]] ==
+                                    null ||
+                                controller.selectedMultiBarPics[
+                                        controller.allUnTaggedPicsDay[i]] ==
+                                    false) {
+                              everySelected = true;
+                              break;
+                            }
+                            i++;
+                          }
+                          isSelected = !everySelected;
+                        }
+                        return GestureDetector(
+                            onTap: () {
+                              if (controller.multiPicBar.value) {
+                                var i = index + 1;
+                                if (isSelected) {
+                                  while (i <
+                                          controller
+                                              .allUnTaggedPicsDay.length &&
+                                      controller.allUnTaggedPicsDay[i]
+                                          is String) {
+                                    controller.selectedMultiBarPics.remove(
+                                        controller.allUnTaggedPicsDay[i]);
+                                    i++;
+                                  }
+                                } else {
+                                  while (i <
+                                          controller
+                                              .allUnTaggedPicsDay.length &&
+                                      controller.allUnTaggedPicsDay[i]
+                                          is String) {
+                                    controller.selectedMultiBarPics[controller
+                                        .allUnTaggedPicsDay[i]] = true;
+                                    i++;
+                                  }
+                                }
+                              }
+                            },
+                            child: buildDateHeader(
+                              controller.allUnTaggedPicsDay[index],
+                              isSelected,
+                            ));
+                      }
+                      var blurHash = BlurHashController
+                          .to.blurHash[controller.allUnTaggedPicsDay[index]];
+
+                      return Stack(
+                        children: [
+                          Positioned.fill(
+                            child: Padding(
+                              padding: const EdgeInsets.all(2),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(6),
+                                child: blurHash != null
+                                    ? BlurHash(
+                                        hash: blurHash,
+                                        color: Colors.transparent,
+                                      )
+                                    : Container(
+                                        padding: const EdgeInsets.all(12),
+                                        color: Colors.grey[300],
+                                      ),
+                              ),
+                            ),
+                          ),
+                          if (controller
+                                  .picStoreMap[
+                                      controller.allUnTaggedPicsDay[index]]
+                                  ?.value !=
+                              null)
+                            Positioned.fill(
+                              child: Padding(
+                                padding: const EdgeInsets.all(2),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Container(
+                                    child: _buildImageWidget(
+                                        picStore: controller
+                                            .picStoreMap[controller
+                                                .allUnTaggedPicsDay[index]]!
+                                            .value,
+                                        picId: controller
+                                            .allUnTaggedPicsDay[index],
+                                        hash: blurHash),
                                   ),
                                 ),
                               ),
-                            ],
-                          );
-                        }
-                        return Stack(
-                          children: [
-                            image,
-                          ],
-                        );
-                      }),
-                    ),
+                            ),
+                        ],
+                      );
+                    },
                   );
-                }(),
-              );
-              break;
-            case LoadState.failed:
-              loader = _failedItem;
-              break;
+                },
+              ),
+            );
+           */
           }
-          return loader;
         },
       ),
     );
   }
 
-//   Widget _buildNewItem(BuildContext context, int index, double size) {
-//     print('Curret Index: $index');
-//
-//     List<Widget> childs = [];
-//     int endIndex = (index + 1) * 3;
-//
-//     for (int currentIndex = index * 3; currentIndex < endIndex; currentIndex++) {
-//       PicStore picStore = galleryStore.untaggedPics[currentIndex].picStore;
-//       if (picStore == null) {
-//         childs.add(
-//           Container(
-//             color: kGrayColor,
-//             padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-//             width: double.infinity,
-//             child: Text(
-//               '${dateFormat(galleryStore.untaggedPics[currentIndex].date)}',
-//               textScaleFactor: 1.0,
-//               style: TextStyle(
-//                 fontFamily: 'Lato',
-//                 color: Color(0xff606566),
-//                 fontSize: 24,
-//                 fontWeight: FontWeight.w400,
-//                 fontStyle: FontStyle.normal,
-//                 letterSpacing: -0.4099999964237213,
-//               ),
-//             ),
-//           ),
-//         );
-//         continue;
-//
-//         // if (tabsStore.toggleIndexSelected == null || tabsStore.toggleIndexSelected == 0) {
-//         //   if (!galleryStore.untaggedPics[index].didChangeMonth) {
-//         //     return Container();
-//         //   }
-//         // }
-//         // return Container(
-//         //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-//         //   child: Text(
-//         //     '${dateFormat(galleryStore.untaggedPics[index].date)}',
-//         //     textScaleFactor: 1.0,
-//         //     style: TextStyle(
-//         //       fontFamily: 'Lato',
-//         //       color: Color(0xff606566),
-//         //       fontSize: 24,
-//         //       fontWeight: FontWeight.w400,
-//         //       fontStyle: FontStyle.normal,
-//         //       letterSpacing: -0.4099999964237213,
-//         //     ),
-//         //   ),
-//         // );
-//       }
-//
-// //    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-//
-//       final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
-//
-//       childs.add(Container(
-//         height: size,
-//         width: size - 1,
-//         child: RepaintBoundary(
-//           child: ExtendedImage(
-//             image: imageProvider,
-//             fit: BoxFit.cover,
-//             loadStateChanged: (ExtendedImageState state) {
-//               Widget loader;
-//               switch (state.extendedImageLoadState) {
-//                 case LoadState.loading:
-//                   loader = const ColoredBox(color: kGreyPlaceholder);
-//                   break;
-//                 case LoadState.completed:
-//                   loader = FadeImageBuilder(
-//                     child: () {
-//                       return GestureDetector(
-//                         onLongPress: () {
-//                           print('LongPress');
-//                           if (tabsStore.multiPicBar == false) {
-//                             galleryStore.setSelectedPics(
-//                               picStore: picStore,
-//                               picIsTagged: false,
-//                             );
-//                             tabsStore.setMultiPicBar(true);
-//                           }
-//                         },
-//                         child: CupertinoButton(
-//                           padding: const EdgeInsets.all(0),
-//                           onPressed: () {
-//                             if (tabsStore.multiPicBar) {
-//                               galleryStore.setSelectedPics(
-//                                 picStore: picStore,
-//                                 picIsTagged: false,
-//                               );
-//                               print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-//                               return;
-//                             }
-//
-//                             tagsEditingController.text = '';
-//                             galleryStore.setCurrentPic(picStore);
-//                             tabsStore.setModalCard(true);
-//                           },
-//                           child: Observer(builder: (_) {
-//                             Widget image = Positioned.fill(
-//                               child: RepaintBoundary(
-//                                 child: state.completedWidget,
-//                               ),
-//                             );
-//                             if (tabsStore.multiPicBar) {
-//                               if (galleryStore.selectedPics.contains(picStore)) {
-//                                 return Stack(
-//                                   children: [
-//                                     image,
-//                                     Container(
-//                                       constraints: BoxConstraints.expand(),
-//                                       decoration: BoxDecoration(
-//                                         color: kSecondaryColor.withOpacity(0.3),
-//                                         border: Border.all(
-//                                           color: kSecondaryColor,
-//                                           width: 2.0,
-//                                         ),
-//                                       ),
-//                                     ),
-//                                     Positioned(
-//                                       left: 8.0,
-//                                       top: 6.0,
-//                                       child: Container(
-//                                         height: 20,
-//                                         width: 20,
-//                                         decoration: BoxDecoration(
-//                                           gradient: kSecondaryGradient,
-//                                           borderRadius: BorderRadius.circular(10.0),
-//                                         ),
-//                                         child: Image.asset('lib/images/checkwhiteico.png'),
-//                                       ),
-//                                     ),
-//                                   ],
-//                                 );
-//                               }
-//                               return Stack(
-//                                 children: [
-//                                   image,
-//                                   Positioned(
-//                                     left: 8.0,
-//                                     top: 6.0,
-//                                     child: Container(
-//                                       height: 20,
-//                                       width: 20,
-//                                       decoration: BoxDecoration(
-//                                         borderRadius: BorderRadius.circular(10.0),
-//                                         border: Border.all(
-//                                           color: kGrayColor,
-//                                           width: 2.0,
-//                                         ),
-//                                       ),
-//                                     ),
-//                                   ),
-//                                 ],
-//                               );
-//                             }
-//                             return Stack(
-//                               children: [
-//                                 image,
-//                               ],
-//                             );
-//                           }),
-//                         ),
-//                       );
-//                     }(),
-//                   );
-//                   break;
-//                 case LoadState.failed:
-//                   loader = _failedItem;
-//                   break;
-//               }
-//               return loader;
-//             },
-//           ),
-//         ),
-//       ));
-//     }
-//
-//     return Wrap(
-//       alignment: WrapAlignment.spaceBetween,
-//       children: childs,
-//     );
-//   }
-
-  Widget _buildGridView(BuildContext context) {
-    print('&&&&& Building grid view');
-    // List<Widget> sliverGrids = [];
-    //
-    // for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
-    //   sliverGrids.add(SliverPersistentHeader(
-    //     delegate: MyDynamicHeader(
-    //       headerTitle: dateFormat(untaggedPicsStore.date),
-    //     ),
-    //   ));
-    //   sliverGrids.add(SliverGrid(
-    //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-    //       crossAxisCount: 3,
-    //       mainAxisSpacing: 2.0,
-    //       crossAxisSpacing: 2.0,
-    //       childAspectRatio: 1.0,
-    //     ),
-    //     delegate: SliverChildBuilderDelegate(
-    //       (BuildContext context, int index) {
-    //         return _buildSliverGridItem(context, untaggedPicsStore.picStores[index]);
-    //       },
-    //       childCount: untaggedPicsStore.picStoresIds.length,
-    //     ),
-    //   ));
-    // }
-
-    return NotificationListener<ScrollNotification>(
-      onNotification: (scrollNotification) {
-        if (scrollNotification is ScrollStartNotification) {
-          print('Start scrolling');
-          tabsStore.setIsScrolling(true);
-        } else if (scrollNotification is ScrollEndNotification) {
-          print('End scrolling');
-          tabsStore.setIsScrolling(false);
-        }
-        return;
-      },
-      child:
-
-          // CustomScrollView(
-          //   slivers: <Widget>[
-          //     SliverAppBar(
-          //       pinned: true,
-          //       expandedHeight: 140.0,
-          //       backgroundColor: kWhiteColor,
-          //       flexibleSpace: FlexibleSpaceBar(
-          //         centerTitle: false,
-          //         titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
-          //         title: Text(
-          //           tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
-          //           textScaleFactor: 1.0,
-          //           style: TextStyle(
-          //             fontFamily: 'Lato',
-          //             color: Color(0xff979a9b),
-          //             fontSize: 20.0,
-          //             fontWeight: FontWeight.w700,
-          //             fontStyle: FontStyle.normal,
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     SliverToBoxAdapter(
-          //       child: SizedBox(
-          //         height: 30.0,
-          //       ),
-          //     ),
-          //     ...sliverGrids,
-          //
-          //     // SliverAnimatedList(
-          //     //   initialItemCount: (galleryStore.untaggedPics.length / 3).floor() + 1,
-          //     //   itemBuilder: (context, index, animation) {
-          //     //     double size = MediaQuery.of(context).size.width / 3;
-          //     //     return _buildNewItem(context, index, size);
-          //     //   },
-          //     // )
-          //     // SliverPinnedHeader(
-          //     //   child: Container(
-          //     //     child: Text('Teste'),
-          //     //   ),
-          //     // ),
-          //     // SliverGrid(
-          //     //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          //     //     maxCrossAxisExtent: 200.0,
-          //     //     mainAxisSpacing: 10.0,
-          //     //     crossAxisSpacing: 10.0,
-          //     //     childAspectRatio: 4.0,
-          //     //   ),
-          //     //   delegate: SliverChildBuilderDelegate(
-          //     //     (BuildContext context, int index) {
-          //     //       return Container(
-          //     //         alignment: Alignment.center,
-          //     //         color: Colors.teal[100 * (index % 9)],
-          //     //         child: Text('Grid Item $index'),
-          //     //       );
-          //     //     },
-          //     //     childCount: 5,
-          //     //   ),
-          //     // ),
-          //     // SliverPinnedHeader(
-          //     //   child: Container(
-          //     //     child: Text('Teste'),
-          //     //   ),
-          //     // ),
-          //     // SliverGrid(
-          //     //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-          //     //     maxCrossAxisExtent: 200.0,
-          //     //     mainAxisSpacing: 10.0,
-          //     //     crossAxisSpacing: 10.0,
-          //     //     childAspectRatio: 4.0,
-          //     //   ),
-          //     //   delegate: SliverChildBuilderDelegate(
-          //     //     (BuildContext context, int index) {
-          //     //       if (index == 2) {
-          //     //         return Container();
-          //     //       }
-          //     //       return Container(
-          //     //         alignment: Alignment.center,
-          //     //         color: Colors.teal[100 * (index % 9)],
-          //     //         child: Text('Grid Item $index'),
-          //     //       );
-          //     //     },
-          //     //     childCount: 100,
-          //     //   ),
-          //     // ),
-          //   ],
-          // ),
-          //
-
-          Observer(builder: (_) {
-        if (tabsStore.toggleIndexUntagged == 0) {
-          return StaggeredGridView.countBuilder(
-            key: Key('month'),
-            controller: scrollControllerFirstTab,
-            physics: const CustomScrollPhysics(),
-            padding: EdgeInsets.only(top: 82.0),
-            crossAxisCount: 5,
-            mainAxisSpacing: 2.0,
-            crossAxisSpacing: 2.0,
-            itemCount: galleryStore.isLoaded ? galleryStore.untaggedGridPicsByMonth.length : 0,
-            itemBuilder: (BuildContext context, int index) {
-              return _buildItem(context, index);
-            },
-            staggeredTileBuilder: (int index) {
-              PicStore picStore = galleryStore.untaggedGridPicsByMonth[index].picStore;
-              if (picStore == null) {
-                return StaggeredTile.fit(5);
-              }
-              return StaggeredTile.count(1, 1);
-            },
-          );
-        }
-
-        return StaggeredGridView.countBuilder(
-          key: Key('day'),
-          controller: scrollControllerFirstTab,
-          physics: const CustomScrollPhysics(),
-          padding: EdgeInsets.only(top: 82.0),
-          crossAxisCount: 3,
-          mainAxisSpacing: 2.0,
-          crossAxisSpacing: 2.0,
-          itemCount: galleryStore.isLoaded ? galleryStore.untaggedGridPics.length : 0,
-          itemBuilder: (BuildContext context, int index) {
-            return _buildItem(context, index);
-          },
-          staggeredTileBuilder: (int index) {
-            PicStore picStore = galleryStore.untaggedGridPics[index].picStore;
-            if (picStore == null) {
-              return StaggeredTile.fit(3);
-            }
-            return StaggeredTile.count(1, 1);
-          },
-        );
-      }),
-    );
-  }
-
-  Widget get _failedItem => Center(
-        child: Text(
-          'Failed loading',
-          textAlign: TextAlign.center,
-          style: const TextStyle(fontSize: 18.0),
-        ),
-      );
+  final _failedItem = const Center(
+    child: Text(
+      'Failed loading',
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 18.0),
+    ),
+  );
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
     print('Date Time Formatting: $dateTime');
 
-    if (dateTime.year == DateTime.now().year) {
-      formatter = tabsStore.toggleIndexUntagged == 0 ? DateFormat.MMMM() : DateFormat.MMMEd();
+    /// More Optimized code
+    if (controller.toggleIndexUntagged.value == 0) {
+      formatter = DateFormat.yMMMM();
     } else {
-      formatter = tabsStore.toggleIndexUntagged == 0 ? DateFormat.yMMMM() : DateFormat.yMMMEd();
+      formatter = dateTime.year == DateTime.now().year
+          ? DateFormat.MMMEd()
+          : DateFormat.yMMMEd();
     }
     return formatter.format(dateTime);
   }
 
-  Widget _buildItem(BuildContext context, int index) {
-    var untaggedPicsStore = tabsStore.toggleIndexUntagged == 0 ? galleryStore.untaggedGridPicsByMonth : galleryStore.untaggedGridPics;
-    PicStore picStore = untaggedPicsStore[index].picStore;
-
-    if (picStore == null) {
-      return Container(
-        padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-        height: 40.0,
-        child: Row(
-          children: [
-            Text(
-              '${dateFormat(untaggedPicsStore[index].date)}',
-              textScaleFactor: 1.0,
-              style: TextStyle(
-                fontFamily: 'Lato',
-                color: Color(0xff606566),
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-                fontStyle: FontStyle.normal,
-                letterSpacing: -0.4099999964237213,
-              ),
+  Widget buildDateHeader(DateTime date, bool isSelected) {
+    return Container(
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      height: 40,
+      child: Row(
+        children: [
+          if (TabsController.to.multiPicBar.value)
+            Container(
+              width: 20,
+              height: 20,
+              margin: const EdgeInsets.only(right: 10),
+              decoration: isSelected
+                  ? BoxDecoration(
+                      gradient: kSecondaryGradient,
+                      borderRadius: BorderRadius.circular(10.0),
+                    )
+                  : BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(color: Colors.grey, width: 1.0)),
+              child: isSelected
+                  ? Image.asset('lib/images/checkwhiteico.png')
+                  : null,
             ),
-          ],
-        ),
-      );
-    }
-
-//    var thumbWidth = MediaQuery.of(context).size.width / 3.0;
-
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
-
-    return RepaintBoundary(
-      child: ExtendedImage(
-        image: imageProvider,
-        fit: BoxFit.cover,
-        loadStateChanged: (ExtendedImageState state) {
-          Widget loader;
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              loader = const ColoredBox(color: kGreyPlaceholder);
-              break;
-            case LoadState.completed:
-              loader = FadeImageBuilder(
-                child: () {
-                  return GestureDetector(
-                    onLongPress: () {
-                      print('LongPress');
-                      if (tabsStore.multiPicBar == false) {
-                        galleryStore.setSelectedPics(
-                          picStore: picStore,
-                          picIsTagged: false,
-                        );
-                        tabsStore.setMultiPicBar(true);
-                      }
-                    },
-                    child: CupertinoButton(
-                      padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        if (tabsStore.multiPicBar) {
-                          galleryStore.setSelectedPics(
-                            picStore: picStore,
-                            picIsTagged: false,
-                          );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
-                          return;
-                        }
-
-                        tagsEditingController.text = '';
-                        galleryStore.setCurrentPic(picStore);
-                        int indexOfSwipePic = galleryStore.swipePics.indexOf(picStore);
-                        galleryStore.setSelectedSwipe(indexOfSwipePic);
-                        tabsStore.setModalCard(true);
-                      },
-                      child: Observer(builder: (_) {
-                        Widget image = Positioned.fill(
-                          child: RepaintBoundary(
-                            child: state.completedWidget,
-                          ),
-                        );
-                        if (tabsStore.multiPicBar) {
-                          if (galleryStore.selectedPics.contains(picStore)) {
-                            return Stack(
-                              children: [
-                                image,
-                                Container(
-                                  constraints: BoxConstraints.expand(),
-                                  decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
-                                    border: Border.all(
-                                      color: kSecondaryColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 8.0,
-                                  top: 6.0,
-                                  child: Container(
-                                    height: 20,
-                                    width: 20,
-                                    decoration: BoxDecoration(
-                                      gradient: kSecondaryGradient,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    child: Image.asset('lib/images/checkwhiteico.png'),
-                                  ),
-                                ),
-                              ],
-                            );
-                          }
-                          return Stack(
-                            children: [
-                              image,
-                              Positioned(
-                                left: 8.0,
-                                top: 6.0,
-                                child: Container(
-                                  height: 20,
-                                  width: 20,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    border: Border.all(
-                                      color: kGrayColor,
-                                      width: 2.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          );
-                        }
-                        return Stack(
-                          children: [
-                            image,
-                          ],
-                        );
-                      }),
-                    ),
-                  );
-                }(),
-              );
-              break;
-            case LoadState.failed:
-              loader = _failedItem;
-              break;
-          }
-          return loader;
-        },
+          Text(
+            '${dateFormat(date)}',
+            textScaleFactor: 1.0,
+            style: TextStyle(
+              fontFamily: 'Lato',
+              color: const Color(0xff606566),
+              fontSize: 14.0,
+              fontWeight: FontWeight.w400,
+              fontStyle: FontStyle.normal,
+              letterSpacing: -0.4099999964237213,
+            ),
+          ),
+        ],
       ),
     );
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    tabsStore = Provider.of<TabsStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
+  Widget _buildImageWidget(
+      {required PicStore picStore, required String picId, String? hash}) {
+    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: false);
 
-    scrollControllerFirstTab = ScrollController(initialScrollOffset: tabsStore.offsetFirstTab);
-    scrollControllerFirstTab.addListener(() {
-      refreshGridPositionFirstTab();
-    });
-    refreshGridPositionFirstTab();
-
-    disposer = reaction((_) => galleryStore.isLoaded, (isLoaded) {
-      if (isLoaded == true) {
-        galleryStore.refreshPicThumbnails();
-      }
-    });
-
-    if (galleryStore.isLoaded == false) {
-      return;
-    }
-    galleryStore.refreshPicThumbnails();
+    return ExtendedImage(
+      filterQuality: FilterQuality.none,
+      image: imageProvider,
+      fit: BoxFit.cover,
+      loadStateChanged: (ExtendedImageState state) {
+        switch (state.extendedImageLoadState) {
+          case LoadState.loading:
+            if (hash == null) {
+              return Padding(
+                padding: const EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: const ColoredBox(color: kGreyPlaceholder),
+                ),
+              );
+            } else {
+              return Padding(
+                padding: const EdgeInsets.all(2),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: BlurHash(
+                    hash: hash,
+                    color: Colors.transparent,
+                  ),
+                ),
+              );
+            }
+          case LoadState.completed:
+            return FadeImageBuilder(
+              milliseconds: 200,
+              child: GestureDetector(
+                onLongPress: () {
+                  print('LongPress');
+                  if (controller.multiPicBar.value == false) {
+                    controller.setMultiPicBar(true);
+                    controller.selectedMultiBarPics[picId] = true;
+                  }
+                },
+                child: CupertinoButton(
+                  padding: const EdgeInsets.all(0),
+                  onPressed: () async {
+                    if (controller.multiPicBar.value) {
+                      if (controller.selectedMultiBarPics[picId] == null) {
+                        controller.selectedMultiBarPics[picId] = true;
+                      } else {
+                        controller.selectedMultiBarPics.remove(picId);
+                      }
+                      return;
+                    }
+                    var result = await Get.to(() => PhotoScreen(
+                        picId: picId,
+                        picIdList: controller.allUnTaggedPics.keys.toList()));
+                    if (null == result) {
+                      await refresh_everything();
+                    }
+                  },
+                  child: Obx(() => Stack(
+                        children: [
+                          Positioned.fill(child: state.completedWidget),
+                          if (controller.multiPicBar.value &&
+                              controller.selectedMultiBarPics[picId] !=
+                                  null) ...[
+                            Container(
+                              constraints: BoxConstraints.expand(),
+                              decoration: BoxDecoration(
+                                color: kSecondaryColor.withOpacity(0.3),
+                                border: Border.all(
+                                  color: kSecondaryColor,
+                                  width: 2.0,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 8.0,
+                              top: 6.0,
+                              child: Container(
+                                height: 20,
+                                width: 20,
+                                decoration: BoxDecoration(
+                                  gradient: kSecondaryGradient,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child:
+                                    Image.asset('lib/images/checkwhiteico.png'),
+                              ),
+                            ),
+                          ],
+                        ],
+                      )),
+                ),
+              ),
+            );
+          case LoadState.failed:
+            return _failedItem;
+        }
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints.expand(),
+      //constraints: BoxConstraints.expand(),
       color: kWhiteColor,
       child: SafeArea(
-        child: Observer(builder: (_) {
-          if (!galleryStore.isLoaded) {
+        child: Obx(() {
+          var hasPics = controller.allUnTaggedPicsMonth.isNotEmpty ||
+              controller.allUnTaggedPicsDay.isNotEmpty;
+          if (controller.isUntaggedPicsLoaded.value == false) {
             return Center(
               child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
-              ),
+                  // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                  ),
             );
-          } else if (!galleryStore.deviceHasPics) {
+          } else if (!hasPics) {
             return Stack(
               children: <Widget>[
                 Container(
@@ -869,7 +512,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.to(() => SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -877,11 +520,11 @@ class _UntaggedTabState extends State<UntaggedTab> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).device_has_no_pics,
+                  message: LangControl.to.S.value.device_has_no_pics,
                 ),
               ],
             );
-          } else if (galleryStore.isLoaded && galleryStore.untaggedPics.isEmpty) {
+          } else if (controller.isUntaggedPicsLoaded.value && !hasPics) {
             return Stack(
               children: <Widget>[
                 Container(
@@ -893,7 +536,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.to(() => SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -901,22 +544,24 @@ class _UntaggedTabState extends State<UntaggedTab> {
                   ),
                 ),
                 DeviceHasNoPics(
-                  message: S.of(context).all_photos_were_tagged,
+                  message: LangControl.to.S.value.no_photos_were_tagged,
                 ),
               ],
             );
-          } else if (galleryStore.isLoaded && galleryStore.deviceHasPics) {
+          } else if (controller.isUntaggedPicsLoaded.value && hasPics) {
             return Stack(
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 48.0),
-                  child: GestureDetector(
-//                              onScaleUpdate: (update) {
-//                                print(update.scale);
-//                                DatabaseManager.instance.gridScale(update.scale);
-//                              },
-                    child: _buildGridView(context),
-                  ),
+                  child:
+                      /* GestureDetector( 
+                              onScaleUpdate: (update) { 
+                                print(update.scale); 
+                                //DatabaseManager.instance.gridScale(update.scale);
+                              },
+                       child: */
+                      _buildGridView(context),
+                  /*  ), */
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -926,7 +571,7 @@ class _UntaggedTabState extends State<UntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Navigator.pushNamed(context, SettingsScreen.id);
+                          Get.to(() => SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -935,16 +580,19 @@ class _UntaggedTabState extends State<UntaggedTab> {
                 ),
                 Positioned(
                   left: 16.0,
-                  top: tabsStore.topOffsetFirstTab,
+                  top: 10.0,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        tabsStore.multiPicBar ? S.of(context).photo_gallery_count(galleryStore.selectedPics.length) : S.of(context).photo_gallery_description,
+                        controller.multiPicBar.value
+                            ? LangControl.to.S.value.photo_gallery_count(
+                                controller.selectedMultiBarPics.length)
+                            : LangControl.to.S.value.photo_gallery_description,
                         textScaleFactor: 1.0,
                         style: TextStyle(
                           fontFamily: 'Lato',
-                          color: Color(0xff979a9b),
+                          color: const Color(0xff979a9b),
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
                           fontStyle: FontStyle.normal,
@@ -954,24 +602,27 @@ class _UntaggedTabState extends State<UntaggedTab> {
                   ),
                 ),
                 AnimatedOpacity(
-                  opacity: tabsStore.isScrolling ? 0.0 : 1.0,
+                  opacity: controller.isScrolling.value ? 0.0 : 1.0,
                   curve: Curves.linear,
                   duration: Duration(milliseconds: 300),
                   onEnd: () {
-                    tabsStore.setIsToggleBarVisible(tabsStore.isScrolling ? false : true);
+                    controller.setIsToggleBarVisible(
+                        controller.isScrolling.value ? false : true);
                   },
                   child: Visibility(
-                    visible: tabsStore.isScrolling ? tabsStore.isToggleBarVisible : true,
+                    visible: controller.isScrolling.value
+                        ? controller.isToggleBarVisible.value
+                        : true,
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: ToggleBar(
-                          titleLeft: S.of(context).toggle_months,
-                          titleRight: S.of(context).toggle_days,
-                          activeToggle: tabsStore.toggleIndexUntagged,
+                          titleLeft: LangControl.to.S.value.toggle_months,
+                          titleRight: LangControl.to.S.value.toggle_days,
+                          activeToggle: controller.toggleIndexUntagged.value,
                           onToggle: (index) {
-                            tabsStore.setToggleIndexUntagged(index);
+                            controller.setToggleIndexUntagged(index);
                           },
                         ),
                       ),

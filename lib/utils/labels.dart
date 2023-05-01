@@ -1,1728 +1,1299 @@
 import 'package:flutter/widgets.dart';
-import 'package:picPics/generated/l10n.dart';
 
-class Labels {
+import 'package:picPics/stores/language_controller.dart';
+
+class PredefinedLabels {
   static String labelTranslation(String label, BuildContext context) {
     switch (label) {
       case 'Team':
-        return S.of(context).team_tag;
-        break;
+        return LangControl.to.S.value.team_tag;
 
       case 'Bonfire':
-        return S.of(context).bonfire_tag;
-        break;
+        return LangControl.to.S.value.bonfire_tag;
 
       case 'Comics':
-        return S.of(context).comics_tag;
-        break;
+        return LangControl.to.S.value.comics_tag;
 
       case 'Himalayan':
-        return S.of(context).himalayan_tag;
-        break;
+        return LangControl.to.S.value.himalayan_tag;
 
       case 'Iceberg':
-        return S.of(context).iceberg_tag;
-        break;
+        return LangControl.to.S.value.iceberg_tag;
 
       case 'Bento':
-        return S.of(context).bento_tag;
-        break;
+        return LangControl.to.S.value.bento_tag;
 
       case 'Sink':
-        return S.of(context).sink_tag;
-        break;
+        return LangControl.to.S.value.sink_tag;
 
       case 'Toy':
-        return S.of(context).toy_tag;
-        break;
+        return LangControl.to.S.value.toy_tag;
 
       case 'Statue':
-        return S.of(context).statue_tag;
-        break;
+        return LangControl.to.S.value.statue_tag;
 
       case 'Cheeseburger':
-        return S.of(context).cheeseburger_tag;
-        break;
+        return LangControl.to.S.value.cheeseburger_tag;
 
       case 'Tractor':
-        return S.of(context).tractor_tag;
-        break;
+        return LangControl.to.S.value.tractor_tag;
 
       case 'Sled':
-        return S.of(context).sled_tag;
-        break;
+        return LangControl.to.S.value.sled_tag;
 
       case 'Aquarium':
-        return S.of(context).aquarium_tag;
-        break;
+        return LangControl.to.S.value.aquarium_tag;
 
       case 'Circus':
-        return S.of(context).circus_tag;
-        break;
+        return LangControl.to.S.value.circus_tag;
 
       case 'Sitting':
-        return S.of(context).sitting_tag;
-        break;
+        return LangControl.to.S.value.sitting_tag;
 
       case 'Beard':
-        return S.of(context).beard_tag;
-        break;
+        return LangControl.to.S.value.beard_tag;
 
       case 'Bridge':
-        return S.of(context).bridge_tag;
-        break;
+        return LangControl.to.S.value.bridge_tag;
 
       case 'Tights':
-        return S.of(context).tights_tag;
-        break;
+        return LangControl.to.S.value.tights_tag;
 
       case 'Bird':
-        return S.of(context).bird_tag;
-        break;
+        return LangControl.to.S.value.bird_tag;
 
       case 'Rafting':
-        return S.of(context).rafting_tag;
-        break;
+        return LangControl.to.S.value.rafting_tag;
 
       case 'Park':
-        return S.of(context).park_tag;
-        break;
+        return LangControl.to.S.value.park_tag;
 
       case 'Factory':
-        return S.of(context).factory_tag;
-        break;
+        return LangControl.to.S.value.factory_tag;
 
       case 'Graduation':
-        return S.of(context).graduation_tag;
-        break;
+        return LangControl.to.S.value.graduation_tag;
 
       case 'Porcelain':
-        return S.of(context).porcelain_tag;
-        break;
+        return LangControl.to.S.value.porcelain_tag;
 
       case 'Twig':
-        return S.of(context).twig_tag;
-        break;
+        return LangControl.to.S.value.twig_tag;
 
       case 'Petal':
-        return S.of(context).petal_tag;
-        break;
+        return LangControl.to.S.value.petal_tag;
 
       case 'Cushion':
-        return S.of(context).cushion_tag;
-        break;
+        return LangControl.to.S.value.cushion_tag;
 
       case 'Sunglasses':
-        return S.of(context).sunglasses_tag;
-        break;
+        return LangControl.to.S.value.sunglasses_tag;
 
       case 'Infrastructure':
-        return S.of(context).infrastructure_tag;
-        break;
+        return LangControl.to.S.value.infrastructure_tag;
 
       case 'Ferris wheel':
-        return S.of(context).ferris_wheel_tag;
-        break;
+        return LangControl.to.S.value.ferris_wheel_tag;
 
       case 'Pomacentridae':
-        return S.of(context).pomacentridae_tag;
-        break;
+        return LangControl.to.S.value.pomacentridae_tag;
 
       case 'Wetsuit':
-        return S.of(context).wetsuit_tag;
-        break;
+        return LangControl.to.S.value.wetsuit_tag;
 
       case 'Shetland sheepdog':
-        return S.of(context).shetland_sheepdog_tag;
-        break;
+        return LangControl.to.S.value.shetland_sheepdog_tag;
 
       case 'Brig':
-        return S.of(context).brig_tag;
-        break;
+        return LangControl.to.S.value.brig_tag;
 
       case 'Watercolor paint':
-        return S.of(context).watercolor_paint_tag;
-        break;
+        return LangControl.to.S.value.watercolor_paint_tag;
 
       case 'Competition':
-        return S.of(context).competition_tag;
-        break;
+        return LangControl.to.S.value.competition_tag;
 
       case 'Cliff':
-        return S.of(context).cliff_tag;
-        break;
+        return LangControl.to.S.value.cliff_tag;
 
       case 'Badminton':
-        return S.of(context).badminton_tag;
-        break;
+        return LangControl.to.S.value.badminton_tag;
 
       case 'Safari':
-        return S.of(context).safari_tag;
-        break;
+        return LangControl.to.S.value.safari_tag;
 
       case 'Bicycle':
-        return S.of(context).bicycle_tag;
-        break;
+        return LangControl.to.S.value.bicycle_tag;
 
       case 'Stadium':
-        return S.of(context).stadium_tag;
-        break;
+        return LangControl.to.S.value.stadium_tag;
 
       case 'Boat':
-        return S.of(context).boat_tag;
-        break;
+        return LangControl.to.S.value.boat_tag;
 
       case 'Smile':
-        return S.of(context).smile_tag;
-        break;
+        return LangControl.to.S.value.smile_tag;
 
       case 'Surfboard':
-        return S.of(context).surfboard_tag;
-        break;
+        return LangControl.to.S.value.surfboard_tag;
 
       case 'Fast food':
-        return S.of(context).fast_food_tag;
-        break;
+        return LangControl.to.S.value.fast_food_tag;
 
       case 'Sunset':
-        return S.of(context).sunset_tag;
-        break;
+        return LangControl.to.S.value.sunset_tag;
 
       case 'Hot dog':
-        return S.of(context).hot_dog_tag;
-        break;
+        return LangControl.to.S.value.hot_dog_tag;
 
       case 'Shorts':
-        return S.of(context).shorts_tag;
-        break;
+        return LangControl.to.S.value.shorts_tag;
 
       case 'Bus':
-        return S.of(context).bus_tag;
-        break;
+        return LangControl.to.S.value.bus_tag;
 
       case 'Bullfighting':
-        return S.of(context).bullfighting_tag;
-        break;
+        return LangControl.to.S.value.bullfighting_tag;
 
       case 'Sky':
-        return S.of(context).sky_tag;
-        break;
+        return LangControl.to.S.value.sky_tag;
 
       case 'Gerbil':
-        return S.of(context).gerbil_tag;
-        break;
+        return LangControl.to.S.value.gerbil_tag;
 
       case 'Rock':
-        return S.of(context).rock_tag;
-        break;
+        return LangControl.to.S.value.rock_tag;
 
       case 'Interaction':
-        return S.of(context).interaction_tag;
-        break;
+        return LangControl.to.S.value.interaction_tag;
 
       case 'Dress':
-        return S.of(context).dress_tag;
-        break;
+        return LangControl.to.S.value.dress_tag;
 
       case 'Toe':
-        return S.of(context).toe_tag;
-        break;
+        return LangControl.to.S.value.toe_tag;
 
       case 'Bear':
-        return S.of(context).bear_tag;
-        break;
+        return LangControl.to.S.value.bear_tag;
 
       case 'Eating':
-        return S.of(context).eating_tag;
-        break;
+        return LangControl.to.S.value.eating_tag;
 
       case 'Tower':
-        return S.of(context).tower_tag;
-        break;
+        return LangControl.to.S.value.tower_tag;
 
       case 'Brick':
-        return S.of(context).brick_tag;
-        break;
+        return LangControl.to.S.value.brick_tag;
 
       case 'Junk':
-        return S.of(context).junk_tag;
-        break;
+        return LangControl.to.S.value.junk_tag;
 
       case 'Person':
-        return S.of(context).person_tag;
-        break;
+        return LangControl.to.S.value.person_tag;
 
       case 'Windsurfing':
-        return S.of(context).windsurfing_tag;
-        break;
+        return LangControl.to.S.value.windsurfing_tag;
 
       case 'Swimwear':
-        return S.of(context).swimwear_tag;
-        break;
+        return LangControl.to.S.value.swimwear_tag;
 
       case 'Roller':
-        return S.of(context).roller_tag;
-        break;
+        return LangControl.to.S.value.roller_tag;
 
       case 'Camping':
-        return S.of(context).camping_tag;
-        break;
+        return LangControl.to.S.value.camping_tag;
 
       case 'Playground':
-        return S.of(context).playground_tag;
-        break;
+        return LangControl.to.S.value.playground_tag;
 
       case 'Bathroom':
-        return S.of(context).bathroom_tag;
-        break;
+        return LangControl.to.S.value.bathroom_tag;
 
       case 'Laugh':
-        return S.of(context).laugh_tag;
-        break;
+        return LangControl.to.S.value.laugh_tag;
 
       case 'Balloon':
-        return S.of(context).balloon_tag;
-        break;
+        return LangControl.to.S.value.balloon_tag;
 
       case 'Concert':
-        return S.of(context).concert_tag;
-        break;
+        return LangControl.to.S.value.concert_tag;
 
       case 'Prom':
-        return S.of(context).prom_tag;
-        break;
+        return LangControl.to.S.value.prom_tag;
 
       case 'Construction':
-        return S.of(context).construction_tag;
-        break;
+        return LangControl.to.S.value.construction_tag;
 
       case 'Product':
-        return S.of(context).product_tag;
-        break;
+        return LangControl.to.S.value.product_tag;
 
       case 'Reef':
-        return S.of(context).reef_tag;
-        break;
+        return LangControl.to.S.value.reef_tag;
 
       case 'Picnic':
-        return S.of(context).picnic_tag;
-        break;
+        return LangControl.to.S.value.picnic_tag;
 
       case 'Wreath':
-        return S.of(context).wreath_tag;
-        break;
+        return LangControl.to.S.value.wreath_tag;
 
       case 'Wheelbarrow':
-        return S.of(context).wheelbarrow_tag;
-        break;
+        return LangControl.to.S.value.wheelbarrow_tag;
 
       case 'Boxer':
-        return S.of(context).boxer_tag;
-        break;
+        return LangControl.to.S.value.boxer_tag;
 
       case 'Necklace':
-        return S.of(context).necklace_tag;
-        break;
+        return LangControl.to.S.value.necklace_tag;
 
       case 'Bracelet':
-        return S.of(context).bracelet_tag;
-        break;
+        return LangControl.to.S.value.bracelet_tag;
 
       case 'Casino':
-        return S.of(context).casino_tag;
-        break;
+        return LangControl.to.S.value.casino_tag;
 
       case 'Windshield':
-        return S.of(context).windshield_tag;
-        break;
+        return LangControl.to.S.value.windshield_tag;
 
       case 'Stairs':
-        return S.of(context).stairs_tag;
-        break;
+        return LangControl.to.S.value.stairs_tag;
 
       case 'Computer':
-        return S.of(context).computer_tag;
-        break;
+        return LangControl.to.S.value.computer_tag;
 
       case 'Cookware and bakeware':
-        return S.of(context).cookware_and_bakeware_tag;
-        break;
+        return LangControl.to.S.value.cookware_and_bakeware_tag;
 
       case 'Monochrome':
-        return S.of(context).monochrome_tag;
-        break;
+        return LangControl.to.S.value.monochrome_tag;
 
       case 'Chair':
-        return S.of(context).chair_tag;
-        break;
+        return LangControl.to.S.value.chair_tag;
 
       case 'Poster':
-        return S.of(context).poster_tag;
-        break;
+        return LangControl.to.S.value.poster_tag;
 
       case 'Bar':
-        return S.of(context).bar_tag;
-        break;
+        return LangControl.to.S.value.bar_tag;
 
       case 'Shipwreck':
-        return S.of(context).shipwreck_tag;
-        break;
+        return LangControl.to.S.value.shipwreck_tag;
 
       case 'Pier':
-        return S.of(context).pier_tag;
-        break;
+        return LangControl.to.S.value.pier_tag;
 
       case 'Community':
-        return S.of(context).community_tag;
-        break;
+        return LangControl.to.S.value.community_tag;
 
       case 'Caving':
-        return S.of(context).caving_tag;
-        break;
+        return LangControl.to.S.value.caving_tag;
 
       case 'Cave':
-        return S.of(context).cave_tag;
-        break;
+        return LangControl.to.S.value.cave_tag;
 
       case 'Tie':
-        return S.of(context).tie_tag;
-        break;
+        return LangControl.to.S.value.tie_tag;
 
       case 'Cabinetry':
-        return S.of(context).cabinetry_tag;
-        break;
+        return LangControl.to.S.value.cabinetry_tag;
 
       case 'Underwater':
-        return S.of(context).underwater_tag;
-        break;
+        return LangControl.to.S.value.underwater_tag;
 
       case 'Clown':
-        return S.of(context).clown_tag;
-        break;
+        return LangControl.to.S.value.clown_tag;
 
       case 'Nightclub':
-        return S.of(context).nightclub_tag;
-        break;
+        return LangControl.to.S.value.nightclub_tag;
 
       case 'Cycling':
-        return S.of(context).cycling_tag;
-        break;
+        return LangControl.to.S.value.cycling_tag;
 
       case 'Comet':
-        return S.of(context).comet_tag;
-        break;
+        return LangControl.to.S.value.comet_tag;
 
       case 'Mortarboard':
-        return S.of(context).mortarboard_tag;
-        break;
+        return LangControl.to.S.value.mortarboard_tag;
 
       case 'Track':
-        return S.of(context).track_tag;
-        break;
+        return LangControl.to.S.value.track_tag;
 
       case 'Christmas':
-        return S.of(context).christmas_tag;
-        break;
+        return LangControl.to.S.value.christmas_tag;
 
       case 'Church':
-        return S.of(context).church_tag;
-        break;
+        return LangControl.to.S.value.church_tag;
 
       case 'Clock':
-        return S.of(context).clock_tag;
-        break;
+        return LangControl.to.S.value.clock_tag;
 
       case 'Dude':
-        return S.of(context).dude_tag;
-        break;
+        return LangControl.to.S.value.dude_tag;
 
       case 'Cattle':
-        return S.of(context).cattle_tag;
-        break;
+        return LangControl.to.S.value.cattle_tag;
 
       case 'Jungle':
-        return S.of(context).jungle_tag;
-        break;
+        return LangControl.to.S.value.jungle_tag;
 
       case 'Desk':
-        return S.of(context).desk_tag;
-        break;
+        return LangControl.to.S.value.desk_tag;
 
       case 'Curling':
-        return S.of(context).curling_tag;
-        break;
+        return LangControl.to.S.value.curling_tag;
 
       case 'Cuisine':
-        return S.of(context).cuisine_tag;
-        break;
+        return LangControl.to.S.value.cuisine_tag;
 
       case 'Cat':
-        return S.of(context).cat_tag;
-        break;
+        return LangControl.to.S.value.cat_tag;
 
       case 'Juice':
-        return S.of(context).juice_tag;
-        break;
+        return LangControl.to.S.value.juice_tag;
 
       case 'Couscous':
-        return S.of(context).couscous_tag;
-        break;
+        return LangControl.to.S.value.couscous_tag;
 
       case 'Screenshot':
-        return S.of(context).screenshot_tag;
-        break;
+        return LangControl.to.S.value.screenshot_tag;
 
       case 'Crew':
-        return S.of(context).crew_tag;
-        break;
+        return LangControl.to.S.value.crew_tag;
 
       case 'Skyline':
-        return S.of(context).skyline_tag;
-        break;
+        return LangControl.to.S.value.skyline_tag;
 
       case 'Stuffed toy':
-        return S.of(context).stuffed_toy_tag;
-        break;
+        return LangControl.to.S.value.stuffed_toy_tag;
 
       case 'Cookie':
-        return S.of(context).cookie_tag;
-        break;
+        return LangControl.to.S.value.cookie_tag;
 
       case 'Tile':
-        return S.of(context).tile_tag;
-        break;
+        return LangControl.to.S.value.tile_tag;
 
       case 'Hanukkah':
-        return S.of(context).hanukkah_tag;
-        break;
+        return LangControl.to.S.value.hanukkah_tag;
 
       case 'Crochet':
-        return S.of(context).crochet_tag;
-        break;
+        return LangControl.to.S.value.crochet_tag;
 
       case 'Skateboarder':
-        return S.of(context).skateboarder_tag;
-        break;
+        return LangControl.to.S.value.skateboarder_tag;
 
       case 'Clipper':
-        return S.of(context).clipper_tag;
-        break;
+        return LangControl.to.S.value.clipper_tag;
 
       case 'Nail':
-        return S.of(context).nail_tag;
-        break;
+        return LangControl.to.S.value.nail_tag;
 
       case 'Cola':
-        return S.of(context).cola_tag;
-        break;
+        return LangControl.to.S.value.cola_tag;
 
       case 'Cutlery':
-        return S.of(context).cutlery_tag;
-        break;
+        return LangControl.to.S.value.cutlery_tag;
 
       case 'Menu':
-        return S.of(context).menu_tag;
-        break;
+        return LangControl.to.S.value.menu_tag;
 
       case 'Sari':
-        return S.of(context).sari_tag;
-        break;
+        return LangControl.to.S.value.sari_tag;
 
       case 'Plush':
-        return S.of(context).plush_tag;
-        break;
+        return LangControl.to.S.value.plush_tag;
 
       case 'Pocket':
-        return S.of(context).pocket_tag;
-        break;
+        return LangControl.to.S.value.pocket_tag;
 
       case 'Neon':
-        return S.of(context).neon_tag;
-        break;
+        return LangControl.to.S.value.neon_tag;
 
       case 'Icicle':
-        return S.of(context).icicle_tag;
-        break;
+        return LangControl.to.S.value.icicle_tag;
 
       case 'Pasteles':
-        return S.of(context).pasteles_tag;
-        break;
+        return LangControl.to.S.value.pasteles_tag;
 
       case 'Chain':
-        return S.of(context).chain_tag;
-        break;
+        return LangControl.to.S.value.chain_tag;
 
       case 'Dance':
-        return S.of(context).dance_tag;
-        break;
+        return LangControl.to.S.value.dance_tag;
 
       case 'Dune':
-        return S.of(context).dune_tag;
-        break;
+        return LangControl.to.S.value.dune_tag;
 
       case 'Santa claus':
-        return S.of(context).santa_claus_tag;
-        break;
+        return LangControl.to.S.value.santa_claus_tag;
 
       case 'Thanksgiving':
-        return S.of(context).thanksgiving_tag;
-        break;
+        return LangControl.to.S.value.thanksgiving_tag;
 
       case 'Tuxedo':
-        return S.of(context).tuxedo_tag;
-        break;
+        return LangControl.to.S.value.tuxedo_tag;
 
       case 'Mouth':
-        return S.of(context).mouth_tag;
-        break;
+        return LangControl.to.S.value.mouth_tag;
 
       case 'Desert':
-        return S.of(context).desert_tag;
-        break;
+        return LangControl.to.S.value.desert_tag;
 
       case 'Dinosaur':
-        return S.of(context).dinosaur_tag;
-        break;
+        return LangControl.to.S.value.dinosaur_tag;
 
       case 'Mufti':
-        return S.of(context).mufti_tag;
-        break;
+        return LangControl.to.S.value.mufti_tag;
 
       case 'Fire':
-        return S.of(context).fire_tag;
-        break;
+        return LangControl.to.S.value.fire_tag;
 
       case 'Bedroom':
-        return S.of(context).bedroom_tag;
-        break;
+        return LangControl.to.S.value.bedroom_tag;
 
       case 'Goggles':
-        return S.of(context).goggles_tag;
-        break;
+        return LangControl.to.S.value.goggles_tag;
 
       case 'Dragon':
-        return S.of(context).dragon_tag;
-        break;
+        return LangControl.to.S.value.dragon_tag;
 
       case 'Couch':
-        return S.of(context).couch_tag;
-        break;
+        return LangControl.to.S.value.couch_tag;
 
       case 'Sledding':
-        return S.of(context).sledding_tag;
-        break;
+        return LangControl.to.S.value.sledding_tag;
 
       case 'Cap':
-        return S.of(context).cap_tag;
-        break;
+        return LangControl.to.S.value.cap_tag;
 
       case 'Whiteboard':
-        return S.of(context).whiteboard_tag;
-        break;
+        return LangControl.to.S.value.whiteboard_tag;
 
       case 'Hat':
-        return S.of(context).hat_tag;
-        break;
+        return LangControl.to.S.value.hat_tag;
 
       case 'Gelato':
-        return S.of(context).gelato_tag;
-        break;
+        return LangControl.to.S.value.gelato_tag;
 
       case 'Cavalier':
-        return S.of(context).cavalier_tag;
-        break;
+        return LangControl.to.S.value.cavalier_tag;
 
       case 'Beanie':
-        return S.of(context).beanie_tag;
-        break;
+        return LangControl.to.S.value.beanie_tag;
 
       case 'Jersey':
-        return S.of(context).jersey_tag;
-        break;
+        return LangControl.to.S.value.jersey_tag;
 
       case 'Scarf':
-        return S.of(context).scarf_tag;
-        break;
+        return LangControl.to.S.value.scarf_tag;
 
       case 'Vacation':
-        return S.of(context).vacation_tag;
-        break;
+        return LangControl.to.S.value.vacation_tag;
 
       case 'Pitch':
-        return S.of(context).pitch_tag;
-        break;
+        return LangControl.to.S.value.pitch_tag;
 
       case 'Blackboard':
-        return S.of(context).blackboard_tag;
-        break;
+        return LangControl.to.S.value.blackboard_tag;
 
       case 'Deejay':
-        return S.of(context).deejay_tag;
-        break;
+        return LangControl.to.S.value.deejay_tag;
 
       case 'Monument':
-        return S.of(context).monument_tag;
-        break;
+        return LangControl.to.S.value.monument_tag;
 
       case 'Bumper':
-        return S.of(context).bumper_tag;
-        break;
+        return LangControl.to.S.value.bumper_tag;
 
       case 'Longboard':
-        return S.of(context).longboard_tag;
-        break;
+        return LangControl.to.S.value.longboard_tag;
 
       case 'Waterfowl':
-        return S.of(context).waterfowl_tag;
-        break;
+        return LangControl.to.S.value.waterfowl_tag;
 
       case 'Flesh':
-        return S.of(context).flesh_tag;
-        break;
+        return LangControl.to.S.value.flesh_tag;
 
       case 'Net':
-        return S.of(context).net_tag;
-        break;
+        return LangControl.to.S.value.net_tag;
 
       case 'Icing':
-        return S.of(context).icing_tag;
-        break;
+        return LangControl.to.S.value.icing_tag;
 
       case 'Dalmatian':
-        return S.of(context).dalmatian_tag;
-        break;
+        return LangControl.to.S.value.dalmatian_tag;
 
       case 'Speedboat':
-        return S.of(context).speedboat_tag;
-        break;
+        return LangControl.to.S.value.speedboat_tag;
 
       case 'Trunk':
-        return S.of(context).trunk_tag;
-        break;
+        return LangControl.to.S.value.trunk_tag;
 
       case 'Coffee':
-        return S.of(context).coffee_tag;
-        break;
+        return LangControl.to.S.value.coffee_tag;
 
       case 'Soccer':
-        return S.of(context).soccer_tag;
-        break;
+        return LangControl.to.S.value.soccer_tag;
 
       case 'Ragdoll':
-        return S.of(context).ragdoll_tag;
-        break;
+        return LangControl.to.S.value.ragdoll_tag;
 
       case 'Food':
-        return S.of(context).food_tag;
-        break;
+        return LangControl.to.S.value.food_tag;
 
       case 'Standing':
-        return S.of(context).standing_tag;
-        break;
+        return LangControl.to.S.value.standing_tag;
 
       case 'Fiction':
-        return S.of(context).fiction_tag;
-        break;
+        return LangControl.to.S.value.fiction_tag;
 
       case 'Fruit':
-        return S.of(context).fruit_tag;
-        break;
+        return LangControl.to.S.value.fruit_tag;
 
       case 'Pho':
-        return S.of(context).pho_tag;
-        break;
+        return LangControl.to.S.value.pho_tag;
 
       case 'Sparkler':
-        return S.of(context).sparkler_tag;
-        break;
+        return LangControl.to.S.value.sparkler_tag;
 
       case 'Presentation':
-        return S.of(context).presentation_tag;
-        break;
+        return LangControl.to.S.value.presentation_tag;
 
       case 'Swing':
-        return S.of(context).swing_tag;
-        break;
+        return LangControl.to.S.value.swing_tag;
 
       case 'Cairn terrier':
-        return S.of(context).cairn_terrier_tag;
-        break;
+        return LangControl.to.S.value.cairn_terrier_tag;
 
       case 'Forest':
-        return S.of(context).forest_tag;
-        break;
+        return LangControl.to.S.value.forest_tag;
 
       case 'Flag':
-        return S.of(context).flag_tag;
-        break;
+        return LangControl.to.S.value.flag_tag;
 
       case 'Frigate':
-        return S.of(context).frigate_tag;
-        break;
+        return LangControl.to.S.value.frigate_tag;
 
       case 'Foot':
-        return S.of(context).foot_tag;
-        break;
+        return LangControl.to.S.value.foot_tag;
 
       case 'Jacket':
-        return S.of(context).jacket_tag;
-        break;
+        return LangControl.to.S.value.jacket_tag;
 
       case 'Pillow':
-        return S.of(context).pillow_tag;
-        break;
+        return LangControl.to.S.value.pillow_tag;
 
       case 'Bathing':
-        return S.of(context).bathing_tag;
-        break;
+        return LangControl.to.S.value.bathing_tag;
 
       case 'Glacier':
-        return S.of(context).glacier_tag;
-        break;
+        return LangControl.to.S.value.glacier_tag;
 
       case 'Gymnastics':
-        return S.of(context).gymnastics_tag;
-        break;
+        return LangControl.to.S.value.gymnastics_tag;
 
       case 'Ear':
-        return S.of(context).ear_tag;
-        break;
+        return LangControl.to.S.value.ear_tag;
 
       case 'Flora':
-        return S.of(context).flora_tag;
-        break;
+        return LangControl.to.S.value.flora_tag;
 
       case 'Shell':
-        return S.of(context).shell_tag;
-        break;
+        return LangControl.to.S.value.shell_tag;
 
       case 'Grandparent':
-        return S.of(context).grandparent_tag;
-        break;
+        return LangControl.to.S.value.grandparent_tag;
 
       case 'Ruins':
-        return S.of(context).ruins_tag;
-        break;
+        return LangControl.to.S.value.ruins_tag;
 
       case 'Eyelash':
-        return S.of(context).eyelash_tag;
-        break;
+        return LangControl.to.S.value.eyelash_tag;
 
       case 'Bunk bed':
-        return S.of(context).bunk_bed_tag;
-        break;
+        return LangControl.to.S.value.bunk_bed_tag;
 
       case 'Balance':
-        return S.of(context).balance_tag;
-        break;
+        return LangControl.to.S.value.balance_tag;
 
       case 'Backpacking':
-        return S.of(context).backpacking_tag;
-        break;
+        return LangControl.to.S.value.backpacking_tag;
 
       case 'Horse':
-        return S.of(context).horse_tag;
-        break;
+        return LangControl.to.S.value.horse_tag;
 
       case 'Glitter':
-        return S.of(context).glitter_tag;
-        break;
+        return LangControl.to.S.value.glitter_tag;
 
       case 'Saucer':
-        return S.of(context).saucer_tag;
-        break;
+        return LangControl.to.S.value.saucer_tag;
 
       case 'Hair':
-        return S.of(context).hair_tag;
-        break;
+        return LangControl.to.S.value.hair_tag;
 
       case 'Miniature':
-        return S.of(context).miniature_tag;
-        break;
+        return LangControl.to.S.value.miniature_tag;
 
       case 'Crowd':
-        return S.of(context).crowd_tag;
-        break;
+        return LangControl.to.S.value.crowd_tag;
 
       case 'Curtain':
-        return S.of(context).curtain_tag;
-        break;
+        return LangControl.to.S.value.curtain_tag;
 
       case 'Icon':
-        return S.of(context).icon_tag;
-        break;
+        return LangControl.to.S.value.icon_tag;
 
       case 'Pixie-bob':
-        return S.of(context).pixie_bob_tag;
-        break;
+        return LangControl.to.S.value.pixie_bob_tag;
 
       case 'Herd':
-        return S.of(context).herd_tag;
-        break;
+        return LangControl.to.S.value.herd_tag;
 
       case 'Insect':
-        return S.of(context).insect_tag;
-        break;
+        return LangControl.to.S.value.insect_tag;
 
       case 'Ice':
-        return S.of(context).ice_tag;
-        break;
+        return LangControl.to.S.value.ice_tag;
 
       case 'Bangle':
-        return S.of(context).bangle_tag;
-        break;
+        return LangControl.to.S.value.bangle_tag;
 
       case 'Flap':
-        return S.of(context).flap_tag;
-        break;
+        return LangControl.to.S.value.flap_tag;
 
       case 'Jewellery':
-        return S.of(context).jewellery_tag;
-        break;
+        return LangControl.to.S.value.jewellery_tag;
 
       case 'Knitting':
-        return S.of(context).knitting_tag;
-        break;
+        return LangControl.to.S.value.knitting_tag;
 
       case 'Centrepiece':
-        return S.of(context).centrepiece_tag;
-        break;
+        return LangControl.to.S.value.centrepiece_tag;
 
       case 'Outerwear':
-        return S.of(context).outerwear_tag;
-        break;
+        return LangControl.to.S.value.outerwear_tag;
 
       case 'Love':
-        return S.of(context).love_tag;
-        break;
+        return LangControl.to.S.value.love_tag;
 
       case 'Muscle':
-        return S.of(context).muscle_tag;
-        break;
+        return LangControl.to.S.value.muscle_tag;
 
       case 'Motorcycle':
-        return S.of(context).motorcycle_tag;
-        break;
+        return LangControl.to.S.value.motorcycle_tag;
 
       case 'Money':
-        return S.of(context).money_tag;
-        break;
+        return LangControl.to.S.value.money_tag;
 
       case 'Mosque':
-        return S.of(context).mosque_tag;
-        break;
+        return LangControl.to.S.value.mosque_tag;
 
       case 'Tableware':
-        return S.of(context).tableware_tag;
-        break;
+        return LangControl.to.S.value.tableware_tag;
 
       case 'Ballroom':
-        return S.of(context).ballroom_tag;
-        break;
+        return LangControl.to.S.value.ballroom_tag;
 
       case 'Kayak':
-        return S.of(context).kayak_tag;
-        break;
+        return LangControl.to.S.value.kayak_tag;
 
       case 'Leisure':
-        return S.of(context).leisure_tag;
-        break;
+        return LangControl.to.S.value.leisure_tag;
 
       case 'Receipt':
-        return S.of(context).receipt_tag;
-        break;
+        return LangControl.to.S.value.receipt_tag;
 
       case 'Lake':
-        return S.of(context).lake_tag;
-        break;
+        return LangControl.to.S.value.lake_tag;
 
       case 'Lighthouse':
-        return S.of(context).lighthouse_tag;
-        break;
+        return LangControl.to.S.value.lighthouse_tag;
 
       case 'Bridle':
-        return S.of(context).bridle_tag;
-        break;
+        return LangControl.to.S.value.bridle_tag;
 
       case 'Leather':
-        return S.of(context).leather_tag;
-        break;
+        return LangControl.to.S.value.leather_tag;
 
       case 'Horn':
-        return S.of(context).horn_tag;
-        break;
+        return LangControl.to.S.value.horn_tag;
 
       case 'Strap':
-        return S.of(context).strap_tag;
-        break;
+        return LangControl.to.S.value.strap_tag;
 
       case 'Lego':
-        return S.of(context).lego_tag;
-        break;
+        return LangControl.to.S.value.lego_tag;
 
       case 'Scuba diving':
-        return S.of(context).scuba_diving_tag;
-        break;
+        return LangControl.to.S.value.scuba_diving_tag;
 
       case 'Leggings':
-        return S.of(context).leggings_tag;
-        break;
+        return LangControl.to.S.value.leggings_tag;
 
       case 'Pool':
-        return S.of(context).pool_tag;
-        break;
+        return LangControl.to.S.value.pool_tag;
 
       case 'Musical instrument':
-        return S.of(context).musical_instrument_tag;
-        break;
+        return LangControl.to.S.value.musical_instrument_tag;
 
       case 'Musical':
-        return S.of(context).musical_tag;
-        break;
+        return LangControl.to.S.value.musical_tag;
 
       case 'Metal':
-        return S.of(context).metal_tag;
-        break;
+        return LangControl.to.S.value.metal_tag;
 
       case 'Moon':
-        return S.of(context).moon_tag;
-        break;
+        return LangControl.to.S.value.moon_tag;
 
       case 'Blazer':
-        return S.of(context).blazer_tag;
-        break;
+        return LangControl.to.S.value.blazer_tag;
 
       case 'Marriage':
-        return S.of(context).marriage_tag;
-        break;
+        return LangControl.to.S.value.marriage_tag;
 
       case 'Mobile phone':
-        return S.of(context).mobile_phone_tag;
-        break;
+        return LangControl.to.S.value.mobile_phone_tag;
 
       case 'Militia':
-        return S.of(context).militia_tag;
-        break;
+        return LangControl.to.S.value.militia_tag;
 
       case 'Tablecloth':
-        return S.of(context).tablecloth_tag;
-        break;
+        return LangControl.to.S.value.tablecloth_tag;
 
       case 'Party':
-        return S.of(context).party_tag;
-        break;
+        return LangControl.to.S.value.party_tag;
 
       case 'Nebula':
-        return S.of(context).nebula_tag;
-        break;
+        return LangControl.to.S.value.nebula_tag;
 
       case 'News':
-        return S.of(context).news_tag;
-        break;
+        return LangControl.to.S.value.news_tag;
 
       case 'Newspaper':
-        return S.of(context).newspaper_tag;
-        break;
+        return LangControl.to.S.value.newspaper_tag;
 
       case 'Piano':
-        return S.of(context).piano_tag;
-        break;
+        return LangControl.to.S.value.piano_tag;
 
       case 'Plant':
-        return S.of(context).plant_tag;
-        break;
+        return LangControl.to.S.value.plant_tag;
 
       case 'Passport':
-        return S.of(context).passport_tag;
-        break;
+        return LangControl.to.S.value.passport_tag;
 
       case 'Penguin':
-        return S.of(context).penguin_tag;
-        break;
+        return LangControl.to.S.value.penguin_tag;
 
       case 'Shikoku':
-        return S.of(context).shikoku_tag;
-        break;
+        return LangControl.to.S.value.shikoku_tag;
 
       case 'Palace':
-        return S.of(context).palace_tag;
-        break;
+        return LangControl.to.S.value.palace_tag;
 
       case 'Doily':
-        return S.of(context).doily_tag;
-        break;
+        return LangControl.to.S.value.doily_tag;
 
       case 'Polo':
-        return S.of(context).polo_tag;
-        break;
+        return LangControl.to.S.value.polo_tag;
 
       case 'Paper':
-        return S.of(context).paper_tag;
-        break;
+        return LangControl.to.S.value.paper_tag;
 
       case 'Pop music':
-        return S.of(context).pop_music_tag;
-        break;
+        return LangControl.to.S.value.pop_music_tag;
 
       case 'Skiff':
-        return S.of(context).skiff_tag;
-        break;
+        return LangControl.to.S.value.skiff_tag;
 
       case 'Pizza':
-        return S.of(context).pizza_tag;
-        break;
+        return LangControl.to.S.value.pizza_tag;
 
       case 'Pet':
-        return S.of(context).pet_tag;
-        break;
+        return LangControl.to.S.value.pet_tag;
 
       case 'Quilting':
-        return S.of(context).quilting_tag;
-        break;
+        return LangControl.to.S.value.quilting_tag;
 
       case 'Cage':
-        return S.of(context).cage_tag;
-        break;
+        return LangControl.to.S.value.cage_tag;
 
       case 'Skateboard':
-        return S.of(context).skateboard_tag;
-        break;
+        return LangControl.to.S.value.skateboard_tag;
 
       case 'Surfing':
-        return S.of(context).surfing_tag;
-        break;
+        return LangControl.to.S.value.surfing_tag;
 
       case 'Rugby':
-        return S.of(context).rugby_tag;
-        break;
+        return LangControl.to.S.value.rugby_tag;
 
       case 'Lipstick':
-        return S.of(context).lipstick_tag;
-        break;
+        return LangControl.to.S.value.lipstick_tag;
 
       case 'River':
-        return S.of(context).river_tag;
-        break;
+        return LangControl.to.S.value.river_tag;
 
       case 'Race':
-        return S.of(context).race_tag;
-        break;
+        return LangControl.to.S.value.race_tag;
 
       case 'Rowing':
-        return S.of(context).rowing_tag;
-        break;
+        return LangControl.to.S.value.rowing_tag;
 
       case 'Road':
-        return S.of(context).road_tag;
-        break;
+        return LangControl.to.S.value.road_tag;
 
       case 'Running':
-        return S.of(context).running_tag;
-        break;
+        return LangControl.to.S.value.running_tag;
 
       case 'Room':
-        return S.of(context).room_tag;
-        break;
+        return LangControl.to.S.value.room_tag;
 
       case 'Roof':
-        return S.of(context).roof_tag;
-        break;
+        return LangControl.to.S.value.roof_tag;
 
       case 'Star':
-        return S.of(context).star_tag;
-        break;
+        return LangControl.to.S.value.star_tag;
 
       case 'Sports':
-        return S.of(context).sports_tag;
-        break;
+        return LangControl.to.S.value.sports_tag;
 
       case 'Shoe':
-        return S.of(context).shoe_tag;
-        break;
+        return LangControl.to.S.value.shoe_tag;
 
       case 'Tubing':
-        return S.of(context).tubing_tag;
-        break;
+        return LangControl.to.S.value.tubing_tag;
 
       case 'Space':
-        return S.of(context).space_tag;
-        break;
+        return LangControl.to.S.value.space_tag;
 
       case 'Sleep':
-        return S.of(context).sleep_tag;
-        break;
+        return LangControl.to.S.value.sleep_tag;
 
       case 'Skin':
-        return S.of(context).skin_tag;
-        break;
+        return LangControl.to.S.value.skin_tag;
 
       case 'Swimming':
-        return S.of(context).swimming_tag;
-        break;
+        return LangControl.to.S.value.swimming_tag;
 
       case 'School':
-        return S.of(context).school_tag;
-        break;
+        return LangControl.to.S.value.school_tag;
 
       case 'Sushi':
-        return S.of(context).sushi_tag;
-        break;
+        return LangControl.to.S.value.sushi_tag;
 
       case 'Loveseat':
-        return S.of(context).loveseat_tag;
-        break;
+        return LangControl.to.S.value.loveseat_tag;
 
       case 'Superman':
-        return S.of(context).superman_tag;
-        break;
+        return LangControl.to.S.value.superman_tag;
 
       case 'Cool':
-        return S.of(context).cool_tag;
-        break;
+        return LangControl.to.S.value.cool_tag;
 
       case 'Skiing':
-        return S.of(context).skiing_tag;
-        break;
+        return LangControl.to.S.value.skiing_tag;
 
       case 'Submarine':
-        return S.of(context).submarine_tag;
-        break;
+        return LangControl.to.S.value.submarine_tag;
 
       case 'Song':
-        return S.of(context).song_tag;
-        break;
+        return LangControl.to.S.value.song_tag;
 
       case 'Class':
-        return S.of(context).class_tag;
-        break;
+        return LangControl.to.S.value.class_tag;
 
       case 'Skyscraper':
-        return S.of(context).skyscraper_tag;
-        break;
+        return LangControl.to.S.value.skyscraper_tag;
 
       case 'Volcano':
-        return S.of(context).volcano_tag;
-        break;
+        return LangControl.to.S.value.volcano_tag;
 
       case 'Television':
-        return S.of(context).television_tag;
-        break;
+        return LangControl.to.S.value.television_tag;
 
       case 'Rein':
-        return S.of(context).rein_tag;
-        break;
+        return LangControl.to.S.value.rein_tag;
 
       case 'Tattoo':
-        return S.of(context).tattoo_tag;
-        break;
+        return LangControl.to.S.value.tattoo_tag;
 
       case 'Train':
-        return S.of(context).train_tag;
-        break;
+        return LangControl.to.S.value.train_tag;
 
       case 'Handrail':
-        return S.of(context).handrail_tag;
-        break;
+        return LangControl.to.S.value.handrail_tag;
 
       case 'Cup':
-        return S.of(context).cup_tag;
-        break;
+        return LangControl.to.S.value.cup_tag;
 
       case 'Vehicle':
-        return S.of(context).vehicle_tag;
-        break;
+        return LangControl.to.S.value.vehicle_tag;
 
       case 'Handbag':
-        return S.of(context).handbag_tag;
-        break;
+        return LangControl.to.S.value.handbag_tag;
 
       case 'Lampshade':
-        return S.of(context).lampshade_tag;
-        break;
+        return LangControl.to.S.value.lampshade_tag;
 
       case 'Event':
-        return S.of(context).event_tag;
-        break;
+        return LangControl.to.S.value.event_tag;
 
       case 'Wine':
-        return S.of(context).wine_tag;
-        break;
+        return LangControl.to.S.value.wine_tag;
 
       case 'Wing':
-        return S.of(context).wing_tag;
-        break;
+        return LangControl.to.S.value.wing_tag;
 
       case 'Wheel':
-        return S.of(context).wheel_tag;
-        break;
+        return LangControl.to.S.value.wheel_tag;
 
       case 'Wakeboarding':
-        return S.of(context).wakeboarding_tag;
-        break;
+        return LangControl.to.S.value.wakeboarding_tag;
 
       case 'Web page':
-        return S.of(context).web_page_tag;
-        break;
+        return LangControl.to.S.value.web_page_tag;
 
       case 'Ranch':
-        return S.of(context).ranch_tag;
-        break;
+        return LangControl.to.S.value.ranch_tag;
 
       case 'Fishing':
-        return S.of(context).fishing_tag;
-        break;
+        return LangControl.to.S.value.fishing_tag;
 
       case 'Heart':
-        return S.of(context).heart_tag;
-        break;
+        return LangControl.to.S.value.heart_tag;
 
       case 'Cotton':
-        return S.of(context).cotton_tag;
-        break;
+        return LangControl.to.S.value.cotton_tag;
 
       case 'Cappuccino':
-        return S.of(context).cappuccino_tag;
-        break;
+        return LangControl.to.S.value.cappuccino_tag;
 
       case 'Bread':
-        return S.of(context).bread_tag;
-        break;
+        return LangControl.to.S.value.bread_tag;
 
       case 'Sand':
-        return S.of(context).sand_tag;
-        break;
+        return LangControl.to.S.value.sand_tag;
 
       case 'Museum':
-        return S.of(context).museum_tag;
-        break;
+        return LangControl.to.S.value.museum_tag;
 
       case 'Helicopter':
-        return S.of(context).helicopter_tag;
-        break;
+        return LangControl.to.S.value.helicopter_tag;
 
       case 'Mountain':
-        return S.of(context).mountain_tag;
-        break;
+        return LangControl.to.S.value.mountain_tag;
 
       case 'Duck':
-        return S.of(context).duck_tag;
-        break;
+        return LangControl.to.S.value.duck_tag;
 
       case 'Soil':
-        return S.of(context).soil_tag;
-        break;
+        return LangControl.to.S.value.soil_tag;
 
       case 'Turtle':
-        return S.of(context).turtle_tag;
-        break;
+        return LangControl.to.S.value.turtle_tag;
 
       case 'Crocodile':
-        return S.of(context).crocodile_tag;
-        break;
+        return LangControl.to.S.value.crocodile_tag;
 
       case 'Musician':
-        return S.of(context).musician_tag;
-        break;
+        return LangControl.to.S.value.musician_tag;
 
       case 'Sneakers':
-        return S.of(context).sneakers_tag;
-        break;
+        return LangControl.to.S.value.sneakers_tag;
 
       case 'Wool':
-        return S.of(context).wool_tag;
-        break;
+        return LangControl.to.S.value.wool_tag;
 
       case 'Ring':
-        return S.of(context).ring_tag;
-        break;
+        return LangControl.to.S.value.ring_tag;
 
       case 'Singer':
-        return S.of(context).singer_tag;
-        break;
+        return LangControl.to.S.value.singer_tag;
 
       case 'Carnival':
-        return S.of(context).carnival_tag;
-        break;
+        return LangControl.to.S.value.carnival_tag;
 
       case 'Snowboarding':
-        return S.of(context).snowboarding_tag;
-        break;
+        return LangControl.to.S.value.snowboarding_tag;
 
       case 'Waterskiing':
-        return S.of(context).waterskiing_tag;
-        break;
+        return LangControl.to.S.value.waterskiing_tag;
 
       case 'Wall':
-        return S.of(context).wall_tag;
-        break;
+        return LangControl.to.S.value.wall_tag;
 
       case 'Rocket':
-        return S.of(context).rocket_tag;
-        break;
+        return LangControl.to.S.value.rocket_tag;
 
       case 'Countertop':
-        return S.of(context).countertop_tag;
-        break;
+        return LangControl.to.S.value.countertop_tag;
 
       case 'Beach':
-        return S.of(context).beach_tag;
-        break;
+        return LangControl.to.S.value.beach_tag;
 
       case 'Rainbow':
-        return S.of(context).rainbow_tag;
-        break;
+        return LangControl.to.S.value.rainbow_tag;
 
       case 'Branch':
-        return S.of(context).branch_tag;
-        break;
+        return LangControl.to.S.value.branch_tag;
 
       case 'Moustache':
-        return S.of(context).moustache_tag;
-        break;
+        return LangControl.to.S.value.moustache_tag;
 
       case 'Garden':
-        return S.of(context).garden_tag;
-        break;
+        return LangControl.to.S.value.garden_tag;
 
       case 'Gown':
-        return S.of(context).gown_tag;
-        break;
+        return LangControl.to.S.value.gown_tag;
 
       case 'Field':
-        return S.of(context).field_tag;
-        break;
+        return LangControl.to.S.value.field_tag;
 
       case 'Dog':
-        return S.of(context).dog_tag;
-        break;
+        return LangControl.to.S.value.dog_tag;
 
       case 'Superhero':
-        return S.of(context).superhero_tag;
-        break;
+        return LangControl.to.S.value.superhero_tag;
 
       case 'Flower':
-        return S.of(context).flower_tag;
-        break;
+        return LangControl.to.S.value.flower_tag;
 
       case 'Placemat':
-        return S.of(context).placemat_tag;
-        break;
+        return LangControl.to.S.value.placemat_tag;
 
       case 'Subwoofer':
-        return S.of(context).subwoofer_tag;
-        break;
+        return LangControl.to.S.value.subwoofer_tag;
 
       case 'Cathedral':
-        return S.of(context).cathedral_tag;
-        break;
+        return LangControl.to.S.value.cathedral_tag;
 
       case 'Building':
-        return S.of(context).building_tag;
-        break;
+        return LangControl.to.S.value.building_tag;
 
       case 'Airplane':
-        return S.of(context).airplane_tag;
-        break;
+        return LangControl.to.S.value.airplane_tag;
 
       case 'Fur':
-        return S.of(context).fur_tag;
-        break;
+        return LangControl.to.S.value.fur_tag;
 
       case 'Bull':
-        return S.of(context).bull_tag;
-        break;
+        return LangControl.to.S.value.bull_tag;
 
       case 'Bench':
-        return S.of(context).bench_tag;
-        break;
+        return LangControl.to.S.value.bench_tag;
 
       case 'Temple':
-        return S.of(context).temple_tag;
-        break;
+        return LangControl.to.S.value.temple_tag;
 
       case 'Butterfly':
-        return S.of(context).butterfly_tag;
-        break;
+        return LangControl.to.S.value.butterfly_tag;
 
       case 'Model':
-        return S.of(context).model_tag;
-        break;
+        return LangControl.to.S.value.model_tag;
 
       case 'Marathon':
-        return S.of(context).marathon_tag;
-        break;
+        return LangControl.to.S.value.marathon_tag;
 
       case 'Needlework':
-        return S.of(context).needlework_tag;
-        break;
+        return LangControl.to.S.value.needlework_tag;
 
       case 'Kitchen':
-        return S.of(context).kitchen_tag;
-        break;
+        return LangControl.to.S.value.kitchen_tag;
 
       case 'Castle':
-        return S.of(context).castle_tag;
-        break;
+        return LangControl.to.S.value.castle_tag;
 
       case 'Aurora':
-        return S.of(context).aurora_tag;
-        break;
+        return LangControl.to.S.value.aurora_tag;
 
       case 'Larva':
-        return S.of(context).larva_tag;
-        break;
+        return LangControl.to.S.value.larva_tag;
 
       case 'Racing':
-        return S.of(context).racing_tag;
-        break;
+        return LangControl.to.S.value.racing_tag;
 
       case 'Airliner':
-        return S.of(context).airliner_tag;
-        break;
+        return LangControl.to.S.value.airliner_tag;
 
       case 'Dam':
-        return S.of(context).dam_tag;
-        break;
+        return LangControl.to.S.value.dam_tag;
 
       case 'Textile':
-        return S.of(context).textile_tag;
-        break;
+        return LangControl.to.S.value.textile_tag;
 
       case 'Groom':
-        return S.of(context).groom_tag;
-        break;
+        return LangControl.to.S.value.groom_tag;
 
       case 'Fun':
-        return S.of(context).fun_tag;
-        break;
+        return LangControl.to.S.value.fun_tag;
 
       case 'Steaming':
-        return S.of(context).steaming_tag;
-        break;
+        return LangControl.to.S.value.steaming_tag;
 
       case 'Vegetable':
-        return S.of(context).vegetable_tag;
-        break;
+        return LangControl.to.S.value.vegetable_tag;
 
       case 'Unicycle':
-        return S.of(context).unicycle_tag;
-        break;
+        return LangControl.to.S.value.unicycle_tag;
 
       case 'Jeans':
-        return S.of(context).jeans_tag;
-        break;
+        return LangControl.to.S.value.jeans_tag;
 
       case 'Flowerpot':
-        return S.of(context).flowerpot_tag;
-        break;
+        return LangControl.to.S.value.flowerpot_tag;
 
       case 'Drawer':
-        return S.of(context).drawer_tag;
-        break;
+        return LangControl.to.S.value.drawer_tag;
 
       case 'Cake':
-        return S.of(context).cake_tag;
-        break;
+        return LangControl.to.S.value.cake_tag;
 
       case 'Armrest':
-        return S.of(context).armrest_tag;
-        break;
+        return LangControl.to.S.value.armrest_tag;
 
       case 'Aviation':
-        return S.of(context).aviation_tag;
-        break;
+        return LangControl.to.S.value.aviation_tag;
 
       case 'Fog':
-        return S.of(context).fog_tag;
-        break;
+        return LangControl.to.S.value.fog_tag;
 
       case 'Fireworks':
-        return S.of(context).fireworks_tag;
-        break;
+        return LangControl.to.S.value.fireworks_tag;
 
       case 'Farm':
-        return S.of(context).farm_tag;
-        break;
+        return LangControl.to.S.value.farm_tag;
 
       case 'Seal':
-        return S.of(context).seal_tag;
-        break;
+        return LangControl.to.S.value.seal_tag;
 
       case 'Shelf':
-        return S.of(context).shelf_tag;
-        break;
+        return LangControl.to.S.value.shelf_tag;
 
       case 'Bangs':
-        return S.of(context).bangs_tag;
-        break;
+        return LangControl.to.S.value.bangs_tag;
 
       case 'Lightning':
-        return S.of(context).lightning_tag;
-        break;
+        return LangControl.to.S.value.lightning_tag;
 
       case 'Van':
-        return S.of(context).van_tag;
-        break;
+        return LangControl.to.S.value.van_tag;
 
       case 'Sphynx':
-        return S.of(context).sphynx_tag;
-        break;
+        return LangControl.to.S.value.sphynx_tag;
 
       case 'Tire':
-        return S.of(context).tire_tag;
-        break;
+        return LangControl.to.S.value.tire_tag;
 
       case 'Denim':
-        return S.of(context).denim_tag;
-        break;
+        return LangControl.to.S.value.denim_tag;
 
       case 'Prairie':
-        return S.of(context).prairie_tag;
-        break;
+        return LangControl.to.S.value.prairie_tag;
 
       case 'Snorkeling':
-        return S.of(context).snorkeling_tag;
-        break;
+        return LangControl.to.S.value.snorkeling_tag;
 
       case 'Umbrella':
-        return S.of(context).umbrella_tag;
-        break;
+        return LangControl.to.S.value.umbrella_tag;
 
       case 'Asphalt':
-        return S.of(context).asphalt_tag;
-        break;
+        return LangControl.to.S.value.asphalt_tag;
 
       case 'Sailboat':
-        return S.of(context).sailboat_tag;
-        break;
+        return LangControl.to.S.value.sailboat_tag;
 
       case 'Basset hound':
-        return S.of(context).basset_hound_tag;
-        break;
+        return LangControl.to.S.value.basset_hound_tag;
 
       case 'Pattern':
-        return S.of(context).pattern_tag;
-        break;
+        return LangControl.to.S.value.pattern_tag;
 
       case 'Supper':
-        return S.of(context).supper_tag;
-        break;
+        return LangControl.to.S.value.supper_tag;
 
       case 'Veil':
-        return S.of(context).veil_tag;
-        break;
+        return LangControl.to.S.value.veil_tag;
 
       case 'Waterfall':
-        return S.of(context).waterfall_tag;
-        break;
+        return LangControl.to.S.value.waterfall_tag;
 
       case 'Lunch':
-        return S.of(context).lunch_tag;
-        break;
+        return LangControl.to.S.value.lunch_tag;
 
       case 'Odometer':
-        return S.of(context).odometer_tag;
-        break;
+        return LangControl.to.S.value.odometer_tag;
 
       case 'Baby':
-        return S.of(context).baby_tag;
-        break;
+        return LangControl.to.S.value.baby_tag;
 
       case 'Glasses':
-        return S.of(context).glasses_tag;
-        break;
+        return LangControl.to.S.value.glasses_tag;
 
       case 'Car':
-        return S.of(context).car_tag;
-        break;
+        return LangControl.to.S.value.car_tag;
 
       case 'Aircraft':
-        return S.of(context).aircraft_tag;
-        break;
+        return LangControl.to.S.value.aircraft_tag;
 
       case 'Hand':
-        return S.of(context).hand_tag;
-        break;
+        return LangControl.to.S.value.hand_tag;
 
       case 'Rodeo':
-        return S.of(context).rodeo_tag;
-        break;
+        return LangControl.to.S.value.rodeo_tag;
 
       case 'Canyon':
-        return S.of(context).canyon_tag;
-        break;
+        return LangControl.to.S.value.canyon_tag;
 
       case 'Meal':
-        return S.of(context).meal_tag;
-        break;
+        return LangControl.to.S.value.meal_tag;
 
       case 'Softball':
-        return S.of(context).softball_tag;
-        break;
+        return LangControl.to.S.value.softball_tag;
 
       case 'Alcohol':
-        return S.of(context).alcohol_tag;
-        break;
+        return LangControl.to.S.value.alcohol_tag;
 
       case 'Bride':
-        return S.of(context).bride_tag;
-        break;
+        return LangControl.to.S.value.bride_tag;
 
       case 'Swamp':
-        return S.of(context).swamp_tag;
-        break;
+        return LangControl.to.S.value.swamp_tag;
 
       case 'Pie':
-        return S.of(context).pie_tag;
-        break;
+        return LangControl.to.S.value.pie_tag;
 
       case 'Bag':
-        return S.of(context).bag_tag;
-        break;
+        return LangControl.to.S.value.bag_tag;
 
       case 'Joker':
-        return S.of(context).joker_tag;
-        break;
+        return LangControl.to.S.value.joker_tag;
 
       case 'Supervillain':
-        return S.of(context).supervillain_tag;
-        break;
+        return LangControl.to.S.value.supervillain_tag;
 
       case 'Army':
-        return S.of(context).army_tag;
-        break;
+        return LangControl.to.S.value.army_tag;
 
       case 'Canoe':
-        return S.of(context).canoe_tag;
-        break;
+        return LangControl.to.S.value.canoe_tag;
 
       case 'Selfie':
-        return S.of(context).selfie_tag;
-        break;
+        return LangControl.to.S.value.selfie_tag;
 
       case 'Rickshaw':
-        return S.of(context).rickshaw_tag;
-        break;
+        return LangControl.to.S.value.rickshaw_tag;
 
       case 'Barn':
-        return S.of(context).barn_tag;
-        break;
+        return LangControl.to.S.value.barn_tag;
 
       case 'Archery':
-        return S.of(context).archery_tag;
-        break;
+        return LangControl.to.S.value.archery_tag;
 
       case 'Aerospace engineering':
-        return S.of(context).aerospace_engineering_tag;
-        break;
+        return LangControl.to.S.value.aerospace_engineering_tag;
 
       case 'Storm':
-        return S.of(context).storm_tag;
-        break;
+        return LangControl.to.S.value.storm_tag;
 
       case 'Helmet':
-        return S.of(context).helmet_tag;
-        break;
+        return LangControl.to.S.value.helmet_tag;
 
       default:
         return label;

@@ -1,7 +1,33 @@
 import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
+import 'package:picPics/model/tag_model.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
+import '../constants.dart';
 
 class Helpers {
+  static Widget failedItem = Center(
+    child: Text(
+      'Failed loading',
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 18.0),
+    ),
+  );
+  static String dateFormat(DateTime dateTime, {bool isMonth = true}) {
+    DateFormat formatter;
+    print('Date Time Formatting: $dateTime');
+
+    /// More Optimized code
+    if (isMonth) {
+      formatter = DateFormat.yMMMM();
+    } else {
+      formatter = dateTime.year == DateTime.now().year
+          ? DateFormat.MMMEd()
+          : DateFormat.yMMMEd();
+    }
+    return formatter.format(dateTime);
+  }
+
   static String stripTag(String tag) => removeDiacritics(tag.toLowerCase());
 
   static String encryptTag(String tag) {
@@ -28,12 +54,52 @@ class Helpers {
     return decrypted;
   }
 
-  static String removeLastCharacter(String str) {
-    String result = null;
-    if ((str != null) && (str.length > 0)) {
-      result = str.substring(0, str.length - 1);
+  static String removeLastCharacter(String? str) {
+    String? result;
+    if (str?.isNotEmpty ?? false) {
+      result = str!.substring(0, str.length - 1);
     }
 
     return result ?? '';
   }
+}
+
+LinearGradient getGradient(int _) {
+  switch (_) {
+    case 0:
+      return kPrimaryGradient;
+    case 1:
+      return kSecondaryGradient;
+    case 2:
+      return kPinkGradient;
+    default:
+      return kCardYellowGradient;
+  }
+}
+
+typedef CallBack = Function(bool);
+
+void doCustomisedSearching(
+    dynamic tag, List<String> listOfLetters, CallBack callback) {
+  if (tag == null) callback(false);
+
+  var matched = true;
+  var title = (tag is TagModel ? tag.title : tag)?.toLowerCase();
+  var i = 0;
+  for (var index = 0; index < listOfLetters.length; index++) {
+    var found = false;
+    while (i < title.length) {
+      if (listOfLetters[index] == title[i]) {
+        found = true;
+        i++;
+        break;
+      }
+      i++;
+    }
+    if (!found) {
+      matched = false;
+      break;
+    }
+  }
+  callback(matched);
 }

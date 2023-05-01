@@ -4,20 +4,16 @@
   "edit_tag": "Изменить тег",
   "cancel": "Отмена",
   "notifications": "Уведомления",
-
   "welcome": "Добро пожаловать!",
   "photos_always_organized": "Теперь ваши фотографии будут всегда упорядочены",
-
   "continue_string": "Продолжить",
   "gallery_access_reason": "Для организации ваших фотографий нам нужен доступ к вашей фотогалерее",
-
   "tutorial_daily_package": "Мы предоставляем вам ежедневный пакет, позволяющей постепенно упорядочить вашу библиотеку.",
   "next": "Далее",
   "tutorial_however_you_want": "Организуйте свои фотографии, добавив к ним теги «семья», «питомцы», или какие вы сами хотите.",
   "close": "Закрыть",
   "start": "Начать",
   "tutorial_just_swipe": "После добавления тегов к фотографии просто проведите пальцем, чтобы перейти к следующему.",
-
   "settings": "Настройки",
   "suggestions": "Предложения",
   "photo_location": "Расположение фото",
@@ -25,23 +21,16 @@
   "add_tag": "Добавить тег",
   "add_tags": "Добавить теги",
   "full_screen": "На весь экран",
-
   "photo_gallery_title": "Фотогалерея",
   "photo_gallery_description": "Фотографии еще не упорядочены",
   "photo_gallery_count": "{howMany, plural, zero{Фотографии не выбраны} one{Выбрано 1 фото} other{Выбрано {howMany} фотографий}}",
-
   "organized_photos_title": "Упорядоченные фотографии",
   "organized_photos_description": "Уже отмеченные тегами фотографии",
-
   "search": "Поиск...",
-
-
   "no_tagged_photos": "У вас еще нет фотографий с тегами",
   "start_tagging": "Начать разметку",
-
   "no_tags_found": "Теги не найдены",
   "search_results": "Результаты поиска",
-
   "daily_challenge": "Ежедневное задание",
   "daily_goal": "Ежедневная цель",
   "notification_time": "Время уведомления",
@@ -49,49 +38,27 @@
   "rate_this_app": "Оцените это приложение",
   "how_many_pics": "Сколько фото",
   "time": "Время",
-
   "take_a_look": "Взгляните на это приложение!",
   "take_a_look_description": "Чтобы упорядочить все свои фотографии, перейдите по ссылке {url}",
-
   "daily_challenge_permission_description": "Чтобы мы могли отправлять вам ежедневные задания, нам нужно разрешение на отправку уведомлений, поэтому вам необходимо разрешить уведомления в настройках вашего мобильного телефона.",
-
-
-  "you_are_premium": "Вы получили Премиум!",
-  "get_premium_now": "Получите Премиум сейчас!",
-
-
-  "get_premium_title": "ПОЛУЧИТЕ ПРЕМИУМ",
-  "get_premium_description": "ЧТОБЫ ПОЛУЧИТЬ ВСЕ ЭТИ ФУНКЦИИ",
-
 
   "no_ads": "Без рекламы",
   "export_all_gallery": "Экспорт всей галереи",
   "infinite_tags": "Бесконечные теги",
   "tag_multiple_photos_at_once": "Разметка нескольких фото одновременно",
-
   "sign": "Подписать",
   "year": "год",
   "month": "месяц",
-
   "restore_purchase": "Восстановить покупку",
   "no_previous_purchase": "Нет предыдущей покупки",
   "no_valid_subscription": "Не удалось найти действительную покупку подписки.",
   "save": "Сохранить",
-
   "save_location": "Сохранить местоположение",
-
   "device_has_no_pics": "На этом устройстве нет фотографий в галерее, поэтому нет фотографии для разметки тегами.",
   "open_gallery": "Открыть галерею",
-
   "gallery_access_permission": "Права доступа",
   "gallery_access_permission_description": "Для организации ваших фотографий нам нужна авторизация доступа к ним.",
-
   "export_library": "Экспорт библиотеки",
-
-  "premium_modal_description": "Вы обработали свои {number} бесплатных ежедневных фото. Хотите продолжить?",
-  "premium_modal_watch_ad": "Для продолжения просмотрите видео-рекламу",
-  "premium_modal_get_premium_title": "Получить Премиум-аккаунт",
-  "premium_modal_get_premium_description": "ВСЕ ФУНКЦИИ БЕЗ РЕКЛАМЫ",
 
   "family_tag": "Семья",
   "travel_tag": "Путешествия",
@@ -103,16 +70,12 @@
   "home_tag": "Дом",
   "work_tag": "Работа",
   "parties_tag": "Вечеринки",
-
   "terms_of_use": "Условия использования",
   "privacy_policy": "Политика конфиденциальности",
-
   "auto_renewable_first_part": "Подписка ",
   "auto_renewable_second_part": "продлевается автоматически.",
   "cancel_anytime": "Можно отменить в любое время",
-
   "language": "язык",
-
   "all_search_tags": "Все поисковые теги",
   "search_all_tags_not_found": "Не найдено ни одного изображения со всеми тегами",
   "picpics_photo_manager": "picPics - Менеджер фотографий",
@@ -145,13 +108,10 @@
   "lock_your_photos": "Заблокируйте свои фотографии",
   "lock_with_pin": "Заблокируйте свои личные фотографии с помощью PIN-кода.",
   "protect_with_encryption": "Защитите свои личные фотографии с помощью шифрования, доступного только с помощью пароля PIN.",
-
-
-  "all_photos_were_tagged": "There are no more photos to organize.",
+  "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Неограниченное количество личных фотографий",
-
   "toggle_months": "Месяцы",
   "toggle_days": "Дней",
   "toggle_date": "Дата",
@@ -165,6 +125,7 @@
   "enable_faceid": "Включить Face ID",
   "enable_touchid": "Включить Touch ID",
   "enable_fingerprint": "Включить отпечаток пальца",
-  "enable_irisscanner": "Включить сканер радужной оболочки глаза"
-
+  "enable_irisscanner": "Включить сканер радужной оболочки глаза",
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

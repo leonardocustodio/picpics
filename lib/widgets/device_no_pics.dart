@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/generated/l10n.dart';
 
 class DeviceHasNoPics extends StatelessWidget {
   final String message;
 
-  DeviceHasNoPics({this.message});
+  DeviceHasNoPics({required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +59,7 @@ class DeviceHasNoPics extends StatelessWidget {
 //              ),
 //              child: Center(
 //                child: Text(
-//                  S.of(context).open_gallery,
+//                  LangControl.to.S.value.open_gallery,
 //                  textScaleFactor: 1.0,
 //                  style: TextStyle(
 //                    fontFamily: 'Lato',

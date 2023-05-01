@@ -1,60 +1,25 @@
-import 'package:hive/hive.dart';
-part 'pic.g.dart';
-
-@HiveType(typeId: 0)
-class Pic extends HiveObject {
-  @HiveField(0)
+class Pic {
   final String photoId;
-
-  @HiveField(1)
   final DateTime createdAt;
-
-  @HiveField(2)
-  final double originalLatitude;
-
-  @HiveField(3)
-  final double originalLongitude;
-
-  @HiveField(4)
-  double latitude;
-
-  @HiveField(5)
-  double longitude;
-
-  @HiveField(6)
-  String specificLocation;
-
-  @HiveField(7)
-  String generalLocation;
-
-  @HiveField(8)
+  final double originalLatitude, originalLongitude;
+  double latitude, longitude;
+  String specificLocation, generalLocation, base64encoded;
   final List<String> tags;
-
-  @HiveField(9)
-  bool isPrivate;
-
-  @HiveField(10)
-  bool deletedFromCameraRoll;
-
-  @HiveField(11)
-  bool isStarred;
-
-  @HiveField(12)
-  String base64encoded;
+  bool isPrivate, deletedFromCameraRoll, isStarred;
 
   Pic({
-    this.photoId,
-    this.createdAt,
-    this.originalLatitude,
-    this.originalLongitude,
-    this.latitude,
-    this.longitude,
-    this.specificLocation,
-    this.generalLocation,
-    this.tags,
-    this.isPrivate,
-    this.deletedFromCameraRoll,
-    this.isStarred,
-    this.base64encoded,
+    required this.photoId,
+    required this.createdAt,
+    required this.originalLatitude,
+    required this.originalLongitude,
+    required this.latitude,
+    required this.longitude,
+    required this.specificLocation,
+    required this.generalLocation,
+    required this.tags,
+    required this.isPrivate,
+    required this.deletedFromCameraRoll,
+    required this.isStarred,
+    required this.base64encoded,
   });
 }

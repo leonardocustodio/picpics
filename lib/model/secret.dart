@@ -1,36 +1,16 @@
-import 'package:hive/hive.dart';
-part 'secret.g.dart';
-
-@HiveType(typeId: 3)
-class Secret extends HiveObject {
-  @HiveField(0)
-  String photoId;
-
-  @HiveField(1)
-  String photoPath;
-
-  @HiveField(2)
-  String thumbPath;
-
-  @HiveField(3)
+class Secret {
+  String photoId, photoPath, thumbPath;
   final DateTime createDateTime;
-
-  @HiveField(4)
-  final double originalLatitude;
-
-  @HiveField(5)
-  final double originalLongitude;
-
-  @HiveField(6)
+  final double originalLatitude, originalLongitude;
   final String nonce;
 
   Secret({
-    this.photoId,
-    this.photoPath,
-    this.thumbPath,
-    this.createDateTime,
-    this.originalLatitude,
-    this.originalLongitude,
-    this.nonce,
+    required this.photoId,
+    required this.photoPath,
+    required this.thumbPath,
+    required this.createDateTime,
+    required this.originalLatitude,
+    required this.originalLongitude,
+    required this.nonce,
   });
 }

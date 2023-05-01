@@ -1,13 +1,36 @@
 import 'package:flutter/material.dart';
 
 const List<int> kDefaultPhotoSize = <int>[600, 600];
-const List<int> kDefaultPreviewThumbSize = <int>[150, 150];
+const List<int> kDefaultPreviewThumbSize = <int>[100, 100];
+
+final greyWidget = Padding(
+  padding: const EdgeInsets.all(2),
+  child: Container(
+    padding: const EdgeInsets.all(10),
+    color: Colors.grey[300],
+  ),
+);
+final failedItem = Center(
+  child: Text(
+    'Failed loading',
+    textAlign: TextAlign.center,
+    style: const TextStyle(fontSize: 18.0),
+  ),
+);
 
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;
 
 const kSecretTagKey = 'XXXXXXXXXYYYYYYYYYZZZZZZZZZZZZ';
-List<String> kRequireOptions = ['Immediately', '30 seconds', '1 minute', '2 minutes', '3 minutes', '4 minutes', '5 minutes'];
+List<String> kRequireOptions = [
+  'Immediately',
+  '30 seconds',
+  '1 minute',
+  '2 minutes',
+  '3 minutes',
+  '4 minutes',
+  '5 minutes'
+];
 
 const kPrimaryColor = Color(0xFF52CECE);
 const kSecondaryColor = Color(0xFFFF6666);
@@ -17,16 +40,16 @@ const kSuccessColor = Color(0xFF70FF98);
 const kAlertColor = Color(0xFFF68C0F);
 const kWarningColor = Color(0xFFE01717);
 const kWhiteColor = Color(0xFFF5FAFA);
-const kGrayColor = const Color(0xffbfc2c3);
-const kLightGrayColor = const Color(0xffe2e4e5);
+const kGrayColor = Color(0xffbfc2c3);
+const kLightGrayColor = Color(0xffe2e4e5);
 const kGreyPlaceholder = Color(0xFFE0E0E0);
 
 const kPrimaryGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-    const Color(0xFF52CECE),
-    const Color(0xFF6BC9DB),
+    Color(0xFF52CECE),
+    Color(0xFF6BC9DB),
   ],
 );
 
@@ -34,8 +57,8 @@ const kSecondaryGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-    const Color(0xFFFF6666),
-    const Color(0xFFFF7878),
+    Color(0xFFFF6666),
+    Color(0xFFFF7878),
   ],
 );
 
@@ -43,8 +66,8 @@ const kCardYellowGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-    const Color(0xFFDFB300),
-    const Color(0xFFFFD93F),
+    Color(0xFFDFB300),
+    Color(0xFFFFD93F),
   ],
 );
 
@@ -52,8 +75,8 @@ const kPinkGradient = LinearGradient(
   begin: Alignment.centerLeft,
   end: Alignment.centerRight,
   colors: [
-    const Color(0xFFEC56A1),
-    const Color(0xFFED74B1),
+    Color(0xFFEC56A1),
+    Color(0xFFED74B1),
   ],
 );
 
@@ -61,8 +84,8 @@ const kYellowGradient = LinearGradient(
   begin: Alignment(-0.07, -0.3),
   end: Alignment(1.2, 1.05),
   colors: [
-    const Color.fromRGBO(232, 191, 27, 0.7),
-    const Color.fromRGBO(242, 206, 59, 0.7),
+    Color.fromRGBO(232, 191, 27, 0.7),
+    Color.fromRGBO(242, 206, 59, 0.7),
   ],
 );
 
@@ -131,7 +154,7 @@ const kBottomSheetTitleTextStyle = TextStyle(
   fontWeight: FontWeight.w300,
 );
 
-const kPremiumButtonTextStyle = TextStyle(
+/* const kPremiumButtonTextStyle = TextStyle(
   fontFamily: 'Lato',
   color: kPinkColor,
   fontSize: 16,
@@ -139,7 +162,7 @@ const kPremiumButtonTextStyle = TextStyle(
   fontStyle: FontStyle.normal,
   letterSpacing: -0.4099999964237213,
 );
-
+ */
 const kLoginDescriptionTextStyle = TextStyle(
   fontFamily: 'Lato',
   color: kWhiteColor,

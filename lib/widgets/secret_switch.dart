@@ -8,8 +8,8 @@ class SecretSwitch extends StatefulWidget {
   final Function onChanged;
 
   SecretSwitch({
-    @required this.value,
-    @required this.onChanged,
+    required this.value,
+    required this.onChanged,
   });
 
   @override
@@ -17,10 +17,10 @@ class SecretSwitch extends StatefulWidget {
 }
 
 class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
-  CustomAnimationControl control = CustomAnimationControl.PLAY;
+  Control control = Control.play;
   bool goingRight = true;
-  bool initRight;
-  bool positionRight;
+  late bool initRight;
+  late bool positionRight;
 
   @override
   void initState() {
@@ -33,7 +33,9 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
     setState(() {
       goingRight = !goingRight;
       positionRight = widget.value;
-      control = (control == CustomAnimationControl.PLAY) ? CustomAnimationControl.PLAY_REVERSE : CustomAnimationControl.PLAY;
+      control = (control == Control.play
+          ? Control.playReverse
+          : Control.play);
     });
   }
 
@@ -45,18 +47,19 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
     return Stack(
       children: [
         CupertinoSwitch(
-          value: widget.value, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+          value: widget
+              .value, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
           activeColor: kYellowColor,
           onChanged: (value) {
             widget.onChanged(value);
           },
         ),
-        CustomAnimation<double>(
+        CustomAnimationBuilder<double>(
           control: control,
           tween: (-11.0).tweenTo(11.0),
           duration: 200.milliseconds,
           curve: goingRight ? Curves.easeOutCubic : Curves.easeInCubic,
-          builder: (context, child, value) {
+          builder: (context, value, _) {
             return Positioned(
               right: 25 + (initRight ? -value : value),
               top: 12,

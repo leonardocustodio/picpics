@@ -1,76 +1,73 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/swiper_tab_controller.dart';
+import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picPics/stores/user_controller.dart';
+import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
-import 'package:provider/provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
 
-class PicTab extends StatefulWidget {
+// ignore: must_be_immutable
+class PicTab extends GetWidget<SwiperTabController> {
   static const id = 'pic_tab';
+  PicTab({Key? key}) : super(key: key);
 
-  final Function showDeleteSecretModal;
-  final Function showEditTagModal;
+  final _ = Get.put(UserController());
+  final __ = Get.put(SwiperTabController());
 
-  PicTab({
-    @required this.showEditTagModal,
-    @required this.showDeleteSecretModal,
-  });
-
-  @override
-  _PicTabState createState() => _PicTabState();
-}
-
-class _PicTabState extends State<PicTab> {
-  AppStore appStore;
-  GalleryStore galleryStore;
   CarouselController carouselController = CarouselController();
   ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
 
-  ReactionDisposer disposer;
+  Widget _buildPhotoSlider(int index) {
+    final picId = controller.swiperPicIdList[index];
+    final picStore = TabsController.to.picStoreMap[picId]?.value ??
+        TabsController.to.explorPicStore(picId).value;
 
-  Widget _buildPhotoSlider(BuildContext context, int index) {
-    print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
+    if (picStore == null) {
+      if ((controller.swipeIndex.value + 1) <
+          controller.swiperPicIdList.length) {
+        WidgetsBinding.instance?.addPostFrameCallback((_) {
+          controller.swipeIndex.value += 1;
+        });
+      }
+      return Container();
+    }
+
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
-        picStore: galleryStore.swipePics[index],
+        picStore: picStore,
         picsInThumbnails: PicSource.SWIPE,
         picsInThumbnailIndex: index,
-        showEditTagModal: widget.showEditTagModal,
-        showDeleteSecretModal: widget.showDeleteSecretModal,
+        // showEditTagModal: (tagkey) => showEditTagModal(tagkey),
+        // showDeleteSecretModal: showDeleteSecretModal,
       ),
     );
   }
 
-  @override
+/*   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
+    appStore = Provider.of<UserController>(context);
+    controller = Provider.of<controller>(context);
 
-    disposer = reaction((_) => galleryStore.trashedPic, (trashedPic) {
-      if (trashedPic) {
-        galleryStore.setSwipeIndex(galleryStore.swipeIndex);
-        galleryStore.setTrashedPic(false);
-      }
-    });
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 0.0),
       constraints: BoxConstraints.expand(),
-      decoration: new BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
-          colorFilter: new ColorFilter.mode(Colors.black.withOpacity(0.1), BlendMode.dstATop),
+          colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.1), BlendMode.dstATop),
           image: AssetImage('lib/images/background.png'),
           fit: BoxFit.cover,
         ),
@@ -87,54 +84,55 @@ class _PicTabState extends State<PicTab> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     onPressed: () {
-                      Navigator.pushNamed(context, SettingsScreen.id);
+                      Get.to(() => SettingsScreen());
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),
                 ],
               ),
             ),
-            Observer(builder: (_) {
-              if (!galleryStore.isLoaded) {
+            Obx(() {
+              if (!controller.isLoaded.value) {
                 return Expanded(
                   child: Center(
                     child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
+                      valueColor:
+                          AlwaysStoppedAnimation<Color>(kSecondaryColor),
                     ),
                   ),
                 );
-              } else if (!galleryStore.deviceHasPics) {
+              } else if (!TabsController.to.deviceHasPics) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).device_has_no_pics,
+                    message: LangControl.to.S.value.device_has_no_pics,
                   ),
                 );
-              } else if (galleryStore.swipePics.isEmpty) {
+              } else if (controller.swiperPicIdList.isEmpty) {
                 return Expanded(
                   child: DeviceHasNoPics(
-                    message: S.of(context).all_photos_were_tagged,
+                    message: LangControl.to.S.value.no_photos_were_tagged,
                   ),
                 );
               }
               return Expanded(
                 child: Stack(
                   children: <Widget>[
-                    Observer(builder: (_) {
-                      galleryStore.clearPicThumbnails();
-                      galleryStore.addPicsToThumbnails(galleryStore.swipePics);
+                    Obx(() {
+                      //controller.clearPicThumbnails();
+                      //controller.addPicsToThumbnails(controller.swipePics);
 
                       return CarouselSlider.builder(
-                        itemCount: galleryStore.swipePics.length,
+                        itemCount: controller.swiperPicIdList.length,
                         carouselController: carouselController,
-                        itemBuilder: (BuildContext context, int index) {
-                          if (index < galleryStore.swipeCutOff) {
+                        itemBuilder: (BuildContext context, int index, int _) {
+                          /* if (index < controller.swipeCutOff) {
                             return Container();
-                          }
+                          } */
                           print('calling index $index');
-                          return _buildPhotoSlider(context, index);
+                          return _buildPhotoSlider(index);
                         },
                         options: CarouselOptions(
-                          initialPage: galleryStore.swipeIndex,
+                          initialPage: controller.swipeIndex.value,
                           enableInfiniteScroll: false,
                           height: double.maxFinite,
                           viewportFraction: 1.0,
@@ -142,16 +140,16 @@ class _PicTabState extends State<PicTab> {
                           autoPlayCurve: Curves.fastOutSlowIn,
                           scrollPhysics: scrollPhysics,
                           onPageChanged: (index, reason) {
-                            galleryStore.setSwipeIndex(index);
+                            controller.setSwipeIndex(index);
                           },
-                          onScrolled: (double) {
-//                              if (galleryStore.swipeIndex <= galleryStore.swipeCutOff && galleryStore.swipeIndex != 0) {
-//                                print('changing scroll physics');
+                          onScrolled: (double? val) {
+//                              if (controller.swipeIndex <= controller.swipeCutOff && controller.swipeIndex != 0) {
+                            print('changing scroll physics');
 //                                setState(() {
 //                                  scrollPhysics = NeverScrollableScrollPhysics();
 //                                });
 //                              }
-//                              print('scrolled $double');
+                            print('scrolled $double');
                           },
                         ),
                       );

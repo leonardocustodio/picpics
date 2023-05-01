@@ -1,57 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/managers/database_manager.dart';
 import 'package:flutter_vibrate/flutter_vibrate.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:flare_flutter/flare_actor.dart';
-import 'package:picPics/stores/tags_store.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
+import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/stores/tags_controller.dart';
+import 'package:picPics/utils/enum.dart';
+import 'package:picPics/utils/helpers.dart';
+import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
 
-enum TagStyle {
-  MultiColored,
-  RedFilled,
-  GrayOutlined,
-}
+typedef OnString = Function(String);
+typedef OnEmptyTap = Function();
 
 class TagsList extends StatefulWidget {
-  final List<TagsStore> tags;
-  final TextEditingController textEditingController;
-  final FocusNode textFocusNode;
+  final List<String> tagsKeyList;
+  final TextEditingController? textEditingController;
+  final FocusNode? textFocusNode;
   final bool addTagField;
-  final Function addTagButton;
+  final Function()? addTagButton;
   final bool addButtonVisible;
-  final String title;
+  final String? title;
   final TagStyle tagStyle;
-  final Function onTap;
-  final Function onDoubleTap;
-  final Function onPanEnd;
-  final Function onSubmitted;
-  final Function onChanged;
-  final Function showEditTagModal;
-  final String aiButtonTitle;
-  final Function onAiButtonTap;
+  final OnString? onTap; // Function(String)
+  final OnString? onDoubleTap; // Function()
+  final OnString? onPanEnd; // Function()
+  final OnString? onSubmitted; // Function(String)
+  final OnString? onChanged; // Function(String)
+  //final OnString showEditTagModal; // Function()
+  final String? aiButtonTitle;
+  final Function()? onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
   const TagsList({
-    @required this.tags,
-    this.tagStyle = TagStyle.MultiColored,
+    required this.tagsKeyList,
+    required this.tagStyle, //= TagStyle.MultiColored,
     this.textEditingController,
     this.textFocusNode,
     this.addTagField = false,
     this.addButtonVisible = true,
     this.addTagButton,
-    @required this.onTap,
-    @required this.onDoubleTap,
-    @required this.onPanEnd,
+    required this.onTap,
+    required this.onDoubleTap,
+    required this.onPanEnd,
     this.onSubmitted,
     this.onChanged,
     this.title,
     this.aiButtonTitle,
     this.onAiButtonTap,
-    @required this.showEditTagModal,
+    //required this.showEditTagModal,
     this.shouldChangeToSwipeMode = false,
   });
 
@@ -60,79 +62,79 @@ class TagsList extends StatefulWidget {
 }
 
 class _TagsListState extends State<TagsList> {
-  int showSwiperInIndex;
-  String tagBeingPanned;
+  int? showSwiperInIndex;
+  String? tagBeingPanned;
   bool swipedRightDirection = false;
 
-  Widget _buildTagsWidget(BuildContext context) {
-    LinearGradient getGradient(int num) {
-      switch (num) {
-        case 0:
-          {
-            return kPrimaryGradient;
-          }
-          break;
-        case 1:
-          {
-            return kSecondaryGradient;
-          }
-          break;
-        case 2:
-          {
-            return kPinkGradient;
-          }
-          break;
-        default:
-          {
-            return kCardYellowGradient;
-          }
-          break;
-      }
-    }
+  Widget _buildTagsWidget(BuildContext context, List<String> tags) {
+    var tagsWidgets = <Widget>[];
+    print('Tags in TagsList: ${tags}');
 
-    List<Widget> tagsWidgets = [];
-    print('Tags in TagsList: ${widget.tags}');
-
-    if (widget.tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
+    if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
         Container(
           padding: const EdgeInsets.only(top: 10.0, left: 18.0, bottom: 8.0),
-          child: Text(
-            S.of(context).no_tags_found,
-            style: TextStyle(
-              fontFamily: 'Lato',
-              color: Color(0xff979a9b),
-              fontSize: 12,
-              fontWeight: FontWeight.w700,
-              fontStyle: FontStyle.normal,
-              letterSpacing: -0.4099999964237213,
+          child: Obx(
+            () => Text(
+              LangControl.to.S.value.no_tags_found,
+              style: TextStyle(
+                fontFamily: 'Lato',
+                color: Color(0xff979a9b),
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                fontStyle: FontStyle.normal,
+                letterSpacing: -0.4099999964237213,
+              ),
             ),
           ),
         ),
       );
     }
 
-    for (int i = 0; i < widget.tags.length; i++) {
-      TagsStore tag = widget.tags[i];
-      var mod = i % 4;
+    for (var i = 0; i < tags.length; i++) {
+      var tagKey = tags[i];
+
+      /// We'll have to avoid the tags whose tag name is null and
+      ///
+      /// also if the tags is [kSecretTagKey] and showPrivate is False
+      if (TagsController.to.allTags[tagKey]?.value.title == null ||
+          (PrivatePhotosController.to.showPrivate.value == false &&
+              tagKey == kSecretTagKey)) {
+        continue;
+      }
 
       tagsWidgets.add(
         GestureDetector(
+          onTap: () {
+            if (widget.shouldChangeToSwipeMode) {
+              setState(() {
+                if (showSwiperInIndex == null) {
+                  showSwiperInIndex =
+                      tags.indexWhere((element) => element == tagKey);
+                } else {
+                  showSwiperInIndex = null;
+                }
+              });
+            }
+            Vibrate.feedback(FeedbackType.success);
+            //DatabaseManager.instance.selectedTagKey = tag.key;
+            widget.onTap?.call(tagKey);
+          },
           onDoubleTap: () {
             Vibrate.feedback(FeedbackType.success);
-            DatabaseManager.instance.selectedTagKey = tag.id;
-            widget.onDoubleTap();
+            //DatabaseManager.instance.selectedTagKey = tag.key;
+            widget.onDoubleTap?.call(tagKey);
           },
           onLongPress: () {
-            DatabaseManager.instance.selectedTagKey = tag.id;
-            widget.showEditTagModal();
+            //DatabaseManager.instance.selectedTagKey = tag.key;
+            showEditTagModal(tagKey);
           },
           onPanStart: (details) {
-            print('Started pan on tag: ${tag.id}');
-            tagBeingPanned = tag.id;
+            print('Started pan on tag: $tagKey');
+            tagBeingPanned = tagKey;
           },
           onPanUpdate: (details) {
-            if (tagBeingPanned != tag.id) {
+            if (tagBeingPanned != tagKey) {
               return;
             }
 
@@ -146,19 +148,22 @@ class _TagsListState extends State<TagsList> {
             if (swipedRightDirection) {
               showSwiperInIndex = null;
               Vibrate.feedback(FeedbackType.success);
-              DatabaseManager.instance.selectedTagKey = tag.id;
-              widget.onPanEnd();
+              //DatabaseManager.instance.selectedTagKey = tag.key;
+              widget.onPanEnd?.call(tagKey);
               swipedRightDirection = false;
             }
           },
-          child: CupertinoButton(
+          child:
+              /*  CupertinoButton(
             minSize: 0,
             padding: const EdgeInsets.all(0),
             onPressed: () {
+              
               if (widget.shouldChangeToSwipeMode) {
                 setState(() {
                   if (showSwiperInIndex == null) {
-                    showSwiperInIndex = widget.tags.indexWhere((element) => element.id == tag.id);
+                    showSwiperInIndex =
+                        tags.indexWhere((element) => element.key == tag.key);
                   } else {
                     showSwiperInIndex = null;
                   }
@@ -166,122 +171,134 @@ class _TagsListState extends State<TagsList> {
               }
 
               Vibrate.feedback(FeedbackType.success);
-              DatabaseManager.instance.selectedTagKey = tag.id;
-              widget.onTap(tag.id, tag.name);
+              //DatabaseManager.instance.selectedTagKey = tag.key;
+              widget.onTap(tag.key, tag.title); 
             },
-            child: Container(
-              decoration: widget.tagStyle == TagStyle.MultiColored
-                  ? BoxDecoration(
-                      gradient: getGradient(mod),
-                      borderRadius: BorderRadius.circular(19.0),
-                    )
-                  : kGrayBoxDecoration,
-              child: showSwiperInIndex != i
-                  ? tag.id != kSecretTagKey
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                          child: Text(
-                            tag.name,
-                            textScaleFactor: 1.0,
-                            style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
-                          ),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5.2, horizontal: 19.0),
-                          child:
-                              widget.tagStyle == TagStyle.MultiColored ? Image.asset('lib/images/locktagwhite.png') : Image.asset('lib/images/locktaggray.png'),
-                        )
-                  : CustomAnimation<double>(
-                      control: CustomAnimationControl.LOOP,
-                      tween: 0.0.tweenTo(600.0),
-                      duration: 7.seconds,
-                      startPosition: 0.0,
-                      builder: (context, child, value) {
-                        double firstOpct = 0.0;
-                        double secondOpct = 0.0;
-                        double thirdOpct = 0.0;
+            child: */
+              Container(
+            decoration: widget.tagStyle == TagStyle.MultiColored
+                ? BoxDecoration(
+                    gradient: getGradient(i % 4),
+                    borderRadius: BorderRadius.circular(19.0))
+                : kGrayBoxDecoration,
+            child: showSwiperInIndex != i
+                ? tagKey != kSecretTagKey
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Text(
+                          TagsController.to.allTags[tagKey]!.value.title,
+                          textScaleFactor: 1.0,
+                          style: widget.tagStyle == TagStyle.MultiColored
+                              ? kWhiteTextStyle
+                              : kGrayTextStyle,
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 5.2, horizontal: 19.0),
+                        child: widget.tagStyle == TagStyle.MultiColored
+                            ? Image.asset('lib/images/locktagwhite.png')
+                            : Image.asset('lib/images/locktaggray.png'),
+                      )
+                : CustomAnimationBuilder<double>(
+                    control: Control.loop,
+                    tween: 0.0.tweenTo(600.0),
+                    duration: 7.seconds,
+                    startPosition: 0.0,
+                    builder: (context, value, _) {
+                      var firstOpct = 0.0;
+                      var secondOpct = 0.0;
+                      var thirdOpct = 0.0;
 
-                        if (value <= 300) {
-                          firstOpct = 0.0;
-                          thirdOpct = 0.0;
+                      if (value <= 300) {
+                        firstOpct = 0.0;
+                        thirdOpct = 0.0;
+                        secondOpct = 1.0;
+
+                        if (value <= 20) {
+                          secondOpct = value / 20.0;
+                        } else if (value <= 280) {
                           secondOpct = 1.0;
-
-                          if (value <= 20) {
-                            secondOpct = value / 20.0;
-                          } else if (value <= 280) {
-                            secondOpct = 1.0;
-                          } else {
-                            secondOpct = 1.0 - ((value - 280.0) / 20.0);
-                          }
-                        } else if (value <= 500) {
-                          firstOpct = 0.0;
-                          secondOpct = 0.0;
-
-                          if (value <= 380) {
-                            thirdOpct = (value - 300.0) / 80.0;
-                          } else if (value <= 420) {
-                            thirdOpct = 1.0;
-                          } else {
-                            thirdOpct = 1.0 - ((value - 420.0) / 80);
-                          }
-                        } else if (value <= 700) {
-                          secondOpct = 0.0;
-                          thirdOpct = 0.0;
-
-                          if (value <= 580) {
-                            firstOpct = (value - 500.0) / 80.0;
-                          } else if (value <= 620) {
-                            firstOpct = 1.0;
-                          } else {
-                            firstOpct = 1.0 - ((value - 620) / 80.0);
-                          }
+                        } else {
+                          secondOpct = 1.0 - ((value - 280.0) / 20.0);
                         }
+                      } else if (value <= 500) {
+                        firstOpct = 0.0;
+                        secondOpct = 0.0;
 
-                        return Stack(
-                          alignment: Alignment.center,
-                          children: <Widget>[
-                            Opacity(
-                              opacity: firstOpct,
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                                child: Text(
-                                  tag.name,
-                                  textScaleFactor: 1.0,
-                                  style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
-                                ),
-                              ),
-                            ),
-                            Opacity(
-                              opacity: secondOpct,
-                              child: Container(
-                                height: 30.0,
-                                width: 30.0,
-                                child: Transform.rotate(
-                                  angle: pi / 2,
-                                  child: FlareActor(
-                                    'lib/anims/swipe_arrow.flr',
-                                    alignment: Alignment.center,
-                                    fit: BoxFit.contain,
-                                    animation: 'arrow_left',
-                                    color: kWhiteColor,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Opacity(
-                              opacity: thirdOpct,
+                        if (value <= 380) {
+                          thirdOpct = (value - 300.0) / 80.0;
+                        } else if (value <= 420) {
+                          thirdOpct = 1.0;
+                        } else {
+                          thirdOpct = 1.0 - ((value - 420.0) / 80);
+                        }
+                      } else if (value <= 700) {
+                        secondOpct = 0.0;
+                        thirdOpct = 0.0;
+
+                        if (value <= 580) {
+                          firstOpct = (value - 500.0) / 80.0;
+                        } else if (value <= 620) {
+                          firstOpct = 1.0;
+                        } else {
+                          firstOpct = 1.0 - ((value - 620) / 80.0);
+                        }
+                      }
+
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: <Widget>[
+                          Opacity(
+                            opacity: firstOpct,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 16.0),
                               child: Text(
-                                S.of(context).delete,
+                                TagsController.to.allTags[tagKey]!.value.title,
                                 textScaleFactor: 1.0,
-                                style: widget.tagStyle == TagStyle.MultiColored ? kWhiteTextStyle : kGrayTextStyle,
+                                style: widget.tagStyle == TagStyle.MultiColored
+                                    ? kWhiteTextStyle
+                                    : kGrayTextStyle,
                               ),
                             ),
-                          ],
-                        );
-                      },
-                    ),
-            ),
+                          ),
+                          Opacity(
+                            opacity: secondOpct,
+                            child: Container(
+                              height: 30.0,
+                              width: 30.0,
+                              child: Transform.rotate(
+                                angle: pi / 2,
+                                child: FlareActor(
+                                  'lib/anims/swipe_arrow.flr',
+                                  alignment: Alignment.center,
+                                  fit: BoxFit.contain,
+                                  animation: 'arrow_left',
+                                  color: kWhiteColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Opacity(
+                            opacity: thirdOpct,
+                            child: Obx(
+                              () => Text(
+                                LangControl.to.S.value.delete,
+                                textScaleFactor: 1.0,
+                                style: widget.tagStyle == TagStyle.MultiColored
+                                    ? kWhiteTextStyle
+                                    : kGrayTextStyle,
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
           ),
+          // ),
         ),
       );
     }
@@ -306,16 +323,18 @@ class _TagsListState extends State<TagsList> {
               SizedBox(
                 width: 4.0,
               ),
-              Text(
-                S.of(context).add_tag,
-                textScaleFactor: 1.0,
-                style: TextStyle(
-                  fontFamily: 'Lato',
-                  color: kGrayColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  fontStyle: FontStyle.normal,
-                  letterSpacing: -0.4099999964237213,
+              Obx(
+                () => Text(
+                  LangControl.to.S.value.add_tag,
+                  textScaleFactor: 1.0,
+                  style: TextStyle(
+                    fontFamily: 'Lato',
+                    color: kGrayColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.normal,
+                    letterSpacing: -0.4099999964237213,
+                  ),
                 ),
               ),
             ],
@@ -332,47 +351,52 @@ class _TagsListState extends State<TagsList> {
             children: [
               Expanded(
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                  height: 30.0,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  height: 34,
                   decoration: BoxDecoration(
                     color: Color(0xFFF1F3F5),
-                    border: Border.all(color: kLightGrayColor, width: 1.0),
-                    borderRadius: BorderRadius.circular(12.0),
+                    border: Border.all(color: kLightGrayColor, width: 1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Image.asset('lib/images/smalladdtag.png'),
                       Expanded(
-                        child: TextField(
-                          controller: widget.textEditingController,
-                          focusNode: widget.textFocusNode,
-                          onChanged: widget.onChanged,
-                          onSubmitted: widget.onSubmitted,
-                          keyboardType: TextInputType.text,
-                          textAlignVertical: TextAlignVertical.center,
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontFamily: 'Lato',
-                            color: Color(0xff606566),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            letterSpacing: -0.4099999964237213,
-                          ),
-                          decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(left: 6.0),
-                            enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                            focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                            border: OutlineInputBorder(borderSide: BorderSide.none),
-                            hintText: S.of(context).add_tags,
-                            hintStyle: TextStyle(
+                        child: Obx(
+                          () => TextField(
+                            controller: widget.textEditingController,
+                            focusNode: widget.textFocusNode,
+                            onChanged: widget.onChanged,
+                            onSubmitted: widget.onSubmitted,
+                            keyboardType: TextInputType.text,
+                            textAlignVertical: TextAlignVertical.center,
+                            maxLines: 1,
+                            style: TextStyle(
                               fontFamily: 'Lato',
-                              color: kGrayColor,
+                              color: Color(0xff606566),
                               fontSize: 16,
                               fontWeight: FontWeight.w400,
                               fontStyle: FontStyle.normal,
                               letterSpacing: -0.4099999964237213,
+                            ),
+                            decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.only(left: 6.0),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              border: OutlineInputBorder(
+                                  borderSide: BorderSide.none),
+                              hintText: LangControl.to.S.value.add_tags,
+                              hintStyle: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kGrayColor,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                fontStyle: FontStyle.normal,
+                                letterSpacing: -0.4099999964237213,
+                              ),
                             ),
                           ),
                         ),
@@ -382,10 +406,15 @@ class _TagsListState extends State<TagsList> {
                           padding: const EdgeInsets.all(0),
                           minSize: 30,
                           onPressed: () {
-                            widget.onSubmitted(widget.textEditingController.text);
+                            if (widget.onSubmitted != null) {
+                              widget.onSubmitted!(
+                                  widget.textEditingController!.text);
+                            }
                           },
-                          child: Container(
-                            child: Image.asset('lib/images/plusaddtagico.png'),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.grey,
+                            size: 28,
                           ),
                         ),
                     ],
@@ -394,21 +423,19 @@ class _TagsListState extends State<TagsList> {
               ),
               if (widget.onAiButtonTap != null)
                 CupertinoButton(
-                  padding: const EdgeInsets.all(0),
+                  padding: const EdgeInsets.only(left: 8),
                   onPressed: widget.onAiButtonTap,
-                  child: Container(
-                    // width: 30.0,
-                    height: 30.0,
-                    decoration: kGrayBoxDecoration,
-                    margin: const EdgeInsets.only(left: 8.0),
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Center(
-                      child: Text(
-                        widget.aiButtonTitle,
+                  child: Row(
+                    children: [
+                      Text(
+                        widget.aiButtonTitle!,
                         textScaleFactor: 1.0,
-                        style: kGrayTextStyle,
+                        style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
-                    ),
+                      Icon(Icons.arrow_forward_ios_rounded,
+                          size: 18, color: Colors.grey),
+                      //Image.asset('lib/images/arrowrightgray.png'),
+                    ],
                   ),
                 ),
             ],
@@ -422,14 +449,14 @@ class _TagsListState extends State<TagsList> {
       children: <Widget>[
         if (widget.title != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Text(
-              widget.title,
+              widget.title!,
               textScaleFactor: 1.0,
               style: TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
-                fontSize: 12,
+                fontSize: 14,
                 fontWeight: FontWeight.w300,
                 fontStyle: FontStyle.normal,
                 letterSpacing: -0.4099999964237213,
@@ -438,8 +465,8 @@ class _TagsListState extends State<TagsList> {
           ),
         Wrap(
           direction: Axis.horizontal,
-          spacing: 5.0,
-          runSpacing: 5.0,
+          spacing: 5,
+          runSpacing: 5,
           runAlignment: WrapAlignment.start,
           children: tagsWidgets,
         ),
@@ -449,6 +476,6 @@ class _TagsListState extends State<TagsList> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildTagsWidget(context);
+    return _buildTagsWidget(context, widget.tagsKeyList);
   }
 }

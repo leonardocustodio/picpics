@@ -1,73 +1,76 @@
-import 'dart:math';
 import 'package:home_widget/home_widget.dart';
+import 'package:picPics/database/app_database.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:hive/hive.dart';
-import 'package:picPics/model/user.dart';
-import 'package:picPics/model/pic.dart';
 
 class WidgetManager {
-  static Future<void> saveData({List<PicStore> picsStores}) async {
-    for (PicStore store in picsStores) {
-      store.switchIsStarred();
+  static AppDatabase appDatabase = AppDatabase();
+  static Future<void> saveData(
+      {List<PicStore> picsStores = const <PicStore>[]}) async {
+    for (var store in picsStores) {
+      await store.switchIsStarred();
     }
-    print('Setted is starred to true');
+    //print('Setted is starred to true');
   }
 
   static Future<void> sendAndUpdate() async {
-    print('Sending data to widget');
+    //print('Sending data to widget');
     await _sendData();
     await _updateWidget();
-    print('Finished sending data');
+    //print('Finished sending data');
   }
 
   static Future<void> _sendData() async {
     try {
-      print('Future send data');
+      //print('Future send data');
 
-      var userBox = await Hive.openBox('user');
-      var picsBox = await Hive.openBox('pics');
+      //var userBox = await Hive.openBox('user');
+      //var picsBox = await Hive.openBox('pics');
 
-      User currentUser = userBox.getAt(0);
-      List<String> starredPhotos = currentUser.starredPhotos;
-      print('Number of starred photos: ${starredPhotos.length}');
+      var currentUser = (await appDatabase.getSingleMoorUser())!;
 
-      String baseString;
+      /* final starredPhotos = currentUser.starredPhotos; */
+      //print('Number of starred photos: ${starredPhotos.length}');
+/* 
+      String? baseString;
 
-      if (starredPhotos.length == 0) {
+      if (starredPhotos.isEmpty) {
         baseString = currentUser.defaultWidgetImage;
       } else {
-        Random rand = new Random();
-        int randInt = rand.nextInt(starredPhotos.length);
-        print('Sorted number for widget: $randInt');
+        final rand = Random();
+        final randInt = rand.nextInt(starredPhotos.length);
+        //print('Sorted number for widget: $randInt');
 
-        Pic pic = picsBox.get(starredPhotos[randInt]);
-        print('Base64: ${pic.base64encoded}');
-        baseString = pic.base64encoded;
+        final pic = await appDatabase
+            .getPhotoByPhotoId(starredPhotos.keys.toList()[randInt]);
+        //print('Base64: ${pic.base64encoded}');
+        baseString = pic?.base64encoded;
       }
       if (baseString == null) {
         return;
       }
 
-      print('Send base string!');
-      return Future.wait(
-          [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]);
+      //print('Send base string!');
+      await Future.wait(
+          [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]); */
+      return;
     } catch (exception) {
-      print('Error Sending Data. $exception');
+      //print('Error Sending Data. $exception');
     }
   }
 
   static Future<void> _updateWidget() async {
     try {
-      print('Future update widget');
-      return HomeWidget.updateWidget(
+      //print('Future update widget');
+      await HomeWidget.updateWidget(
         name: 'PicsWidgetProvider',
         androidName: 'PicsWidgetProvider',
         iOSName: 'PicsWidget',
       );
+      return;
     } catch (exception) {
-      print('Error Updating Widget. $exception');
+      //print('Error Updating Widget. $exception');
     }
-    print('After return in update widget');
+    //print('After return in update widget');
   }
 
   // Future<void> _loadData() async {
@@ -80,7 +83,7 @@ class WidgetManager {
   //           .then((value) => _messageController.text = value),
   //     ]);
   //   } catch (exception) {
-  //     debugPrint('Error Getting Data. $exception');
+  //     debug//print('Error Getting Data. $exception');
   //   }
   // }
 

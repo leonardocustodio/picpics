@@ -1,17 +1,13 @@
-import 'dart:io';
-
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:firebase_analytics/observer.dart';
-import 'package:flutter/foundation.dart';
 
 enum Screen {
   tabs_screen,
   settings_screen,
   add_location_screen,
   photo_screen,
-  premium_screen,
   login_screen,
 }
 
@@ -54,13 +50,15 @@ enum Event {
 
 class Analytics {
   static FacebookAppEvents facebookAppEvents = FacebookAppEvents();
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
-  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  static FirebaseAnalyticsObserver observer =
+      FirebaseAnalyticsObserver(analytics: analytics);
 
   static String enumToString(Object o) => o.toString().split('.').last;
 
-  static sendEvent(Event event, {Map<String, dynamic> params = null}) async {
-    if (kDebugMode) {
+  static Future<void> sendEvent(Event event,
+      {Map<String, dynamic>? params}) async {
+    if (/* kDebugMode */ true) {
       return;
     }
 
@@ -75,37 +73,27 @@ class Analytics {
     );
   }
 
-  static sendAdClick() async {}
-
-  static sendAdImpression() async {
-    if (kDebugMode) {
-      return;
-    }
-
-    await analytics.logEvent(name: '${enumToString(Event.ad_impression)}');
-    await facebookAppEvents.logEvent(name: 'AdImpression');
-  }
-
-  static sendAppOpen() async {
-    if (kDebugMode) {
+  static Future<void> sendAppOpen() async {
+    if (/* kDebugMode */ true) {
       return;
     }
 
     await analytics.logAppOpen();
-    await facebookAppEvents.logActivatedApp();
+    // await facebookAppEvents.logActivatedApp();
   }
 
-  static sendTutorialBegin() async {
-    if (kDebugMode) {
+  static Future<void> sendTutorialBegin() async {
+    if (/* kDebugMode */ true) {
       return;
     }
 
     await analytics.logTutorialBegin();
-    await facebookAppEvents.logEvent(name: '${enumToString(Event.tutorial_begin)}');
+    await facebookAppEvents.logEvent(
+        name: '${enumToString(Event.tutorial_begin)}');
   }
 
-  static sendTutorialComplete() async {
-    if (kDebugMode) {
+  static Future<void> sendTutorialComplete() async {
+    if (/* kDebugMode */ true) {
       return;
     }
 
@@ -113,35 +101,9 @@ class Analytics {
     await facebookAppEvents.logEvent(name: 'fb_mobile_tutorial_completion');
   }
 
-  static sendPresentOffer({String itemId, String itemName, String itemCategory, int quantity, double price, String currency}) async {
-    if (kDebugMode) {
-      return;
-    }
-
-    await analytics.logPresentOffer(
-      itemId: itemId,
-      itemName: itemName,
-      itemCategory: itemCategory,
-      quantity: quantity,
-      price: price,
-      currency: currency,
-    );
-
-    await facebookAppEvents.logEvent(
-      name: '${enumToString(Event.present_offer)}',
-      parameters: {
-        'itemId': itemId,
-        'itemName': itemName,
-        'itemCategory': itemCategory,
-        'quantity': quantity,
-        'price': price,
-        'currency': currency,
-      },
-    );
-  }
-
-  static sendBeginCheckout({String currency, double price}) async {
-    if (kDebugMode) {
+  static Future<void> sendBeginCheckout(
+      {required String currency, required double price}) async {
+    if (/* kDebugMode */ true) {
       return;
     }
 
@@ -159,34 +121,18 @@ class Analytics {
     );
   }
 
-  static sendPurchase({String currency, double price}) async {
-    if (kDebugMode) {
+  static Future<void> setUserId(String userId) async {
+    if (/* kDebugMode */ true) {
       return;
     }
 
-    await analytics.logEcommercePurchase(
-      currency: currency,
-      value: price,
-    );
-
-    await facebookAppEvents.logPurchase(
-      amount: price,
-      currency: currency,
-    );
-  }
-
-  static setUserId(String userId) async {
-    if (kDebugMode) {
-      return;
-    }
-
-    await analytics.setUserId(userId);
+    // await analytics.setUserId({id: userId});
     await facebookAppEvents.setUserID(userId);
     FlutterBranchSdk.setIdentity(userId);
   }
 
-  static sendCurrentScreen(Screen screen) async {
-    if (kDebugMode) {
+  static Future<void> sendCurrentScreen(Screen screen) async {
+    if (/* kDebugMode */ true) {
       return;
     }
 
@@ -201,8 +147,8 @@ class Analytics {
     );
   }
 
-  static sendCurrentTab(int index) async {
-    if (kDebugMode) {
+  static Future<void> sendCurrentTab(int index) async {
+    if (/* kDebugMode */ true) {
       return;
     }
 

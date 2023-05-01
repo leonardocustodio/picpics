@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:picPics/components/colorful_background.dart';
 import 'package:simple_animations/simple_animations.dart';
@@ -18,14 +17,16 @@ class ColorAnimatedBackground extends StatefulWidget {
   });
 
   @override
-  _ColorAnimatedBackgroundState createState() => _ColorAnimatedBackgroundState();
+  _ColorAnimatedBackgroundState createState() =>
+      _ColorAnimatedBackgroundState();
 }
 
-class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground> with AnimationMixin {
-  AnimationController widthController;
-  AnimationController heightController;
-  Animation<double> x_animation;
-  Animation<double> y_animation;
+class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
+    with AnimationMixin {
+  late AnimationController widthController;
+  late AnimationController heightController;
+  late Animation<double> x_animation;
+  late Animation<double> y_animation;
 
   @override
   void initState() {
@@ -51,7 +52,7 @@ class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground> with 
                   sigmaY: 18.0,
                 ),
                 child: Container(
-                  decoration: new BoxDecoration(
+                  decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,

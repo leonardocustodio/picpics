@@ -1,112 +1,45 @@
-import 'package:hive/hive.dart';
-part 'user.g.dart';
-
-@HiveType(typeId: 2)
-class User extends HiveObject {
-  @HiveField(0)
+class User {
   final String id;
-
-  @HiveField(1)
-  String email;
-
-  @HiveField(2)
-  String password;
-
-  @HiveField(3)
-  bool notifications;
-
-  @HiveField(4)
-  bool dailyChallenges;
-
-  @HiveField(5)
-  int goal;
-
-  @HiveField(6)
-  int hourOfDay;
-
-  @HiveField(7)
-  int minutesOfDay;
-
-  @HiveField(8)
-  bool isPremium;
-
-  @HiveField(9)
   final List<String> recentTags;
-
-  @HiveField(10)
-  bool tutorialCompleted;
-
-  @HiveField(11)
-  int picsTaggedToday;
-
-  @HiveField(12)
+  String email, password, appLanguage, appVersion, defaultWidgetImage;
+  int goal, hourOfDay, minutesOfDay, picsTaggedToday;
+  bool hasGalleryPermission,
+      loggedIn,
+      secretPhotos,
+      isPinRegistered,
+      keepAskingToDelete,
+      shouldDeleteOnPrivate,
+      tourCompleted,
+      isBiometricActivated,
+      notifications,
+      dailyChallenges,
+      tutorialCompleted;
   DateTime lastTaggedPicDate;
-
-  @HiveField(13)
-  bool canTagToday;
-
-  @HiveField(14)
-  String appLanguage;
-
-  @HiveField(15)
-  String appVersion;
-
-  @HiveField(17)
-  bool hasGalleryPermission;
-
-  @HiveField(18)
-  bool loggedIn;
-
-  @HiveField(19)
-  bool secretPhotos;
-
-  @HiveField(20)
-  bool isPinRegistered;
-
-  @HiveField(21)
-  bool keepAskingToDelete;
-
-  @HiveField(22)
-  bool shouldDeleteOnPrivate;
-
-  @HiveField(23)
-  bool tourCompleted;
-
-  @HiveField(24)
-  bool isBiometricActivated;
-
-  @HiveField(25)
-  List<String> starredPhotos;
-
-  @HiveField(26)
-  String defaultWidgetImage;
-
+  Map<String, String> starredPhotos;
   User({
-    this.id,
-    this.email,
-    this.password,
-    this.notifications,
-    this.dailyChallenges,
-    this.goal,
-    this.hourOfDay,
-    this.minutesOfDay,
-    this.isPremium,
-    this.recentTags,
-    this.tutorialCompleted,
-    this.picsTaggedToday,
-    this.lastTaggedPicDate,
-    this.canTagToday,
-    this.appLanguage,
-    this.appVersion,
-    this.hasGalleryPermission,
-    this.loggedIn,
-    this.secretPhotos,
-    this.isPinRegistered,
-    this.keepAskingToDelete,
-    this.shouldDeleteOnPrivate,
-    this.tourCompleted,
-    this.isBiometricActivated,
-    this.starredPhotos,
-    this.defaultWidgetImage,
+    required this.id,
+    required this.email,
+    required this.password,
+    required this.notifications,
+    required this.dailyChallenges,
+    required this.goal,
+    required this.hourOfDay,
+    required this.minutesOfDay,
+    required this.recentTags,
+    required this.tutorialCompleted,
+    required this.picsTaggedToday,
+    required this.lastTaggedPicDate,
+    required this.appLanguage,
+    required this.appVersion,
+    required this.hasGalleryPermission,
+    required this.loggedIn,
+    required this.secretPhotos,
+    required this.isPinRegistered,
+    required this.keepAskingToDelete,
+    required this.shouldDeleteOnPrivate,
+    required this.tourCompleted,
+    required this.isBiometricActivated,
+    required this.starredPhotos,
+    required this.defaultWidgetImage,
   });
 }

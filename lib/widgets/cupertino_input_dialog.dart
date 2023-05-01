@@ -4,26 +4,26 @@ import 'package:picPics/constants.dart';
 
 class CupertinoInputDialog extends StatelessWidget {
   final String title;
-  final String inputPlaceholder;
+  final String? inputPlaceholder;
 
   final String destructiveButtonTitle;
   final String defaultButtonTitle;
 
-  final Function onPressedDestructive;
-  final Function onPressedDefault;
+  final Function() onPressedDestructive;
+  final Function() onPressedDefault;
 
-  final Image prefixImage;
+  final Image? prefixImage;
   final TextEditingController alertInputController;
 
   CupertinoInputDialog({
-    @required this.title,
+    required this.title,
     this.inputPlaceholder,
-    @required this.destructiveButtonTitle,
-    @required this.defaultButtonTitle,
-    @required this.onPressedDestructive,
-    @required this.onPressedDefault,
+    required this.destructiveButtonTitle,
+    required this.defaultButtonTitle,
+    required this.onPressedDestructive,
+    required this.onPressedDefault,
     this.prefixImage,
-    @required this.alertInputController,
+    required this.alertInputController,
   });
 
   @override
@@ -65,7 +65,7 @@ class CupertinoInputDialog extends StatelessWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  if (prefixImage != null) prefixImage,
+                  if (prefixImage != null) prefixImage!,
                   Expanded(
                     child: TextField(
                       controller: alertInputController,
@@ -77,8 +77,10 @@ class CupertinoInputDialog extends StatelessWidget {
                       ),
                       decoration: InputDecoration(
                         contentPadding: const EdgeInsets.only(left: 6.0),
-                        enabledBorder: OutlineInputBorder(borderSide: BorderSide.none),
-                        focusedBorder: OutlineInputBorder(borderSide: BorderSide.none),
+                        enabledBorder:
+                            OutlineInputBorder(borderSide: BorderSide.none),
+                        focusedBorder:
+                            OutlineInputBorder(borderSide: BorderSide.none),
                         border: OutlineInputBorder(borderSide: BorderSide.none),
                       ),
                     ),

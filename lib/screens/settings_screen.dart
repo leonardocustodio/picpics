@@ -1,22 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:get/get.dart';
+import 'package:picPics/generated/l10n.dart';
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/constants.dart';
-import 'package:outline_gradient_button/outline_gradient_button.dart';
 import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/screens/premium_screen.dart';
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/gallery_store.dart';
+import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/stores/private_photos_controller.dart';
+import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/utils/languages.dart';
 import 'package:picPics/widgets/fadein.dart';
 import 'package:picPics/widgets/secret_switch.dart';
 import 'package:rate_my_app/rate_my_app.dart';
 import 'dart:io';
-import 'package:esys_flutter_share/esys_flutter_share.dart';
-import 'package:provider/provider.dart';
-import 'package:picPics/generated/l10n.dart';
+
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:local_auth/local_auth.dart';
 
@@ -27,16 +26,14 @@ class SettingsScreen extends StatefulWidget {
   _SettingsScreenState createState() => _SettingsScreenState();
 }
 
-class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObserver {
-  AppStore appStore;
-  GalleryStore galleryStore;
-
+class _SettingsScreenState extends State<SettingsScreen>
+    with WidgetsBindingObserver {
   @override
   void dispose() {
     super.dispose();
   }
 
-  _launchURL(String url) async {
+  Future<void> _launchURL(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -45,24 +42,24 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void contactUs(BuildContext context) {
-    final Uri _emailLaunchUri = Uri(
+    final _emailLaunchUri = Uri(
       scheme: 'mailto',
       path: 'picpics@inovatso.com.br',
     );
     launch(_emailLaunchUri.toString());
   }
 
-  RateMyApp rateMyApp = RateMyApp(
+  final rateMyApp = RateMyApp(
     googlePlayIdentifier: 'br.com.inovatso.picPics',
     appStoreIdentifier: '1503352127',
   );
 
   void shareApp(BuildContext context) {
-    Share.text(
-      S.of(context).take_a_look,
-      S.of(context).take_a_look_description('https://picpics.link/share'),
-      'text/plain',
-    );
+    Share.share(LangControl.to.S.value.take_a_look,
+        subject: S
+            .of(context)
+            .take_a_look_description('https://picpics.link/share'));
+
     Analytics.sendEvent(Event.shared_app);
   }
 
@@ -71,10 +68,11 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
       if (Platform.isAndroid) {
         await rateMyApp.launchStore();
       } else {
-        rateMyApp.showStarRateDialog(
+        await rateMyApp.showStarRateDialog(
           context,
           ignoreNativeDialog: false,
-          onDismissed: () => rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
+          onDismissed: () =>
+              rateMyApp.callEvent(RateMyAppEventType.laterButtonPressed),
         );
       }
     });
@@ -82,12 +80,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   }
 
   void showRequirePinPicker(BuildContext context) async {
-    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: appStore.requireSecret);
+    final extentScrollController = FixedExtentScrollController(
+        initialItem: UserController.to.requireSecret.value);
 
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        int temporaryOption = appStore.requireSecret;
+        var temporaryOption = UserController.to.requireSecret.value;
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -98,14 +97,16 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 children: <Widget>[
                   CupertinoButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        textScaleFactor: 1.0,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.cancel,
+                          textScaleFactor: 1.0,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -116,16 +117,18 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      appStore.setRequireSecret(temporaryOption);
-                      Navigator.pop(context);
+                      UserController.to.setRequireSecret(temporaryOption);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.end,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.ok,
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.end,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -162,16 +165,18 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   void showLanguagePicker(BuildContext context) async {
     var language = LanguageLocal();
     var supportedLocales = S.delegate.supportedLocales;
-    List<String> supportedLanguages = supportedLocales.map((e) => e.languageCode).toList();
-    List<String> appSplit = appStore.appLanguage.split('_');
-    int languageIndex = supportedLanguages.indexOf(appSplit[0]);
+    final supportedLanguages =
+        supportedLocales.map((e) => e.languageCode).toList();
+    final appSplit = UserController.to.appLanguage.split('_');
+    final languageIndex = supportedLanguages.indexOf(appSplit[0]);
 
-    FixedExtentScrollController extentScrollController = FixedExtentScrollController(initialItem: languageIndex);
+    final extentScrollController =
+        FixedExtentScrollController(initialItem: languageIndex);
 
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        int temporaryLanguage = languageIndex;
+        var temporaryLanguage = languageIndex;
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -182,37 +187,67 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 children: <Widget>[
                   CupertinoButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        textScaleFactor: 1.0,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.cancel,
+                          textScaleFactor: 1.0,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
-                  Text(
-                    S.of(context).language,
-                    textScaleFactor: 1.0,
-                    style: kBottomSheetTitleTextStyle,
+                  Obx(
+                    () => Text(
+                      LangControl.to.S.value.language,
+                      textScaleFactor: 1.0,
+                      style: kBottomSheetTitleTextStyle,
+                    ),
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      appStore.changeUserLanguage(supportedLocales[temporaryLanguage].toString());
-                      Navigator.pop(context);
-                      setState(() {
-                        S.load(supportedLocales[temporaryLanguage]);
+                      showDialog(
+                          context: context,
+                          builder: (context) => Center(
+                                child: Container(
+                                  width: 60.0,
+                                  height: 60.0,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(4.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: CupertinoActivityIndicator(),
+                                  ),
+                                ),
+                              ));
+                      UserController.to
+                          .changeUserLanguage(
+                              supportedLocales[temporaryLanguage].toString())
+                          .then((_) {
+                        LangControl.to
+                            .changeLanguageTo(
+                                supportedLocales[temporaryLanguage].toString())
+                            .then((value) {
+                          setState(() {});
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        });
                       });
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.end,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.ok,
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.end,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -265,31 +300,31 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 //                children: <Widget>[
 //                  CupertinoButton(
 //                    onPressed: () {
-//                      Navigator.pop(context);
+//                      Get.back();
 //                    },
 //                    child: Container(
 //                      width: 80.0,
 //                      child: Text(
-//                        S.of(context).cancel,
+//                        LangControl.to.S.value.cancel,
 //                        textScaleFactor: 1.0,
 //                        style: kBottomSheetTextStyle,
 //                      ),
 //                    ),
 //                  ),
 //                  Text(
-//                    S.of(context).how_many_pics,
+//                    LangControl.to.S.value.how_many_pics,
 //                    textScaleFactor: 1.0,
 //                    style: kBottomSheetTitleTextStyle,
 //                  ),
 //                  CupertinoButton(
 //                    onPressed: () {
 //                      DatabaseManager.instance.changeUserGoal(temporaryGoal);
-//                      Navigator.pop(context);
+//                      Get.back();
 //                    },
 //                    child: Container(
 //                      width: 80.0,
 //                      child: Text(
-//                        S.of(context).ok,
+//                        LangControl.to.S.value.ok,
 //                        textScaleFactor: 1.0,
 //                        textAlign: TextAlign.end,
 //                        style: kBottomSheetTextStyle,
@@ -330,8 +365,13 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
     await showModalBottomSheet(
       context: context,
       builder: (BuildContext builder) {
-        DateTime now = DateTime.now();
-        DateTime time = DateTime(now.year, now.month, now.day, appStore.hourOfDay, appStore.minutesOfDay);
+        var now = DateTime.now();
+        var time = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            UserController.to.hourOfDay.value,
+            UserController.to.minutesOfDay.value);
 
         return Container(
           height: MediaQuery.of(context).copyWith().size.height / 3,
@@ -342,34 +382,41 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 children: <Widget>[
                   CupertinoButton(
                     onPressed: () {
-                      Navigator.pop(context);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).cancel,
-                        textScaleFactor: 1.0,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.cancel,
+                          textScaleFactor: 1.0,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
-                  Text(
-                    S.of(context).time,
-                    textScaleFactor: 1.0,
-                    style: kBottomSheetTitleTextStyle,
+                  Obx(
+                    () => Text(
+                      LangControl.to.S.value.time,
+                      textScaleFactor: 1.0,
+                      style: kBottomSheetTitleTextStyle,
+                    ),
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      appStore.changeUserTimeOfDay(time.hour, time.minute);
-                      Navigator.pop(context);
+                      UserController.to
+                          .changeUserTimeOfDay(time.hour, time.minute);
+                      Get.back();
                     },
                     child: Container(
                       width: 80.0,
-                      child: Text(
-                        S.of(context).ok,
-                        textScaleFactor: 1.0,
-                        textAlign: TextAlign.end,
-                        style: kBottomSheetTextStyle,
+                      child: Obx(
+                        () => Text(
+                          LangControl.to.S.value.ok,
+                          textScaleFactor: 1.0,
+                          textAlign: TextAlign.end,
+                          style: kBottomSheetTextStyle,
+                        ),
                       ),
                     ),
                   ),
@@ -402,14 +449,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 //        builder: (BuildContext context) {
 //          return PlatformAlertDialog(
 //            title: Text(
-//              S.of(context).notifications,
+//              LangControl.to.S.value.notifications,
 //              textScaleFactor: 1.0,
 //            ),
 //            content: SingleChildScrollView(
 //              child: ListBody(
 //                children: <Widget>[
 //                  Text(
-//                    S.of(context).daily_challenge_permission_description,
+//                    LangControl.to.S.value.daily_challenge_permission_description,
 //                    textScaleFactor: 1.0,
 //                  ),
 //                ],
@@ -418,7 +465,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 //            actions: <Widget>[
 //              PlatformDialogAction(
 //                child: Text(
-//                  S.of(context).ok,
+//                  LangControl.to.S.value.ok,
 //                  textScaleFactor: 1.0,
 //                ),
 //                actionType: ActionType.Preferred,
@@ -440,22 +487,15 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance?.addObserver(this);
     Analytics.sendCurrentScreen(Screen.settings_screen);
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      appStore.checkNotificationPermission();
+      UserController.to.checkNotificationPermission();
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    galleryStore = Provider.of<GalleryStore>(context);
   }
 
   @override
@@ -473,14 +513,17 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CupertinoButton(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
-                    onPressed: () => Navigator.pop(context),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 5.0, vertical: 10.0),
+                    onPressed: () => Get.back(),
                     child: Image.asset('lib/images/backarrowgray.png'),
                   ),
-                  Text(
-                    S.of(context).settings,
-                    textScaleFactor: 1.0,
-                    style: kGraySettingsBoldTextStyle,
+                  Obx(
+                    () => Text(
+                      LangControl.to.S.value.settings,
+                      textScaleFactor: 1.0,
+                      style: kGraySettingsBoldTextStyle,
+                    ),
                   ),
                   CupertinoButton(
                     onPressed: () {
@@ -492,7 +535,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
               ),
               Expanded(
                 child: LayoutBuilder(
-                  builder: (BuildContext context, BoxConstraints viewportConstraints) {
+                  builder: (BuildContext context,
+                      BoxConstraints viewportConstraints) {
                     return SingleChildScrollView(
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
@@ -511,41 +555,56 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 Container(
                                   height: 60.0,
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0),
                                     child: CupertinoButton(
                                       padding: const EdgeInsets.all(0),
                                       pressedOpacity: 1.0,
-                                      onPressed: () {
-                                        if (appStore.secretPhotos == true) {
-                                          appStore.switchSecretPhotos();
-                                          galleryStore.removeAllPrivatePics();
+                                      onPressed: () async {
+                                        if (PrivatePhotosController
+                                                .to.showPrivate.value ==
+                                            true) {
+                                          await PrivatePhotosController.to
+                                              .switchSecretPhotos();
+                                          //galleryStore.removeAllPrivatePics();
                                           return;
                                         }
-                                        appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
-                                        Navigator.pushNamed(context, PinScreen.id);
+                                        UserController.to.popPinScreenToId =
+                                            SettingsScreen.id;
+                                        await Get.toNamed(PinScreen.id);
                                       },
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
                                           Text(
-                                            S.of(context).private_photos,
+                                            LangControl
+                                                .to.S.value.private_photos,
                                             textScaleFactor: 1.0,
                                             style: kGraySettingsFieldTextStyle,
                                           ),
-                                          Observer(
-                                            builder: (_) {
+                                          Obx(
+                                            () {
                                               return SecretSwitch(
-                                                value: appStore.secretPhotos,
-                                                onChanged: (value) {
+                                                value: PrivatePhotosController
+                                                    .to.showPrivate.value,
+                                                onChanged: (value) async {
                                                   if (value == false) {
-                                                    appStore.switchSecretPhotos();
-                                                    galleryStore.removeAllPrivatePics();
+                                                    await PrivatePhotosController
+                                                        .to
+                                                        .switchSecretPhotos();
+                                                    //galleryStore .removeAllPrivatePics();
                                                     return;
                                                   }
 
-                                                  appStore.wantsToActivateBiometric = false;
-                                                  appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
-                                                  Navigator.pushNamed(context, PinScreen.id);
+                                                  UserController.to
+                                                          .wantsToActivateBiometric =
+                                                      false;
+                                                  UserController
+                                                          .to.popPinScreenToId =
+                                                      SettingsScreen.id;
+                                                  await Get.toNamed(
+                                                      PinScreen.id);
                                                 },
                                               );
                                             },
@@ -559,16 +618,33 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   color: kLightGrayColor,
                                   thickness: 1.0,
                                 ),
-                                Observer(builder: (_) {
-                                  if (appStore.secretPhotos == true && appStore.availableBiometrics.isNotEmpty) {
-                                    String enableBiometric;
+                                Obx(() {
+                                  if (PrivatePhotosController
+                                              .to.showPrivate.value ==
+                                          true &&
+                                      // TODO: throwing error at UserController.to.availableBiometrics.isNotEmpty :
+                                      // error: The getter 'isNotEmpty' was called on null.
+                                      (UserController
+                                          .to.availableBiometrics.isNotEmpty)) {
+                                    String? enableBiometric;
 
-                                    if (appStore.availableBiometrics.contains(BiometricType.face)) {
-                                      enableBiometric = S.of(context).enable_faceid;
-                                    } else if (appStore.availableBiometrics.contains(BiometricType.iris)) {
-                                      enableBiometric = S.of(context).enable_irisscanner;
-                                    } else if (appStore.availableBiometrics.contains(BiometricType.fingerprint)) {
-                                      enableBiometric = Platform.isIOS ? S.of(context).enable_touchid : S.of(context).enable_fingerprint;
+                                    if (UserController.to.availableBiometrics
+                                        .contains(BiometricType.face)) {
+                                      enableBiometric =
+                                          LangControl.to.S.value.enable_faceid;
+                                    } else if (UserController
+                                        .to.availableBiometrics
+                                        .contains(BiometricType.iris)) {
+                                      enableBiometric = LangControl
+                                          .to.S.value.enable_irisscanner;
+                                    } else if (UserController
+                                        .to.availableBiometrics
+                                        .contains(BiometricType.fingerprint)) {
+                                      enableBiometric = Platform.isIOS
+                                          ? LangControl
+                                              .to.S.value.enable_touchid
+                                          : LangControl
+                                              .to.S.value.enable_fingerprint;
                                     }
 
                                     return FadeIn(
@@ -584,40 +660,76 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                               Expanded(
                                                 child: Container(
                                                   child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                                    padding: const EdgeInsets
+                                                            .symmetric(
+                                                        horizontal: 16.0),
                                                     child: CupertinoButton(
-                                                      padding: const EdgeInsets.all(0),
-                                                      onPressed: () async {
-                                                        if (appStore.isBiometricActivated != true) {
-                                                          appStore.wantsToActivateBiometric = true;
-                                                          appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
-                                                          Navigator.pushNamed(context, PinScreen.id);
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              0),
+                                                      onPressed: () {
+                                                        if (UserController
+                                                                .to
+                                                                .isBiometricActivated
+                                                                .value !=
+                                                            true) {
+                                                          UserController.to
+                                                                  .wantsToActivateBiometric =
+                                                              true;
+                                                          UserController.to
+                                                                  .popPinScreenToId =
+                                                              SettingsScreen.id;
+                                                          Get.to(
+                                                              () => PinScreen);
                                                           return;
                                                         }
-
-                                                        await appStore.setIsBiometricActivated(false);
+                                                        UserController.to
+                                                            .setIsBiometricActivated(
+                                                                false);
                                                       },
                                                       child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: <Widget>[
                                                           Text(
-                                                            enableBiometric,
-                                                            textScaleFactor: 1.0,
-                                                            style: kGraySettingsFieldTextStyle,
+                                                            enableBiometric ??
+                                                                '',
+                                                            textScaleFactor:
+                                                                1.0,
+                                                            style:
+                                                                kGraySettingsFieldTextStyle,
                                                           ),
-                                                          Observer(builder: (_) {
+                                                          Obx(() {
                                                             return CupertinoSwitch(
-                                                              value: appStore.isBiometricActivated,
-                                                              activeColor: kSecondaryColor,
-                                                              onChanged: (value) async {
-                                                                if (value == true) {
-                                                                  appStore.wantsToActivateBiometric = true;
-                                                                  appStore.popPinScreen = PopPinScreenTo.SettingsScreen;
-                                                                  Navigator.pushNamed(context, PinScreen.id);
+                                                              value: UserController
+                                                                  .to
+                                                                  .isBiometricActivated
+                                                                  .value,
+                                                              activeColor:
+                                                                  kSecondaryColor,
+                                                              onChanged:
+                                                                  (value) async {
+                                                                if (value ==
+                                                                    true) {
+                                                                  UserController
+                                                                          .to
+                                                                          .wantsToActivateBiometric =
+                                                                      true;
+                                                                  UserController
+                                                                          .to
+                                                                          .popPinScreenToId =
+                                                                      SettingsScreen
+                                                                          .id;
+                                                                  await Get.to(() =>
+                                                                      PinScreen());
                                                                   return;
                                                                 }
 
-                                                                await appStore.setIsBiometricActivated(value);
+                                                                await UserController
+                                                                    .to
+                                                                    .setIsBiometricActivated(
+                                                                        value);
                                                               },
                                                             );
                                                           }),
@@ -643,8 +755,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 //   color: kLightGrayColor,
                                 //   thickness: 1.0,
                                 // ),
-                                // Observer(builder: (_) {
-                                //   if (appStore.secretPhotos == true) {
+                                // Obx( () {
+                                //   if (UserController.to.secretPhotos == true) {
                                 //     return FadeIn(
                                 //       delay: 0,
                                 //       child: LayoutBuilder(
@@ -670,9 +782,9 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 //                             textScaleFactor: 1.0,
                                 //                             style: kGraySettingsFieldTextStyle,
                                 //                           ),
-                                //                           Observer(builder: (_) {
+                                //                           Obx( () {
                                 //                             return Text(
-                                //                               kRequireOptions[appStore.requireSecret],
+                                //                               kRequireOptions[UserController.to.requireSecret],
                                 //                               textScaleFactor: 1.0,
                                 //                               style: kGraySettingsValueTextStyle,
                                 //                             );
@@ -703,28 +815,28 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 //       padding: const EdgeInsets.all(0),
                                 //       pressedOpacity: 1.0,
                                 //       onPressed: () {
-                                //         appStore.switchDailyChallenges(
-                                //           notificationTitle: S.of(context).daily_notification_title,
-                                //           notificationDescription: S.of(context).daily_notification_description,
+                                //         UserController.to.switchDailyChallenges(
+                                //           notificationTitle: LangControl.to.S.value.daily_notification_title,
+                                //           notificationDescription: LangControl.to.S.value.daily_notification_description,
                                 //         );
                                 //       },
                                 //       child: Row(
                                 //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 //         children: <Widget>[
                                 //           Text(
-                                //             S.of(context).daily_challenge,
+                                //             LangControl.to.S.value.daily_challenge,
                                 //             textScaleFactor: 1.0,
                                 //             style: kGraySettingsFieldTextStyle,
                                 //           ),
-                                //           Observer(
-                                //             builder: (_) {
+                                //           Obx(
+                                //              () {
                                 //               return CupertinoSwitch(
-                                //                 value: appStore.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
+                                //                 value: UserController.to.dailyChallenges, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
                                 //                 activeColor: kSecondaryColor,
                                 //                 onChanged: (value) {
-                                //                   appStore.switchDailyChallenges(
-                                //                     notificationTitle: S.of(context).daily_notification_title,
-                                //                     notificationDescription: S.of(context).daily_notification_description,
+                                //                   UserController.to.switchDailyChallenges(
+                                //                     notificationTitle: LangControl.to.S.value.daily_notification_title,
+                                //                     notificationDescription: LangControl.to.S.value.daily_notification_description,
                                 //                   );
                                 //                 },
                                 //               );
@@ -750,14 +862,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 //         children: <Widget>[
                                 //           Text(
-                                //             S.of(context).notification_time,
+                                //             LangControl.to.S.value.notification_time,
                                 //             textScaleFactor: 1.0,
                                 //             style: kGraySettingsFieldTextStyle,
                                 //           ),
-                                //           Observer(
-                                //             builder: (_) {
+                                //           Obx(
+                                //              () {
                                 //               return Text(
-                                //                 '${'${appStore.hourOfDay}'.padLeft(2, '0')}: ${'${appStore.minutesOfDay}'.padLeft(2, '0')}',
+                                //                 '${'${UserController.to.hourOfDay}'.padLeft(2, '0')}: ${'${UserController.to.minutesOfDay}'.padLeft(2, '0')}',
                                 //                 textScaleFactor: 1.0,
                                 //                 style: kGraySettingsValueTextStyle,
                                 //               );
@@ -779,7 +891,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
 //                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                            children: <Widget>[
 //                              Text(
-//                                S.of(context).daily_goal,
+//                                LangControl.to.S.value.daily_goal,
 //                                textScaleFactor: 1.0,
 //                                style: kGraySettingsFieldTextStyle,
 //                              ),
@@ -800,24 +912,32 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                 Container(
                                   height: 60.0,
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0),
                                     child: CupertinoButton(
                                       padding: const EdgeInsets.all(0),
-                                      onPressed: () => showLanguagePicker(context),
+                                      onPressed: () =>
+                                          showLanguagePicker(context),
                                       child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: <Widget>[
-                                          Text(
-                                            S.of(context).language,
-                                            textScaleFactor: 1.0,
-                                            style: kGraySettingsFieldTextStyle,
+                                          Obx(
+                                            () => Text(
+                                              LangControl.to.S.value.language,
+                                              textScaleFactor: 1.0,
+                                              style:
+                                                  kGraySettingsFieldTextStyle,
+                                            ),
                                           ),
-                                          Observer(
-                                            builder: (_) {
+                                          Obx(
+                                            () {
                                               return Text(
-                                                appStore.currentLanguage,
+                                                UserController
+                                                    .to.currentLanguage.value,
                                                 textScaleFactor: 1.0,
-                                                style: kGraySettingsValueTextStyle,
+                                                style:
+                                                    kGraySettingsValueTextStyle,
                                               );
                                             },
                                           ),
@@ -839,12 +959,14 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Image.asset('lib/images/sharegrayicon.png'),
+                                      Image.asset(
+                                          'lib/images/sharegrayicon.png'),
                                       SizedBox(
                                         width: 15.0,
                                       ),
                                       Text(
-                                        S.of(context).share_with_friends,
+                                        LangControl
+                                            .to.S.value.share_with_friends,
                                         textScaleFactor: 1.0,
                                         style: kGraySettingsBoldTextStyle,
                                       ),
@@ -860,10 +982,12 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                       SizedBox(
                                         width: 15.0,
                                       ),
-                                      Text(
-                                        S.of(context).rate_this_app,
-                                        textScaleFactor: 1.0,
-                                        style: kGraySettingsBoldTextStyle,
+                                      Obx(
+                                        () => Text(
+                                          LangControl.to.S.value.rate_this_app,
+                                          textScaleFactor: 1.0,
+                                          style: kGraySettingsBoldTextStyle,
+                                        ),
                                       ),
                                     ],
                                   ),
@@ -878,7 +1002,8 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                         width: 15.0,
                                       ),
                                       Text(
-                                        S.of(context).feedback_bug_report,
+                                        LangControl
+                                            .to.S.value.feedback_bug_report,
                                         textScaleFactor: 1.0,
                                         style: kGraySettingsBoldTextStyle,
                                       ),
@@ -888,17 +1013,29 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                               ],
                             ),
                             // Spacer(),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 32.0, right: 32.0, top: 10.0, bottom: 10.0),
+                            /* Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 32.0,
+                                  right: 32.0,
+                                  top: 10.0,
+                                  bottom: 10.0),
                               child: CupertinoButton(
                                 onPressed: () {
-                                  if (appStore.isPremium) {
+                                  if (UserController.to.isPremium.value) {
                                     return;
                                   }
-                                  Navigator.pushNamed(context, PremiumScreen.id);
+                                  /*  Get.to(() => PremiumScreen); */
                                 },
                                 padding: const EdgeInsets.all(0),
                                 child: OutlineGradientButton(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Color(0xFFFFA4D1),
+                                      Color(0xFFFFCC00),
+                                    ],
+                                  ),
+                                  strokeWidth: 2.0,
+                                  radius: Radius.circular(8.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -910,14 +1047,22 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                         width: 16.0,
                                       ),
                                       Flexible(
-                                        child: Observer(
-                                          builder: (_) {
+                                        child: Obx(
+                                          () {
                                             return Text(
-                                              appStore.isPremium ? S.of(context).you_are_premium : S.of(context).get_premium_now,
+                                              UserController.to.isPremium.value
+                                                  ? S
+                                                      .of(context)
+                                                      .you_are_premium
+                                                  : S
+                                                      .of(context)
+                                                      .get_premium_now,
                                               maxLines: 2,
                                               textAlign: TextAlign.left,
                                               textScaleFactor: 1.0,
-                                              style: kGraySettingsBoldTextStyle.copyWith(color: kSecondaryColor),
+                                              style: kGraySettingsBoldTextStyle
+                                                  .copyWith(
+                                                      color: kSecondaryColor),
                                             );
                                           },
                                         ),
@@ -927,18 +1072,10 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                       ),
                                     ],
                                   ),
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Color(0xFFFFA4D1),
-                                      Color(0xFFFFCC00),
-                                    ],
-                                  ),
-                                  strokeWidth: 2.0,
-                                  radius: Radius.circular(8.0),
                                 ),
                               ),
                             ),
-                            // Spacer(),
+                             */ // Spacer(),
                             Column(
                               children: [
                                 Row(
@@ -946,36 +1083,42 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   children: [
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8.0),
+                                      onPressed: () {
+                                        _launchURL(
+                                            'https://picpics.link/e/facebook');
+                                      },
                                       child: Container(
                                         height: 20,
                                         width: 20,
-                                        child: Image.asset('lib/images/facebookico.png'),
+                                        child: Image.asset(
+                                            'lib/images/facebookico.png'),
                                       ),
-                                      onPressed: () {
-                                        _launchURL('https://picpics.link/e/facebook');
-                                      },
                                     ),
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8.0),
+                                      onPressed: () {
+                                        _launchURL(
+                                            'https://picpics.link/e/website');
+                                      },
                                       child: Container(
                                         height: 20,
                                         width: 20,
-                                        child: Image.asset('lib/images/webico.png'),
+                                        child: Image.asset(
+                                            'lib/images/webico.png'),
                                       ),
-                                      onPressed: () {
-                                        _launchURL('https://picpics.link/e/website');
-                                      },
                                     ),
                                     CupertinoButton(
                                       padding: const EdgeInsets.only(top: 8.0),
+                                      onPressed: () {
+                                        _launchURL(
+                                            'https://picpics.link/e/instagram');
+                                      },
                                       child: Container(
                                         height: 20,
                                         width: 20,
-                                        child: Image.asset('lib/images/instagramico.png'),
+                                        child: Image.asset(
+                                            'lib/images/instagramico.png'),
                                       ),
-                                      onPressed: () {
-                                        _launchURL('https://picpics.link/e/instagram');
-                                      },
                                     ),
                                   ],
                                 ),
@@ -984,47 +1127,57 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   children: <Widget>[
                                     CupertinoButton(
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/privacy');
+                                        _launchURL(
+                                            'https://picpics.link/e/privacy');
                                       },
-                                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0),
                                       minSize: 32.0,
-                                      child: Text(
-                                        S.of(context).privacy_policy,
-                                        style: const TextStyle(
-                                          color: const Color(0xff606566),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Lato",
-                                          fontStyle: FontStyle.normal,
-                                          decoration: TextDecoration.underline,
-                                          fontSize: 10.0,
+                                      child: Obx(
+                                        () => Text(
+                                          LangControl.to.S.value.privacy_policy,
+                                          style: const TextStyle(
+                                            color: Color(0xff606566),
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: 'Lato',
+                                            fontStyle: FontStyle.normal,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontSize: 10.0,
+                                          ),
                                         ),
                                       ),
                                     ),
                                     Text(
-                                      "  &   ",
+                                      '  &   ',
                                       style: const TextStyle(
-                                        color: const Color(0xff606566),
+                                        color: Color(0xff606566),
                                         fontWeight: FontWeight.w400,
-                                        fontFamily: "Lato",
+                                        fontFamily: 'Lato',
                                         fontStyle: FontStyle.normal,
                                         fontSize: 10.0,
                                       ),
                                     ),
                                     CupertinoButton(
                                       onPressed: () {
-                                        _launchURL('https://picpics.link/e/terms');
+                                        _launchURL(
+                                            'https://picpics.link/e/terms');
                                       },
-                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 10.0),
                                       minSize: 32.0,
-                                      child: Text(
-                                        S.of(context).terms_of_use,
-                                        style: const TextStyle(
-                                          color: const Color(0xff606566),
-                                          fontWeight: FontWeight.w400,
-                                          fontFamily: "Lato",
-                                          fontStyle: FontStyle.normal,
-                                          decoration: TextDecoration.underline,
-                                          fontSize: 10.0,
+                                      child: Obx(
+                                        () => Text(
+                                          LangControl.to.S.value.terms_of_use,
+                                          style: const TextStyle(
+                                            color: Color(0xff606566),
+                                            fontWeight: FontWeight.w400,
+                                            fontFamily: 'Lato',
+                                            fontStyle: FontStyle.normal,
+                                            decoration:
+                                                TextDecoration.underline,
+                                            fontSize: 10.0,
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -1034,7 +1187,7 @@ class _SettingsScreenState extends State<SettingsScreen> with WidgetsBindingObse
                                   padding: const EdgeInsets.only(bottom: 8.0),
                                   child: Center(
                                     child: Text(
-                                      'VERSION: ${appStore.appVersion}',
+                                      'VERSION: ${UserController.to.appVersion}',
                                       textScaleFactor: 1.0,
                                       style: kGraySettingsFieldTextStyle,
                                     ),

@@ -4,21 +4,16 @@
   "edit_tag": "Edytuj tag",
   "cancel": "Anuluj",
   "notifications": "Powiadomienia",
-
-
   "welcome": "Witamy!",
   "photos_always_organized": "Teraz Twoje zdjęcia będą zawsze uporządkowane",
-
   "continue_string": "Kontyntynuj",
   "gallery_access_reason": "Aby uporządkować Twoje zdjęcia, potrzebujemy dostępu do Twojej galerii zdjęć",
-
   "tutorial_daily_package": "Przynosimy codzienny pakiet, aby stopniowo uporządkować bibliotekę.",
   "next": "Kolejny",
   "tutorial_however_you_want": "Uporządkuj swoje zdjęcia, dodając tagi, takie jak „rodzina”, „zwierzęta” lub cokolwiek chcesz.",
   "close": "Blisko",
   "start": "Początek",
   "tutorial_just_swipe": "Po dodaniu tagów do zdjęcia po prostu przesuń palcem, aby przejść do następnego.",
-
   "settings": "Ustawienia",
   "suggestions": "Propozycje",
   "photo_location": "Lokalizacja zdjęcia",
@@ -26,23 +21,16 @@
   "add_tag": "Dodaj tag",
   "add_tags": "Dodaj tagi",
   "full_screen": "Pełny ekran",
-
   "photo_gallery_title": "Galeria zdjęć",
   "photo_gallery_description": "Zdjęcia jeszcze nie zorganizowane",
   "photo_gallery_count": "{howMany, plural, zero{Nie wybrano zdjęć} one{Wybrano 1 zdjęcie} other{Wybrano {howMany} zdjęć}}",
-
   "organized_photos_title": "Zorganizowane zdjęcia",
   "organized_photos_description": "Photos that have already been tagged",
-
   "search": "Szukaj...",
-
-
   "no_tagged_photos": "Nie masz jeszcze żadnych oznaczonych zdjęć",
   "start_tagging": "Rozpocznij tagowanie",
-
   "no_tags_found": "Nie znaleziono tagów",
   "search_results": "Wyniki wyszukiwania",
-
   "daily_challenge": "Wyzwanie dnia",
   "daily_goal": "Dzienny cel",
   "notification_time": "Czas powiadomienia",
@@ -50,49 +38,27 @@
   "rate_this_app": "Oceń tę aplikację",
   "how_many_pics": "Ile zdjęć",
   "time": "Czas",
-
   "take_a_look": "Spójrz na tę aplikację!",
   "take_a_look_description": "Aby uporządkować wszystkie zdjęcia, przejdź do {url}",
-
   "daily_challenge_permission_description": "Abyśmy mogli wysyłać codzienne wyzwania, potrzebujemy autoryzacji do wysyłania powiadomień, dlatego konieczne jest, abyś autoryzował powiadomienia w opcjach swojego telefonu komórkowego",
-
-
-  "you_are_premium": "Jesteś premium!",
-  "get_premium_now": "Zdobądź premię już teraz!",
-
-
-  "get_premium_title": "POBIERZ PREMIUM",
-  "get_premium_description": "MIEĆ WSZYSTKIE TE CECHY",
-
 
   "no_ads": "Bez reklam",
   "export_all_gallery": "Eksportuj całą galerię",
   "infinite_tags": "Nieskończone tagi",
   "tag_multiple_photos_at_once": "Oznacz wiele zdjęć jednocześnie",
-
   "sign": "Znak",
   "year": "rok",
   "month": "miesiąc",
-
   "restore_purchase": "Przywróć zakup",
   "no_previous_purchase": "Brak poprzedniego zakupu",
   "no_valid_subscription": "Nie można znaleźć prawidłowego zakupu subskrypcji.",
   "save": "zapisać",
-
   "save_location": "Zapisz lokalizację",
-
   "device_has_no_pics": "To urządzenie nie ma zdjęcia w galerii, więc nie ma zdjęcia, które można oznaczyć.",
   "open_gallery": "Otwórz galerię",
-
   "gallery_access_permission": "Uprawnienia dostępu",
   "gallery_access_permission_description": "Aby rozpocząć porządkowanie zdjęć, potrzebujemy autoryzacji, aby uzyskać do nich dostęp",
-
   "export_library": "Eksportuj bibliotekę",
-
-  "premium_modal_description": "Skończyłeś swoje {number} codzienne zdjęcia, czy chcesz kontynuować?",
-  "premium_modal_watch_ad": "Obejrzyj reklamę wideo, aby kontynuować",
-  "premium_modal_get_premium_title": "Uzyskaj konto premium",
-  "premium_modal_get_premium_description": "WSZYSTKIE FUNKCJE BEZ REKLAM",
 
   "family_tag": "Rodzina",
   "travel_tag": "Podróżować",
@@ -104,16 +70,12 @@
   "home_tag": "Dom",
   "work_tag": "Praca",
   "parties_tag": "Strony",
-
   "terms_of_use": "Warunki korzystania",
   "privacy_policy": "Polityka prywatności",
-
   "auto_renewable_first_part": "Subskrypcja jest ",
   "auto_renewable_second_part": "autoodnawialne.",
   "cancel_anytime": "Anuluj w dowolnym momencie",
-
   "language": "Język",
-
   "all_search_tags": "Wszystkie tagi wyszukiwania",
   "search_all_tags_not_found": "Nie znaleziono zdjęć ze wszystkimi tagami",
   "picpics_photo_manager": "picPics - Menedżer zdjęć",
@@ -146,13 +108,10 @@
   "lock_your_photos": "Zablokuj swoje zdjęcia",
   "lock_with_pin": "Zablokuj swoje prywatne zdjęcia za pomocą kodu PIN.",
   "protect_with_encryption": "Chroń swoje osobiste zdjęcia za pomocą szyfrowania dostępnego tylko za pomocą hasła PIN.",
-
-
-  "all_photos_were_tagged": "There are no more photos to organize.",
+  "no_photos_were_tagged": "There are no more photos to organize.",
   "daily_notification_title": "Daily challenge",
   "daily_notification_description": "It's time to complete your picPics daily challenge!",
   "unlimited_private_pics": "Nieograniczone prywatne zdjęcia",
-
   "toggle_months": "Miesięcy",
   "toggle_days": "Dni",
   "toggle_date": "Data",
@@ -166,6 +125,7 @@
   "enable_faceid": "Włącz Face ID",
   "enable_touchid": "Włącz Touch ID",
   "enable_fingerprint": "Włącz odcisk palca",
-  "enable_irisscanner": "Włącz skaner tęczówki"
-
+  "enable_irisscanner": "Włącz skaner tęczówki",
+  "finishing": "Finishing...",
+  "allTags": "All Tags"
 }

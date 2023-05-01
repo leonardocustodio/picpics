@@ -1,4 +1,4 @@
-import 'dart:async';
+/* import 'dart:async';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,11 +10,10 @@ import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
 import 'package:picPics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/stores/app_store.dart';
 import 'package:picPics/stores/gallery_store.dart';
 import 'package:picPics/stores/pic_store.dart';
-import 'package:provider/provider.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
@@ -28,7 +27,7 @@ class TutsAddLocationScreen extends StatefulWidget {
 }
 
 class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
-  AppStore appStore;
+  UserController appStore;
   GalleryStore galleryStore;
   PicStore get picStore => galleryStore.currentPic;
 
@@ -53,7 +52,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
       String state;
       String country;
 
-      for (var components in selectedGeolocation.fullJSON["address_components"]) {
+      for (var components
+          in selectedGeolocation.fullJSON["address_components"]) {
         var types = components["types"];
         if (types.contains("establishment")) {
           print('find establishment: ${components["long_name"]}');
@@ -97,13 +97,14 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
       }
     }
 
-    Navigator.pop(context);
+    Get.back();
   }
 
   void getUserPosition() async {
     print('getting current location');
 
-    Position position = await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    Position position =
+        await getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
 
     final geolocation = LatLng(position.latitude, position.longitude);
 
@@ -134,7 +135,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
 
     if (picStore.latitude != null && picStore.longitude != null) {
       latLng = LatLng(picStore.latitude, picStore.longitude);
-    } else if (picStore.originalLatitude != null && picStore.originalLongitude != null) {
+    } else if (picStore.originalLatitude != null &&
+        picStore.originalLongitude != null) {
       latLng = LatLng(picStore.originalLatitude, picStore.originalLongitude);
     }
 
@@ -175,7 +177,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
+    appStore = Provider.of<UserController>(context);
     galleryStore = Provider.of<GalleryStore>(context);
     findInitialCamera();
   }
@@ -183,7 +185,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
   @override
   Widget build(BuildContext context) {
     final double height = MediaQuery.of(context).size.height;
-    final AssetEntityImageProvider imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    final AssetEntityImageProvider imageProvider =
+        AssetEntityImageProvider(picStore, isOriginal: true);
     return Scaffold(
       key: homeScaffoldKey,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -204,7 +207,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
             SafeArea(
               top: false,
               child: Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                padding: const EdgeInsets.only(
+                    left: 16.0, right: 16.0, bottom: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -216,7 +220,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                         CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
-                            Navigator.pop(context);
+                            Get.back();
                           },
                           child: Container(
                             width: height * 0.17,
@@ -230,7 +234,8 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                                   Widget loader;
                                   switch (state.extendedImageLoadState) {
                                     case LoadState.loading:
-                                      loader = const ColoredBox(color: kGreyPlaceholder);
+                                      loader = const ColoredBox(
+                                          color: kGreyPlaceholder);
                                       break;
                                     case LoadState.completed:
                                       loader = FadeImageBuilder(
@@ -258,11 +263,13 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                           ),
                         ),
                         CupertinoButton(
-                          padding: const EdgeInsets.only(left: 14.0, right: 0, bottom: 0.0, top: 14.0),
+                          padding: const EdgeInsets.only(
+                              left: 14.0, right: 0, bottom: 0.0, top: 14.0),
                           onPressed: () {
                             getUserPosition();
                           },
-                          child: Image.asset('lib/images/getcurrentlocationico.png'),
+                          child: Image.asset(
+                              'lib/images/getcurrentlocationico.png'),
                         ),
                       ],
                     ),
@@ -281,7 +288,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                         height: 44.0,
                         child: Center(
                           child: Text(
-                            S.of(context).save_location,
+                            LangControl.to.S.value.save_location,
                             textScaleFactor: 1.0,
                             style: TextStyle(
                               fontFamily: 'Lato',
@@ -304,7 +311,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
               child: SafeArea(
                 child: SearchMapPlaceWidget(
                   apiKey: kGoogleApiKey,
-                  placeholder: S.of(context).search,
+                  placeholder: LangControl.to.S.value.search,
                   language: appStore.appLanguage.split('_')[0], // arrumar isso
                   onSelected: (place) async {
                     final geolocation = await place.geolocation;
@@ -321,14 +328,17 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                       position: geolocation.coordinates,
                     );
 
-                    final GoogleMapController controller = await _mapController.future;
+                    final GoogleMapController controller =
+                        await _mapController.future;
                     _markers.clear();
                     setState(() {
                       _markers.add(destination);
                     });
 
-                    controller.animateCamera(CameraUpdate.newLatLng(geolocation.coordinates));
-                    controller.animateCamera(CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
+                    controller.animateCamera(
+                        CameraUpdate.newLatLng(geolocation.coordinates));
+                    controller.animateCamera(
+                        CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
                   },
                 ),
               ),
@@ -339,3 +349,4 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
     );
   }
 }
+ */

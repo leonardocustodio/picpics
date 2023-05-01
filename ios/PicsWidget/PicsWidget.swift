@@ -8,7 +8,7 @@
 import WidgetKit
 import SwiftUI
 
-private let widgetGroupId = "group.br.com.inovatso.picPics.Widgets"
+private let widgetGroupId = "group.br.com.inovatso.picPics.Widget"
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> ExampleEntry {
@@ -46,7 +46,7 @@ struct PicsWidgetEntryView : View {
 
 @main
 struct PicsWidget: Widget {
-    let kind: String = "PicsWidget"
+    let kind: String = "PicWidget"
     
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in

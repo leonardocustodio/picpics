@@ -1,33 +1,32 @@
 import 'dart:ui';
-
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:picPics/generated/l10n.dart';
+
 import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/pin_store.dart';
+import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/stores/user_controller.dart';
+import 'package:picPics/stores/pin_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
-import 'package:picPics/widgets/general_modal.dart';
-import 'package:email_validator/email_validator.dart';
-import 'package:provider/provider.dart';
+
+class EmailStore extends GetxController {
+  final isLoading = false.obs;
+}
 
 class EmailScreen extends StatefulWidget {
   static const String id = 'email_screen';
-
-  final PinStore pinStore;
-  EmailScreen({this.pinStore});
+  const EmailScreen({Key? key}) : super(key: key);
 
   @override
   _EmailScreenState createState() => _EmailScreenState();
 }
 
 class _EmailScreenState extends State<EmailScreen> {
-  AppStore appStore;
-  PinStore pinStore;
-
   bool isLoading = false;
 
   @override
@@ -36,36 +35,12 @@ class _EmailScreenState extends State<EmailScreen> {
 //    Analytics.sendCurrentScreen(Screen.login_screen);
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    appStore = Provider.of<AppStore>(context);
-    pinStore = Provider.of<PinStore>(context);
-  }
-
-  void showErrorModal(String message) {
-    showDialog<void>(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext buildContext) {
-        return GeneralModal(
-          message: message,
-          onPressedDelete: () {
-            Navigator.pop(context);
-          },
-          onPressedOk: () {
-            Navigator.pop(context);
-          },
-        );
-      },
-    );
-  }
-
   Future<void> startRegistration() async {
-    bool isValid = EmailValidator.validate(pinStore.email);
+    final isValid = EmailValidator.validate(PinController.to.email.value);
 
     if (!isValid) {
-      showErrorModal('Please type a valid e-mail address to proceed.');
+      PinController.to
+          .showErrorModal('Please type a valid e-mail address to proceed.');
       return;
     }
 
@@ -73,22 +48,25 @@ class _EmailScreenState extends State<EmailScreen> {
       isLoading = true;
     });
 
-    Map<String, dynamic> result = await pinStore.register();
+    final result = await PinController.to.register();
 
     setState(() {
       isLoading = false;
     });
 
     if (result['success'] == true) {
-      appStore.setWaitingAccessCode(true);
-      Navigator.pushNamed(context, PinScreen.id);
+      UserController.to.setWaitingAccessCode(true);
+      await Get.toNamed(PinScreen.id);
     } else {
       print('Result: $result');
-      if (result['errorCode'] == 'email-already-in-use') {
-        showErrorModal('This e-mail is already in use by another account.');
+      if ((result['errorCode'] as FirebaseAuthException).code ==
+          'email-already-in-use') {
+        PinController.to.showErrorModal(
+            'This e-mail is already in use by another account.');
         print('Error !!!');
       } else {
-        showErrorModal('An error has occured. Please try again!');
+        PinController.to
+            .showErrorModal('An error has occured. Please try again!');
         print('Error !!!');
       }
     }
@@ -96,7 +74,7 @@ class _EmailScreenState extends State<EmailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
+    final size = MediaQuery.of(context).size;
     print('Height: ${size.height} - Width: ${size.width}');
 
     return Scaffold(
@@ -117,12 +95,14 @@ class _EmailScreenState extends State<EmailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       CupertinoButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 5.0, vertical: 10.0),
                         onPressed: () {
-                          appStore.setWaitingAccessCode(false);
-                          Navigator.pop(context);
+                          UserController.to.setWaitingAccessCode(false);
+                          Get.back();
                         },
-                        child: Image.asset('lib/images/backarrowwithdropshadow.png'),
+                        child: Image.asset(
+                            'lib/images/backarrowwithdropshadow.png'),
                       ),
                     ],
                   ),
@@ -135,19 +115,22 @@ class _EmailScreenState extends State<EmailScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text(
-                            S.of(context).confirm_email,
-                            style: TextStyle(
-                              fontFamily: 'Lato',
-                              color: kWhiteColor,
-                              fontSize: size.width < 400 ? 22.0 : 28.0,
-                              fontWeight: FontWeight.w700,
-                              fontStyle: FontStyle.normal,
+                          Obx(
+                            () => Text(
+                              LangControl.to.S.value.confirm_email,
+                              style: TextStyle(
+                                fontFamily: 'Lato',
+                                color: kWhiteColor,
+                                fontSize: size.width < 400 ? 22.0 : 28.0,
+                                fontWeight: FontWeight.w700,
+                                fontStyle: FontStyle.normal,
+                              ),
                             ),
                           ),
                           Spacer(),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24.0, vertical: 32.0),
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(8.0),
@@ -155,15 +138,17 @@ class _EmailScreenState extends State<EmailScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  S.of(context).email,
-                                  style: TextStyle(
-                                    fontFamily: 'Lato',
-                                    color: Color(0xff606566),
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w300,
-                                    fontStyle: FontStyle.normal,
-                                    letterSpacing: -0.4099999964237213,
+                                Obx(
+                                  () => Text(
+                                    LangControl.to.S.value.email,
+                                    style: TextStyle(
+                                      fontFamily: 'Lato',
+                                      color: Color(0xff606566),
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w300,
+                                      fontStyle: FontStyle.normal,
+                                      letterSpacing: -0.4099999964237213,
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -171,31 +156,36 @@ class _EmailScreenState extends State<EmailScreen> {
                                   margin: const EdgeInsets.only(top: 6.0),
                                   child: TextField(
                                     maxLines: 1,
-                                    onChanged: pinStore.setEmail,
+                                    onChanged: PinController.to.setEmail,
                                     decoration: InputDecoration(
-                                      contentPadding: const EdgeInsets.only(left: 10.0, right: 5.0),
-                                      fillColor: Color(0xFFF1F3F5).withOpacity(0.3),
+                                      contentPadding: const EdgeInsets.only(
+                                          left: 10.0, right: 5.0),
+                                      fillColor:
+                                          Color(0xFFF1F3F5).withOpacity(0.3),
                                       filled: true,
                                       border: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
-                                        borderRadius: BorderRadius.circular(8.0),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
-                                        borderRadius: BorderRadius.circular(8.0),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
-                                        borderRadius: BorderRadius.circular(8.0),
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
                                       ),
                                     ),
                                   ),
@@ -208,7 +198,7 @@ class _EmailScreenState extends State<EmailScreen> {
                           ),
                           CupertinoButton(
                             padding: const EdgeInsets.all(0),
-                            onPressed: () async {
+                            onPressed: () {
                               startRegistration();
                             },
                             child: Container(
@@ -218,10 +208,12 @@ class _EmailScreenState extends State<EmailScreen> {
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
                               child: Center(
-                                child: Text(
-                                  S.of(context).continue_string,
-                                  textScaleFactor: 1.0,
-                                  style: kLoginButtonTextStyle,
+                                child: Obx(
+                                  () => Text(
+                                    LangControl.to.S.value.continue_string,
+                                    textScaleFactor: 1.0,
+                                    style: kLoginButtonTextStyle,
+                                  ),
                                 ),
                               ),
                             ),

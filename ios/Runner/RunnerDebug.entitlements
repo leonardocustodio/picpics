@@ -13,7 +13,7 @@
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.br.com.inovatso.picPics.Widgets</string>
+		<string>group.br.com.inovatso.picPics.Widget</string>
 	</array>
 </dict>
 </plist>
