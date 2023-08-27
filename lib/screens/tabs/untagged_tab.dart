@@ -26,6 +26,8 @@ class UntaggedTab extends GetWidget<TabsController> {
   //ScrollController scrollControllerFirstTab;
   TextEditingController tagsEditingController = TextEditingController();
 
+  UntaggedTab({super.key});
+
   Widget _buildGridView(BuildContext context) {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
@@ -46,9 +48,9 @@ class UntaggedTab extends GetWidget<TabsController> {
           var isMonth = controller.toggleIndexUntagged.value == 0;
           if (isMonth) {
             if (controller.allUnTaggedPicsMonth.isEmpty) {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
-            return UntaggedTabMonth();
+            return const UntaggedTabMonth();
             /*   return Obx(
               () => StaggeredGridView.countBuilder(
                   addAutomaticKeepAlives: true,
@@ -181,7 +183,7 @@ class UntaggedTab extends GetWidget<TabsController> {
             );
            */
           } else {
-            return UntaggedTabDay();
+            return const UntaggedTabDay();
             /*  return Obx(
               () => StaggeredGridView.countBuilder(
                 addAutomaticKeepAlives: true,
@@ -367,11 +369,11 @@ class UntaggedTab extends GetWidget<TabsController> {
                   : null,
             ),
           Text(
-            '${dateFormat(date)}',
+            dateFormat(date),
             textScaleFactor: 1.0,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Lato',
-              color: const Color(0xff606566),
+              color: Color(0xff606566),
               fontSize: 14.0,
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.normal,
@@ -450,7 +452,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                               controller.selectedMultiBarPics[picId] !=
                                   null) ...[
                             Container(
-                              constraints: BoxConstraints.expand(),
+                              constraints: const BoxConstraints.expand(),
                               decoration: BoxDecoration(
                                 color: kSecondaryColor.withOpacity(0.3),
                                 border: Border.all(
@@ -496,7 +498,7 @@ class UntaggedTab extends GetWidget<TabsController> {
           var hasPics = controller.allUnTaggedPicsMonth.isNotEmpty ||
               controller.allUnTaggedPicsDay.isNotEmpty;
           if (controller.isUntaggedPicsLoaded.value == false) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(
                   // valueColor: AlwaysStoppedAnimation<Color>(kSecondaryColor),
                   ),
@@ -512,7 +514,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Get.to(() => SettingsScreen());
+                          Get.to(() => const SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -536,7 +538,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Get.to(() => SettingsScreen());
+                          Get.to(() => const SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -571,7 +573,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Get.to(() => SettingsScreen());
+                          Get.to(() => const SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -590,9 +592,9 @@ class UntaggedTab extends GetWidget<TabsController> {
                                 controller.selectedMultiBarPics.length)
                             : LangControl.to.S.value.photo_gallery_description,
                         textScaleFactor: 1.0,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Lato',
-                          color: const Color(0xff979a9b),
+                          color: Color(0xff979a9b),
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
                           fontStyle: FontStyle.normal,
@@ -604,7 +606,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                 AnimatedOpacity(
                   opacity: controller.isScrolling.value ? 0.0 : 1.0,
                   curve: Curves.linear,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   onEnd: () {
                     controller.setIsToggleBarVisible(
                         controller.isScrolling.value ? false : true);

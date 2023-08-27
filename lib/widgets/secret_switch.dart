@@ -7,7 +7,7 @@ class SecretSwitch extends StatefulWidget {
   final bool value;
   final Function onChanged;
 
-  SecretSwitch({
+  const SecretSwitch({super.key, 
     required this.value,
     required this.onChanged,
   });

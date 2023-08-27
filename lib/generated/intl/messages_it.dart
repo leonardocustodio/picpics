@@ -22,14 +22,14 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "Una chiave di accesso è stata inviata a ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'Nessuna foto selezionata', one: '1 foto selezionata', other: '${howMany} foto selezionate')}";
+      Intl.plural(howMany, zero: 'Nessuna foto selezionata', one: '1 foto selezionata', other: '${howMany} foto selezionate');
 
   static String m2(url) => "Per organizzare tutte le tue foto vai a ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "access_code":
-            MessageLookupByLibrary.simpleMessage("Codice d\'accesso"),
+            MessageLookupByLibrary.simpleMessage("Codice d'accesso"),
         "access_code_sent": m0,
         "add_multiple_tags":
             MessageLookupByLibrary.simpleMessage("Aggiungi molteplici tag"),
@@ -44,7 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ask_photo_library_permission": MessageLookupByLibrary.simpleMessage(
             "Abbiamo bisogno di accedere alla tua libreria di foto in modo da poter iniziare a organizzare le tue foto con picPics. Non preoccuparti, i tuoi dati non lasceranno mai il tuo dispositivo!"),
         "auto_renewable_first_part":
-            MessageLookupByLibrary.simpleMessage("L\'abbonamento è "),
+            MessageLookupByLibrary.simpleMessage("L'abbonamento è "),
         "auto_renewable_second_part": MessageLookupByLibrary.simpleMessage(
             "rinnovabile automaticamente."),
         "cancel": MessageLookupByLibrary.simpleMessage("Annulla"),
@@ -61,11 +61,11 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Sfida quotidiana"),
         "daily_challenge_permission_description":
             MessageLookupByLibrary.simpleMessage(
-                "Per poter inviare le tue sfide quotidiane abbiamo bisogno dell\'autorizzazione per inviare notifiche, quindi è necessario autorizzare le notifiche nelle opzioni del tuo cellulare"),
+                "Per poter inviare le tue sfide quotidiane abbiamo bisogno dell'autorizzazione per inviare notifiche, quindi è necessario autorizzare le notifiche nelle opzioni del tuo cellulare"),
         "daily_goal":
             MessageLookupByLibrary.simpleMessage("Obiettivo giornaliero"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("Elimina"),
@@ -82,7 +82,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enable_fingerprint":
             MessageLookupByLibrary.simpleMessage("Abilita Impronta Digitale"),
         "enable_irisscanner":
-            MessageLookupByLibrary.simpleMessage("Abilita Scanner Dell\'Iride"),
+            MessageLookupByLibrary.simpleMessage("Abilita Scanner Dell'Iride"),
         "enable_touchid":
             MessageLookupByLibrary.simpleMessage("Abilita Touch ID"),
         "export_all_gallery":
@@ -103,7 +103,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Autorizzazioni di accesso"),
         "gallery_access_permission_description":
             MessageLookupByLibrary.simpleMessage(
-                "Per iniziare a organizzare le tue foto, abbiamo bisogno dell\'autorizzazione per accedervi"),
+                "Per iniziare a organizzare le tue foto, abbiamo bisogno dell'autorizzazione per accedervi"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "Per organizzare le tue foto abbiamo bisogno di accedere alla tua galleria fotografica"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Casa"),
@@ -194,10 +194,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "tag_multiple_photos_at_once": MessageLookupByLibrary.simpleMessage(
             "Tagga più foto contemporaneamente"),
         "take_a_look": MessageLookupByLibrary.simpleMessage(
-            "Dai un\'occhiata a questa app!"),
+            "Dai un'occhiata a questa app!"),
         "take_a_look_description": m2,
         "terms_of_use":
-            MessageLookupByLibrary.simpleMessage("Condizioni d\'uso"),
+            MessageLookupByLibrary.simpleMessage("Condizioni d'uso"),
         "time": MessageLookupByLibrary.simpleMessage("Orario"),
         "toggle_date": MessageLookupByLibrary.simpleMessage("Data"),
         "toggle_days": MessageLookupByLibrary.simpleMessage("Giorni"),
@@ -219,7 +219,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Foto private illimitates"),
         "vacation_tag": MessageLookupByLibrary.simpleMessage("Vacanza"),
         "view_hidden_photos": MessageLookupByLibrary.simpleMessage(
-            "Per visualizzare le tue foto nascoste, disattiva il blocco nelle impostazioni dell\'applicazione. Puoi sbloccarle con il tuo PIN."),
+            "Per visualizzare le tue foto nascoste, disattiva il blocco nelle impostazioni dell'applicazione. Puoi sbloccarle con il tuo PIN."),
         "welcome": MessageLookupByLibrary.simpleMessage("Benvenuto!"),
         "work_tag": MessageLookupByLibrary.simpleMessage("Lavoro"),
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 min"),

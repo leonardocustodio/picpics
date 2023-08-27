@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class ToggleBar extends StatefulWidget {
   final int activeToggle;
@@ -10,7 +9,7 @@ class ToggleBar extends StatefulWidget {
   final String titleLeft;
   final String titleRight;
 
-  ToggleBar({
+  const ToggleBar({super.key, 
     required this.titleLeft,
     required this.titleRight,
     required this.activeToggle,
@@ -33,7 +32,7 @@ class _ToggleBarState extends State<ToggleBar> {
         child: Container(
           height: 44.0,
           decoration: BoxDecoration(
-            color: Color(0xFFF5F5F5).withOpacity(0.8),
+            color: const Color(0xFFF5F5F5).withOpacity(0.8),
             borderRadius: BorderRadius.circular(22.0),
           ),
           child: Row(
@@ -47,13 +46,13 @@ class _ToggleBarState extends State<ToggleBar> {
                       alignment: widget.activeToggle == 0
                           ? Alignment.centerLeft
                           : Alignment.centerRight,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.ease,
                       child: Container(
                         margin: const EdgeInsets.symmetric(
                             horizontal: 4.0, vertical: 4.0),
                         decoration: BoxDecoration(
-                          color: Color(0xFFB7B7B7),
+                          color: const Color(0xFFB7B7B7),
                           borderRadius: BorderRadius.circular(19.0),
                         ),
                         child: Opacity(
@@ -67,7 +66,7 @@ class _ToggleBarState extends State<ToggleBar> {
                                   ? widget.titleLeft
                                   : widget.titleRight,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Color(0xFF7E7E80),
                               ),
                             ),
@@ -90,7 +89,7 @@ class _ToggleBarState extends State<ToggleBar> {
                           style: TextStyle(
                             color: widget.activeToggle == 0
                                 ? Colors.white
-                                : Color(0xFF7E7E80),
+                                : const Color(0xFF7E7E80),
                             fontFamily: 'Lato',
                             fontWeight: FontWeight.w600,
                           ),
@@ -107,7 +106,7 @@ class _ToggleBarState extends State<ToggleBar> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: widget.activeToggle == 0
-                                ? Color(0xFF7E7E80)
+                                ? const Color(0xFF7E7E80)
                                 : Colors.white,
                             fontFamily: 'Lato',
                             fontWeight: FontWeight.w600,

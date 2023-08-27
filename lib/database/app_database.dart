@@ -17,7 +17,7 @@ part 'app_database.g.dart';
 extension MoorTValue<T> on T {
   Value<T> get moorValue {
     if (this == null) {
-      return Value.absent();
+      return const Value.absent();
     }
     return Value(this);
   }
@@ -72,7 +72,7 @@ class Photos extends Table {
 }
 
 class Labels extends Table {
-  TextColumn get key => text().withDefault(Constant(Uuid().v4()))();
+  TextColumn get key => text().withDefault(Constant(const Uuid().v4()))();
   @override
   Set<Column> get primaryKey => {key};
   IntColumn get counter => integer().withDefault(const Constant(1))();
@@ -108,7 +108,7 @@ class MoorUsers extends Table {
   @override
   Set<Column> get primaryKey => {customPrimaryKey};
 
-  TextColumn get id => text().withDefault(Constant(Uuid().v4()))();
+  TextColumn get id => text().withDefault(Constant(const Uuid().v4()))();
   TextColumn get email => text().nullable()();
   TextColumn get password => text().nullable()();
   BoolColumn get notification => boolean().withDefault(const Constant(false))();
@@ -477,7 +477,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<void> insertAllMoorUsers(User user, {UserKey? userKey}) async {
-    var moorUserCompanionVariable;
+    MoorUsersCompanion moorUserCompanionVariable;
 
     moorUserCompanionVariable = MoorUsersCompanion.insert(
       customPrimaryKey: const Value(0),
@@ -503,7 +503,7 @@ class AppDatabase extends _$AppDatabase {
       shouldDeleteOnPrivate: user.shouldDeleteOnPrivate.moorValue,
       tourCompleted: user.tourCompleted.moorValue,
       isBiometricActivated: user.isBiometricActivated.moorValue,
-      secretKey: userKey?.secretKey.moorValue ?? Value.absent(),
+      secretKey: userKey?.secretKey.moorValue ?? const Value.absent(),
     );
 
     await into(moorUsers).insert(

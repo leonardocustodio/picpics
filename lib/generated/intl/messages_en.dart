@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "An access key was sent to ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected')}";
+      Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected');
 
   static String m2(url) => "To organize all your photos go to ${url}";
 
@@ -51,7 +51,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "armrest_tag": MessageLookupByLibrary.simpleMessage("Armrest"),
         "army_tag": MessageLookupByLibrary.simpleMessage("Army"),
         "ask_photo_library_permission": MessageLookupByLibrary.simpleMessage(
-            "We need access to your photo library so you can start organizing your photos with picPics. Don\'t worry your data will never leave your device!"),
+            "We need access to your photo library so you can start organizing your photos with picPics. Don't worry your data will never leave your device!"),
         "asphalt_tag": MessageLookupByLibrary.simpleMessage("Asphalt"),
         "aurora_tag": MessageLookupByLibrary.simpleMessage("Aurora"),
         "auto_renewable_first_part":
@@ -183,7 +183,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "For us to be able to send your daily challenges we need authorization to send notifications, so, it is necessary that you authorize the notifications in the options of your cell phone"),
         "daily_goal": MessageLookupByLibrary.simpleMessage("Daily goal"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "dalmatian_tag": MessageLookupByLibrary.simpleMessage("Dalmatian"),
@@ -202,7 +202,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "dog_tag": MessageLookupByLibrary.simpleMessage("Dog"),
         "doily_tag": MessageLookupByLibrary.simpleMessage("Doily"),
         "dont_ask_again":
-            MessageLookupByLibrary.simpleMessage("Don\'t ask again"),
+            MessageLookupByLibrary.simpleMessage("Don't ask again"),
         "dragon_tag": MessageLookupByLibrary.simpleMessage("Dragon"),
         "drawer_tag": MessageLookupByLibrary.simpleMessage("Drawer"),
         "dress_tag": MessageLookupByLibrary.simpleMessage("Dress"),
@@ -386,7 +386,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "no_previous_purchase":
             MessageLookupByLibrary.simpleMessage("No Previous Purchase"),
         "no_tagged_photos": MessageLookupByLibrary.simpleMessage(
-            "You don\'t have any tagged photos yet"),
+            "You don't have any tagged photos yet"),
         "no_tags_found": MessageLookupByLibrary.simpleMessage("No tags found"),
         "no_valid_subscription": MessageLookupByLibrary.simpleMessage(
             "Could not find a valid subscription purchase."),

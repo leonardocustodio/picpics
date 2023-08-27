@@ -125,7 +125,7 @@ class TagsController extends GetxController {
         }
         print(listOfLetters.toString());
         print(suggestionTags
-            .map((e) => '${TagsController.to.allTags[e]!.value.title}')
+            .map((e) => TagsController.to.allTags[e]!.value.title)
             .toString());
         print('------');
         doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
@@ -157,11 +157,11 @@ class TagsController extends GetxController {
         .where((element) => suggestionTags.contains(element.id))
         .toList(); */
     var suggestions = <TagModel>[];
-    suggestionTags.forEach((suggestedTag) {
+    for (var suggestedTag in suggestionTags) {
       if (TagsController.to.allTags[suggestedTag] != null) {
         suggestions.add(TagsController.to.allTags[suggestedTag]!.value);
       }
-    });
+    }
     // print('Suggestions Tag Store: $suggestions');
     searchTagsResults.clear();
     searchTagsResults.value = List<TagModel>.from(suggestions);
@@ -210,9 +210,9 @@ class TagsController extends GetxController {
       tempTags = tempTags.sublist(0, maxTagsLength);
     }
     mostUsedTags.clear();
-    tempTags.forEach((TagModel tag) {
+    for (var tag in tempTags) {
       mostUsedTags[tag.key] = tag.title;
-    });
+    }
   }
 
   /// load last week used tags into `lastWeekUsedTags`
@@ -233,11 +233,11 @@ class TagsController extends GetxController {
   void _doSortingOfWeeksAndMonth(
       RxMap<String, String> map, DateTime back, int maxTagsLength) {
     var tempTags = <TagModel>[];
-    allTags.values.forEach((tag) {
+    for (var tag in allTags.values) {
       if (tag.value.time.isBefore(back)) {
         tempTags.add(tag.value);
       }
-    });
+    }
     if (tempTags.isNotEmpty) {
       tempTags
           .sort((TagModel a, TagModel b) => b.time.day.compareTo(a.time.day));
@@ -246,9 +246,9 @@ class TagsController extends GetxController {
       }
     }
     map.clear();
-    tempTags.forEach((TagModel tag) {
+    for (var tag in tempTags) {
       map[tag.key] = tag.title;
-    });
+    }
   }
 
   Future<String> createTag(String tagName) async {
@@ -416,10 +416,10 @@ class TagsController extends GetxController {
     if (tabsController.currentTab.value == 0) {
       if (tabsController.toggleIndexUntagged.value == 0) {
         await tabsController.untaggedScrollControllerMonth.animateTo(0.0,
-            duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+            duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
       } else {
         await tabsController.untaggedScrollControllerDay.animateTo(0.0,
-            duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+            duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
       }
     }
     final taggedController = Get.find<TaggedController>();
@@ -506,13 +506,13 @@ class TagsController extends GetxController {
     final tagKeyToPicId = <String, Map<String, String>>{};
 
     picIdToTagKey.forEach((pictureId, tagMap) {
-      tagMap.keys.forEach((tagKey) {
+      for (var tagKey in tagMap.keys) {
         if (tagKeyToPicId[tagKey] == null) {
           tagKeyToPicId[tagKey] = <String, String>{pictureId: ''};
         } else {
           tagKeyToPicId[tagKey]![pictureId] = '';
         }
-      });
+      }
     });
 
     await Future.forEach(tagKeyToPicId.keys, (String tagKey) async {

@@ -10,7 +10,7 @@ class ColorAnimatedBackground extends StatefulWidget {
   final double moveByY;
   final bool blurFilter;
 
-  ColorAnimatedBackground({
+  const ColorAnimatedBackground({super.key, 
     this.moveByX = 30.0,
     this.moveByY = 20.0,
     this.blurFilter = true,
@@ -44,7 +44,7 @@ class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
         moveBy: Point(x_animation.value, y_animation.value),
       ),
       child: Container(
-        constraints: BoxConstraints.expand(),
+        constraints: const BoxConstraints.expand(),
         child: widget.blurFilter
             ? BackdropFilter(
                 filter: ImageFilter.blur(
@@ -52,7 +52,7 @@ class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
                   sigmaY: 18.0,
                 ),
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
@@ -63,7 +63,7 @@ class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
                 ),
               )
             : Container(
-                constraints: BoxConstraints.expand(),
+                constraints: const BoxConstraints.expand(),
                 color: Colors.white.withOpacity(0.2),
               ),
       ),

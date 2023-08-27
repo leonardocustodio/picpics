@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "एक पहुंच कुंजी ${email} पर भेजी गई थी";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'कोई फ़ोटो नहीं चुना गया', one: '1 फ़ोटो चयनित', other: '${howMany} फ़ोटो चयनित')}";
+      Intl.plural(howMany, zero: 'कोई फ़ोटो नहीं चुना गया', one: '1 फ़ोटो चयनित', other: '${howMany} फ़ोटो चयनित');
 
   static String m2(url) =>
       "अपनी सभी तस्वीरों को व्यवस्थित करने के लिए ${url} पर जाएं";
@@ -62,7 +62,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "हमें आपकी दैनिक चुनौतियों को भेजने में सक्षम होने के लिए, हमें सूचनाएं भेजने के लिए प्राधिकरण की आवश्यकता है, इसलिए, यह आवश्यक है कि आप अपने सेल फोन के विकल्पों में सूचनाओं को अधिकृत करें."),
         "daily_goal": MessageLookupByLibrary.simpleMessage("दैनिक लक्ष्य"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("हटाएं"),
@@ -198,7 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tutorial_daily_package": MessageLookupByLibrary.simpleMessage(
             "हम धीरे-धीरे आपके पुस्तकालय को व्यवस्थित करने के लिए एक दैनिक पैकेज लाते हैं."),
         "tutorial_however_you_want": MessageLookupByLibrary.simpleMessage(
-            "टैग जोड़कर अपनी तस्वीरों को व्यवस्थित करें, जैसे \'परिवार\', \'पालतू जानवर\', या जो भी आप चाहते हैं."),
+            "टैग जोड़कर अपनी तस्वीरों को व्यवस्थित करें, जैसे 'परिवार', 'पालतू जानवर', या जो भी आप चाहते हैं."),
         "tutorial_just_swipe": MessageLookupByLibrary.simpleMessage(
             "अपनी फ़ोटो में टैग जोड़ने के बाद, बस अगले एक पर जाने के लिए स्वाइप करें."),
         "tutorial_multiselect": MessageLookupByLibrary.simpleMessage(

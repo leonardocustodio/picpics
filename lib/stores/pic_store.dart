@@ -14,7 +14,6 @@ import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:share_extend/share_extend.dart';
-import 'package:strings/strings.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -260,6 +259,7 @@ class PicStore extends GetxController {
       return null;
     }
     await setDeletedFromCameraRoll(false);
+    return null;
   }
 
   //@action
@@ -357,7 +357,7 @@ class PicStore extends GetxController {
       for (var tagKey in pic.tags.keys) {
         var tagModel = TagsController.to.allTags[tagKey];
         if (tagModel == null) {
-          print('&&&&##### DID NOT FIND TAG: ${tagKey}');
+          print('&&&&##### DID NOT FIND TAG: $tagKey');
           continue;
         }
         tags[tagKey] = tagModel;
@@ -380,7 +380,7 @@ class PicStore extends GetxController {
     isPrivate.value = value;
     print('Pic isPrivate: $value');
     print('Pic Entity Exists: ${entity == null ? false : true}');
-    print('Photo Id: ${photoId} - Entity Id: ${entity.value?.id}');
+    print('Photo Id: $photoId - Entity Id: ${entity.value?.id}');
 
     //var picsBox = Hive.box('pics');
     var getPic = await database.getPhotoByPhotoId(photoId.value);
@@ -707,7 +707,7 @@ class PicStore extends GetxController {
       }
       //picsBox.delete(photoId);
       await database.deletePhotoByPhotoId(photoId.value);
-      print('removed ${photoId} from database');
+      print('removed $photoId from database');
     }
 
     return true;
@@ -816,7 +816,7 @@ class PicStore extends GetxController {
           .toList();
     }
 
-    final _credentials = ServiceAccountCredentials.fromJson(r'''
+    final credentials = ServiceAccountCredentials.fromJson(r'''
 {
   "type": "service_account",
   "project_id": "picpics",
@@ -831,12 +831,12 @@ class PicStore extends GetxController {
 }
 ''');
 
-    final _SCOPES = [TranslateApi.cloudTranslationScope];
+    final SCOPES = [TranslateApi.cloudTranslationScope];
     var translatedStrings = <String>[];
 
-    await clientViaServiceAccount(_credentials, _SCOPES)
-        .then((http_client) async {
-      var translate = TranslateApi(http_client);
+    await clientViaServiceAccount(credentials, SCOPES)
+        .then((httpClient) async {
+      var translate = TranslateApi(httpClient);
       var request = TranslateTextRequest();
       request.contents = tagsText;
       request.mimeType = 'text/plain';
@@ -849,12 +849,12 @@ class PicStore extends GetxController {
           await translate.projects.translateText(request, 'projects/picpics');
       var translations = response.translations;
       if (translations != null) {
-        translations.forEach((element) {
+        for (var element in translations) {
           if (element.translatedText != null) {
             // TODO: Removed this to compile
             // translatedStrings.add(Strings.properCase(element.translatedText!));
           }
-        });
+        }
       }
     });
 

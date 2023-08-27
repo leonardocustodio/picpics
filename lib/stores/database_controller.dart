@@ -43,7 +43,7 @@ class DatabaseController extends GetxController {
 MoorUser getDefaultMoorUser({String? deviceLocale}) {
   return MoorUser(
     customPrimaryKey: 0,
-    id: Uuid().v4(),
+    id: const Uuid().v4(),
     email: null,
     password: null,
     notification: false,

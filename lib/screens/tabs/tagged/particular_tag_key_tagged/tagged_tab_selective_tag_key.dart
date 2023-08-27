@@ -41,7 +41,7 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                               .map((key, _) => MapEntry(key, ''))
                         });
                   },
-                  child: Text('Untag'),
+                  child: const Text('Untag'),
                 ),
             ],
             leading: GestureDetector(
@@ -70,7 +70,7 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
             child: SafeArea(
               child: Obx(() {
                 if (controller.isTaggedPicsLoaded.value == false) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
 
                 if (TabsController.to.assetEntityList.isNotEmpty) {
@@ -123,7 +123,7 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                             ],
                           ),
                         ),
-                        Positioned.fill(child: PercentageDialog()),
+                        const Positioned.fill(child: PercentageDialog()),
                       ],
                     );
                   }

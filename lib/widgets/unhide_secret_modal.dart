@@ -8,7 +8,7 @@ class UnhideSecretModal extends StatelessWidget {
   final Function() onPressedDelete;
   final Function() onPressedOk;
 
-  UnhideSecretModal({
+  const UnhideSecretModal({super.key, 
     required this.onPressedDelete,
     required this.onPressedOk,
   });
@@ -20,11 +20,11 @@ class UnhideSecretModal extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: width < 360
-          ? EdgeInsets.symmetric(horizontal: 20.0)
-          : EdgeInsets.symmetric(horizontal: 40.0),
+          ? const EdgeInsets.symmetric(horizontal: 20.0)
+          : const EdgeInsets.symmetric(horizontal: 40.0),
       child: Container(
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xFFF1F3F5),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(14),
@@ -51,7 +51,7 @@ class UnhideSecretModal extends StatelessWidget {
                   Obx(
                     () => Text(
                       LangControl.to.S.value.secret_photos,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff979a9b),
                         fontSize: 24,
@@ -77,7 +77,7 @@ class UnhideSecretModal extends StatelessWidget {
                 () => Text(
                   LangControl.to.S.value.disable_secret,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Lato',
                     color: Color(0xff707070),
                     fontSize: 15,
@@ -108,7 +108,7 @@ class UnhideSecretModal extends StatelessWidget {
                               () => Text(
                                 LangControl.to.S.value.no,
                                 textScaleFactor: 1.0,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: kSecondaryColor,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Lato',

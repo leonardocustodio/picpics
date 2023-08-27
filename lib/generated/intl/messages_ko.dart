@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "${email}으로 액세스 키를 보냈습니다.";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: '선택된 사진이 없습니다', one: '사진 1장이 선택됨', other: '사진 ${howMany}장이 선택됨')}";
+      Intl.plural(howMany, zero: '선택된 사진이 없습니다', one: '사진 1장이 선택됨', other: '사진 ${howMany}장이 선택됨');
 
   static String m2(url) => "모든 사진을 정리정돈하려면 ${url}로 이동하십시오.";
 
@@ -57,7 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "저희가 매일 챌린지를 보내려면 알림을 보낼 수있는 권한이 필요하므로 휴대 전화 옵션에서 알림을 승인해야합니다."),
         "daily_goal": MessageLookupByLibrary.simpleMessage("일일 목표"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("삭제"),
@@ -178,7 +178,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tutorial_daily_package": MessageLookupByLibrary.simpleMessage(
             "라이브러리를 꾸준히 정리정돈할 수 있도록 매일 패키지를 준비합니다."),
         "tutorial_however_you_want": MessageLookupByLibrary.simpleMessage(
-            "\'가족\', \'반려동물\' 등 원하는 태그를 추가하여 사진을 정리정돈하십시오."),
+            "'가족', '반려동물' 등 원하는 태그를 추가하여 사진을 정리정돈하십시오."),
         "tutorial_just_swipe": MessageLookupByLibrary.simpleMessage(
             "사진에 태그를 추가한 후 스와이프하면 다음 태그로 이동합니다."),
         "tutorial_multiselect": MessageLookupByLibrary.simpleMessage(

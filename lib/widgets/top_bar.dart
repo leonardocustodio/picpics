@@ -21,7 +21,7 @@ class TopBar extends StatelessWidget {
   final void Function(String value)? onSubmitted;
   final List<Widget> children;
 
-  TopBar({
+  const TopBar({super.key, 
     this.searchEditingController,
     this.showUntag = false,
     this.searchFocusNode,
@@ -83,7 +83,7 @@ class TopBar extends StatelessWidget {
                             },
                             keyboardType: TextInputType.text,
                             maxLines: 1,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Lato',
                               color: Color(0xff606566),
                               fontSize: 16,
@@ -93,16 +93,16 @@ class TopBar extends StatelessWidget {
                             ),
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.only(right: 2.0),
-                              enabledBorder: OutlineInputBorder(
+                              enabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide.none),
-                              focusedBorder: OutlineInputBorder(
+                              focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide.none),
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                   borderSide: BorderSide.none),
                               prefixIcon:
                                   Image.asset('lib/images/searchico.png'),
                               hintText: LangControl.to.S.value.search,
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: kGrayColor,
                                 fontSize: 16,
@@ -135,11 +135,11 @@ class TopBar extends StatelessWidget {
                       onTap: () {
                         onUntag?.call();
                       },
-                      child: Text('Untag'))
+                      child: const Text('Untag'))
                   : CupertinoButton(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       onPressed: () {
-                        Get.to(() => SettingsScreen());
+                        Get.to(() => const SettingsScreen());
                       },
                       child: Image.asset('lib/images/settings.png'),
                     ),

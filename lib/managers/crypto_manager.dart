@@ -40,7 +40,7 @@ class Crypto {
 
   static Future<void> reSaveSpKey(
       String userPin, UserController appStore) async {
-    final storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
 
     final ppkey = await storage.read(key: 'ppkey') ?? '';
     final stringToBase64 = utf8.fuse(base64);
@@ -80,7 +80,7 @@ class Crypto {
   static Future<bool> checkRecoveryKey(String encryptedRecoveryKey,
       String recoveryCode, String randomIv, UserController appStore) async {
     try {
-      final storage = FlutterSecureStorage();
+      const storage = FlutterSecureStorage();
       final hpkey = await storage.read(key: 'hpkey');
 
       final generatedIv = '$randomIv$randomIv${randomIv.substring(0, 4)}';
@@ -166,7 +166,7 @@ class Crypto {
 
   static Future<bool> checkIsPinValid(String userPin) async {
     final userController = UserController.to;
-    final storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     final ppkey = await storage.read(key: 'ppkey') ?? '';
     final hpkey = await storage.read(key: 'hpkey');
     final spkey = await storage.read(key: 'spkey') ?? '';
@@ -227,7 +227,7 @@ class Crypto {
 
   static Future<String?> getEncryptedPin() async {
     try {
-      final storage = FlutterSecureStorage();
+      const storage = FlutterSecureStorage();
 
       final secretString = await UserController.to.getSecretKey();
       if (secretString == null) {
@@ -263,14 +263,14 @@ class Crypto {
   }
 
   static Future<void> deleteEncryptedPin() async {
-    final storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
 
     await storage.delete(key: 'epkey');
     await storage.delete(key: 'npkey');
   }
 
   static Future<bool> saveEncryptedPin(String userPin) async {
-    final storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
@@ -324,16 +324,16 @@ class Crypto {
   }
 
   static Future<void> saveSaltKey() async {
-    final storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     final stringToBase64 = utf8.fuse(base64);
-    final secretSalt = stringToBase64.encode(Uuid().v4()).substring(0, 16);
+    final secretSalt = stringToBase64.encode(const Uuid().v4()).substring(0, 16);
     await storage.write(key: 'ppkey', value: secretSalt);
     print('Secret salt: $secretSalt');
   }
 
   static Future<void> saveSpKey(String accessKey, String spKey, String userPin,
       String userEmail, UserController appStore) async {
-    final storage = FlutterSecureStorage();
+    const storage = FlutterSecureStorage();
     final ppkey = await storage.read(key: 'ppkey');
     final stringToBase64 = utf8.fuse(base64);
 

@@ -1,6 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
@@ -147,7 +145,7 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                               tabsController.selectedMultiBarPics[picId] ==
                                   true) ...[
                             Container(
-                              constraints: BoxConstraints.expand(),
+                              constraints: const BoxConstraints.expand(),
                               decoration: BoxDecoration(
                                 color: kSecondaryColor.withOpacity(0.3),
                                 border: Border.all(
@@ -180,7 +178,7 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                                   padding: const EdgeInsets.only(bottom: 2.0),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    gradient: LinearGradient(
+                                    gradient: const LinearGradient(
                                       colors: [
                                         Color(0xffffcc00),
                                         Color(0xffffe98f)

@@ -324,7 +324,7 @@ class TabsController extends GetxController {
     isUntaggedPicsLoaded.value = false;
     var filterOptionGroup = FilterOptionGroup()
       ..addOrderOption(
-        OrderOption(
+        const OrderOption(
           type: OrderOptionType.createDate,
           asc: false,
         ),
@@ -445,7 +445,7 @@ class TabsController extends GetxController {
 
   void tagAction() {
     setMultiTagSheet(true);
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       expandableController.value.expanded = true;
     });
   }
@@ -506,7 +506,7 @@ class TabsController extends GetxController {
         setMultiTagSheet(true);
         expandableController.value.expanded = true;
         expandablePaddingController.value.expanded = true;
-        WidgetsBinding.instance?.addPostFrameCallback((_) {});
+        WidgetsBinding.instance.addPostFrameCallback((_) {});
       } else if (index == 2) {
         if (selectedMultiBarPics.isEmpty) {
           return;

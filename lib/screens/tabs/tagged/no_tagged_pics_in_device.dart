@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/language_controller.dart';
@@ -16,7 +15,7 @@ class NoTaggedPicsInDevice extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TopBar(
+        const TopBar(
           children: <Widget>[],
         ),
         Expanded(
@@ -26,7 +25,7 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                 height: Get.height / 2,
                 child: Image.asset('lib/images/notaggedphotos.png'),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 21.0,
               ),
               Obx(
@@ -34,7 +33,7 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                   LangControl.to.S.value.no_tagged_photos,
                   textScaleFactor: 1.0,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Lato',
                     color: Color(0xff979a9b),
                     fontSize: 18,
@@ -43,7 +42,7 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 17.0,
               ),
               CupertinoButton(
@@ -61,7 +60,7 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                       () => Text(
                         LangControl.to.S.value.start_tagging,
                         textScaleFactor: 1.0,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Lato',
                           color: kWhiteColor,
                           fontSize: 16,

@@ -8,7 +8,7 @@ class FadeIn extends StatelessWidget {
   final double delay;
   final Widget child;
 
-  FadeIn({
+  const FadeIn({super.key, 
     required this.delay,
     required this.child,
   });
@@ -25,7 +25,7 @@ class FadeIn extends StatelessWidget {
       tween: tween,
       builder: (context, value, _) => Opacity(
         opacity: value.get(_AniProps.opacity),
-        child: Container(
+        child: SizedBox(
           height: value.get(_AniProps.translateY),
           child: child,
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 import 'package:picPics/screens/tabs/tagged/no_tagged_pics_in_device.dart';
@@ -65,12 +64,12 @@ class TaggedTab extends GetView<TaggedController> {
                         ///
                         /// Device has pics but no tagged pics
                         ///
-                        return NoTaggedPicsInDevice();
+                        return const NoTaggedPicsInDevice();
                       } else {
                         ///
                         /// Device has pics with tagged Pics
                         ///
-                        return TaggedPicsInDeviceWithSearchOption();
+                        return const TaggedPicsInDeviceWithSearchOption();
                       }
                     } else {
                       ///

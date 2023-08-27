@@ -36,10 +36,10 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   final _markers = <Marker>{};
   Geolocation? selectedGeolocation;
 
-  static final LatLng nullLocation = LatLng(0.0, 0.0);
-  static final LatLng rioDeJaneiro = LatLng(-22.951911, -52.2126759);
+  static const LatLng nullLocation = LatLng(0.0, 0.0);
+  static const LatLng rioDeJaneiro = LatLng(-22.951911, -52.2126759);
 
-  static final CameraPosition _initialCamera = CameraPosition(
+  static const CameraPosition _initialCamera = CameraPosition(
     target: rioDeJaneiro,
     zoom: 0.0,
   );
@@ -110,9 +110,9 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     final geolocation = LatLng(position.latitude, position.longitude);
 
     final destination = Marker(
-      markerId: MarkerId('user-destination'),
+      markerId: const MarkerId('user-destination'),
       icon: await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(
+        const ImageConfiguration(
           devicePixelRatio: 2.5,
         ),
         'lib/images/pin.png',
@@ -143,9 +143,9 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
     if (latLng != null && latLng != nullLocation) {
       final destination = Marker(
-        markerId: MarkerId('user-destination'),
+        markerId: const MarkerId('user-destination'),
         icon: await BitmapDescriptor.fromAssetImage(
-          ImageConfiguration(
+          const ImageConfiguration(
             devicePixelRatio: 2.5,
           ),
           'lib/images/pin.png',
@@ -210,7 +210,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Spacer(),
+                    const Spacer(),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -220,7 +220,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                           onPressed: () {
                             Get.back();
                           },
-                          child: Container(
+                          child: SizedBox(
                             width: height * 0.17,
                             height: height * 0.17,
                             child: ClipRRect(
@@ -289,7 +289,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                             () => Text(
                               LangControl.to.S.value.save_location,
                               textScaleFactor: 1.0,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: kWhiteColor,
                                 fontSize: 16,
@@ -320,9 +320,9 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       selectedGeolocation = geolocation;
 
                       final destination = Marker(
-                        markerId: MarkerId('user-destination'),
+                        markerId: const MarkerId('user-destination'),
                         icon: await BitmapDescriptor.fromAssetImage(
-                          ImageConfiguration(
+                          const ImageConfiguration(
                             devicePixelRatio: 2.5,
                           ),
                           'lib/images/pin.png',

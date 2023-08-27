@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "Klucz dostępu został wysłany na adres ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'Nie wybrano zdjęć', one: 'Wybrano 1 zdjęcie', other: 'Wybrano ${howMany} zdjęć')}";
+      Intl.plural(howMany, zero: 'Nie wybrano zdjęć', one: 'Wybrano 1 zdjęcie', other: 'Wybrano ${howMany} zdjęć');
 
   static String m2(url) =>
       "Aby uporządkować wszystkie zdjęcia, przejdź do ${url}";
@@ -64,7 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Abyśmy mogli wysyłać codzienne wyzwania, potrzebujemy autoryzacji do wysyłania powiadomień, dlatego konieczne jest, abyś autoryzował powiadomienia w opcjach swojego telefonu komórkowego"),
         "daily_goal": MessageLookupByLibrary.simpleMessage("Dzienny cel"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("Usunąć"),

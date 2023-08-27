@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "Se envió una clave de acceso a ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'No hay ninguna foto seleccionada', one: '1 foto seleccionada', other: '${howMany} fotos seleccionadas')}";
+      Intl.plural(howMany, zero: 'No hay ninguna foto seleccionada', one: '1 foto seleccionada', other: '${howMany} fotos seleccionadas');
 
   static String m2(url) => "Para organizar todas tus fotos, ve a ${url}";
 
@@ -181,7 +181,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Para que podamos enviar tus desafíos diarios, necesitamos autorización para enviar notificaciones, por lo tanto, es necesario que autorices las notificaciones en las opciones de tu teléfono celular"),
         "daily_goal": MessageLookupByLibrary.simpleMessage("Objetivo diario"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "dalmatian_tag": MessageLookupByLibrary.simpleMessage("Dálmata"),
@@ -631,7 +631,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tutorial_daily_package": MessageLookupByLibrary.simpleMessage(
             "Ofrecemos un paquete diario para que puedas organizar tu biblioteca gradualmente."),
         "tutorial_however_you_want": MessageLookupByLibrary.simpleMessage(
-            "Organiza tus fotos añadiendo etiquetas, como \'familia\', \'mascotas\' o lo que quieras."),
+            "Organiza tus fotos añadiendo etiquetas, como 'familia', 'mascotas' o lo que quieras."),
         "tutorial_just_swipe": MessageLookupByLibrary.simpleMessage(
             "Después de añadir las etiquetas a tu foto, simplemente desliza para pasar a la siguiente."),
         "tutorial_multiselect": MessageLookupByLibrary.simpleMessage(

@@ -10,11 +10,11 @@ final greyWidget = Padding(
     color: Colors.grey[300],
   ),
 );
-final failedItem = Center(
+const failedItem = Center(
   child: Text(
     'Failed loading',
     textAlign: TextAlign.center,
-    style: const TextStyle(fontSize: 18.0),
+    style: TextStyle(fontSize: 18.0),
   ),
 );
 
@@ -92,7 +92,7 @@ const kYellowGradient = LinearGradient(
 var kGrayBoxDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(19.0),
   border: Border.all(
-    color: Color(0xff979a9b),
+    color: const Color(0xff979a9b),
   ),
 );
 

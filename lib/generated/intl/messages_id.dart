@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "Kode akses telah dikirim ke ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'Tidak ada foto yang dipilih', one: '1 foto dipilih', other: '${howMany} foto dipilih')}";
+      Intl.plural(howMany, zero: 'Tidak ada foto yang dipilih', one: '1 foto dipilih', other: '${howMany} foto dipilih');
 
   static String m2(url) => "Untuk mengatur semua foto Anda, buka ${url}";
 
@@ -63,7 +63,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Agar kami dapat mengirimkan tantangan harian, kami memerlukan izin untuk mengirim notifikasi. Karena itu, Anda harus mengizinkan notifikasi pada opsi ponsel Anda."),
         "daily_goal": MessageLookupByLibrary.simpleMessage("Misi harian"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("Hapus"),
@@ -206,7 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tutorial_daily_package": MessageLookupByLibrary.simpleMessage(
             "Kami membawa paket harian untuk Anda untuk mengatur koleksi Anda secara berkala."),
         "tutorial_however_you_want": MessageLookupByLibrary.simpleMessage(
-            "Atur foto Anda dengan menambahkan tag, seperti \'keluarga\', \'hewan peliharaan\', atau apa pun yang Anda inginkan."),
+            "Atur foto Anda dengan menambahkan tag, seperti 'keluarga', 'hewan peliharaan', atau apa pun yang Anda inginkan."),
         "tutorial_just_swipe": MessageLookupByLibrary.simpleMessage(
             "Setelah menambahkan tag ke foto Anda, cukup geser untuk membuka yang berikutnya."),
         "tutorial_multiselect": MessageLookupByLibrary.simpleMessage(

@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "En åtkomstnyckel skickades till ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'Inga foton har valts', one: '1 foto valt', other: '${howMany} foton valda')}";
+      Intl.plural(howMany, zero: 'Inga foton har valts', one: '1 foto valt', other: '${howMany} foton valda');
 
   static String m2(url) =>
       "För att organisera alla dina foton går du till ${url}";
@@ -64,7 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "För att vi ska kunna skicka dina dagliga utmaningar behöver vi behörighet för att skicka aviseringar, vilket innebär att du måste godkänna aviseringar i din mobiltelefons inställningar"),
         "daily_goal": MessageLookupByLibrary.simpleMessage("Dagligt mål"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("Radera"),

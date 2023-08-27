@@ -9,7 +9,7 @@ class GeneralModal extends StatelessWidget {
   final Function() onPressedDelete;
   final Function() onPressedOk;
 
-  GeneralModal({
+  const GeneralModal({super.key, 
     required this.message,
     required this.onPressedDelete,
     required this.onPressedOk,
@@ -23,7 +23,7 @@ class GeneralModal extends StatelessWidget {
         height: 187.0,
         width: 270.0,
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xFFF1F3F5),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(14),
@@ -44,13 +44,13 @@ class GeneralModal extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Text(
                 message,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Lato',
                   color: Color(0xff606566),
                   fontSize: 15,
@@ -59,7 +59,7 @@ class GeneralModal extends StatelessWidget {
                 ),
               ),
             ),
-            Spacer(
+            const Spacer(
               flex: 2,
             ),
             Padding(

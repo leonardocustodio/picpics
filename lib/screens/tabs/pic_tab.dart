@@ -22,7 +22,7 @@ class PicTab extends GetWidget<SwiperTabController> {
   final __ = Get.put(SwiperTabController());
 
   CarouselController carouselController = CarouselController();
-  ScrollPhysics scrollPhysics = AlwaysScrollableScrollPhysics();
+  ScrollPhysics scrollPhysics = const AlwaysScrollableScrollPhysics();
 
   Widget _buildPhotoSlider(int index) {
     final picId = controller.swiperPicIdList[index];
@@ -32,7 +32,7 @@ class PicTab extends GetWidget<SwiperTabController> {
     if (picStore == null) {
       if ((controller.swipeIndex.value + 1) <
           controller.swiperPicIdList.length) {
-        WidgetsBinding.instance?.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           controller.swipeIndex.value += 1;
         });
       }
@@ -63,12 +63,12 @@ class PicTab extends GetWidget<SwiperTabController> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.only(bottom: 0.0),
-      constraints: BoxConstraints.expand(),
+      constraints: const BoxConstraints.expand(),
       decoration: BoxDecoration(
         image: DecorationImage(
           colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.1), BlendMode.dstATop),
-          image: AssetImage('lib/images/background.png'),
+          image: const AssetImage('lib/images/background.png'),
           fit: BoxFit.cover,
         ),
       ),
@@ -84,7 +84,7 @@ class PicTab extends GetWidget<SwiperTabController> {
                   CupertinoButton(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     onPressed: () {
-                      Get.to(() => SettingsScreen());
+                      Get.to(() => const SettingsScreen());
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),
@@ -93,7 +93,7 @@ class PicTab extends GetWidget<SwiperTabController> {
             ),
             Obx(() {
               if (!controller.isLoaded.value) {
-                return Expanded(
+                return const Expanded(
                   child: Center(
                     child: CircularProgressIndicator(
                       valueColor:

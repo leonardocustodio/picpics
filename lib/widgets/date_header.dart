@@ -39,9 +39,9 @@ class DateHeaderWidget extends StatelessWidget {
                   : null,
             ),
           Text(
-            '${Helpers.dateFormat(date, isMonth: isMonth)}',
+            Helpers.dateFormat(date, isMonth: isMonth),
             textScaleFactor: 1.0,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
               fontSize: 14.0,

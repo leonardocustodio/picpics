@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 
 class Helpers {
-  static Widget failedItem = Center(
+  static Widget failedItem = const Center(
     child: Text(
       'Failed loading',
       textAlign: TextAlign.center,
-      style: const TextStyle(fontSize: 18.0),
+      style: TextStyle(fontSize: 18.0),
     ),
   );
   static String dateFormat(DateTime dateTime, {bool isMonth = true}) {

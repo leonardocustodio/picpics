@@ -15,7 +15,7 @@ class CupertinoInputDialog extends StatelessWidget {
   final Image? prefixImage;
   final TextEditingController alertInputController;
 
-  CupertinoInputDialog({
+  const CupertinoInputDialog({super.key, 
     required this.title,
     this.inputPlaceholder,
     required this.destructiveButtonTitle,
@@ -34,7 +34,7 @@ class CupertinoInputDialog extends StatelessWidget {
         height: 156.0,
         width: 270.0,
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xFFF1F3F5),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(14),
@@ -48,7 +48,7 @@ class CupertinoInputDialog extends StatelessWidget {
               child: Text(
                 title,
                 textScaleFactor: 1.0,
-                style: TextStyle(
+                style: const TextStyle(
                   color: Color(0xff606566),
                   fontSize: 16,
                   fontFamily: 'Lato',
@@ -70,13 +70,13 @@ class CupertinoInputDialog extends StatelessWidget {
                     child: TextField(
                       controller: alertInputController,
                       autofocus: true,
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Color(0xff606566),
                         fontSize: 16,
                         fontFamily: 'Lato',
                       ),
-                      decoration: InputDecoration(
-                        contentPadding: const EdgeInsets.only(left: 6.0),
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.only(left: 6.0),
                         enabledBorder:
                             OutlineInputBorder(borderSide: BorderSide.none),
                         focusedBorder:
@@ -88,7 +88,7 @@ class CupertinoInputDialog extends StatelessWidget {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             Row(
               children: <Widget>[
                 Expanded(
@@ -96,13 +96,13 @@ class CupertinoInputDialog extends StatelessWidget {
                     padding: const EdgeInsets.all(0),
                     onPressed: onPressedDestructive,
                     child: Container(
-                      color: Color(0xFFF5FAFA),
+                      color: const Color(0xFFF5FAFA),
                       height: 48.0,
                       child: Center(
                         child: Text(
                           destructiveButtonTitle,
                           textScaleFactor: 1.0,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFFE01717),
                             fontSize: 16,
                             fontFamily: 'Lato',
@@ -118,13 +118,13 @@ class CupertinoInputDialog extends StatelessWidget {
                     padding: const EdgeInsets.all(0),
                     onPressed: onPressedDefault,
                     child: Container(
-                      color: Color(0xFFF5FAFA),
+                      color: const Color(0xFFF5FAFA),
                       height: 48.0,
                       child: Center(
                         child: Text(
                           defaultButtonTitle,
                           textScaleFactor: 1.0,
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: Color(0xFF606566),
                             fontSize: 16,
                             fontFamily: 'Lato',

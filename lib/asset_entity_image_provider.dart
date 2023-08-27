@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
@@ -23,7 +22,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// 选择载入原数据还是缩略图数据
   final bool isOriginal;
 
-  AssetEntityImageProvider(
+  const AssetEntityImageProvider(
     this.picStore, {
     this.scale = 1.0,
     this.thumbSize = kDefaultPreviewThumbSize,

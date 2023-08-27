@@ -37,7 +37,7 @@ class TagsList extends StatefulWidget {
   final Function()? onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
-  const TagsList({
+  const TagsList({super.key, 
     required this.tagsKeyList,
     required this.tagStyle, //= TagStyle.MultiColored,
     this.textEditingController,
@@ -68,7 +68,7 @@ class _TagsListState extends State<TagsList> {
 
   Widget _buildTagsWidget(BuildContext context, List<String> tags) {
     var tagsWidgets = <Widget>[];
-    print('Tags in TagsList: ${tags}');
+    print('Tags in TagsList: $tags');
 
     if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
@@ -77,7 +77,7 @@ class _TagsListState extends State<TagsList> {
           child: Obx(
             () => Text(
               LangControl.to.S.value.no_tags_found,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
                 fontSize: 13,
@@ -253,7 +253,7 @@ class _TagsListState extends State<TagsList> {
                           Opacity(
                             opacity: firstOpct,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
+                              padding: const EdgeInsets.symmetric(
                                   vertical: 8.0, horizontal: 16.0),
                               child: Text(
                                 TagsController.to.allTags[tagKey]!.value.title,
@@ -266,12 +266,12 @@ class _TagsListState extends State<TagsList> {
                           ),
                           Opacity(
                             opacity: secondOpct,
-                            child: Container(
+                            child: SizedBox(
                               height: 30.0,
                               width: 30.0,
                               child: Transform.rotate(
                                 angle: pi / 2,
-                                child: FlareActor(
+                                child: const FlareActor(
                                   'lib/anims/swipe_arrow.flr',
                                   alignment: Alignment.center,
                                   fit: BoxFit.contain,
@@ -312,7 +312,7 @@ class _TagsListState extends State<TagsList> {
           height: 30.0,
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           decoration: BoxDecoration(
-            color: Color(0xFFF1F3F5),
+            color: const Color(0xFFF1F3F5),
             border: Border.all(color: kLightGrayColor, width: 1.0),
             borderRadius: BorderRadius.circular(12.0),
           ),
@@ -320,14 +320,14 @@ class _TagsListState extends State<TagsList> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Image.asset('lib/images/smalladdtag.png'),
-              SizedBox(
+              const SizedBox(
                 width: 4.0,
               ),
               Obx(
                 () => Text(
                   LangControl.to.S.value.add_tag,
                   textScaleFactor: 1.0,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Lato',
                     color: kGrayColor,
                     fontSize: 16,
@@ -354,7 +354,7 @@ class _TagsListState extends State<TagsList> {
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   height: 34,
                   decoration: BoxDecoration(
-                    color: Color(0xFFF1F3F5),
+                    color: const Color(0xFFF1F3F5),
                     border: Border.all(color: kLightGrayColor, width: 1),
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -372,7 +372,7 @@ class _TagsListState extends State<TagsList> {
                             keyboardType: TextInputType.text,
                             textAlignVertical: TextAlignVertical.center,
                             maxLines: 1,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'Lato',
                               color: Color(0xff606566),
                               fontSize: 16,
@@ -382,14 +382,14 @@ class _TagsListState extends State<TagsList> {
                             ),
                             decoration: InputDecoration(
                               contentPadding: const EdgeInsets.only(left: 6.0),
-                              enabledBorder: OutlineInputBorder(
+                              enabledBorder: const OutlineInputBorder(
                                   borderSide: BorderSide.none),
-                              focusedBorder: OutlineInputBorder(
+                              focusedBorder: const OutlineInputBorder(
                                   borderSide: BorderSide.none),
-                              border: OutlineInputBorder(
+                              border: const OutlineInputBorder(
                                   borderSide: BorderSide.none),
                               hintText: LangControl.to.S.value.add_tags,
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: kGrayColor,
                                 fontSize: 16,
@@ -411,7 +411,7 @@ class _TagsListState extends State<TagsList> {
                                   widget.textEditingController!.text);
                             }
                           },
-                          child: Icon(
+                          child: const Icon(
                             Icons.add,
                             color: Colors.grey,
                             size: 28,
@@ -432,7 +432,7 @@ class _TagsListState extends State<TagsList> {
                         textScaleFactor: 1.0,
                         style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
-                      Icon(Icons.arrow_forward_ios_rounded,
+                      const Icon(Icons.arrow_forward_ios_rounded,
                           size: 18, color: Colors.grey),
                       //Image.asset('lib/images/arrowrightgray.png'),
                     ],
@@ -453,7 +453,7 @@ class _TagsListState extends State<TagsList> {
             child: Text(
               widget.title!,
               textScaleFactor: 1.0,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
                 fontSize: 14,

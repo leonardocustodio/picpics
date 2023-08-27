@@ -1,5 +1,4 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:geocoding/geocoding.dart';
@@ -38,7 +37,7 @@ class PhotoCard extends StatefulWidget {
   final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
-  PhotoCard({
+  const PhotoCard({super.key, 
     required this.picStore,
     //this.showEditTagModal,
     //this.showDeleteSecretModal,
@@ -114,10 +113,10 @@ class _PhotoCardState extends State<PhotoCard> {
   void focusTagsEditingController() {}
 
   void getSizeAndPosition() {
-    var _cardBox =
+    var cardBox =
         _photoSpaceKey.currentContext?.findRenderObject() as RenderBox;
-    print('Card Box Size: ${_cardBox.size.height}');
-    UserController.to.setPhotoHeightInCardWidget(_cardBox.size.height);
+    print('Card Box Size: ${cardBox.size.height}');
+    UserController.to.setPhotoHeightInCardWidget(cardBox.size.height);
   }
 
   String? hash;
@@ -168,7 +167,7 @@ class _PhotoCardState extends State<PhotoCard> {
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
             blurRadius: 8,
             spreadRadius: 0,
           ),
@@ -186,7 +185,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     color: Colors.transparent,
                   ),
                 ClipRRect(
-                  borderRadius: BorderRadius.only(
+                  borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12.0),
                     topRight: Radius.circular(12.0),
                   ),
@@ -198,7 +197,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       key: _photoSpaceKey,
                       afterPaintImage: (canvas, rect, image, paint) {
                         WidgetsBinding.instance
-                            ?.addPostFrameCallback((_) => getSizeAndPosition());
+                            .addPostFrameCallback((_) => getSizeAndPosition());
                       },
                       image: imageProvider,
                       fit: boxFit,
@@ -206,7 +205,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         switch (state.extendedImageLoadState) {
                           case LoadState.loading:
                             if (null == hash) {
-                              return ColoredBox(color: kGreyPlaceholder);
+                              return const ColoredBox(color: kGreyPlaceholder);
                             } else {
                               return BlurHash(
                                 hash: hash!,
@@ -226,7 +225,7 @@ class _PhotoCardState extends State<PhotoCard> {
                                 child: RepaintBoundary(
                                   child: Container(
                                     color: Colors.black,
-                                    constraints: BoxConstraints.expand(),
+                                    constraints: const BoxConstraints.expand(),
                                     child: state.completedWidget,
                                   ),
                                 ),
@@ -251,8 +250,8 @@ class _PhotoCardState extends State<PhotoCard> {
                   toggleButtonOnPressed: () {
                     UserController.to.switchIsMenuExpanded();
                   },
-                  toggleButtonColor: Color(0xFF979A9B).withOpacity(0.5),
-                  toggleButtonBoxShadow: [
+                  toggleButtonColor: const Color(0xFF979A9B).withOpacity(0.5),
+                  toggleButtonBoxShadow: const [
                     BoxShadow(
                         color: Colors.black12, blurRadius: 3, spreadRadius: 3),
                   ],
@@ -277,7 +276,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           ? Image.asset('lib/images/openlockmenu.png')
                           : Image.asset('lib/images/lockmenu.png'),
                       color: picStore.isPrivate.value == true
-                          ? Color(0xFFF5FAFA)
+                          ? const Color(0xFFF5FAFA)
                           : kYellowColor,
                       iconSize: 19.2,
                       onTap: () {
@@ -300,7 +299,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         /* GalleryStore.to
                                 .setInitialSelectedThumbnail(picStore); */
                         var result = Get.to(() => PhotoScreen(
-                            picIdList: [], picId: picStore.photoId.value));
+                            picIdList: const [], picId: picStore.photoId.value));
                         if (null == result) {
                           refresh_everything();
                         }
@@ -335,7 +334,7 @@ class _PhotoCardState extends State<PhotoCard> {
                                 text: picStore.specificLocation.value
                                         ?.toString() ??
                                     LangControl.to.S.value.photo_location,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
                                   fontSize: 18,
@@ -347,7 +346,7 @@ class _PhotoCardState extends State<PhotoCard> {
                               TextSpan(
                                 text:
                                     '  ${picStore.generalLocation.value ?? LangControl.to.S.value.country}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),
                                   fontSize: 12,
@@ -364,7 +363,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     Text(
                       dateFormat(picStore.createdAt),
                       textScaleFactor: 1.0,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff606566),
                         fontSize: 14.5,
@@ -448,7 +447,7 @@ class _PhotoCardState extends State<PhotoCard> {
                             Text(
                               LangControl.to.S.value.suggestions,
                               textScaleFactor: 1.0,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff979a9b),
                                 fontSize: 12,
@@ -457,9 +456,9 @@ class _PhotoCardState extends State<PhotoCard> {
                                 letterSpacing: -0.4099999964237213,
                               ),
                             ),
-                            Center(
+                            const Center(
                               child: Padding(
-                                padding: const EdgeInsets.only(
+                                padding: EdgeInsets.only(
                                     top: 32.0, bottom: 32.0),
                                 child: CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -479,7 +478,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     }
 
                     print(
-                        '${suggestionsTitle} : ${picStore.aiTags} : suggestionsTitle');
+                        '$suggestionsTitle : ${picStore.aiTags} : suggestionsTitle');
                     TagsController.to.tagsSuggestionsCalculate();
                     return Obx(
                       () => TagsList(

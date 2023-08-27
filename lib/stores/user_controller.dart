@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart' as drift;
 import 'package:cryptography/cryptography.dart' as cryptography;
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:get/get.dart';
@@ -610,7 +609,7 @@ class UserController extends GetxController {
     /* var userBox = Hive.box('userkey');
     userBox.delete(0); */
     final user = await database.getSingleMoorUser();
-    await database.updateMoorUser(user!.copyWith(secretKey: drift.Value('')));
+    await database.updateMoorUser(user!.copyWith(secretKey: const drift.Value('')));
 
     print('Deleted encrypted info!');
   }

@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "Um código de acesso foi enviado para ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'Nenhuma foto selecionada', one: '1 foto selecionada', other: '${howMany} fotos selecionadas')}";
+      Intl.plural(howMany, zero: 'Nenhuma foto selecionada', one: '1 foto selecionada', other: '${howMany} fotos selecionadas');
 
   static String m2(url) => "Para organizar suas fotos, veja neste link: ${url}";
 

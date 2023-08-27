@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -216,7 +215,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                           }
                                         }, */
 
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontFamily: 'Lato',
                                           color: Color(0xff606566),
                                           fontSize: 16,
@@ -224,9 +223,9 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                           fontStyle: FontStyle.normal,
                                           letterSpacing: -0.4099999964237213,
                                         ),
-                                        decoration: InputDecoration(
+                                        decoration: const InputDecoration(
                                           contentPadding:
-                                              const EdgeInsets.all(0),
+                                              EdgeInsets.all(0),
                                           border: OutlineInputBorder(
                                               borderSide: BorderSide.none),
                                           enabledBorder: OutlineInputBorder(
@@ -259,7 +258,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                           searchEditingController.clear();
                                           /* } */
                                         },
-                                        child: Container(
+                                        child: const SizedBox(
                                             width: 60,
                                             child: Icon(Icons.clear))),
                                 ],
@@ -288,8 +287,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8),
                           child: Text(
                             'Searched',
                             style: TextStyle(
@@ -320,8 +319,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8),
                           child: Text(
                             'Most used',
                             style: TextStyle(
@@ -356,8 +355,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8),
                           child: Text(
                             'Last Week Used',
                             style: TextStyle(
@@ -392,8 +391,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8),
                           child: Text(
                             'Last Month Used',
                             style: TextStyle(
@@ -432,7 +431,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                           child: Obx(
                             () => Text(
                               LangControl.to.S.value.allTags,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff979a9b),
                                 fontSize: 33,

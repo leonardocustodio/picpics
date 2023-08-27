@@ -22,6 +22,8 @@ import 'package:local_auth/local_auth.dart';
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
 
+  const SettingsScreen({super.key});
+
   @override
   _SettingsScreenState createState() => _SettingsScreenState();
 }
@@ -42,11 +44,11 @@ class _SettingsScreenState extends State<SettingsScreen>
   }
 
   void contactUs(BuildContext context) {
-    final _emailLaunchUri = Uri(
+    final emailLaunchUri = Uri(
       scheme: 'mailto',
       path: 'picpics@inovatso.com.br',
     );
-    launch(_emailLaunchUri.toString());
+    launch(emailLaunchUri.toString());
   }
 
   final rateMyApp = RateMyApp(
@@ -88,7 +90,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       builder: (BuildContext builder) {
         var temporaryOption = UserController.to.requireSecret.value;
 
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).copyWith().size.height / 3,
           child: Column(
             children: <Widget>[
@@ -99,7 +101,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onPressed: () {
                       Get.back();
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 80.0,
                       child: Obx(
                         () => Text(
@@ -110,7 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       ),
                     ),
                   ),
-                  Text(
+                  const Text(
                     'Require secret key',
                     textScaleFactor: 1.0,
                     style: kBottomSheetTitleTextStyle,
@@ -120,7 +122,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       UserController.to.setRequireSecret(temporaryOption);
                       Get.back();
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 80.0,
                       child: Obx(
                         () => Text(
@@ -149,7 +151,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   itemBuilder: (BuildContext context, int index) {
                     return Center(
                         child: Text(
-                      '${kRequireOptions[index]}',
+                      kRequireOptions[index],
                       textScaleFactor: 1.0,
                     ));
                   },
@@ -178,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen>
       builder: (BuildContext builder) {
         var temporaryLanguage = languageIndex;
 
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).copyWith().size.height / 3,
           child: Column(
             children: <Widget>[
@@ -189,7 +191,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onPressed: () {
                       Get.back();
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 80.0,
                       child: Obx(
                         () => Text(
@@ -219,8 +221,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(4.0),
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(12.0),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(12.0),
                                     child: CupertinoActivityIndicator(),
                                   ),
                                 ),
@@ -239,7 +241,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                         });
                       });
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 80.0,
                       child: Obx(
                         () => Text(
@@ -373,7 +375,7 @@ class _SettingsScreenState extends State<SettingsScreen>
             UserController.to.hourOfDay.value,
             UserController.to.minutesOfDay.value);
 
-        return Container(
+        return SizedBox(
           height: MediaQuery.of(context).copyWith().size.height / 3,
           child: Column(
             children: <Widget>[
@@ -384,7 +386,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     onPressed: () {
                       Get.back();
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 80.0,
                       child: Obx(
                         () => Text(
@@ -408,7 +410,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                           .changeUserTimeOfDay(time.hour, time.minute);
                       Get.back();
                     },
-                    child: Container(
+                    child: SizedBox(
                       width: 80.0,
                       child: Obx(
                         () => Text(
@@ -487,7 +489,7 @@ class _SettingsScreenState extends State<SettingsScreen>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
     Analytics.sendCurrentScreen(Screen.settings_screen);
   }
 
@@ -548,11 +550,11 @@ class _SettingsScreenState extends State<SettingsScreen>
                           children: <Widget>[
                             Column(
                               children: [
-                                Divider(
+                                const Divider(
                                   color: kLightGrayColor,
                                   thickness: 1.0,
                                 ),
-                                Container(
+                                SizedBox(
                                   height: 60.0,
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -614,7 +616,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     ),
                                   ),
                                 ),
-                                Divider(
+                                const Divider(
                                   color: kLightGrayColor,
                                   thickness: 1.0,
                                 ),
@@ -739,7 +741,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                   ),
                                                 ),
                                               ),
-                                              Divider(
+                                              const Divider(
                                                 color: kLightGrayColor,
                                                 thickness: 1.0,
                                               ),
@@ -909,7 +911,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                                   color: kLightGrayColor,
 //                                   thickness: 1.0,
 //                                 ),
-                                Container(
+                                SizedBox(
                                   height: 60.0,
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -946,7 +948,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     ),
                                   ),
                                 ),
-                                Divider(
+                                const Divider(
                                   color: kLightGrayColor,
                                   thickness: 1.0,
                                 ),
@@ -961,7 +963,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     children: <Widget>[
                                       Image.asset(
                                           'lib/images/sharegrayicon.png'),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 15.0,
                                       ),
                                       Text(
@@ -979,7 +981,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Image.asset('lib/images/starrateapp.png'),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 15.0,
                                       ),
                                       Obx(
@@ -998,7 +1000,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Image.asset('lib/images/feedbackico.png'),
-                                      SizedBox(
+                                      const SizedBox(
                                         width: 15.0,
                                       ),
                                       Text(
@@ -1087,7 +1089,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         _launchURL(
                                             'https://picpics.link/e/facebook');
                                       },
-                                      child: Container(
+                                      child: SizedBox(
                                         height: 20,
                                         width: 20,
                                         child: Image.asset(
@@ -1100,7 +1102,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         _launchURL(
                                             'https://picpics.link/e/website');
                                       },
-                                      child: Container(
+                                      child: SizedBox(
                                         height: 20,
                                         width: 20,
                                         child: Image.asset(
@@ -1113,7 +1115,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         _launchURL(
                                             'https://picpics.link/e/instagram');
                                       },
-                                      child: Container(
+                                      child: SizedBox(
                                         height: 20,
                                         width: 20,
                                         child: Image.asset(
@@ -1148,9 +1150,9 @@ class _SettingsScreenState extends State<SettingsScreen>
                                         ),
                                       ),
                                     ),
-                                    Text(
+                                    const Text(
                                       '  &   ',
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color: Color(0xff606566),
                                         fontWeight: FontWeight.w400,
                                         fontFamily: 'Lato',

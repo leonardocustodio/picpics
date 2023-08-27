@@ -27,7 +27,7 @@ class SelectAllWidget extends StatelessWidget {
             child:
                 isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
           ),
-          Text(
+          const Text(
             'Select All',
             textScaleFactor: 1,
             style: TextStyle(

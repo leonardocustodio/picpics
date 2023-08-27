@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "访问密钥已发送至${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: '未选择照片', one: '已选择1张照片', other: '已选择${howMany}张照片')}";
+      Intl.plural(howMany, zero: '未选择照片', one: '已选择1张照片', other: '已选择${howMany}张照片');
 
   static String m2(url) => "要整理所有照片，请访问${url}";
 
@@ -57,7 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "为了让我们能够发送您的每日挑战，我们需要授权来发送通知，因此您需要在手机选项中授权通知权限"),
         "daily_goal": MessageLookupByLibrary.simpleMessage("每日目标"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("删除"),

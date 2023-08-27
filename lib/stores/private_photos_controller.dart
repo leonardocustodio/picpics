@@ -15,8 +15,8 @@ class PrivatePhotosController extends GetxController {
   final _appDatabase = AppDatabase();
 
   Future<void> refreshPrivatePics() async {
-    var _val = await _appDatabase.getPrivatePhotoList();
-    await Future.forEach(_val, (Photo photo) async {
+    var val = await _appDatabase.getPrivatePhotoList();
+    await Future.forEach(val, (Photo photo) async {
       privateMap[photo.id] = '';
     });
   }

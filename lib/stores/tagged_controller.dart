@@ -72,7 +72,7 @@ class TaggedController extends GetxController {
 
   void tagAction() {
     setMultiTagSheet(true);
-    Future.delayed(Duration(milliseconds: 200), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       expandableController.value.expanded = true;
     });
   }
@@ -153,25 +153,25 @@ class TaggedController extends GetxController {
       picIdMapToTagKey = <String, Map<String, String>>{};
 
       tagKeyMapToPicId!.forEach((tagKey, picMaps) {
-        picMaps.keys.forEach((picId) {
+        for (var picId in picMaps.keys) {
           if (picIdMapToTagKey![picId] == null) {
             picIdMapToTagKey[picId] = <String, String>{tagKey: ''};
           } else {
             picIdMapToTagKey[picId]![tagKey] = '';
           }
-        });
+        }
       });
     } else {
       tagKeyMapToPicId = <String, Map<String, String>>{};
 
       picIdMapToTagKey.forEach((picId, tagMaps) {
-        tagMaps.keys.forEach((tagKey) {
+        for (var tagKey in tagMaps.keys) {
           if (tagKeyMapToPicId![tagKey] == null) {
             tagKeyMapToPicId[tagKey] = <String, String>{picId: ''};
           } else {
             tagKeyMapToPicId[tagKey]![picId] = '';
           }
-        });
+        }
       });
     }
     await showDialog<void>(
@@ -230,10 +230,10 @@ class TaggedController extends GetxController {
             percentageController.value.value += 1.0;
           });
         }).then((_) async {
-          map.keys.forEach((String picId) {
+          for (var picId in map.keys) {
             tabsController.picStoreMap[picId]?.value.isStarred.value =
                 map[picId]!;
-          });
+          }
           percentageController.stop();
           tabsController.setMultiPicBar(false);
           tabsController.setMultiTagSheet(false);
@@ -344,7 +344,7 @@ class TaggedController extends GetxController {
               if (taggedPicId[tagKey]?.keys.isEmpty ?? true) {
                 /// If there are no pictures present related to this tagKey then
                 /// let's go back to previous screen
-                WidgetsBinding.instance?.addPostFrameCallback((_) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
                   print('going back');
                   Get.back();
                 });
@@ -503,7 +503,7 @@ class ConfirmationDialog extends StatelessWidget {
   final Function()? onPressedClose;
   final Function() onPressedOk;
 
-  const ConfirmationDialog({
+  const ConfirmationDialog({super.key, 
     required this.headingText,
     required this.titleText,
     required this.okText,
@@ -517,15 +517,15 @@ class ConfirmationDialog extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: Get.width < 360
-          ? EdgeInsets.symmetric(horizontal: 20.0)
-          : EdgeInsets.symmetric(horizontal: 40.0),
+          ? const EdgeInsets.symmetric(horizontal: 20.0)
+          : const EdgeInsets.symmetric(horizontal: 40.0),
       child: Container(
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xFFF1F3F5),
           borderRadius: BorderRadius.vertical(
-            top: const Radius.circular(14),
-            bottom: const Radius.circular(19.0),
+            top: Radius.circular(14),
+            bottom: Radius.circular(19.0),
           ),
         ),
         child: Padding(
@@ -544,7 +544,7 @@ class ConfirmationDialog extends StatelessWidget {
                         headingText,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),
                           fontSize: 24,
@@ -555,7 +555,7 @@ class ConfirmationDialog extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 40,
                     child: CupertinoButton(
                       onPressed: () {
@@ -578,7 +578,7 @@ class ConfirmationDialog extends StatelessWidget {
                   textAlign: TextAlign.center,
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Lato',
                     color: Color(0xff707070),
                     fontSize: 15,
@@ -616,7 +616,7 @@ class ConfirmationDialog extends StatelessWidget {
                               textScaleFactor: 1.0,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: kSecondaryColor,
                                 fontWeight: FontWeight.w700,
                                 fontFamily: 'Lato',
@@ -629,7 +629,7 @@ class ConfirmationDialog extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      constraints: BoxConstraints(maxWidth: 16.0),
+                      constraints: const BoxConstraints(maxWidth: 16.0),
                     ),
                     Expanded(
                       child: CupertinoButton(

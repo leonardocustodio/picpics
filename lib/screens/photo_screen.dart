@@ -47,7 +47,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
   final List<String> picIdList;
 
-  PhotoScreen({required this.picId, required this.picIdList}) {
+  PhotoScreen({super.key, required this.picId, required this.picIdList}) {
     if (picIdList.isNotEmpty) {
       idList.addAll(picIdList);
     }
@@ -113,7 +113,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
     if (picStore == null) {
       return PhotoViewGalleryPageOptions.customChild(
-        child: ColoredBox(color: kGreyPlaceholder),
+        child: const ColoredBox(color: kGreyPlaceholder),
       );
     }
     final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
@@ -236,14 +236,14 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
           child: Stack(
             children: <Widget>[
               Container(
-                constraints: BoxConstraints.expand(),
-                color: Color(0xff101010),
+                constraints: const BoxConstraints.expand(),
+                color: const Color(0xff101010),
                 child: PhotoViewGallery.builder(
                   scrollPhysics: const BouncingScrollPhysics(),
                   builder: _buildItem,
                   itemCount: getPicIdList().length,
                   loadingBuilder: (context, event) => Center(
-                    child: Container(
+                    child: SizedBox(
                       width: 20.0,
                       height: 20.0,
                       child: CircularProgressIndicator(
@@ -290,7 +290,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     .withOpacity(0.37)
                                     .withOpacity(0.3)
                               ],
-                              stops: [0, 0.40625],
+                              stops: const [0, 0.40625],
                             ),
                           ),
                           child: SafeArea(
@@ -329,7 +329,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                         ),
                       ),
                     ),
-                    Spacer(),
+                    const Spacer(),
                     if (!controller.showSlideshow.value)
                       ClipRect(
                         child: BackdropFilter(
@@ -338,7 +338,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                             sigmaY: 2.0,
                           ),
                           child: Container(
-                            constraints: BoxConstraints(
+                            constraints: const BoxConstraints(
                               minHeight: 184.0,
                             ),
                             decoration: BoxDecoration(
@@ -355,7 +355,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                       .withOpacity(0.37)
                                       .withOpacity(0.3)
                                 ],
-                                stops: [0, 0.40625],
+                                stops: const [0, 0.40625],
                               ),
                             ),
                             child: SafeArea(
@@ -388,7 +388,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                           .value ??
                                                       LangControl.to.S.value
                                                           .photo_location,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontFamily: 'NotoSans',
                                                     color: kWhiteColor,
                                                     fontSize: 17,
@@ -400,7 +400,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                               TextSpan(
                                                 text:
                                                     '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value.generalLocation.value ?? LangControl.to.S.value.country}',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   fontFamily: 'NotoSans',
                                                   color: kWhiteColor,
                                                   fontSize: 12,
@@ -425,7 +425,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   .createdAt ??
                                               DateTime.now()),
                                           textScaleFactor: 1.0,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                             fontFamily: 'Lato',
                                             color: kWhiteColor,
                                             fontSize: 12,
@@ -463,7 +463,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     .withOpacity(0.37)
                                     .withOpacity(0.3)
                               ],
-                              stops: [0, 0.40625],
+                              stops: const [0, 0.40625],
                             ),
                           ),
                           child: SafeArea(
@@ -473,7 +473,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
-                                  Container(
+                                  SizedBox(
                                     height: 98,
                                     child: ListView.builder(
                                       scrollDirection: Axis.horizontal,
@@ -509,7 +509,7 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
       child: Obx(
         () => (controller.picWiseTags[picId]?.keys.toList().isEmpty ?? true)
             ? TagsList(
-                tagsKeyList: <String>[],
+                tagsKeyList: const <String>[],
                 tagStyle: TagStyle.MultiColored,
                 addTagButton: () async {
                   var picStore = TabsController.to.picStoreMap[picId]?.value;

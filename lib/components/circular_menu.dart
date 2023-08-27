@@ -46,7 +46,7 @@ class CircularMenu extends StatefulWidget {
   /// [toggleButtonElevation] ,[toggleButtonPadding] and [toggleButtonMargin] must be
   /// equal or greater than zero.
   /// [items] must not be null and it must contains two elements at least.
-  CircularMenu({
+  const CircularMenu({
     required this.items,
     this.alignment = Alignment.bottomCenter,
     this.radius = 100,

@@ -67,7 +67,7 @@ class BlurHash {
     final maxAc = (maxAcEnc + 1) / 166.0;
     final components = List.generate(
       numCompY,
-      (i) => List<ColorTriplet>.filled(numCompX, ColorTriplet(0, 0, 0)),
+      (i) => List<ColorTriplet>.filled(numCompX, const ColorTriplet(0, 0, 0)),
     );
 
     for (var j = 0; j < numCompY; j++) {
@@ -109,17 +109,17 @@ class BlurHash {
     final data = image.getBytes();
     final components = List.generate(
       numCompY,
-      (i) => List<ColorTriplet>.filled(numCompX, ColorTriplet(0, 0, 0)),
+      (i) => List<ColorTriplet>.filled(numCompX, const ColorTriplet(0, 0, 0)),
     );
 
     for (var y = 0; y < numCompY; ++y) {
       for (var x = 0; x < numCompX; ++x) {
         final normalisation = (x == 0 && y == 0) ? 1.0 : 2.0;
-        final basisFunc = (int i, int j) {
+        basisFunc(int i, int j) {
           return normalisation *
               cos((pi * x * i) / image.width) *
               cos((pi * y * j) / image.height);
-        };
+        }
         components[y][x] =
             _multiplyBasisFunction(data, image.width, image.height, basisFunc);
       }
@@ -197,7 +197,7 @@ String _encodeComponents(List<List<ColorTriplet>> components) {
 
   final factors = List<ColorTriplet>.filled(
     numCompX * numCompY,
-    ColorTriplet(0, 0, 0),
+    const ColorTriplet(0, 0, 0),
   );
 
   var count = 0;
@@ -224,8 +224,7 @@ String _encodeFactors(
 
   var maxVal = 1.0;
   if (ac.isNotEmpty) {
-    final maxElem =
-        (ColorTriplet c) => max(c.r.abs(), max(c.g.abs(), c.b.abs()));
+    maxElem(ColorTriplet c) => max(c.r.abs(), max(c.g.abs(), c.b.abs()));
     final actualMax = ac.map(maxElem).reduce(max);
     final quantisedMax = max(0, min(82, (actualMax * 166.0 - 0.5).floor()));
     maxVal = (quantisedMax + 1.0) / 166.0;

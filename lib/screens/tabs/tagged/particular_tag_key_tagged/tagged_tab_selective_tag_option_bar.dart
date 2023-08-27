@@ -29,7 +29,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
         return ExpandableNotifier(
           controller: controller.expandableController.value,
           child: Container(
-            color: Color(0x0ff1f3f5),
+            color: const Color(0x0ff1f3f5),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -42,7 +42,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                   child: SafeArea(
                     bottom: !controller.expandableController.value.expanded,
                     child: Container(
-                      color: Color(0xFFF1F3F5),
+                      color: const Color(0xFFF1F3F5),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
@@ -50,13 +50,13 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                             onPressed: () {
                               controller.setMultiTagSheet(false);
                             },
-                            child: Container(
+                            child: SizedBox(
                               width: 80.0,
                               child: Obx(
                                 () => Text(
                                   LangControl.to.S.value.cancel,
                                   textScaleFactor: 1.0,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Color(0xff707070),
                                     fontSize: 16,
                                     fontFamily: 'Lato',
@@ -66,7 +66,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                               ),
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           CupertinoButton(
                             onPressed: () async {
                               // if (!UserController.to.isPremium) {
@@ -88,14 +88,14 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                                       .toList());
                               await refresh_everything();
                             },
-                            child: Container(
+                            child: SizedBox(
                               width: 80.0,
                               child: Obx(
                                 () => Text(
                                   LangControl.to.S.value.ok,
                                   textScaleFactor: 1.0,
                                   textAlign: TextAlign.end,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Color(0xff707070),
                                     fontSize: 16,
                                     fontFamily: 'Lato',
@@ -116,7 +116,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                     padding: const EdgeInsets.all(24.0),
 
                     /// TODO: Tags List Not Showing
-                    color: Color(0xFFEFEFF4).withOpacity(0.94),
+                    color: const Color(0xFFEFEFF4).withOpacity(0.94),
                     child: SafeArea(
                       bottom: true,
                       child: Column(
@@ -249,7 +249,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
         );
       }
       if (!controller.multiPicBar.value) {
-        return Container(
+        return const SizedBox(
           width: 0,
           height: 0,
         );
@@ -262,21 +262,21 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
         BottomNavigationBarItem(
           label: 'Tag',
           icon: AnimatedOpacity(
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               opacity: controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
               child: Image.asset('lib/images/tagtabbutton.png')),
         ),
         BottomNavigationBarItem(
           label: 'Share',
           icon: AnimatedOpacity(
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               opacity: controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
               child: Image.asset('lib/images/sharetabbutton.png')),
         ),
         BottomNavigationBarItem(
             label: 'Trash',
             icon: AnimatedOpacity(
-              duration: Duration(milliseconds: 500),
+              duration: const Duration(milliseconds: 500),
               opacity: controller.selectedMultiBarPics.isEmpty ? 0.2 : 1,
               child: Image.asset('lib/images/trashtabbutton.png'),
             )),
@@ -288,7 +288,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
               },
               iconSize: 24,
               border:
-                  Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+                  const Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
               items: listOfBottomNavigationItems)
           : SizedBox(
               height: 64,

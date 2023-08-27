@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
@@ -21,8 +20,8 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
               <String>[];
 
       return StaggeredGridView.countBuilder(
-          key: Key('$tagKey'),
-          padding: EdgeInsets.only(top: 2),
+          key: Key(tagKey),
+          padding: const EdgeInsets.only(top: 2),
           crossAxisCount: 4,
           mainAxisSpacing: 0,
           crossAxisSpacing: 0,
@@ -73,7 +72,7 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
                               controller.selectedMultiBarPics[picId] !=
                                   null) ...[
                             Container(
-                              constraints: BoxConstraints.expand(),
+                              constraints: const BoxConstraints.expand(),
                               decoration: BoxDecoration(
                                 color: kSecondaryColor.withOpacity(0.3),
                                 border: Border.all(

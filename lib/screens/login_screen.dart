@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
@@ -14,6 +13,8 @@ import 'package:picPics/widgets/color_animated_background.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
+
+  const LoginScreen({super.key});
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -32,7 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
         value: SystemUiOverlayStyle.dark,
         child: Stack(
           children: [
-            ColorAnimatedBackground(
+            const ColorAnimatedBackground(
               moveByX: 30.0,
               moveByY: 20.0,
               blurFilter: false,
@@ -60,12 +61,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: <Widget>[
-                                      Spacer(
+                                      const Spacer(
                                         flex: 2,
                                       ),
                                       Image.asset(
                                           'lib/images/picpics_small.png'),
-                                      Spacer(
+                                      const Spacer(
                                         flex: 1,
                                       ),
                                       Obx(
@@ -83,7 +84,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           style: kLoginDescriptionTextStyle,
                                         ),
                                       ),
-                                      Spacer(
+                                      const Spacer(
                                         flex: 2,
                                       ),
                                     ],
@@ -93,7 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                               return Column(
                                 children: <Widget>[
-                                  Spacer(
+                                  const Spacer(
                                     flex: 1,
                                   ),
                                   Container(
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         maxHeight: height / 3 - 20),
                                     child: loginStore.getImage(index),
                                   ),
-                                  Spacer(
+                                  const Spacer(
                                     flex: 2,
                                   ),
                                   Padding(
@@ -116,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           '',
                                       textScaleFactor: 1.0,
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontFamily: 'Lato',
                                         color: kWhiteColor,
                                         fontSize: 24,
@@ -170,7 +171,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 64.0),
+                        const SizedBox(height: 64.0),
                         CupertinoButton(
                           onPressed: () async {
                             if (loginStore.slideIndex.value ==
@@ -202,7 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     : LangControl.to.S.value.next.toUpperCase(),
                                 textScaleFactor: 1.0,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'Lato',
                                   color: kWhiteColor,
                                   fontSize: 22,

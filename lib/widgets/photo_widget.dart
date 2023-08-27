@@ -1,5 +1,4 @@
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
@@ -19,7 +18,7 @@ class PhotoWidget extends StatelessWidget {
       if (hash != null) {
         return BlurHash(hash: hash!, color: Colors.transparent);
       } else {
-        return ColoredBox(color: kGreyPlaceholder);
+        return const ColoredBox(color: kGreyPlaceholder);
       }
     }
     final imageProvider =
@@ -34,7 +33,7 @@ class PhotoWidget extends StatelessWidget {
               if (hash != null) {
                 return BlurHash(hash: hash!, color: Colors.transparent);
               } else {
-                return ColoredBox(color: kGreyPlaceholder);
+                return const ColoredBox(color: kGreyPlaceholder);
               }
 
             case LoadState.completed:

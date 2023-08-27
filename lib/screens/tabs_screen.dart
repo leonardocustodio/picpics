@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +16,8 @@ import 'package:picPics/widgets/percentage_dialog.dart';
 // ignore_for_file: unused_local_variable, must_be_immutable
 class TabsScreen extends GetWidget<TabsController> {
   static const id = 'tabs_screen';
+
+  const TabsScreen({super.key});
 
   //SwiperController tutorialSwiperController = SwiperController();
 
@@ -60,7 +61,7 @@ class TabsScreen extends GetWidget<TabsController> {
                       } else  */
                     if (userController.hasGalleryPermission.value == false) {
                       return Container(
-                        constraints: BoxConstraints.expand(),
+                        constraints: const BoxConstraints.expand(),
                         color: kWhiteColor,
                         child: SafeArea(
                           child: Stack(
@@ -97,7 +98,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                             'lib/images/nogalleryauth.png'),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 21.0,
                                     ),
                                     Obx(
@@ -106,7 +107,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                             .gallery_access_permission_description,
                                         textScaleFactor: 1.0,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontFamily: 'Lato',
                                           color: Color(0xff979a9b),
                                           fontSize: 18,
@@ -115,7 +116,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                         ),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 17.0,
                                     ),
                                     CupertinoButton(
@@ -151,7 +152,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                               LangControl.to.S.value
                                                   .gallery_access_permission,
                                               textScaleFactor: 1.0,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontFamily: 'Lato',
                                                 color: kWhiteColor,
                                                 fontSize: 16,
@@ -267,7 +268,7 @@ class TabsScreen extends GetWidget<TabsController> {
                     ),
                   )
                 : Container()), */
-          Positioned.fill(child: PercentageDialog()),
+          const Positioned.fill(child: PercentageDialog()),
         ],
       ),
     );

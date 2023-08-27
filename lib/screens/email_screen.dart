@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -82,7 +81,7 @@ class _EmailScreenState extends State<EmailScreen> {
         value: SystemUiOverlayStyle.dark,
         child: Stack(
           children: <Widget>[
-            ColorAnimatedBackground(
+            const ColorAnimatedBackground(
               moveByX: 60.0,
               moveByY: 40.0,
               blurFilter: false,
@@ -127,7 +126,7 @@ class _EmailScreenState extends State<EmailScreen> {
                               ),
                             ),
                           ),
-                          Spacer(),
+                          const Spacer(),
                           Container(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 24.0, vertical: 32.0),
@@ -141,7 +140,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                 Obx(
                                   () => Text(
                                     LangControl.to.S.value.email,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontFamily: 'Lato',
                                       color: Color(0xff606566),
                                       fontSize: 12,
@@ -161,10 +160,10 @@ class _EmailScreenState extends State<EmailScreen> {
                                       contentPadding: const EdgeInsets.only(
                                           left: 10.0, right: 5.0),
                                       fillColor:
-                                          Color(0xFFF1F3F5).withOpacity(0.3),
+                                          const Color(0xFFF1F3F5).withOpacity(0.3),
                                       filled: true,
                                       border: OutlineInputBorder(
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
@@ -172,7 +171,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                             BorderRadius.circular(8.0),
                                       ),
                                       enabledBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
@@ -180,7 +179,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                             BorderRadius.circular(8.0),
                                       ),
                                       focusedBorder: OutlineInputBorder(
-                                        borderSide: BorderSide(
+                                        borderSide: const BorderSide(
                                           color: Color(0xFFE2E4E5),
                                           width: 1.0,
                                         ),
@@ -193,7 +192,7 @@ class _EmailScreenState extends State<EmailScreen> {
                               ],
                             ),
                           ),
-                          Spacer(
+                          const Spacer(
                             flex: 2,
                           ),
                           CupertinoButton(
@@ -218,7 +217,7 @@ class _EmailScreenState extends State<EmailScreen> {
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 40.0,
                           ),
                         ],
@@ -231,7 +230,7 @@ class _EmailScreenState extends State<EmailScreen> {
             if (isLoading)
               Container(
                 color: Colors.black.withOpacity(0.7),
-                child: Center(
+                child: const Center(
                   child: SpinKitChasingDots(
                     color: kPrimaryColor,
                     size: 80.0,

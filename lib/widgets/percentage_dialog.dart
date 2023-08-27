@@ -5,7 +5,7 @@ import 'package:picPics/stores/percentage_dialog_controller.dart';
 
 // ignore: must_be_immutable
 class PercentageDialog extends GetWidget<PercentageDialogController> {
-  PercentageDialog({Key? key}) : super(key: key);
+  const PercentageDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +45,7 @@ class PercentageDialog extends GetWidget<PercentageDialogController> {
                       child: Text(
                         '$textPercent%',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                             inherit: false, color: Colors.black, fontSize: 17),
                       ),
                     ),
@@ -61,7 +61,7 @@ class PercentageDialog extends GetWidget<PercentageDialogController> {
                   child: Text(
                     '${textPercent > 98 ? "Finishing..." : controller.text.value}',
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                         inherit: false, color: Colors.white, fontSize: 17),
                   ),
                 ),

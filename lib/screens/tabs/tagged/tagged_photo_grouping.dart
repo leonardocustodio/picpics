@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -15,7 +14,7 @@ import 'package:picPics/widgets/photo_widget.dart';
 final height = (Get.width / 3) - 20;
 
 class TaggedPhotosGrouping extends GetWidget<TaggedController> {
-  TaggedPhotosGrouping({Key? key}) : super(key: key);
+  const TaggedPhotosGrouping({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,17 +31,17 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
             tempStorage[key] = '';
           }
         });
-        tempTaggedStorage.forEach((tag) {
+        for (var tag in tempTaggedStorage) {
           if (tempStorage[tag] == null) {
             taggedKeys.add(tag);
           }
-        });
+        }
       } else {
         taggedKeys = controller.taggedPicId.keys.toList();
       }
 
       return StaggeredGridView.countBuilder(
-        key: Key('tag'),
+        key: const Key('tag'),
         padding: const EdgeInsets.only(left: 7, right: 7),
         crossAxisCount: 3,
         mainAxisSpacing: 8,
@@ -113,8 +112,8 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
                                     child: AutoSizeText.rich(
                                       TextSpan(
                                           text:
-                                              '${TagsController.to.allTags[tagKey]?.value.title ?? ''}',
-                                          style: TextStyle(
+                                              TagsController.to.allTags[tagKey]?.value.title ?? '',
+                                          style: const TextStyle(
                                             color: Colors.black,
                                           ),
                                           children: [
@@ -151,7 +150,7 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
                                 padding: const EdgeInsets.only(bottom: 2.0),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  gradient: LinearGradient(
+                                  gradient: const LinearGradient(
                                     colors: [
                                       Color(0xffffcc00),
                                       Color(0xffffe98f)

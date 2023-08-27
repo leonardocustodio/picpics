@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 class DeviceHasNoPics extends StatelessWidget {
   final String message;
 
-  DeviceHasNoPics({required this.message});
+  const DeviceHasNoPics({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class DeviceHasNoPics extends StatelessWidget {
               child: Image.asset('lib/images/nogalleryauth.png'),
             ),
           ),
-          SizedBox(
+          const SizedBox(
             height: 21.0,
           ),
           Padding(
@@ -33,7 +33,7 @@ class DeviceHasNoPics extends StatelessWidget {
               message,
               textScaleFactor: 1.0,
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
                 fontSize: 18,

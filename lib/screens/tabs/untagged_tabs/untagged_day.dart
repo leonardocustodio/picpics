@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
@@ -21,8 +20,8 @@ class UntaggedTabDay extends GetWidget<TabsController> {
         addRepaintBoundaries: true,
         shrinkWrap: true,
         controller: controller.untaggedScrollControllerDay,
-        key: Key('Day'),
-        padding: EdgeInsets.only(top: 2),
+        key: const Key('Day'),
+        padding: const EdgeInsets.only(top: 2),
         itemCount: controller.allUnTaggedPicsDay.length,
         crossAxisCount: 3,
         mainAxisSpacing: 0,
@@ -126,7 +125,7 @@ class UntaggedTabDay extends GetWidget<TabsController> {
                               controller.selectedMultiBarPics[object] !=
                                   null) ...[
                             Container(
-                              constraints: BoxConstraints.expand(),
+                              constraints: const BoxConstraints.expand(),
                               decoration: BoxDecoration(
                                 color: kSecondaryColor.withOpacity(0.3),
                                 border: Border.all(

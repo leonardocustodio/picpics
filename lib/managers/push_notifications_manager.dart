@@ -41,8 +41,8 @@ class PushNotificationsManager {
 */
 
       var initializationSettingsAndroid =
-          AndroidInitializationSettings('ic_launcher');
-      var initializationSettingsIOS = DarwinInitializationSettings(
+          const AndroidInitializationSettings('ic_launcher');
+      var initializationSettingsIOS = const DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
           requestSoundPermission: false);

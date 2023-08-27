@@ -1,7 +1,6 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
-import 'package:firebase_analytics/observer.dart';
 
 enum Screen {
   tabs_screen,
@@ -63,12 +62,12 @@ class Analytics {
     }
 
     await analytics.logEvent(
-      name: '${enumToString(event)}',
+      name: enumToString(event),
       parameters: params,
     );
 
     await facebookAppEvents.logEvent(
-      name: '${enumToString(event)}',
+      name: enumToString(event),
       parameters: params,
     );
   }
@@ -88,8 +87,7 @@ class Analytics {
     }
 
     await analytics.logTutorialBegin();
-    await facebookAppEvents.logEvent(
-        name: '${enumToString(Event.tutorial_begin)}');
+    await facebookAppEvents.logEvent(name: enumToString(Event.tutorial_begin));
   }
 
   static Future<void> sendTutorialComplete() async {
@@ -137,12 +135,12 @@ class Analytics {
     }
 
     await observer.analytics.setCurrentScreen(
-      screenName: '${enumToString(screen)}',
+      screenName: enumToString(screen),
     );
     await facebookAppEvents.logEvent(
-      name: '${enumToString(Event.current_screen)}',
+      name: enumToString(Event.current_screen),
       parameters: {
-        'screenName': '${enumToString(screen)}',
+        'screenName': enumToString(screen),
       },
     );
   }
@@ -152,23 +150,23 @@ class Analytics {
       return;
     }
 
-    var tabName;
-    if (index == 0) {
-      tabName = '${enumToString(Tab.gallery)}';
-    } else if (index == 1) {
-      tabName = '${enumToString(Tab.pics)}';
-    } else if (index == 2) {
-      tabName = '${enumToString(Tab.tagged)}';
-    }
-
-    await observer.analytics.setCurrentScreen(
-      screenName: '${enumToString(Screen.tabs_screen)}/$tabName',
-    );
-    await facebookAppEvents.logEvent(
-      name: '${enumToString(Event.current_tab)}',
-      parameters: {
-        'screenName': '${enumToString(Screen.tabs_screen)}/$tabName',
-      },
-    );
+    // String tabName;
+    // if (index == 0) {
+    //   tabName = enumToString(Tab.gallery);
+    // } else if (index == 1) {
+    //   tabName = enumToString(Tab.pics);
+    // } else if (index == 2) {
+    //   tabName = enumToString(Tab.tagged);
+    // }
+    //
+    // await observer.analytics.setCurrentScreen(
+    //   screenName: '${enumToString(Screen.tabs_screen)}/$tabName',
+    // );
+    // await facebookAppEvents.logEvent(
+    //   name: enumToString(Event.current_tab),
+    //   parameters: {
+    //     'screenName': '${enumToString(Screen.tabs_screen)}/$tabName',
+    //   },
+    // );
   }
 }

@@ -19,16 +19,16 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'fr';
 
-  static String m0(email) => "Une clé d\'accès a été envoyée à ${email}";
+  static String m0(email) => "Une clé d'accès a été envoyée à ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'Aucune photo sélectionnée', one: '1 photo sélectionnée', other: '${howMany} photos sélectionnées')}";
+      Intl.plural(howMany, zero: 'Aucune photo sélectionnée', one: '1 photo sélectionnée', other: '${howMany} photos sélectionnées');
 
   static String m2(url) => "Pour organiser toutes vos photos, accédez à ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "access_code": MessageLookupByLibrary.simpleMessage("Code d\'accès"),
+        "access_code": MessageLookupByLibrary.simpleMessage("Code d'accès"),
         "access_code_sent": m0,
         "add_multiple_tags": MessageLookupByLibrary.simpleMessage(
             "Ajouter de multiples mots clés"),
@@ -45,7 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "ask_photo_library_permission": MessageLookupByLibrary.simpleMessage(
             "Nous devons accéder à votre photothèque pour que vous puissiez commencer à organiser vos photos avec picPics. Ne vous inquiétez pas, vos données ne quitteront jamais votre appareil!"),
         "auto_renewable_first_part":
-            MessageLookupByLibrary.simpleMessage("L\'abonnement est "),
+            MessageLookupByLibrary.simpleMessage("L'abonnement est "),
         "auto_renewable_second_part": MessageLookupByLibrary.simpleMessage(
             "renouvelable automatiquement."),
         "cancel": MessageLookupByLibrary.simpleMessage("Annuler"),
@@ -53,7 +53,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Annuler à tout moment"),
         "close": MessageLookupByLibrary.simpleMessage("Fermer"),
         "confirm_email": MessageLookupByLibrary.simpleMessage(
-            "Confirmez votre courriel d\'inscription pour recevoir votre code d\'accès"),
+            "Confirmez votre courriel d'inscription pour recevoir votre code d'accès"),
         "confirm_secret_key":
             MessageLookupByLibrary.simpleMessage("Confirmer la clé secrète"),
         "continue_string": MessageLookupByLibrary.simpleMessage("Continuer"),
@@ -62,29 +62,29 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Défi quotidien"),
         "daily_challenge_permission_description":
             MessageLookupByLibrary.simpleMessage(
-                "Pour que nous puissions envoyer vos défis quotidiens, nous avons besoin d\'une autorisation pour envoyer des notifications, il est donc nécessaire que vous autorisiez les notifications dans les options de votre téléphone portable"),
+                "Pour que nous puissions envoyer vos défis quotidiens, nous avons besoin d'une autorisation pour envoyer des notifications, il est donc nécessaire que vous autorisiez les notifications dans les options de votre téléphone portable"),
         "daily_goal":
             MessageLookupByLibrary.simpleMessage("Objectif quotidien"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("Supprimer"),
         "device_has_no_pics": MessageLookupByLibrary.simpleMessage(
-            "Cet appareil n\'a pas de photo dans la galerie, il n\'y a donc aucune photo qui puisse être étiquetée."),
+            "Cet appareil n'a pas de photo dans la galerie, il n'y a donc aucune photo qui puisse être étiquetée."),
         "disable_secret": MessageLookupByLibrary.simpleMessage(
             "Voulez-vous afficher cette photo ?"),
         "dont_ask_again":
             MessageLookupByLibrary.simpleMessage("Ne plus demander"),
         "edit_tag":
-            MessageLookupByLibrary.simpleMessage("Modifier l\'étiquette"),
+            MessageLookupByLibrary.simpleMessage("Modifier l'étiquette"),
         "email": MessageLookupByLibrary.simpleMessage("Courriel"),
         "enable_faceid":
             MessageLookupByLibrary.simpleMessage("Activer Face ID"),
         "enable_fingerprint": MessageLookupByLibrary.simpleMessage(
-            "Activer l\'empreinte digitale"),
+            "Activer l'empreinte digitale"),
         "enable_irisscanner":
-            MessageLookupByLibrary.simpleMessage("Activer le scanner d\'iris"),
+            MessageLookupByLibrary.simpleMessage("Activer le scanner d'iris"),
         "enable_touchid":
             MessageLookupByLibrary.simpleMessage("Activer Touch ID"),
         "export_all_gallery":
@@ -102,10 +102,10 @@ class MessageLookup extends MessageLookupByLibrary {
             "Vous avez oublié la clé secrète ?"),
         "full_screen": MessageLookupByLibrary.simpleMessage("Plein écran"),
         "gallery_access_permission":
-            MessageLookupByLibrary.simpleMessage("Autorisations d\'accès"),
+            MessageLookupByLibrary.simpleMessage("Autorisations d'accès"),
         "gallery_access_permission_description":
             MessageLookupByLibrary.simpleMessage(
-                "Pour commencer à organiser vos photos, nous avons besoin d\'une autorisation pour y accéder"),
+                "Pour commencer à organiser vos photos, nous avons besoin d'une autorisation pour y accéder"),
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "Pour organiser vos photos, nous devons avoir accès à votre galerie de photos"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Accueil"),
@@ -133,16 +133,16 @@ class MessageLookup extends MessageLookupByLibrary {
         "no_previous_purchase":
             MessageLookupByLibrary.simpleMessage("Aucun achat précédent"),
         "no_tagged_photos": MessageLookupByLibrary.simpleMessage(
-            "Vous n\'avez pas encore de photos étiquetées"),
+            "Vous n'avez pas encore de photos étiquetées"),
         "no_tags_found":
             MessageLookupByLibrary.simpleMessage("Aucune étiquette trouvée"),
         "no_valid_subscription": MessageLookupByLibrary.simpleMessage(
-            "Impossible de trouver un achat d\'abonnement valide."),
+            "Impossible de trouver un achat d'abonnement valide."),
         "notification_time":
             MessageLookupByLibrary.simpleMessage("Heure de notification"),
         "notifications": MessageLookupByLibrary.simpleMessage("Notifications"),
         "ny_tag": MessageLookupByLibrary.simpleMessage("New York"),
-        "ok": MessageLookupByLibrary.simpleMessage("D\'accord"),
+        "ok": MessageLookupByLibrary.simpleMessage("D'accord"),
         "open_gallery":
             MessageLookupByLibrary.simpleMessage("Ouvrir la galerie"),
         "organized_photos_description":
@@ -175,15 +175,15 @@ class MessageLookup extends MessageLookupByLibrary {
         "require_secret_key":
             MessageLookupByLibrary.simpleMessage("Exiger une clé secrète"),
         "restore_purchase":
-            MessageLookupByLibrary.simpleMessage("Restaurer l\'achat"),
+            MessageLookupByLibrary.simpleMessage("Restaurer l'achat"),
         "save": MessageLookupByLibrary.simpleMessage("sauvegarder"),
         "save_location":
-            MessageLookupByLibrary.simpleMessage("Enregistrer l\'emplacement"),
+            MessageLookupByLibrary.simpleMessage("Enregistrer l'emplacement"),
         "screenshots_tag":
-            MessageLookupByLibrary.simpleMessage("Captures d\'écran"),
+            MessageLookupByLibrary.simpleMessage("Captures d'écran"),
         "search": MessageLookupByLibrary.simpleMessage("Chercher..."),
         "search_all_tags_not_found": MessageLookupByLibrary.simpleMessage(
-            "Aucune image n\'a été trouvée avec tous les mots clés saisis"),
+            "Aucune image n'a été trouvée avec tous les mots clés saisis"),
         "search_results":
             MessageLookupByLibrary.simpleMessage("Résultats de la recherche"),
         "secret_key_created": MessageLookupByLibrary.simpleMessage(
@@ -198,7 +198,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "sports_tag": MessageLookupByLibrary.simpleMessage("Sports"),
         "start": MessageLookupByLibrary.simpleMessage("Démarrer"),
         "start_tagging":
-            MessageLookupByLibrary.simpleMessage("Commencer l\'étiquetage"),
+            MessageLookupByLibrary.simpleMessage("Commencer l'étiquetage"),
         "suggestions": MessageLookupByLibrary.simpleMessage("Suggestions"),
         "tag_multiple_photos_at_once": MessageLookupByLibrary.simpleMessage(
             "Étiqueter plusieurs photos à la fois"),
@@ -206,7 +206,7 @@ class MessageLookup extends MessageLookupByLibrary {
             "Jetez un oeil à cette application !"),
         "take_a_look_description": m2,
         "terms_of_use":
-            MessageLookupByLibrary.simpleMessage("Conditions d\'utilisation"),
+            MessageLookupByLibrary.simpleMessage("Conditions d'utilisation"),
         "time": MessageLookupByLibrary.simpleMessage("Heure"),
         "toggle_date": MessageLookupByLibrary.simpleMessage("Date"),
         "toggle_days": MessageLookupByLibrary.simpleMessage("Jours"),
@@ -228,7 +228,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Photos privées illimitées"),
         "vacation_tag": MessageLookupByLibrary.simpleMessage("Vacances"),
         "view_hidden_photos": MessageLookupByLibrary.simpleMessage(
-            "Pour afficher vos photos occultes, libérez le verrouillage dans les paramètres de l\'application. Vous pouvez le déverrouiller avec votre code PIN."),
+            "Pour afficher vos photos occultes, libérez le verrouillage dans les paramètres de l'application. Vous pouvez le déverrouiller avec votre code PIN."),
         "welcome": MessageLookupByLibrary.simpleMessage("Bienvenue !"),
         "work_tag": MessageLookupByLibrary.simpleMessage("Travail"),
         "x_minutes": MessageLookupByLibrary.simpleMessage("20 min"),

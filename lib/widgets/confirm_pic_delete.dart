@@ -9,7 +9,7 @@ class ConfirmPicDelete extends StatelessWidget {
   final Function()? onPressedClose;
   final Function() onPressedDelete;
 
-  const ConfirmPicDelete({
+  const ConfirmPicDelete({super.key, 
     this.deleteText = 'Are you sure you want to delete photo ?',
     this.onPressedClose,
     required this.onPressedDelete,
@@ -20,15 +20,15 @@ class ConfirmPicDelete extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: Get.width < 360
-          ? EdgeInsets.symmetric(horizontal: 20.0)
-          : EdgeInsets.symmetric(horizontal: 40.0),
+          ? const EdgeInsets.symmetric(horizontal: 20.0)
+          : const EdgeInsets.symmetric(horizontal: 40.0),
       child: Container(
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Color(0xFFF1F3F5),
           borderRadius: BorderRadius.vertical(
-            top: const Radius.circular(14),
-            bottom: const Radius.circular(19.0),
+            top: Radius.circular(14),
+            bottom: Radius.circular(19.0),
           ),
         ),
         child: Padding(
@@ -49,7 +49,7 @@ class ConfirmPicDelete extends StatelessWidget {
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
                   ),
-                  Text(
+                  const Text(
                     'Delete Photo',
                     style: TextStyle(
                       fontFamily: 'Lato',
@@ -78,7 +78,7 @@ class ConfirmPicDelete extends StatelessWidget {
                 child: Text(
                   deleteText,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'Lato',
                     color: Color(0xff707070),
                     fontSize: 15,
@@ -122,7 +122,7 @@ class ConfirmPicDelete extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      constraints: BoxConstraints(maxWidth: 16.0),
+                      constraints: const BoxConstraints(maxWidth: 16.0),
                     ),
                     Expanded(
                       child: CupertinoButton(
@@ -145,7 +145,7 @@ class ConfirmPicDelete extends StatelessWidget {
                               () => Text(
                                 LangControl.to.S.value.delete,
                                 textScaleFactor: 1.0,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: kSecondaryColor,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Lato',

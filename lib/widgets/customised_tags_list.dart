@@ -21,7 +21,7 @@ class CustomisedTagsList extends StatelessWidget {
   final OnTap? onTap;
   final Function? onDoubleTap;
 
-  CustomisedTagsList({
+  CustomisedTagsList({super.key, 
     required this.tagsKeyList,
     required this.selectedTags,
     this.maxLength,
@@ -41,7 +41,7 @@ class CustomisedTagsList extends StatelessWidget {
             child: Text(
               title!,
               textScaleFactor: 1.0,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
                 fontSize: 12,
@@ -63,7 +63,7 @@ class CustomisedTagsList extends StatelessWidget {
                     child: Obx(
                       () => Text(
                         LangControl.to.S.value.no_tags_found,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),
                           fontSize: 14,
@@ -105,7 +105,7 @@ class CustomisedTagsList extends StatelessWidget {
         showEditTagModal(tag.key);
       },
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         decoration: isColorFull
             ? BoxDecoration(

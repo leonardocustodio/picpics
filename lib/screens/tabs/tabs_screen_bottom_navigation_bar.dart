@@ -27,7 +27,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
           ? ExpandableNotifier(
               controller: controller.expandableController.value,
               child: Container(
-                color: Color(0x00f1f3f5),
+                color: const Color(0x00f1f3f5),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -40,7 +40,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                       child: SafeArea(
                         bottom: !controller.expandableController.value.expanded,
                         child: Container(
-                          color: Color(0xFFF1F3F5),
+                          color: const Color(0xFFF1F3F5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -48,12 +48,12 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                 onPressed: () {
                                   controller.setMultiTagSheet(false);
                                 },
-                                child: Container(
+                                child: SizedBox(
                                   width: 80.0,
                                   child: Text(
                                     LangControl.to.S.value.cancel,
                                     textScaleFactor: 1.0,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Color(0xff707070),
                                       fontSize: 16,
                                       fontFamily: 'Lato',
@@ -62,7 +62,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                   ),
                                 ),
                               ),
-                              Spacer(),
+                              const Spacer(),
                               CupertinoButton(
                                 onPressed: () async {
                                   // if (!UserController.to.isPremium) {
@@ -81,18 +81,18 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                   controller.setMultiPicBar(false);
 
                                   WidgetsBinding.instance
-                                      ?.addPostFrameCallback((timeStamp) async {
+                                      .addPostFrameCallback((timeStamp) async {
                                     await TagsController.to
                                         .addTagsToSelectedPics();
                                   });
                                 },
-                                child: Container(
+                                child: SizedBox(
                                   width: 80.0,
                                   child: Text(
                                     LangControl.to.S.value.ok,
                                     textScaleFactor: 1.0,
                                     textAlign: TextAlign.end,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Color(0xff707070),
                                       fontSize: 16,
                                       fontFamily: 'Lato',
@@ -112,7 +112,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                         padding: const EdgeInsets.all(24.0),
 
                         /// TODO: Tags List Not Showing
-                        color: Color(0xFFEFEFF4).withOpacity(0.94),
+                        color: const Color(0xFFEFEFF4).withOpacity(0.94),
                         child: SafeArea(
                           bottom: true,
                           child: Column(
@@ -266,7 +266,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                           controller.setTabIndex(index);
                         },
                         iconSize: 32.0,
-                        border: Border(
+                        border: const Border(
                             top: BorderSide(
                                 color: Color(0xFFE2E4E5), width: 1.0)),
                         items: <BottomNavigationBarItem>[
@@ -335,7 +335,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                         controller.setTabIndex(index);
                       },
                       iconSize: 24.0,
-                      border: Border(
+                      border: const Border(
                           top:
                               BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
                       items: <BottomNavigationBarItem>[
@@ -348,7 +348,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                             //title: Container(),
                             icon: AnimatedOpacity(
                               opacity: ignore ? 0.3 : 1,
-                              duration: Duration(seconds: 1),
+                              duration: const Duration(seconds: 1),
                               child: Image.asset('lib/images/starico.png'),
                             ),
                           ),
@@ -356,7 +356,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                           //title: Container(),
                           icon: AnimatedOpacity(
                             opacity: ignore ? 0.3 : 1,
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                             child: Image.asset('lib/images/tagtabbutton.png'),
                           ),
                         ),
@@ -364,7 +364,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                           //title: Container(),
                           icon: AnimatedOpacity(
                             opacity: ignore ? 0.3 : 1,
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                             child: Image.asset('lib/images/sharetabbutton.png'),
                           ),
                         ),
@@ -372,7 +372,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                           //title: Container(),
                           icon: AnimatedOpacity(
                             opacity: ignore ? 0.3 : 1,
-                            duration: Duration(seconds: 1),
+                            duration: const Duration(seconds: 1),
                             child: Image.asset('lib/images/trashtabbutton.png'),
                           ),
                         ),
@@ -397,7 +397,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                               label: 'Feature',
                               icon: AnimatedOpacity(
                                 opacity: ignore ? 0.3 : 1,
-                                duration: Duration(seconds: 1),
+                                duration: const Duration(seconds: 1),
                                 child: Image.asset('lib/images/starico.png'),
                               ),
                             ),
@@ -405,7 +405,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                             label: 'Tag',
                             icon: AnimatedOpacity(
                               opacity: ignore ? 0.3 : 1,
-                              duration: Duration(seconds: 1),
+                              duration: const Duration(seconds: 1),
                               child: Image.asset('lib/images/tagtabbutton.png'),
                             ),
                           ),
@@ -413,7 +413,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                             label: 'Share',
                             icon: AnimatedOpacity(
                               opacity: ignore ? 0.3 : 1,
-                              duration: Duration(seconds: 1),
+                              duration: const Duration(seconds: 1),
                               child:
                                   Image.asset('lib/images/sharetabbutton.png'),
                             ),
@@ -422,7 +422,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                             label: 'Trash',
                             icon: AnimatedOpacity(
                               opacity: ignore ? 0.3 : 1,
-                              duration: Duration(seconds: 1),
+                              duration: const Duration(seconds: 1),
                               child:
                                   Image.asset('lib/images/trashtabbutton.png'),
                             ),

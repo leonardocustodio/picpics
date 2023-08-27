@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) => "Kunci akses telah dihantar ke ${email}";
 
   static String m1(howMany) =>
-      "${Intl.plural(howMany, zero: 'Tiada gambar yang dipilih', one: '1 gambar dipilih', other: '${howMany} gambar dipilih')}";
+      Intl.plural(howMany, zero: 'Tiada gambar yang dipilih', one: '1 gambar dipilih', other: '${howMany} gambar dipilih');
 
   static String m2(url) =>
       "Untuk menguruskan semua gambar anda, pergi ke ${url}";
@@ -64,7 +64,7 @@ class MessageLookup extends MessageLookupByLibrary {
                 "Supaya kami dapat menghantar cabaran harian anda, kami memerlukan kebenaran untuk menghantar pemberitahuan, jadi, anda perlu memberi kebenaran pemberitahuan dalam pilihan peranti mudah alih anda"),
         "daily_goal": MessageLookupByLibrary.simpleMessage("Matlamat harian"),
         "daily_notification_description": MessageLookupByLibrary.simpleMessage(
-            "It\'s time to complete your picPics daily challenge!"),
+            "It's time to complete your picPics daily challenge!"),
         "daily_notification_title":
             MessageLookupByLibrary.simpleMessage("Daily challenge"),
         "delete": MessageLookupByLibrary.simpleMessage("Padamkan"),
@@ -205,7 +205,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "tutorial_daily_package": MessageLookupByLibrary.simpleMessage(
             "Kami membawa pakej harian untuk anda bagi menguruskan perpustakaan anda secara beransur-ansur."),
         "tutorial_however_you_want": MessageLookupByLibrary.simpleMessage(
-            "Susun gambar anda dengan menambahkan tag, seperti \'keluarga\', \'binatang peliharaan\', atau apa sahaja yang anda mahukan."),
+            "Susun gambar anda dengan menambahkan tag, seperti 'keluarga', 'binatang peliharaan', atau apa sahaja yang anda mahukan."),
         "tutorial_just_swipe": MessageLookupByLibrary.simpleMessage(
             "Setelah menambahkan tag pada gambar anda, leret sahaja untuk pergi ke gambar seterusnya."),
         "tutorial_multiselect": MessageLookupByLibrary.simpleMessage(

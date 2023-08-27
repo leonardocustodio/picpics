@@ -7,6 +7,8 @@ import 'package:picPics/constants.dart';
 class TagsScreen_ extends StatefulWidget {
   static String id = 'tags_screen';
 
+  const TagsScreen_({super.key});
+
   @override
   _TagsScreen_State createState() => _TagsScreen_State();
 }
@@ -36,7 +38,7 @@ class _TagsScreen_State extends State<TagsScreen_> {
                       ),
                       Image.asset('lib/images/searchico.png'),
                       const SizedBox(width: 10.0),
-                      Expanded(
+                      const Expanded(
                         child: TextField(
                           // controller: _textEditingController,
                           // onSubmitted: (_) => _selectPlace(),
@@ -54,7 +56,7 @@ class _TagsScreen_State extends State<TagsScreen_> {
                             letterSpacing: -0.4099999964237213,
                           ),
                           decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.all(0),
+                            contentPadding: EdgeInsets.all(0),
                             border:
                                 OutlineInputBorder(borderSide: BorderSide.none),
                             enabledBorder:

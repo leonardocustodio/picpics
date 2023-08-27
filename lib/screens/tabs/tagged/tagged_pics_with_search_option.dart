@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
@@ -15,12 +14,12 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/top_bar.dart';
 
 class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
-  TaggedPicsInDeviceWithSearchOption({Key? key}) : super(key: key);
+  const TaggedPicsInDeviceWithSearchOption({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: Get.width,
         height: Get.height,
         child: Column(
@@ -92,7 +91,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                       ? LangControl.to.S.value.search_results
                                       : LangControl.to.S.value.recent_tags,
                                   textScaleFactor: 1.0,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: 'Lato',
                                     color: Color(0xff979a9b),
                                     fontSize: 12,
@@ -145,7 +144,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                         LangControl.to.S.value.no_tags_found,
                                         textScaleFactor: 1.0,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           fontFamily: 'Lato',
                                           color: Color(0xff979a9b),
                                           fontSize: 12,
@@ -175,7 +174,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                   if (taggedController.toggleIndexTagged.value == 0) {
                     return TaggedTabDate();
                   }
-                  return TaggedPhotosGrouping();
+                  return const TaggedPhotosGrouping();
                 },
               ),
             ),
@@ -211,9 +210,9 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                 isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
           ),
           Text(
-            '${dateFormat(date)}',
+            dateFormat(date),
             textScaleFactor: 1.0,
-            style: TextStyle(
+            style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
               fontSize: 14.0,

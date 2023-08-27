@@ -135,7 +135,7 @@ void main() async {
 
 class PicPicsApp extends StatefulWidget {
   final UserController user;
-  const PicPicsApp({required this.user});
+  const PicPicsApp({super.key, required this.user});
 
   @override
   _PicPicsAppState createState() => _PicPicsAppState();
@@ -150,7 +150,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
       //TODO: uncomment
       //Hive.deleteFromDisk();
     }
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -188,7 +188,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
     print('Main Build!!!');
     print('lang: ${widget.user.appLocale.value}');
     return GetMaterialApp(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         lang.S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -201,16 +201,16 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
       navigatorObservers: [Analytics.observer],
       routes: {
         AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
-        LoginScreen.id: (context) => LoginScreen(),
-        TabsScreen.id: (context) => TabsScreen(),
+        LoginScreen.id: (context) => const LoginScreen(),
+        TabsScreen.id: (context) => const TabsScreen(),
         PhotoScreen.id: (context) => PhotoScreen(
               picId: '',
-              picIdList: <String>[],
+              picIdList: const <String>[],
             ),
-        SettingsScreen.id: (context) => SettingsScreen(),
-        AddLocationScreen.id: (context) => AddLocationScreen(null),
+        SettingsScreen.id: (context) => const SettingsScreen(),
+        AddLocationScreen.id: (context) => const AddLocationScreen(null),
         PinScreen.id: (context) => PinScreen(),
-        EmailScreen.id: (context) => EmailScreen(),
+        EmailScreen.id: (context) => const EmailScreen(),
       },
     );
   }

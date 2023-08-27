@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:image/image.dart' as img;
 import 'package:get/get.dart';
@@ -25,9 +24,9 @@ class BlurHashController extends GetxController {
   Future<void> _loadBlurHash() async {
     var blurHashList = await _appDatabase.getAllPicBlurHash();
 
-    blurHashList.forEach((pic) {
+    for (var pic in blurHashList) {
       masterHash[pic.photoId] = pic.blurHash;
-    });
+    }
     blurHash.value = Map<String, String>.from(masterHash);
   }
 
@@ -46,8 +45,8 @@ class BlurHashController extends GetxController {
 
     _blurHashesQueue[photoId] = imageBytes;
 
-    _settingTimer = Timer(Duration(seconds: 5), () {
-      _timer = Timer(Duration(seconds: 1), spawnBlurHashInsertingIsolate);
+    _settingTimer = Timer(const Duration(seconds: 5), () {
+      _timer = Timer(const Duration(seconds: 1), spawnBlurHashInsertingIsolate);
     });
   }
 

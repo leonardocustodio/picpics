@@ -46,8 +46,8 @@ class DatabaseManager extends ChangeNotifier {
     print('dailyChallenges: $userSettings');
 
     if (Platform.isIOS) {
-      final _firebaseMessaging = FirebaseMessaging.instance;
-      await _firebaseMessaging.requestPermission(
+      final firebaseMessaging = FirebaseMessaging.instance;
+      await firebaseMessaging.requestPermission(
           sound: true, badge: true, alert: true);
 
       // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
