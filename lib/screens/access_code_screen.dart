@@ -17,15 +17,13 @@ import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
 
 // ignore_for_file: must_be_immutable
-class PinScreen extends GetWidget<PinController> {
-  static const String id = 'pin_screen';
+class AccessCodeScreen extends GetWidget<PinController> {
+  static const String id = 'access_code_screen';
 
   CarouselController carouselController = CarouselController();
-  // late GlobalKey<AnimatorWidgetState> animatorKey;
-
   int carouselPage = 0;
 
-  PinScreen({super.key});
+  AccessCodeScreen({super.key});
 
 /*   @override
   void initState() {
@@ -37,6 +35,7 @@ class PinScreen extends GetWidget<PinController> {
     print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
     String title;
+    GlobalKey<AnimatorWidgetState> animatorKey;
 
     if (controller.isWaitingRecoveryKey.value == true) {
       if (index == 0) {
@@ -148,125 +147,6 @@ class PinScreen extends GetWidget<PinController> {
 
   void pinTapped(String value, bool backspace) async {
     print('Value: ${controller.recoveryCode}$value');
-    if (controller.isWaitingRecoveryKey.value == true) {
-      if (carouselPage == 0) {
-        if (backspace) {
-          controller.setRecoveryCode(
-              Helpers.removeLastCharacter(controller.recoveryCode.value));
-          return;
-        }
-        controller.setRecoveryCode('${controller.recoveryCode.value}$value');
-
-        if (controller.recoveryCode.value.length == 6) {
-          // set true
-          final valid = await controller.isRecoveryCodeValid(UserController.to);
-
-          if (valid) {
-            await carouselController.nextPage();
-            carouselPage = 1;
-            controller.setRecoveryCode('');
-            return;
-          }
-
-          controller.shakeRecovery.currentState?.forward();
-          controller.setRecoveryCode('');
-        }
-        return;
-      }
-
-      if (carouselPage == 1) {
-        if (backspace) {
-          controller.setPinTemp(
-              Helpers.removeLastCharacter(controller.pinTemp.value));
-          return;
-        }
-        controller.setPinTemp('${controller.pinTemp.value}$value');
-
-        if (controller.pinTemp.value.length == 6) {
-          carouselPage = 2;
-          await carouselController.nextPage();
-        }
-        return;
-      }
-
-      if (backspace) {
-        controller.setConfirmPinTemp(
-            Helpers.removeLastCharacter(controller.confirmPinTemp.value));
-        return;
-      }
-      controller.setConfirmPinTemp('${controller.confirmPinTemp.value}$value');
-
-      if (controller.confirmPinTemp.value.length == 6) {
-        if (controller.pinTemp.value == controller.confirmPinTemp.value) {
-          print('Setting new pin!!!!!');
-          carouselPage = 0;
-          controller.pin = controller.pinTemp.value;
-          await UserController.to.setEmail(controller.email
-              .value); // Tem que deixar antes pois é utilizado quando salva o pin
-
-          await controller.saveNewPin(UserController.to);
-
-          await UserController.to.setIsPinRegistered(true);
-          await PrivatePhotosController.to.switchSecretPhotos();
-          //GalleryStore.to.checkIsLibraryUpdated();
-          controller.setPinTemp('');
-          controller.setConfirmPinTemp('');
-          UserController.to.setWaitingAccessCode(false);
-          await carouselController.animateToPage(0);
-
-          Get.back();
-        } else {
-          controller.shakeKeyConfirm.currentState?.forward();
-          Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
-            carouselPage = 1;
-            controller.setPinTemp('');
-            controller.setConfirmPinTemp('');
-            carouselController.animateToPage(1);
-          });
-        }
-      }
-
-      return;
-    }
-
-    if (UserController.to.isPinRegistered.value == true) {
-      if (backspace) {
-        controller
-            .setPinTemp(Helpers.removeLastCharacter(controller.pinTemp.value));
-        return;
-      }
-      controller.setPinTemp('${controller.pinTemp.value}$value');
-
-      if (controller.pinTemp.value.length == 6) {
-        // set true
-        final valid = await controller.isPinValid();
-
-        if (valid) {
-          if (UserController.to.wantsToActivateBiometric) {
-            await controller.activateBiometric();
-            await UserController.to.setIsBiometricActivated(true);
-
-            controller.setPinTemp('');
-            controller.setConfirmPinTemp('');
-            Get.back();
-            return;
-          }
-
-          await PrivatePhotosController.to.switchSecretPhotos();
-          //GalleryStore.to.checkIsLibraryUpdated();
-
-          controller.setPinTemp('');
-          controller.setConfirmPinTemp('');
-          Get.back();
-          return;
-        }
-
-        controller.shakeKey.currentState?.forward();
-        controller.setPinTemp('');
-        controller.setConfirmPinTemp('');
-      }
-      return;
-    }
 
     if (UserController.to.waitingAccessCode.value == true) {
       if (backspace) {
@@ -516,25 +396,6 @@ class PinScreen extends GetWidget<PinController> {
                           );
                         }
 
-                        if (UserController.to.waitingAccessCode.value ==
-                            false) {
-                          return CarouselSlider.builder(
-                            carouselController: carouselController,
-                            itemCount: 2,
-                            itemBuilder:
-                                (BuildContext context, int index, int _) {
-                              return _buildPinPad(context, index);
-                            },
-                            options: CarouselOptions(
-                              initialPage: 0,
-                              enableInfiniteScroll: false,
-                              height: double.maxFinite,
-                              viewportFraction: 1.0,
-                              scrollPhysics:
-                                  const NeverScrollableScrollPhysics(),
-                            ),
-                          );
-                        }
                         return Column(
                           children: [
                             const Spacer(),

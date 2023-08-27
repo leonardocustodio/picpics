@@ -370,49 +370,49 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        RichText(
-                                          textScaleFactor: 1.0,
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                  text: TabsController
-                                                          .to
-                                                          .picStoreMap[
-                                                              getPicIdList()
-                                                                      .toList()[
-                                                                  controller
-                                                                      .selectedIndex
-                                                                      .value]]
-                                                          ?.value
-                                                          .specificLocation
-                                                          .value ??
-                                                      LangControl.to.S.value
-                                                          .photo_location,
-                                                  style: const TextStyle(
-                                                    fontFamily: 'NotoSans',
-                                                    color: kWhiteColor,
-                                                    fontSize: 17,
-                                                    fontWeight: FontWeight.w400,
-                                                    fontStyle: FontStyle.normal,
-                                                    letterSpacing:
-                                                        -0.4099999964237213,
-                                                  )),
-                                              TextSpan(
-                                                text:
-                                                    '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value.generalLocation.value ?? LangControl.to.S.value.country}',
-                                                style: const TextStyle(
-                                                  fontFamily: 'NotoSans',
-                                                  color: kWhiteColor,
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w300,
-                                                  fontStyle: FontStyle.normal,
-                                                  letterSpacing:
-                                                      -0.4099999964237213,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                        // RichText(
+                                        //   textScaleFactor: 1.0,
+                                        //   text: TextSpan(
+                                        //     children: [
+                                        //       TextSpan(
+                                        //           text: TabsController
+                                        //                   .to
+                                        //                   .picStoreMap[
+                                        //                       getPicIdList()
+                                        //                               .toList()[
+                                        //                           controller
+                                        //                               .selectedIndex
+                                        //                               .value]]
+                                        //                   ?.value
+                                        //                   .specificLocation
+                                        //                   .value ??
+                                        //               LangControl.to.S.value
+                                        //                   .photo_location,
+                                        //           style: const TextStyle(
+                                        //             fontFamily: 'NotoSans',
+                                        //             color: kWhiteColor,
+                                        //             fontSize: 17,
+                                        //             fontWeight: FontWeight.w400,
+                                        //             fontStyle: FontStyle.normal,
+                                        //             letterSpacing:
+                                        //                 -0.4099999964237213,
+                                        //           )),
+                                        //       TextSpan(
+                                        //         text:
+                                        //             '  ${TabsController.to.picStoreMap[getPicIdList()[controller.selectedIndex.value]]?.value.generalLocation.value ?? LangControl.to.S.value.country}',
+                                        //         style: const TextStyle(
+                                        //           fontFamily: 'NotoSans',
+                                        //           color: kWhiteColor,
+                                        //           fontSize: 12,
+                                        //           fontWeight: FontWeight.w300,
+                                        //           fontStyle: FontStyle.normal,
+                                        //           letterSpacing:
+                                        //               -0.4099999964237213,
+                                        //         ),
+                                        //       ),
+                                        //     ],
+                                        //   ),
+                                        // ),
                                         Text(
                                           dateFormat(TabsController
                                                   .to

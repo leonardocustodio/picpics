@@ -15,6 +15,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:picPics/generated/l10n.dart' as lang;
 import 'package:picPics/managers/analytics_manager.dart';
 import 'package:picPics/managers/widget_manager.dart';
+import 'package:picPics/screens/access_code_screen.dart';
 import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/screens/login_screen.dart';
@@ -207,6 +208,7 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
         AddLocationScreen.id: (context) => const AddLocationScreen(null),
         PinScreen.id: (context) => PinScreen(),
         EmailScreen.id: (context) => const EmailScreen(),
+        AccessCodeScreen.id: (context) => AccessCodeScreen(),
       },
     );
   }

@@ -1,5 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:facebook_app_events/facebook_app_events.dart';
+// import 'package:facebook_app_events/facebook_app_events.dart';
 import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 enum Screen {
@@ -48,7 +48,7 @@ enum Event {
 }
 
 class Analytics {
-  static FacebookAppEvents facebookAppEvents = FacebookAppEvents();
+  // static FacebookAppEvents facebookAppEvents = FacebookAppEvents();
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   static FirebaseAnalyticsObserver observer =
       FirebaseAnalyticsObserver(analytics: analytics);
@@ -61,15 +61,15 @@ class Analytics {
       return;
     }
 
-    await analytics.logEvent(
-      name: enumToString(event),
-      parameters: params,
-    );
-
-    await facebookAppEvents.logEvent(
-      name: enumToString(event),
-      parameters: params,
-    );
+    // await analytics.logEvent(
+    //   name: enumToString(event),
+    //   parameters: params,
+    // );
+    //
+    // await facebookAppEvents.logEvent(
+    //   name: enumToString(event),
+    //   parameters: params,
+    // );
   }
 
   static Future<void> sendAppOpen() async {
@@ -77,7 +77,7 @@ class Analytics {
       return;
     }
 
-    await analytics.logAppOpen();
+    // await analytics.logAppOpen();
     // await facebookAppEvents.logActivatedApp();
   }
 
@@ -86,8 +86,8 @@ class Analytics {
       return;
     }
 
-    await analytics.logTutorialBegin();
-    await facebookAppEvents.logEvent(name: enumToString(Event.tutorial_begin));
+    // await analytics.logTutorialBegin();
+    // await facebookAppEvents.logEvent(name: enumToString(Event.tutorial_begin));
   }
 
   static Future<void> sendTutorialComplete() async {
@@ -95,8 +95,8 @@ class Analytics {
       return;
     }
 
-    await analytics.logTutorialComplete();
-    await facebookAppEvents.logEvent(name: 'fb_mobile_tutorial_completion');
+    // await analytics.logTutorialComplete();
+    // await facebookAppEvents.logEvent(name: 'fb_mobile_tutorial_completion');
   }
 
   static Future<void> sendBeginCheckout(
@@ -105,18 +105,18 @@ class Analytics {
       return;
     }
 
-    await analytics.logBeginCheckout(
-      value: price,
-      currency: currency,
-    );
-
-    await facebookAppEvents.logEvent(
-      name: 'fb_mobile_initiated_checkout',
-      parameters: {
-        FacebookAppEvents.paramNameContent: price,
-        'fb_currency': currency,
-      },
-    );
+    // await analytics.logBeginCheckout(
+    //   value: price,
+    //   currency: currency,
+    // );
+    //
+    // await facebookAppEvents.logEvent(
+    //   name: 'fb_mobile_initiated_checkout',
+    //   parameters: {
+    //     FacebookAppEvents.paramNameContent: price,
+    //     'fb_currency': currency,
+    //   },
+    // );
   }
 
   static Future<void> setUserId(String userId) async {
@@ -125,8 +125,8 @@ class Analytics {
     }
 
     // await analytics.setUserId({id: userId});
-    await facebookAppEvents.setUserID(userId);
-    FlutterBranchSdk.setIdentity(userId);
+    // await facebookAppEvents.setUserID(userId);
+    // FlutterBranchSdk.setIdentity(userId);
   }
 
   static Future<void> sendCurrentScreen(Screen screen) async {
@@ -134,15 +134,15 @@ class Analytics {
       return;
     }
 
-    await observer.analytics.setCurrentScreen(
-      screenName: enumToString(screen),
-    );
-    await facebookAppEvents.logEvent(
-      name: enumToString(Event.current_screen),
-      parameters: {
-        'screenName': enumToString(screen),
-      },
-    );
+    // await observer.analytics.setCurrentScreen(
+    //   screenName: enumToString(screen),
+    // );
+    // await facebookAppEvents.logEvent(
+    //   name: enumToString(Event.current_screen),
+    //   parameters: {
+    //     'screenName': enumToString(screen),
+    //   },
+    // );
   }
 
   static Future<void> sendCurrentTab(int index) async {

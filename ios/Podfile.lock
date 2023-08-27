@@ -8,17 +8,6 @@ PODS:
     - Flutter
   - devicelocale (0.0.1):
     - Flutter
-  - facebook_app_events (0.0.1):
-    - FBAudienceNetwork (~> 6.12)
-    - FBSDKCoreKit (~> 16.0)
-    - Flutter
-  - FBAEMKit (16.1.3):
-    - FBSDKCoreKit_Basics (= 16.1.3)
-  - FBAudienceNetwork (6.14.0)
-  - FBSDKCoreKit (16.1.3):
-    - FBAEMKit (= 16.1.3)
-    - FBSDKCoreKit_Basics (= 16.1.3)
-  - FBSDKCoreKit_Basics (16.1.3)
   - Firebase/Analytics (10.12.0):
     - Firebase/Core
   - Firebase/Auth (10.12.0):
@@ -269,7 +258,6 @@ DEPENDENCIES:
   - background_fetch (from `.symlinks/plugins/background_fetch/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - devicelocale (from `.symlinks/plugins/devicelocale/ios`)
-  - facebook_app_events (from `.symlinks/plugins/facebook_app_events/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -302,10 +290,6 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - BranchSDK
-    - FBAEMKit
-    - FBAudienceNetwork
-    - FBSDKCoreKit
-    - FBSDKCoreKit_Basics
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -340,8 +324,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/cloud_functions/ios"
   devicelocale:
     :path: ".symlinks/plugins/devicelocale/ios"
-  facebook_app_events:
-    :path: ".symlinks/plugins/facebook_app_events/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_auth:
@@ -404,11 +386,6 @@ SPEC CHECKSUMS:
   BranchSDK: 8749d10e30725d08b6c188ab90e6fd6223d204db
   cloud_functions: 19478d5af48098293778c254f64cf85ac8f1c1b8
   devicelocale: b22617f40038496deffba44747101255cee005b0
-  facebook_app_events: deb163f1f7fa13213192532bbc84ff0b0d798bc2
-  FBAEMKit: af2972f39bb0f3f7c45998f435b007833c32ffb2
-  FBAudienceNetwork: 03e273f66b70756be7d060927111af97b7641b06
-  FBSDKCoreKit: 19e2e18b3be578d7a51fed8fdd8c152bef0b9511
-  FBSDKCoreKit_Basics: dd9826ce3c9fd9f8cdf8dbbd0ef0a53e6c0c9e7e
   Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
   firebase_analytics: 3bdcd8b68b7b8ccf28bbcdcfb994309f6232f873
   firebase_auth: 604e47908bc2dcd7baa113bbd37ab74000bff488

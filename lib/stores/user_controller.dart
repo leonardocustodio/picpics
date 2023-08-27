@@ -537,6 +537,8 @@ class UserController extends GetxController {
     currentUser.email = value;
     currentUser.save(); */
 
+    print('setting email: $value');
+
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
       email: drift.Value(value),
@@ -609,7 +611,8 @@ class UserController extends GetxController {
     /* var userBox = Hive.box('userkey');
     userBox.delete(0); */
     final user = await database.getSingleMoorUser();
-    await database.updateMoorUser(user!.copyWith(secretKey: const drift.Value('')));
+    await database
+        .updateMoorUser(user!.copyWith(secretKey: const drift.Value('')));
 
     print('Deleted encrypted info!');
   }

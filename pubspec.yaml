@@ -1,7 +1,7 @@
 name: picPics
 description: picPics Application
 publish_to: 'none'
-version: 2.0.0+2
+version: 2.0.0+3
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -38,7 +38,7 @@ dependencies:
   sqlite3_flutter_libs: ^0.5.16
   image: ^4.0.17
   flutter_branch_sdk: ^6.7.0
-  facebook_app_events: ^0.19.0
+#  facebook_app_events: ^0.19.0
   flutter_secure_storage: ^8.0.0
   home_widget: ^0.3.0
   flutter_local_notifications: ^15.1.1

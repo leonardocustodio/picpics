@@ -37,7 +37,8 @@ class PhotoCard extends StatefulWidget {
   final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
-  const PhotoCard({super.key, 
+  const PhotoCard({
+    super.key,
     required this.picStore,
     //this.showEditTagModal,
     //this.showDeleteSecretModal,
@@ -299,7 +300,8 @@ class _PhotoCardState extends State<PhotoCard> {
                         /* GalleryStore.to
                                 .setInitialSelectedThumbnail(picStore); */
                         var result = Get.to(() => PhotoScreen(
-                            picIdList: const [], picId: picStore.photoId.value));
+                            picIdList: const [],
+                            picId: picStore.photoId.value));
                         if (null == result) {
                           refresh_everything();
                         }
@@ -318,58 +320,62 @@ class _PhotoCardState extends State<PhotoCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
+                    // CupertinoButton(
+                    //   padding: const EdgeInsets.all(0),
+                    //   onPressed: () {
+                    //     Get.to(() => AddLocationScreen(picStore));
+                    //   },
+                    //   child: Obx(() {
+                    //     return RichText(
+                    //       textScaleFactor: 1.0,
+                    //       text: TextSpan(
+                    //         children: [
+                    //           TextSpan(
+                    //             text: picStore.specificLocation.value
+                    //                     ?.toString() ??
+                    //                 LangControl.to.S.value.photo_location,
+                    //             style: const TextStyle(
+                    //               fontFamily: 'Lato',
+                    //               color: Color(0xff606566),
+                    //               fontSize: 18,
+                    //               fontWeight: FontWeight.w400,
+                    //               fontStyle: FontStyle.normal,
+                    //               letterSpacing: -0.4099999964237213,
+                    //             ),
+                    //           ),
+                    //           TextSpan(
+                    //             text:
+                    //                 '  ${picStore.generalLocation.value ?? LangControl.to.S.value.country}',
+                    //             style: const TextStyle(
+                    //               fontFamily: 'Lato',
+                    //               color: Color(0xff606566),
+                    //               fontSize: 12,
+                    //               fontWeight: FontWeight.w300,
+                    //               fontStyle: FontStyle.normal,
+                    //               letterSpacing: -0.4099999964237213,
+                    //             ),
+                    //           ),
+                    //         ],
+                    //       ),
+                    //     );
+                    //   }),
+                    // ),
                     CupertinoButton(
+                      onPressed: null,
                       padding: const EdgeInsets.all(0),
-                      onPressed: () {
-                        Get.to(() => AddLocationScreen(picStore));
-                      },
-                      child: Obx(() {
-                        return RichText(
-                          textScaleFactor: 1.0,
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: picStore.specificLocation.value
-                                        ?.toString() ??
-                                    LangControl.to.S.value.photo_location,
-                                style: const TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                              TextSpan(
-                                text:
-                                    '  ${picStore.generalLocation.value ?? LangControl.to.S.value.country}',
-                                style: const TextStyle(
-                                  fontFamily: 'Lato',
-                                  color: Color(0xff606566),
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w300,
-                                  fontStyle: FontStyle.normal,
-                                  letterSpacing: -0.4099999964237213,
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }),
-                    ),
-                    Text(
-                      dateFormat(picStore.createdAt),
-                      textScaleFactor: 1.0,
-                      style: const TextStyle(
-                        fontFamily: 'Lato',
-                        color: Color(0xff606566),
-                        fontSize: 14.5,
-                        fontWeight: FontWeight.w300,
-                        fontStyle: FontStyle.normal,
-                        letterSpacing: -0.4099999964237213,
+                      child: Text(
+                        dateFormat(picStore.createdAt),
+                        textScaleFactor: 1.0,
+                        style: const TextStyle(
+                          fontFamily: 'Lato',
+                          color: Color(0xff606566),
+                          fontSize: 14.5,
+                          fontWeight: FontWeight.w300,
+                          fontStyle: FontStyle.normal,
+                          letterSpacing: -0.4099999964237213,
+                        ),
                       ),
                     ),
                   ],
@@ -458,8 +464,8 @@ class _PhotoCardState extends State<PhotoCard> {
                             ),
                             const Center(
                               child: Padding(
-                                padding: EdgeInsets.only(
-                                    top: 32.0, bottom: 32.0),
+                                padding:
+                                    EdgeInsets.only(top: 32.0, bottom: 32.0),
                                 child: CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                       kSecondaryColor),
