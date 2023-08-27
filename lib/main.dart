@@ -27,6 +27,7 @@ import 'package:picPics/stores/percentage_dialog_controller.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 
+import 'firebase_options.dart';
 import 'screens/all_tags_screen.dart';
 import 'screens/settings_screen.dart';
 import 'stores/database_controller.dart';
@@ -84,21 +85,17 @@ void main() async {
 
   // CloudFunctions.instance.useFunctionsEmulator(origin: Platform.isAndroid ? 'http://10.0.2.2:5001' : 'http://localhost:5001');
 
-  await Firebase.initializeApp();
-  // await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-
-  /// TODO: change to this ---->     kDebugMode ? false : true
-  await FirebaseCrashlytics.instance
-      .setCrashlyticsCollectionEnabled(kDebugMode ? false : false);
-
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-  Isolate.current.addErrorListener(RawReceivePort((pair) async {
-    final List<dynamic> errorAndStacktrace = pair;
-    await FirebaseCrashlytics.instance.recordError(
-      errorAndStacktrace.first,
-      errorAndStacktrace.last,
-    );
-  }).sendPort);
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FlutterError.onError = (errorDetails) {
+    FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
+  };
+  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+  PlatformDispatcher.instance.onError = (error, stack) {
+    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+    return true;
+  };
 
   /* if (Platform.isIOS) {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
@@ -124,13 +121,12 @@ void main() async {
   print('Has setted app group: $setAppGroup');
 
   await BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
-  runZonedGuarded<void>(() {
-    runApp(
-      PicPicsApp(
-        user: user,
-      ),
-    );
-  }, FirebaseCrashlytics.instance.recordError);
+
+  runApp(
+    PicPicsApp(
+      user: user,
+    ),
+  );
 }
 
 class PicPicsApp extends StatefulWidget {

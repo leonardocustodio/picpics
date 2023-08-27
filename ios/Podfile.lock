@@ -1,5 +1,5 @@
 PODS:
-  - background_fetch (1.2.0):
+  - background_fetch (1.2.1):
     - Flutter
   - BranchSDK (2.2.0)
   - cloud_functions (4.4.0):
@@ -45,7 +45,7 @@ PODS:
     - Firebase/Analytics (= 10.12.0)
     - firebase_core
     - Flutter
-  - firebase_auth (4.7.3):
+  - firebase_auth (4.8.0):
     - Firebase/Auth (= 10.12.0)
     - firebase_core
     - Flutter
@@ -56,7 +56,7 @@ PODS:
     - Firebase/Crashlytics (= 10.12.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (14.6.6):
+  - firebase_messaging (14.6.7):
     - Firebase/Messaging (= 10.12.0)
     - firebase_core
     - Flutter
@@ -247,18 +247,18 @@ PODS:
   - shared_preferences_foundation (0.0.1):
     - Flutter
     - FlutterMacOS
-  - sqlite3 (3.41.2):
-    - sqlite3/common (= 3.41.2)
-  - sqlite3/common (3.41.2)
-  - sqlite3/fts5 (3.41.2):
+  - sqlite3 (3.43.0):
+    - sqlite3/common (= 3.43.0)
+  - sqlite3/common (3.43.0)
+  - sqlite3/fts5 (3.43.0):
     - sqlite3/common
-  - sqlite3/perf-threadsafe (3.41.2):
+  - sqlite3/perf-threadsafe (3.43.0):
     - sqlite3/common
-  - sqlite3/rtree (3.41.2):
+  - sqlite3/rtree (3.43.0):
     - sqlite3/common
   - sqlite3_flutter_libs (0.0.1):
     - Flutter
-    - sqlite3 (~> 3.41.2)
+    - sqlite3 (~> 3.43.0)
     - sqlite3/fts5
     - sqlite3/perf-threadsafe
     - sqlite3/rtree
@@ -400,7 +400,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/url_launcher_ios/ios"
 
 SPEC CHECKSUMS:
-  background_fetch: 79229f3677f19e1851b8e46d051720842e25a7fc
+  background_fetch: 896944864b038d2837fc750d470e9841e1e6a363
   BranchSDK: 8749d10e30725d08b6c188ab90e6fd6223d204db
   cloud_functions: 19478d5af48098293778c254f64cf85ac8f1c1b8
   devicelocale: b22617f40038496deffba44747101255cee005b0
@@ -411,10 +411,10 @@ SPEC CHECKSUMS:
   FBSDKCoreKit_Basics: dd9826ce3c9fd9f8cdf8dbbd0ef0a53e6c0c9e7e
   Firebase: 07150e75d142fb9399f6777fa56a187b17f833a0
   firebase_analytics: 3bdcd8b68b7b8ccf28bbcdcfb994309f6232f873
-  firebase_auth: 95f4a6acafa6a7a0d902aa467dd4d7ca336ee4be
+  firebase_auth: 604e47908bc2dcd7baa113bbd37ab74000bff488
   firebase_core: 4a3246a02f828a01c74a2c26427037786d90f17f
   firebase_crashlytics: df144edf7d04ace42beb3a3e29d825bfa49dd04b
-  firebase_messaging: 13b378c8449cae7ec96c79570170943dd73d4738
+  firebase_messaging: 0b4f7997f491343b90d9300af54fe55c72135833
   firebase_remote_config: 7a8dac1be55303b927ddda80c882f329c6de6b80
   FirebaseABTesting: e1535073fac4ff55c7537a6e041155c72d9e6906
   FirebaseAnalytics: 0270389efbe3022b54ec4588862dabec3477ee98
@@ -460,8 +460,8 @@ SPEC CHECKSUMS:
   share_extend: b6748dc53695587891126a89533b862b92548c7b
   share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
-  sqlite3: fd89671d969f3e73efe503ce203e28b016b58f68
-  sqlite3_flutter_libs: 04ba0d14a04335a2fbf9a331e8664f401fbccdd5
+  sqlite3: 7afcf055d3700254769a4dcba56f27d26b5515c9
+  sqlite3_flutter_libs: 878ccbdcfd7b7cb41a774ec238223d876880c5ec
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
 
 PODFILE CHECKSUM: 4e8f8b2be68aeea4c0d5beb6ff1e79fface1d048
