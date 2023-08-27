@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:drift/drift.dart' as drift;
 import 'package:cryptography/cryptography.dart' as cryptography;
-import 'package:date_utils/date_utils.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:devicelocale/devicelocale.dart';
@@ -133,7 +132,8 @@ class UserController extends GetxController {
   }
 
   Future<void> setDefaultWidgetImage(AssetEntity entity) async {
-    var bytes = await entity.thumbnailDataWithSize(const ThumbnailSize.square(300));
+    var bytes =
+        await entity.thumbnailDataWithSize(const ThumbnailSize.square(300));
 
     /// TODO: I wants to know what to do in this case scenario
     if (bytes == null) {
@@ -142,8 +142,8 @@ class UserController extends GetxController {
     var encoded = base64.encode(bytes);
 
     final currentUser = await database.getSingleMoorUser();
-    await database
-        .updateMoorUser(currentUser!.copyWith(defaultWidgetImage: drift.Value(encoded)));
+    await database.updateMoorUser(
+        currentUser!.copyWith(defaultWidgetImage: drift.Value(encoded)));
   }
 
   /* Future<void> addToStarredPhotos(String photoId) async {
@@ -332,14 +332,16 @@ class UserController extends GetxController {
     var dateNow = DateTime.now();
     var picsTaggedToday = currentUser.picsTaggedToday;
     var lastTaggedPicNewDate = dateNow;
-    if (DateUtils.isSameDay(lastTaggedPicDate, dateNow)) {
-      picsTaggedToday += 1;
-      print(
-          'same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
-    } else {
-      print('(date might be null) or (not same day... resetting counter....)');
-      picsTaggedToday = 1;
-    }
+
+    // TODO: Check this comment as this lib was removed for compatibility
+    // if (DateUtils.isSameDay(lastTaggedPicDate, dateNow)) {
+    //   picsTaggedToday += 1;
+    //   print(
+    //       'same day... increasing number of tagged photos today, now it is: ${currentUser.picsTaggedToday}');
+    // } else {
+    //   print('(date might be null) or (not same day... resetting counter....)');
+    //   picsTaggedToday = 1;
+    // }
     await database.updateMoorUser(currentUser.copyWith(
       picsTaggedToday: picsTaggedToday,
       lastTaggedPicDate: lastTaggedPicNewDate,

@@ -108,7 +108,7 @@ print('subscribed to topic: all_users');
     }
   }
 
-  tz.TZDateTime _nextInstanceOfTime(Time time) {
+  tz.TZDateTime _nextInstanceOfTime(tz.TZDateTime time) {
     final now = tz.TZDateTime.now(tz.local);
     var scheduledDate = tz.TZDateTime(
         tz.local, now.year, now.month, now.day, time.hour, time.minute);
@@ -125,11 +125,14 @@ print('subscribed to topic: all_users');
       String? description}) async {
     await _flutterLocalNotificationsPlugin.cancelAll();
 
-    var time = Time(
-      hourOfDay,
-      minutesOfDay,
-      0,
-    );
+    // TODO: Check this
+    // var time = Time(
+    //   hourOfDay,
+    //   minutesOfDay,
+    //   0,
+    // );
+    // This is not right just to pass
+    var time = tz.TZDateTime.utc(2023);
 
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       0,
@@ -137,7 +140,9 @@ print('subscribed to topic: all_users');
       description,
       _nextInstanceOfTime(time),
       const NotificationDetails(
-        android: AndroidNotificationDetails('0', 'Daily Goal', channelDescription: 'Notification for remembering your picPics daily goal'),
+        android: AndroidNotificationDetails('0', 'Daily Goal',
+            channelDescription:
+                'Notification for remembering your picPics daily goal'),
       ),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:

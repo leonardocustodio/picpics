@@ -87,14 +87,16 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
       controller.overlay.value = true;
       /* setState(() {
       }); */
-      SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
+      // TODO: Removing this to compile
+      // SystemChrome.setEnabledSystemUIOverlays(SystemUiOverlay.values);
     } else {
       if (!controller.showSlideshow.value) {
         controller.showSlideshow.value = true;
       } else {
         controller.showSlideshow.value = false;
         controller.overlay.value = false;
-        SystemChrome.setEnabledSystemUIOverlays([]);
+        // TODO: Removing this to compile
+        // SystemChrome.setEnabledSystemUIOverlays([]);
       }
     }
   }

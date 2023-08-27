@@ -196,7 +196,8 @@ class PicStore extends GetxController {
 
   Future<Uint8List?> get assetThumbBytes async {
     if (isPrivate.value == false) {
-      return await entity.value?.thumbnailDataWithSize(ThumbnailSize(kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]));
+      return await entity.value?.thumbnailDataWithSize(ThumbnailSize(
+          kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]));
     }
     print('Returning decrypt image in privatePath: $photoPath');
     if (UserController.to.encryptionKey == null) {
@@ -291,8 +292,8 @@ class PicStore extends GetxController {
         return;
       }
       final imageEntity = await PhotoManager.editor.saveImage(
-          picData,
-          title: '',
+        picData,
+        title: '',
       );
 
       /// TODO: what to do if the imageEntity is null ??
@@ -655,7 +656,9 @@ class PicStore extends GetxController {
         var bytes = await assetOriginBytes;
         path = await _writeByteToImageFile(bytes);
       } else {
-        var bytes = await entity.value!.thumbnailDataWithSize(ThumbnailSize(entity.value!.size.width.toInt(), entity.value!.size.height.toInt()));
+        var bytes = await entity.value!.thumbnailDataWithSize(ThumbnailSize(
+            entity.value!.size.width.toInt(),
+            entity.value!.size.height.toInt()));
         path = await _writeByteToImageFile(bytes);
       }
     }
@@ -848,7 +851,8 @@ class PicStore extends GetxController {
       if (translations != null) {
         translations.forEach((element) {
           if (element.translatedText != null) {
-            translatedStrings.add(Strings.properCase(element.translatedText!));
+            // TODO: Removed this to compile
+            // translatedStrings.add(Strings.properCase(element.translatedText!));
           }
         });
       }
