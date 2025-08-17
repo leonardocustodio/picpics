@@ -5,6 +5,7 @@ import 'package:picPics/constants.dart';
 
 import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class DeleteSecretModal extends StatefulWidget {
   final Function() onPressedClose;
@@ -27,7 +28,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    print('Width: $width');
+    AppLogger.d('Width: $width');
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -55,7 +56,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                     opacity: 0.0,
                     child: CupertinoButton(
                       onPressed: () {
-                        print('teste');
+                        AppLogger.d('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),

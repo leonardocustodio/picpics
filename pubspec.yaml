@@ -64,6 +64,7 @@ dependencies:
   googleapis_auth: ^2.0.0
   strings: ^4.0.1
   http: ^1.2.2
+  logger: ^2.5.0
   flutter_staggered_grid_view:
     git:
       url: https://github.com/suyulin/flutter_staggered_grid_view

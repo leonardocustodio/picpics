@@ -10,6 +10,7 @@ import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/login_store.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -182,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   TabsScreen.id, (route) => false);
                               return;
                             }
-                            print('next');
+                            AppLogger.d('next');
                             await swiperController.next(animation: true);
                           },
                           padding: const EdgeInsets.all(0),

@@ -12,6 +12,7 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/top_bar.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
   const TaggedPicsInDeviceWithSearchOption({super.key});
@@ -75,7 +76,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                         .removeTagKeyFromFiltering(tagKey);
                                   },
                                   onDoubleTap: (String tagKey) {
-                                    print('do nothing');
+                                    AppLogger.d('do nothing');
                                   },
                                   // showEditTagModal: showEditTagModal,
                                 ),
@@ -129,10 +130,10 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                                             searchEditingController.text); */
                                       },
                                       onDoubleTap: (String tagKey) {
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                       onPanEnd: (String tagKey) {
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                     ),
                                   )

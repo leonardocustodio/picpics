@@ -14,6 +14,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -68,8 +69,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
           offerings.current!.availablePackages.isNotEmpty) {
         getOfferingError = null;
 
-        print(offerings.current!.availablePackages);
-        print(offerings.getOffering('full_subscription')!.availablePackages);
+        AppLogger.d(offerings.current!.availablePackages);
+        AppLogger.d(offerings.getOffering('full_subscription')!.availablePackages);
 
         setState(() {
           _items =
@@ -97,8 +98,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
         if (UserController.to.tryBuyId != null) {
           if (getPackage != null) {
-            print(getPackage);
-            print('making purchase!!!');
+            AppLogger.d(getPackage);
+            AppLogger.d('making purchase!!!');
             makePurchase(context, getPackage);
 
             UserController.to.setTryBuyId(null);
@@ -106,7 +107,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         }
       }
     } on Exception catch (e) {
-      print('Error has occurred: ${e.toString()}');
+      AppLogger.d('Error has occurred: ${e.toString()}');
       if (e is PlatformException) {
         var errorCode = PurchasesErrorHelper.getErrorCode(e);
         if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
@@ -185,7 +186,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             isLoading = false;
           });
           // Unlock that great "pro" content
-          print('now you are fucking pro!');
+          AppLogger.d('now you are fucking pro!');
           await UserController.to.setIsPremium(true);
           // Get.back();
           await Navigator.pushNamedAndRemoveUntil(
@@ -210,7 +211,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      print('Could not launch $url');
+      AppLogger.d('Could not launch $url');
     }
   }
 
@@ -471,7 +472,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       }
     }
 
-    print(yearSub);
+    AppLogger.d(yearSub);
     var daysFree = yearSub?.product.introductoryPrice == null
         ? 3
         : yearSub!.product.introductoryPrice!.introPricePeriodNumberOfUnits;
@@ -651,7 +652,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     var save = yearSubs == null || monthSubs == null
         ? 0
         : 100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
-    print('Save: $save');
+    AppLogger.d('Save: $save');
 
     return Column(
       children: [

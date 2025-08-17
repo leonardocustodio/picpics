@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class ConfirmPicDelete extends StatelessWidget {
   final String deleteText;
@@ -45,7 +46,7 @@ class ConfirmPicDelete extends StatelessWidget {
                     child: CupertinoButton(
                       onPressed: () {
                         Get.back();
-                        print('teste');
+                        AppLogger.d('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),

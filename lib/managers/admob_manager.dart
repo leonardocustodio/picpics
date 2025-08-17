@@ -1,3 +1,5 @@
+import 'package:picPics/utils/app_logger.dart';
+
 /* import 'dart:io';
 
 class Ads {
@@ -10,12 +12,12 @@ class Ads {
 
   static void initialize() {
     // FirebaseAdMob.instance.initialize(appId: kDebugMode ? FirebaseAdMob.testAppId : appId);
-    print('Did initialize admob!!!');
+    AppLogger.d('Did initialize admob!!!');
   }
 
   static void loadRewarded() {
     // RewardedVideoAd.instance.load(adUnitId: kDebugMode ? RewardedVideoAd.testAdUnitId : rewardedId, targetingInfo: targetingInfo).catchError((e) {
-    //print(e.toString());
+    //AppLogger.d(e.toString());
     // }).then((value) {
     //   DatabaseManager.instance.adsIsLoaded = true;
     //   if (DatabaseManager.instance.showShowAdAfterReload) {

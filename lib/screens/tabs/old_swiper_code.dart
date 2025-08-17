@@ -1,3 +1,5 @@
+import 'package:picPics/utils/app_logger.dart';
+
 /*                            Swiper(
                               controller: swiperController,
                               loop: true,
@@ -6,14 +8,14 @@
                               onIndexChanged: (index) async {
                                 DatabaseManager.instance.setSwiperIndex(index);
                                 picSwiper = index;
-print('picSwiper = $index');
+AppLogger.d('picSwiper = $index');
                                 bool shouldShowAds = await DatabaseManager.instance.increaseTodayTaggedPics();
                                 if (shouldShowAds) {
                                   showWatchAdModal(context);
                                 }
                               },
                               itemBuilder: (BuildContext context, int index) {
-print('calling index $index');
+AppLogger.d('calling index $index');
                                 return _buildPhotoSlider(context, index);
                               },
                               layout: SwiperLayout.DEFAULT,

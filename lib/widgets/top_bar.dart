@@ -8,6 +8,7 @@ import 'package:picPics/screens/settings_screen.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/secret_switch.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 typedef OnUntag = Function();
 
@@ -49,7 +50,7 @@ class TopBar extends StatelessWidget {
                   child: FocusScope(
                     child: Focus(
                       onFocusChange: (focus) {
-                        print('hasFocus: $focus');
+                        AppLogger.d('hasFocus: $focus');
                         /* if (TagsController.to.isSearching.value == false) {
                           TagsController.to.setIsSearching(true);
                           TagsController.to.tagsSuggestionsCalculate();
@@ -71,12 +72,12 @@ class TopBar extends StatelessWidget {
                             controller: searchEditingController,
                             focusNode: searchFocusNode,
                             onChanged: (text) {
-                              print('searching: $text');
+                              AppLogger.d('searching: $text');
                               onChanged?.call(text);
                               /* TagsController.to.searchText.value = text; */
                             },
                             onSubmitted: (text) {
-                              print('return');
+                              AppLogger.d('return');
                               onSubmitted?.call(text);
                               searchEditingController?.clear();
                               /* TagsController.to.searchTagsResults.clear(); */
@@ -125,7 +126,7 @@ class TopBar extends StatelessWidget {
                         child: SecretSwitch(
                             value: privateController.showPrivate.value,
                             onChanged: (value) {
-                              print('turn off');
+                              AppLogger.d('turn off');
                               privateController.switchSecretPhotos();
                             }),
                       )

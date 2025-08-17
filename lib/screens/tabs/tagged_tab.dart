@@ -10,6 +10,7 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore_for_file: must_be_immutable, unused_field
 class TaggedTab extends GetView<TaggedController> {
@@ -24,27 +25,27 @@ class TaggedTab extends GetView<TaggedController> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        print('WillPopScope  taggedTab');
+        AppLogger.d('WillPopScope  taggedTab');
         if (tabsController.multiTagSheet.value) {
-          print('WillPopScope  multiTagSheet');
+          AppLogger.d('WillPopScope  multiTagSheet');
           tabsController.multiTagSheet.value = false;
           return false;
         }
         if (tabsController.multiPicBar.value) {
-          print('WillPopScope  multiPicBar');
+          AppLogger.d('WillPopScope  multiPicBar');
           tabsController.multiPicBar.value = false;
           return false;
         }
         if (tagsController.isSearching.value) {
-          print('WillPopScope  isSearching');
+          AppLogger.d('WillPopScope  isSearching');
           tagsController.isSearching.value = false;
           return false;
         }
         /* if (tabsController.currentTab.value != 0) {
-          print('WillPopScope  currentTab');
+          AppLogger.d('WillPopScope  currentTab');
           return false;
         } */
-        print('WillPopScope  currentTab = 0');
+        AppLogger.d('WillPopScope  currentTab = 0');
         tabsController.currentTab.value = 0;
         return false;
       },
@@ -87,12 +88,12 @@ class TaggedTab extends GetView<TaggedController> {
                       return NotificationListener<ScrollNotification>(
                         onNotification: (scrollNotification) {
                           if (scrollNotification is ScrollStartNotification) {
-                            print('Start scrolling');
+                            AppLogger.d('Start scrolling');
                             TaggedController.to.setIsScrolling(true);
                             return true;
                           } else if (scrollNotification
                               is ScrollEndNotification) {
-                            print('End scrolling');
+                            AppLogger.d('End scrolling');
                             TaggedController.to.setIsScrolling(false);
                           }
                           return false;

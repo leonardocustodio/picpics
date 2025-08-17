@@ -10,6 +10,7 @@ import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/photo_widget.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 final height = (Get.width / 3) - 20;
 
@@ -59,7 +60,7 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
             final blurHash = BlurHashController.to.blurHash[showingPicId];
             final ignore = tagsController.isSearching.value &&
                 tagsController.selectedFilteringTagsKeys[tagKey] == null;
-            print('$ignore');
+            AppLogger.d('$ignore');
             return IgnorePointer(
               ignoring: ignore,
               child: Opacity(

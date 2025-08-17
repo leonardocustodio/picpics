@@ -12,6 +12,7 @@ import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pin_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class EmailStore extends GetxController {
   final isLoading = false.obs;
@@ -57,16 +58,16 @@ class _EmailScreenState extends State<EmailScreen> {
       UserController.to.setWaitingAccessCode(true);
       await Get.toNamed(PinScreen.id);
     } else {
-      print('Result: $result');
+      AppLogger.d('Result: $result');
       if ((result['errorCode'] as FirebaseAuthException).code ==
           'email-already-in-use') {
         PinController.to.showErrorModal(
             'This e-mail is already in use by another account.');
-        print('Error !!!');
+        AppLogger.d('Error !!!');
       } else {
         PinController.to
             .showErrorModal('An error has occured. Please try again!');
-        print('Error !!!');
+        AppLogger.d('Error !!!');
       }
     }
   }
@@ -74,7 +75,7 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    print('Height: ${size.height} - Width: ${size.width}');
+    AppLogger.d('Height: ${size.height} - Width: ${size.width}');
 
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(

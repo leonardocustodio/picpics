@@ -1,6 +1,7 @@
 import 'package:home_widget/home_widget.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class WidgetManager {
   static AppDatabase appDatabase = AppDatabase();
@@ -9,19 +10,19 @@ class WidgetManager {
     for (var store in picsStores) {
       await store.switchIsStarred();
     }
-    //print('Setted is starred to true');
+    //AppLogger.d('Setted is starred to true');
   }
 
   static Future<void> sendAndUpdate() async {
-    //print('Sending data to widget');
+    //AppLogger.d('Sending data to widget');
     await _sendData();
     await _updateWidget();
-    //print('Finished sending data');
+    //AppLogger.d('Finished sending data');
   }
 
   static Future<void> _sendData() async {
     try {
-      //print('Future send data');
+      //AppLogger.d('Future send data');
 
       //var userBox = await Hive.openBox('user');
       //var picsBox = await Hive.openBox('pics');
@@ -29,7 +30,7 @@ class WidgetManager {
       await appDatabase.getSingleMoorUser();
 
       /* final starredPhotos = currentUser.starredPhotos; */
-      //print('Number of starred photos: ${starredPhotos.length}');
+      //AppLogger.d('Number of starred photos: ${starredPhotos.length}');
 /* 
       String? baseString;
 
@@ -38,29 +39,29 @@ class WidgetManager {
       } else {
         final rand = Random();
         final randInt = rand.nextInt(starredPhotos.length);
-        //print('Sorted number for widget: $randInt');
+        //AppLogger.d('Sorted number for widget: $randInt');
 
         final pic = await appDatabase
             .getPhotoByPhotoId(starredPhotos.keys.toList()[randInt]);
-        //print('Base64: ${pic.base64encoded}');
+        //AppLogger.d('Base64: ${pic.base64encoded}');
         baseString = pic?.base64encoded;
       }
       if (baseString == null) {
         return;
       }
 
-      //print('Send base string!');
+      //AppLogger.d('Send base string!');
       await Future.wait(
           [HomeWidget.saveWidgetData<String>('imageEncoded', baseString)]); */
       return;
     } catch (exception) {
-      //print('Error Sending Data. $exception');
+      //AppLogger.d('Error Sending Data. $exception');
     }
   }
 
   static Future<void> _updateWidget() async {
     try {
-      //print('Future update widget');
+      //AppLogger.d('Future update widget');
       await HomeWidget.updateWidget(
         name: 'PicsWidgetProvider',
         androidName: 'PicsWidgetProvider',
@@ -68,9 +69,9 @@ class WidgetManager {
       );
       return;
     } catch (exception) {
-      //print('Error Updating Widget. $exception');
+      //AppLogger.d('Error Updating Widget. $exception');
     }
-    //print('After return in update widget');
+    //AppLogger.d('After return in update widget');
   }
 
   // Future<void> _loadData() async {
@@ -83,7 +84,7 @@ class WidgetManager {
   //           .then((value) => _messageController.text = value),
   //     ]);
   //   } catch (exception) {
-  //     debug//print('Error Getting Data. $exception');
+  //     debug//AppLogger.d('Error Getting Data. $exception');
   //   }
   // }
 }

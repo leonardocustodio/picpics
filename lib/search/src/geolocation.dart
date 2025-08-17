@@ -1,3 +1,5 @@
+import 'package:picPics/utils/app_logger.dart';
+
 part of search_map_place;
 
 class Geolocation {
@@ -29,7 +31,7 @@ class Geolocation {
     try {
       return LatLng(_coordinates['lat'], _coordinates['lng']);
     } catch (e) {
-      print(
+      AppLogger.d(
           'You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with the latitude and longitude');
       return _coordinates;
     }
@@ -46,7 +48,7 @@ class Geolocation {
             LatLng(_bounds['northeast']['lat'], _bounds['northeast']['lng']),
       );
     } catch (e) {
-      print(
+      AppLogger.d(
           'You appear to not have the `google_maps_flutter` package installed. In this case, this method will return an object with southwest and northeast bounds');
       return _bounds;
     }

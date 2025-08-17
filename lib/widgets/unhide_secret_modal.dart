@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class UnhideSecretModal extends StatelessWidget {
   final Function() onPressedDelete;
@@ -44,7 +45,7 @@ class UnhideSecretModal extends StatelessWidget {
                     opacity: 0.0,
                     child: CupertinoButton(
                       onPressed: () {
-                        print('teste');
+                        AppLogger.d('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
@@ -64,7 +65,7 @@ class UnhideSecretModal extends StatelessWidget {
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      print('teste');
+                      AppLogger.d('teste');
                     },
                     child: Image.asset('lib/images/closegrayico.png'),
                   ),

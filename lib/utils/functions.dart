@@ -9,6 +9,7 @@ import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/widgets/delete_secret_modal.dart';
 import 'package:picPics/widgets/unhide_secret_modal.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 void showDeleteSecretModalForMultiPic() async {
   if (UserController.to.keepAskingToDelete.value == false) {
@@ -18,7 +19,7 @@ void showDeleteSecretModalForMultiPic() async {
     return;
   }
 
-  print('showModal');
+  AppLogger.d('showModal');
   await showDialog<void>(
     context: Get.context!,
     barrierDismissible: true,
@@ -60,7 +61,7 @@ Future<void> showDeleteSecretModal(
     return;
   }
 
-  print('showModal');
+  AppLogger.d('showModal');
   await showDialog<void>(
     context: Get.context!,
     barrierDismissible: true,

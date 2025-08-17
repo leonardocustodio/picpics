@@ -18,6 +18,7 @@ import 'dart:io';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const id = 'settings_Screen';
@@ -39,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      print('Could not launch $url');
+      AppLogger.d('Could not launch $url');
     }
   }
 
@@ -529,7 +530,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      print('do nothing');
+                      AppLogger.d('do nothing');
                     },
                     child: Container(),
                   ),

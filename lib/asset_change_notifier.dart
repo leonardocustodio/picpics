@@ -1,3 +1,5 @@
+import 'package:picPics/utils/app_logger.dart';
+
 //import 'package:flutter/cupertino.dart';
 //import 'package:flutter/services.dart';
 //import 'package:photo_manager/photo_manager.dart';
@@ -7,11 +9,11 @@
 //class AssetChangeNotifier {
 //  static void registerObserve() {
 //    try {
-/* print('%%%%%% Registered change notifier'); */
+/* AppLogger.d('%%%%%% Registered change notifier'); */
 //      PhotoManager.addChangeCallback(_onAssetChange);
 //      PhotoManager.startChangeNotify();
 //    } catch (e) {
-/* print('Error when registering assets callback: $e'); */
+/* AppLogger.d('Error when registering assets callback: $e'); */
 //    }
 //  }
 //
@@ -21,21 +23,21 @@
 //      PhotoManager.removeChangeCallback(_onAssetChange);
 //      PhotoManager.stopChangeNotify();
 //    } catch (e) {
-/* print('Error when unregistering assets callback: $e'); */
+/* AppLogger.d('Error when unregistering assets callback: $e'); */
 //    }
 //  }
 //
 //  static void _onAssetChange(MethodCall call) async {
-/* print('#!#!#!#!#!#! asset changed: ${call.arguments}'); */
+/* AppLogger.d('#!#!#!#!#!#! asset changed: ${call.arguments}'); */
 //
 //    List<dynamic> createdPics = call.arguments['create'];
 //    List<dynamic> deletedPics = call.arguments['delete'];
-//print(deletedPics);
+//AppLogger.d(deletedPics);
 //
 //    if (deletedPics.length > 0) {
-/* print('### deleted pics from library!'); */
+/* AppLogger.d('### deleted pics from library!'); */
 //      for (var pic in deletedPics) {
-/* print('Pic deleted Id: ${pic['id']}'); */
+/* AppLogger.d('Pic deleted Id: ${pic['id']}'); */
 ////        AssetPathProvider pathProvider = PhotoProvider.instance.pathProviderMap[PhotoProvider.instance.list[0]];
 ////        AssetEntity entity = pathProvider.orderedList.firstWhere((element) => element.id == pic['id'], orElse: () => null);
 ////
@@ -51,7 +53,7 @@
 //
 //    if (createdPics.length > 0) {
 //      for (var pic in createdPics) {
-/* print('Pic created Id: ${pic['id']}'); */
+/* AppLogger.d('Pic created Id: ${pic['id']}'); */
 //        AssetEntity picEntity = await AssetEntity.fromId(pic['id']);
 //        galleryStore.addEntity(picEntity);
 //      }

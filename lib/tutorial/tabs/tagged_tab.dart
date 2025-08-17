@@ -20,6 +20,7 @@ import 'package:picPics/widgets/toggle_bar.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TutsTaggedTab extends StatefulWidget {
   static const id = 'tuts_tagged_tab';
@@ -66,18 +67,18 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
   }
 
   void refreshItems(bool filtered) {
-    print('Calling refresh items!!!');
+    AppLogger.d('Calling refresh items!!!');
     if (isTitleWidget.isEmpty ||
         galleryStore.shouldRefreshTaggedGallery == true) {
       taggedItems = [];
       isTitleWidget = [];
 
-      print('Refreshing tagged library!!!!!');
+      AppLogger.d('Refreshing tagged library!!!!!');
       galleryStore.clearPicThumbnails();
 
       if (filtered) {
         if (galleryStore.filteredPics.isEmpty) {
-          print('Filtered Pics is empty');
+          AppLogger.d('Filtered Pics is empty');
           isTitleWidget.addAll([true, true]);
           taggedItems.addAll([null, null]);
         } else {
@@ -106,7 +107,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
 
           for (TaggedPicsStore taggedPicsStore in taggedPicsStores) {
             if (taggedPicsStore.pics.isEmpty) {
-              print('&&&& IS EMPTY &&&&');
+              AppLogger.d('&&&& IS EMPTY &&&&');
               isTitleWidget.add(true);
               taggedItems.add(taggedPicsStore);
               isTitleWidget.add(true);
@@ -132,14 +133,14 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
         }
       }
 
-      print('@@@@@ Tagged Items Length: ${taggedItems.length}');
+      AppLogger.d('@@@@@ Tagged Items Length: ${taggedItems.length}');
       galleryStore.setShouldRefreshTaggedGallery(false);
     }
   }
 
   Widget _buildTaggedGridView(BuildContext context) {
-    print('Rebuilding tagged gridview');
-    print('&&&&&&&&&&&&&&&&& Build grid items!!!');
+    AppLogger.d('Rebuilding tagged gridview');
+    AppLogger.d('&&&&&&&&&&&&&&&&& Build grid items!!!');
 
     double newPadding = 0.0;
     if (galleryStore.isSearching) {
@@ -154,10 +155,10 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollStartNotification) {
-          print('Start scrolling');
+          AppLogger.d('Start scrolling');
           tabsStore.setIsScrolling(true);
         } else if (scrollNotification is ScrollEndNotification) {
-          print('End scrolling');
+          AppLogger.d('End scrolling');
           tabsStore.setIsScrolling(false);
         }
         return;
@@ -245,7 +246,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
-    print('Date Time Formatting: $dateTime');
+    AppLogger.d('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
       formatter = DateFormat.MMMEd();
@@ -373,7 +374,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      print('LongPress');
+                      AppLogger.d('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -390,11 +391,11 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                             picStore: picStore,
                             picIsTagged: true,
                           );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          AppLogger.d('Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
-                        print('Selected photo: ${picStore.photoId}');
+                        AppLogger.d('Selected photo: ${picStore.photoId}');
                         galleryStore.setCurrentPic(picStore);
                         galleryStore.setInitialSelectedThumbnail(picStore);
                         Get.to(() =>  PhotoScreen());
@@ -531,7 +532,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
       if (refresh) {
         setState(() {
           refreshItems(galleryStore.searchingTagsKeys.isNotEmpty);
-          print('##### Rebuild everything!');
+          AppLogger.d('##### Rebuild everything!');
         });
       }
     });
@@ -647,7 +648,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                   tags: galleryStore.searchingTags.toList(),
                                   tagStyle: TagStyle.MultiColored,
                                   onTap: (tagId, tagName) {
-                                    print('do nothing');
+                                    AppLogger.d('do nothing');
                                     galleryStore.removeTagFromSearchFilter();
                                     if (galleryStore
                                             .searchingTagsKeys.isEmpty &&
@@ -664,7 +665,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                     }
                                   },
                                   onDoubleTap: () {
-                                    print('do nothing');
+                                    AppLogger.d('do nothing');
                                   },
                                   showEditTagModal: widget.showEditTagModal,
                                 ),
@@ -691,7 +692,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                             Observer(
                               builder: (_) {
                                 if (!galleryStore.showSearchTagsResults) {
-                                  print('############ ${galleryStore.tagsSuggestions}');
+                                  AppLogger.d('############ ${galleryStore.tagsSuggestions}');
 
                                   return Padding(
                                     padding: const EdgeInsets.only(
@@ -714,10 +715,10 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                             searchEditingController.text);
                                       },
                                       onDoubleTap: () {
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                       onPanEnd: () {
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                     ),
                                   );
@@ -763,10 +764,10 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                           searchEditingController.text);
                                     },
                                     onDoubleTap: () {
-                                      print('do nothing');
+                                      AppLogger.d('do nothing');
                                     },
                                     onPanEnd: () {
-                                      print('do nothing');
+                                      AppLogger.d('do nothing');
                                     },
                                   ),
                                 );
@@ -855,7 +856,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                             setState(() {
                               refreshItems(
                                   galleryStore.searchingTagsKeys.isNotEmpty);
-                              print('##### Rebuild everything!');
+                              AppLogger.d('##### Rebuild everything!');
                             });
                           }
                           tabsStore.setToggleIndexTagged(index);

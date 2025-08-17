@@ -20,6 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:extended_image/extended_image.dart';
 
 import 'all_tags_screen.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class PhotoScreenController extends GetxController {
   final overlay = true.obs;
@@ -526,14 +527,14 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                   Get.back();
                 },
                 onTap: (String tagKey) {
-                  print('ignore click');
+                  AppLogger.d('ignore click');
                 },
                 onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                 },
                 onPanEnd: (String tagKey) {
-                  print('teste');
+                  AppLogger.d('teste');
                 },
                 /* showEditTagModal: () =>
                                                     showEditTagModal(context, false), */
@@ -566,14 +567,14 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                   Get.back();
                 },
                 onTap: (String tagKey) {
-                  print('ignore click');
+                  AppLogger.d('ignore click');
                 },
                 onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                 },
                 onPanEnd: (String tagKey) {
-                  print('teste');
+                  AppLogger.d('teste');
                 },
                 /* showEditTagModal: () =>
                                                     showEditTagModal(context, false), */

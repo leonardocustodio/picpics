@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class DeviceHasNoPics extends StatelessWidget {
   final String message;
@@ -9,7 +10,7 @@ class DeviceHasNoPics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    print('Device Height: $height');
+    AppLogger.d('Device Height: $height');
 
     return Center(
       child: Column(

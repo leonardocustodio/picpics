@@ -11,6 +11,7 @@ import 'package:picPics/model/user.dart';
 import 'package:picPics/model/user_key.dart';
 import 'package:picPics/stores/database_controller.dart';
 import 'package:uuid/uuid.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 part 'app_database.g.dart';
 
@@ -187,7 +188,7 @@ LazyDatabase _openConnection() {
     // for your app.
     final dbFolder = await getApplicationSupportDirectory();
     //final path = p.join(dbFolder.path, 'db.sqlite');
-    //print('db:path:-$path');
+    //AppLogger.d('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return NativeDatabase(file, setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");

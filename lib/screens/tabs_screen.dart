@@ -1,3 +1,4 @@
+import 'package:picPics/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
@@ -28,7 +29,7 @@ class TabsScreen extends GetWidget<TabsController> {
   @override
   Widget build(BuildContext context) {
     final myLocale = Localizations.localeOf(context);
-    print('Language Code: ${myLocale.languageCode}');
+    AppLogger.d('Language Code: ${myLocale.languageCode}');
 
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     var height = MediaQuery.of(context).size.height;
@@ -44,6 +45,10 @@ class TabsScreen extends GetWidget<TabsController> {
               child: Stack(
                 children: <Widget>[
                   GetX<UserController>(builder: (userController) {
+                    AppLogger.i('[TabsScreen] Building with UserController:');
+                    AppLogger.d('  - hasGalleryPermission: ${userController.hasGalleryPermission.value}');
+                    AppLogger.d('  - tutorialCompleted: ${userController.tutorialCompleted.value}');
+                    
                     /* if (true || controller.isLoading.value) {
                         return Material(
                           color: Colors.black.withOpacity(0.7),
@@ -60,6 +65,7 @@ class TabsScreen extends GetWidget<TabsController> {
                         );
                       } else  */
                     if (userController.hasGalleryPermission.value == false) {
+                      AppLogger.i('[TabsScreen] Showing permission request screen');
                       return Container(
                         constraints: const BoxConstraints.expand(),
                         color: kWhiteColor,
@@ -122,9 +128,11 @@ class TabsScreen extends GetWidget<TabsController> {
                                     CupertinoButton(
                                       padding: const EdgeInsets.all(0),
                                       onPressed: () {
+                                        AppLogger.i('[TabsScreen] User tapped permission button');
                                         userController
                                             .requestGalleryPermission()
                                             .then((hasPermission) async {
+                                          AppLogger.i('[TabsScreen] Permission request result: $hasPermission');
                                           if (hasPermission) {
                                             await userController
                                                 .requestNotificationPermission();
@@ -210,7 +218,7 @@ class TabsScreen extends GetWidget<TabsController> {
                             itemBuilder: (BuildContext context, int index) {
                               return GestureDetector(
                                 onTap: () {
-                                  print('ignore');
+                                  AppLogger.d('ignore');
                                 },
                                 child: Container(
                                   margin: EdgeInsets.only(

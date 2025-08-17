@@ -11,6 +11,7 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:uuid/uuid.dart';
 import 'package:cryptography/cryptography.dart' as cryptography;
+import 'package:picPics/utils/app_logger.dart';
 
 class Crypto {
   static Future<String> encryptAccessKey(
@@ -32,8 +33,8 @@ class Crypto {
 
     final hexData = hex.encode(encryptedData.cipherText);
 
-    print('Encrypting $encryptValue - With ivString: $ivString');
-    print('Encrypted value: $hexData');
+    AppLogger.d('Encrypting $encryptValue - With ivString: $ivString');
+    AppLogger.d('Encrypted value: $hexData');
 
     return hexData;
   }
@@ -45,7 +46,7 @@ class Crypto {
     final ppkey = await storage.read(key: 'ppkey') ?? '';
     final stringToBase64 = utf8.fuse(base64);
 
-    print('Decrypted spKey is: ${appStore.tempEncryptionKey}');
+    AppLogger.d('Decrypted spKey is: ${appStore.tempEncryptionKey}');
 
     /// preparing the algorithm
     final algorithm = cryptography.AesCtr.with256bits(
@@ -62,7 +63,7 @@ class Crypto {
     final ivString =
         stringToBase64.encode('$userPin${appStore.email}').substring(0, 16);
 
-    print('New generated IV for encryption: $ivString');
+    AppLogger.d('New generated IV for encryption: $ivString');
     final ivKey = utf8.encode(ivString);
 
     final encryptedData = await algorithm.encrypt(
@@ -72,9 +73,9 @@ class Crypto {
     );
     final hexData = hex.encode(encryptedData.cipherText);
 
-    print('New key encrypted with new pin: $hexData');
+    AppLogger.d('New key encrypted with new pin: $hexData');
     await storage.write(key: 'spkey', value: hexData);
-    print('New key saved to storage!');
+    AppLogger.d('New key saved to storage!');
   }
 
   static Future<bool> checkRecoveryKey(String encryptedRecoveryKey,
@@ -96,7 +97,7 @@ class Crypto {
       final ivRecovery = utf8.encode(recoveryIv);
 
       var encryptedValue = hex.decode(encryptedRecoveryKey);
-      print(
+      AppLogger.d(
           'Encrypted Recovery Key: $encryptedRecoveryKey - Recovery Code: $recoveryCode - Random IV: $randomIv - Generated IV: $generatedIv');
 
       final firstStepMac = await cryptography.Hmac.sha256().calculateMac(
@@ -113,7 +114,7 @@ class Crypto {
       final decryptedFirstData =
           await algorithm.decrypt(secretBoxFirstStep, secretKey: picKey);
 
-      print(
+      AppLogger.d(
           'First Step Decrypted: $decryptedFirstData : ${decryptedFirstData.length}');
 
       final ivGenerated = utf8.encode(generatedIv);
@@ -133,17 +134,17 @@ class Crypto {
       final decryptedFinal =
           await algorithm.decrypt(secretBoxFinalStep, secretKey: picKey);
 
-      print('Final decryptedFinal: $decryptedFinal :${decryptedFinal.length}');
+      AppLogger.d('Final decryptedFinal: $decryptedFinal :${decryptedFinal.length}');
       final decryptedData = utf8.decode(decryptedFinal);
-      print('Final decrypted value: $decryptedData');
-      print('Hp Key: $hpkey');
+      AppLogger.d('Final decrypted value: $decryptedData');
+      AppLogger.d('Hp Key: $hpkey');
 
       final digest =
           hex.encode((await cryptography.Sha256().hash(decryptedFinal)).bytes);
-      print('Final key hashed: $digest');
-      print('Saved hash: $hpkey');
+      AppLogger.d('Final key hashed: $digest');
+      AppLogger.d('Saved hash: $hpkey');
 
-      print('Final key hash');
+      AppLogger.d('Final key hash');
       if (hpkey == null) {
         await storage.write(key: 'hpkey', value: digest);
         appStore.setTempEncryptionKey(decryptedData);
@@ -155,10 +156,10 @@ class Crypto {
         return true;
       }
 
-      print('Not the real key');
+      AppLogger.d('Not the real key');
       return false;
     } catch (error) {
-      print('Not the real key: $error');
+      AppLogger.d('Not the real key: $error');
       return false;
     }
     return false;
@@ -201,26 +202,26 @@ class Crypto {
           await algorithm.decrypt(secretBox, secretKey: picKey);
       final decryptedString = hex.encode(decryptedData);
 
-      print('Server key after decrypt: $decryptedString');
+      AppLogger.d('Server key after decrypt: $decryptedString');
 
-      print('Hasing it to check if it is the correct key');
+      AppLogger.d('Hasing it to check if it is the correct key');
       final digest =
           hex.encode((await cryptography.Sha256().hash(decryptedData)).bytes);
-      print('Hashed key is: $digest');
+      AppLogger.d('Hashed key is: $digest');
 
       if (digest == hpkey) {
-        print('The key is valid!');
-        print('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
-        print('Decrypted Key: $decryptedData');
+        AppLogger.d('The key is valid!');
+        AppLogger.d('ppkey: $ppkey - nonce: ${utf8.encode(ppkey)}');
+        AppLogger.d('Decrypted Key: $decryptedData');
         userController.setEncryptionKey(
             await algorithm.newSecretKeyFromBytes(decryptedData));
         return true;
       }
 
-      print('The key is invalid');
+      AppLogger.d('The key is invalid');
       return false;
     } catch (error) {
-      print('Failed to decrypt key invalid padblock!: $error');
+      AppLogger.d('Failed to decrypt key invalid padblock!: $error');
       return false;
     }
   }
@@ -254,10 +255,10 @@ class Crypto {
           ));
       final decryptedData =
           await algorithm.decrypt(secretBox, secretKey: picKey);
-      print('Pin: ${hex.encode(decryptedData)}');
+      AppLogger.d('Pin: ${hex.encode(decryptedData)}');
       return hex.encode(decryptedData);
     } catch (error) {
-      print('error: $error');
+      AppLogger.d('error: $error');
       return null;
     }
   }
@@ -320,7 +321,7 @@ class Crypto {
     final letsDecrypt =
         await algorithm.decrypt(secretBox, secretKey: secreetKey);
     final data = hex.encode(letsDecrypt);
-    print('decrypt Data: $data'); */
+    AppLogger.d('decrypt Data: $data'); */
   }
 
   static Future<void> saveSaltKey() async {
@@ -329,7 +330,7 @@ class Crypto {
     final secretSalt =
         stringToBase64.encode(const Uuid().v4()).substring(0, 16);
     await storage.write(key: 'ppkey', value: secretSalt);
-    print('Secret salt: $secretSalt');
+    AppLogger.d('Secret salt: $secretSalt');
   }
 
   static Future<void> saveSpKey(String accessKey, String spKey, String userPin,
@@ -348,8 +349,8 @@ class Crypto {
         .newSecretKeyFromBytes(utf8.encode('PeShVkYp3s6v9y9BVEpHxMcQfTjWnZq4'));
     final ivAccess = utf8.encode(generateIv);
 
-    print('SpKey: $spKey');
-    print('Encrypted: $spKey');
+    AppLogger.d('SpKey: $spKey');
+    AppLogger.d('Encrypted: $spKey');
     final encryptedValue = hex.decode(spKey);
 
     final secretBox = cryptography.SecretBox(
@@ -366,15 +367,15 @@ class Crypto {
         await algorithm.decrypt(secretBox, secretKey: picAccessKey);
     final hexData = hex.encode(decryptedKey);
 
-    print('Decrypted spKey is: $hexData');
+    AppLogger.d('Decrypted spKey is: $hexData');
     appStore
         .setEncryptionKey(await algorithm.newSecretKeyFromBytes(decryptedKey));
 
-    print('Before digest....');
+    AppLogger.d('Before digest....');
     final digest =
         hex.encode((await cryptography.Sha256().hash(decryptedKey)).bytes);
 
-    print('Saving hashed spKey: $digest');
+    AppLogger.d('Saving hashed spKey: $digest');
     await storage.write(key: 'hpkey', value: digest);
 
     final picKey = await _retrieveSecretKey(
@@ -382,17 +383,17 @@ class Crypto {
 
     final ivString =
         stringToBase64.encode('$userPin$userEmail').substring(0, 16);
-    print('New generated IV for encryption: $ivString');
+    AppLogger.d('New generated IV for encryption: $ivString');
 
     final ivKey = utf8.encode(ivString);
     final encrypted =
         await algorithm.encrypt(decryptedKey, secretKey: picKey, nonce: ivKey);
     final encryptedData = hex.encode(encrypted.cipherText);
 
-    print('New key encrypted with pin: $encryptedData');
+    AppLogger.d('New key encrypted with pin: $encryptedData');
 
     await storage.write(key: 'spkey', value: encryptedData);
-    print('key saved to storage!');
+    AppLogger.d('key saved to storage!');
   }
 
   ///
@@ -410,7 +411,7 @@ class Crypto {
 
   static Future<void> encryptImage(
       PicStore picStore, cryptography.SecretKey secretKey) async {
-    print('Going to encrypt image with encryption key');
+    AppLogger.d('Going to encrypt image with encryption key');
 
     final assetData = await picStore.entity.value?.originBytes;
     final thumbData = await picStore.entity.value
@@ -420,8 +421,8 @@ class Crypto {
         ? picStore.entity.value?.title
         : await picStore.entity.value?.titleAsync;
 
-    print('Asset Name: ${picStore.entity.value?.id}');
-    print('Origin file: $title');
+    AppLogger.d('Asset Name: ${picStore.entity.value?.id}');
+    AppLogger.d('Origin file: $title');
 
     if (assetData == null || thumbData == null) {
       return;
@@ -442,7 +443,7 @@ class Crypto {
     final finalPhotoPath = p.join(appDocumentsDir.path, photosPath);
     final finalThumbPath = p.join(appDocumentsDir.path, thumbnailsPath);
 
-    print('Encrypting....');
+    AppLogger.d('Encrypting....');
 
     /// Using 96 bytes nonce
     final nonce = encrypt.Key.fromSecureRandom(12).bytes;
@@ -470,14 +471,14 @@ class Crypto {
 
     final savedPicFile = File(finalPhotoPath);
     final savedThumbFile = File(finalThumbPath);
-    print('Saving to file...');
+    AppLogger.d('Saving to file...');
     await savedPicFile.writeAsBytes(encryptedPicData.cipherText);
     await savedThumbFile.writeAsBytes(encryptedThumbData.cipherText);
-    print('Writing to ${savedPicFile.path}');
-    print('Writing to ${savedThumbFile.path}');
+    AppLogger.d('Writing to ${savedPicFile.path}');
+    AppLogger.d('Writing to ${savedThumbFile.path}');
 
-    print('Saved file: $title to ${savedPicFile.path}');
-    // print('File sizes: ${savedPicFile.lengthSync()} - Thumb Size: ${savedThumbFile.lengthSync()}');
+    AppLogger.d('Saved file: $title to ${savedPicFile.path}');
+    // AppLogger.d('File sizes: ${savedPicFile.lengthSync()} - Thumb Size: ${savedThumbFile.lengthSync()}');
 
     await picStore.setPrivatePath(
         photosPath, thumbnailsPath, hex.encode(nonce.toList()));
@@ -490,10 +491,10 @@ class Crypto {
 
     final file = File(filePath);
 
-    print('Secret Key: ${secretKey.toString()}');
-    print('Nonce: ${nonce.toString()}');
-    print('File exists: ${await file.exists()}');
-    print(
+    AppLogger.d('Secret Key: ${secretKey.toString()}');
+    AppLogger.d('Nonce: ${nonce.toString()}');
+    AppLogger.d('File exists: ${await file.exists()}');
+    AppLogger.d(
         'App Support Dir: ${(await getApplicationDocumentsDirectory()).path}');
 
     final encryptedValue = file.readAsBytesSync();
@@ -506,7 +507,7 @@ class Crypto {
     );
 
     List<int> decryptedData;
-    print('Decrypting image: $filePath');
+    AppLogger.d('Decrypting image: $filePath');
     if (Platform.isAndroid) {
       /// preparing the algorithm
       final algorithm = cryptography.AesCtr.with256bits(
@@ -518,7 +519,7 @@ class Crypto {
 
       decryptedData = await algorithm.decrypt(secretBox, secretKey: secretKey);
     }
-    print('Decrypted');
+    AppLogger.d('Decrypted');
 
     return Uint8List.fromList(decryptedData);
   }

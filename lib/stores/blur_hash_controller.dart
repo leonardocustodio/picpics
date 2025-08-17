@@ -4,6 +4,7 @@ import 'package:image/image.dart' as img;
 import 'package:get/get.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/third_party_lib/src/blurhash.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class BlurHashController extends GetxController {
   static BlurHashController get to => Get.find();
@@ -63,13 +64,13 @@ class BlurHashController extends GetxController {
         await _appDatabase.insertAllPicBlurHash(picBlurHashList);
       }
     } catch (e) {
-      print('Error: $e');
+      AppLogger.d('Error: $e');
     }
   }
 
   static FutureOr<Map<String, String>> _insertBlurHashToDatabase(
       RxMap<String, Uint8List> val) async {
-    print('_blurHashesQueue : ${val.keys}');
+    AppLogger.d('_blurHashesQueue : ${val.keys}');
 
     /// creating hashMap to return the value
     var localBlurHashMap = <String, String>{};

@@ -11,6 +11,7 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/confirm_pic_delete.dart';
 
 import 'tabs_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TaggedController extends GetxController {
   static TaggedController get to => Get.find();
@@ -81,7 +82,7 @@ class TaggedController extends GetxController {
     if (selectedMultiBarPics.isEmpty) {
       return;
     }
-    print('sharing selected pics....');
+    AppLogger.d('sharing selected pics....');
     //setIsLoading(true);
     await sharePics(
         picKeys: selectedMultiBarPics.keys
@@ -108,20 +109,20 @@ class TaggedController extends GetxController {
 
   Future<bool> shouldPopOut() async {
     /// if sheet is opened the don't allow popping and just
-    print('WillPopScope taggedController');
+    AppLogger.d('WillPopScope taggedController');
     if (multiTagSheet.value) {
-      print('WillPopScope multiPicTags');
+      AppLogger.d('WillPopScope multiPicTags');
       tagsController.multiPicTags.clear();
       multiTagSheet.value = false;
       return false;
     }
     if (multiPicBar.value) {
-      print('WillPopScope multiPicBar');
+      AppLogger.d('WillPopScope multiPicBar');
       multiPicBar.value = false;
       return false;
     }
 
-    print('WillPopScope onPoppingOut');
+    AppLogger.d('WillPopScope onPoppingOut');
     onPoppingOut();
     return true;
   }
@@ -281,7 +282,7 @@ class TaggedController extends GetxController {
                 /// If there are no pictures present related to this tagKey then
                 /// let's go back to previous screen
                 WidgetsBinding.instance?.addPostFrameCallback((_) {
-                  print('going back');
+                  AppLogger.d('going back');
                   Get.back();
                 });
               } */
@@ -345,7 +346,7 @@ class TaggedController extends GetxController {
                 /// If there are no pictures present related to this tagKey then
                 /// let's go back to previous screen
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  print('going back');
+                  AppLogger.d('going back');
                   Get.back();
                 });
               }

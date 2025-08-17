@@ -1,6 +1,7 @@
 /* import 'dart:async';
 import 'dart:io';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class ClassificationStore {
   /* ClassificationStore() {
@@ -16,7 +17,7 @@ class ClassificationStore {
       final text = label.text;
       final entityId = label.entityId;
       final confidence = label.confidence;
-      print('Text: $text - Entity: $entityId - Confidence: $confidence');
+      AppLogger.d('Text: $text - Entity: $entityId - Confidence: $confidence');
     }
 
     cloudLabeler.close();

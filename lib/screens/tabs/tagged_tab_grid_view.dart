@@ -25,6 +25,7 @@ import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import '../../asset_entity_image_provider.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore: must_be_immutable
 class TaggedTabGridView extends GetWidget<TaggedController> {
@@ -133,7 +134,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
               return FadeImageBuilder(
                 child: GestureDetector(
                   onLongPress: () {
-                    print('LongPress');
+                    AppLogger.d('LongPress');
                     if (controller.multiPicBar.value == false) {
                       controller.selectedMultiBarPics[picId] = true;
                       controller.setMultiPicBar(true);
@@ -152,8 +153,8 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                   picStore: picStore,
                   picIsTagged: false,
                 ); */
-                        print('Pics Selected Length: ');
-                        print('${GalleryStore.to.selectedPics.length}');
+                        AppLogger.d('Pics Selected Length: ');
+                        AppLogger.d('${GalleryStore.to.selectedPics.length}');
                         return;
                       }
                       var list = controller.taggedPicId[tagKey]?.keys.toList();
@@ -353,7 +354,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                         ///    Get.to(() =>   PremiumScreen);
                                         ///    return;
                                         ///  }
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                       onPanEnd: (String tagKey) {
                                         // if (!UserController.to.isPremium) {
@@ -371,7 +372,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                         //   Get.to(() =>   PremiumScreen);
                                         //   return;
                                         // }
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                       onChanged: (text) {
                                         TagsController.to.searchText.value =
@@ -400,7 +401,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                             if (TagsController
                                                     .to.allTags[tagKey] ==
                                                 null) {
-                                              print(
+                                              AppLogger.d(
                                                   'tag does not exist! creating it!');
                                               TagsController.to.createTag(text);
                                             }
@@ -453,7 +454,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                                     Get.to(() => PremiumScreen);
                                                     return;
                                                   } */
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                       onPanEnd: (String tagKey) {
                                         /* if (!UserController
@@ -461,7 +462,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                                     Get.to(() => PremiumScreen);
                                                     return;
                                                   } */
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                     ),
                                   ),

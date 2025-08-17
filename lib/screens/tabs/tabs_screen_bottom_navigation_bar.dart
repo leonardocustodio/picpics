@@ -13,6 +13,7 @@ import 'package:picPics/utils/enum.dart';
 import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/tags_list.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
   TabsScreenBottomNavigatioBar({super.key});
@@ -134,7 +135,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                     ///    Get.to(() =>   PremiumScreen);
                                     ///    return;
                                     ///  }
-                                    print('do nothing');
+                                    AppLogger.d('do nothing');
                                   },
                                   onPanEnd: (String tagKey) {
                                     // if (!UserController.to.isPremium) {
@@ -152,7 +153,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                     //   Get.to(() =>   PremiumScreen);
                                     //   return;
                                     // }
-                                    print('do nothing');
+                                    AppLogger.d('do nothing');
                                   },
                                   onChanged: (text) {
                                     TagsController.to.searchText.value = text;
@@ -177,7 +178,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                           null) {
                                         if (TagsController.to.allTags[tagKey] ==
                                             null) {
-                                          print(
+                                          AppLogger.d(
                                               'tag does not exist! creating it!');
                                           TagsController.to.createTag(text);
                                         }
@@ -227,7 +228,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                                   Get.to(() => PremiumScreen);
                                                   return;
                                                 } */
-                                    print('do nothing');
+                                    AppLogger.d('do nothing');
                                   },
                                   onPanEnd: (String tagKey) {
                                     /* if (!UserController
@@ -235,7 +236,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                                   Get.to(() => PremiumScreen);
                                                   return;
                                                 } */
-                                    print('do nothing');
+                                    AppLogger.d('do nothing');
                                   },
                                 ),
                               ),
@@ -293,7 +294,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                         ],
                       )
                     : SizedBox(
-                        height: 64.0,
+                        height: 92.0,
                         child: BottomNavigationBar(
                           currentIndex: controller.currentTab.value,
                           onTap: (index) {
@@ -379,7 +380,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                       ],
                     )
                   : SizedBox(
-                      height: 64.0,
+                      height: 92.0,
                       child: BottomNavigationBar(
                         onTap: (index) {
                           controller.setTabIndex(index);

@@ -34,9 +34,10 @@ import 'stores/swiper_tab_controller.dart';
 import 'stores/tabs_controller.dart';
 import 'stores/tagged_controller.dart';
 import 'stores/tags_controller.dart';
+import 'utils/app_logger.dart';
 
 /* Future<String?> checkForUserControllerInitiatedProducts() async {
-  print('Checking if appstore initiated products');
+  AppLogger.d('Checking if appstore initiated products');
   var appStoreProducts =
       await FlutterInappPurchase.instance.getAppStoreInitiatedProducts();
   if (appStoreProducts.isNotEmpty) {
@@ -46,7 +47,7 @@ import 'stores/tags_controller.dart';
 } */
 
 void backgroundFetchHeadlessTask(String taskId) async {
-  print('[BackgroundFetch] Headless event received.');
+  AppLogger.d('[BackgroundFetch] Headless event received.');
   await WidgetManager.sendAndUpdate();
   BackgroundFetch.finish(taskId);
 }
@@ -55,6 +56,9 @@ String initialRoute = LoginScreen.id;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize logger
+  AppLogger.init();
 
   //Get.lazyPut(() => RefreshPicPicsController());
   //Get.lazyPut(() => GalleryStore());
@@ -102,7 +106,7 @@ void main() async {
 
   var setAppGroup =
       await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
-  print('Has setted app group: $setAppGroup');
+  AppLogger.d('Has setted app group: $setAppGroup');
 
   await BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 
@@ -147,12 +151,12 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      print('&&&& Here lifecycle!');
+      AppLogger.d('&&&& Here lifecycle!');
       WidgetManager.sendAndUpdate();
     }
 
     if (state == AppLifecycleState.resumed) {
-      print('&&&&&&&&& App got back from background');
+      AppLogger.d('&&&&&&&&& App got back from background');
       // if (appStore.secretPhotos) {
       //   appStore.switchSecretPhotos();
       //   galleryStore.removeAllPrivatePics();
@@ -165,8 +169,8 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    print('Main Build!!!');
-    print('lang: ${widget.user.appLocale.value}');
+    AppLogger.d('Main Build!!!');
+    AppLogger.d('lang: ${widget.user.appLocale.value}');
     return GetMaterialApp(
       localizationsDelegates: const [
         lang.S.delegate,

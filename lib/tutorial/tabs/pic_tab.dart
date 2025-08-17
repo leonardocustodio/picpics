@@ -9,6 +9,7 @@ import 'package:picPics/widgets/device_no_pics.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TutsPicTab extends StatefulWidget {
   static const id = 'tuts_pic_tab';
@@ -34,7 +35,7 @@ class _TutsPicTabState extends State<TutsPicTab> {
   ReactionDisposer disposer;
 
   Widget _buildPhotoSlider(BuildContext context, int index) {
-    print('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
+    AppLogger.d('&&&&&&&& BUILD PHOTO SLIDER!!!!!');
     return Padding(
       padding: const EdgeInsets.all(6.0),
       child: PhotoCard(
@@ -130,7 +131,7 @@ class _TutsPicTabState extends State<TutsPicTab> {
                           if (index < galleryStore.swipeCutOff) {
                             return Container();
                           }
-                          print('calling index $index');
+                          AppLogger.d('calling index $index');
                           return _buildPhotoSlider(context, index);
                         },
                         options: CarouselOptions(
@@ -146,12 +147,12 @@ class _TutsPicTabState extends State<TutsPicTab> {
                           },
                           onScrolled: (double) {
 //                              if (galleryStore.swipeIndex <= galleryStore.swipeCutOff && galleryStore.swipeIndex != 0) {
-                            print('changing scroll physics');
+                            AppLogger.d('changing scroll physics');
 //                                setState(() {
 //                                  scrollPhysics = NeverScrollableScrollPhysics();
 //                                });
 //                              }
-                            print('scrolled $double');
+                            AppLogger.d('scrolled $double');
                           },
                         ),
                       );

@@ -13,6 +13,7 @@ import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
+import 'package:picPics/utils/app_logger.dart';
 
 typedef OnString = Function(String);
 typedef OnEmptyTap = Function();
@@ -68,7 +69,7 @@ class _TagsListState extends State<TagsList> {
 
   Widget _buildTagsWidget(BuildContext context, List<String> tags) {
     var tagsWidgets = <Widget>[];
-    print('Tags in TagsList: $tags');
+    AppLogger.d('Tags in TagsList: $tags');
 
     if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
@@ -130,7 +131,7 @@ class _TagsListState extends State<TagsList> {
             showEditTagModal(tagKey);
           },
           onPanStart: (details) {
-            print('Started pan on tag: $tagKey');
+            AppLogger.d('Started pan on tag: $tagKey');
             tagBeingPanned = tagKey;
           },
           onPanUpdate: (details) {
@@ -140,7 +141,7 @@ class _TagsListState extends State<TagsList> {
 
             if (details.delta.dy < 0) {
               // swiping in right direction
-              print(details.delta.dy);
+              AppLogger.d(details.delta.dy);
               swipedRightDirection = true;
             }
           },

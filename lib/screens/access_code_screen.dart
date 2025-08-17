@@ -14,6 +14,7 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore_for_file: must_be_immutable
 class AccessCodeScreen extends GetWidget<PinController> {
@@ -31,7 +32,7 @@ class AccessCodeScreen extends GetWidget<PinController> {
   } */
 
   Widget _buildPinPad(BuildContext context, int index) {
-    print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
+    AppLogger.d('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
     String title;
 
@@ -144,7 +145,7 @@ class AccessCodeScreen extends GetWidget<PinController> {
   }
 
   void pinTapped(String value, bool backspace) async {
-    print('Value: ${controller.recoveryCode}$value');
+    AppLogger.d('Value: ${controller.recoveryCode}$value');
 
     if (UserController.to.waitingAccessCode.value == true) {
       if (backspace) {

@@ -5,6 +5,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
@@ -68,14 +69,14 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     Uint8List? data;
 
     if (isOriginal) {
-      print('Loading original...');
+      AppLogger.d('Loading original...');
       data = picStore.isPrivate.value
           ? await key.picStore.assetOriginBytes
           : await key.picStore.entity.value?.originBytes;
     } else {
-      print('Loading thumbnail...');
+      AppLogger.d('Loading thumbnail...');
       if (picStore.entity.value == null) {
-        print('Entity is null & isPrivate: ${picStore.isPrivate}');
+        AppLogger.d('Entity is null & isPrivate: ${picStore.isPrivate}');
       }
       data = picStore.isPrivate.value
           ? await key.picStore.assetThumbBytes
@@ -91,7 +92,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     }
 
     // if (picStore.isPrivate == true) {
-    print('entity is null!!!');
+    AppLogger.d('entity is null!!!');
     //   data = await key.picStore.assetOriginBytes;
     //   return decode(data);
     // }
@@ -121,7 +122,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     final extension = picStore.entity.value == null
         ? picStore.photoPath.split('.').last
         : picStore.entity.value?.title?.split('.').last;
-    print('Extension: $extension');
+    AppLogger.d('Extension: $extension');
     if (extension != null) {
       switch (extension.toLowerCase()) {
         case 'jpg':

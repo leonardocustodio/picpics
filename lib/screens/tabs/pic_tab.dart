@@ -12,6 +12,7 @@ import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:picPics/widgets/photo_card.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore: must_be_immutable
 class PicTab extends GetWidget<SwiperTabController> {
@@ -128,7 +129,7 @@ class PicTab extends GetWidget<SwiperTabController> {
                           /* if (index < controller.swipeCutOff) {
                             return Container();
                           } */
-                          print('calling index $index');
+                          AppLogger.d('calling index $index');
                           return _buildPhotoSlider(index);
                         },
                         options: CarouselOptions(
@@ -144,12 +145,12 @@ class PicTab extends GetWidget<SwiperTabController> {
                           },
                           onScrolled: (double? val) {
 //                              if (controller.swipeIndex <= controller.swipeCutOff && controller.swipeIndex != 0) {
-                            print('changing scroll physics');
+                            AppLogger.d('changing scroll physics');
 //                                setState(() {
 //                                  scrollPhysics = NeverScrollableScrollPhysics();
 //                                });
 //                              }
-                            print('scrolled $double');
+                            AppLogger.d('scrolled $double');
                           },
                         ),
                       );

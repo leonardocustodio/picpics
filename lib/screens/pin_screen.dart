@@ -15,6 +15,7 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore_for_file: must_be_immutable
 class PinScreen extends GetWidget<PinController> {
@@ -34,7 +35,7 @@ class PinScreen extends GetWidget<PinController> {
   } */
 
   Widget _buildPinPad(BuildContext context, int index) {
-    print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
+    AppLogger.d('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
     String title;
 
@@ -147,7 +148,7 @@ class PinScreen extends GetWidget<PinController> {
   }
 
   void pinTapped(String value, bool backspace) async {
-    print('Value: ${controller.recoveryCode}$value');
+    AppLogger.d('Value: ${controller.recoveryCode}$value');
     if (controller.isWaitingRecoveryKey.value == true) {
       if (carouselPage == 0) {
         if (backspace) {
@@ -198,7 +199,7 @@ class PinScreen extends GetWidget<PinController> {
 
       if (controller.confirmPinTemp.value.length == 6) {
         if (controller.pinTemp.value == controller.confirmPinTemp.value) {
-          print('Setting new pin!!!!!');
+          AppLogger.d('Setting new pin!!!!!');
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
           await UserController.to.setEmail(controller.email

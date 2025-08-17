@@ -25,6 +25,7 @@ import 'package:intl/intl.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
 import 'package:flutter/services.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 //typedef EditTagModalTypeDef = dynamic Function(String tagKey);
 
@@ -88,13 +89,13 @@ class _PhotoCardState extends State<PhotoCard> {
     var placemark = await placemarkFromCoordinates(
         picStore.originalLatitude!, picStore.originalLongitude!);
 
-    print('Placemark: ${placemark.length}');
+    AppLogger.d('Placemark: ${placemark.length}');
     for (var place in placemark) {
-      print('${place.name} - ${place.locality} - ${place.country}');
+      AppLogger.d('${place.name} - ${place.locality} - ${place.country}');
     }
 
     if (placemark.isNotEmpty) {
-      print('Saving pic!!!');
+      AppLogger.d('Saving pic!!!');
       await picStore.saveLocation(
         lat: picStore.originalLatitude!,
         long: picStore.originalLongitude!,
@@ -115,7 +116,7 @@ class _PhotoCardState extends State<PhotoCard> {
   void getSizeAndPosition() {
     var cardBox =
         _photoSpaceKey.currentContext?.findRenderObject() as RenderBox;
-    print('Card Box Size: ${cardBox.size.height}');
+    AppLogger.d('Card Box Size: ${cardBox.size.height}');
     UserController.to.setPhotoHeightInCardWidget(cardBox.size.height);
   }
 
@@ -129,7 +130,7 @@ class _PhotoCardState extends State<PhotoCard> {
     tagsFocusNode = FocusNode();
 
     /* if (KeyboardVisibility.isVisible) {
-      print('#### keyboard is visible!!!!');
+      AppLogger.d('#### keyboard is visible!!!!');
       tagsFocusNode.requestFocus();
     } */
   }
@@ -145,18 +146,18 @@ class _PhotoCardState extends State<PhotoCard> {
     int height = MediaQuery.of(context).size.height * 2 ~/ 3;
     photoSize = <int>[height, height];
 
-    print('Did Change Dep!!!');
+    AppLogger.d('Did Change Dep!!!');
   } */
 
   @override
   Widget build(BuildContext context) {
 /*     final height = MediaQuery.of(context).size.height;
  */
-    print('Pic Store Photo Id: ${picStore.photoId}');
-    print('Other info: ${picStore.photoPath}');
+    AppLogger.d('Pic Store Photo Id: ${picStore.photoId}');
+    AppLogger.d('Other info: ${picStore.photoPath}');
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
-    /* print('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
+    /* AppLogger.d('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
     var imageProvider = AssetEntityImageProvider(picStore,
         thumbSize: kDefaultPhotoSize, isOriginal: false);
     return Container(
@@ -396,14 +397,14 @@ class _PhotoCardState extends State<PhotoCard> {
                     aiButtonTitle: LangControl.to.S.value.allTags,
                     onAiButtonTap: () {
                       Get.to(() => AllTagsScreen(picStore: picStore));
-                      print('ai button tapped');
+                      AppLogger.d('ai button tapped');
                       // picStore.switchAiTags(context);
                     },
                     onTap: (String key) {
-                      print('do nothing');
+                      AppLogger.d('do nothing');
                     },
                     onDoubleTap: (String value) {
-                      print('do nothing');
+                      AppLogger.d('do nothing');
                     },
                     onPanEnd: (String selectedTagKey) async {
                       await TagsController.to.removeTagFromPic(
@@ -422,7 +423,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       await TagsController.to.tagsSuggestionsCalculate();
                     },
                     onSubmitted: (text) async {
-                      print('return');
+                      AppLogger.d('return');
 
                       if (text != '') {
                         var tagKey = await TagsController.to.createTag(text);
@@ -482,7 +483,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       suggestionsTitle = LangControl.to.S.value.recent_tags;
                     }
 
-                    print(
+                    AppLogger.d(
                         '$suggestionsTitle : ${picStore.aiTags} : suggestionsTitle');
                     TagsController.to.tagsSuggestionsCalculate();
                     return Obx(
@@ -548,10 +549,10 @@ class _PhotoCardState extends State<PhotoCard> {
                           picStore.setSearchText(''); */
                         },
                         onDoubleTap: (tagKey) {
-                          print('do nothing');
+                          AppLogger.d('do nothing');
                         },
                         onPanEnd: (tagKey) {
-                          print('do nothing');
+                          AppLogger.d('do nothing');
                         },
                       ),
                     );
