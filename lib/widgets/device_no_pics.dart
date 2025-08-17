@@ -31,7 +31,7 @@ class DeviceHasNoPics extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(
               message,
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.linear(1.0),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontFamily: 'Lato',
@@ -60,7 +60,7 @@ class DeviceHasNoPics extends StatelessWidget {
 //              child: Center(
 //                child: Text(
 //                  LangControl.to.S.value.open_gallery,
-//                  textScaleFactor: 1.0,
+//                  textScaler: TextScaler.linear(1.0),
 //                  style: TextStyle(
 //                    fontFamily: 'Lato',
 //                    color: kWhiteColor,

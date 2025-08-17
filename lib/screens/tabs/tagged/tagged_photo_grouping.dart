@@ -14,7 +14,7 @@ import 'package:picPics/widgets/photo_widget.dart';
 final height = (Get.width / 3) - 20;
 
 class TaggedPhotosGrouping extends GetWidget<TaggedController> {
-  const TaggedPhotosGrouping({Key? key}) : super(key: key);
+  const TaggedPhotosGrouping({super.key});
 
   @override
   Widget build(BuildContext context) {

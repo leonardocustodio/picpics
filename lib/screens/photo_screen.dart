@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -371,7 +370,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         // RichText(
-                                        //   textScaleFactor: 1.0,
+                                        //   textScaler: TextScaler.linear(1.0),
                                         //   text: TextSpan(
                                         //     children: [
                                         //       TextSpan(
@@ -424,7 +423,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   ?.value
                                                   .createdAt ??
                                               DateTime.now()),
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: const TextStyle(
                                             fontFamily: 'Lato',
                                             color: kWhiteColor,
@@ -500,7 +499,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
 class BottomTabsListWidget extends GetWidget<TaggedController> {
   final String picId;
-  const BottomTabsListWidget({required this.picId, Key? key}) : super(key: key);
+  const BottomTabsListWidget({required this.picId, super.key});
 
   @override
   Widget build(BuildContext context) {

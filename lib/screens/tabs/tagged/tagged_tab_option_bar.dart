@@ -15,7 +15,7 @@ import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/tags_list.dart';
 
 class TaggedTabOptionBar extends GetWidget<TaggedController> {
-  TaggedTabOptionBar({Key? key}) : super(key: key);
+  TaggedTabOptionBar({super.key});
 
   final bottomTagsEditingController = TextEditingController();
   final tagsController = Get.find<TagsController>();
@@ -53,7 +53,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                               child: Obx(
                                 () => Text(
                                   LangControl.to.S.value.cancel,
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   style: const TextStyle(
                                     color: Color(0xff707070),
                                     fontSize: 16,
@@ -88,7 +88,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                               child: Obx(
                                 () => Text(
                                   LangControl.to.S.value.ok,
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   textAlign: TextAlign.end,
                                   style: const TextStyle(
                                     color: Color(0xff707070),

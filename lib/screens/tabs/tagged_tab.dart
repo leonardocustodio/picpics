@@ -14,7 +14,7 @@ import 'package:picPics/widgets/toggle_bar.dart';
 // ignore_for_file: must_be_immutable, unused_field
 class TaggedTab extends GetView<TaggedController> {
   static const id = 'tagged_tab';
-  TaggedTab({Key? key}) : super(key: key);
+  TaggedTab({super.key});
 
   final _ = Get.find<UserController>();
   final tagsController = Get.find<TagsController>();

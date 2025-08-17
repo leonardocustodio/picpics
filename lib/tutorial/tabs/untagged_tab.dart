@@ -200,7 +200,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //             width: double.infinity,
 //             child: Text(
 //               '${dateFormat(galleryStore.untaggedPics[currentIndex].date)}',
-//               textScaleFactor: 1.0,
+//               textScaler: TextScaler.linear(1.0),
 //               style: TextStyle(
 //                 fontFamily: 'Lato',
 //                 color: Color(0xff606566),
@@ -223,7 +223,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //         //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
 //         //   child: Text(
 //         //     '${dateFormat(galleryStore.untaggedPics[index].date)}',
-//         //     textScaleFactor: 1.0,
+//         //     textScaler: TextScaler.linear(1.0),
 //         //     style: TextStyle(
 //         //       fontFamily: 'Lato',
 //         //       color: Color(0xff606566),
@@ -419,7 +419,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
           //         titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
           //         title: Text(
           //           tabsStore.multiPicBar ? LangControl.to.S.value.photo_gallery_count(galleryStore.selectedPics.length) : LangControl.to.S.value.photo_gallery_description,
-          //           textScaleFactor: 1.0,
+          //           textScaler: TextScaler.linear(1.0),
           //           style: TextStyle(
           //             fontFamily: 'Lato',
           //             color: Color(0xff979a9b),
@@ -630,7 +630,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
         children: [
           Text(
             '${date}',
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             style: TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
@@ -883,7 +883,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                             ? LangControl.to.S.value.photo_gallery_count(
                                 galleryStore.selectedPics.length)
                             : LangControl.to.S.value.photo_gallery_description,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),

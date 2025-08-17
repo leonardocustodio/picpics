@@ -614,7 +614,7 @@ class ConfirmationDialog extends StatelessWidget {
                           child: Center(
                             child: Text(
                               cancelText,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: const TextStyle(
@@ -650,7 +650,7 @@ class ConfirmationDialog extends StatelessWidget {
                           child: Center(
                             child: Text(
                               okText,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: kLoginButtonTextStyle,

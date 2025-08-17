@@ -7,8 +7,8 @@ import 'package:picPics/widgets/top_bar.dart';
 
 class NoTaggedPicsInDevice extends StatelessWidget {
   const NoTaggedPicsInDevice({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ class NoTaggedPicsInDevice extends StatelessWidget {
               Obx(
                 () => Text(
                   LangControl.to.S.value.no_tagged_photos,
-                  textScaleFactor: 1.0,
+                  textScaler: TextScaler.linear(1.0),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontFamily: 'Lato',
@@ -59,7 +59,7 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                     child: Obx(
                       () => Text(
                         LangControl.to.S.value.start_tagging,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: const TextStyle(
                           fontFamily: 'Lato',
                           color: kWhiteColor,

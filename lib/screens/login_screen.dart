@@ -72,7 +72,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Obx(
                                         () => Text(
                                           LangControl.to.S.value.welcome,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: kLoginDescriptionTextStyle,
                                         ),
                                       ),
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         () => Text(
                                           LangControl.to.S.value
                                               .photos_always_organized,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: kLoginDescriptionTextStyle,
                                         ),
                                       ),
@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       loginStore.getDescription(
                                               context, index) ??
                                           '',
-                                      textScaleFactor: 1.0,
+                                      textScaler: TextScaler.linear(1.0),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontFamily: 'Lato',
@@ -201,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         loginStore.totalSlides - 1
                                     ? LangControl.to.S.value.start.toUpperCase()
                                     : LangControl.to.S.value.next.toUpperCase(),
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontFamily: 'Lato',

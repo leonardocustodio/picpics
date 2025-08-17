@@ -150,9 +150,6 @@ class MoorUsers extends Table {
 class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
   @override
   Map<String, String> fromSql(String fromDb) {
-    if (fromDb == null) {
-      return <String, String>{};
-    }
     var r = json.decode(fromDb);
     if (r is List) {
       return <String, String>{};
@@ -170,9 +167,6 @@ class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
 class ListStringConvertor extends TypeConverter<List<String>, String> {
   @override
   List<String> fromSql(String fromDb) {
-    if (fromDb == null) {
-      return <String>[];
-    }
     var r = json.decode(fromDb);
     if (r is List) {
       return r.toList().map((e) => e.toString()).toList();

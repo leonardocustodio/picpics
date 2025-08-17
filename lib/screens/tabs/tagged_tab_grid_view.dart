@@ -275,7 +275,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       width: 80.0,
                                       child: Text(
                                         LangControl.to.S.value.cancel,
-                                        textScaleFactor: 1.0,
+                                        textScaler: TextScaler.linear(1.0),
                                         style: TextStyle(
                                           color: Color(0xff707070),
                                           fontSize: 16,
@@ -310,7 +310,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       width: 80.0,
                                       child: Text(
                                         LangControl.to.S.value.ok,
-                                        textScaleFactor: 1.0,
+                                        textScaler: TextScaler.linear(1.0),
                                         textAlign: TextAlign.end,
                                         style: TextStyle(
                                           color: Color(0xff707070),

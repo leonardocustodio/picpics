@@ -8,7 +8,6 @@ import 'package:picPics/constants.dart';
 
 import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pin_controller.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -35,7 +34,6 @@ class AccessCodeScreen extends GetWidget<PinController> {
     print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
     String title;
-    GlobalKey<AnimatorWidgetState> animatorKey;
 
     if (controller.isWaitingRecoveryKey.value == true) {
       if (index == 0) {
@@ -242,7 +240,7 @@ class AccessCodeScreen extends GetWidget<PinController> {
                             },
                             child: Text(
                               LangControl.to.S.value.restore_purchase,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xff979a9b),
@@ -562,10 +560,9 @@ class NumberPad extends StatelessWidget {
           Expanded(
             child: CupertinoButton(
               padding: const EdgeInsets.all(0),
-              minSize: 44.0,
               onPressed: () {
                 onPinTapped('${pin == 11 ? '0' : pin}', false);
-              },
+              }, minimumSize: Size(44.0, 44.0),
               child: Container(
                 margin: const EdgeInsets.all(2),
                 height: double.infinity,

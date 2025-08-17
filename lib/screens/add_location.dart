@@ -23,7 +23,7 @@ final searchScaffoldKey = GlobalKey<ScaffoldState>();
 class AddLocationScreen extends StatefulWidget {
   static const id = 'add_location_screen';
   final PicStore? currentPic;
-  const AddLocationScreen(this.currentPic, {Key? key}) : super(key: key);
+  const AddLocationScreen(this.currentPic, {super.key});
 
   @override
   _AddLocationScreenState createState() => _AddLocationScreenState();
@@ -288,7 +288,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                           child: Obx(
                             () => Text(
                               LangControl.to.S.value.save_location,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: kWhiteColor,

@@ -188,7 +188,7 @@ class _TagsListState extends State<TagsList> {
                             vertical: 8.0, horizontal: 16.0),
                         child: Text(
                           TagsController.to.allTags[tagKey]!.value.title,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           style: widget.tagStyle == TagStyle.MultiColored
                               ? kWhiteTextStyle
                               : kGrayTextStyle,
@@ -257,7 +257,7 @@ class _TagsListState extends State<TagsList> {
                                   vertical: 8.0, horizontal: 16.0),
                               child: Text(
                                 TagsController.to.allTags[tagKey]!.value.title,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: widget.tagStyle == TagStyle.MultiColored
                                     ? kWhiteTextStyle
                                     : kGrayTextStyle,
@@ -284,7 +284,7 @@ class _TagsListState extends State<TagsList> {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.delete,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: widget.tagStyle == TagStyle.MultiColored
                                     ? kWhiteTextStyle
                                     : kGrayTextStyle,
@@ -303,9 +303,8 @@ class _TagsListState extends State<TagsList> {
 
     if (widget.addTagButton != null) {
       tagsWidgets.add(CupertinoButton(
-        minSize: 30,
         padding: const EdgeInsets.all(0),
-        onPressed: widget.addTagButton,
+        onPressed: widget.addTagButton, minimumSize: Size(30, 30),
         child: Container(
           height: 30.0,
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -324,7 +323,7 @@ class _TagsListState extends State<TagsList> {
               Obx(
                 () => Text(
                   LangControl.to.S.value.add_tag,
-                  textScaleFactor: 1.0,
+                  textScaler: TextScaler.linear(1.0),
                   style: const TextStyle(
                     fontFamily: 'Lato',
                     color: kGrayColor,
@@ -402,13 +401,12 @@ class _TagsListState extends State<TagsList> {
                       if (widget.addButtonVisible)
                         CupertinoButton(
                           padding: const EdgeInsets.all(0),
-                          minSize: 30,
                           onPressed: () {
                             if (widget.onSubmitted != null) {
                               widget.onSubmitted!(
                                   widget.textEditingController!.text);
                             }
-                          },
+                          }, minimumSize: Size(30, 30),
                           child: const Icon(
                             Icons.add,
                             color: Colors.grey,
@@ -427,7 +425,7 @@ class _TagsListState extends State<TagsList> {
                     children: [
                       Text(
                         widget.aiButtonTitle!,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
                       const Icon(Icons.arrow_forward_ios_rounded,
@@ -450,7 +448,7 @@ class _TagsListState extends State<TagsList> {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               widget.title!,
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.linear(1.0),
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),

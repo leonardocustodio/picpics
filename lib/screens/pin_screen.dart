@@ -362,7 +362,7 @@ class PinScreen extends GetWidget<PinController> {
                             },
                             child: Text(
                               LangControl.to.S.value.restore_purchase,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xff979a9b),
@@ -701,7 +701,6 @@ class NumberPad extends StatelessWidget {
           Expanded(
             child: CupertinoButton(
               padding: const EdgeInsets.all(0),
-              minSize: 44.0,
               onPressed: () {
                 onPinTapped('${pin == 11 ? '0' : pin}', false);
               },

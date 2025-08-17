@@ -108,7 +108,7 @@ class UnhideSecretModal extends StatelessWidget {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.no,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: const TextStyle(
                                   color: kSecondaryColor,
                                   fontWeight: FontWeight.w700,
@@ -137,7 +137,7 @@ class UnhideSecretModal extends StatelessWidget {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.yes,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: kLoginButtonTextStyle,
                               ),
                             ),

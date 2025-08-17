@@ -9,12 +9,12 @@ class OriginalImageItem extends StatelessWidget {
   final BoxFit fit;
 
   const OriginalImageItem({
-    Key? key,
+    super.key,
     this.entity,
     required this.backgroundColor,
     this.size = 64,
     this.fit = BoxFit.cover,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

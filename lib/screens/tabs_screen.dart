@@ -105,7 +105,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                       () => Text(
                                         LangControl.to.S.value
                                             .gallery_access_permission_description,
-                                        textScaleFactor: 1.0,
+                                        textScaler: TextScaler.linear(1.0),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontFamily: 'Lato',
@@ -151,7 +151,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                             () => Text(
                                               LangControl.to.S.value
                                                   .gallery_access_permission,
-                                              textScaleFactor: 1.0,
+                                              textScaler:
+                                                  TextScaler.linear(1.0),
                                               style: const TextStyle(
                                                 fontFamily: 'Lato',
                                                 color: kWhiteColor,

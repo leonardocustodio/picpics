@@ -218,7 +218,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                       index == 1
                           ? LangControl.to.S.value.search_all_tags_not_found
                           : 'No photos found with this tag',
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       style: TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff979a9b),
@@ -263,7 +263,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
         children: [
           Text(
             '${dateFormat(date)}',
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             style: TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
@@ -284,7 +284,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
     //     children: <Widget>[
     //       Text(
     //         '${dateFormat(date)}',
-    //         textScaleFactor: 1.0,
+    //         textScaler: TextScaler.linear(1.0),
     //         style: TextStyle(
     //           fontFamily: 'Lato',
     //           color: Color(0xff606566),
@@ -324,7 +324,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
             taggedPicsStore != null
                 ? taggedPicsStore.tag.name
                 : LangControl.to.S.value.all_search_tags,
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             style: TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
@@ -580,7 +580,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                             ),
                             Text(
                               LangControl.to.S.value.no_tagged_photos,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontFamily: 'Lato',
@@ -606,7 +606,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                 child: Center(
                                   child: Text(
                                     LangControl.to.S.value.start_tagging,
-                                    textScaleFactor: 1.0,
+                                    textScaler: TextScaler.linear(1.0),
                                     style: TextStyle(
                                       fontFamily: 'Lato',
                                       color: kWhiteColor,
@@ -677,7 +677,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                 galleryStore.showSearchTagsResults
                                     ? LangControl.to.S.value.search_results
                                     : LangControl.to.S.value.recent_tags,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff979a9b),
@@ -728,7 +728,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                                         top: 10.0, left: 26.0, bottom: 10.0),
                                     child: Text(
                                       LangControl.to.S.value.no_tags_found,
-                                      textScaleFactor: 1.0,
+                                      textScaler: TextScaler.linear(1.0),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontFamily: 'Lato',
@@ -807,7 +807,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                             ? LangControl.to.S.value.photo_gallery_count(
                                 galleryStore.selectedPics.length)
                             : LangControl.to.S.value.organized_photos_title,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),

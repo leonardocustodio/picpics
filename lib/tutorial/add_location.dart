@@ -289,7 +289,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                         child: Center(
                           child: Text(
                             LangControl.to.S.value.save_location,
-                            textScaleFactor: 1.0,
+                            textScaler: TextScaler.linear(1.0),
                             style: TextStyle(
                               fontFamily: 'Lato',
                               color: kWhiteColor,

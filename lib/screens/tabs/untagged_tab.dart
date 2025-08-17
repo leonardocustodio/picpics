@@ -370,7 +370,7 @@ class UntaggedTab extends GetWidget<TabsController> {
             ),
           Text(
             dateFormat(date),
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
@@ -591,7 +591,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                             ? LangControl.to.S.value.photo_gallery_count(
                                 controller.selectedMultiBarPics.length)
                             : LangControl.to.S.value.photo_gallery_description,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: const TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),

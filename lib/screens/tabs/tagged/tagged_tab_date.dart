@@ -12,8 +12,8 @@ import 'package:picPics/widgets/photo_widget.dart';
 
 class TaggedTabDate extends GetWidget<TaggedController> {
   TaggedTabDate({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final scrollController = ScrollController();
 

@@ -372,7 +372,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         width: 80.0,
                                         child: Text(
                                           LangControl.to.S.value.cancel,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: TextStyle(
                                             color: Color(0xff707070),
                                             fontSize: 16,
@@ -405,7 +405,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         width: 80.0,
                                         child: Text(
                                           LangControl.to.S.value.ok,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           textAlign: TextAlign.end,
                                           style: TextStyle(
                                             color: Color(0xff707070),
@@ -766,7 +766,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                     S
                                         .of(context)
                                         .gallery_access_permission_description,
-                                    textScaleFactor: 1.0,
+                                    textScaler: TextScaler.linear(1.0),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
@@ -801,7 +801,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           S
                                               .of(context)
                                               .gallery_access_permission,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: TextStyle(
                                             fontFamily: 'Lato',
                                             color: kWhiteColor,
@@ -917,7 +917,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                         children: <Widget>[
                           Text(
                             LangControl.to.S.value.welcome,
-                            textScaleFactor: 1.0,
+                            textScaler: TextScaler.linear(1.0),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Lato',
@@ -968,7 +968,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           horizontal: 16.0),
                                       child: Text(
                                         text,
-                                        textScaleFactor: 1.0,
+                                        textScaler: TextScaler.linear(1.0),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: 'Lato',
@@ -1069,7 +1069,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                   tabsStore.tutorialIndex == 2
                                       ? LangControl.to.S.value.start
                                       : LangControl.to.S.value.next,
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'Lato',

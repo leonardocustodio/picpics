@@ -8,7 +8,6 @@ import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/screens/add_location.dart';
 import 'package:picPics/screens/all_tags_screen.dart';
 import 'package:picPics/screens/photo_screen.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
@@ -329,7 +328,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     //   },
                     //   child: Obx(() {
                     //     return RichText(
-                    //       textScaleFactor: 1.0,
+                    //       textScaler: TextScaler.linear(1.0),
                     //       text: TextSpan(
                     //         children: [
                     //           TextSpan(
@@ -367,7 +366,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       padding: const EdgeInsets.all(0),
                       child: Text(
                         dateFormat(picStore.createdAt),
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: const TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff606566),
@@ -452,7 +451,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           children: [
                             Text(
                               LangControl.to.S.value.suggestions,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff979a9b),

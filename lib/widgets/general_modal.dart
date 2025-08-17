@@ -78,7 +78,7 @@ class GeneralModal extends StatelessWidget {
                     child: Obx(
                       () => Text(
                         LangControl.to.S.value.continue_string,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: kLoginButtonTextStyle,
                       ),
                     ),

@@ -16,7 +16,7 @@ import 'package:picPics/widgets/photo_card.dart';
 // ignore: must_be_immutable
 class PicTab extends GetWidget<SwiperTabController> {
   static const id = 'pic_tab';
-  PicTab({Key? key}) : super(key: key);
+  PicTab({super.key});
 
   final _ = Get.put(UserController());
   final __ = Get.put(SwiperTabController());

@@ -3,7 +3,7 @@ import 'package:picPics/constants.dart';
 
 class SelectAllWidget extends StatelessWidget {
   final bool isSelected;
-  const SelectAllWidget({required this.isSelected, Key? key}) : super(key: key);
+  const SelectAllWidget({required this.isSelected, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class SelectAllWidget extends StatelessWidget {
           ),
           const Text(
             'Select All',
-            textScaleFactor: 1,
+            textScaler: TextScaler.linear(1),
             style: TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),

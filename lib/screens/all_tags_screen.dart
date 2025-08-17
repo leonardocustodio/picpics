@@ -54,8 +54,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
   var _ = Get.put(AllTagsController());
   AllTagsScreen({
     this.picStore,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   FocusNode focusNode = FocusNode();
   var searchEditingController = TextEditingController();

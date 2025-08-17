@@ -1,7 +1,6 @@
 PODS:
   - background_fetch (1.4.0):
     - Flutter
-  - BranchSDK (3.12.2)
   - cloud_functions (6.0.0):
     - Firebase/Functions (= 12.0.0)
     - firebase_core
@@ -139,9 +138,6 @@ PODS:
     - PromisesSwift (~> 2.1)
   - FirebaseSharedSwift (12.0.0)
   - Flutter (1.0.0)
-  - flutter_branch_sdk (8.6.0):
-    - BranchSDK (~> 3.12.0)
-    - Flutter
   - flutter_keyboard_visibility (0.0.1):
     - Flutter
   - flutter_local_notifications (0.0.1):
@@ -290,7 +286,6 @@ DEPENDENCIES:
   - firebase_messaging (from `.symlinks/plugins/firebase_messaging/ios`)
   - firebase_remote_config (from `.symlinks/plugins/firebase_remote_config/ios`)
   - Flutter (from `Flutter`)
-  - flutter_branch_sdk (from `.symlinks/plugins/flutter_branch_sdk/ios`)
   - flutter_keyboard_visibility (from `.symlinks/plugins/flutter_keyboard_visibility/ios`)
   - flutter_local_notifications (from `.symlinks/plugins/flutter_local_notifications/ios`)
   - flutter_localization (from `.symlinks/plugins/flutter_localization/ios`)
@@ -311,7 +306,6 @@ DEPENDENCIES:
 
 SPEC REPOS:
   trunk:
-    - BranchSDK
     - Firebase
     - FirebaseABTesting
     - FirebaseAnalytics
@@ -364,8 +358,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/firebase_remote_config/ios"
   Flutter:
     :path: Flutter
-  flutter_branch_sdk:
-    :path: ".symlinks/plugins/flutter_branch_sdk/ios"
   flutter_keyboard_visibility:
     :path: ".symlinks/plugins/flutter_keyboard_visibility/ios"
   flutter_local_notifications:
@@ -403,7 +395,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   background_fetch: 81d0f20490f0126a1c29709e458f47a69e80f44e
-  BranchSDK: db2c2ffa5b85ad3e202f73393ca794878afd3c52
   cloud_functions: 9b2e5ced78e97f80c1dcf7edfb293cf2e19fe71a
   devicelocale: bd64aa714485a8afdaded0892c1e7d5b7f680cf8
   Firebase: 800d487043c0557d9faed71477a38d9aafb08a41
@@ -431,7 +422,6 @@ SPEC CHECKSUMS:
   FirebaseSessions: 4e784acda213108aafef536535cdfc03504acc42
   FirebaseSharedSwift: 59266c22ccfcef604d725c034c568fa666ea9bda
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_branch_sdk: a87d7e10a30e891371ed3b464859e7797b07d5f0
   flutter_keyboard_visibility: 4625131e43015dbbe759d9b20daaf77e0e3f6619
   flutter_local_notifications: a5a732f069baa862e728d839dd2ebb904737effb
   flutter_localization: 72299fb6cb4e51cae587bd953ed0b958040b71e6

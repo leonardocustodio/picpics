@@ -236,7 +236,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
       // Text(
       //   LangControl.to.S.value.get_premium_title,
-      //   textScaleFactor: 1.0,
+      //   textScaler: TextScaler.linear(1.0),
       //   maxLines: 2,
       //   textAlign: TextAlign.left,
       //   overflow: TextOverflow.visible,
@@ -256,7 +256,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //     LangControl.to.S.value.get_premium_description,
       //     maxLines: 2,
       //     textAlign: TextAlign.left,
-      //     textScaleFactor: 1.0,
+      //     textScaler: TextScaler.linear(1.0),
       //     overflow: TextOverflow.visible,
       //     style: TextStyle(
       //       color: kPrimaryColor.withOpacity(0.8),
@@ -281,7 +281,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             Flexible(
               child: Text(
                 'Fast find all your memories',
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 maxLines: 2,
                 textAlign: TextAlign.left,
                 style: TextStyle(
@@ -307,7 +307,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             Flexible(
               child: Text(
                 LangControl.to.S.value.unlimited_private_pics,
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 maxLines: 2,
                 textAlign: TextAlign.left,
                 style: TextStyle(
@@ -333,7 +333,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //       Flexible(
       //         child: Text(
       //           LangControl.to.S.value.no_ads,
-      //           textScaleFactor: 1.0,
+      //           textScaler: TextScaler.linear(1.0),
       //           maxLines: 2,
       //           textAlign: TextAlign.left,
       //           style: TextStyle(
@@ -361,7 +361,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 LangControl.to.S.value.infinite_tags,
                 maxLines: 2,
                 textAlign: TextAlign.left,
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 style: TextStyle(
                   fontFamily: 'Lato',
                   color: Color(0xff707070),
@@ -385,7 +385,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             Flexible(
               child: Text(
                 LangControl.to.S.value.tag_multiple_photos_at_once,
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 maxLines: 2,
                 textAlign: TextAlign.left,
                 style: TextStyle(
@@ -413,7 +413,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //           LangControl.to.S.value.cancel_anytime,
       //           maxLines: 2,
       //           textAlign: TextAlign.left,
-      //           textScaleFactor: 1.0,
+      //           textScaler: TextScaler.linear(1.0),
       //           style: TextStyle(
       //             fontFamily: 'Lato',
       //             color: Color(0xff707070),
@@ -442,7 +442,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           child: Center(
             child: Text(
               'Um erro ocorreu ao tentar se conectar a loja, por favor, tente novamente mais tarde.',
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.linear(1.0),
               textAlign: TextAlign.center,
               style: kPremiumButtonTextStyle,
             ),
@@ -533,7 +533,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   child: Center(
                     child: Text(
                       'Subscribe Now',
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontFamily: 'Lato',
@@ -561,7 +561,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     child: Center(
                       child: Text(
                         'Special Offer',
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff606566),
@@ -590,7 +590,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         child: Center(
           child: Text(
             LangControl.to.S.value.restore_purchase,
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Lato',
@@ -614,7 +614,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         child: Center(
           child: Text(
             'Um erro ocorreu ao tentar se conectar a loja, por favor, tente novamente mais tarde.',
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             textAlign: TextAlign.center,
             style: kPremiumButtonTextStyle,
           ),
@@ -673,7 +673,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   child: Center(
                     child: Text(
                       '${LangControl.to.S.value.sign} ${monthSubs?.product.priceString}\n${LangControl.to.S.value.month}',
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       textAlign: TextAlign.center,
                       style:
                           kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
@@ -709,7 +709,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           child: Center(
                             child: Text(
                               '${LangControl.to.S.value.sign} ${yearSubs?.product.priceString}\n${LangControl.to.S.value.year}',
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               textAlign: TextAlign.center,
                               style: kPremiumButtonTextStyle,
                             ),
@@ -732,7 +732,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             child: Center(
                               child: Text(
                                 '   ${LangControl.to.S.value.save} ${save.round()}%',
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),

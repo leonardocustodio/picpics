@@ -48,7 +48,7 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
         CupertinoSwitch(
           value: widget
               .value, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-          activeColor: kYellowColor,
+          activeTrackColor: kYellowColor,
           onChanged: (value) {
             widget.onChanged(value);
           },

@@ -72,7 +72,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                               ),
                               Text(
                                 LangControl.to.S.value.no_tagged_photos,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -99,7 +99,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                   child: Center(
                                     child: Text(
                                       LangControl.to.S.value.start_tagging,
-                                      textScaleFactor: 1.0,
+                                      textScaler: TextScaler.linear(1.0),
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: kWhiteColor,
@@ -179,7 +179,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                       index == 1
                           ? LangControl.to.S.value.search_all_tags_not_found
                           : 'No photos found with this tag',
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       style: TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff979a9b),

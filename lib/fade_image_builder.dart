@@ -5,10 +5,10 @@ class FadeImageBuilder extends StatelessWidget {
   final int milliseconds;
 
   const FadeImageBuilder({
-    Key? key,
+    super.key,
     required this.child,
     this.milliseconds = 1000,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -1,13 +1,9 @@
-import 'dart:async';
-import 'dart:isolate';
-
 import 'package:background_fetch/background_fetch.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:home_widget/home_widget.dart';
@@ -103,21 +99,6 @@ void main() async {
   } */
   var user = UserController();
   await user.initialize();
-
-  // Initialize Flutter Branch SDK
-  await FlutterBranchSdk.init(enableLogging: false);
-
-  // Listen to deep link events
-  var streamSubscription = FlutterBranchSdk.listSession().listen((data) {
-    if (data.containsKey('+clicked_branch_link') &&
-        data['+clicked_branch_link'] == true) {
-      //Link clicked. Add logic to get link data
-      print('Custom string: ${data["custom_string"]}');
-    }
-  }, onError: (error) {
-    //PlatformException platformException = error as PlatformException;
-    print('InitSession error: ${error.toString()}');
-  });
 
   var setAppGroup =
       await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');

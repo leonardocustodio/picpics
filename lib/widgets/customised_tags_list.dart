@@ -41,7 +41,7 @@ class CustomisedTagsList extends StatelessWidget {
             padding: const EdgeInsets.only(bottom: 8.0),
             child: Text(
               title!,
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.linear(1.0),
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
@@ -115,7 +115,7 @@ class CustomisedTagsList extends StatelessWidget {
             : kGrayBoxDecoration,
         child: Text(
           tag.title,
-          textScaleFactor: 1.0,
+          textScaler: TextScaler.linear(1.0),
           style: (isColorFull ? kWhiteTextStyle : kGrayTextStyle)
               .copyWith(fontSize: 14),
         ),

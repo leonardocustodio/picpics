@@ -11,8 +11,7 @@ class DateHeaderWidget extends StatelessWidget {
       {required this.date,
       required this.isSelected,
       required this.isMonth,
-      Key? key})
-      : super(key: key);
+      super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +39,7 @@ class DateHeaderWidget extends StatelessWidget {
             ),
           Text(
             Helpers.dateFormat(date, isMonth: isMonth),
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),

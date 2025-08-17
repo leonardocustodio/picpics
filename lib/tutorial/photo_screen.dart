@@ -320,7 +320,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         RichText(
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
@@ -358,7 +358,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                         Text(
                                           dateFormat(galleryStore
                                               .currentThumbnailPic.createdAt),
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: TextStyle(
                                             fontFamily: 'Lato',
                                             color: kWhiteColor,

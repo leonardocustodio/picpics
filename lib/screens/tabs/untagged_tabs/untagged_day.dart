@@ -10,7 +10,7 @@ import 'package:picPics/widgets/date_header.dart';
 import 'package:picPics/widgets/photo_widget.dart';
 
 class UntaggedTabDay extends GetWidget<TabsController> {
-  const UntaggedTabDay({Key? key}) : super(key: key);
+  const UntaggedTabDay({super.key});
 
   @override
   Widget build(BuildContext context) {

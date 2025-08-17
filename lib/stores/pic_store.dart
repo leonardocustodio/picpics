@@ -284,7 +284,7 @@ class PicStore extends GetxController {
     print('Deleting $photoPath and $thumbPath');
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
-      print('Pic has entity? ${entity == null ? false : true}');
+      print('Pic has entity? ${true}');
       var picData = await assetOriginBytes;
 
       /// TODO: returning is picData is null
@@ -296,12 +296,6 @@ class PicStore extends GetxController {
         title: '',
         filename: 'picpics_${DateTime.now().millisecondsSinceEpoch}.jpg',
       );
-
-      /// TODO: what to do if the imageEntity is null ??
-      /// doing temporary thing
-      if (null == imageEntity) {
-        return;
-      }
       await changeAssetEntity(imageEntity);
       print('copied image back to gallery with id: ${imageEntity.id}');
     }
@@ -380,7 +374,7 @@ class PicStore extends GetxController {
 
     isPrivate.value = value;
     print('Pic isPrivate: $value');
-    print('Pic Entity Exists: ${entity == null ? false : true}');
+    print('Pic Entity Exists: ${true}');
     print('Photo Id: $photoId - Entity Id: ${entity.value?.id}');
 
     //var picsBox = Hive.box('pics');

@@ -41,8 +41,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   ImageFileType get imageFileType => _getType();
 
   @override
-  ImageStreamCompleter load(
-      AssetEntityImageProvider key, DecoderBufferCallback decode) {
+  ImageStreamCompleter loadImage(
+      AssetEntityImageProvider key, ImageDecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -62,7 +62,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   Future<ui.Codec> _loadAsync(
     AssetEntityImageProvider key,
-    DecoderBufferCallback decode,
+    ImageDecoderCallback decode,
   ) async {
     assert(key == this);
     Uint8List? data;
@@ -105,7 +105,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     // } else {
     //   data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     // }
-    return decode(await ui.ImmutableBuffer.fromUint8List(data!));
+    final buffer = await ui.ImmutableBuffer.fromUint8List(data!);
+    return decode(buffer);
   }
 
   /// Get image type by reading the file extension.
@@ -148,13 +149,12 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    final typedOther =
-        // ignore: test_types_in_equals
-        other as AssetEntityImageProvider;
+    final typedOther = other as AssetEntityImageProvider;
 
     if (picStore.entity.value == null) {
       return picStore.photoPath == typedOther.picStore.photoPath;

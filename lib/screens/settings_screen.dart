@@ -106,7 +106,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       child: Obx(
                         () => Text(
                           LangControl.to.S.value.cancel,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           style: kBottomSheetTextStyle,
                         ),
                       ),
@@ -114,7 +114,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   ),
                   const Text(
                     'Require secret key',
-                    textScaleFactor: 1.0,
+                    textScaler: TextScaler.linear(1.0),
                     style: kBottomSheetTitleTextStyle,
                   ),
                   CupertinoButton(
@@ -127,7 +127,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       child: Obx(
                         () => Text(
                           LangControl.to.S.value.ok,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           textAlign: TextAlign.end,
                           style: kBottomSheetTextStyle,
                         ),
@@ -152,7 +152,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     return Center(
                         child: Text(
                       kRequireOptions[index],
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                     ));
                   },
                 ),
@@ -196,7 +196,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       child: Obx(
                         () => Text(
                           LangControl.to.S.value.cancel,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           style: kBottomSheetTextStyle,
                         ),
                       ),
@@ -205,7 +205,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   Obx(
                     () => Text(
                       LangControl.to.S.value.language,
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       style: kBottomSheetTitleTextStyle,
                     ),
                   ),
@@ -246,7 +246,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       child: Obx(
                         () => Text(
                           LangControl.to.S.value.ok,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           textAlign: TextAlign.end,
                           style: kBottomSheetTextStyle,
                         ),
@@ -271,7 +271,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                     return Center(
                         child: Text(
                       '${language.getDisplayLanguage(supportedLocales[index].languageCode)['name']} / ${language.getDisplayLanguage(supportedLocales[index].languageCode)['nativeName']}',
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                     ));
                   },
                 ),
@@ -308,14 +308,14 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                      width: 80.0,
 //                      child: Text(
 //                        LangControl.to.S.value.cancel,
-//                        textScaleFactor: 1.0,
+//                        textScaler: TextScaler.linear(1.0),
 //                        style: kBottomSheetTextStyle,
 //                      ),
 //                    ),
 //                  ),
 //                  Text(
 //                    LangControl.to.S.value.how_many_pics,
-//                    textScaleFactor: 1.0,
+//                    textScaler: TextScaler.linear(1.0),
 //                    style: kBottomSheetTitleTextStyle,
 //                  ),
 //                  CupertinoButton(
@@ -327,7 +327,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                      width: 80.0,
 //                      child: Text(
 //                        LangControl.to.S.value.ok,
-//                        textScaleFactor: 1.0,
+//                        textScaler: TextScaler.linear(1.0),
 //                        textAlign: TextAlign.end,
 //                        style: kBottomSheetTextStyle,
 //                      ),
@@ -351,7 +351,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                    return Center(
 //                        child: Text(
 //                      '${index + 1}',
-//                      textScaleFactor: 1.0,
+//                      textScaler: TextScaler.linear(1.0),
 //                    ));
 //                  },
 //                ),
@@ -391,7 +391,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       child: Obx(
                         () => Text(
                           LangControl.to.S.value.cancel,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           style: kBottomSheetTextStyle,
                         ),
                       ),
@@ -400,7 +400,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   Obx(
                     () => Text(
                       LangControl.to.S.value.time,
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       style: kBottomSheetTitleTextStyle,
                     ),
                   ),
@@ -415,7 +415,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                       child: Obx(
                         () => Text(
                           LangControl.to.S.value.ok,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           textAlign: TextAlign.end,
                           style: kBottomSheetTextStyle,
                         ),
@@ -452,14 +452,14 @@ class _SettingsScreenState extends State<SettingsScreen>
 //          return PlatformAlertDialog(
 //            title: Text(
 //              LangControl.to.S.value.notifications,
-//              textScaleFactor: 1.0,
+//              textScaler: TextScaler.linear(1.0),
 //            ),
 //            content: SingleChildScrollView(
 //              child: ListBody(
 //                children: <Widget>[
 //                  Text(
 //                    LangControl.to.S.value.daily_challenge_permission_description,
-//                    textScaleFactor: 1.0,
+//                    textScaler: TextScaler.linear(1.0),
 //                  ),
 //                ],
 //              ),
@@ -468,7 +468,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //              PlatformDialogAction(
 //                child: Text(
 //                  LangControl.to.S.value.ok,
-//                  textScaleFactor: 1.0,
+//                  textScaler: TextScaler.linear(1.0),
 //                ),
 //                actionType: ActionType.Preferred,
 //                onPressed: () {
@@ -523,7 +523,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                   Obx(
                     () => Text(
                       LangControl.to.S.value.settings,
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       style: kGraySettingsBoldTextStyle,
                     ),
                   ),
@@ -582,7 +582,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           Text(
                                             LangControl
                                                 .to.S.value.private_photos,
-                                            textScaleFactor: 1.0,
+                                            textScaler: TextScaler.linear(1.0),
                                             style: kGraySettingsFieldTextStyle,
                                           ),
                                           Obx(
@@ -697,8 +697,10 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                           Text(
                                                             enableBiometric ??
                                                                 '',
-                                                            textScaleFactor:
-                                                                1.0,
+                                                            textScaler:
+                                                                TextScaler
+                                                                    .linear(
+                                                                        1.0),
                                                             style:
                                                                 kGraySettingsFieldTextStyle,
                                                           ),
@@ -708,7 +710,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                                   .to
                                                                   .isBiometricActivated
                                                                   .value,
-                                                              activeColor:
+                                                              activeTrackColor:
                                                                   kSecondaryColor,
                                                               onChanged:
                                                                   (value) async {
@@ -781,13 +783,13 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //                         children: <Widget>[
                                 //                           Text(
                                 //                             'Require Secret Key',
-                                //                             textScaleFactor: 1.0,
+                                //                             textScaler: TextScaler.linear(1.0),
                                 //                             style: kGraySettingsFieldTextStyle,
                                 //                           ),
                                 //                           Obx( () {
                                 //                             return Text(
                                 //                               kRequireOptions[UserController.to.requireSecret],
-                                //                               textScaleFactor: 1.0,
+                                //                               textScaler: TextScaler.linear(1.0),
                                 //                               style: kGraySettingsValueTextStyle,
                                 //                             );
                                 //                           }),
@@ -827,7 +829,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //         children: <Widget>[
                                 //           Text(
                                 //             LangControl.to.S.value.daily_challenge,
-                                //             textScaleFactor: 1.0,
+                                //             textScaler: TextScaler.linear(1.0),
                                 //             style: kGraySettingsFieldTextStyle,
                                 //           ),
                                 //           Obx(
@@ -865,14 +867,14 @@ class _SettingsScreenState extends State<SettingsScreen>
                                 //         children: <Widget>[
                                 //           Text(
                                 //             LangControl.to.S.value.notification_time,
-                                //             textScaleFactor: 1.0,
+                                //             textScaler: TextScaler.linear(1.0),
                                 //             style: kGraySettingsFieldTextStyle,
                                 //           ),
                                 //           Obx(
                                 //              () {
                                 //               return Text(
                                 //                 '${'${UserController.to.hourOfDay}'.padLeft(2, '0')}: ${'${UserController.to.minutesOfDay}'.padLeft(2, '0')}',
-                                //                 textScaleFactor: 1.0,
+                                //                 textScaler: TextScaler.linear(1.0),
                                 //                 style: kGraySettingsValueTextStyle,
                                 //               );
                                 //             },
@@ -894,12 +896,12 @@ class _SettingsScreenState extends State<SettingsScreen>
 //                            children: <Widget>[
 //                              Text(
 //                                LangControl.to.S.value.daily_goal,
-//                                textScaleFactor: 1.0,
+//                                textScaler: TextScaler.linear(1.0),
 //                                style: kGraySettingsFieldTextStyle,
 //                              ),
 //                              Text(
 //                                '${Provider.of<DatabaseManager>(context).userSettings.goal}',
-//                                textScaleFactor: 1.0,
+//                                textScaler: TextScaler.linear(1.0),
 //                                style: kGraySettingsValueTextStyle,
 //                              ),
 //                            ],
@@ -927,7 +929,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                           Obx(
                                             () => Text(
                                               LangControl.to.S.value.language,
-                                              textScaleFactor: 1.0,
+                                              textScaler:
+                                                  TextScaler.linear(1.0),
                                               style:
                                                   kGraySettingsFieldTextStyle,
                                             ),
@@ -937,7 +940,8 @@ class _SettingsScreenState extends State<SettingsScreen>
                                               return Text(
                                                 UserController
                                                     .to.currentLanguage.value,
-                                                textScaleFactor: 1.0,
+                                                textScaler:
+                                                    TextScaler.linear(1.0),
                                                 style:
                                                     kGraySettingsValueTextStyle,
                                               );
@@ -969,7 +973,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       Text(
                                         LangControl
                                             .to.S.value.share_with_friends,
-                                        textScaleFactor: 1.0,
+                                        textScaler: TextScaler.linear(1.0),
                                         style: kGraySettingsBoldTextStyle,
                                       ),
                                     ],
@@ -987,7 +991,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       Obx(
                                         () => Text(
                                           LangControl.to.S.value.rate_this_app,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: kGraySettingsBoldTextStyle,
                                         ),
                                       ),
@@ -1006,7 +1010,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                       Text(
                                         LangControl
                                             .to.S.value.feedback_bug_report,
-                                        textScaleFactor: 1.0,
+                                        textScaler: TextScaler.linear(1.0),
                                         style: kGraySettingsBoldTextStyle,
                                       ),
                                     ],
@@ -1061,7 +1065,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                       .get_premium_now,
                                               maxLines: 2,
                                               textAlign: TextAlign.left,
-                                              textScaleFactor: 1.0,
+                                              textScaler: TextScaler.linear(1.0),
                                               style: kGraySettingsBoldTextStyle
                                                   .copyWith(
                                                       color: kSecondaryColor),
@@ -1133,8 +1137,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                             'https://picpics.link/e/privacy');
                                       },
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
-                                      minSize: 32.0,
+                                          vertical: 8.0), minimumSize: Size(32.0, 32.0),
                                       child: Obx(
                                         () => Text(
                                           LangControl.to.S.value.privacy_policy,
@@ -1166,8 +1169,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                             'https://picpics.link/e/terms');
                                       },
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 10.0),
-                                      minSize: 32.0,
+                                          vertical: 10.0), minimumSize: Size(32.0, 32.0),
                                       child: Obx(
                                         () => Text(
                                           LangControl.to.S.value.terms_of_use,
@@ -1190,7 +1192,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                   child: Center(
                                     child: Text(
                                       'VERSION: ${UserController.to.appVersion}',
-                                      textScaleFactor: 1.0,
+                                      textScaler: TextScaler.linear(1.0),
                                       style: kGraySettingsFieldTextStyle,
                                     ),
                                   ),
