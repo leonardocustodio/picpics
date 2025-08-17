@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:flutter/services.dart';
 
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -37,7 +36,8 @@ class TagsList extends StatefulWidget {
   final Function()? onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
-  const TagsList({super.key, 
+  const TagsList({
+    super.key,
     required this.tagsKeyList,
     required this.tagStyle, //= TagStyle.MultiColored,
     this.textEditingController,
@@ -116,12 +116,12 @@ class _TagsListState extends State<TagsList> {
                 }
               });
             }
-            Vibrate.feedback(FeedbackType.success);
+            HapticFeedback.lightImpact();
             //DatabaseManager.instance.selectedTagKey = tag.key;
             widget.onTap?.call(tagKey);
           },
           onDoubleTap: () {
-            Vibrate.feedback(FeedbackType.success);
+            HapticFeedback.lightImpact();
             //DatabaseManager.instance.selectedTagKey = tag.key;
             widget.onDoubleTap?.call(tagKey);
           },
@@ -147,7 +147,7 @@ class _TagsListState extends State<TagsList> {
           onPanEnd: (details) {
             if (swipedRightDirection) {
               showSwiperInIndex = null;
-              Vibrate.feedback(FeedbackType.success);
+              HapticFeedback.lightImpact();
               //DatabaseManager.instance.selectedTagKey = tag.key;
               widget.onPanEnd?.call(tagKey);
               swipedRightDirection = false;
@@ -170,7 +170,7 @@ class _TagsListState extends State<TagsList> {
                 });
               }
 
-              Vibrate.feedback(FeedbackType.success);
+              HapticFeedback.lightImpact();
               //DatabaseManager.instance.selectedTagKey = tag.key;
               widget.onTap(tag.key, tag.title); 
             },
@@ -271,12 +271,10 @@ class _TagsListState extends State<TagsList> {
                               width: 30.0,
                               child: Transform.rotate(
                                 angle: pi / 2,
-                                child: const FlareActor(
-                                  'lib/anims/swipe_arrow.flr',
-                                  alignment: Alignment.center,
-                                  fit: BoxFit.contain,
-                                  animation: 'arrow_left',
+                                child: const Icon(
+                                  Icons.arrow_back_ios,
                                   color: kWhiteColor,
+                                  size: 20,
                                 ),
                               ),
                             ),

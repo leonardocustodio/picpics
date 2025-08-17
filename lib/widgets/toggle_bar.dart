@@ -9,7 +9,8 @@ class ToggleBar extends StatefulWidget {
   final String titleLeft;
   final String titleRight;
 
-  const ToggleBar({super.key, 
+  const ToggleBar({
+    super.key,
     required this.titleLeft,
     required this.titleRight,
     required this.activeToggle,

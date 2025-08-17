@@ -326,7 +326,8 @@ class Crypto {
   static Future<void> saveSaltKey() async {
     const storage = FlutterSecureStorage();
     final stringToBase64 = utf8.fuse(base64);
-    final secretSalt = stringToBase64.encode(const Uuid().v4()).substring(0, 16);
+    final secretSalt =
+        stringToBase64.encode(const Uuid().v4()).substring(0, 16);
     await storage.write(key: 'ppkey', value: secretSalt);
     print('Secret salt: $secretSalt');
   }
@@ -456,7 +457,8 @@ class Crypto {
           macAlgorithm: cryptography.Hmac.sha256());
     } else {
       // TODO: Check if this will work
-      algorithm = cryptography.AesGcm.with256bits() as cryptography.StreamingCipher;
+      algorithm =
+          cryptography.AesGcm.with256bits() as cryptography.StreamingCipher;
     }
 
     /// Let's start processing the image files to start encrypting.

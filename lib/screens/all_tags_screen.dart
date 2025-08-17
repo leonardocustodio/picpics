@@ -224,8 +224,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                           letterSpacing: -0.4099999964237213,
                                         ),
                                         decoration: const InputDecoration(
-                                          contentPadding:
-                                              EdgeInsets.all(0),
+                                          contentPadding: EdgeInsets.all(0),
                                           border: OutlineInputBorder(
                                               borderSide: BorderSide.none),
                                           enabledBorder: OutlineInputBorder(

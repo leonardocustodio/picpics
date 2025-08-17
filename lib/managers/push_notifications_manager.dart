@@ -140,17 +140,17 @@ print('subscribed to topic: all_users');
       description,
       _nextInstanceOfTime(time),
       const NotificationDetails(
-        android: AndroidNotificationDetails('0', 'Daily Goal',
-            channelDescription:
-                'Notification for remembering your picPics daily goal'),
+        android: AndroidNotificationDetails(
+          '0',
+          'Daily Goal',
+          channelDescription:
+              'Notification for remembering your picPics daily goal',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
       ),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-
-      /// TODO: What to do in this situation ?
-      /* scheduledNotificationRepeatFrequency:
-            ScheduledNotificationRepeatFrequency.daily, */
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 }

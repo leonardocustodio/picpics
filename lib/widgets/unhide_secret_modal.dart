@@ -8,7 +8,8 @@ class UnhideSecretModal extends StatelessWidget {
   final Function() onPressedDelete;
   final Function() onPressedOk;
 
-  const UnhideSecretModal({super.key, 
+  const UnhideSecretModal({
+    super.key,
     required this.onPressedDelete,
     required this.onPressedOk,
   });

@@ -17,7 +17,8 @@ class CircularMenuItem extends StatelessWidget {
   /// creates a menu item .
   /// [onTap] must not be null.
   /// [padding] and [margin]  must be equal or greater than zero.
-  const CircularMenuItem({super.key, 
+  const CircularMenuItem({
+    super.key,
     required this.onTap,
     this.image,
     this.color,

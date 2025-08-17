@@ -192,8 +192,7 @@ print('got token this mean it did accept notification');
 
   Future findLocation(double latitude, double longitude) async {
     print('Finding location...');
-    final placemarks = await placemarkFromCoordinates(latitude, longitude,
-        localeIdentifier: 'pt_BR');
+    final placemarks = await placemarkFromCoordinates(latitude, longitude);
     print('Placemark: ${placemarks.first.locality}');
     currentPhotoCity = placemarks.first.locality ?? '';
     currentPhotoState = placemarks.first.administrativeArea ?? '';

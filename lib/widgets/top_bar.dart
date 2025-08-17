@@ -21,7 +21,8 @@ class TopBar extends StatelessWidget {
   final void Function(String value)? onSubmitted;
   final List<Widget> children;
 
-  const TopBar({super.key, 
+  const TopBar({
+    super.key,
     this.searchEditingController,
     this.showUntag = false,
     this.searchFocusNode,

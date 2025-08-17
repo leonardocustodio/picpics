@@ -201,8 +201,9 @@ class TabsController extends GetxController {
 
     var assetPathEntity = assetsPath[0];
 
-    assetEntityList = List<AssetEntity>.from(await assetPathEntity
-        .getAssetListRange(start: 0, end: assetPathEntity.assetCount));
+    final assetCount = await assetPathEntity.assetCountAsync;
+    assetEntityList = List<AssetEntity>.from(
+        await assetPathEntity.getAssetListRange(start: 0, end: assetCount));
     await refreshUntaggedList();
   }
 
@@ -695,9 +696,8 @@ Future<void> sharePics({required List<String> picKeys}) async {
 
   await Analytics.sendEvent(Event.shared_photos);
 
-  await Share.shareFiles(
-    imageList,
-    mimeTypes: mimeList,
+  await Share.shareXFiles(
+    imageList.map((path) => XFile(path)).toList(),
   );
 
 //    setSharedPic(true);

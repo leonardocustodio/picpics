@@ -15,7 +15,8 @@ class CupertinoInputDialog extends StatelessWidget {
   final Image? prefixImage;
   final TextEditingController alertInputController;
 
-  const CupertinoInputDialog({super.key, 
+  const CupertinoInputDialog({
+    super.key,
     required this.title,
     this.inputPlaceholder,
     required this.destructiveButtonTitle,

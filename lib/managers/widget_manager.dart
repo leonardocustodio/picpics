@@ -86,5 +86,4 @@ class WidgetManager {
   //     debug//print('Error Getting Data. $exception');
   //   }
   // }
-
 }

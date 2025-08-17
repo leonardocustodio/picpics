@@ -159,8 +159,8 @@ class _EmailScreenState extends State<EmailScreen> {
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
                                           left: 10.0, right: 5.0),
-                                      fillColor:
-                                          const Color(0xFFF1F3F5).withOpacity(0.3),
+                                      fillColor: const Color(0xFFF1F3F5)
+                                          .withOpacity(0.3),
                                       filled: true,
                                       border: OutlineInputBorder(
                                         borderSide: const BorderSide(

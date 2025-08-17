@@ -25,7 +25,7 @@ import 'package:picPics/widgets/tags_list.dart';
 import 'package:intl/intl.dart';
 import 'package:picPics/components/circular_menu.dart';
 import 'package:picPics/components/circular_menu_item.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:flutter/services.dart';
 
 //typedef EditTagModalTypeDef = dynamic Function(String tagKey);
 
@@ -430,7 +430,7 @@ class _PhotoCardState extends State<PhotoCard> {
                         await picStore.addMultipleTagsToPic(
                             acceptedTagKeys: {tagKey: ''});
 
-                        Vibrate.feedback(FeedbackType.success);
+                        HapticFeedback.lightImpact();
                         tagsEditingController.clear();
                         TagsController.to.searchText.value = '';
                         await TagsController.to.tagsSuggestionsCalculate();

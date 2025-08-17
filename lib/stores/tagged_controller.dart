@@ -503,7 +503,8 @@ class ConfirmationDialog extends StatelessWidget {
   final Function()? onPressedClose;
   final Function() onPressedOk;
 
-  const ConfirmationDialog({super.key, 
+  const ConfirmationDialog({
+    super.key,
     required this.headingText,
     required this.titleText,
     required this.okText,

@@ -5,7 +5,7 @@ import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:flutter/cupertino.dart';
 import 'package:devicelocale/devicelocale.dart';
 import 'package:get/get.dart';
-import 'package:notification_permissions/notification_permissions.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:picPics/stores/language_controller.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -198,28 +198,39 @@ class UserController extends GetxController {
   //@action
   Future<void> checkNotificationPermission(
       {bool firstPermissionCheck = false}) async {
-    return NotificationPermissions.getNotificationPermissionStatus()
-        .then((status) async {
-      final currentUser = await database.getSingleMoorUser();
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
 
-      if (status == PermissionStatus.denied) {
-        await database.updateMoorUser(currentUser!.copyWith(
-          notification: false,
-        ));
-      } else {
-        var tempDailyChallenges = currentUser!.dailyChallenges;
-        if (firstPermissionCheck) {
-          tempDailyChallenges = false;
-        }
-        await database.updateMoorUser(currentUser.copyWith(
-          notification: true,
-          dailyChallenges: tempDailyChallenges,
-        ));
+    final bool? granted = await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
+    final bool hasPermission = granted ?? false;
+
+    final currentUser = await database.getSingleMoorUser();
+
+    if (!hasPermission) {
+      await database.updateMoorUser(currentUser!.copyWith(
+        notification: false,
+      ));
+    } else {
+      var tempDailyChallenges = currentUser!.dailyChallenges;
+      if (firstPermissionCheck) {
+        tempDailyChallenges = false;
       }
+      await database.updateMoorUser(currentUser.copyWith(
+        notification: true,
+        dailyChallenges: tempDailyChallenges,
+      ));
+    }
 
-      notifications.value = currentUser.notification;
-      dailyChallenges.value = currentUser.dailyChallenges;
-    });
+    notifications.value = currentUser.notification;
+    dailyChallenges.value = currentUser.dailyChallenges;
   }
 
   Future<void> switchDailyChallenges(

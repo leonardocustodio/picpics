@@ -9,7 +9,8 @@ class ConfirmPicDelete extends StatelessWidget {
   final Function()? onPressedClose;
   final Function() onPressedDelete;
 
-  const ConfirmPicDelete({super.key, 
+  const ConfirmPicDelete({
+    super.key,
     this.deleteText = 'Are you sure you want to delete photo ?',
     this.onPressedClose,
     required this.onPressedDelete,

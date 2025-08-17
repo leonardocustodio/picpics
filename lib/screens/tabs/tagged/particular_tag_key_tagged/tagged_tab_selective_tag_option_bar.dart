@@ -287,8 +287,8 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                 controller.setTabIndexParticularTagKey(index, tagKey);
               },
               iconSize: 24,
-              border:
-                  const Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+              border: const Border(
+                  top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
               items: listOfBottomNavigationItems)
           : SizedBox(
               height: 64,

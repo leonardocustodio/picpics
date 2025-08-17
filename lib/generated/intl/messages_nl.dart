@@ -22,8 +22,10 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m0(email) =>
       "Er is een toegangssleutel verzonden naar ${email}";
 
-  static String m1(howMany) =>
-      Intl.plural(howMany, zero: 'Geen foto\'s geselecteerd', one: '1 foto geselecteerd', other: '${howMany} foto\'s geselecteerd');
+  static String m1(howMany) => Intl.plural(howMany,
+      zero: 'Geen foto\'s geselecteerd',
+      one: '1 foto geselecteerd',
+      other: '${howMany} foto\'s geselecteerd');
 
   static String m2(url) => "Ga naar ${url} om al uw foto's te ordenen";
 
@@ -106,8 +108,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "gallery_access_reason": MessageLookupByLibrary.simpleMessage(
             "Om uw foto's te ordenen, hebben we toegang tot uw fotogalerij nodig"),
         "home_tag": MessageLookupByLibrary.simpleMessage("Huis"),
-        "how_many_pics":
-            MessageLookupByLibrary.simpleMessage("Hoeveel foto's"),
+        "how_many_pics": MessageLookupByLibrary.simpleMessage("Hoeveel foto's"),
         "infinite_tags": MessageLookupByLibrary.simpleMessage("Oneindige tags"),
         "keep_asking": MessageLookupByLibrary.simpleMessage("Blijf vragen"),
         "keep_safe": MessageLookupByLibrary.simpleMessage(
@@ -177,8 +178,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Zoekresultaten"),
         "secret_key_created": MessageLookupByLibrary.simpleMessage(
             "Geheime sleutel met succes aangemaakt!"),
-        "secret_photos":
-            MessageLookupByLibrary.simpleMessage("Geheime foto's"),
+        "secret_photos": MessageLookupByLibrary.simpleMessage("Geheime foto's"),
         "selfies_tag": MessageLookupByLibrary.simpleMessage("Selfies"),
         "settings": MessageLookupByLibrary.simpleMessage("Instellingen"),
         "share_with_friends":

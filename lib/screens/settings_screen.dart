@@ -663,7 +663,7 @@ class _SettingsScreenState extends State<SettingsScreen>
                                                 child: Container(
                                                   child: Padding(
                                                     padding: const EdgeInsets
-                                                            .symmetric(
+                                                        .symmetric(
                                                         horizontal: 16.0),
                                                     child: CupertinoButton(
                                                       padding:

@@ -21,8 +21,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(email) => "访问密钥已发送至${email}";
 
-  static String m1(howMany) =>
-      Intl.plural(howMany, zero: '未选择照片', one: '已选择1张照片', other: '已选择${howMany}张照片');
+  static String m1(howMany) => Intl.plural(howMany,
+      zero: '未选择照片', one: '已选择1张照片', other: '已选择${howMany}张照片');
 
   static String m2(url) => "要整理所有照片，请访问${url}";
 

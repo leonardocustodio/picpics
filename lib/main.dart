@@ -104,8 +104,11 @@ void main() async {
   var user = UserController();
   await user.initialize();
 
-  // FlutterBranchSdk.setRequestMetadata(r'$google_analytics_user_id', userId);
-  var streamSubscription = FlutterBranchSdk.initSession().listen((data) {
+  // Initialize Flutter Branch SDK
+  await FlutterBranchSdk.init(enableLogging: false);
+
+  // Listen to deep link events
+  var streamSubscription = FlutterBranchSdk.listSession().listen((data) {
     if (data.containsKey('+clicked_branch_link') &&
         data['+clicked_branch_link'] == true) {
       //Link clicked. Add logic to get link data
@@ -113,8 +116,7 @@ void main() async {
     }
   }, onError: (error) {
     //PlatformException platformException = error as PlatformException;
-    print('InitSession error: ${error.code}');
-    print(' - ${error.message}');
+    print('InitSession error: ${error.toString()}');
   });
 
   var setAppGroup =

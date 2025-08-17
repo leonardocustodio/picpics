@@ -65,8 +65,10 @@ class DefaultFirebaseOptions {
     projectId: 'picpics',
     databaseURL: 'https://picpics.firebaseio.com',
     storageBucket: 'picpics.appspot.com',
-    androidClientId: '782873848258-sqj0psl71h0v1ou6ubjovtae0bssdobg.apps.googleusercontent.com',
-    iosClientId: '782873848258-1r809shqf1tg3n1hpabgmlqfngtf41bk.apps.googleusercontent.com',
+    androidClientId:
+        '782873848258-sqj0psl71h0v1ou6ubjovtae0bssdobg.apps.googleusercontent.com',
+    iosClientId:
+        '782873848258-1r809shqf1tg3n1hpabgmlqfngtf41bk.apps.googleusercontent.com',
     iosBundleId: 'br.com.inovatso.picPics',
   );
 }

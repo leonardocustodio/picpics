@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/model/tag_model.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:flutter/services.dart';
 import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/helpers.dart';
@@ -21,7 +21,8 @@ class CustomisedTagsList extends StatelessWidget {
   final OnTap? onTap;
   final Function? onDoubleTap;
 
-  CustomisedTagsList({super.key, 
+  CustomisedTagsList({
+    super.key,
     required this.tagsKeyList,
     required this.selectedTags,
     this.maxLength,
@@ -91,12 +92,12 @@ class CustomisedTagsList extends StatelessWidget {
     var isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
       onTap: () {
-        Vibrate.feedback(FeedbackType.success);
+        HapticFeedback.lightImpact();
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
         onTap?.call(tag.key, tag.title, tag.count, tag.time);
       },
       onDoubleTap: () {
-        Vibrate.feedback(FeedbackType.success);
+        HapticFeedback.lightImpact();
         /* DatabaseManager.instance.selectedTagKey = tag.key; */
         onDoubleTap?.call();
       },

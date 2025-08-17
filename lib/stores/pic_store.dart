@@ -13,7 +13,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -294,6 +294,7 @@ class PicStore extends GetxController {
       final imageEntity = await PhotoManager.editor.saveImage(
         picData,
         title: '',
+        filename: 'picpics_${DateTime.now().millisecondsSinceEpoch}.jpg',
       );
 
       /// TODO: what to do if the imageEntity is null ??
@@ -668,7 +669,7 @@ class PicStore extends GetxController {
     }
 
     await Analytics.sendEvent(Event.shared_photo);
-    await ShareExtend.share(path, 'image');
+    await Share.shareXFiles([XFile(path)]);
   }
 
   //@action
@@ -834,8 +835,7 @@ class PicStore extends GetxController {
     final SCOPES = [TranslateApi.cloudTranslationScope];
     var translatedStrings = <String>[];
 
-    await clientViaServiceAccount(credentials, SCOPES)
-        .then((httpClient) async {
+    await clientViaServiceAccount(credentials, SCOPES).then((httpClient) async {
       var translate = TranslateApi(httpClient);
       var request = TranslateTextRequest();
       request.contents = tagsText;

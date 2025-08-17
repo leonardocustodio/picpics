@@ -42,7 +42,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   @override
   ImageStreamCompleter load(
-      AssetEntityImageProvider key, DecoderCallback decode) {
+      AssetEntityImageProvider key, DecoderBufferCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -62,7 +62,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   Future<ui.Codec> _loadAsync(
     AssetEntityImageProvider key,
-    DecoderCallback decode,
+    DecoderBufferCallback decode,
   ) async {
     assert(key == this);
     Uint8List? data;
@@ -79,8 +79,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       }
       data = picStore.isPrivate.value
           ? await key.picStore.assetThumbBytes
-          : await key.picStore.entity.value
-              ?.thumbnailDataWithSize(ThumbnailSize(thumbSize[0], thumbSize[1]));
+          : await key.picStore.entity.value?.thumbnailDataWithSize(
+              ThumbnailSize(thumbSize[0], thumbSize[1]));
 
       if (BlurHashController.to.blurHash[picStore.photoId.value] == null) {
         if (data != null) {
@@ -105,7 +105,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     // } else {
     //   data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     // }
-    return decode(data!);
+    return decode(await ui.ImmutableBuffer.fromUint8List(data!));
   }
 
   /// Get image type by reading the file extension.
@@ -167,7 +167,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   }
 
   @override
-  int get hashCode => hashValues(picStore.entity, scale, isOriginal);
+  int get hashCode => Object.hash(picStore.entity, scale, isOriginal);
 }
 
 enum ImageFileType { jpg, png, gif, tiff, heic, other }

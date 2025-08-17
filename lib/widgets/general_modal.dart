@@ -9,7 +9,8 @@ class GeneralModal extends StatelessWidget {
   final Function() onPressedDelete;
   final Function() onPressedOk;
 
-  const GeneralModal({super.key, 
+  const GeneralModal({
+    super.key,
     required this.message,
     required this.onPressedDelete,
     required this.onPressedOk,

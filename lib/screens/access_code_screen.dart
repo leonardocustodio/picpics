@@ -20,7 +20,7 @@ import 'package:local_auth/local_auth.dart';
 class AccessCodeScreen extends GetWidget<PinController> {
   static const String id = 'access_code_screen';
 
-  CarouselController carouselController = CarouselController();
+  CarouselSliderController carouselController = CarouselSliderController();
   int carouselPage = 0;
 
   AccessCodeScreen({super.key});

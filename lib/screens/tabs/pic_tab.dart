@@ -21,7 +21,7 @@ class PicTab extends GetWidget<SwiperTabController> {
   final _ = Get.put(UserController());
   final __ = Get.put(SwiperTabController());
 
-  CarouselController carouselController = CarouselController();
+  CarouselSliderController carouselController = CarouselSliderController();
   ScrollPhysics scrollPhysics = const AlwaysScrollableScrollPhysics();
 
   Widget _buildPhotoSlider(int index) {

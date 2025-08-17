@@ -111,8 +111,12 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
                                     margin: const EdgeInsets.only(top: 5),
                                     child: AutoSizeText.rich(
                                       TextSpan(
-                                          text:
-                                              TagsController.to.allTags[tagKey]?.value.title ?? '',
+                                          text: TagsController
+                                                  .to
+                                                  .allTags[tagKey]
+                                                  ?.value
+                                                  .title ??
+                                              '',
                                           style: const TextStyle(
                                             color: Colors.black,
                                           ),

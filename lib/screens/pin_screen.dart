@@ -20,7 +20,7 @@ import 'package:local_auth/local_auth.dart';
 class PinScreen extends GetWidget<PinController> {
   static const String id = 'pin_screen';
 
-  CarouselController carouselController = CarouselController();
+  CarouselSliderController carouselController = CarouselSliderController();
   // late GlobalKey<AnimatorWidgetState> animatorKey;
 
   int carouselPage = 0;
