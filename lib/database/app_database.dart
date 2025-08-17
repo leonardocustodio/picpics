@@ -11,6 +11,7 @@ import 'package:picPics/model/user.dart';
 import 'package:picPics/model/user_key.dart';
 import 'package:picPics/stores/database_controller.dart';
 import 'package:uuid/uuid.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 part 'app_database.g.dart';
 
@@ -150,9 +151,6 @@ class MoorUsers extends Table {
 class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
   @override
   Map<String, String> fromSql(String fromDb) {
-    if (fromDb == null) {
-      return <String, String>{};
-    }
     var r = json.decode(fromDb);
     if (r is List) {
       return <String, String>{};
@@ -170,9 +168,6 @@ class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
 class ListStringConvertor extends TypeConverter<List<String>, String> {
   @override
   List<String> fromSql(String fromDb) {
-    if (fromDb == null) {
-      return <String>[];
-    }
     var r = json.decode(fromDb);
     if (r is List) {
       return r.toList().map((e) => e.toString()).toList();
@@ -193,7 +188,7 @@ LazyDatabase _openConnection() {
     // for your app.
     final dbFolder = await getApplicationSupportDirectory();
     //final path = p.join(dbFolder.path, 'db.sqlite');
-    //print('db:path:-$path');
+    //AppLogger.d('db:path:-$path');
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return NativeDatabase(file, setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");

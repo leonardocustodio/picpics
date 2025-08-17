@@ -26,6 +26,7 @@ import 'dart:async';
 
 import '../constants.dart';
 import 'private_photos_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 /* class Debouncer {
   final int milliseconds;
@@ -94,7 +95,7 @@ class TabsController extends GetxController {
 
     /* Future.delayed(Duration(seconds: 5), () {
       Timer.periodic(Duration(milliseconds: 4), (_) {
-        print('runned');
+        AppLogger.d('runned');
         allUnTaggedPicsMonth.remove(allUnTaggedPicsMonth.keys.toList()[1]);
         allUnTaggedPicsDay.remove(allUnTaggedPicsDay.keys.toList()[1]);
       });
@@ -104,9 +105,9 @@ class TabsController extends GetxController {
 
   Future<bool> shouldPopOut() async {
     /// if sheet is opened the don't allow popping and just
-    print('WillPopScope tabsController');
+    AppLogger.d('WillPopScope tabsController');
     if (multiTagSheet.value) {
-      print('WillPopScope multiTagSheet');
+      AppLogger.d('WillPopScope multiTagSheet');
       TagsController.to.multiPicTags.clear();
       multiTagSheet.value = false;
       return false;
@@ -116,7 +117,7 @@ class TabsController extends GetxController {
       return false;
     }
     if (multiPicBar.value) {
-      print('WillPopScope multiPicBar');
+      AppLogger.d('WillPopScope multiPicBar');
       multiPicBar.value = false;
       return false;
     }
@@ -124,7 +125,7 @@ class TabsController extends GetxController {
       currentTab.value = 0;
       return false;
     }
-    print('WillPopScope onPoppingOut');
+    AppLogger.d('WillPopScope onPoppingOut');
     onPoppingOut();
     return true;
   }
@@ -171,7 +172,7 @@ class TabsController extends GetxController {
 
     /*    disposer3 = reaction((_) => controller.showDeleteSecretModal, (showModal) {
       if (showModal) {
-        print('show delete secret modal!!!');
+        AppLogger.d('show delete secret modal!!!');
 //        setState(() {
 //          showEditTagModal();
 //        });
@@ -201,8 +202,9 @@ class TabsController extends GetxController {
 
     var assetPathEntity = assetsPath[0];
 
-    assetEntityList = List<AssetEntity>.from(await assetPathEntity
-        .getAssetListRange(start: 0, end: assetPathEntity.assetCount));
+    final assetCount = await assetPathEntity.assetCountAsync;
+    assetEntityList = List<AssetEntity>.from(
+        await assetPathEntity.getAssetListRange(start: 0, end: assetCount));
     await refreshUntaggedList();
   }
 
@@ -354,7 +356,7 @@ class TabsController extends GetxController {
             requiresDeviceIdle: false,
             requiredNetworkType: NetworkType.NONE), (String taskId) async {
       // This is the fetch-event callback.
-      print("[BackgroundFetch] Event received $taskId");
+      AppLogger.d("[BackgroundFetch] Event received $taskId");
 
       await WidgetManager.sendAndUpdate();
 
@@ -362,9 +364,9 @@ class TabsController extends GetxController {
       // for taking too long in the background.
       BackgroundFetch.finish(taskId);
     }).then((int status) {
-      print('[BackgroundFetch] configure success: $status');
+      AppLogger.d('[BackgroundFetch] configure success: $status');
     }).catchError((e) {
-      print('[BackgroundFetch] configure ERROR: $e');
+      AppLogger.d('[BackgroundFetch] configure ERROR: $e');
     });
 
     // Optionally query the current BackgroundFetch status.
@@ -454,7 +456,7 @@ class TabsController extends GetxController {
     if (selectedMultiBarPics.isEmpty) {
       return;
     }
-    print('sharing selected pics....');
+    AppLogger.d('sharing selected pics....');
     setIsLoading(true);
     await sharePics(picKeys: selectedMultiBarPics.keys.toList());
     setIsLoading(false);
@@ -511,7 +513,7 @@ class TabsController extends GetxController {
         if (selectedMultiBarPics.isEmpty) {
           return;
         }
-        print('sharing selected pics....');
+        AppLogger.d('sharing selected pics....');
         setIsLoading(true);
         await sharePics(picKeys: selectedMultiBarPics.keys.toList());
         setIsLoading(false);
@@ -570,7 +572,7 @@ class TabsController extends GetxController {
           var pic = await database.getPhotoByPhotoId(picStore.photoId.value);
 
           if (pic != null && pic.tags.isNotEmpty) {
-            // print('pic is in db... removing it from db!');
+            // AppLogger.d('pic is in db... removing it from db!');
             var picTags = List<String>.from(pic.tags.keys);
             await Future.forEach(picTags, (String tagKey) async {
               var tag = await database.getLabelByLabelKey(tagKey);
@@ -578,7 +580,7 @@ class TabsController extends GetxController {
                 if (picStore != null) {
                   tag.photoId.remove(picStore.photoId);
                 }
-                // print('removed ${picStore.photoId} from tag ${tag.title}');
+                // AppLogger.d('removed ${picStore.photoId} from tag ${tag.title}');
                 await database.updateLabel(tag);
                 //tagsBox.put(tagKey, tag);
 
@@ -594,7 +596,7 @@ class TabsController extends GetxController {
               percentageController.value.value += 1.0;
             });
 
-            // print('removed ${picStore.photoId} from database');
+            // AppLogger.d('removed ${picStore.photoId} from database');
           }
         }
       }).then((_) {
@@ -604,7 +606,7 @@ class TabsController extends GetxController {
       });
 
       await Analytics.sendEvent(Event.deleted_photo);
-      // print('Reaction!');
+      // AppLogger.d('Reaction!');
       selectedMultiBarPics.clear();
       //setTrashedPic(true);
     }
@@ -624,9 +626,9 @@ class TabsController extends GetxController {
     var picStore = picStoreMap[picId]?.value;
     picStore ??= explorPicStore(picId).value;
     if (null != picStore) {
-      // print('Going to trash pic!');
+      // AppLogger.d('Going to trash pic!');
       await picStore.deletePic();
-      // print('Deleted pic: $deleted');
+      // AppLogger.d('Deleted pic: $deleted');
 
       /* if (deleted) {
       filteredPics.remove(picStore);
@@ -639,7 +641,7 @@ class TabsController extends GetxController {
 
       await Analytics.sendEvent(Event.deleted_photo);
     }
-    // print('Reaction!');
+    // AppLogger.d('Reaction!');
     //setTrashedPic(true);
   }
 }
@@ -690,14 +692,13 @@ Future<void> sharePics({required List<String> picKeys}) async {
 //      x++;
   }
 
-  // print('Image List: $imageList');
-  // print('Mime List: $mimeList');
+  // AppLogger.d('Image List: $imageList');
+  // AppLogger.d('Mime List: $mimeList');
 
   await Analytics.sendEvent(Event.shared_photos);
 
-  await Share.shareFiles(
-    imageList,
-    mimeTypes: mimeList,
+  await Share.shareXFiles(
+    imageList.map((path) => XFile(path)).toList(),
   );
 
 //    setSharedPic(true);
@@ -706,7 +707,7 @@ Future<void> sharePics({required List<String> picKeys}) async {
 }
 
 /* Future<void> checkIsLibraryUpdated() async {
-  // print('Scanning library again....');
+  // AppLogger.d('Scanning library again....');
 
   final List<AssetPathEntity> assets = await PhotoManager.getAssetPathList(
     hasAll: true,
@@ -722,18 +723,18 @@ Future<void> sharePics({required List<String> picKeys}) async {
       SetEquality().equals(entitiesIds, allPics.value.keys.toSet());
 
   if (isEqual) {
-    // print('Library is updated!!!!!!');
-    // print('#@#@#@# Total photos: ${allPics.value.length}');
+    // AppLogger.d('Library is updated!!!!!!');
+    // AppLogger.d('#@#@#@# Total photos: ${allPics.value.length}');
   } else {
-    // print('Library not updated!!!');
+    // AppLogger.d('Library not updated!!!');
 
     final Set<String> createdPics =
         entitiesIds.difference(allPics.value.keys.toSet());
     final Set<String> deletedPics =
         allPics.value.keys.toSet().difference(entitiesIds);
 
-    // print('Created: $createdPics');
-    // print('Deleted: $deletedPics');
+    // AppLogger.d('Created: $createdPics');
+    // AppLogger.d('Deleted: $deletedPics');
 
     for (String created in createdPics) {
       AssetEntity entity = await AssetEntity.fromId(created);

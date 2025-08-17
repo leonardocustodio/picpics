@@ -3,13 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class ConfirmPicDelete extends StatelessWidget {
   final String deleteText;
   final Function()? onPressedClose;
   final Function() onPressedDelete;
 
-  const ConfirmPicDelete({super.key, 
+  const ConfirmPicDelete({
+    super.key,
     this.deleteText = 'Are you sure you want to delete photo ?',
     this.onPressedClose,
     required this.onPressedDelete,
@@ -44,7 +46,7 @@ class ConfirmPicDelete extends StatelessWidget {
                     child: CupertinoButton(
                       onPressed: () {
                         Get.back();
-                        print('teste');
+                        AppLogger.d('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
@@ -113,7 +115,7 @@ class ConfirmPicDelete extends StatelessWidget {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.cancel,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: kLoginButtonTextStyle,
                               ),
                             ),
@@ -144,7 +146,7 @@ class ConfirmPicDelete extends StatelessWidget {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.delete,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: const TextStyle(
                                   color: kSecondaryColor,
                                   fontWeight: FontWeight.w700,

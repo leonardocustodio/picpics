@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class DeviceHasNoPics extends StatelessWidget {
   final String message;
@@ -9,7 +10,7 @@ class DeviceHasNoPics extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    print('Device Height: $height');
+    AppLogger.d('Device Height: $height');
 
     return Center(
       child: Column(
@@ -31,7 +32,7 @@ class DeviceHasNoPics extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Text(
               message,
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.linear(1.0),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontFamily: 'Lato',
@@ -60,7 +61,7 @@ class DeviceHasNoPics extends StatelessWidget {
 //              child: Center(
 //                child: Text(
 //                  LangControl.to.S.value.open_gallery,
-//                  textScaleFactor: 1.0,
+//                  textScaler: TextScaler.linear(1.0),
 //                  style: TextStyle(
 //                    fontFamily: 'Lato',
 //                    color: kWhiteColor,

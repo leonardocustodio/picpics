@@ -1,6 +1,5 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 // import 'package:facebook_app_events/facebook_app_events.dart';
-import 'package:flutter_branch_sdk/flutter_branch_sdk.dart';
 
 enum Screen {
   tabs_screen,

@@ -14,6 +14,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:picPics/screens/tabs_screen.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -68,8 +69,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
           offerings.current!.availablePackages.isNotEmpty) {
         getOfferingError = null;
 
-        print(offerings.current!.availablePackages);
-        print(offerings.getOffering('full_subscription')!.availablePackages);
+        AppLogger.d(offerings.current!.availablePackages);
+        AppLogger.d(offerings.getOffering('full_subscription')!.availablePackages);
 
         setState(() {
           _items =
@@ -97,8 +98,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
         if (UserController.to.tryBuyId != null) {
           if (getPackage != null) {
-            print(getPackage);
-            print('making purchase!!!');
+            AppLogger.d(getPackage);
+            AppLogger.d('making purchase!!!');
             makePurchase(context, getPackage);
 
             UserController.to.setTryBuyId(null);
@@ -106,7 +107,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         }
       }
     } on Exception catch (e) {
-      print('Error has occurred: ${e.toString()}');
+      AppLogger.d('Error has occurred: ${e.toString()}');
       if (e is PlatformException) {
         var errorCode = PurchasesErrorHelper.getErrorCode(e);
         if (errorCode != PurchasesErrorCode.purchaseCancelledError) {
@@ -185,7 +186,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             isLoading = false;
           });
           // Unlock that great "pro" content
-          print('now you are fucking pro!');
+          AppLogger.d('now you are fucking pro!');
           await UserController.to.setIsPremium(true);
           // Get.back();
           await Navigator.pushNamedAndRemoveUntil(
@@ -210,7 +211,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      print('Could not launch $url');
+      AppLogger.d('Could not launch $url');
     }
   }
 
@@ -236,7 +237,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
       // Text(
       //   LangControl.to.S.value.get_premium_title,
-      //   textScaleFactor: 1.0,
+      //   textScaler: TextScaler.linear(1.0),
       //   maxLines: 2,
       //   textAlign: TextAlign.left,
       //   overflow: TextOverflow.visible,
@@ -256,7 +257,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //     LangControl.to.S.value.get_premium_description,
       //     maxLines: 2,
       //     textAlign: TextAlign.left,
-      //     textScaleFactor: 1.0,
+      //     textScaler: TextScaler.linear(1.0),
       //     overflow: TextOverflow.visible,
       //     style: TextStyle(
       //       color: kPrimaryColor.withOpacity(0.8),
@@ -281,7 +282,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             Flexible(
               child: Text(
                 'Fast find all your memories',
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 maxLines: 2,
                 textAlign: TextAlign.left,
                 style: TextStyle(
@@ -307,7 +308,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             Flexible(
               child: Text(
                 LangControl.to.S.value.unlimited_private_pics,
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 maxLines: 2,
                 textAlign: TextAlign.left,
                 style: TextStyle(
@@ -333,7 +334,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //       Flexible(
       //         child: Text(
       //           LangControl.to.S.value.no_ads,
-      //           textScaleFactor: 1.0,
+      //           textScaler: TextScaler.linear(1.0),
       //           maxLines: 2,
       //           textAlign: TextAlign.left,
       //           style: TextStyle(
@@ -361,7 +362,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 LangControl.to.S.value.infinite_tags,
                 maxLines: 2,
                 textAlign: TextAlign.left,
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 style: TextStyle(
                   fontFamily: 'Lato',
                   color: Color(0xff707070),
@@ -385,7 +386,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             Flexible(
               child: Text(
                 LangControl.to.S.value.tag_multiple_photos_at_once,
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 maxLines: 2,
                 textAlign: TextAlign.left,
                 style: TextStyle(
@@ -413,7 +414,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       //           LangControl.to.S.value.cancel_anytime,
       //           maxLines: 2,
       //           textAlign: TextAlign.left,
-      //           textScaleFactor: 1.0,
+      //           textScaler: TextScaler.linear(1.0),
       //           style: TextStyle(
       //             fontFamily: 'Lato',
       //             color: Color(0xff707070),
@@ -442,7 +443,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           child: Center(
             child: Text(
               'Um erro ocorreu ao tentar se conectar a loja, por favor, tente novamente mais tarde.',
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.linear(1.0),
               textAlign: TextAlign.center,
               style: kPremiumButtonTextStyle,
             ),
@@ -471,7 +472,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       }
     }
 
-    print(yearSub);
+    AppLogger.d(yearSub);
     var daysFree = yearSub?.product.introductoryPrice == null
         ? 3
         : yearSub!.product.introductoryPrice!.introPricePeriodNumberOfUnits;
@@ -533,7 +534,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   child: Center(
                     child: Text(
                       'Subscribe Now',
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontFamily: 'Lato',
@@ -561,7 +562,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     child: Center(
                       child: Text(
                         'Special Offer',
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff606566),
@@ -590,7 +591,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         child: Center(
           child: Text(
             LangControl.to.S.value.restore_purchase,
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             textAlign: TextAlign.center,
             style: TextStyle(
               fontFamily: 'Lato',
@@ -614,7 +615,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         child: Center(
           child: Text(
             'Um erro ocorreu ao tentar se conectar a loja, por favor, tente novamente mais tarde.',
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             textAlign: TextAlign.center,
             style: kPremiumButtonTextStyle,
           ),
@@ -651,7 +652,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     var save = yearSubs == null || monthSubs == null
         ? 0
         : 100 - (yearSubs.product.price / (monthSubs.product.price * 12) * 100);
-    print('Save: $save');
+    AppLogger.d('Save: $save');
 
     return Column(
       children: [
@@ -673,7 +674,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   child: Center(
                     child: Text(
                       '${LangControl.to.S.value.sign} ${monthSubs?.product.priceString}\n${LangControl.to.S.value.month}',
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       textAlign: TextAlign.center,
                       style:
                           kPremiumButtonTextStyle.copyWith(color: kWhiteColor),
@@ -709,7 +710,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                           child: Center(
                             child: Text(
                               '${LangControl.to.S.value.sign} ${yearSubs?.product.priceString}\n${LangControl.to.S.value.year}',
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               textAlign: TextAlign.center,
                               style: kPremiumButtonTextStyle,
                             ),
@@ -732,7 +733,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             child: Center(
                               child: Text(
                                 '   ${LangControl.to.S.value.save} ${save.round()}%',
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: TextStyle(
                                   fontFamily: 'Lato',
                                   color: Color(0xff606566),

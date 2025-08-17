@@ -13,6 +13,7 @@ import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/cupertino_input_dialog.dart';
 import 'package:picPics/widgets/general_modal.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class PinController extends GetxController {
   static PinController get to => Get.find();
@@ -97,14 +98,14 @@ class PinController extends GetxController {
         },
       );
 
-      print(result.data);
+      AppLogger.d(result.data);
 
       if (result.data != false) {
-        print('Recovery Key Encrypted: ${result.data}');
+        AppLogger.d('Recovery Key Encrypted: ${result.data}');
         encryptedRecoveryKey = result.data;
         setIsWaitingRecoveryKey(true);
-        print('Saving ${result.data} with access ');
-        print('code $accessCode and pin $pin');
+        AppLogger.d('Saving ${result.data} with access ');
+        AppLogger.d('code $accessCode and pin $pin');
         await Crypto.saveSaltKey();
         // await Crypto.saveSpKey(accessCode, result.data, pin);
         return true;
@@ -112,9 +113,9 @@ class PinController extends GetxController {
 
       return result.data;
     } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception: ${e.message}:${e.details}');
+      AppLogger.d('caught firebase functions exception: ${e.message}:${e.details}');
     } catch (e) {
-      print('caught generic exception: $e');
+      AppLogger.d('caught generic exception: $e');
     }
 
     return false;
@@ -122,7 +123,7 @@ class PinController extends GetxController {
 
   //@action
   Future<bool> isRecoveryCodeValid(UserController appStore) async {
-    print('Typed Recovery Code: $recoveryCode');
+    AppLogger.d('Typed Recovery Code: $recoveryCode');
 
     var valid = await Crypto.checkRecoveryKey(
         encryptedRecoveryKey, recoveryCode.value, generatedIv, appStore);
@@ -138,12 +139,12 @@ class PinController extends GetxController {
     appStore.setTempEncryptionKey(null);
     pin = '';
     setIsWaitingRecoveryKey(false);
-    print('Saved new pin!!!');
+    AppLogger.d('Saved new pin!!!');
   }
 
   //@action
   Future<Map<String, dynamic>> register() async {
-    print('Email: $email - Pin: $pin');
+    AppLogger.d('Email: $email - Pin: $pin');
 
     var result = <String, dynamic>{};
 
@@ -163,13 +164,13 @@ class PinController extends GetxController {
         return result;
       }
     } catch (error) {
-      print('Error creating user: $error');
+      AppLogger.d('Error creating user: $error');
       result['success'] = false;
       result['errorCode'] = error;
       return result;
     }
 
-    print('User: $user');
+    AppLogger.d('User: $user');
     result['success'] = true;
     return result;
   }
@@ -192,11 +193,11 @@ class PinController extends GetxController {
           'random_iv': randomNumber,
         },
       );
-      print(result.data);
+      AppLogger.d(result.data);
 
       if (result.data != false) {
-        print('Saving ${result.data} with access code ');
-        print('$accessCode and pin $pin');
+        AppLogger.d('Saving ${result.data} with access code ');
+        AppLogger.d('$accessCode and pin $pin');
         await Crypto.saveSaltKey();
         await Crypto.saveSpKey(
             accessCode.value, result.data, pin, email.value, appStore);
@@ -205,13 +206,13 @@ class PinController extends GetxController {
 
       return result.data;
     } on FirebaseFunctionsException catch (e) {
-      print('caught firebase functions exception');
-      print(e.code);
-      print(e.message);
-      print(e.details);
+      AppLogger.d('caught firebase functions exception');
+      AppLogger.d(e.code);
+      AppLogger.d(e.message);
+      AppLogger.d(e.details);
     } catch (e) {
-      print('caught generic exception');
-      print(e);
+      AppLogger.d('caught generic exception');
+      AppLogger.d(e);
     }
 
     return false;
@@ -258,7 +259,7 @@ class PinController extends GetxController {
     isLoading.value = false;
 
     if (valid) {
-      print('Is valid: $valid');
+      AppLogger.d('Is valid: $valid');
       showCreatedKeyModal();
     } else {
       shakeKey.currentState?.forward();
@@ -268,11 +269,11 @@ class PinController extends GetxController {
   }
 
   void askEmail() async {
-    print('asking email');
+    AppLogger.d('asking email');
 
     var alertInputController = TextEditingController();
 
-    print('showModal');
+    AppLogger.d('showModal');
     await showDialog<void>(
       context: Get.context!,
       barrierDismissible: true,
@@ -393,7 +394,7 @@ class PinController extends GetxController {
         setConfirmPinTemp('');
       }
     } on PlatformException catch (_) {
-      print(e);
+      AppLogger.d(e);
       shakeKey.currentState?.forward();
       setPinTemp('');
       setConfirmPinTemp('');

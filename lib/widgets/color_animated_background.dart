@@ -10,7 +10,8 @@ class ColorAnimatedBackground extends StatefulWidget {
   final double moveByY;
   final bool blurFilter;
 
-  const ColorAnimatedBackground({super.key, 
+  const ColorAnimatedBackground({
+    super.key,
     this.moveByX = 30.0,
     this.moveByY = 20.0,
     this.blurFilter = true,

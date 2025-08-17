@@ -17,6 +17,7 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/top_bar.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TaggedTabGridView extends GetWidget<TaggedController> {
   final String tagKey;
@@ -72,7 +73,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                               ),
                               Text(
                                 LangControl.to.S.value.no_tagged_photos,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Lato',
@@ -99,7 +100,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                   child: Center(
                                     child: Text(
                                       LangControl.to.S.value.start_tagging,
-                                      textScaleFactor: 1.0,
+                                      textScaler: TextScaler.linear(1.0),
                                       style: TextStyle(
                                         fontFamily: 'Lato',
                                         color: kWhiteColor,
@@ -143,7 +144,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                     onVisibilityChanged: (visibilityInfo) {
                       var visiblePercentage =
                           visibilityInfo.visibleFraction * 100;
-                      print(visiblePercentage.toString() + 'visibility');
+                      AppLogger.d(visiblePercentage.toString() + 'visibility');
                       if (visiblePercentage > 10 &&
                           tabsController.picStoreMap[picId]?.value == null) {
                         TabsController.to.picStoreMap[picId] =
@@ -179,7 +180,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                       index == 1
                           ? LangControl.to.S.value.search_all_tags_not_found
                           : 'No photos found with this tag',
-                      textScaleFactor: 1.0,
+                      textScaler: TextScaler.linear(1.0),
                       style: TextStyle(
                         fontFamily: 'Lato',
                         color: Color(0xff979a9b),
@@ -222,7 +223,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      print('LongPress');
+                      AppLogger.d('LongPress');
                       if (false == controller.multiPicBar.value) {
                         controller.selectedTaggedPics[picId] = true;
                         controller.multiPicBar.value = true;
@@ -358,11 +359,11 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                           picStore: picStore,
                           picIsTagged: true,
                         );
-                        print('Pics Selected Length: ${GalleryStore.to.selectedPics.length}');
+                        AppLogger.d('Pics Selected Length: ${GalleryStore.to.selectedPics.length}');
                         return;
                       } */
 
-                      print('Selected photo: ${picStore.photoId}');
+                      AppLogger.d('Selected photo: ${picStore.photoId}');
                       /* GalleryStore.to.setCurrentPic(picStore);
                       GalleryStore.to.setInitialSelectedThumbnail(picStore); */
                       Get.to(() => PhotoScreen(
@@ -461,7 +462,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                         );
                       }
                       if (picStore.isStarred == true) {
-                        print('Adding starred yellow ico');
+                        AppLogger.d('Adding starred yellow ico');
                         items.add(
                           Positioned(
                             left: 6.0,

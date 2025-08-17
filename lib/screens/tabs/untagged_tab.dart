@@ -18,6 +18,7 @@ import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
 
 import '../../asset_entity_image_provider.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore: must_be_immutable
 class UntaggedTab extends GetWidget<TabsController> {
@@ -33,11 +34,11 @@ class UntaggedTab extends GetWidget<TabsController> {
       onNotification: (scrollNotification) {
         /// Hiding Months on days from here by listening to the scrollNotification
         if (scrollNotification is ScrollStartNotification) {
-          print('Start scrolling');
+          AppLogger.d('Start scrolling');
           controller.setIsScrolling(true);
           return false;
         } else if (scrollNotification is ScrollEndNotification) {
-          print('End scrolling');
+          AppLogger.d('End scrolling');
           controller.setIsScrolling(false);
           return true;
         }
@@ -332,7 +333,7 @@ class UntaggedTab extends GetWidget<TabsController> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
-    print('Date Time Formatting: $dateTime');
+    AppLogger.d('Date Time Formatting: $dateTime');
 
     /// More Optimized code
     if (controller.toggleIndexUntagged.value == 0) {
@@ -370,7 +371,7 @@ class UntaggedTab extends GetWidget<TabsController> {
             ),
           Text(
             dateFormat(date),
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
@@ -421,7 +422,7 @@ class UntaggedTab extends GetWidget<TabsController> {
               milliseconds: 200,
               child: GestureDetector(
                 onLongPress: () {
-                  print('LongPress');
+                  AppLogger.d('LongPress');
                   if (controller.multiPicBar.value == false) {
                     controller.setMultiPicBar(true);
                     controller.selectedMultiBarPics[picId] = true;
@@ -558,7 +559,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                   child:
                       /* GestureDetector( 
                               onScaleUpdate: (update) { 
-                                print(update.scale); 
+                                AppLogger.d(update.scale); 
                                 //DatabaseManager.instance.gridScale(update.scale);
                               },
                        child: */
@@ -591,7 +592,7 @@ class UntaggedTab extends GetWidget<TabsController> {
                             ? LangControl.to.S.value.photo_gallery_count(
                                 controller.selectedMultiBarPics.length)
                             : LangControl.to.S.value.photo_gallery_description,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: const TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),

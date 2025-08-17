@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
-import 'package:flutter_vibrate/flutter_vibrate.dart';
+import 'package:flutter/services.dart';
 
-import 'package:flare_flutter/flare_actor.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
@@ -14,6 +13,7 @@ import 'package:picPics/utils/show_edit_label_dialog.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 import 'dart:math';
+import 'package:picPics/utils/app_logger.dart';
 
 typedef OnString = Function(String);
 typedef OnEmptyTap = Function();
@@ -37,7 +37,8 @@ class TagsList extends StatefulWidget {
   final Function()? onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
-  const TagsList({super.key, 
+  const TagsList({
+    super.key,
     required this.tagsKeyList,
     required this.tagStyle, //= TagStyle.MultiColored,
     this.textEditingController,
@@ -68,7 +69,7 @@ class _TagsListState extends State<TagsList> {
 
   Widget _buildTagsWidget(BuildContext context, List<String> tags) {
     var tagsWidgets = <Widget>[];
-    print('Tags in TagsList: $tags');
+    AppLogger.d('Tags in TagsList: $tags');
 
     if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
       tagsWidgets.add(
@@ -116,12 +117,12 @@ class _TagsListState extends State<TagsList> {
                 }
               });
             }
-            Vibrate.feedback(FeedbackType.success);
+            HapticFeedback.lightImpact();
             //DatabaseManager.instance.selectedTagKey = tag.key;
             widget.onTap?.call(tagKey);
           },
           onDoubleTap: () {
-            Vibrate.feedback(FeedbackType.success);
+            HapticFeedback.lightImpact();
             //DatabaseManager.instance.selectedTagKey = tag.key;
             widget.onDoubleTap?.call(tagKey);
           },
@@ -130,7 +131,7 @@ class _TagsListState extends State<TagsList> {
             showEditTagModal(tagKey);
           },
           onPanStart: (details) {
-            print('Started pan on tag: $tagKey');
+            AppLogger.d('Started pan on tag: $tagKey');
             tagBeingPanned = tagKey;
           },
           onPanUpdate: (details) {
@@ -140,14 +141,14 @@ class _TagsListState extends State<TagsList> {
 
             if (details.delta.dy < 0) {
               // swiping in right direction
-              print(details.delta.dy);
+              AppLogger.d(details.delta.dy);
               swipedRightDirection = true;
             }
           },
           onPanEnd: (details) {
             if (swipedRightDirection) {
               showSwiperInIndex = null;
-              Vibrate.feedback(FeedbackType.success);
+              HapticFeedback.lightImpact();
               //DatabaseManager.instance.selectedTagKey = tag.key;
               widget.onPanEnd?.call(tagKey);
               swipedRightDirection = false;
@@ -170,7 +171,7 @@ class _TagsListState extends State<TagsList> {
                 });
               }
 
-              Vibrate.feedback(FeedbackType.success);
+              HapticFeedback.lightImpact();
               //DatabaseManager.instance.selectedTagKey = tag.key;
               widget.onTap(tag.key, tag.title); 
             },
@@ -188,7 +189,7 @@ class _TagsListState extends State<TagsList> {
                             vertical: 8.0, horizontal: 16.0),
                         child: Text(
                           TagsController.to.allTags[tagKey]!.value.title,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           style: widget.tagStyle == TagStyle.MultiColored
                               ? kWhiteTextStyle
                               : kGrayTextStyle,
@@ -257,7 +258,7 @@ class _TagsListState extends State<TagsList> {
                                   vertical: 8.0, horizontal: 16.0),
                               child: Text(
                                 TagsController.to.allTags[tagKey]!.value.title,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: widget.tagStyle == TagStyle.MultiColored
                                     ? kWhiteTextStyle
                                     : kGrayTextStyle,
@@ -271,12 +272,10 @@ class _TagsListState extends State<TagsList> {
                               width: 30.0,
                               child: Transform.rotate(
                                 angle: pi / 2,
-                                child: const FlareActor(
-                                  'lib/anims/swipe_arrow.flr',
-                                  alignment: Alignment.center,
-                                  fit: BoxFit.contain,
-                                  animation: 'arrow_left',
+                                child: const Icon(
+                                  Icons.arrow_back_ios,
                                   color: kWhiteColor,
+                                  size: 20,
                                 ),
                               ),
                             ),
@@ -286,7 +285,7 @@ class _TagsListState extends State<TagsList> {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.delete,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: widget.tagStyle == TagStyle.MultiColored
                                     ? kWhiteTextStyle
                                     : kGrayTextStyle,
@@ -305,9 +304,8 @@ class _TagsListState extends State<TagsList> {
 
     if (widget.addTagButton != null) {
       tagsWidgets.add(CupertinoButton(
-        minSize: 30,
         padding: const EdgeInsets.all(0),
-        onPressed: widget.addTagButton,
+        onPressed: widget.addTagButton, minimumSize: Size(30, 30),
         child: Container(
           height: 30.0,
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -326,7 +324,7 @@ class _TagsListState extends State<TagsList> {
               Obx(
                 () => Text(
                   LangControl.to.S.value.add_tag,
-                  textScaleFactor: 1.0,
+                  textScaler: TextScaler.linear(1.0),
                   style: const TextStyle(
                     fontFamily: 'Lato',
                     color: kGrayColor,
@@ -404,13 +402,12 @@ class _TagsListState extends State<TagsList> {
                       if (widget.addButtonVisible)
                         CupertinoButton(
                           padding: const EdgeInsets.all(0),
-                          minSize: 30,
                           onPressed: () {
                             if (widget.onSubmitted != null) {
                               widget.onSubmitted!(
                                   widget.textEditingController!.text);
                             }
-                          },
+                          }, minimumSize: Size(30, 30),
                           child: const Icon(
                             Icons.add,
                             color: Colors.grey,
@@ -429,7 +426,7 @@ class _TagsListState extends State<TagsList> {
                     children: [
                       Text(
                         widget.aiButtonTitle!,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
                       const Icon(Icons.arrow_forward_ios_rounded,
@@ -452,7 +449,7 @@ class _TagsListState extends State<TagsList> {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               widget.title!,
-              textScaleFactor: 1.0,
+              textScaler: TextScaler.linear(1.0),
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),

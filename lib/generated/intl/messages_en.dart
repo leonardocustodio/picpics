@@ -21,8 +21,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(email) => "An access key was sent to ${email}";
 
-  static String m1(howMany) =>
-      Intl.plural(howMany, zero: 'No photos selected', one: '1 photo selected', other: '${howMany} photos selected');
+  static String m1(howMany) => Intl.plural(howMany,
+      zero: 'No photos selected',
+      one: '1 photo selected',
+      other: '${howMany} photos selected');
 
   static String m2(url) => "To organize all your photos go to ${url}";
 

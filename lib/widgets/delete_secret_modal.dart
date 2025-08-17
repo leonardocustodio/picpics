@@ -5,13 +5,15 @@ import 'package:picPics/constants.dart';
 
 import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class DeleteSecretModal extends StatefulWidget {
   final Function() onPressedClose;
   final Function() onPressedDelete;
   final Function() onPressedOk;
 
-  const DeleteSecretModal({super.key, 
+  const DeleteSecretModal({
+    super.key,
     required this.onPressedClose,
     required this.onPressedDelete,
     required this.onPressedOk,
@@ -26,7 +28,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    print('Width: $width');
+    AppLogger.d('Width: $width');
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -54,7 +56,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                     opacity: 0.0,
                     child: CupertinoButton(
                       onPressed: () {
-                        print('teste');
+                        AppLogger.d('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
@@ -236,7 +238,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.no,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: const TextStyle(
                                   color: kSecondaryColor,
                                   fontWeight: FontWeight.w700,
@@ -272,7 +274,7 @@ class _DeleteSecretModalState extends State<DeleteSecretModal> {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.yes,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: kLoginButtonTextStyle,
                               ),
                             ),

@@ -4,6 +4,7 @@ import 'package:picPics/model/tag_model.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class Helpers {
   static Widget failedItem = const Center(
@@ -15,7 +16,7 @@ class Helpers {
   );
   static String dateFormat(DateTime dateTime, {bool isMonth = true}) {
     DateFormat formatter;
-    print('Date Time Formatting: $dateTime');
+    AppLogger.d('Date Time Formatting: $dateTime');
 
     /// More Optimized code
     if (isMonth) {
@@ -37,9 +38,9 @@ class Helpers {
     final iv = E.IV.fromLength(16);
     final encrypter = E.Encrypter(E.AES(key));
     final encrypted = encrypter.encrypt(plainText, iv: iv);
-    print('Stripped tag: $tag');
+    AppLogger.d('Stripped tag: $tag');
 
-    print('Encrypted tag: ${encrypted.base16}');
+    AppLogger.d('Encrypted tag: ${encrypted.base16}');
     return encrypted.base16;
   }
 
@@ -50,7 +51,7 @@ class Helpers {
     var encrypt = E.Encrypted.fromBase16(encrypted);
     final decrypted = encrypter.decrypt(encrypt, iv: iv);
 
-    print('Decrypted tag: $decrypted');
+    AppLogger.d('Decrypted tag: $decrypted');
     return decrypted;
   }
 

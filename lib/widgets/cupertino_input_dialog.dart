@@ -15,7 +15,8 @@ class CupertinoInputDialog extends StatelessWidget {
   final Image? prefixImage;
   final TextEditingController alertInputController;
 
-  const CupertinoInputDialog({super.key, 
+  const CupertinoInputDialog({
+    super.key,
     required this.title,
     this.inputPlaceholder,
     required this.destructiveButtonTitle,
@@ -47,7 +48,7 @@ class CupertinoInputDialog extends StatelessWidget {
               padding: const EdgeInsets.only(top: 19.0, bottom: 10.0),
               child: Text(
                 title,
-                textScaleFactor: 1.0,
+                textScaler: TextScaler.linear(1.0),
                 style: const TextStyle(
                   color: Color(0xff606566),
                   fontSize: 16,
@@ -101,7 +102,7 @@ class CupertinoInputDialog extends StatelessWidget {
                       child: Center(
                         child: Text(
                           destructiveButtonTitle,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           style: const TextStyle(
                             color: Color(0xFFE01717),
                             fontSize: 16,
@@ -123,7 +124,7 @@ class CupertinoInputDialog extends StatelessWidget {
                       child: Center(
                         child: Text(
                           defaultButtonTitle,
-                          textScaleFactor: 1.0,
+                          textScaler: TextScaler.linear(1.0),
                           style: const TextStyle(
                             color: Color(0xFF606566),
                             fontSize: 16,

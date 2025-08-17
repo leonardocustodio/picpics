@@ -12,9 +12,10 @@ import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/utils/enum.dart';
 import 'package:picPics/widgets/tags_list.dart';
 import 'package:picPics/widgets/top_bar.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
-  const TaggedPicsInDeviceWithSearchOption({Key? key}) : super(key: key);
+  const TaggedPicsInDeviceWithSearchOption({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +76,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                         .removeTagKeyFromFiltering(tagKey);
                                   },
                                   onDoubleTap: (String tagKey) {
-                                    print('do nothing');
+                                    AppLogger.d('do nothing');
                                   },
                                   // showEditTagModal: showEditTagModal,
                                 ),
@@ -90,7 +91,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                       /* GalleryStore.to.showSearchTagsResults.value */
                                       ? LangControl.to.S.value.search_results
                                       : LangControl.to.S.value.recent_tags,
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   style: const TextStyle(
                                     fontFamily: 'Lato',
                                     color: Color(0xff979a9b),
@@ -129,10 +130,10 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                                             searchEditingController.text); */
                                       },
                                       onDoubleTap: (String tagKey) {
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                       onPanEnd: (String tagKey) {
-                                        print('do nothing');
+                                        AppLogger.d('do nothing');
                                       },
                                     ),
                                   )
@@ -142,7 +143,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                     child: Obx(
                                       () => Text(
                                         LangControl.to.S.value.no_tags_found,
-                                        textScaleFactor: 1.0,
+                                        textScaler: TextScaler.linear(1.0),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontFamily: 'Lato',
@@ -211,7 +212,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
           ),
           Text(
             dateFormat(date),
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),

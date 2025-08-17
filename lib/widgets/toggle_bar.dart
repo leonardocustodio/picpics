@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class ToggleBar extends StatefulWidget {
   final int activeToggle;
@@ -9,7 +10,8 @@ class ToggleBar extends StatefulWidget {
   final String titleLeft;
   final String titleRight;
 
-  const ToggleBar({super.key, 
+  const ToggleBar({
+    super.key,
     required this.titleLeft,
     required this.titleRight,
     required this.activeToggle,
@@ -80,7 +82,7 @@ class _ToggleBarState extends State<ToggleBar> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         onPressed: () {
-                          print('Teste');
+                          AppLogger.d('Teste');
                           widget.onToggle(0);
                         },
                         child: Text(
@@ -98,7 +100,7 @@ class _ToggleBarState extends State<ToggleBar> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(horizontal: 20.0),
                         onPressed: () {
-                          print('Teste');
+                          AppLogger.d('Teste');
                           widget.onToggle(1);
                         },
                         child: Text(

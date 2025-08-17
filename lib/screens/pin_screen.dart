@@ -15,12 +15,13 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore_for_file: must_be_immutable
 class PinScreen extends GetWidget<PinController> {
   static const String id = 'pin_screen';
 
-  CarouselController carouselController = CarouselController();
+  CarouselSliderController carouselController = CarouselSliderController();
   // late GlobalKey<AnimatorWidgetState> animatorKey;
 
   int carouselPage = 0;
@@ -34,7 +35,7 @@ class PinScreen extends GetWidget<PinController> {
   } */
 
   Widget _buildPinPad(BuildContext context, int index) {
-    print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
+    AppLogger.d('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
     String title;
 
@@ -147,7 +148,7 @@ class PinScreen extends GetWidget<PinController> {
   }
 
   void pinTapped(String value, bool backspace) async {
-    print('Value: ${controller.recoveryCode}$value');
+    AppLogger.d('Value: ${controller.recoveryCode}$value');
     if (controller.isWaitingRecoveryKey.value == true) {
       if (carouselPage == 0) {
         if (backspace) {
@@ -198,7 +199,7 @@ class PinScreen extends GetWidget<PinController> {
 
       if (controller.confirmPinTemp.value.length == 6) {
         if (controller.pinTemp.value == controller.confirmPinTemp.value) {
-          print('Setting new pin!!!!!');
+          AppLogger.d('Setting new pin!!!!!');
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
           await UserController.to.setEmail(controller.email
@@ -362,7 +363,7 @@ class PinScreen extends GetWidget<PinController> {
                             },
                             child: Text(
                               LangControl.to.S.value.restore_purchase,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xff979a9b),
@@ -701,7 +702,6 @@ class NumberPad extends StatelessWidget {
           Expanded(
             child: CupertinoButton(
               padding: const EdgeInsets.all(0),
-              minSize: 44.0,
               onPressed: () {
                 onPinTapped('${pin == 11 ? '0' : pin}', false);
               },

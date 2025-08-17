@@ -5,7 +5,7 @@ import 'package:picPics/stores/percentage_dialog_controller.dart';
 
 // ignore: must_be_immutable
 class PercentageDialog extends GetWidget<PercentageDialogController> {
-  const PercentageDialog({Key? key}) : super(key: key);
+  const PercentageDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

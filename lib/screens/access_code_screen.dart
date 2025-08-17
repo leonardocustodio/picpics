@@ -8,19 +8,19 @@ import 'package:picPics/constants.dart';
 
 import 'package:picPics/screens/email_screen.dart';
 import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pin_controller.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore_for_file: must_be_immutable
 class AccessCodeScreen extends GetWidget<PinController> {
   static const String id = 'access_code_screen';
 
-  CarouselController carouselController = CarouselController();
+  CarouselSliderController carouselController = CarouselSliderController();
   int carouselPage = 0;
 
   AccessCodeScreen({super.key});
@@ -32,10 +32,9 @@ class AccessCodeScreen extends GetWidget<PinController> {
   } */
 
   Widget _buildPinPad(BuildContext context, int index) {
-    print('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
+    AppLogger.d('&&&&&&&& BUILD PIN PAD SLIDER!!!!!');
 
     String title;
-    GlobalKey<AnimatorWidgetState> animatorKey;
 
     if (controller.isWaitingRecoveryKey.value == true) {
       if (index == 0) {
@@ -146,7 +145,7 @@ class AccessCodeScreen extends GetWidget<PinController> {
   }
 
   void pinTapped(String value, bool backspace) async {
-    print('Value: ${controller.recoveryCode}$value');
+    AppLogger.d('Value: ${controller.recoveryCode}$value');
 
     if (UserController.to.waitingAccessCode.value == true) {
       if (backspace) {
@@ -242,7 +241,7 @@ class AccessCodeScreen extends GetWidget<PinController> {
                             },
                             child: Text(
                               LangControl.to.S.value.restore_purchase,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               style: const TextStyle(
                                 fontWeight: FontWeight.w700,
                                 color: Color(0xff979a9b),
@@ -562,10 +561,9 @@ class NumberPad extends StatelessWidget {
           Expanded(
             child: CupertinoButton(
               padding: const EdgeInsets.all(0),
-              minSize: 44.0,
               onPressed: () {
                 onPinTapped('${pin == 11 ? '0' : pin}', false);
-              },
+              }, minimumSize: Size(44.0, 44.0),
               child: Container(
                 margin: const EdgeInsets.all(2),
                 height: double.infinity,

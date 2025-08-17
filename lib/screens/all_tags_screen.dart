@@ -9,6 +9,7 @@ import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/widgets/customised_tags_list.dart';
 import '../constants.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 // ignore_for_file: invalid_use_of_protected_member
 class AllTagsController extends GetxController {
@@ -54,8 +55,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
   var _ = Get.put(AllTagsController());
   AllTagsScreen({
     this.picStore,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   FocusNode focusNode = FocusNode();
   var searchEditingController = TextEditingController();
@@ -224,8 +225,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                           letterSpacing: -0.4099999964237213,
                                         ),
                                         decoration: const InputDecoration(
-                                          contentPadding:
-                                              EdgeInsets.all(0),
+                                          contentPadding: EdgeInsets.all(0),
                                           border: OutlineInputBorder(
                                               borderSide: BorderSide.none),
                                           enabledBorder: OutlineInputBorder(
@@ -309,7 +309,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            print('do nothing');
+                            AppLogger.d('do nothing');
                           },
                           //showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -341,7 +341,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               await doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            print('do nothing');
+                            AppLogger.d('do nothing');
                           },
                           // showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -377,7 +377,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               await doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            print('do nothing');
+                            AppLogger.d('do nothing');
                           },
                           //showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -414,7 +414,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               await doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            print('do nothing');
+                            AppLogger.d('do nothing');
                           },
                           //showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -449,7 +449,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                   DateTime time) async =>
                               await doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
-                            print('do nothing');
+                            AppLogger.d('do nothing');
                           },
                           //showEditTagModal: () => showEditTagModal(context),
                         ),
@@ -466,7 +466,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
 
   Future<void> doTagging(
       String tagId, String tagName, int count, DateTime time) async {
-    print('do nothing');
+    AppLogger.d('do nothing');
 
     if (controller.selectedTags.value[tagId] != null) {
       controller.selectedTags.value.remove(tagId);

@@ -9,8 +9,7 @@ import 'package:picPics/stores/pic_store.dart';
 class PhotoWidget extends StatelessWidget {
   final PicStore? picStore;
   final String? hash;
-  const PhotoWidget({required this.picStore, this.hash, Key? key})
-      : super(key: key);
+  const PhotoWidget({required this.picStore, this.hash, super.key});
 
   @override
   Widget build(BuildContext context) {

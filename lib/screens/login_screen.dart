@@ -10,6 +10,7 @@ import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/login_store.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class LoginScreen extends StatefulWidget {
   static const id = 'login_screen';
@@ -72,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       Obx(
                                         () => Text(
                                           LangControl.to.S.value.welcome,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: kLoginDescriptionTextStyle,
                                         ),
                                       ),
@@ -80,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         () => Text(
                                           LangControl.to.S.value
                                               .photos_always_organized,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: kLoginDescriptionTextStyle,
                                         ),
                                       ),
@@ -115,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       loginStore.getDescription(
                                               context, index) ??
                                           '',
-                                      textScaleFactor: 1.0,
+                                      textScaler: TextScaler.linear(1.0),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontFamily: 'Lato',
@@ -182,7 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   TabsScreen.id, (route) => false);
                               return;
                             }
-                            print('next');
+                            AppLogger.d('next');
                             await swiperController.next(animation: true);
                           },
                           padding: const EdgeInsets.all(0),
@@ -201,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         loginStore.totalSlides - 1
                                     ? LangControl.to.S.value.start.toUpperCase()
                                     : LangControl.to.S.value.next.toUpperCase(),
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontFamily: 'Lato',

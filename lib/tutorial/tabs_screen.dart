@@ -33,6 +33,7 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TutsTabsScreen extends StatefulWidget {
   static const id = 'tuts_tabs_screen';
@@ -73,7 +74,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
       return;
     }
 
-    print('showModal');
+    AppLogger.d('showModal');
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -122,7 +123,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
       return;
     }
 
-    print('showModal');
+    AppLogger.d('showModal');
     showDialog<void>(
       context: context,
       barrierDismissible: true,
@@ -162,7 +163,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
     super.initState();
     // ignore: deprecated_member_use
     KeyboardVisibility.onChange.listen((bool visible) {
-      print('keyboard: $visible');
+      AppLogger.d('keyboard: $visible');
 
       if (visible && tabsStore.multiTagSheet.value) {
         setState(() {
@@ -180,22 +181,22 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
 
     // RewardedVideoAd.instance.listener = (RewardedVideoAdEvent event, {String rewardType, int rewardAmount}) {
     //   if (event == RewardedVideoAdEvent.loaded) {
-    print('@@@ loaded');
+    AppLogger.d('@@@ loaded');
     //   }
     //
     //   if (event == RewardedVideoAdEvent.rewarded) {
-    print('@@@ rewarded');
+    AppLogger.d('@@@ rewarded');
     //     appStore.setCanTagToday(true);
     //   }
     //
     //   if (event == RewardedVideoAdEvent.closed) {
-    print('@@@@ closed');
+    AppLogger.d('@@@@ closed');
     //     DatabaseManager.instance.adsIsLoaded = false;
     //     Ads.loadRewarded();
     //   }
     //
     //   if (event == RewardedVideoAdEvent.failedToLoad) {
-    print('@@@ failed');
+    AppLogger.d('@@@ failed');
     //     DatabaseManager.instance.adsIsLoaded = false;
     //   }
     // };
@@ -258,7 +259,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
 
     disposer3 = reaction((_) => tabsStore.showDeleteSecretModal, (showModal) {
       if (showModal) {
-        print('show delete secret modal!!!');
+        AppLogger.d('show delete secret modal!!!');
 //        setState(() {
 //          showEditTagModal();
 //        });
@@ -269,13 +270,13 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
     disposer4 = reaction((_) => appStore.secretPhotos, (secretPhotos) {
       if (secretPhotos) {
         if (appStore.hasObserver == false) {
-          print('adding observer to change screen!');
+          AppLogger.d('adding observer to change screen!');
           WidgetsBinding.instance.addObserver(this);
           appStore.hasObserver = true;
         }
       } else {
         if (appStore.hasObserver == true) {
-          print('removing observer of changing screen');
+          AppLogger.d('removing observer of changing screen');
           WidgetsBinding.instance.removeObserver(this);
           appStore.hasObserver = false;
         }
@@ -299,7 +300,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
-        print("&&&& Paused");
+        AppLogger.d("&&&& Paused");
         setState(() {
           _appCycleState = state;
         });
@@ -308,19 +309,19 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
         setState(() {
           _appCycleState = state;
         });
-        print("&&& inactive");
+        AppLogger.d("&&& inactive");
         break;
       case AppLifecycleState.detached:
         setState(() {
           _appCycleState = state;
         });
-        print("&&&& detached");
+        AppLogger.d("&&&& detached");
         break;
       case AppLifecycleState.resumed:
         setState(() {
           _appCycleState = state;
         });
-        print("&&&& resumed");
+        AppLogger.d("&&&& resumed");
         break;
     }
   }
@@ -332,7 +333,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
     // }
 
     Locale myLocale = Localizations.localeOf(context);
-    print('Language Code: ${myLocale.languageCode}');
+    AppLogger.d('Language Code: ${myLocale.languageCode}');
 
     var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
     var height = MediaQuery.of(context).size.height;
@@ -372,7 +373,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         width: 80.0,
                                         child: Text(
                                           LangControl.to.S.value.cancel,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: TextStyle(
                                             color: Color(0xff707070),
                                             fontSize: 16,
@@ -405,7 +406,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         width: 80.0,
                                         child: Text(
                                           LangControl.to.S.value.ok,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           textAlign: TextAlign.end,
                                           style: TextStyle(
                                             color: Color(0xff707070),
@@ -445,7 +446,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           //   Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          AppLogger.d('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
@@ -461,7 +462,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           //  Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          AppLogger.d('do nothing');
                                         },
                                         onChanged: (text) {
                                           galleryStore.setSearchText(text);
@@ -482,7 +483,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                                 null) {
                                               if (appStore.tags[tagKey] ==
                                                   null) {
-                                                print('tag does not exist! creating it!');
+                                                AppLogger.d('tag does not exist! creating it!');
                                                 galleryStore.createTag(text);
                                               }
                                               galleryStore
@@ -516,14 +517,14 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           //   Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          AppLogger.d('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
                                           //   Get.to(() =>   PremiumScreen());
                                           //   return;
                                           // }
-                                          print('do nothing');
+                                          AppLogger.d('do nothing');
                                         },
                                       ),
                                     ),
@@ -766,7 +767,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                     S
                                         .of(context)
                                         .gallery_access_permission_description,
-                                    textScaleFactor: 1.0,
+                                    textScaler: TextScaler.linear(1.0),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
@@ -801,7 +802,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           S
                                               .of(context)
                                               .gallery_access_permission,
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: TextStyle(
                                             fontFamily: 'Lato',
                                             color: kWhiteColor,
@@ -854,7 +855,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                     child: SafeArea(
                       child: GestureDetector(
                         onTap: () {
-                          print('ignore');
+                          AppLogger.d('ignore');
                         },
                         child: Container(
                           margin: EdgeInsets.only(
@@ -917,7 +918,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                         children: <Widget>[
                           Text(
                             LangControl.to.S.value.welcome,
-                            textScaleFactor: 1.0,
+                            textScaler: TextScaler.linear(1.0),
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Lato',
@@ -968,7 +969,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                           horizontal: 16.0),
                                       child: Text(
                                         text,
-                                        textScaleFactor: 1.0,
+                                        textScaler: TextScaler.linear(1.0),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: 'Lato',
@@ -1044,7 +1045,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                           CupertinoButton(
                             onPressed: () async {
                               if (tabsStore.tutorialIndex == 2) {
-                                print('Requesting notification....');
+                                AppLogger.d('Requesting notification....');
 
                                 await appStore.requestNotificationPermission();
                                 await appStore.checkNotificationPermission(
@@ -1069,7 +1070,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                   tabsStore.tutorialIndex == 2
                                       ? LangControl.to.S.value.start
                                       : LangControl.to.S.value.next,
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'Lato',

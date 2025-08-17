@@ -14,6 +14,7 @@ import 'package:picPics/stores/pic_store.dart';
 import 'package:picPics/stores/tabs_store.dart';
 import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:picPics/widgets/toggle_bar.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TutsUntaggedTab extends StatefulWidget {
   static const id = 'tuts_untagged_tab';
@@ -79,7 +80,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      print('LongPress');
+                      AppLogger.d('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -96,7 +97,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          AppLogger.d('Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -185,7 +186,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
   }
 
 //   Widget _buildNewItem(BuildContext context, int index, double size) {
-/* print('Curret Index: $index'); */
+/* AppLogger.d('Curret Index: $index'); */
 //
 //     List<Widget> childs = [];
 //     int endIndex = (index + 1) * 3;
@@ -200,7 +201,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //             width: double.infinity,
 //             child: Text(
 //               '${dateFormat(galleryStore.untaggedPics[currentIndex].date)}',
-//               textScaleFactor: 1.0,
+//               textScaler: TextScaler.linear(1.0),
 //               style: TextStyle(
 //                 fontFamily: 'Lato',
 //                 color: Color(0xff606566),
@@ -223,7 +224,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //         //   padding: const EdgeInsets.only(left: 8.0, right: 8.0),
 //         //   child: Text(
 //         //     '${dateFormat(galleryStore.untaggedPics[index].date)}',
-//         //     textScaleFactor: 1.0,
+//         //     textScaler: TextScaler.linear(1.0),
 //         //     style: TextStyle(
 //         //       fontFamily: 'Lato',
 //         //       color: Color(0xff606566),
@@ -258,7 +259,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                     child: () {
 //                       return GestureDetector(
 //                         onLongPress: () {
-/* print('LongPress'); */
+/* AppLogger.d('LongPress'); */
 //                           if (tabsStore.multiPicBar == false) {
 //                             galleryStore.setSelectedPics(
 //                               picStore: picStore,
@@ -275,7 +276,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                                 picStore: picStore,
 //                                 picIsTagged: false,
 //                               );
-/* print('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
+/* AppLogger.d('Pics Selected Length: ${galleryStore.selectedPics.length}'); */
 //                               return;
 //                             }
 //
@@ -370,7 +371,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //   }
 
   Widget _buildGridView(BuildContext context) {
-    print('&&&&& Building grid view');
+    AppLogger.d('&&&&& Building grid view');
     // List<Widget> sliverGrids = [];
     //
     // for (UntaggedPicsStore untaggedPicsStore in galleryStore.untaggedPics) {
@@ -398,10 +399,10 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     return NotificationListener<ScrollNotification>(
       onNotification: (scrollNotification) {
         if (scrollNotification is ScrollStartNotification) {
-          print('Start scrolling');
+          AppLogger.d('Start scrolling');
           tabsStore.setIsScrolling(true);
         } else if (scrollNotification is ScrollEndNotification) {
-          print('End scrolling');
+          AppLogger.d('End scrolling');
           tabsStore.setIsScrolling(false);
         }
         return;
@@ -419,7 +420,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
           //         titlePadding: const EdgeInsets.only(bottom: 16.0, left: 19.0),
           //         title: Text(
           //           tabsStore.multiPicBar ? LangControl.to.S.value.photo_gallery_count(galleryStore.selectedPics.length) : LangControl.to.S.value.photo_gallery_description,
-          //           textScaleFactor: 1.0,
+          //           textScaler: TextScaler.linear(1.0),
           //           style: TextStyle(
           //             fontFamily: 'Lato',
           //             color: Color(0xff979a9b),
@@ -608,7 +609,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;
-    print('Date Time Formatting: $dateTime');
+    AppLogger.d('Date Time Formatting: $dateTime');
 
     if (dateTime.year == DateTime.now().year) {
       formatter = tabsStore.toggleIndexUntagged == 0
@@ -630,7 +631,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
         children: [
           Text(
             '${date}',
-            textScaleFactor: 1.0,
+            textScaler: TextScaler.linear(1.0),
             style: TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
@@ -666,7 +667,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                 child: () {
                   return GestureDetector(
                     onLongPress: () {
-                      print('LongPress');
+                      AppLogger.d('LongPress');
                       if (tabsStore.multiPicBar == false) {
                         galleryStore.setSelectedPics(
                           picStore: picStore,
@@ -683,7 +684,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                             picStore: picStore,
                             picIsTagged: false,
                           );
-                          print('Pics Selected Length: ${galleryStore.selectedPics.length}');
+                          AppLogger.d('Pics Selected Length: ${galleryStore.selectedPics.length}');
                           return;
                         }
 
@@ -784,7 +785,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
     });
     refreshGridPositionFirstTab(); */
 
-    print('change dependencies!');
+    AppLogger.d('change dependencies!');
     galleryStore.refreshPicThumbnails();
   }
 
@@ -850,7 +851,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                   padding: const EdgeInsets.only(top: 48.0),
                   child: GestureDetector(
 //                              onScaleUpdate: (update) {
-/* print(update.scale); */
+/* AppLogger.d(update.scale); */
 //                                DatabaseManager.instance.gridScale(update.scale);
 //                              },
                     child: _buildGridView(context),
@@ -883,7 +884,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                             ? LangControl.to.S.value.photo_gallery_count(
                                 galleryStore.selectedPics.length)
                             : LangControl.to.S.value.photo_gallery_description,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff979a9b),

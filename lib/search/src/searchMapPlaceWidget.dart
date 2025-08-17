@@ -137,7 +137,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   }
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) => SizedBox(
         width: MediaQuery.of(context).size.width,
         child: _searchContainer(
           child: _searchInput(context),
@@ -261,7 +261,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
       child: ListTile(
         title: Text(
           place.length < 45
-              ? '$place'
+              ? place
               : "${place.replaceRange(45, place.length, "")} ...",
           style: TextStyle(
             fontSize: MediaQuery.of(context).size.width * 0.04,

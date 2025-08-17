@@ -21,15 +21,16 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(email) => "Una chiave di accesso è stata inviata a ${email}";
 
-  static String m1(howMany) =>
-      Intl.plural(howMany, zero: 'Nessuna foto selezionata', one: '1 foto selezionata', other: '${howMany} foto selezionate');
+  static String m1(howMany) => Intl.plural(howMany,
+      zero: 'Nessuna foto selezionata',
+      one: '1 foto selezionata',
+      other: '${howMany} foto selezionate');
 
   static String m2(url) => "Per organizzare tutte le tue foto vai a ${url}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "access_code":
-            MessageLookupByLibrary.simpleMessage("Codice d'accesso"),
+        "access_code": MessageLookupByLibrary.simpleMessage("Codice d'accesso"),
         "access_code_sent": m0,
         "add_multiple_tags":
             MessageLookupByLibrary.simpleMessage("Aggiungi molteplici tag"),

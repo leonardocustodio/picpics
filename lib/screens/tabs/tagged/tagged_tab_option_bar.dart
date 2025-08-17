@@ -13,9 +13,10 @@ import 'package:picPics/utils/functions.dart';
 import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/refresh_everything.dart';
 import 'package:picPics/widgets/tags_list.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TaggedTabOptionBar extends GetWidget<TaggedController> {
-  TaggedTabOptionBar({Key? key}) : super(key: key);
+  TaggedTabOptionBar({super.key});
 
   final bottomTagsEditingController = TextEditingController();
   final tagsController = Get.find<TagsController>();
@@ -53,7 +54,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                               child: Obx(
                                 () => Text(
                                   LangControl.to.S.value.cancel,
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   style: const TextStyle(
                                     color: Color(0xff707070),
                                     fontSize: 16,
@@ -88,7 +89,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                               child: Obx(
                                 () => Text(
                                   LangControl.to.S.value.ok,
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   textAlign: TextAlign.end,
                                   style: const TextStyle(
                                     color: Color(0xff707070),
@@ -129,7 +130,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                                 ///    Get.to(() =>   PremiumScreen);
                                 ///    return;
                                 ///  }
-                                print('do nothing');
+                                AppLogger.d('do nothing');
                               },
                               onPanEnd: (String tagKey) {
                                 // if (!UserController.to.isPremium) {
@@ -145,7 +146,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                                 //   Get.to(() =>   PremiumScreen);
                                 //   return;
                                 // }
-                                print('do nothing');
+                                AppLogger.d('do nothing');
                               },
                               onChanged: (text) {
                                 tagsController.searchText.value = text;
@@ -167,7 +168,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                                       null) {
                                     if (tagsController.allTags[tagKey] ==
                                         null) {
-                                      print('tag does not exist! creating it!');
+                                      AppLogger.d('tag does not exist! creating it!');
                                       tagsController.createTag(text);
                                     }
                                     tagsController.multiPicTags[tagKey] = '';
@@ -211,7 +212,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                                                     Get.to(() => PremiumScreen);
                                                     return;
                                                   } */
-                                  print('do nothing');
+                                  AppLogger.d('do nothing');
                                 },
                                 onPanEnd: (String tagKey) {
                                   /* if (!UserController
@@ -219,7 +220,7 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                                                     Get.to(() => PremiumScreen);
                                                     return;
                                                   } */
-                                  print('do nothing');
+                                  AppLogger.d('do nothing');
                                 },
                               ),
                             ),
@@ -281,8 +282,8 @@ class TaggedTabOptionBar extends GetWidget<TaggedController> {
                 controller.setTabIndexAllTaggedKeys(index);
               },
               iconSize: 24,
-              border:
-                  const Border(top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+              border: const Border(
+                  top: BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
               items: listOfBottomNavigationItems)
           : SizedBox(
               height: 64,

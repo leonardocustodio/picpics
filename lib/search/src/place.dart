@@ -1,3 +1,5 @@
+import 'package:picPics/utils/app_logger.dart';
+
 part of search_map_place;
 
 class Place {
@@ -17,7 +19,7 @@ class Place {
       types = place['types'];
       fullJSON = place;
     } catch (e) {
-      print("The argument you passed for Place is not compatible.");
+      AppLogger.d("The argument you passed for Place is not compatible.");
     }
   }
 

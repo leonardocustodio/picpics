@@ -15,6 +15,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
@@ -23,7 +24,7 @@ final searchScaffoldKey = GlobalKey<ScaffoldState>();
 class AddLocationScreen extends StatefulWidget {
   static const id = 'add_location_screen';
   final PicStore? currentPic;
-  const AddLocationScreen(this.currentPic, {Key? key}) : super(key: key);
+  const AddLocationScreen(this.currentPic, {super.key});
 
   @override
   _AddLocationScreenState createState() => _AddLocationScreenState();
@@ -46,7 +47,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
   void saveLocation(BuildContext context) {
     if (selectedGeolocation != null) {
-      //print(selectedGeolocation.fullJSON.toString());
+      //AppLogger.d(selectedGeolocation.fullJSON.toString());
 
       String? location;
       String? city;
@@ -57,23 +58,23 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
           in selectedGeolocation!.fullJSON['address_components']) {
         var types = components['types'];
         if (types.contains('establishment')) {
-          print('find establishment: ${components["long_name"]}');
+          AppLogger.d('find establishment: ${components["long_name"]}');
           location = components['long_name'];
           continue;
         } else if (types.contains('locality')) {
-          print('locality: ${components["long_name"]}');
+          AppLogger.d('locality: ${components["long_name"]}');
           city = components['long_name'];
           continue;
         } else if (types.contains('administrative_area_level_2')) {
-          print('find administrative_area_level_2: ${components["long_name"]}');
+          AppLogger.d('find administrative_area_level_2: ${components["long_name"]}');
           city = components['long_name'];
           continue;
         } else if (types.contains('administrative_area_level_1')) {
-          print('find administrative_area_level_1: ${components["long_name"]}');
+          AppLogger.d('find administrative_area_level_1: ${components["long_name"]}');
           state = components['long_name'];
           continue;
         } else if (types.contains('country')) {
-          print('country: ${components["long_name"]}');
+          AppLogger.d('country: ${components["long_name"]}');
           country = components['long_name'];
           break;
         }
@@ -102,7 +103,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   }
 
   void getUserPosition() async {
-    print('getting current location');
+    AppLogger.d('getting current location');
 
     final position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
@@ -128,7 +129,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
     await controller.animateCamera(CameraUpdate.newLatLng(geolocation));
 
-    print('finished');
+    AppLogger.d('finished');
   }
 
   void findInitialCamera() async {
@@ -159,7 +160,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
         _markers.add(destination);
       });
 
-      print(latLng);
+      AppLogger.d(latLng);
 
       final position = CameraPosition(
         target: latLng == nullLocation ? rioDeJaneiro : latLng,
@@ -274,7 +275,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                     CupertinoButton(
                       padding: const EdgeInsets.all(0),
                       onPressed: () {
-                        print('saving location...');
+                        AppLogger.d('saving location...');
                         saveLocation(context);
                       },
                       child: Container(
@@ -288,7 +289,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                           child: Obx(
                             () => Text(
                               LangControl.to.S.value.save_location,
-                              textScaleFactor: 1.0,
+                              textScaler: TextScaler.linear(1.0),
                               style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: kWhiteColor,

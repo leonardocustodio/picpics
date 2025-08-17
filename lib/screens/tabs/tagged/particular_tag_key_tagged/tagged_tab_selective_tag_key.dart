@@ -16,7 +16,7 @@ import 'package:picPics/widgets/device_no_pics.dart';
 // ignore: must_be_immutable
 class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
   final String tagKey;
-  const TaggedTabSelectiveTagKey(this.tagKey, {Key? key}) : super(key: key);
+  const TaggedTabSelectiveTagKey(this.tagKey, {super.key});
 
   @override
   Widget build(BuildContext context) {

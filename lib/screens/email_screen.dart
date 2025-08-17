@@ -12,6 +12,7 @@ import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/stores/user_controller.dart';
 import 'package:picPics/stores/pin_controller.dart';
 import 'package:picPics/widgets/color_animated_background.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class EmailStore extends GetxController {
   final isLoading = false.obs;
@@ -19,7 +20,7 @@ class EmailStore extends GetxController {
 
 class EmailScreen extends StatefulWidget {
   static const String id = 'email_screen';
-  const EmailScreen({Key? key}) : super(key: key);
+  const EmailScreen({super.key});
 
   @override
   _EmailScreenState createState() => _EmailScreenState();
@@ -57,16 +58,16 @@ class _EmailScreenState extends State<EmailScreen> {
       UserController.to.setWaitingAccessCode(true);
       await Get.toNamed(PinScreen.id);
     } else {
-      print('Result: $result');
+      AppLogger.d('Result: $result');
       if ((result['errorCode'] as FirebaseAuthException).code ==
           'email-already-in-use') {
         PinController.to.showErrorModal(
             'This e-mail is already in use by another account.');
-        print('Error !!!');
+        AppLogger.d('Error !!!');
       } else {
         PinController.to
             .showErrorModal('An error has occured. Please try again!');
-        print('Error !!!');
+        AppLogger.d('Error !!!');
       }
     }
   }
@@ -74,7 +75,7 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    print('Height: ${size.height} - Width: ${size.width}');
+    AppLogger.d('Height: ${size.height} - Width: ${size.width}');
 
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -159,8 +160,8 @@ class _EmailScreenState extends State<EmailScreen> {
                                     decoration: InputDecoration(
                                       contentPadding: const EdgeInsets.only(
                                           left: 10.0, right: 5.0),
-                                      fillColor:
-                                          const Color(0xFFF1F3F5).withOpacity(0.3),
+                                      fillColor: const Color(0xFFF1F3F5)
+                                          .withOpacity(0.3),
                                       filled: true,
                                       border: OutlineInputBorder(
                                         borderSide: const BorderSide(
@@ -210,7 +211,7 @@ class _EmailScreenState extends State<EmailScreen> {
                                 child: Obx(
                                   () => Text(
                                     LangControl.to.S.value.continue_string,
-                                    textScaleFactor: 1.0,
+                                    textScaler: TextScaler.linear(1.0),
                                     style: kLoginButtonTextStyle,
                                   ),
                                 ),

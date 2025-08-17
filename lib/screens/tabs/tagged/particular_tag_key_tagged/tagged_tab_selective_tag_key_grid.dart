@@ -11,7 +11,7 @@ import 'package:picPics/widgets/photo_widget.dart';
 // ignore: must_be_immutable
 class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
   final String tagKey;
-  const TaggedTabSelectiveTagKeyGrid(this.tagKey, {Key? key}) : super(key: key);
+  const TaggedTabSelectiveTagKeyGrid(this.tagKey, {super.key});
   @override
   Widget build(BuildContext context) {
     return Obx(() {

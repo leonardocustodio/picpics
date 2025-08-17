@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/stores/language_controller.dart';
 import 'package:picPics/asset_entity_image_provider.dart';
 import 'package:picPics/fade_image_builder.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -21,6 +20,7 @@ import 'package:intl/intl.dart';
 import 'package:extended_image/extended_image.dart';
 
 import 'all_tags_screen.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class PhotoScreenController extends GetxController {
   final overlay = true.obs;
@@ -371,7 +371,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         // RichText(
-                                        //   textScaleFactor: 1.0,
+                                        //   textScaler: TextScaler.linear(1.0),
                                         //   text: TextSpan(
                                         //     children: [
                                         //       TextSpan(
@@ -424,7 +424,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                   ?.value
                                                   .createdAt ??
                                               DateTime.now()),
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: const TextStyle(
                                             fontFamily: 'Lato',
                                             color: kWhiteColor,
@@ -500,7 +500,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 
 class BottomTabsListWidget extends GetWidget<TaggedController> {
   final String picId;
-  const BottomTabsListWidget({required this.picId, Key? key}) : super(key: key);
+  const BottomTabsListWidget({required this.picId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -527,14 +527,14 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                   Get.back();
                 },
                 onTap: (String tagKey) {
-                  print('ignore click');
+                  AppLogger.d('ignore click');
                 },
                 onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                 },
                 onPanEnd: (String tagKey) {
-                  print('teste');
+                  AppLogger.d('teste');
                 },
                 /* showEditTagModal: () =>
                                                     showEditTagModal(context, false), */
@@ -567,14 +567,14 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                   Get.back();
                 },
                 onTap: (String tagKey) {
-                  print('ignore click');
+                  AppLogger.d('ignore click');
                 },
                 onDoubleTap: (String tagKey) {
 //                                        TabsController_.to.picStoreMap[picId]
 //                                        TabsController_.to.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                 },
                 onPanEnd: (String tagKey) {
-                  print('teste');
+                  AppLogger.d('teste');
                 },
                 /* showEditTagModal: () =>
                                                     showEditTagModal(context, false), */

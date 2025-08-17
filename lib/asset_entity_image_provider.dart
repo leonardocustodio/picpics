@@ -5,6 +5,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/blur_hash_controller.dart';
 import 'package:picPics/stores/pic_store.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
@@ -41,8 +42,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   ImageFileType get imageFileType => _getType();
 
   @override
-  ImageStreamCompleter load(
-      AssetEntityImageProvider key, DecoderCallback decode) {
+  ImageStreamCompleter loadImage(
+      AssetEntityImageProvider key, ImageDecoderCallback decode) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -62,25 +63,25 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   Future<ui.Codec> _loadAsync(
     AssetEntityImageProvider key,
-    DecoderCallback decode,
+    ImageDecoderCallback decode,
   ) async {
     assert(key == this);
     Uint8List? data;
 
     if (isOriginal) {
-      print('Loading original...');
+      AppLogger.d('Loading original...');
       data = picStore.isPrivate.value
           ? await key.picStore.assetOriginBytes
           : await key.picStore.entity.value?.originBytes;
     } else {
-      print('Loading thumbnail...');
+      AppLogger.d('Loading thumbnail...');
       if (picStore.entity.value == null) {
-        print('Entity is null & isPrivate: ${picStore.isPrivate}');
+        AppLogger.d('Entity is null & isPrivate: ${picStore.isPrivate}');
       }
       data = picStore.isPrivate.value
           ? await key.picStore.assetThumbBytes
-          : await key.picStore.entity.value
-              ?.thumbnailDataWithSize(ThumbnailSize(thumbSize[0], thumbSize[1]));
+          : await key.picStore.entity.value?.thumbnailDataWithSize(
+              ThumbnailSize(thumbSize[0], thumbSize[1]));
 
       if (BlurHashController.to.blurHash[picStore.photoId.value] == null) {
         if (data != null) {
@@ -91,7 +92,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     }
 
     // if (picStore.isPrivate == true) {
-    print('entity is null!!!');
+    AppLogger.d('entity is null!!!');
     //   data = await key.picStore.assetOriginBytes;
     //   return decode(data);
     // }
@@ -105,7 +106,8 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     // } else {
     //   data = await key.picStore.entity.thumbDataWithSize(thumbSize[0], thumbSize[1]);
     // }
-    return decode(data!);
+    final buffer = await ui.ImmutableBuffer.fromUint8List(data!);
+    return decode(buffer);
   }
 
   /// Get image type by reading the file extension.
@@ -120,7 +122,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
     final extension = picStore.entity.value == null
         ? picStore.photoPath.split('.').last
         : picStore.entity.value?.title?.split('.').last;
-    print('Extension: $extension');
+    AppLogger.d('Extension: $extension');
     if (extension != null) {
       switch (extension.toLowerCase()) {
         case 'jpg':
@@ -148,13 +150,12 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   }
 
   @override
-  bool operator ==(dynamic other) {
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
     if (other.runtimeType != runtimeType) {
       return false;
     }
-    final typedOther =
-        // ignore: test_types_in_equals
-        other as AssetEntityImageProvider;
+    final typedOther = other as AssetEntityImageProvider;
 
     if (picStore.entity.value == null) {
       return picStore.photoPath == typedOther.picStore.photoPath;
@@ -167,7 +168,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   }
 
   @override
-  int get hashCode => hashValues(picStore.entity, scale, isOriginal);
+  int get hashCode => Object.hash(picStore.entity, scale, isOriginal);
 }
 
 enum ImageFileType { jpg, png, gif, tiff, heic, other }

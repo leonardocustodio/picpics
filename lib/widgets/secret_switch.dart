@@ -7,7 +7,8 @@ class SecretSwitch extends StatefulWidget {
   final bool value;
   final Function onChanged;
 
-  const SecretSwitch({super.key, 
+  const SecretSwitch({
+    super.key,
     required this.value,
     required this.onChanged,
   });
@@ -33,9 +34,7 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
     setState(() {
       goingRight = !goingRight;
       positionRight = widget.value;
-      control = (control == Control.play
-          ? Control.playReverse
-          : Control.play);
+      control = (control == Control.play ? Control.playReverse : Control.play);
     });
   }
 
@@ -49,7 +48,7 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
         CupertinoSwitch(
           value: widget
               .value, // Provider.of<DatabaseManager>(context).userSettings.dailyChallenges,
-          activeColor: kYellowColor,
+          activeTrackColor: kYellowColor,
           onChanged: (value) {
             widget.onChanged(value);
           },

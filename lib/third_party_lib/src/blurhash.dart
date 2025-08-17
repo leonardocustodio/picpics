@@ -120,6 +120,7 @@ class BlurHash {
               cos((pi * x * i) / image.width) *
               cos((pi * y * j) / image.height);
         }
+
         components[y][x] =
             _multiplyBasisFunction(data, image.width, image.height, basisFunc);
       }
@@ -186,7 +187,8 @@ String encodeBlurHash(
   int numpCompY = 3,
 }) {
   // TODO: Conferir se ta certo
-  final image = Image.fromBytes(width: width, height: height, bytes: data.buffer);
+  final image =
+      Image.fromBytes(width: width, height: height, bytes: data.buffer);
   final hash = BlurHash.encode(image, numCompX: numCompX, numCompY: numpCompY);
   return hash.hash;
 }

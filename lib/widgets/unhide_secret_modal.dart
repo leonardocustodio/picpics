@@ -3,12 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/stores/language_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class UnhideSecretModal extends StatelessWidget {
   final Function() onPressedDelete;
   final Function() onPressedOk;
 
-  const UnhideSecretModal({super.key, 
+  const UnhideSecretModal({
+    super.key,
     required this.onPressedDelete,
     required this.onPressedOk,
   });
@@ -43,7 +45,7 @@ class UnhideSecretModal extends StatelessWidget {
                     opacity: 0.0,
                     child: CupertinoButton(
                       onPressed: () {
-                        print('teste');
+                        AppLogger.d('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
@@ -63,7 +65,7 @@ class UnhideSecretModal extends StatelessWidget {
                   ),
                   CupertinoButton(
                     onPressed: () {
-                      print('teste');
+                      AppLogger.d('teste');
                     },
                     child: Image.asset('lib/images/closegrayico.png'),
                   ),
@@ -107,7 +109,7 @@ class UnhideSecretModal extends StatelessWidget {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.no,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: const TextStyle(
                                   color: kSecondaryColor,
                                   fontWeight: FontWeight.w700,
@@ -136,7 +138,7 @@ class UnhideSecretModal extends StatelessWidget {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.yes,
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 style: kLoginButtonTextStyle,
                               ),
                             ),

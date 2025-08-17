@@ -8,7 +8,8 @@ class FadeIn extends StatelessWidget {
   final double delay;
   final Widget child;
 
-  const FadeIn({super.key, 
+  const FadeIn({
+    super.key,
     required this.delay,
     required this.child,
   });

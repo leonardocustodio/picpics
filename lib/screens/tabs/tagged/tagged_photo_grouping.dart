@@ -10,11 +10,12 @@ import 'package:picPics/stores/tabs_controller.dart';
 import 'package:picPics/stores/tagged_controller.dart';
 import 'package:picPics/stores/tags_controller.dart';
 import 'package:picPics/widgets/photo_widget.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 final height = (Get.width / 3) - 20;
 
 class TaggedPhotosGrouping extends GetWidget<TaggedController> {
-  const TaggedPhotosGrouping({Key? key}) : super(key: key);
+  const TaggedPhotosGrouping({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +60,7 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
             final blurHash = BlurHashController.to.blurHash[showingPicId];
             final ignore = tagsController.isSearching.value &&
                 tagsController.selectedFilteringTagsKeys[tagKey] == null;
-            print('$ignore');
+            AppLogger.d('$ignore');
             return IgnorePointer(
               ignoring: ignore,
               child: Opacity(
@@ -111,8 +112,12 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
                                     margin: const EdgeInsets.only(top: 5),
                                     child: AutoSizeText.rich(
                                       TextSpan(
-                                          text:
-                                              TagsController.to.allTags[tagKey]?.value.title ?? '',
+                                          text: TagsController
+                                                  .to
+                                                  .allTags[tagKey]
+                                                  ?.value
+                                                  .title ??
+                                              '',
                                           style: const TextStyle(
                                             color: Colors.black,
                                           ),

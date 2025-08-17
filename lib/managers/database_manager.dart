@@ -8,6 +8,7 @@ import 'package:picPics/managers/analytics_manager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:io';
 import 'package:picPics/utils/languages.dart';
+import 'package:picPics/utils/app_logger.dart';
 /* import 'package:purchases_flutter/purchases_flutter.dart'; */
 
 class DatabaseManager extends ChangeNotifier {
@@ -42,8 +43,8 @@ class DatabaseManager extends ChangeNotifier {
 
     userSettings = (await database.getSingleMoorUser())!;
 
-    print('requesting notification...');
-    print('dailyChallenges: $userSettings');
+    AppLogger.d('requesting notification...');
+    AppLogger.d('dailyChallenges: $userSettings');
 
     if (Platform.isIOS) {
       final firebaseMessaging = FirebaseMessaging.instance;
@@ -54,7 +55,7 @@ class DatabaseManager extends ChangeNotifier {
       // });
       /* _firebaseMessaging.getToken().then((String token) {
         assert(token != null);
-print('got token this mean it did accept notification');
+AppLogger.d('got token this mean it did accept notification');
         //userSettings.notifications = true;
         //userSettings.dailyChallenges = true;
         //userBox.putAt(0, userSettings);
@@ -70,7 +71,7 @@ print('got token this mean it did accept notification');
 
       _firebaseMessaging.onIosSettingsRegistered. */
     } else {
-      print('its android!!!');
+      AppLogger.d('its android!!!');
       await database.updateMoorUser(
         userSettings.copyWith(
           notification: true,
@@ -90,13 +91,13 @@ print('got token this mean it did accept notification');
     final getTag = await database.getLabelByLabelKey(tagKey);
 
     // Verificar isso aqui pois tem a ver com as sugestões!!!!
-    print('TagKey: $tagKey');
+    AppLogger.d('TagKey: $tagKey');
 
     if (getTag != null) {
-      print('Returning name');
+      AppLogger.d('Returning name');
       return getTag.title;
     } else {
-      print('### ERROR ### Returning key');
+      AppLogger.d('### ERROR ### Returning key');
       return null;
     }
   }
@@ -114,19 +115,19 @@ print('got token this mean it did accept notification');
   /* Future<bool?> checkPremiumStatus() async {
     try {
       final purchaserInfo = await Purchases.getPurchaserInfo();
-      print('### ${purchaserInfo.entitlements}');
-      print('### ${purchaserInfo.entitlements.all}');
+      AppLogger.d('### ${purchaserInfo.entitlements}');
+      AppLogger.d('### ${purchaserInfo.entitlements.all}');
       if (purchaserInfo.entitlements.all.isEmpty) {
-        print('Could not fetch information from premium status!!!');
+        AppLogger.d('Could not fetch information from premium status!!!');
         return null;
       }
 
       if (purchaserInfo.entitlements.all['Premium']?.isActive ?? false) {
         // Grant user "pro" access
-        print('you are still premium');
+        AppLogger.d('you are still premium');
         return true;
       } else {
-        print('not premium anymore');
+        AppLogger.d('not premium anymore');
         return false;
       }
       // access latest purchaserInfo
@@ -137,7 +138,7 @@ print('got token this mean it did accept notification');
   } */
 
   /* void loadRemoteConfig() async {
-    print('loading remote config....');
+    AppLogger.d('loading remote config....');
     final remoteConfig = RemoteConfig.instance;
     // Enable developer mode to relax fetch throttling
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
@@ -153,10 +154,10 @@ print('got token this mean it did accept notification');
       // Using default duration to force fetching from remote server.
       await remoteConfig.fetch(/* expiration: const Duration(hours: 5) */);
       await remoteConfig.activate();
-      print('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
-      print('free_private_pics: ${remoteConfig.getInt('free_private_pics')}');
+      AppLogger.d('daily_pics_for_ads: ${remoteConfig.getInt('daily_pics_for_ads')}');
+      AppLogger.d('free_private_pics: ${remoteConfig.getInt('free_private_pics')}');
     } catch (exception) {
-      print(
+      AppLogger.d(
           'Unable to fetch remote config. Cached or default values will be used');
     }
   }
@@ -187,14 +188,13 @@ print('got token this mean it did accept notification');
 
   void gridScale(double multiplier) {
     scale = scale;
-    print('new scale value: $scale');
+    AppLogger.d('new scale value: $scale');
   }
 
   Future findLocation(double latitude, double longitude) async {
-    print('Finding location...');
-    final placemarks = await placemarkFromCoordinates(latitude, longitude,
-        localeIdentifier: 'pt_BR');
-    print('Placemark: ${placemarks.first.locality}');
+    AppLogger.d('Finding location...');
+    final placemarks = await placemarkFromCoordinates(latitude, longitude);
+    AppLogger.d('Placemark: ${placemarks.first.locality}');
     currentPhotoCity = placemarks.first.locality ?? '';
     currentPhotoState = placemarks.first.administrativeArea ?? '';
     lastLocationRequest = [latitude, longitude];

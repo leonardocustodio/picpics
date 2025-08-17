@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:picPics/managers/database_manager.dart';
 import 'package:timezone/timezone.dart' as tz;
+import 'package:picPics/utils/app_logger.dart';
 
 class PushNotificationsManager {
   PushNotificationsManager._();
@@ -26,12 +27,12 @@ class PushNotificationsManager {
       // For testing purposes print the Firebase Messaging token
       var token = await _firebaseMessaging.getToken();
 
-      print("FirebaseMessaging token: $token");
+      AppLogger.d("FirebaseMessaging token: $token");
 
       _initialized = true;
 /* 
       _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
-      print("Settings registered: $settings");
+      AppLogger.d("Settings registered: $settings");
 
         var userBox = Hive.box('user');
         DatabaseManager.instance.userSettings.notifications = settings.alert;
@@ -52,7 +53,7 @@ class PushNotificationsManager {
         iOS: initializationSettingsIOS,
       );
       await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
-      print('scheduling notification');
+      AppLogger.d('scheduling notification');
 //      scheduleNotification();
     }
   }
@@ -64,14 +65,14 @@ class PushNotificationsManager {
       String? description}) async {
     if (!_initialized) {
       await init();
-      print('subscribed');
+      AppLogger.d('subscribed');
       return;
     }
 
     await _firebaseMessaging.requestPermission();
     final token = await _firebaseMessaging.getToken();
-    print("FirebaseMessaging token: $token");
-    print('subscribed');
+    AppLogger.d("FirebaseMessaging token: $token");
+    AppLogger.d('subscribed');
 
     scheduleNotification(
       hourOfDay: hourOfDay,
@@ -83,13 +84,13 @@ class PushNotificationsManager {
 
 /*   void register() {
   _firebaseMessaging.subscribeToTopic('all_users');
-print('subscribed to topic: all_users');
+AppLogger.d('subscribed to topic: all_users');
   } */
 
   void deregister() async {
     try {
       await _firebaseMessaging.deleteToken();
-      print('unsubscribed');
+      AppLogger.d('unsubscribed');
       //var userBox = Hive.box('user');
       //DatabaseManager.instance.userSettings.dailyChallenges = false;
       //userBox.putAt(0, DatabaseManager.instance.userSettings);
@@ -99,12 +100,12 @@ print('subscribed to topic: all_users');
         ),
       );
 
-      print(
+      AppLogger.d(
           'User settings: notification: ${DatabaseManager.instance.userSettings.notification} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
 
       await _flutterLocalNotificationsPlugin.cancelAll();
     } catch (error) {
-      print(error);
+      AppLogger.d(error);
     }
   }
 
@@ -140,17 +141,17 @@ print('subscribed to topic: all_users');
       description,
       _nextInstanceOfTime(time),
       const NotificationDetails(
-        android: AndroidNotificationDetails('0', 'Daily Goal',
-            channelDescription:
-                'Notification for remembering your picPics daily goal'),
+        android: AndroidNotificationDetails(
+          '0',
+          'Daily Goal',
+          channelDescription:
+              'Notification for remembering your picPics daily goal',
+          importance: Importance.high,
+          priority: Priority.high,
+        ),
       ),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
-
-      /// TODO: What to do in this situation ?
-      /* scheduledNotificationRepeatFrequency:
-            ScheduledNotificationRepeatFrequency.daily, */
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
     );
   }
 }

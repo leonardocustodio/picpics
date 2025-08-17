@@ -70,7 +70,7 @@ class MigrationScreen extends GetWidget<MigrationStore> {
                               if (controller.isMigrating.value) ...[
                                 Text(
                                   'Please wait',
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'Lato',
@@ -97,7 +97,7 @@ class MigrationScreen extends GetWidget<MigrationStore> {
                                       horizontal: 16.0),
                                   child: Text(
                                     'Nós estamos otimizando o aplicativo para melhorar a performance e possibilitar novas funcionalidades!',
-                                    textScaleFactor: 1.0,
+                                    textScaler: TextScaler.linear(1.0),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
@@ -113,7 +113,7 @@ class MigrationScreen extends GetWidget<MigrationStore> {
                               if (controller.isMigrating.value == false) ...[
                                 Text(
                                   'Processo concluído!',
-                                  textScaleFactor: 1.0,
+                                  textScaler: TextScaler.linear(1.0),
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     fontFamily: 'Lato',
@@ -129,7 +129,7 @@ class MigrationScreen extends GetWidget<MigrationStore> {
                                       horizontal: 16.0),
                                   child: Text(
                                     'Pronto o processo foi concluído, você pode continuar usando agora o melhor gerenciador de fotos!',
-                                    textScaleFactor: 1.0,
+                                    textScaler: TextScaler.linear(1.0),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       fontFamily: 'Lato',
@@ -162,7 +162,7 @@ class MigrationScreen extends GetWidget<MigrationStore> {
                             child: Center(
                               child: Text(
                                 'Continuar',
-                                textScaleFactor: 1.0,
+                                textScaler: TextScaler.linear(1.0),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Lato',

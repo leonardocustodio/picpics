@@ -9,7 +9,8 @@ class GeneralModal extends StatelessWidget {
   final Function() onPressedDelete;
   final Function() onPressedOk;
 
-  const GeneralModal({super.key, 
+  const GeneralModal({
+    super.key,
     required this.message,
     required this.onPressedDelete,
     required this.onPressedOk,
@@ -77,7 +78,7 @@ class GeneralModal extends StatelessWidget {
                     child: Obx(
                       () => Text(
                         LangControl.to.S.value.continue_string,
-                        textScaleFactor: 1.0,
+                        textScaler: TextScaler.linear(1.0),
                         style: kLoginButtonTextStyle,
                       ),
                     ),

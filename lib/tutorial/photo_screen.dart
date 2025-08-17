@@ -18,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:extended_image/extended_image.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class TutsPhotoScreen extends StatefulWidget {
   static const id = 'tuts_photo_screen';
@@ -320,7 +321,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                           MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
                                         RichText(
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           text: TextSpan(
                                             children: [
                                               TextSpan(
@@ -358,7 +359,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                         Text(
                                           dateFormat(galleryStore
                                               .currentThumbnailPic.createdAt),
-                                          textScaleFactor: 1.0,
+                                          textScaler: TextScaler.linear(1.0),
                                           style: TextStyle(
                                             fontFamily: 'Lato',
                                             color: kWhiteColor,
@@ -390,14 +391,14 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                               context, 'show_keyboard');
                                         },
                                         onTap: (tagName) {
-                                          print('ignore click');
+                                          AppLogger.d('ignore click');
                                         },
                                         onDoubleTap: () {
 //                                        galleryStore.currentThumbnailPic
 //                                        galleryStore.currentPic.removeTagFromPic(tagKey: DatabaseManager.instance.selectedTagKey);
                                         },
                                         onPanEnd: () {
-                                          print('teste');
+                                          AppLogger.d('teste');
                                         },
                                         showEditTagModal: () =>
                                             showEditTagModal(

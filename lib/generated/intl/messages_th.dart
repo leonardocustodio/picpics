@@ -21,8 +21,10 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m0(email) => "รหัสเข้าใช้งานส่งไปที่ ${email}";
 
-  static String m1(howMany) =>
-      Intl.plural(howMany, zero: 'ไม่มีรูปที่เลือก', one: 'เลือก 1 ภาพ', other: 'เลือก ${howMany} ภาพ');
+  static String m1(howMany) => Intl.plural(howMany,
+      zero: 'ไม่มีรูปที่เลือก',
+      one: 'เลือก 1 ภาพ',
+      other: 'เลือก ${howMany} ภาพ');
 
   static String m2(url) => "ไปที่ ${url} เพื่อจัดหมวดหมู่ภาพถ่ายทั้งหมด";
 

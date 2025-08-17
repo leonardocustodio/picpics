@@ -13,7 +13,7 @@ import 'package:photo_manager/photo_manager.dart';
 import 'package:picPics/managers/crypto_manager.dart';
 import 'package:picPics/model/tag_model.dart';
 import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:share_extend/share_extend.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:picPics/constants.dart';
 import 'package:picPics/database/app_database.dart';
 import 'package:picPics/managers/analytics_manager.dart';
@@ -22,6 +22,7 @@ import 'package:picPics/utils/helpers.dart';
 import 'package:picPics/utils/labels.dart';
 
 import 'tags_controller.dart';
+import 'package:picPics/utils/app_logger.dart';
 
 class PicStore extends GetxController {
   final DateTime createdAt;
@@ -87,7 +88,7 @@ class PicStore extends GetxController {
     isStar();
   }
   /*  {
-    print('loading pic info......');
+    AppLogger.d('loading pic info......');
     tagsSuggestionsCalculate();
     loadPicInfo();
   } */
@@ -109,7 +110,7 @@ class PicStore extends GetxController {
     return await isStar();
     //pic.isStarred = value;
     /* String? base64encoded;
-    print('teste');
+    AppLogger.d('teste');
     if (isStarred.value) {
       //var bytes = await entity.value?.thumbDataWithSize(300, 300);
 
@@ -126,7 +127,7 @@ class PicStore extends GetxController {
 
     /// Do the database writting
 
-    print('isStarred value: $isStarred');
+    AppLogger.d('isStarred value: $isStarred');
   }
 
   //@action
@@ -139,7 +140,7 @@ class PicStore extends GetxController {
       if (getTag != null) {
         getTag.photoId.remove(photoId);
         getTag.photoId[value] = '';
-        print('Replaced tag in ${getTag.title} tagsbox');
+        AppLogger.d('Replaced tag in ${getTag.title} tagsbox');
         await database.updateLabel(getTag);
       }
     });
@@ -149,7 +150,7 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> changeAssetEntity(AssetEntity picEntity) async {
-    print('Changing asset entity of $photoId to ${picEntity.id}');
+    AppLogger.d('Changing asset entity of $photoId to ${picEntity.id}');
 
     //var picsBox = Hive.box('pics');
     //Pic picOld = picsBox.get(photoId);
@@ -178,14 +179,14 @@ class PicStore extends GetxController {
 
     entity.value = picEntity;
     await setChangePhotoId(picEntity.id);
-    print('Changed asset entity');
+    AppLogger.d('Changed asset entity');
   }
 
   Future<Uint8List?> get assetOriginBytes async {
     if (isPrivate.value == false) {
       return await entity.value?.originBytes;
     }
-    print('Returning decrypt image in privatePath: $photoPath');
+    AppLogger.d('Returning decrypt image in privatePath: $photoPath');
     if (UserController.to.encryptionKey == null) {
       return null;
     }
@@ -198,7 +199,7 @@ class PicStore extends GetxController {
       return await entity.value?.thumbnailDataWithSize(ThumbnailSize(
           kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]));
     }
-    print('Returning decrypt image in privatePath: $photoPath');
+    AppLogger.d('Returning decrypt image in privatePath: $photoPath');
     if (UserController.to.encryptionKey == null) {
       return null;
     }
@@ -211,7 +212,7 @@ class PicStore extends GetxController {
   bool deletedFromCameraRoll = false;
 
   Future<void> setDeletedFromCameraRoll(bool value) async {
-    print('Setting deleted from camera roll as $value');
+    AppLogger.d('Setting deleted from camera roll as $value');
     deletedFromCameraRoll = value;
 
     //var picsBox = Hive.box('pics');
@@ -244,7 +245,7 @@ class PicStore extends GetxController {
 
     if (UserController.to.shouldDeleteOnPrivate.value == true &&
         entity.value != null) {
-      print('**** Deleted original pic!!!');
+      AppLogger.d('**** Deleted original pic!!!');
       if (Platform.isAndroid) {
         await PhotoManager.editor.deleteWithIds([entity.value!.id]);
       } else {
@@ -264,7 +265,7 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> removePrivatePath() async {
-    print('Removing pic from secrets box...');
+    AppLogger.d('Removing pic from secrets box...');
 
     //var secretBox = Hive.box('secrets');
     //Secret secretPic = secretBox.get(photoId);
@@ -273,18 +274,18 @@ class PicStore extends GetxController {
     if (secretPic != null) {
       //secretPic.delete();
       await database.deletePrivate(secretPic);
-      print('Pic deleted from secrets box!!!');
+      AppLogger.d('Pic deleted from secrets box!!!');
       return;
     }
 
-    print('Did not find the pic in secretbox');
+    AppLogger.d('Did not find the pic in secretbox');
   }
 
   Future<void> deleteEncryptedPic({bool copyToCameraRoll = false}) async {
-    print('Deleting $photoPath and $thumbPath');
+    AppLogger.d('Deleting $photoPath and $thumbPath');
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
-      print('Pic has entity? ${entity == null ? false : true}');
+      AppLogger.d('Pic has entity? ${true}');
       var picData = await assetOriginBytes;
 
       /// TODO: returning is picData is null
@@ -294,15 +295,10 @@ class PicStore extends GetxController {
       final imageEntity = await PhotoManager.editor.saveImage(
         picData,
         title: '',
+        filename: 'picpics_${DateTime.now().millisecondsSinceEpoch}.jpg',
       );
-
-      /// TODO: what to do if the imageEntity is null ??
-      /// doing temporary thing
-      if (null == imageEntity) {
-        return;
-      }
       await changeAssetEntity(imageEntity);
-      print('copied image back to gallery with id: ${imageEntity.id}');
+      AppLogger.d('copied image back to gallery with id: ${imageEntity.id}');
     }
     var appDocumentsDir = await getApplicationDocumentsDirectory();
 
@@ -311,7 +307,7 @@ class PicStore extends GetxController {
 
     await photoFile.delete();
     await thumbFile.delete();
-    print('Removed both files...');
+    AppLogger.d('Removed both files...');
   }
 
 /*   Future<void> loadExifData() async {
@@ -319,7 +315,7 @@ class PicStore extends GetxController {
     var originBytes = originFile.readAsBytesSync();
 
     var mapResult = md.MetaData.extractXMP(originBytes, raw: true);
-    print(mapResult['dc:subject']);
+    AppLogger.d(mapResult['dc:subject']);
   } */
 
   //@action
@@ -330,7 +326,7 @@ class PicStore extends GetxController {
     //var secretBox = Hive.box('secrets');
     var pic = await database.getPhotoByPhotoId(photoId.value);
     if (pic != null) {
-      print('pic $photoId exists, loading data....');
+      AppLogger.d('pic $photoId exists, loading data....');
       //Pic pic = picsBox.get(photoId);
 
       latitude.value = pic.latitude;
@@ -341,7 +337,7 @@ class PicStore extends GetxController {
       deletedFromCameraRoll = pic.deletedFromCameraRoll;
       isStarred.value = pic.isStarred;
 
-      print('Is private: $isPrivate');
+      AppLogger.d('Is private: $isPrivate');
       if (isPrivate.value == true) {
         var secretPic = await database.getPrivateByPhotoId(photoId.value);
 
@@ -349,7 +345,7 @@ class PicStore extends GetxController {
           photoPath = secretPic.path;
           thumbPath = secretPic.thumbPath!;
           nonce = secretPic.nonce;
-          print(
+          AppLogger.d(
               'Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
         }
       }
@@ -357,14 +353,14 @@ class PicStore extends GetxController {
       for (var tagKey in pic.tags.keys) {
         var tagModel = TagsController.to.allTags[tagKey];
         if (tagModel == null) {
-          print('&&&&##### DID NOT FIND TAG: $tagKey');
+          AppLogger.d('&&&&##### DID NOT FIND TAG: $tagKey');
           continue;
         }
         tags[tagKey] = tagModel;
       }
     }
     /* else {
-      print('pic $photoId doesnt exists in database');
+      AppLogger.d('pic $photoId doesnt exists in database');
     } */
   }
 
@@ -378,9 +374,9 @@ class PicStore extends GetxController {
     }
 
     isPrivate.value = value;
-    print('Pic isPrivate: $value');
-    print('Pic Entity Exists: ${entity == null ? false : true}');
-    print('Photo Id: $photoId - Entity Id: ${entity.value?.id}');
+    AppLogger.d('Pic isPrivate: $value');
+    AppLogger.d('Pic Entity Exists: ${true}');
+    AppLogger.d('Photo Id: $photoId - Entity Id: ${entity.value?.id}');
 
     //var picsBox = Hive.box('pics');
     var getPic = await database.getPhotoByPhotoId(photoId.value);
@@ -396,14 +392,14 @@ class PicStore extends GetxController {
       acceptedTagKeys: {kSecretTagKey: ''},
     );
     await tagsSuggestionsCalculate();
-    print('Added secret tag to pic!');
+    AppLogger.d('Added secret tag to pic!');
   }
 
   Future<void> removeSecretTagFromPic() async {
     await removeMultipleTagFromPic(
         acceptedTags: <String, String>{kSecretTagKey: ''});
     await tagsSuggestionsCalculate();
-    print('Added secret tag to pic!');
+    AppLogger.d('Added secret tag to pic!');
   }
 
   //@action
@@ -486,7 +482,7 @@ class PicStore extends GetxController {
         );
       }
     }
-    print('find suggestions: $searchText');
+    AppLogger.d('find suggestions: $searchText');
 
     return <TagModel>[];
   }
@@ -494,10 +490,10 @@ class PicStore extends GetxController {
   //@action
   /* Future<void> addTag({required String tagName}) async {
     //var tagsBox = Hive.box('tags');
-    /* print(tagsBox.keys); */
+    /* AppLogger.d(tagsBox.keys); */
 
     var tagKey = Helpers.encryptTag(tagName);
-    print('Adding tag: $tagName');
+    AppLogger.d('Adding tag: $tagName');
     final getTag = await database.getLabelByLabelKey(tagKey);
 
     if (getTag != null) {
@@ -518,7 +514,7 @@ class PicStore extends GetxController {
           lastUsedAt: DateTime.now()));
     }
 
-    print('adding tag to database...');
+    AppLogger.d('adding tag to database...');
 
     await addMultipleTagsToPic(acceptedTagKeys: <String, String>{tagKey: ''});
     await UserController.to.addTagToRecent(tagKey: tagKey);
@@ -573,12 +569,12 @@ class PicStore extends GetxController {
     }
 
     if (acceptedTagKeys.isEmpty) {
-      print('this tag is already in this picture');
+      AppLogger.d('this tag is already in this picture');
       return;
     }
 
     getPic.tags.removeWhere((tagKey, _) => acceptedTagKeys[tagKey] != null);
-    print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+    AppLogger.d('photoId: ${getPic.id} - tags: ${getPic.tags}');
     await database.updatePhoto(getPic);
 
     if (name != null) {
@@ -595,15 +591,15 @@ class PicStore extends GetxController {
     var getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
-      print('this picture is in db going to update');
+      AppLogger.d('this picture is in db going to update');
 
       if (acceptedTagKeys.isEmpty) {
-        print('this tag is already in this picture');
+        AppLogger.d('this tag is already in this picture');
         return;
       }
 
       getPic.tags.addAll(acceptedTagKeys);
-      print('photoId: ${getPic.id} - tags: ${getPic.tags}');
+      AppLogger.d('photoId: ${getPic.id} - tags: ${getPic.tags}');
       await database.updatePhoto(getPic);
 
       if (name != null) {
@@ -615,8 +611,8 @@ class PicStore extends GetxController {
       return;
     }
 
-    print('this picture is not in db, adding it...');
-    print('Photo Id: $photoId');
+    AppLogger.d('this picture is not in db, adding it...');
+    AppLogger.d('Photo Id: $photoId');
 
     var pic =
         photoObject(acceptedTagKeys, acceptedTagKeys[kSecretTagKey] != null);
@@ -668,12 +664,12 @@ class PicStore extends GetxController {
     }
 
     await Analytics.sendEvent(Event.shared_photo);
-    await ShareExtend.share(path, 'image');
+    await Share.shareXFiles([XFile(path)]);
   }
 
   //@action
   Future<bool> deletePic() async {
-    print('Before photo manager delete: ${entity.value?.id}');
+    AppLogger.d('Before photo manager delete: ${entity.value?.id}');
 
     /// TODO: Is this I am doing, This I will check once again
     if (entity.value == null) {
@@ -694,7 +690,7 @@ class PicStore extends GetxController {
     var pic = await database.getPhotoByPhotoId(photoId.value);
 
     if (pic != null) {
-      print('pic is in db... removing it from db!');
+      AppLogger.d('pic is in db... removing it from db!');
       var picTags = List<String>.from(pic.tags.keys);
       for (var tagKey in picTags) {
         await removeMultipleTagFromPic(
@@ -707,7 +703,7 @@ class PicStore extends GetxController {
       }
       //picsBox.delete(photoId);
       await database.deletePhotoByPhotoId(photoId.value);
-      print('removed $photoId from database');
+      AppLogger.d('removed $photoId from database');
     }
 
     return true;
@@ -750,7 +746,7 @@ class PicStore extends GetxController {
     var getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
-      print('found pic');
+      AppLogger.d('found pic');
 
       //getPic.latitude = lat;
       //getPic.longitude = long;
@@ -763,9 +759,9 @@ class PicStore extends GetxController {
         specificLocation: drift.Value(specific),
         generalLocation: drift.Value(general),
       ));
-      print('updated pic with new values');
+      AppLogger.d('updated pic with new values');
     } else {
-      print('Did not found pic!');
+      AppLogger.d('Did not found pic!');
       var createPic = Photo(
         id: photoId.value,
         createdAt: createdAt,
@@ -782,7 +778,7 @@ class PicStore extends GetxController {
       );
       //picsBox.put(photoId, createPic);
       await database.createPhoto(createPic);
-      print('Saved pic to database!');
+      AppLogger.d('Saved pic to database!');
     }
 
     latitude.value = lat;
@@ -810,7 +806,7 @@ class PicStore extends GetxController {
       List<String> tagsText, BuildContext context) async {
     var lang = UserController.to.appLanguage.split('_')[0];
     if (lang == 'pt' || lang == 'es' || lang == 'de' || lang == 'ja') {
-      print('Offline translating it...');
+      AppLogger.d('Offline translating it...');
       return tagsText
           .map((e) => PredefinedLabels.labelTranslation(e, context))
           .toList();
@@ -834,8 +830,7 @@ class PicStore extends GetxController {
     final SCOPES = [TranslateApi.cloudTranslationScope];
     var translatedStrings = <String>[];
 
-    await clientViaServiceAccount(credentials, SCOPES)
-        .then((httpClient) async {
+    await clientViaServiceAccount(credentials, SCOPES).then((httpClient) async {
       var translate = TranslateApi(httpClient);
       var request = TranslateTextRequest();
       request.contents = tagsText;
@@ -908,7 +903,7 @@ class PicStore extends GetxController {
   //   double minValue = buffer.reduce(min);
   //   double maxValue = buffer.reduce(max);
   //
-  /* print('Min: $minValue - Max: $maxValue - Mean: $mean'); */
+  /* AppLogger.d('Min: $minValue - Max: $maxValue - Mean: $mean'); */
   //
   //   return convertedBytes.buffer.asFloat32List();
   // }
@@ -955,17 +950,17 @@ class PicStore extends GetxController {
     // var imageBytes = (await entity.file).readAsBytesSync().buffer;
     // var resizedImage = resizeImage(imageBytes, inputSize);
     // var input = imageToByteListFloat32(resizedImage, inputSize, 127.5, 255).reshape([1, 224, 224, 3]);
-    /* print('Input: $input'); */
+    /* AppLogger.d('Input: $input'); */
     //
-    // print(input.)
+    // AppLogger.d(input.)
     //
     // final interpreter = await tfl.Interpreter.fromAsset('model.tflite');
     // var output = List(1 * 1000).reshape([1, 1000]);
     //
     // interpreter.run(input, output);
-    /* print(output); */
+    /* AppLogger.d(output); */
     // interpreter.close();
-    /* print('doSomething() executed in ${stopwatch.elapsed}'); */
+    /* AppLogger.d('doSomething() executed in ${stopwatch.elapsed}'); */
 
     final FirebaseVisionImage visionImage =
         FirebaseVisionImage.fromFile(await entity.value.file);
@@ -977,7 +972,7 @@ class PicStore extends GetxController {
       final String labelText = label.text;
       final String entityId = label.entityId;
       final double confidence = label.confidence;
-      print('Label: $labelText - Entity: $entityId - Confidence: $confidence');
+      AppLogger.d('Label: $labelText - Entity: $entityId - Confidence: $confidence');
       tags.add(labelText);
     }
 
