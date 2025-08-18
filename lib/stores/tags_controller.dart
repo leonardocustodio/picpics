@@ -654,7 +654,8 @@ class TagsController extends GetxController {
     if (label != null && allTags[tagKey] != null) {
       // AppLogger.d('found tag going to delete it');
       // Remove a tag das fotos já taggeadas
-      final tagsStore = allTags[tagKey]!.value;
+      // Unused variable commented out to fix warning
+      // final tagsStore = allTags[tagKey]!.value;
       // AppLogger.d('TagsStore Tag: ${tagsStore.name}');
       /*  TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);

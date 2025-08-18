@@ -1,14 +1,14 @@
 import 'dart:async';
-import 'dart:io';
+// import 'dart:io'; // Unused import
 
 import 'package:background_fetch/background_fetch.dart';
-import 'package:drift/drift.dart';
+// import 'package:drift/drift.dart'; // Unused import
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
-import 'package:path_provider/path_provider.dart';
+// import 'package:path_provider/path_provider.dart'; // Unused import
 import 'package:photo_manager/photo_manager.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/database/app_database.dart';
@@ -363,7 +363,7 @@ class TabsController extends GetxController {
       BackgroundFetch.finish(taskId);
     }).then((int status) {
       AppLogger.d('[BackgroundFetch] configure success: $status');
-    }).catchError((e) {
+    }).catchError((dynamic e) {
       AppLogger.d('[BackgroundFetch] configure ERROR: $e');
     });
 
@@ -746,11 +746,12 @@ Future<void> sharePics({required List<String> picKeys}) async {
   await loadPrivateAssets();
 } */
 
-Future<String> _writeByteToImageFile(Uint8List byteData) async {
-  final tempDir = await getTemporaryDirectory();
-  final imageFile = File(
-      '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg',);
-  imageFile.createSync(recursive: true);
-  imageFile.writeAsBytesSync(byteData);
-  return imageFile.path;
-}
+// Unused function commented out to fix warning
+// Future<String> _writeByteToImageFile(Uint8List byteData) async {
+//   final tempDir = await getTemporaryDirectory();
+//   final imageFile = File(
+//       '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg',);
+//   imageFile.createSync(recursive: true);
+//   imageFile.writeAsBytesSync(byteData);
+//   return imageFile.path;
+// }

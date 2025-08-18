@@ -108,26 +108,7 @@ class PicStore extends GetxController {
       pic.copyWith(isStarred: !isStarred.value),
     );
     return isStar();
-    //pic.isStarred = value;
-    /* String? base64encoded;
-    AppLogger.d('teste');
-    if (isStarred.value) {
-      //var bytes = await entity.value?.thumbDataWithSize(300, 300);
-
-      /// TODO: what to do in this case scenario
-      /* if (bytes == null) {
-        return;
-      } */
-      /* var encoded = base64.encode(bytes);
-      base64encoded = encoded; */
-      /* await UserController.to.addToStarredPhotos(photoId.value); */
-    } else {
-      /* await UserController.to.removeFromStarredPhotos(photoId.value); */
-    } */
-
-    /// Do the database writting
-
-    AppLogger.d('isStarred value: $isStarred');
+    // Dead code removed - everything after return statement was unreachable
   }
 
   //@action

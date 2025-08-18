@@ -9,7 +9,7 @@ import 'package:picpics/stores/tags_controller.dart';
 import 'package:picpics/utils/helpers.dart';
 import 'package:picpics/utils/show_edit_label_dialog.dart';
 
-typedef OnTap = Function(
+typedef OnTap = void Function(
     String tagId, String tagName, int counter, DateTime lastUsedAt,);
 
 // ignore: must_be_immutable

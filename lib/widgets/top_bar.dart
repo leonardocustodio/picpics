@@ -9,7 +9,7 @@ import 'package:picpics/stores/tags_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/secret_switch.dart';
 
-typedef OnUntag = Function();
+typedef OnUntag = void Function();
 
 class TopBar extends StatelessWidget {
 

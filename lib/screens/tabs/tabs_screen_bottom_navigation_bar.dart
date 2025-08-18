@@ -194,7 +194,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                       ? LangControl.to.S.value.search_results
                                       : LangControl.to.S.value.recent_tags,
                                   tagsKeyList: TagsController
-                                      .to.searchTagsResults.value
+                                      .to.searchTagsResults
                                       .where((tag) =>
                                           TagsController
                                               .to.multiPicTags[tag.key] ==

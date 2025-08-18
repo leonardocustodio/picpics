@@ -92,7 +92,7 @@ class PinController extends GetxController {
     setGeneratedIv('$randomNumber');
 
     try {
-      final result = await callable.call(
+      final result = await callable.call<Map<String, dynamic>>(
         <String, dynamic>{
           'user_mail': userEmail,
           'random_iv': randomNumber,
@@ -189,7 +189,7 @@ class PinController extends GetxController {
         accessCode.value, email.value, '$randomNumber',);
 
     try {
-      final result = await callable.call(
+      final result = await callable.call<Map<String, dynamic>>(
         <String, dynamic>{
           'access_key': accessKey,
           'random_iv': randomNumber,

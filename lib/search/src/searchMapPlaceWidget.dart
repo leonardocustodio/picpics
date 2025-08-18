@@ -82,9 +82,9 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   final TextEditingController _textEditingController = TextEditingController();
   late AnimationController _animationController;
   // SearchContainer height.
-  late Animation _containerHeight;
+  late Animation<double> _containerHeight;
   // Place options opacity.
-  late Animation _listOpacity;
+  late Animation<double> _listOpacity;
 
   List<dynamic> _placePredictions = [];
   bool _isEditing = false;
@@ -159,7 +159,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
                 child,
                 if (_placePredictions.isNotEmpty)
                   Opacity(
-                    opacity: _listOpacity.value as double,
+                    opacity: _listOpacity.value,
                     child: Column(
                       children: <Widget>[
                         for (final prediction in _placePredictions)
@@ -273,26 +273,28 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   /*
   STYLING
   */
-  InputDecoration _inputStyle() {
-    return InputDecoration(
-      hintText: widget.placeholder,
-      border: InputBorder.none,
-      contentPadding: const EdgeInsets.symmetric(vertical: 0),
-      hintStyle: TextStyle(
-        color: widget.darkMode ? Colors.grey[100] : Colors.grey[850],
-      ),
-    );
-  }
+  // Unused method commented out to fix warning
+  // InputDecoration _inputStyle() {
+  //   return InputDecoration(
+  //     hintText: widget.placeholder,
+  //     border: InputBorder.none,
+  //     contentPadding: const EdgeInsets.symmetric(vertical: 0),
+  //     hintStyle: TextStyle(
+  //       color: widget.darkMode ? Colors.grey[100] : Colors.grey[850],
+  //     ),
+  //   );
+  // }
 
-  BoxDecoration _containerDecoration() {
-    return BoxDecoration(
-      color: widget.darkMode ? Colors.grey[800] : Colors.white,
-      borderRadius: const BorderRadius.all(Radius.circular(6)),
-      boxShadow: const [
-        BoxShadow(color: Colors.black12, blurRadius: 20, spreadRadius: 10),
-      ],
-    );
-  }
+  // Unused method commented out to fix warning
+  // BoxDecoration _containerDecoration() {
+  //   return BoxDecoration(
+  //     color: widget.darkMode ? Colors.grey[800] : Colors.white,
+  //     borderRadius: const BorderRadius.all(Radius.circular(6)),
+  //     boxShadow: const [
+  //       BoxShadow(color: Colors.black12, blurRadius: 20, spreadRadius: 10),
+  //     ],
+  //   );
+  // }
 
   /*
   METHODS
@@ -333,7 +335,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   }
 
   /// API request function. Returns the Predictions
-  Future<dynamic> _makeRequest(input) async {
+  Future<dynamic> _makeRequest(String input) async {
     var url =
         'https://maps.googleapis.com/maps/api/place/autocomplete/json?input=$input&key=${widget.apiKey}&language=${widget.language}';
     if (widget.location != null && widget.radius != null) {
@@ -373,7 +375,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
         ),
       );
     } else {
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future<void>.delayed(const Duration(milliseconds: 500));
     }
 
     // Makes animation

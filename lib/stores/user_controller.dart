@@ -85,7 +85,7 @@ class UserController extends GetxController {
     currentLanguage.value = '${local.getDisplayLanguage(lang)['nativeName']}';
   }
 
-  Future initialize() async {
+  Future<void> initialize() async {
     AppLogger.i('[UserController] Starting initialization...');
     final user =
         await DatabaseController.to.getUser(deviceLocale: deviceLocale.value);
@@ -380,9 +380,10 @@ class UserController extends GetxController {
     User currentUser = userBox.getAt(0); */
     final currentUser = await database.getSingleMoorUser();
 
-    final lastTaggedPicDate = currentUser!.lastTaggedPicDate;
+    // Unused variable commented out to fix warning
+    // final lastTaggedPicDate = currentUser!.lastTaggedPicDate;
     final dateNow = DateTime.now();
-    final picsTaggedToday = currentUser.picsTaggedToday;
+    final picsTaggedToday = currentUser?.picsTaggedToday ?? 0;
     final lastTaggedPicNewDate = dateNow;
 
     // TODO: Check this comment as this lib was removed for compatibility
@@ -394,7 +395,7 @@ class UserController extends GetxController {
     //   AppLogger.d('(date might be null) or (not same day... resetting counter....)');
     //   picsTaggedToday = 1;
     // }
-    await database.updateMoorUser(currentUser.copyWith(
+    await database.updateMoorUser(currentUser!.copyWith(
       picsTaggedToday: picsTaggedToday,
       lastTaggedPicDate: lastTaggedPicNewDate,
     ),);

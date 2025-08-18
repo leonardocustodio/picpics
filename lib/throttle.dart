@@ -1,6 +1,6 @@
 import 'dart:async';
 
-typedef VoidCallback = Function();
+typedef VoidCallback = void Function();
 
 /// When multiple calls are repeated, only the first time is valid.
 ///

@@ -15,8 +15,8 @@ class CupertinoInputDialog extends StatelessWidget {
   final String destructiveButtonTitle;
   final String defaultButtonTitle;
 
-  final Function() onPressedDestructive;
-  final Function() onPressedDefault;
+  final void Function() onPressedDestructive;
+  final void Function() onPressedDefault;
 
   final Image? prefixImage;
   final TextEditingController alertInputController;

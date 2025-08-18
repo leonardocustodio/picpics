@@ -9,7 +9,7 @@ class Place {
     this.types,
   });
 
-  Place.fromJSON(place, this.geocode) {
+  Place.fromJSON(dynamic place, this.geocode) {
     try {
       description = place['description'] as String;
       placeId = place['place_id'] as String?;
@@ -44,7 +44,7 @@ class Place {
   /// ```
   /// fullJSON["structured_formating"]["main_text"]
   /// ```
-  var fullJSON;
+  dynamic fullJSON;
 
   Geolocation? _geolocation;
 

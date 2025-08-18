@@ -7,7 +7,7 @@ import 'package:picpics/screens/settings_screen.dart';
 import 'package:picpics/stores/language_controller.dart';
 import 'package:picpics/stores/swiper_tab_controller.dart';
 import 'package:picpics/stores/tabs_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
+// import 'package:picpics/stores/user_controller.dart'; // Unused import
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/enum.dart';
 import 'package:picpics/widgets/device_no_pics.dart';

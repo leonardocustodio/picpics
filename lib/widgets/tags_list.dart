@@ -15,8 +15,8 @@ import 'package:picpics/utils/show_edit_label_dialog.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
-typedef OnString = Function(String);
-typedef OnEmptyTap = Function();
+typedef OnString = void Function(String);
+typedef OnEmptyTap = void Function();
 
 class TagsList extends StatefulWidget {
 
@@ -44,7 +44,7 @@ class TagsList extends StatefulWidget {
   final TextEditingController? textEditingController;
   final FocusNode? textFocusNode;
   final bool addTagField;
-  final Function()? addTagButton;
+  final void Function()? addTagButton;
   final bool addButtonVisible;
   final String? title;
   final TagStyle tagStyle;
@@ -55,7 +55,7 @@ class TagsList extends StatefulWidget {
   final OnString? onChanged; // Function(String)
   //final OnString showEditTagModal; // Function()
   final String? aiButtonTitle;
-  final Function()? onAiButtonTap;
+  final void Function()? onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
   @override

@@ -1,21 +1,21 @@
-import 'package:extended_image/extended_image.dart';
+// import 'package:extended_image/extended_image.dart'; // Unused import
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blurhash/flutter_blurhash.dart';
+// import 'package:flutter_blurhash/flutter_blurhash.dart'; // Unused import
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:picpics/asset_entity_image_provider.dart';
+// import 'package:picpics/asset_entity_image_provider.dart'; // Unused import
 import 'package:picpics/constants.dart';
-import 'package:picpics/fade_image_builder.dart';
-import 'package:picpics/screens/photo_screen.dart';
+// import 'package:picpics/fade_image_builder.dart'; // Unused import
+// import 'package:picpics/screens/photo_screen.dart'; // Unused import
 import 'package:picpics/screens/settings_screen.dart';
 import 'package:picpics/screens/tabs/untagged_tabs/untagged_day.dart';
 import 'package:picpics/screens/tabs/untagged_tabs/untagged_month.dart';
 import 'package:picpics/stores/language_controller.dart';
-import 'package:picpics/stores/pic_store.dart';
+// import 'package:picpics/stores/pic_store.dart'; // Unused import
 import 'package:picpics/stores/tabs_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
-import 'package:picpics/utils/refresh_everything.dart';
+// import 'package:picpics/utils/refresh_everything.dart'; // Unused import
 import 'package:picpics/widgets/device_no_pics.dart';
 import 'package:picpics/widgets/toggle_bar.dart';
 
@@ -322,13 +322,14 @@ class UntaggedTab extends GetWidget<TabsController> {
     );
   }
 
-  final _failedItem = const Center(
-    child: Text(
-      'Failed loading',
-      textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 18),
-    ),
-  );
+  // Unused field commented out to fix warning
+  // final _failedItem = const Center(
+  //   child: Text(
+  //     'Failed loading',
+  //     textAlign: TextAlign.center,
+  //     style: TextStyle(fontSize: 18),
+  //   ),
+  // );
 
   String dateFormat(DateTime dateTime) {
     DateFormat formatter;

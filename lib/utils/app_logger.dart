@@ -24,42 +24,42 @@ class AppLogger {
   }
 
   // Convenience methods for direct access
-  static void d(message,
+  static void d(dynamic message,
       {DateTime? time, Object? error, StackTrace? stackTrace,}) {
     if (kDebugMode) {
       log.d(message, time: time, error: error, stackTrace: stackTrace);
     }
   }
 
-  static void i(message,
+  static void i(dynamic message,
       {DateTime? time, Object? error, StackTrace? stackTrace,}) {
     if (kDebugMode) {
       log.i(message, time: time, error: error, stackTrace: stackTrace);
     }
   }
 
-  static void w(message,
+  static void w(dynamic message,
       {DateTime? time, Object? error, StackTrace? stackTrace,}) {
     if (kDebugMode) {
       log.w(message, time: time, error: error, stackTrace: stackTrace);
     }
   }
 
-  static void e(message,
+  static void e(dynamic message,
       {DateTime? time, Object? error, StackTrace? stackTrace,}) {
     if (kDebugMode) {
       log.e(message, time: time, error: error, stackTrace: stackTrace);
     }
   }
 
-  static void t(message,
+  static void t(dynamic message,
       {DateTime? time, Object? error, StackTrace? stackTrace,}) {
     if (kDebugMode) {
       log.t(message, time: time, error: error, stackTrace: stackTrace);
     }
   }
 
-  static void f(message,
+  static void f(dynamic message,
       {DateTime? time, Object? error, StackTrace? stackTrace,}) {
     if (kDebugMode) {
       log.f(message, time: time, error: error, stackTrace: stackTrace);

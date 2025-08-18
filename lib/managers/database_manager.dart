@@ -184,7 +184,7 @@ AppLogger.d('got token this mean it did accept notification');
   String getUserLanguage() {
     final appLanguage = userSettings.appLanguage?.split('_')[0];
     final language = LanguageLocal();
-    return '${language.getDisplayLanguage(appLanguage)['nativeName']}';
+    return '${language.getDisplayLanguage(appLanguage ?? 'en')['nativeName']}';
   }
 
   void gridScale(double multiplier) {

@@ -10,8 +10,8 @@ class GeneralModal extends StatelessWidget {
     required this.message, required this.onPressedDelete, required this.onPressedOk, super.key,
   });
   final String message;
-  final Function() onPressedDelete;
-  final Function() onPressedOk;
+  final void Function() onPressedDelete;
+  final void Function() onPressedOk;
 
   @override
   Widget build(BuildContext context) {

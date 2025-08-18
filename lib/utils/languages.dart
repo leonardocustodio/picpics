@@ -209,7 +209,7 @@ class LanguageLocal {
     'za': {'name': 'Zhuang, Chuang', 'nativeName': 'Saɯ cueŋƅ, Saw cuengh'},
   };
 
-  Map<String, String> getDisplayLanguage(key) {
+  Map<String, String> getDisplayLanguage(String key) {
     if (isoLangs.containsKey(key)) {
       return isoLangs[key]!;
     } else {

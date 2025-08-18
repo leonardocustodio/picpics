@@ -85,7 +85,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     final extentScrollController = FixedExtentScrollController(
         initialItem: UserController.to.requireSecret.value,);
 
-    await showModalBottomSheet(
+    await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext builder) {
         var temporaryOption = UserController.to.requireSecret.value;
@@ -173,7 +173,7 @@ class _SettingsScreenState extends State<SettingsScreen>
     final extentScrollController =
         FixedExtentScrollController(initialItem: languageIndex);
 
-    await showModalBottomSheet(
+    await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext builder) {
         var temporaryLanguage = languageIndex;
@@ -360,7 +360,7 @@ class _SettingsScreenState extends State<SettingsScreen>
 //  }
 
   Future<void> showTimePicker(BuildContext context) async {
-    await showModalBottomSheet(
+    await showModalBottomSheet<void>(
       context: context,
       builder: (BuildContext builder) {
         final now = DateTime.now();

@@ -1,15 +1,15 @@
 # picPics - Photo Organizer
 
 <div align="center">
-  <img src="lib/images/logo.png" alt="PicPics Logo" width="200"/>
+  <img src="lib/images/logo.png" alt="picPics Logo" width="160"/>
   
   **Organize your photos with tags and keep them safe**
   
   [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
-  [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+  [![License](https://img.shields.io/badge/license-Apache-2.0-green.svg)](LICENSE)
 </div>
 
-## 📱 About PicPics
+## 📱 About picPics
 
 picPics is a Flutter-based photo organization app that helps you manage and categorize your photos using a tag-based system. With features like secret photo protection, multiple tag support, and an intuitive swipe interface, PicPics makes photo organization effortless and enjoyable.
 

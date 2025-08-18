@@ -50,8 +50,6 @@ extension SelectedBoard on Board {
         return LangControl.to.S.value.tutorial_secret;
       case Board.multiSelect:
         return LangControl.to.S.value.tutorial_multiselect;
-      default:
-        return null;
     }
   }
 
@@ -67,8 +65,6 @@ extension SelectedBoard on Board {
         return Image.asset('lib/images/onboardsecret.png');
       case Board.multiSelect:
         return Image.asset('lib/images/onboardmultiselect.png');
-      default:
-        return null;
     }
   }
 }

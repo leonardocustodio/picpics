@@ -13,8 +13,8 @@ class ConfirmPicDelete extends StatelessWidget {
     this.onPressedClose,
   });
   final String deleteText;
-  final Function()? onPressedClose;
-  final Function() onPressedDelete;
+  final void Function()? onPressedClose;
+  final void Function() onPressedDelete;
 
   @override
   Widget build(BuildContext context) {

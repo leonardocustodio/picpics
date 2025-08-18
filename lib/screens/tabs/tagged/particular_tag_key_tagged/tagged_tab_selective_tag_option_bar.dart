@@ -188,7 +188,7 @@ class TaggedTabSelectiveTagOptionBar extends GetWidget<TaggedController> {
                                     ? LangControl.to.S.value.search_results
                                     : LangControl.to.S.value.recent_tags,
                                 tagsKeyList: tagsController
-                                    .searchTagsResults.value
+                                    .searchTagsResults
                                     .where((tag) =>
                                         tag.key != tagKey &&
                                         tagsController.multiPicTags[tag.key] ==

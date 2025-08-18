@@ -135,8 +135,8 @@ class TaggedController extends GetxController {
     if (toggleIndexTagged.value == 0) {
       final picIdMapToTagKey = <String, Map<String, String>>{};
       TabsController.to.selectedMultiBarPics.forEach((picId, value) {
-        if (picWiseTags.value[picId] != null) {
-          picIdMapToTagKey[picId] = picWiseTags.value[picId]!.value;
+        if (picWiseTags[picId] != null) {
+          picIdMapToTagKey[picId] = picWiseTags[picId]!;
         }
       });
       await untagPicsFromTag(picIdMapToTagKey: picIdMapToTagKey);
@@ -501,8 +501,8 @@ class ConfirmationDialog extends StatelessWidget {
   final String cancelText;
   final String okText;
   final String headingText;
-  final Function()? onPressedClose;
-  final Function() onPressedOk;
+  final void Function()? onPressedClose;
+  final void Function() onPressedOk;
 
   @override
   Widget build(BuildContext context) {

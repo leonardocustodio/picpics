@@ -78,10 +78,10 @@ LinearGradient getGradient(int _) {
   }
 }
 
-typedef CallBack = Function(bool);
+typedef CallBack = void Function(bool);
 
 void doCustomisedSearching(
-    tag, List<String> listOfLetters, CallBack callback,) {
+    dynamic tag, List<String> listOfLetters, CallBack callback,) {
   if (tag == null) {
     callback(false);
     return;

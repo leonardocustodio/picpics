@@ -11,9 +11,9 @@ class DeleteSecretModal extends StatefulWidget {
   const DeleteSecretModal({
     required this.onPressedClose, required this.onPressedDelete, required this.onPressedOk, super.key,
   });
-  final Function() onPressedClose;
-  final Function() onPressedDelete;
-  final Function() onPressedOk;
+  final void Function() onPressedClose;
+  final void Function() onPressedDelete;
+  final void Function() onPressedOk;
 
   @override
   DeleteSecretModalState createState() => DeleteSecretModalState();
