@@ -7,34 +7,32 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:home_widget/home_widget.dart';
-
-import 'package:picPics/generated/l10n.dart' as lang;
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/widget_manager.dart';
-import 'package:picPics/screens/access_code_screen.dart';
-import 'package:picPics/screens/add_location.dart';
-import 'package:picPics/screens/email_screen.dart';
-import 'package:picPics/screens/login_screen.dart';
-import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/screens/tabs_screen.dart';
-import 'package:picPics/stores/blur_hash_controller.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/percentage_dialog_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-
-import 'firebase_options.dart';
-import 'screens/all_tags_screen.dart';
-import 'screens/settings_screen.dart';
-import 'stores/database_controller.dart';
-import 'stores/login_store.dart';
-import 'stores/pin_controller.dart';
-import 'stores/swiper_tab_controller.dart';
-import 'stores/tabs_controller.dart';
-import 'stores/tagged_controller.dart';
-import 'stores/tags_controller.dart';
-import 'utils/app_logger.dart';
+import 'package:picpics/firebase_options.dart';
+import 'package:picpics/generated/l10n.dart' as lang;
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/managers/widget_manager.dart';
+import 'package:picpics/screens/access_code_screen.dart';
+import 'package:picpics/screens/add_location.dart';
+import 'package:picpics/screens/all_tags_screen.dart';
+import 'package:picpics/screens/email_screen.dart';
+import 'package:picpics/screens/login_screen.dart';
+import 'package:picpics/screens/photo_screen.dart';
+import 'package:picpics/screens/pin_screen.dart';
+import 'package:picpics/screens/settings_screen.dart';
+import 'package:picpics/screens/tabs_screen.dart';
+import 'package:picpics/stores/blur_hash_controller.dart';
+import 'package:picpics/stores/database_controller.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/login_store.dart';
+import 'package:picpics/stores/percentage_dialog_controller.dart';
+import 'package:picpics/stores/pin_controller.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/swiper_tab_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 /* Future<String?> checkForUserControllerInitiatedProducts() async {
   AppLogger.d('Checking if appstore initiated products');
@@ -46,7 +44,7 @@ import 'utils/app_logger.dart';
   return null;
 } */
 
-void backgroundFetchHeadlessTask(String taskId) async {
+Future<void> backgroundFetchHeadlessTask(String taskId) async {
   AppLogger.d('[BackgroundFetch] Headless event received.');
   await WidgetManager.sendAndUpdate();
   BackgroundFetch.finish(taskId);
@@ -56,31 +54,31 @@ String initialRoute = LoginScreen.id;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   // Initialize logger
   AppLogger.init();
 
   //Get.lazyPut(() => RefreshPicPicsController());
   //Get.lazyPut(() => GalleryStore());
 
-  Get.lazyPut<LangControl>(() => LangControl());
+  Get.lazyPut<LangControl>(LangControl.new);
 
-  Get.lazyPut<BlurHashController>(() => BlurHashController());
-  Get.lazyPut<PercentageDialogController>(() => PercentageDialogController());
-  Get.lazyPut<UserController>(() => UserController());
+  Get.lazyPut<BlurHashController>(BlurHashController.new);
+  Get.lazyPut<PercentageDialogController>(PercentageDialogController.new);
+  Get.lazyPut<UserController>(UserController.new);
   await lang.S.load(Locale(UserController.to.appLanguage.value)).then((value) {
     LangControl.to.S = Rx<lang.S>(value);
   });
-  Get.lazyPut<PrivatePhotosController>(() => PrivatePhotosController());
-  Get.lazyPut<AllTagsController>(() => AllTagsController());
-  Get.lazyPut<TagsController>(() => TagsController());
-  Get.lazyPut<TaggedController>(() => TaggedController());
-  Get.lazyPut<SwiperTabController>(() => SwiperTabController());
-  Get.lazyPut<DatabaseController>(() => DatabaseController());
-  Get.lazyPut<TabsController>(() => TabsController());
-  Get.lazyPut<PinController>(() => PinController());
-  Get.lazyPut<LoginStore>(() => LoginStore());
-  Get.lazyPut<PhotoScreenController>(() => PhotoScreenController());
+  Get.lazyPut<PrivatePhotosController>(PrivatePhotosController.new);
+  Get.lazyPut<AllTagsController>(AllTagsController.new);
+  Get.lazyPut<TagsController>(TagsController.new);
+  Get.lazyPut<TaggedController>(TaggedController.new);
+  Get.lazyPut<SwiperTabController>(SwiperTabController.new);
+  Get.lazyPut<DatabaseController>(DatabaseController.new);
+  Get.lazyPut<TabsController>(TabsController.new);
+  Get.lazyPut<PinController>(PinController.new);
+  Get.lazyPut<LoginStore>(LoginStore.new);
+  Get.lazyPut<PhotoScreenController>(PhotoScreenController.new);
 
   // GestureBinding.instance.resamplingEnabled = true;
 
@@ -101,10 +99,10 @@ void main() async {
   /* if (Platform.isIOS) {
     initiatedWithProduct = await checkForUserControllerInitiatedProducts();
   } */
-  var user = UserController();
+  final user = UserController();
   await user.initialize();
 
-  var setAppGroup =
+  final setAppGroup =
       await HomeWidget.setAppGroupId('group.br.com.inovatso.picPics.Widgets');
   AppLogger.d('Has setted app group: $setAppGroup');
 
@@ -118,17 +116,17 @@ void main() async {
 }
 
 class PicPicsApp extends StatefulWidget {
+  const PicPicsApp({required this.user, super.key});
   final UserController user;
-  const PicPicsApp({super.key, required this.user});
 
   @override
-  _PicPicsAppState createState() => _PicPicsAppState();
+  PicPicsAppState createState() => PicPicsAppState();
 }
 
-class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
+class PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
   @override
   void initState() {
-    var tutorial = widget.user.tutorialCompleted.value;
+    final tutorial = widget.user.tutorialCompleted.value;
     if (tutorial) {
       initialRoute = TabsScreen.id;
       //TODO: uncomment
@@ -180,11 +178,10 @@ class _PicPicsAppState extends State<PicPicsApp> with WidgetsBindingObserver {
       ],
       locale: Locale(widget.user.appLocale.value),
       supportedLocales: lang.S.delegate.supportedLocales,
-      debugShowCheckedModeBanner: kDebugMode,
       initialRoute: initialRoute,
       navigatorObservers: [Analytics.observer],
       routes: {
-        AllTagsScreen.id: (context) => AllTagsScreen(picStore: null),
+        AllTagsScreen.id: (context) => AllTagsScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         TabsScreen.id: (context) => const TabsScreen(),
         PhotoScreen.id: (context) => PhotoScreen(

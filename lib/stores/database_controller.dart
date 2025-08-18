@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
 import 'package:uuid/uuid.dart';
 
 class DatabaseController extends GetxController {
@@ -31,7 +31,7 @@ class DatabaseController extends GetxController {
     }
   }
 
-  void setKeepAskingToDelete(bool value) async {
+  Future<void> setKeepAskingToDelete(bool value) async {
     final currentUser = await _database.getSingleMoorUser();
     if (currentUser != null) {
       await _database
@@ -44,8 +44,6 @@ MoorUser getDefaultMoorUser({String? deviceLocale}) {
   return MoorUser(
     customPrimaryKey: 0,
     id: const Uuid().v4(),
-    email: null,
-    password: null,
     notification: false,
     dailyChallenges: false,
     goal: 20,
@@ -64,7 +62,5 @@ MoorUser getDefaultMoorUser({String? deviceLocale}) {
     tourCompleted: false,
     isBiometricActivated: false,
     shouldDeleteOnPrivate: false,
-    /* starredPhotos: <String, String>{}, */
-    defaultWidgetImage: null,
   );
 }

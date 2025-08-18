@@ -1,18 +1,29 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/constants.dart';
-
-import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/widgets/secret_switch.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/settings_screen.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/widgets/secret_switch.dart';
 
 typedef OnUntag = Function();
 
 class TopBar extends StatelessWidget {
+
+  const TopBar({
+    required this.children, super.key,
+    this.searchEditingController,
+    this.showUntag = false,
+    this.searchFocusNode,
+    this.onUntag,
+    this.onSubmitted,
+    this.onChanged,
+  }) : assert((searchEditingController == null
+            ? (onChanged == null && onSubmitted == null)
+            : (onChanged != null && onSubmitted != null)),);
   /* final GalleryStore galleryStore; */
   final FocusNode? searchFocusNode;
   final bool showUntag;
@@ -22,26 +33,13 @@ class TopBar extends StatelessWidget {
   final void Function(String value)? onSubmitted;
   final List<Widget> children;
 
-  const TopBar({
-    super.key,
-    this.searchEditingController,
-    this.showUntag = false,
-    this.searchFocusNode,
-    this.onUntag,
-    this.onSubmitted,
-    this.onChanged,
-    required this.children,
-  }) : assert((searchEditingController == null
-            ? (onChanged == null && onSubmitted == null)
-            : (onChanged != null && onSubmitted != null)));
-
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(right: 16.0, left: 2.0),
+          padding: const EdgeInsets.only(right: 16, left: 2),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
@@ -84,7 +82,6 @@ class TopBar extends StatelessWidget {
                               //                          DatabaseManager.instance.searchResults = null;
                             },
                             keyboardType: TextInputType.text,
-                            maxLines: 1,
                             style: const TextStyle(
                               fontFamily: 'Lato',
                               color: Color(0xff606566),
@@ -94,13 +91,13 @@ class TopBar extends StatelessWidget {
                               letterSpacing: -0.4099999964237213,
                             ),
                             decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(right: 2.0),
+                              contentPadding: const EdgeInsets.only(right: 2),
                               enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none),
+                                  borderSide: BorderSide.none,),
                               focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none),
+                                  borderSide: BorderSide.none,),
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none),
+                                  borderSide: BorderSide.none,),
                               prefixIcon:
                                   Image.asset('lib/images/searchico.png'),
                               hintText: LangControl.to.S.value.search,
@@ -122,33 +119,31 @@ class TopBar extends StatelessWidget {
               GetX<PrivatePhotosController>(builder: (privateController) {
                 return privateController.showPrivate.value
                     ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
                         child: SecretSwitch(
                             value: privateController.showPrivate.value,
                             onChanged: (value) {
                               AppLogger.d('turn off');
                               privateController.switchSecretPhotos();
-                            }),
+                            },),
                       )
                     : Container();
-              }),
-              showUntag
-                  ? GestureDetector(
+              },),
+              if (showUntag) GestureDetector(
                       onTap: () {
                         onUntag?.call();
                       },
-                      child: const Text('Untag'))
-                  : CupertinoButton(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: const Text('Untag'),) else CupertinoButton(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       onPressed: () {
-                        Get.to(() => const SettingsScreen());
+                        Get.to<void>(() => const SettingsScreen());
                       },
                       child: Image.asset('lib/images/settings.png'),
                     ),
             ],
           ),
         ),
-        ...children
+        ...children,
       ],
     );
   }

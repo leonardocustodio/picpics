@@ -1,9 +1,9 @@
 // import 'package:flutter/material.dart';
 // import 'package:photo_manager/photo_manager.dart';
-// import 'package:picPics/lru_cache.dart';
+// import 'package:picpics/lru_cache.dart';
 // import 'dart:typed_data';
 //
-// import 'package:picPics/stores/pic_store.dart';
+// import 'package:picpics/stores/pic_store.dart';
 //
 // class FullImageItem extends StatelessWidget {
 //   final PicStore picStore;

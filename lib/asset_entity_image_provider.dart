@@ -1,14 +1,23 @@
 import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/stores/blur_hash_controller.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/stores/blur_hash_controller.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 @immutable
 class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
+
+  const AssetEntityImageProvider(
+    this.picStore, {
+    this.scale = 1.0,
+    this.thumbSize = kDefaultPreviewThumbSize,
+    this.isOriginal = true,
+  }) : assert(isOriginal || thumbSize.length == 2,
+            'thumbSize must contain and only contain two integers when it\'s not original',);
   final PicStore picStore;
 
   /// Scale for image provider.
@@ -22,14 +31,6 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
   /// Choose if original data or thumb data should be loaded.
   /// 选择载入原数据还是缩略图数据
   final bool isOriginal;
-
-  const AssetEntityImageProvider(
-    this.picStore, {
-    this.scale = 1.0,
-    this.thumbSize = kDefaultPreviewThumbSize,
-    this.isOriginal = true,
-  }) : assert(isOriginal || thumbSize.length == 2,
-            'thumbSize must contain and only contain two integers when it\'s not original');
   /* {
     if (!isOriginal && thumbSize.length != 2) {
       throw ArgumentError(
@@ -43,7 +44,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
 
   @override
   ImageStreamCompleter loadImage(
-      AssetEntityImageProvider key, ImageDecoderCallback decode) {
+      AssetEntityImageProvider key, ImageDecoderCallback decode,) {
     return MultiFrameImageStreamCompleter(
       codec: _loadAsync(key, decode),
       scale: key.scale,
@@ -81,7 +82,7 @@ class AssetEntityImageProvider extends ImageProvider<AssetEntityImageProvider> {
       data = picStore.isPrivate.value
           ? await key.picStore.assetThumbBytes
           : await key.picStore.entity.value?.thumbnailDataWithSize(
-              ThumbnailSize(thumbSize[0], thumbSize[1]));
+              ThumbnailSize(thumbSize[0], thumbSize[1]),);
 
       if (BlurHashController.to.blurHash[picStore.photoId.value] == null) {
         if (data != null) {

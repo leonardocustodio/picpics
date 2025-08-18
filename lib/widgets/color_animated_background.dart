@@ -1,14 +1,12 @@
 import 'dart:math';
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:picPics/components/colorful_background.dart';
+import 'package:picpics/components/colorful_background.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
 class ColorAnimatedBackground extends StatefulWidget {
-  final double moveByX;
-  final double moveByY;
-  final bool blurFilter;
 
   const ColorAnimatedBackground({
     super.key,
@@ -16,41 +14,43 @@ class ColorAnimatedBackground extends StatefulWidget {
     this.moveByY = 20.0,
     this.blurFilter = true,
   });
+  final double moveByX;
+  final double moveByY;
+  final bool blurFilter;
 
   @override
-  _ColorAnimatedBackgroundState createState() =>
-      _ColorAnimatedBackgroundState();
+  ColorAnimatedBackgroundState createState() => ColorAnimatedBackgroundState();
 }
 
-class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
+class ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
     with AnimationMixin {
   late AnimationController widthController;
   late AnimationController heightController;
-  late Animation<double> x_animation;
-  late Animation<double> y_animation;
+  late Animation<double> xAnimation;
+  late Animation<double> yAnimation;
 
   @override
   void initState() {
     super.initState();
     widthController = createController()..mirror(duration: 3.seconds);
     heightController = createController()..mirror(duration: 3.seconds);
-    x_animation = 0.0.tweenTo(widget.moveByX).animatedBy(widthController);
-    y_animation = 0.0.tweenTo(widget.moveByY).animatedBy(heightController);
+    xAnimation = 0.0.tweenTo(widget.moveByX).animatedBy(widthController);
+    yAnimation = 0.0.tweenTo(widget.moveByY).animatedBy(heightController);
   }
 
   @override
   Widget build(BuildContext context) {
     return CustomPaint(
       painter: ColorfulBackground(
-        moveBy: Point(x_animation.value, y_animation.value),
+        moveBy: Point(xAnimation.value, yAnimation.value),
       ),
       child: Container(
         constraints: const BoxConstraints.expand(),
         child: widget.blurFilter
             ? BackdropFilter(
                 filter: ImageFilter.blur(
-                  sigmaX: 18.0,
-                  sigmaY: 18.0,
+                  sigmaX: 18,
+                  sigmaY: 18,
                 ),
                 child: Container(
                   decoration: const BoxDecoration(
@@ -65,7 +65,7 @@ class _ColorAnimatedBackgroundState extends State<ColorAnimatedBackground>
               )
             : Container(
                 constraints: const BoxConstraints.expand(),
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
               ),
       ),
     );

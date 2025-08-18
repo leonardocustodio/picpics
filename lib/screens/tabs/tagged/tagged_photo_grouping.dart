@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
-import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key.dart';
-import 'package:picPics/stores/blur_hash_controller.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/widgets/photo_widget.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key.dart';
+import 'package:picpics/stores/blur_hash_controller.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/widgets/photo_widget.dart';
 
 final height = (Get.width / 3) - 20;
 
@@ -32,7 +32,7 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
             tempStorage[key] = '';
           }
         });
-        for (var tag in tempTaggedStorage) {
+        for (final tag in tempTaggedStorage) {
           if (tempStorage[tag] == null) {
             taggedKeys.add(tag);
           }
@@ -67,7 +67,7 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
                 opacity: ignore ? 0.3 : 1.0,
                 child: GestureDetector(
                   onTap: () {
-                    Get.to(() => TaggedTabSelectiveTagKey(tagKey));
+                    Get.to<void>(() => TaggedTabSelectiveTagKey(tagKey));
                   },
                   child: Container(
                     margin: const EdgeInsets.all(4),
@@ -125,8 +125,8 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
                                             TextSpan(
                                               text:
                                                   ' (${controller.taggedPicId[tagKey]?.keys.length ?? 0})',
-                                            )
-                                          ]),
+                                            ),
+                                          ],),
                                       maxFontSize: 20,
                                       minFontSize: 5,
                                       maxLines: 1,
@@ -140,40 +140,39 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
                           ),
                           if (picStore?.isStarred.value ?? false)
                             Positioned(
-                              left: 6.0,
-                              top: 6.0,
+                              left: 6,
+                              top: 6,
                               child:
                                   Image.asset('lib/images/staryellowico.png'),
                             ),
                           if (picStore?.isPrivate.value ?? false)
                             Positioned(
-                              right: 8.0,
-                              top: 6.0,
+                              right: 8,
+                              top: 6,
                               child: Container(
                                 height: 20,
                                 width: 20,
-                                padding: const EdgeInsets.only(bottom: 2.0),
+                                padding: const EdgeInsets.only(bottom: 2),
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10),
                                   gradient: const LinearGradient(
                                     colors: [
                                       Color(0xffffcc00),
-                                      Color(0xffffe98f)
+                                      Color(0xffffe98f),
                                     ],
                                     stops: [0.2291666716337204, 1],
-                                    begin: Alignment(-1.0, 0.0),
-                                    end: Alignment(1.0, -0.0),
+                                    end: Alignment(1, -0),
                                     // angle: 0,
                                     // scale: undefined,
                                   ),
                                 ),
                                 child: Image.asset(
-                                    'lib/images/smallwhitelock.png'),
+                                    'lib/images/smallwhitelock.png',),
                               ),
                             ),
                         ],
                       );
-                    }),
+                    },),
                   ),
                 ),
               ),
@@ -181,6 +180,6 @@ class TaggedPhotosGrouping extends GetWidget<TaggedController> {
           });
         },
       );
-    });
+    },);
   }
 }

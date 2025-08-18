@@ -1,17 +1,17 @@
-import 'package:encrypt/encrypt.dart' as E;
 import 'package:diacritic/diacritic.dart';
-import 'package:picPics/model/tag_model.dart';
-import 'package:intl/intl.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:flutter/material.dart';
-import '../constants.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:intl/intl.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/model/tag_model.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class Helpers {
   static Widget failedItem = const Center(
     child: Text(
       'Failed loading',
       textAlign: TextAlign.center,
-      style: TextStyle(fontSize: 18.0),
+      style: TextStyle(fontSize: 18),
     ),
   );
   static String dateFormat(DateTime dateTime, {bool isMonth = true}) {
@@ -34,9 +34,9 @@ class Helpers {
   static String encryptTag(String tag) {
     final plainText = stripTag(tag);
 
-    final key = E.Key.fromUtf8('picpics key for encrypting tags!');
-    final iv = E.IV.fromLength(16);
-    final encrypter = E.Encrypter(E.AES(key));
+    final key = encrypt.Key.fromUtf8('picpics key for encrypting tags!');
+    final iv = encrypt.IV.fromLength(16);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
     final encrypted = encrypter.encrypt(plainText, iv: iv);
     AppLogger.d('Stripped tag: $tag');
 
@@ -45,11 +45,11 @@ class Helpers {
   }
 
   static String decryptTag(String encrypted) {
-    final key = E.Key.fromUtf8('picpics key for encrypting tags!');
-    final iv = E.IV.fromLength(16);
-    final encrypter = E.Encrypter(E.AES(key));
-    var encrypt = E.Encrypted.fromBase16(encrypted);
-    final decrypted = encrypter.decrypt(encrypt, iv: iv);
+    final key = encrypt.Key.fromUtf8('picpics key for encrypting tags!');
+    final iv = encrypt.IV.fromLength(16);
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    final encryptedData = encrypt.Encrypted.fromBase16(encrypted);
+    final decrypted = encrypter.decrypt(encryptedData, iv: iv);
 
     AppLogger.d('Decrypted tag: $decrypted');
     return decrypted;
@@ -81,11 +81,20 @@ LinearGradient getGradient(int _) {
 typedef CallBack = Function(bool);
 
 void doCustomisedSearching(
-    dynamic tag, List<String> listOfLetters, CallBack callback) {
-  if (tag == null) callback(false);
+    tag, List<String> listOfLetters, CallBack callback,) {
+  if (tag == null) {
+    callback(false);
+    return;
+  }
 
   var matched = true;
-  var title = (tag is TagModel ? tag.title : tag)?.toLowerCase();
+  final titleNullable = tag is TagModel ? tag.title : tag?.toString();
+  if (titleNullable == null) {
+    callback(false);
+    return;
+  }
+  final title = titleNullable.toLowerCase();
+  
   var i = 0;
   for (var index = 0; index < listOfLetters.length; index++) {
     var found = false;

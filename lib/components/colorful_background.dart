@@ -1,32 +1,33 @@
 import 'dart:math';
-import 'package:picPics/constants.dart';
+
 import 'package:flutter/material.dart';
+import 'package:picpics/constants.dart';
 
 class ColorfulBackground extends CustomPainter {
-  final Point moveBy;
   ColorfulBackground({required this.moveBy});
+  final Point moveBy;
 
   @override
   void paint(Canvas canvas, Size size) {
-    var primaryGradient = Paint()
+    final primaryGradient = Paint()
       ..shader = kPrimaryGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    var secondaryGradient = Paint()
+    final secondaryGradient = Paint()
       ..shader = kSecondaryGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
-    var pinkGradient = Paint()
+    final pinkGradient = Paint()
       ..shader = kPinkGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height));
 
-    var yellowPaint = Paint()
+    final yellowPaint = Paint()
       ..color = kYellowColor
       ..style = PaintingStyle.fill;
 
-    var secondaryPath =
+    final secondaryPath =
         getSecondaryPath(size.width, size.height, moveBy.x - 20, moveBy.y * 2);
-    var pinkPath = getPinkPath(
-        size.width, size.height, -(moveBy.x / 3), -(moveBy.y / 2 - 30));
-    var yellowPath =
+    final pinkPath = getPinkPath(
+        size.width, size.height, -(moveBy.x / 3), -(moveBy.y / 2 - 30),);
+    final yellowPath =
         getYellowPath(size.width, size.height, moveBy.x / 2, -moveBy.y + .0);
 
     canvas.drawPaint(primaryGradient);
@@ -39,7 +40,7 @@ class ColorfulBackground extends CustomPainter {
     return Path()
       ..moveTo(x * 1, y * 0.35 + moveByY)
       ..quadraticBezierTo(
-          x * 0.5 + moveByX, y * 0.4 + moveByY, 0 + moveByX, y * 0.3 + moveByY)
+          x * 0.5 + moveByX, y * 0.4 + moveByY, 0 + moveByX, y * 0.3 + moveByY,)
       ..lineTo(0 * x + moveByX, 1 * y + moveByY)
       ..lineTo(1 * x, y * 1 + moveByY)
       ..close();
@@ -57,7 +58,7 @@ class ColorfulBackground extends CustomPainter {
     return Path()
       ..moveTo(0, y * 0.25 + moveByY / 3)
       ..quadraticBezierTo(
-          x * 0.75 + moveByX, y * 0.3 + moveByY, x, y * 0.5 - moveByY / 2)
+          x * 0.75 + moveByX, y * 0.3 + moveByY, x, y * 0.5 - moveByY / 2,)
       ..lineTo(x * 1, y * 1)
       ..lineTo(0, y * 1)
       ..close();

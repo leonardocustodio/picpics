@@ -1,10 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
-import 'package:image/image.dart' as img;
 import 'package:get/get.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/third_party_lib/src/blurhash.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:image/image.dart' as img;
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/third_party_lib/src/blurhash.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class BlurHashController extends GetxController {
   static BlurHashController get to => Get.find();
@@ -23,9 +24,9 @@ class BlurHashController extends GetxController {
   }
 
   Future<void> _loadBlurHash() async {
-    var blurHashList = await _appDatabase.getAllPicBlurHash();
+    final blurHashList = await _appDatabase.getAllPicBlurHash();
 
-    for (var pic in blurHashList) {
+    for (final pic in blurHashList) {
       masterHash[pic.photoId] = pic.blurHash;
     }
     blurHash.value = Map<String, String>.from(masterHash);
@@ -51,12 +52,12 @@ class BlurHashController extends GetxController {
     });
   }
 
-  void spawnBlurHashInsertingIsolate() async {
+  Future<void> spawnBlurHashInsertingIsolate() async {
     try {
       final val = await compute(_insertBlurHashToDatabase, _blurHashesQueue);
 
       if (val.isNotEmpty) {
-        var picBlurHashList = <PicBlurHash>[];
+        final picBlurHashList = <PicBlurHash>[];
         val.forEach((key, value) {
           masterHash[key] = value;
           picBlurHashList.add(PicBlurHash(photoId: key, blurHash: value));
@@ -69,11 +70,11 @@ class BlurHashController extends GetxController {
   }
 
   static FutureOr<Map<String, String>> _insertBlurHashToDatabase(
-      RxMap<String, Uint8List> val) async {
+      RxMap<String, Uint8List> val,) async {
     AppLogger.d('_blurHashesQueue : ${val.keys}');
 
     /// creating hashMap to return the value
-    var localBlurHashMap = <String, String>{};
+    final localBlurHashMap = <String, String>{};
 
     if (val.isNotEmpty) {
       await Future.forEach(val.entries,

@@ -2,24 +2,23 @@ import 'dart:io';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/stores/language_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/functions.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/widgets/tags_list.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/utils/functions.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/widgets/tags_list.dart';
 
 class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
   TabsScreenBottomNavigatioBar({super.key});
-  TextEditingController tagsEditingController = TextEditingController();
+  final TextEditingController tagsEditingController = TextEditingController();
 
-  TextEditingController bottomTagsEditingController = TextEditingController();
+  final TextEditingController bottomTagsEditingController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
       () => controller.multiTagSheet.value
           ? ExpandableNotifier(
               controller: controller.expandableController.value,
-              child: Container(
+              child: ColoredBox(
                 color: const Color(0x00f1f3f5),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -40,7 +39,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                       },
                       child: SafeArea(
                         bottom: !controller.expandableController.value.expanded,
-                        child: Container(
+                        child: ColoredBox(
                           color: const Color(0xFFF1F3F5),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -50,10 +49,10 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                   controller.setMultiTagSheet(false);
                                 },
                                 child: SizedBox(
-                                  width: 80.0,
+                                  width: 80,
                                   child: Text(
                                     LangControl.to.S.value.cancel,
-                                    textScaler: TextScaler.linear(1.0),
+                                    textScaler: const TextScaler.linear(1),
                                     style: const TextStyle(
                                       color: Color(0xff707070),
                                       fontSize: 16,
@@ -67,7 +66,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                               CupertinoButton(
                                 onPressed: () async {
                                   // if (!UserController.to.isPremium) {
-                                  //   Get.to(() =>   PremiumScreen());
+                                  //   Get.to<void>(() =>   PremiumScreen());
                                   //   return;
                                   // }
 
@@ -88,10 +87,10 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                   });
                                 },
                                 child: SizedBox(
-                                  width: 80.0,
+                                  width: 80,
                                   child: Text(
                                     LangControl.to.S.value.ok,
-                                    textScaler: TextScaler.linear(1.0),
+                                    textScaler: const TextScaler.linear(1),
                                     textAlign: TextAlign.end,
                                     style: const TextStyle(
                                       color: Color(0xff707070),
@@ -110,17 +109,16 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                     Expandable(
                       controller: controller.expandableController.value,
                       expanded: Container(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: const EdgeInsets.all(24),
 
                         /// TODO: Tags List Not Showing
-                        color: const Color(0xFFEFEFF4).withOpacity(0.94),
+                        color: const Color(0xFFEFEFF4).withValues(alpha: 0.94),
                         child: SafeArea(
-                          bottom: true,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
                               TagsList(
-                                  tagStyle: TagStyle.MultiColored,
+                                  tagStyle: TagStyle.multiColored,
                                   tagsKeyList: TagsController
                                       .to.multiPicTags.keys
                                       .toList(),
@@ -132,14 +130,14 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                               }, */
                                   onTap: (String tagKey) {
                                     ///  if (!UserController.to.isPremium) {
-                                    ///    Get.to(() =>   PremiumScreen);
+                                    ///    Get.to<void>(() =>   PremiumScreen);
                                     ///    return;
                                     ///  }
                                     AppLogger.d('do nothing');
                                   },
                                   onPanEnd: (String tagKey) {
                                     // if (!UserController.to.isPremium) {
-                                    //   Get.to(() =>   PremiumScreen);
+                                    //   Get.to<void>(() =>   PremiumScreen);
                                     //   return;
                                     // }
                                     TagsController.to.multiPicTags
@@ -150,7 +148,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                   },
                                   onDoubleTap: (String tagKey) {
                                     // if (!UserController.to.isPremium) {
-                                    //   Get.to(() =>   PremiumScreen);
+                                    //   Get.to<void>(() =>   PremiumScreen);
                                     //   return;
                                     // }
                                     AppLogger.d('do nothing');
@@ -163,7 +161,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                   },
                                   onSubmitted: (text) {
                                     // if (!UserController.to.isPremium) {
-                                    //   Get.to(() =>   PremiumScreen);
+                                    //   Get.to<void>(() =>   PremiumScreen);
                                     //   return;
                                     // }
                                     if (text != '') {
@@ -179,7 +177,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                         if (TagsController.to.allTags[tagKey] ==
                                             null) {
                                           AppLogger.d(
-                                              'tag does not exist! creating it!');
+                                              'tag does not exist! creating it!',);
                                           TagsController.to.createTag(text);
                                         }
                                         TagsController.to.multiPicTags[tagKey] =
@@ -187,9 +185,9 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                         TagsController.to.searchText.value = '';
                                       }
                                     }
-                                  }),
+                                  },),
                               Padding(
-                                padding: const EdgeInsets.only(top: 8.0),
+                                padding: const EdgeInsets.only(top: 8),
                                 child: TagsList(
                                   title: TagsController.to.searchText.value !=
                                           ''
@@ -200,17 +198,17 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                       .where((tag) =>
                                           TagsController
                                               .to.multiPicTags[tag.key] ==
-                                          null)
+                                          null,)
                                       .toList()
                                       .map((e) => e.key)
                                       .toList(),
-                                  tagStyle: TagStyle.GrayOutlined,
+                                  tagStyle: TagStyle.grayOutlined,
                                   /* showEditTagModal: () =>
                                                   showEditTagModal(context), */
                                   onTap: (String tagKey) {
                                     /* if (!UserController
                                                     .to.isPremium.value) {
-                                                  Get.to(() => PremiumScreen);
+                                                  Get.to<void>(() => PremiumScreen);
                                                   return;
                                                 } */
 
@@ -225,7 +223,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                   onDoubleTap: (String tagKey) {
                                     /* if (!UserController
                                                     .to.isPremium.value) {
-                                                  Get.to(() => PremiumScreen);
+                                                  Get.to<void>(() => PremiumScreen);
                                                   return;
                                                 } */
                                     AppLogger.d('do nothing');
@@ -233,7 +231,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                                   onPanEnd: (String tagKey) {
                                     /* if (!UserController
                                                     .to.isPremium.value) {
-                                                  Get.to(() => PremiumScreen);
+                                                  Get.to<void>(() => PremiumScreen);
                                                   return;
                                                 } */
                                     AppLogger.d('do nothing');
@@ -266,15 +264,15 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                         onTap: (index) {
                           controller.setTabIndex(index);
                         },
-                        iconSize: 32.0,
+                        iconSize: 32,
                         border: const Border(
                             top: BorderSide(
-                                color: Color(0xFFE2E4E5), width: 1.0)),
+                                color: Color(0xFFE2E4E5),),),
                         items: <BottomNavigationBarItem>[
                           BottomNavigationBarItem(
                             //title: Container(),
                             icon: Image.asset(
-                                'lib/images/untaggedtabinactive.png'),
+                                'lib/images/untaggedtabinactive.png',),
                             activeIcon:
                                 Image.asset('lib/images/untaggedtabactive.png'),
                           ),
@@ -294,7 +292,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                         ],
                       )
                     : SizedBox(
-                        height: 92.0,
+                        height: 92,
                         child: BottomNavigationBar(
                           currentIndex: controller.currentTab.value,
                           onTap: (index) {
@@ -303,14 +301,14 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                           type: BottomNavigationBarType.fixed,
                           showSelectedLabels: false,
                           showUnselectedLabels: false,
-                          iconSize: 32.0,
+                          iconSize: 32,
                           items: <BottomNavigationBarItem>[
                             BottomNavigationBarItem(
                               label: 'Untagged photos',
                               icon: Image.asset(
-                                  'lib/images/untaggedtabinactive.png'),
+                                  'lib/images/untaggedtabinactive.png',),
                               activeIcon: Image.asset(
-                                  'lib/images/untaggedtabactive.png'),
+                                  'lib/images/untaggedtabactive.png',),
                             ),
                             BottomNavigationBarItem(
                               label: 'Swipe photos',
@@ -322,7 +320,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                             BottomNavigationBarItem(
                               label: 'Tagged photos',
                               icon: Image.asset(
-                                  'lib/images/taggedtabinactive.png'),
+                                  'lib/images/taggedtabinactive.png',),
                               activeIcon:
                                   Image.asset('lib/images/taggedtabactive.png'),
                             ),
@@ -335,10 +333,10 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                       onTap: (index) {
                         controller.setTabIndex(index);
                       },
-                      iconSize: 24.0,
+                      iconSize: 24,
                       border: const Border(
                           top:
-                              BorderSide(color: Color(0xFFE2E4E5), width: 1.0)),
+                              BorderSide(color: Color(0xFFE2E4E5)),),
                       items: <BottomNavigationBarItem>[
                         BottomNavigationBarItem(
                           //title: Container(),
@@ -380,7 +378,7 @@ class TabsScreenBottomNavigatioBar extends GetWidget<TabsController> {
                       ],
                     )
                   : SizedBox(
-                      height: 92.0,
+                      height: 92,
                       child: BottomNavigationBar(
                         onTap: (index) {
                           controller.setTabIndex(index);

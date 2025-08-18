@@ -14,7 +14,7 @@ const failedItem = Center(
   child: Text(
     'Failed loading',
     textAlign: TextAlign.center,
-    style: TextStyle(fontSize: 18.0),
+    style: TextStyle(fontSize: 18),
   ),
 );
 
@@ -29,7 +29,7 @@ List<String> kRequireOptions = [
   '2 minutes',
   '3 minutes',
   '4 minutes',
-  '5 minutes'
+  '5 minutes',
 ];
 
 const kPrimaryColor = Color(0xFF52CECE);
@@ -45,8 +45,6 @@ const kLightGrayColor = Color(0xffe2e4e5);
 const kGreyPlaceholder = Color(0xFFE0E0E0);
 
 const kPrimaryGradient = LinearGradient(
-  begin: Alignment.centerLeft,
-  end: Alignment.centerRight,
   colors: [
     Color(0xFF52CECE),
     Color(0xFF6BC9DB),
@@ -54,8 +52,6 @@ const kPrimaryGradient = LinearGradient(
 );
 
 const kSecondaryGradient = LinearGradient(
-  begin: Alignment.centerLeft,
-  end: Alignment.centerRight,
   colors: [
     Color(0xFFFF6666),
     Color(0xFFFF7878),
@@ -63,8 +59,6 @@ const kSecondaryGradient = LinearGradient(
 );
 
 const kCardYellowGradient = LinearGradient(
-  begin: Alignment.centerLeft,
-  end: Alignment.centerRight,
   colors: [
     Color(0xFFDFB300),
     Color(0xFFFFD93F),
@@ -72,8 +66,6 @@ const kCardYellowGradient = LinearGradient(
 );
 
 const kPinkGradient = LinearGradient(
-  begin: Alignment.centerLeft,
-  end: Alignment.centerRight,
   colors: [
     Color(0xFFEC56A1),
     Color(0xFFED74B1),
@@ -89,8 +81,8 @@ const kYellowGradient = LinearGradient(
   ],
 );
 
-var kGrayBoxDecoration = BoxDecoration(
-  borderRadius: BorderRadius.circular(19.0),
+BoxDecoration kGrayBoxDecoration = BoxDecoration(
+  borderRadius: BorderRadius.circular(19),
   border: Border.all(
     color: const Color(0xff979a9b),
   ),

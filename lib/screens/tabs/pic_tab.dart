@@ -1,26 +1,25 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-
-import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/stores/swiper_tab_controller.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/widgets/device_no_pics.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:picPics/widgets/photo_card.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/settings_screen.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/swiper_tab_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/widgets/device_no_pics.dart';
+import 'package:picpics/widgets/photo_card.dart';
 
 // ignore: must_be_immutable
 class PicTab extends GetWidget<SwiperTabController> {
-  static const id = 'pic_tab';
   PicTab({super.key});
+  static const id = 'pic_tab';
 
-  final _ = Get.put(UserController());
-  final __ = Get.put(SwiperTabController());
+  // final _ = Get.put(UserController());
+  // final __ = Get.put(SwiperTabController());
 
   CarouselSliderController carouselController = CarouselSliderController();
   ScrollPhysics scrollPhysics = const AlwaysScrollableScrollPhysics();
@@ -41,10 +40,10 @@ class PicTab extends GetWidget<SwiperTabController> {
     }
 
     return Padding(
-      padding: const EdgeInsets.all(6.0),
+      padding: const EdgeInsets.all(6),
       child: PhotoCard(
         picStore: picStore,
-        picsInThumbnails: PicSource.SWIPE,
+        picsInThumbnails: PicSource.swipe,
         picsInThumbnailIndex: index,
         // showEditTagModal: (tagkey) => showEditTagModal(tagkey),
         // showDeleteSecretModal: showDeleteSecretModal,
@@ -63,12 +62,12 @@ class PicTab extends GetWidget<SwiperTabController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 0.0),
+      padding: const EdgeInsets.only(),
       constraints: const BoxConstraints.expand(),
       decoration: BoxDecoration(
         image: DecorationImage(
           colorFilter: ColorFilter.mode(
-              Colors.black.withOpacity(0.1), BlendMode.dstATop),
+              Colors.black.withValues(alpha: 0.1), BlendMode.dstATop,),
           image: const AssetImage('lib/images/background.png'),
           fit: BoxFit.cover,
         ),
@@ -77,15 +76,15 @@ class PicTab extends GetWidget<SwiperTabController> {
         child: Column(
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Image.asset('lib/images/picpicssmallred.png'),
                   CupertinoButton(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     onPressed: () {
-                      Get.to(() => const SettingsScreen());
+                      Get.to<void>(() => const SettingsScreen());
                     },
                     child: Image.asset('lib/images/settings.png'),
                   ),
@@ -136,9 +135,8 @@ class PicTab extends GetWidget<SwiperTabController> {
                           initialPage: controller.swipeIndex.value,
                           enableInfiniteScroll: false,
                           height: double.maxFinite,
-                          viewportFraction: 1.0,
+                          viewportFraction: 1,
                           enlargeCenterPage: true,
-                          autoPlayCurve: Curves.fastOutSlowIn,
                           scrollPhysics: scrollPhysics,
                           onPageChanged: (index, reason) {
                             controller.setSwipeIndex(index);

@@ -1,16 +1,16 @@
 /* import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/show_edit_label_dialog.dart';
-import 'package:picPics/widgets/tags_list.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/stores/gallery_store.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/tabs_store.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/utils/show_edit_label_dialog.dart';
+import 'package:picpics/widgets/tags_list.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import 'package:extended_image/extended_image.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class TutsPhotoScreen extends StatefulWidget {
   static const id = 'tuts_photo_screen';
@@ -239,13 +239,9 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.black
-                                  .withOpacity(0.7)
-                                  .withOpacity(0.37)
-                                  .withOpacity(0.3),
+                                  .withValues(alpha: 0.7 * 0.37 * 0.3),
                               Colors.black
-                                  .withOpacity(1.0)
-                                  .withOpacity(0.37)
-                                  .withOpacity(0.3)
+                                  .withValues(alpha: 1.0 * 0.37 * 0.3)
                             ],
                             stops: [0, 0.40625],
                           ),
@@ -259,7 +255,7 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 5.0, vertical: 10.0),
                                 onPressed: () {
-                                  Get.back();
+                                  Get.back<void>();
                                 },
                                 child: Image.asset(
                                     'lib/images/backarrowwithdropshadow.png'),
@@ -297,13 +293,9 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.black
-                                    .withOpacity(0.7)
-                                    .withOpacity(0.37)
-                                    .withOpacity(0.3),
+                                    .withValues(alpha: 0.7 * 0.37 * 0.3),
                                 Colors.black
-                                    .withOpacity(1.0)
-                                    .withOpacity(0.37)
-                                    .withOpacity(0.3)
+                                    .withValues(alpha: 1.0 * 0.37 * 0.3)
                               ],
                               stops: [0, 0.40625],
                             ),
@@ -422,13 +414,9 @@ class _TutsPhotoScreenState extends State<TutsPhotoScreen> {
                             end: Alignment.bottomCenter,
                             colors: [
                               Colors.black
-                                  .withOpacity(0.7)
-                                  .withOpacity(0.37)
-                                  .withOpacity(0.3),
+                                  .withValues(alpha: 0.7 * 0.37 * 0.3),
                               Colors.black
-                                  .withOpacity(1.0)
-                                  .withOpacity(0.37)
-                                  .withOpacity(0.3)
+                                  .withValues(alpha: 1.0 * 0.37 * 0.3)
                             ],
                             stops: [0, 0.40625],
                           ),

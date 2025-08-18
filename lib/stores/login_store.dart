@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:picpics/stores/language_controller.dart';
 
-import 'package:picPics/stores/language_controller.dart';
-
-import 'user_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
 
 class LoginStore extends GetxController {
   static LoginStore get to => Get.find();

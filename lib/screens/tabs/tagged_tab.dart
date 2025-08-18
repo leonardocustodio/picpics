@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'package:picPics/screens/tabs/tagged/no_tagged_pics_in_device.dart';
-import 'package:picPics/screens/tabs/tagged/tagged_pics_with_search_option.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/widgets/device_no_pics.dart';
-import 'package:picPics/widgets/toggle_bar.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/screens/tabs/tagged/no_tagged_pics_in_device.dart';
+import 'package:picpics/screens/tabs/tagged/tagged_pics_with_search_option.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/widgets/device_no_pics.dart';
+import 'package:picpics/widgets/toggle_bar.dart';
 
 // ignore_for_file: must_be_immutable, unused_field
 class TaggedTab extends GetView<TaggedController> {
-  static const id = 'tagged_tab';
   TaggedTab({super.key});
+  static const id = 'tagged_tab';
 
   final _ = Get.find<UserController>();
   final tagsController = Get.find<TagsController>();
@@ -52,7 +51,7 @@ class TaggedTab extends GetView<TaggedController> {
       child: Scaffold(
         body: SafeArea(
           child: Container(
-            padding: const EdgeInsets.only(bottom: 0.0),
+            padding: const EdgeInsets.only(),
             child: Stack(
               children: <Widget>[
                 Positioned.fill(
@@ -77,7 +76,7 @@ class TaggedTab extends GetView<TaggedController> {
                       /// Device has no pics
                       ///
                       return DeviceHasNoPics(
-                          message: LangControl.to.S.value.device_has_no_pics);
+                          message: LangControl.to.S.value.device_has_no_pics,);
                     }
                   }),
                 ),
@@ -113,13 +112,12 @@ class TaggedTab extends GetView<TaggedController> {
                                 TaggedController.to.allTaggedPicIdList.isEmpty)
                             ? 0.0
                             : 1.0,
-                    curve: Curves.linear,
                     duration: Duration(
                         milliseconds:
-                            controller.searchFocusNode.hasFocus ? 0 : 300),
+                            controller.searchFocusNode.hasFocus ? 0 : 300,),
                     onEnd: () {
                       tabsController.setIsToggleBarVisible(
-                          controller.isScrolling.value ? false : true);
+                          controller.isScrolling.value ? false : true,);
                     },
                     child: Visibility(
                       visible: controller.isScrolling.value
@@ -128,12 +126,12 @@ class TaggedTab extends GetView<TaggedController> {
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
+                          padding: const EdgeInsets.only(bottom: 10),
                           child: ToggleBar(
                             titleLeft: LangControl.to.S.value.toggle_date,
                             titleRight: LangControl.to.S.value.toggle_tags,
                             activeToggle: controller.toggleIndexTagged.value,
-                            onToggle: (index) {
+                            onToggle: (int index) {
                               controller.toggleIndexTagged.value = index;
                             },
                           ),

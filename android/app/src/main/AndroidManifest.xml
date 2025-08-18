@@ -13,7 +13,7 @@
 
    <application
         tools:replace="android:label"
-        android:label="picPics"
+        android:label="picpics"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">

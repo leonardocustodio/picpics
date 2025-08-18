@@ -1,19 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class UnhideSecretModal extends StatelessWidget {
-  final Function() onPressedDelete;
-  final Function() onPressedOk;
 
   const UnhideSecretModal({
-    super.key,
-    required this.onPressedDelete,
-    required this.onPressedOk,
+    required this.onPressedDelete, required this.onPressedOk, super.key,
   });
+  final Function() onPressedDelete;
+  final Function() onPressedOk;
 
   @override
   Widget build(BuildContext context) {
@@ -22,19 +20,19 @@ class UnhideSecretModal extends StatelessWidget {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: width < 360
-          ? const EdgeInsets.symmetric(horizontal: 20.0)
-          : const EdgeInsets.symmetric(horizontal: 40.0),
+          ? const EdgeInsets.symmetric(horizontal: 20)
+          : const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
           color: Color(0xFFF1F3F5),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(14),
-            bottom: Radius.circular(19.0),
+            bottom: Radius.circular(19),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -42,7 +40,7 @@ class UnhideSecretModal extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Opacity(
-                    opacity: 0.0,
+                    opacity: 0,
                     child: CupertinoButton(
                       onPressed: () {
                         AppLogger.d('teste');
@@ -72,7 +70,7 @@ class UnhideSecretModal extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 44.0),
+                padding: const EdgeInsets.symmetric(vertical: 44),
                 child: Image.asset('lib/images/lockmodalico.png'),
               ),
               Obx(
@@ -89,33 +87,32 @@ class UnhideSecretModal extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 30.0),
+                padding: const EdgeInsets.only(top: 30),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),
                         onPressed: onPressedDelete,
                         child: Container(
-                          height: 44.0,
+                          height: 44,
                           decoration: BoxDecoration(
                             border:
-                                Border.all(color: kSecondaryColor, width: 1.0),
-                            borderRadius: BorderRadius.circular(8.0),
+                                Border.all(color: kSecondaryColor),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.no,
-                                textScaler: TextScaler.linear(1.0),
+                                textScaler: const TextScaler.linear(1),
                                 style: const TextStyle(
                                   color: kSecondaryColor,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Lato',
                                   fontStyle: FontStyle.normal,
-                                  fontSize: 16.0,
+                                  fontSize: 16,
                                 ),
                               ),
                             ),
@@ -123,22 +120,22 @@ class UnhideSecretModal extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 16.0),
+                    const SizedBox(width: 16),
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),
                         onPressed: onPressedOk,
                         child: Container(
-                          height: 44.0,
+                          height: 44,
                           decoration: BoxDecoration(
                             gradient: kPrimaryGradient,
-                            borderRadius: BorderRadius.circular(8.0),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.yes,
-                                textScaler: TextScaler.linear(1.0),
+                                textScaler: const TextScaler.linear(1),
                                 style: kLoginButtonTextStyle,
                               ),
                             ),

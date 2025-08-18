@@ -1,9 +1,7 @@
-import 'package:picPics/utils/app_logger.dart';
-
 //import 'package:flutter/cupertino.dart';
 //import 'package:flutter/services.dart';
 //import 'package:photo_manager/photo_manager.dart';
-//import 'package:picPics/stores/gallery_store.dart';
+//import 'package:picpics/stores/gallery_store.dart';
 //
 //
 //class AssetChangeNotifier {

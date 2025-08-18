@@ -7,20 +7,20 @@ import 'package:get/get.dart';
 import 'package:moor/moor.dart';
 import 'package:cryptography_flutter/cryptography.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/managers/push_notifications_manager.dart';
-import 'package:picPics/managers/widget_manager.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/utils/enum.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/managers/crypto_manager.dart';
+import 'package:picpics/managers/push_notifications_manager.dart';
+import 'package:picpics/managers/widget_manager.dart';
+import 'package:picpics/screens/premium/premium_screen.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/stores/gallery_store.dart';
+import 'package:picpics/utils/enum.dart';
 
 import '../constants.dart';
 import 'dart:async';
 import 'package:flutter/foundation.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class Debouncer {
   final int milliseconds;
@@ -133,7 +133,7 @@ class TabsController extends GetxController {
     // Added for the case of buying premium from appstore
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (UserController.to.tryBuyId != null) {
-        Get.to(() => PremiumScreen());
+        Get.to<void>(() => PremiumScreen());
       }
     });
     refreshGridPositionThirdTab();

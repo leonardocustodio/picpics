@@ -1,41 +1,38 @@
 import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class ToggleBar extends StatefulWidget {
+
+  const ToggleBar({
+    required this.titleLeft, required this.titleRight, required this.activeToggle, required this.onToggle, super.key,
+  });
   final int activeToggle;
   final Function onToggle;
 
   final String titleLeft;
   final String titleRight;
 
-  const ToggleBar({
-    super.key,
-    required this.titleLeft,
-    required this.titleRight,
-    required this.activeToggle,
-    required this.onToggle,
-  });
-
   @override
-  _ToggleBarState createState() => _ToggleBarState();
+  ToggleBarState createState() => ToggleBarState();
 }
 
-class _ToggleBarState extends State<ToggleBar> {
+class ToggleBarState extends State<ToggleBar> {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
       child: BackdropFilter(
         filter: ImageFilter.blur(
-          sigmaX: 2.0,
-          sigmaY: 2.0,
+          sigmaX: 2,
+          sigmaY: 2,
         ),
         child: Container(
-          height: 44.0,
+          height: 44,
           decoration: BoxDecoration(
-            color: const Color(0xFFF5F5F5).withOpacity(0.8),
-            borderRadius: BorderRadius.circular(22.0),
+            color: const Color(0xFFF5F5F5).withValues(alpha: 0.8),
+            borderRadius: BorderRadius.circular(22),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -52,16 +49,16 @@ class _ToggleBarState extends State<ToggleBar> {
                       curve: Curves.ease,
                       child: Container(
                         margin: const EdgeInsets.symmetric(
-                            horizontal: 4.0, vertical: 4.0),
+                            horizontal: 4, vertical: 4,),
                         decoration: BoxDecoration(
                           color: const Color(0xFFB7B7B7),
-                          borderRadius: BorderRadius.circular(19.0),
+                          borderRadius: BorderRadius.circular(19),
                         ),
                         child: Opacity(
-                          opacity: 0.0,
+                          opacity: 0,
                           child: CupertinoButton(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
+                                const EdgeInsets.symmetric(horizontal: 16),
                             onPressed: null,
                             child: Text(
                               widget.activeToggle == 0
@@ -80,7 +77,7 @@ class _ToggleBarState extends State<ToggleBar> {
                   Row(
                     children: [
                       CupertinoButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         onPressed: () {
                           AppLogger.d('Teste');
                           widget.onToggle(0);
@@ -98,7 +95,7 @@ class _ToggleBarState extends State<ToggleBar> {
                         ),
                       ),
                       CupertinoButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         onPressed: () {
                           AppLogger.d('Teste');
                           widget.onToggle(1);
@@ -118,7 +115,7 @@ class _ToggleBarState extends State<ToggleBar> {
                     ],
                   ),
                 ],
-              )
+              ),
             ],
           ),
         ),

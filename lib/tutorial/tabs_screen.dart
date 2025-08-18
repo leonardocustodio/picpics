@@ -3,37 +3,37 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/rendering.dart';
-import 'package:picPics/constants.dart';
+import 'package:picpics/constants.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/screens/pin_screen.dart';
-import 'package:picPics/screens/premium/premium_screen.dart';
-import 'package:picPics/managers/push_notifications_manager.dart';
-import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
-import 'package:picPics/screens/tabs/pic_tab.dart';
-import 'package:picPics/screens/tabs/tagged_tab.dart';
-import 'package:picPics/screens/tabs/untagged_tab.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/show_edit_label_dialog.dart';
-import 'package:picPics/widgets/delete_secret_modal.dart';
-import 'package:picPics/widgets/photo_card.dart';
-import 'package:picPics/widgets/tags_list.dart';
-import 'package:picPics/widgets/unhide_secret_modal.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/screens/pin_screen.dart';
+import 'package:picpics/screens/premium/premium_screen.dart';
+import 'package:picpics/managers/push_notifications_manager.dart';
+import 'package:picpics/screens/settings_screen.dart';
+import 'package:picpics/stores/app_store.dart';
+import 'package:picpics/stores/gallery_store.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/tabs_store.dart';
+import 'package:picpics/screens/tabs/pic_tab.dart';
+import 'package:picpics/screens/tabs/tagged_tab.dart';
+import 'package:picpics/screens/tabs/untagged_tab.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/utils/show_edit_label_dialog.dart';
+import 'package:picpics/widgets/delete_secret_modal.dart';
+import 'package:picpics/widgets/photo_card.dart';
+import 'package:picpics/widgets/tags_list.dart';
+import 'package:picpics/widgets/unhide_secret_modal.dart';
 
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:picPics/managers/database_manager.dart';
+import 'package:picpics/managers/database_manager.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/throttle.dart';
+import 'package:picpics/throttle.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class TutsTabsScreen extends StatefulWidget {
   static const id = 'tuts_tabs_screen';
@@ -105,7 +105,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
   Future<void> showDeleteSecretModal(PicStore picStore) async {
     if (appStore.secretPhotos != true) {
       appStore.popPinScreen = PopPinScreenTo.TabsScreen;
-      Get.to(() =>  PinScreen());
+      Get.to<void>(() =>  PinScreen());
       return;
     }
 
@@ -113,7 +113,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
       int freePrivatePics = await appStore.freePrivatePics;
       if (appStore.totalPrivatePics >= freePrivatePics &&
           picStore.isPrivate == false) {
-        Get.to(() =>  PremiumScreen());
+        Get.to<void>(() =>  PremiumScreen());
         return;
       }
     }
@@ -291,7 +291,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
     // Added for the case of buying premium from appstore
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (appStore.tryBuyId != null) {
-        Get.to(() =>  PremiumScreen());
+        Get.to<void>(() =>  PremiumScreen());
       }
     });
   }
@@ -387,7 +387,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                     CupertinoButton(
                                       onPressed: () {
                                         // if (!appStore.isPremium) {
-                                        //   Get.to(() =>   PremiumScreen());
+                                        //   Get.to<void>(() =>   PremiumScreen());
                                         //   return;
                                         // }
 
@@ -426,7 +426,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                             controller: expandableController,
                             expanded: Container(
                               padding: const EdgeInsets.all(24.0),
-                              color: Color(0xFFEFEFF4).withOpacity(0.94),
+                              color: Color(0xFFEFEFF4).withValues(alpha: 0.94),
                               child: SafeArea(
                                 bottom: true,
                                 child: Column(
@@ -443,14 +443,14 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                                 context, galleryStore, true),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
-                                          //   Get.to(() =>   PremiumScreen());
+                                          //   Get.to<void>(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           AppLogger.d('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
-                                          //   Get.to(() =>   PremiumScreen());
+                                          //   Get.to<void>(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           galleryStore.removeFromMultiPicTags(
@@ -459,7 +459,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
-                                          //  Get.to(() =>   PremiumScreen());
+                                          //  Get.to<void>(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           AppLogger.d('do nothing');
@@ -469,7 +469,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         },
                                         onSubmitted: (text) {
                                           // if (!appStore.isPremium) {
-                                          //   Get.to(() =>   PremiumScreen());
+                                          //   Get.to<void>(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           if (text != '') {
@@ -504,7 +504,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                                 context, galleryStore, true),
                                         onTap: (tagId, tagName) {
                                           // if (!appStore.isPremium) {
-                                          //  Get.to(() =>   PremiumScreen());
+                                          //  Get.to<void>(() =>   PremiumScreen());
                                           //   return;
                                           // }
 
@@ -514,14 +514,14 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                         },
                                         onDoubleTap: () {
                                           // if (!appStore.isPremium) {
-                                          //   Get.to(() =>   PremiumScreen());
+                                          //   Get.to<void>(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           AppLogger.d('do nothing');
                                         },
                                         onPanEnd: () {
                                           // if (!appStore.isPremium) {
-                                          //   Get.to(() =>   PremiumScreen());
+                                          //   Get.to<void>(() =>   PremiumScreen());
                                           //   return;
                                           // }
                                           AppLogger.d('do nothing');
@@ -739,7 +739,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8.0),
                                     onPressed: () {
-                                      Get.to(() =>   SettingsScreen());
+                                      Get.to<void>(() =>   SettingsScreen());
                                     },
                                     child:
                                         Image.asset('lib/images/settings.png'),
@@ -851,7 +851,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
                     tabsStore.setModalCard(false);
                   },
                   child: Container(
-                    color: Colors.black.withOpacity(0.4),
+                    color: Colors.black.withValues(alpha: 0.4),
                     child: SafeArea(
                       child: GestureDetector(
                         onTap: () {
@@ -884,7 +884,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
         Observer(builder: (_) {
           if (tabsStore.isLoading) {
             return Material(
-              color: Colors.black.withOpacity(0.7),
+              color: Colors.black.withValues(alpha: 0.7),
               child: Center(
                 child: SpinKitChasingDots(
                   color: kPrimaryColor,
@@ -900,7 +900,7 @@ class _TutsTabsScreenState extends State<TutsTabsScreen>
             Analytics.sendTutorialBegin();
 
             return Container(
-              color: Colors.black.withOpacity(0.6),
+              color: Colors.black.withValues(alpha: 0.6),
               child: Material(
                 color: Colors.transparent,
                 child: Center(

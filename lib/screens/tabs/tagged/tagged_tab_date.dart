@@ -1,14 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/stores/blur_hash_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/utils/refresh_everything.dart';
-import 'package:picPics/widgets/date_header.dart';
-import 'package:picPics/widgets/photo_widget.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/photo_screen.dart';
+import 'package:picpics/stores/blur_hash_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/utils/refresh_everything.dart';
+import 'package:picpics/widgets/date_header.dart';
+import 'package:picpics/widgets/photo_widget.dart';
 
 class TaggedTabDate extends GetWidget<TaggedController> {
   TaggedTabDate({
@@ -27,9 +27,6 @@ class TaggedTabDate extends GetWidget<TaggedController> {
           addRepaintBoundaries: false,
           primary: false,
           controller: scrollController,
-          shrinkWrap: false,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
           itemCount: controller.allTaggedPicDateWiseList.length,
           staggeredTileBuilder: (int index) {
             if (controller.allTaggedPicDateWiseList[index] is DateTime) {
@@ -72,16 +69,16 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                         while (i < controller.allTaggedPicDateWiseList.length &&
                             controller.allTaggedPicDateWiseList[i] is String) {
                           tabsController.selectedMultiBarPics[
-                              controller.allTaggedPicDateWiseList[i]] = true;
+                              controller.allTaggedPicDateWiseList[i] as String] = true;
                           i++;
                         }
                       }
                     }
                   },
                   child: DateHeaderWidget(
-                      date: controller.allTaggedPicDateWiseList[index],
+                      date: controller.allTaggedPicDateWiseList[index] as DateTime,
                       isSelected: isSelected,
-                      isMonth: true),
+                      isMonth: true,),
                 );
               }
 
@@ -102,19 +99,19 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                       if (tabsController.multiPicBar.value) {
                         if (tabsController.selectedMultiBarPics[picId] ==
                             null) {
-                          tabsController.selectedMultiBarPics[picId] = true;
+                          tabsController.selectedMultiBarPics[picId as String] = true;
                         } else {
                           tabsController.selectedMultiBarPics.remove(picId);
                         }
                         return;
                       }
 
-                      var result = await Get.to(() => PhotoScreen(
-                          picId: picId,
+                      final result = await Get.to<dynamic>(() => PhotoScreen(
+                          picId: picId as String,
                           picIdList:
-                              controller.allTaggedPicIdList.keys.toList()));
+                              controller.allTaggedPicIdList.keys.toList(),),);
                       if (null == result) {
-                        await refresh_everything();
+                        await refreshEverything();
                       }
                     },
                     child: GestureDetector(
@@ -122,7 +119,7 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                         if (tabsController.multiPicBar.value == false) {
                           tabsController.setMultiPicBar(true);
                         }
-                        tabsController.selectedMultiBarPics[picId] = true;
+                        tabsController.selectedMultiBarPics[picId as String] = true;
                       },
                       child: Stack(
                         children: [
@@ -147,22 +144,22 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                             Container(
                               constraints: const BoxConstraints.expand(),
                               decoration: BoxDecoration(
-                                color: kSecondaryColor.withOpacity(0.3),
+                                color: kSecondaryColor.withValues(alpha: 0.3),
                                 border: Border.all(
                                   color: kSecondaryColor,
-                                  width: 2.0,
+                                  width: 2,
                                 ),
                               ),
                             ),
                             Positioned(
-                              left: 8.0,
-                              top: 6.0,
+                              left: 8,
+                              top: 6,
                               child: Container(
                                 height: 20,
                                 width: 20,
                                 decoration: BoxDecoration(
                                   gradient: kSecondaryGradient,
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 child:
                                     Image.asset('lib/images/checkwhiteico.png'),
@@ -170,28 +167,27 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                             ),
                             if (picStore?.isPrivate.value ?? false)
                               Positioned(
-                                right: 8.0,
-                                top: 6.0,
+                                right: 8,
+                                top: 6,
                                 child: Container(
                                   height: 20,
                                   width: 20,
-                                  padding: const EdgeInsets.only(bottom: 2.0),
+                                  padding: const EdgeInsets.only(bottom: 2),
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderRadius: BorderRadius.circular(10),
                                     gradient: const LinearGradient(
                                       colors: [
                                         Color(0xffffcc00),
-                                        Color(0xffffe98f)
+                                        Color(0xffffe98f),
                                       ],
                                       stops: [0.2291666716337204, 1],
-                                      begin: Alignment(-1.0, 0.0),
-                                      end: Alignment(1.0, -0.0),
+                                      end: Alignment(1, -0),
                                       // angle: 0,
                                       // scale: undefined,
                                     ),
                                   ),
                                   child: Image.asset(
-                                      'lib/images/smallwhitelock.png'),
+                                      'lib/images/smallwhitelock.png',),
                                 ),
                               ),
                           ],
@@ -202,7 +198,7 @@ class TaggedTabDate extends GetWidget<TaggedController> {
                 ),
               );
             });
-          });
-    });
+          },);
+    },);
   }
 }

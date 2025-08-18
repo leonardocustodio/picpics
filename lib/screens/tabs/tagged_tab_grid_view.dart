@@ -6,26 +6,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/screens/settings_screen.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/screens/photo_screen.dart';
+import 'package:picpics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import 'package:picPics/screens/tabs/tagged/select_all_widget.dart';
-import 'package:picPics/stores/blur_hash_controller.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/functions.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/refresh_everything.dart';
-import 'package:picPics/widgets/device_no_pics.dart';
-import 'package:picPics/widgets/tags_list.dart';
+import 'package:picpics/screens/tabs/tagged/select_all_widget.dart';
+import 'package:picpics/stores/blur_hash_controller.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/utils/functions.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/utils/refresh_everything.dart';
+import 'package:picpics/widgets/device_no_pics.dart';
+import 'package:picpics/widgets/tags_list.dart';
 import '../../asset_entity_image_provider.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 // ignore: must_be_immutable
 class TaggedTabGridView extends GetWidget<TaggedController> {
@@ -159,7 +159,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                       }
                       var list = controller.taggedPicId[tagKey]?.keys.toList();
                       if (list != null && list.isNotEmpty) {
-                        Get.to(
+                        Get.to<void>(
                             () => PhotoScreen(picId: picId, picIdList: list));
                       }
                     },
@@ -177,7 +177,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                               Container(
                                 constraints: BoxConstraints.expand(),
                                 decoration: BoxDecoration(
-                                  color: kSecondaryColor.withOpacity(0.3),
+                                  color: kSecondaryColor.withValues(alpha: 0.3),
                                   border: Border.all(
                                     color: kSecondaryColor,
                                     width: 2.0,
@@ -290,7 +290,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                   CupertinoButton(
                                     onPressed: () async {
                                       // if (!UserController.to.isPremium) {
-                                      //   Get.to(() =>   PremiumScreen());
+                                      //   Get.to<void>(() =>   PremiumScreen());
                                       //   return;
                                       // }
 
@@ -305,7 +305,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       controller.setMultiPicBar(false);
                                       await TagsController.to
                                           .addTagsToSelectedPics();
-                                      await refresh_everything();
+                                      await refreshEverything();
                                     },
                                     child: Container(
                                       width: 80.0,
@@ -333,7 +333,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                             padding: const EdgeInsets.all(24.0),
 
                             /// TODO: Tags List Not Showing
-                            color: Color(0xFFEFEFF4).withOpacity(0.94),
+                            color: Color(0xFFEFEFF4).withValues(alpha: 0.94),
                             child: SafeArea(
                               bottom: true,
                               child: Column(
@@ -351,14 +351,14 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                                 }, */
                                       onTap: (String tagKey) {
                                         ///  if (!UserController.to.isPremium) {
-                                        ///    Get.to(() =>   PremiumScreen);
+                                        ///    Get.to<void>(() =>   PremiumScreen);
                                         ///    return;
                                         ///  }
                                         AppLogger.d('do nothing');
                                       },
                                       onPanEnd: (String tagKey) {
                                         // if (!UserController.to.isPremium) {
-                                        //   Get.to(() =>   PremiumScreen);
+                                        //   Get.to<void>(() =>   PremiumScreen);
                                         //   return;
                                         // }
                                         TagsController.to.multiPicTags
@@ -369,7 +369,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       },
                                       onDoubleTap: (String tagKey) {
                                         // if (!UserController.to.isPremium) {
-                                        //   Get.to(() =>   PremiumScreen);
+                                        //   Get.to<void>(() =>   PremiumScreen);
                                         //   return;
                                         // }
                                         AppLogger.d('do nothing');
@@ -383,7 +383,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       },
                                       onSubmitted: (text) {
                                         // if (!UserController.to.isPremium) {
-                                        //   Get.to(() =>   PremiumScreen);
+                                        //   Get.to<void>(() =>   PremiumScreen);
                                         //   return;
                                         // }
                                         if (text != '') {
@@ -435,7 +435,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       onTap: (String tagKey) {
                                         /* if (!UserController
                                                       .to.isPremium.value) {
-                                                    Get.to(() => PremiumScreen);
+                                                    Get.to<void>(() => PremiumScreen);
                                                     return;
                                                   } */
 
@@ -451,7 +451,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       onDoubleTap: (String tagKey) {
                                         /* if (!UserController
                                                       .to.isPremium.value) {
-                                                    Get.to(() => PremiumScreen);
+                                                    Get.to<void>(() => PremiumScreen);
                                                     return;
                                                   } */
                                         AppLogger.d('do nothing');
@@ -459,7 +459,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                                       onPanEnd: (String tagKey) {
                                         /* if (!UserController
                                                       .to.isPremium.value) {
-                                                    Get.to(() => PremiumScreen);
+                                                    Get.to<void>(() => PremiumScreen);
                                                     return;
                                                   } */
                                         AppLogger.d('do nothing');
@@ -551,7 +551,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
               CupertinoButton(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 onPressed: () {
-                  Get.to(() => SettingsScreen());
+                  Get.to<void>(() => SettingsScreen());
                 },
                 child: Image.asset('lib/images/settings.png'),
               ),
@@ -559,12 +559,12 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
             leading: GestureDetector(
               onTap: () async {
                 if (await controller.shouldPopOut()) {
-                  Get.back();
+                  Get.back<void>();
                 }
               },
               child: Icon(
                 Icons.arrow_back_ios_rounded,
-                color: Colors.black.withOpacity(.5),
+                color: Colors.black.withValues(alpha: .5),
                 size: 24,
               ),
             ),
@@ -572,7 +572,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
             title: Text(
               ('${TagsController.to.allTags[tagKey]?.value.title ?? ''} (${controller.taggedPicId[tagKey]?.keys.length ?? 0})'),
               style: TextStyle(
-                color: Colors.black.withOpacity(.5),
+                color: Colors.black.withValues(alpha: .5),
               ),
             ),
           ),

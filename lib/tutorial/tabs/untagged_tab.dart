@@ -2,19 +2,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/custom_scroll_physics.dart';
-import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/screens/settings_screen.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/custom_scroll_physics.dart';
+import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/screens/settings_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
-import 'package:picPics/widgets/device_no_pics.dart';
-import 'package:picPics/widgets/toggle_bar.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/stores/gallery_store.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/tabs_store.dart';
+import 'package:picpics/widgets/device_no_pics.dart';
+import 'package:picpics/widgets/toggle_bar.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class TutsUntaggedTab extends StatefulWidget {
   static const id = 'tuts_untagged_tab';
@@ -119,7 +119,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                                 Container(
                                   constraints: BoxConstraints.expand(),
                                   decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
+                                    color: kSecondaryColor.withValues(alpha: 0.3),
                                     border: Border.all(
                                       color: kSecondaryColor,
                                       width: 2.0,
@@ -298,7 +298,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
 //                                     Container(
 //                                       constraints: BoxConstraints.expand(),
 //                                       decoration: BoxDecoration(
-//                                         color: kSecondaryColor.withOpacity(0.3),
+//                                         color: kSecondaryColor.withValues(alpha: 0.3),
 //                                         border: Border.all(
 //                                           color: kSecondaryColor,
 //                                           width: 2.0,
@@ -706,7 +706,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                                 Container(
                                   constraints: BoxConstraints.expand(),
                                   decoration: BoxDecoration(
-                                    color: kSecondaryColor.withOpacity(0.3),
+                                    color: kSecondaryColor.withValues(alpha: 0.3),
                                     border: Border.all(
                                       color: kSecondaryColor,
                                       width: 2.0,
@@ -807,7 +807,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Get.to(() =>  SettingsScreen());
+                          Get.to<void>(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -832,7 +832,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Get.to(() =>  SettingsScreen());
+                          Get.to<void>(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),
@@ -866,7 +866,7 @@ class _TutsUntaggedTabState extends State<TutsUntaggedTab> {
                       CupertinoButton(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
                         onPressed: () {
-                          Get.to(() =>  SettingsScreen());
+                          Get.to<void>(() =>  SettingsScreen());
                         },
                         child: Image.asset('lib/images/settings.png'),
                       ),

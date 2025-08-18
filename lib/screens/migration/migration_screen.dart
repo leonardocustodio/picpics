@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/constants.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/stores/migration_store.dart';
-import 'package:picPics/widgets/color_animated_background.dart';
+import 'package:picpics/stores/migration_store.dart';
+import 'package:picpics/widgets/color_animated_background.dart';
 import 'package:moor_db_viewer/moor_db_viewer.dart';
 
 /* 
@@ -26,7 +26,7 @@ class MigrationScreen extends GetWidget<MigrationStore> {
     /* 
     Navigator.of(context)
         .push(MaterialPageRoute(builder: (context) => MoorDbViewer(db))); */
-    Get.to(() => MoorDbViewer(db));
+    Get.to<void>(() => MoorDbViewer(db));
   }
 
 /*   @override

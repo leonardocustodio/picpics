@@ -3,23 +3,11 @@ import 'dart:typed_data';
 
 import 'package:image/image.dart';
 
-import 'encoding.dart';
-import 'exception.dart';
-import 'foundation.dart';
+import 'package:picpics/third_party_lib/src/encoding.dart';
+import 'package:picpics/third_party_lib/src/exception.dart';
+import 'package:picpics/third_party_lib/src/foundation.dart';
 
 class BlurHash {
-  /// The actual BlurHash string.
-  final String hash;
-
-  /// The decoded components of the BlurHash.
-  /// This is mostly useful for e.g. transposing a BlurHash.
-  final List<List<ColorTriplet>> components;
-
-  /// The number of horizontal BlurHash components.
-  final int numCompX;
-
-  /// The number of vertical BlurHash components.
-  final int numCompY;
 
   /// Private constructor used in the actual factory constructors.
   /// See [BlurHash.decode] and [BlurHash.encode].
@@ -115,7 +103,7 @@ class BlurHash {
     for (var y = 0; y < numCompY; ++y) {
       for (var x = 0; x < numCompX; ++x) {
         final normalisation = (x == 0 && y == 0) ? 1.0 : 2.0;
-        basisFunc(int i, int j) {
+        double basisFunc(int i, int j) {
           return normalisation *
               cos((pi * x * i) / image.width) *
               cos((pi * y * j) / image.height);
@@ -145,9 +133,21 @@ class BlurHash {
     );
 
     return BlurHash.components([
-      [color]
+      [color],
     ]);
   }
+  /// The actual BlurHash string.
+  final String hash;
+
+  /// The decoded components of the BlurHash.
+  /// This is mostly useful for e.g. transposing a BlurHash.
+  final List<List<ColorTriplet>> components;
+
+  /// The number of horizontal BlurHash components.
+  final int numCompX;
+
+  /// The number of vertical BlurHash components.
+  final int numCompY;
 
   /// Returns the actual [BlurHash] image with the given [width] and [height].
   ///
@@ -226,7 +226,7 @@ String _encodeFactors(
 
   var maxVal = 1.0;
   if (ac.isNotEmpty) {
-    maxElem(ColorTriplet c) => max(c.r.abs(), max(c.g.abs(), c.b.abs()));
+    double maxElem(ColorTriplet c) => max(c.r.abs(), max(c.g.abs(), c.b.abs()));
     final actualMax = ac.map(maxElem).reduce(max);
     final quantisedMax = max(0, min(82, (actualMax * 166.0 - 0.5).floor()));
     maxVal = (quantisedMax + 1.0) / 166.0;

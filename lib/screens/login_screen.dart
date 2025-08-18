@@ -1,21 +1,20 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_swiper_view/flutter_swiper_view.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:flutter/cupertino.dart';
-
-import 'package:picPics/screens/tabs_screen.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/login_store.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/widgets/color_animated_background.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/tabs_screen.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/login_store.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/widgets/color_animated_background.dart';
 
 class LoginScreen extends StatefulWidget {
-  static const id = 'login_screen';
 
   const LoginScreen({super.key});
+  static const id = 'login_screen';
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -27,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final loginStore = LoginStore();
-    var height = MediaQuery.of(context).size.height;
+    final height = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -35,15 +34,13 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Stack(
           children: [
             const ColorAnimatedBackground(
-              moveByX: 30.0,
-              moveByY: 20.0,
               blurFilter: false,
             ),
             SafeArea(
               child: Obx(() {
                 return Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0, top: 24.0),
+                    padding: const EdgeInsets.only(bottom: 16, top: 24),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: <Widget>[
@@ -56,7 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (index == 0) {
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 26.0,
+                                    horizontal: 26,
                                   ),
                                   child: Column(
                                     crossAxisAlignment:
@@ -66,14 +63,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                         flex: 2,
                                       ),
                                       Image.asset(
-                                          'lib/images/picpics_small.png'),
+                                          'lib/images/picpics_small.png',),
                                       const Spacer(
-                                        flex: 1,
+                                        
                                       ),
                                       Obx(
                                         () => Text(
                                           LangControl.to.S.value.welcome,
-                                          textScaler: TextScaler.linear(1.0),
+                                          textScaler: const TextScaler.linear(1),
                                           style: kLoginDescriptionTextStyle,
                                         ),
                                       ),
@@ -81,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         () => Text(
                                           LangControl.to.S.value
                                               .photos_always_organized,
-                                          textScaler: TextScaler.linear(1.0),
+                                          textScaler: const TextScaler.linear(1),
                                           style: kLoginDescriptionTextStyle,
                                         ),
                                       ),
@@ -96,11 +93,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               return Column(
                                 children: <Widget>[
                                   const Spacer(
-                                    flex: 1,
+                                    
                                   ),
                                   Container(
                                     constraints: BoxConstraints(
-                                        maxHeight: height / 3 - 20),
+                                        maxHeight: height / 3 - 20,),
                                     child: loginStore.getImage(index),
                                   ),
                                   const Spacer(
@@ -108,15 +105,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                      left: 16.0,
+                                      left: 16,
                                       right: 16,
-                                      bottom: 48.0,
+                                      bottom: 48,
                                     ),
                                     child: Text(
                                       loginStore.getDescription(
-                                              context, index) ??
+                                              context, index,) ??
                                           '',
-                                      textScaler: TextScaler.linear(1.0),
+                                      textScaler: const TextScaler.linear(1),
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
                                         fontFamily: 'Lato',
@@ -132,30 +129,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                             itemCount: loginStore.totalSlides,
                             controller: swiperController,
-                            onIndexChanged: (index) {
-                              loginStore.setSlideIndex(index);
-                            },
+                            onIndexChanged: loginStore.setSlideIndex,
                             pagination: SwiperCustomPagination(
                               builder: (BuildContext context,
-                                  SwiperPluginConfig? config) {
-                                var navIndicators = <Widget>[];
+                                  SwiperPluginConfig? config,) {
+                                final navIndicators = <Widget>[];
 
                                 for (var x = 0;
                                     x < loginStore.totalSlides;
                                     x++) {
                                   navIndicators.add(
                                     Container(
-                                      height: 8.0,
-                                      width: 8.0,
+                                      height: 8,
+                                      width: 8,
                                       margin: const EdgeInsets.symmetric(
-                                        horizontal: 7.0,
+                                        horizontal: 7,
                                       ),
                                       decoration: BoxDecoration(
                                         color: config?.activeIndex == x
                                             ? kWhiteColor
                                             : kGrayColor,
                                         borderRadius:
-                                            BorderRadius.circular(4.0),
+                                            BorderRadius.circular(4),
                                       ),
                                     ),
                                   );
@@ -172,28 +167,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 64.0),
+                        const SizedBox(height: 64),
                         CupertinoButton(
                           onPressed: () async {
                             if (loginStore.slideIndex.value ==
                                 loginStore.totalSlides - 1) {
                               await UserController.to
                                   .setTutorialCompleted(true);
-                              await Get.offNamedUntil(
-                                  TabsScreen.id, (route) => false);
+                              await Get.offNamedUntil<void>(
+                                  TabsScreen.id, (route) => false,);
                               return;
                             }
                             AppLogger.d('next');
-                            await swiperController.next(animation: true);
+                            await swiperController.next();
                           },
                           padding: const EdgeInsets.all(0),
                           child: Container(
-                            height: 66.0,
+                            height: 66,
                             margin:
-                                const EdgeInsets.symmetric(horizontal: 16.0),
+                                const EdgeInsets.symmetric(horizontal: 16),
                             decoration: BoxDecoration(
                               gradient: kPrimaryGradient,
-                              borderRadius: BorderRadius.circular(8.0),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             alignment: Alignment.center,
                             child: Obx(
@@ -202,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         loginStore.totalSlides - 1
                                     ? LangControl.to.S.value.start.toUpperCase()
                                     : LangControl.to.S.value.next.toUpperCase(),
-                                textScaler: TextScaler.linear(1.0),
+                                textScaler: const TextScaler.linear(1),
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(
                                   fontFamily: 'Lato',

@@ -1,5 +1,5 @@
 /* import 'dart:math';
-import 'package:picPics/third_party_lib/src/foundation.dart';
+import 'package:picpics/third_party_lib/src/foundation.dart';
 
 import 'blurhash.dart';
 

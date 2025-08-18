@@ -3,23 +3,23 @@ import 'package:date_utils/date_utils.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/model/tag_model.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:picPics/stores/tagged_date_pics_store.dart';
-import 'package:picPics/stores/tagged_grid_pic_store.dart';
-import 'package:picPics/stores/tagged_pics_store.dart';
-import 'package:picPics/stores/untagged_grid_pic_store.dart';
-import 'package:picPics/stores/untagged_pics_store.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/utils/helpers.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/managers/crypto_manager.dart';
+import 'package:picpics/model/tag_model.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/tagged_date_pics_store.dart';
+import 'package:picpics/stores/tagged_grid_pic_store.dart';
+import 'package:picpics/stores/tagged_pics_store.dart';
+import 'package:picpics/stores/untagged_grid_pic_store.dart';
+import 'package:picpics/stores/untagged_pics_store.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/helpers.dart';
 
 import 'tags_controller.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 // ignore_for_file: invalid_use_of_protected_member
 class GalleryStore extends GetxController {

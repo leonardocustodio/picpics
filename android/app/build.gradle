@@ -51,7 +51,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "br.com.inovatso.picPics"
+        applicationId "app.picpics.mobile"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode flutterVersionCode.toInteger()

@@ -1,17 +1,18 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/stores/percentage_dialog_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/utils/helpers.dart';
-import '../constants.dart';
-import 'package:picPics/model/tag_model.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/model/tag_model.dart';
+import 'package:picpics/stores/percentage_dialog_controller.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/helpers.dart';
 
 class TagsController extends GetxController {
   /// tagKey: {
@@ -73,15 +74,15 @@ class TagsController extends GetxController {
   Future<List<TagModel>> tagsSuggestionsCalculate() async {
     //var userBox = Hive.box('user');
     //var tagsBox = Hive.box('tags');
-    var tagsList = await _database.getAllLabel();
+    final tagsList = await _database.getAllLabel();
     final getUser = await _database.getSingleMoorUser();
 
     //List<String> multiPicTags = multiPicTagKeys.toList();
-    var suggestionTags = <String>[];
-    var text = searchText.trim();
+    final suggestionTags = <String>[];
+    final text = searchText.trim();
 
     if (text.trim() == '') {
-      for (var recent in getUser!.recentTags) {
+      for (final recent in getUser!.recentTags) {
         // AppLogger.d('Recent Tag: $recent');
         if (multiPicTags[recent] != null ||
             (PrivatePhotosController.to.showPrivate.value == false &&
@@ -92,8 +93,8 @@ class TagsController extends GetxController {
       }
 
       if (suggestionTags.length < kMaxNumOfSuggestions) {
-        for (var tag in tagsList) {
-          var tagKey = tag.key;
+        for (final tag in tagsList) {
+          final tagKey = tag.key;
           if (suggestionTags.length == kMaxNumOfSuggestions) {
             break;
           }
@@ -109,9 +110,9 @@ class TagsController extends GetxController {
         }
       }
     } else {
-      var listOfLetters = text.toLowerCase().split('');
-      for (var tag in tagsList) {
-        var tagKey = tag.key;
+      final listOfLetters = text.toLowerCase().split('');
+      for (final tag in tagsList) {
+        final tagKey = tag.key;
         if (PrivatePhotosController.to.showPrivate.value == false &&
             tagKey == kSecretTagKey) {
           continue;
@@ -120,19 +121,19 @@ class TagsController extends GetxController {
           continue;
         }
 
-        var tagsStoreValue = TagsController.to.allTags[tagKey]?.value;
+        final tagsStoreValue = TagsController.to.allTags[tagKey]?.value;
         if (tagsStoreValue == null) {
           continue;
         }
         AppLogger.d(listOfLetters.toString());
         AppLogger.d(suggestionTags
             .map((e) => TagsController.to.allTags[e]!.value.title)
-            .toString());
+            .toString(),);
         AppLogger.d('------');
         doCustomisedSearching(tagsStoreValue, listOfLetters, (matched) {
           if (matched) {
             AppLogger.d(
-                'searching: ${TagsController.to.allTags[tagKey]!.value.title}');
+                'searching: ${TagsController.to.allTags[tagKey]!.value.title}',);
             suggestionTags.add(tagKey);
           }
         });
@@ -157,8 +158,8 @@ class TagsController extends GetxController {
     /* List<TagsStore> suggestions = TagsController.to.allTags
         .where((element) => suggestionTags.contains(element.id))
         .toList(); */
-    var suggestions = <TagModel>[];
-    for (var suggestedTag in suggestionTags) {
+    final suggestions = <TagModel>[];
+    for (final suggestedTag in suggestionTags) {
       if (TagsController.to.allTags[suggestedTag] != null) {
         suggestions.add(TagsController.to.allTags[suggestedTag]!.value);
       }
@@ -200,7 +201,7 @@ class TagsController extends GetxController {
     });
 
     tempTags.sort((a, b) {
-      var count = b.count.compareTo(a.count);
+      final count = b.count.compareTo(a.count);
       if (count == 0) {
         return b.title.toLowerCase().compareTo(a.title.toLowerCase());
       }
@@ -211,30 +212,30 @@ class TagsController extends GetxController {
       tempTags = tempTags.sublist(0, maxTagsLength);
     }
     mostUsedTags.clear();
-    for (var tag in tempTags) {
+    for (final tag in tempTags) {
       mostUsedTags[tag.key] = tag.title;
     }
   }
 
   /// load last week used tags into `lastWeekUsedTags`
   void loadLastWeekUsedTags({int maxTagsLength = 12}) {
-    var now = DateTime.now();
-    var sevenDaysBack =
-        DateTime(now.year, now.month, (now.day - now.weekday - 1));
+    final now = DateTime.now();
+    final sevenDaysBack =
+        DateTime(now.year, now.month, now.day - now.weekday - 1);
     _doSortingOfWeeksAndMonth(lastMonthUsedTags, sevenDaysBack, maxTagsLength);
   }
 
   /// load last month used tags into `lastMonthUsedTags`
   void loadLastMonthUsedTags({int maxTagsLength = 12}) {
-    var now = DateTime.now();
-    var monthBack = DateTime(now.year, now.month, 1);
+    final now = DateTime.now();
+    final monthBack = DateTime(now.year, now.month);
     _doSortingOfWeeksAndMonth(lastMonthUsedTags, monthBack, maxTagsLength);
   }
 
   void _doSortingOfWeeksAndMonth(
-      RxMap<String, String> map, DateTime back, int maxTagsLength) {
+      RxMap<String, String> map, DateTime back, int maxTagsLength,) {
     var tempTags = <TagModel>[];
-    for (var tag in allTags.values) {
+    for (final tag in allTags.values) {
       if (tag.value.time.isBefore(back)) {
         tempTags.add(tag.value);
       }
@@ -247,7 +248,7 @@ class TagsController extends GetxController {
       }
     }
     map.clear();
-    for (var tag in tempTags) {
+    for (final tag in tempTags) {
       map[tag.key] = tag.title;
     }
   }
@@ -256,7 +257,7 @@ class TagsController extends GetxController {
     //var tagsBox = Hive.box('tags');
     /*// AppLogger.d(tagsBox.keys); */
 
-    var tagKey = Helpers.encryptTag(tagName);
+    final tagKey = Helpers.encryptTag(tagName);
     // AppLogger.d('Adding tag: $tagName');
 
     final lab = await _database.getLabelByLabelKey(tagKey);
@@ -272,10 +273,10 @@ class TagsController extends GetxController {
         title: tagName,
         photoId: <String, String>{},
         counter: 1,
-        lastUsedAt: DateTime.now()));
+        lastUsedAt: DateTime.now(),),);
     //tagsBox.put(tagKey, Tag(tagName, []));
 
-    var tagModel =
+    final tagModel =
         TagModel(key: tagKey, title: tagName, count: 1, time: DateTime.now());
     addTag(tagModel);
     addRecentTag(tagKey);
@@ -289,10 +290,10 @@ class TagsController extends GetxController {
 
   /// load all the tags async
   Future<void> loadAllTags() async {
-    var tagsBox = await _database.getAllLabel();
+    final tagsBox = await _database.getAllLabel();
 
-    for (var tag in tagsBox) {
-      var tagModel = TagModel(
+    for (final tag in tagsBox) {
+      final tagModel = TagModel(
         key: tag.key,
         title: tag.title,
         count: tag.counter,
@@ -303,7 +304,7 @@ class TagsController extends GetxController {
 
     if (allTags[kSecretTagKey] == null) {
       AppLogger.d('Creating secret tag in db!');
-      var createSecretLabel = Label(
+      final createSecretLabel = Label(
         key: kSecretTagKey,
         title: 'Secret Pics',
         photoId: <String, String>{},
@@ -311,7 +312,7 @@ class TagsController extends GetxController {
         lastUsedAt: DateTime.now(),
       );
 
-      var tagModel = TagModel(
+      final tagModel = TagModel(
         key: kSecretTagKey,
         title: 'Secret Pics',
         count: 1,
@@ -348,12 +349,12 @@ class TagsController extends GetxController {
 
   Future<void> removeTagsFromPicsMainFunction(
       {required Map<String, Map<String, String>> picIdMapToTagKey,
-      required Map<String, Map<String, String>> tagKeyMapToPicId}) async {
+      required Map<String, Map<String, String>> tagKeyMapToPicId,}) async {
     final taggedController = Get.find<TaggedController>();
 
     await _removeTagsFromPicsPrivate(
             picIdMapToTagKey: picIdMapToTagKey,
-            tagKeyMapToTagKey: tagKeyMapToPicId)
+            tagKeyMapToTagKey: tagKeyMapToPicId,)
         .then((_) async {
       /// Clear the selectedTaggedPics as now the processing is done
       ///
@@ -371,7 +372,7 @@ class TagsController extends GetxController {
 
   Future<void> _removeTagsFromPicsPrivate(
       {required Map<String, Map<String, String>> picIdMapToTagKey,
-      required Map<String, Map<String, String>> tagKeyMapToTagKey}) async {
+      required Map<String, Map<String, String>> tagKeyMapToTagKey,}) async {
     final percentageController = Get.find<PercentageDialogController>();
 
     /// iterate over the pictures and add tags to it
@@ -385,9 +386,9 @@ class TagsController extends GetxController {
 
       await tabsController.picStoreMap[picId]!.value
           .removeMultipleTagsFromPicsForwadFromTagsController(
-              acceptedTagKeys: map);
+              acceptedTagKeys: map,);
       await Future.delayed(Duration.zero, () {
-        percentageController.increaseValue(1.0);
+        percentageController.increaseValue(1);
       });
     }).then((_) {
       percentageController.stop();
@@ -395,7 +396,7 @@ class TagsController extends GetxController {
   }
 
   Future<void> _removePhotoIdFromLabel(
-      String tagKey, Map<String, String> picIdsMap) async {
+      String tagKey, Map<String, String> picIdsMap,) async {
     final getTag = await _database.getLabelByLabelKey(tagKey);
 
     if (getTag == null) {
@@ -416,11 +417,11 @@ class TagsController extends GetxController {
   Future<void> addTagsToSelectedPics({List<String>? selectedPicIds}) async {
     if (tabsController.currentTab.value == 0) {
       if (tabsController.toggleIndexUntagged.value == 0) {
-        await tabsController.untaggedScrollControllerMonth.animateTo(0.0,
-            duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+        await tabsController.untaggedScrollControllerMonth.animateTo(0,
+            duration: const Duration(milliseconds: 300), curve: Curves.easeIn,);
       } else {
-        await tabsController.untaggedScrollControllerDay.animateTo(0.0,
-            duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
+        await tabsController.untaggedScrollControllerDay.animateTo(0,
+            duration: const Duration(milliseconds: 300), curve: Curves.easeIn,);
       }
     }
     final taggedController = Get.find<TaggedController>();
@@ -436,7 +437,7 @@ class TagsController extends GetxController {
 
     final map = <String, Map<String, String>>{
       // ignore: invalid_use_of_protected_member
-      for (var picId in selectedPicIds) picId: multiPicTags.value,
+      for (final picId in selectedPicIds) picId: multiPicTags.value,
     };
 
     await addTagsToPics(picIdToTagKey: map).then((_) async {
@@ -458,7 +459,7 @@ class TagsController extends GetxController {
   }
 
   Future<void> removeTagFromPic(
-      {required String picId, required String tagKey}) async {
+      {required String picId, required String tagKey,}) async {
     final taggedController = Get.find<TaggedController>();
     var picStore = tabsController.picStoreMap[picId]?.value;
     picStore ??= tabsController.explorPicStore(picId).value;
@@ -477,16 +478,16 @@ class TagsController extends GetxController {
 
   /// Add All Untagged Pics To Tagged Pics with same Tags
   Future<void> _addPhotoIdToLabel(
-      String tagKey, Map<String, String> picIdsMap) async {
+      String tagKey, Map<String, String> picIdsMap,) async {
     final getTag = await _database.getLabelByLabelKey(tagKey);
 
     if (getTag == null && allTags[tagKey] != null) {
-      var newLabel = Label(
+      final newLabel = Label(
           key: tagKey,
           counter: 1,
           lastUsedAt: DateTime.now(),
           title: allTags[tagKey]!.value.title,
-          photoId: picIdsMap);
+          photoId: picIdsMap,);
       await _database.createLabel(newLabel);
       return;
     }
@@ -497,7 +498,7 @@ class TagsController extends GetxController {
   }
 
   Future<void> addTagsToPics(
-      {required Map<String, Map<String, String>> picIdToTagKey}) async {
+      {required Map<String, Map<String, String>> picIdToTagKey,}) async {
     final percentageController = Get.find<PercentageDialogController>();
     percentageController.start(picIdToTagKey.keys.length + .0, 'Tagging...');
 
@@ -507,7 +508,7 @@ class TagsController extends GetxController {
     final tagKeyToPicId = <String, Map<String, String>>{};
 
     picIdToTagKey.forEach((pictureId, tagMap) {
-      for (var tagKey in tagMap.keys) {
+      for (final tagKey in tagMap.keys) {
         if (tagKeyToPicId[tagKey] == null) {
           tagKeyToPicId[tagKey] = <String, String>{pictureId: ''};
         } else {
@@ -525,7 +526,7 @@ class TagsController extends GetxController {
       await tabsController.picStoreMap[picId]!.value
           .addMultipleTagsToPic(acceptedTagKeys: map);
       await Future.delayed(Duration.zero, () {
-        percentageController.increaseValue(1.0);
+        percentageController.increaseValue(1);
       });
     }).then((_) {
       percentageController.stop();
@@ -558,8 +559,8 @@ class TagsController extends GetxController {
   void _editTagInternalFunction(
       {required String oldTagKey,
       required String newTagKey,
-      required String newName}) {
-    var tagModel = allTags[oldTagKey]!.value;
+      required String newName,}) {
+    final tagModel = allTags[oldTagKey]!.value;
 
     /// remove the oldTagKey because it will help us to make it un-listenable
     /// as it might be used somewhere else and we don't need un necessary frame updates
@@ -601,13 +602,13 @@ class TagsController extends GetxController {
   }
 
   Future<void> editTagName(
-      {required String oldTagKey, required String newName}) async {
+      {required String oldTagKey, required String newName,}) async {
     /// create a new tagKey
-    var newTagKey = Helpers.encryptTag(newName);
+    final newTagKey = Helpers.encryptTag(newName);
 
     /// use that new tagKey to make the ui changes fastly
     _editTagInternalFunction(
-        oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName);
+        oldTagKey: oldTagKey, newTagKey: newTagKey, newName: newName,);
 
     /// as soon as the `ui` changes are done - now secretly do the background changes in async manner
 
@@ -615,7 +616,7 @@ class TagsController extends GetxController {
     final oldTag = await _database.getLabelByLabelKey(oldTagKey);
 
     /// Creating new label
-    var createTag = Label(
+    final createTag = Label(
       key: newTagKey,
       title: newName,
       photoId: oldTag!.photoId,
@@ -636,7 +637,7 @@ class TagsController extends GetxController {
             //picsBox.put(photoId, pic);
             // AppLogger.d('updated tag in pic ${pic.id}');
           }
-        })
+        }),
       ],
     );
 
@@ -648,12 +649,12 @@ class TagsController extends GetxController {
   Future<void> deleteTagFromPic({required String tagKey}) async {
     //var tagsBox = Hive.box('tags');
 
-    var label = await _database.getLabelByLabelKey(tagKey);
+    final label = await _database.getLabelByLabelKey(tagKey);
 
     if (label != null && allTags[tagKey] != null) {
       // AppLogger.d('found tag going to delete it');
       // Remove a tag das fotos já taggeadas
-      var tagsStore = allTags[tagKey]!.value;
+      final tagsStore = allTags[tagKey]!.value;
       // AppLogger.d('TagsStore Tag: ${tagsStore.name}');
       /*  TaggedPicsStore taggedPicsStore =
           taggedPics.firstWhere((element) => element.tag == tagsStore);

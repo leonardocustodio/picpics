@@ -1,4 +1,4 @@
-/* import 'package:picPics/constants.dart';
+/* import 'package:picpics/constants.dart';
 import 'package:flutter/material.dart';
 
 class ColorfulPremium extends CustomPainter {
@@ -15,13 +15,13 @@ class ColorfulPremium extends CustomPainter {
       ..shader = kSecondaryGradient
           .createShader(Rect.fromLTWH(0, 0, size.width, size.height))
       ..colorFilter = ColorFilter.mode(
-        Colors.white.withOpacity(withOpacity),
+        Colors.white.withValues(alpha: withOpacity),
         BlendMode.srcOver,
       );
 
     final pinkGradient = Paint()
       ..colorFilter = ColorFilter.mode(
-        Colors.white.withOpacity(withOpacity),
+        Colors.white.withValues(alpha: withOpacity),
         BlendMode.srcOver,
       )
       ..shader = kPinkGradient
@@ -30,7 +30,7 @@ class ColorfulPremium extends CustomPainter {
     final yellowPaint = Paint()
       ..color = kYellowColor
       ..colorFilter = ColorFilter.mode(
-        Colors.white.withOpacity(withOpacity),
+        Colors.white.withValues(alpha: withOpacity),
         BlendMode.srcOver,
       )
       ..style = PaintingStyle.fill;

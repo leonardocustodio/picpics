@@ -1,5 +1,3 @@
-import 'package:picPics/utils/app_logger.dart';
-
 /* import 'dart:io';
 
 class Ads {

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
 class FadeImageBuilder extends StatelessWidget {
-  final Widget child;
-  final int milliseconds;
 
   const FadeImageBuilder({
-    super.key,
-    required this.child,
+    required this.child, super.key,
     this.milliseconds = 1000,
   });
+  final Widget child;
+  final int milliseconds;
 
   @override
   Widget build(BuildContext context) {

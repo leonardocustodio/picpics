@@ -1,35 +1,31 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/model/tag_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/show_edit_label_dialog.dart';
+import 'package:get/get.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/model/tag_model.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/utils/show_edit_label_dialog.dart';
 
 typedef OnTap = Function(
-    String tagId, String tagName, int counter, DateTime lastUsedAt);
+    String tagId, String tagName, int counter, DateTime lastUsedAt,);
 
 // ignore: must_be_immutable
 class CustomisedTagsList extends StatelessWidget {
+
+  CustomisedTagsList({
+    required this.tagsKeyList, required this.selectedTags, required this.onTap, required this.onDoubleTap, super.key,
+    this.maxLength,
+    this.title,
+  });
   final List<String> tagsKeyList;
   final Map<String, TagModel> selectedTags;
   int? maxLength;
   final String? title;
   final OnTap? onTap;
   final Function? onDoubleTap;
-
-  CustomisedTagsList({
-    super.key,
-    required this.tagsKeyList,
-    required this.selectedTags,
-    this.maxLength,
-    required this.onTap,
-    required this.onDoubleTap,
-    this.title,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,10 +34,10 @@ class CustomisedTagsList extends StatelessWidget {
       children: <Widget>[
         if (title != null)
           Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
+            padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               title!,
-              textScaler: TextScaler.linear(1.0),
+              textScaler: const TextScaler.linear(1),
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
@@ -53,10 +49,8 @@ class CustomisedTagsList extends StatelessWidget {
             ),
           ),
         Wrap(
-          direction: Axis.horizontal,
-          spacing: 5.0,
-          runSpacing: 5.0,
-          runAlignment: WrapAlignment.start,
+          spacing: 5,
+          runSpacing: 5,
           children: (tagsKeyList.isEmpty)
               ? [
                   Container(
@@ -74,13 +68,13 @@ class CustomisedTagsList extends StatelessWidget {
                         ),
                       ),
                     ),
-                  )
+                  ),
                 ]
               : List.generate(
                   maxLength != null
                       ? tagsKeyList.length.clamp(0, maxLength!)
                       : tagsKeyList.length,
-                  (index) => _buildItem(index),
+                  _buildItem,
                 ),
         ),
       ],
@@ -88,8 +82,8 @@ class CustomisedTagsList extends StatelessWidget {
   }
 
   Widget _buildItem(int index) {
-    var tag = TagsController.to.allTags[tagsKeyList[index]]!.value;
-    var isColorFull = selectedTags[tag.key] != null;
+    final tag = TagsController.to.allTags[tagsKeyList[index]]!.value;
+    final isColorFull = selectedTags[tag.key] != null;
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
@@ -111,11 +105,11 @@ class CustomisedTagsList extends StatelessWidget {
         decoration: isColorFull
             ? BoxDecoration(
                 gradient: getGradient(index % 4),
-                borderRadius: BorderRadius.circular(19))
+                borderRadius: BorderRadius.circular(19),)
             : kGrayBoxDecoration,
         child: Text(
           tag.title,
-          textScaler: TextScaler.linear(1.0),
+          textScaler: const TextScaler.linear(1),
           style: (isColorFull ? kWhiteTextStyle : kGrayTextStyle)
               .copyWith(fontSize: 14),
         ),

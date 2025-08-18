@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-
-import 'package:picPics/screens/tabs/tagged/tagged_photo_grouping.dart';
-import 'package:picPics/screens/tabs/tagged/tagged_tab_date.dart';
-import 'package:picPics/stores/language_controller.dart';
 import 'package:intl/intl.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/widgets/tags_list.dart';
-import 'package:picPics/widgets/top_bar.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/tabs/tagged/tagged_photo_grouping.dart';
+import 'package:picpics/screens/tabs/tagged/tagged_tab_date.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/widgets/tags_list.dart';
+import 'package:picpics/widgets/top_bar.dart';
 
 class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
   const TaggedPicsInDeviceWithSearchOption({super.key});
@@ -61,12 +60,12 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                             if (controller.selectedFilteringTagsKeys.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(
-                                    left: 16.0, right: 16.0, bottom: 8.0),
+                                    left: 16, right: 16, bottom: 8,),
                                 child: TagsList(
                                   tagsKeyList: controller
                                       .selectedFilteringTagsKeys.keys
                                       .toList(),
-                                  tagStyle: TagStyle.MultiColored,
+                                  tagStyle: TagStyle.multiColored,
                                   onTap: (String tagKey) {
                                     controller
                                         .removeTagKeyFromFiltering(tagKey);
@@ -84,14 +83,14 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                             //                            if (GalleryStore.to.showSearchTagsResults) ...[
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                                  const EdgeInsets.symmetric(horizontal: 16),
                               child: Obx(
                                 () => Text(
                                   controller.searchText.value != ''
                                       /* GalleryStore.to.showSearchTagsResults.value */
                                       ? LangControl.to.S.value.search_results
                                       : LangControl.to.S.value.recent_tags,
-                                  textScaler: TextScaler.linear(1.0),
+                                  textScaler: const TextScaler.linear(1),
                                   style: const TextStyle(
                                     fontFamily: 'Lato',
                                     color: Color(0xff979a9b),
@@ -104,18 +103,17 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                               ),
                             ),
 
-                            controller.searchTagsResults.isNotEmpty
-                                ? Padding(
+                            if (controller.searchTagsResults.isNotEmpty) Padding(
                                     padding: const EdgeInsets.only(
-                                        left: 16.0,
+                                        left: 16,
                                         right: 16,
-                                        top: 8.0,
-                                        bottom: 16.0),
+                                        top: 8,
+                                        bottom: 16,),
                                     child: TagsList(
                                       tagsKeyList: controller.searchTagsResults
                                           .map((e) => e.key)
                                           .toList(),
-                                      tagStyle: TagStyle.GrayOutlined,
+                                      tagStyle: TagStyle.grayOutlined,
                                       /* showEditTagModal: showEditTagModal, */
                                       onTap: (tagKey) {
                                         /* if (controller.toggleIndexTagged.value == 0) {
@@ -136,14 +134,13 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                                         AppLogger.d('do nothing');
                                       },
                                     ),
-                                  )
-                                : Container(
+                                  ) else Container(
                                     padding: const EdgeInsets.only(
-                                        top: 10.0, left: 26.0, bottom: 10.0),
+                                        top: 10, left: 26, bottom: 10,),
                                     child: Obx(
                                       () => Text(
                                         LangControl.to.S.value.no_tags_found,
-                                        textScaler: TextScaler.linear(1.0),
+                                        textScaler: const TextScaler.linear(1),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontFamily: 'Lato',
@@ -167,7 +164,7 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
                     }),
                   ],
                 );
-              }),
+              },),
             ),
             Expanded(
               child: GetX<TaggedController>(
@@ -191,8 +188,8 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
 
   Widget buildDateHeader(DateTime date, bool isSelected) {
     return Container(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      height: 40.0,
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      height: 40,
       child: Row(
         children: [
           Container(
@@ -202,21 +199,21 @@ class TaggedPicsInDeviceWithSearchOption extends GetWidget<TagsController> {
             decoration: isSelected
                 ? BoxDecoration(
                     gradient: kSecondaryGradient,
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(10),
                   )
                 : BoxDecoration(
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Colors.grey, width: 1.0)),
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey),),
             child:
                 isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
           ),
           Text(
             dateFormat(date),
-            textScaler: TextScaler.linear(1.0),
+            textScaler: const TextScaler.linear(1),
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
-              fontSize: 14.0,
+              fontSize: 14,
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.normal,
               letterSpacing: -0.4099999964237213,

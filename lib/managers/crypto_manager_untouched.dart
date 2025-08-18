@@ -6,12 +6,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/pic_store.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/stores/pic_store.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:uuid/uuid.dart';
 import 'package:cryptography/cryptography.dart' as cryptography;
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class Crypto {
   static Future<String> encryptAccessKey(

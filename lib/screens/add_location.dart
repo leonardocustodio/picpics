@@ -1,30 +1,30 @@
 import 'dart:async';
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/constants.dart';
-import 'package:flutter/services.dart';
-import 'package:picPics/search/search_map_place.dart';
-import 'package:geolocator/geolocator.dart';
-
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/search/search_map_place.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
 final searchScaffoldKey = GlobalKey<ScaffoldState>();
 
 class AddLocationScreen extends StatefulWidget {
+  const AddLocationScreen(this.currentPic, {super.key});
   static const id = 'add_location_screen';
   final PicStore? currentPic;
-  const AddLocationScreen(this.currentPic, {super.key});
 
   @override
   _AddLocationScreenState createState() => _AddLocationScreenState();
@@ -37,12 +37,11 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   final _markers = <Marker>{};
   Geolocation? selectedGeolocation;
 
-  static const LatLng nullLocation = LatLng(0.0, 0.0);
+  static const LatLng nullLocation = LatLng(0, 0);
   static const LatLng rioDeJaneiro = LatLng(-22.951911, -52.2126759);
 
   static const CameraPosition _initialCamera = CameraPosition(
     target: rioDeJaneiro,
-    zoom: 0.0,
   );
 
   void saveLocation(BuildContext context) {
@@ -51,37 +50,39 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
 
       String? location;
       String? city;
-      String? state;
+      // String? state;
       String? country;
 
-      for (var components
-          in selectedGeolocation!.fullJSON['address_components']) {
-        var types = components['types'];
+      for (final components
+          in selectedGeolocation!.fullJSON!['address_components'] as List<dynamic>) {
+        final types = components['types'] as List<dynamic>;
         if (types.contains('establishment')) {
           AppLogger.d('find establishment: ${components["long_name"]}');
-          location = components['long_name'];
+          location = components['long_name'] as String?;
           continue;
         } else if (types.contains('locality')) {
           AppLogger.d('locality: ${components["long_name"]}');
-          city = components['long_name'];
+          city = components['long_name'] as String?;
           continue;
         } else if (types.contains('administrative_area_level_2')) {
-          AppLogger.d('find administrative_area_level_2: ${components["long_name"]}');
-          city = components['long_name'];
+          AppLogger.d(
+              'find administrative_area_level_2: ${components["long_name"]}',);
+          city = components['long_name'] as String?;
           continue;
         } else if (types.contains('administrative_area_level_1')) {
-          AppLogger.d('find administrative_area_level_1: ${components["long_name"]}');
-          state = components['long_name'];
+          AppLogger.d(
+              'find administrative_area_level_1: ${components["long_name"]}',);
+          // state = components['long_name'] as String?;
           continue;
         } else if (types.contains('country')) {
           AppLogger.d('country: ${components["long_name"]}');
-          country = components['long_name'];
+          country = components['long_name'] as String?;
           break;
         }
       }
 
       if (location != null) {
-        LatLng latLng = selectedGeolocation!.coordinates;
+        final latLng = selectedGeolocation!.coordinates as LatLng;
         picStore.saveLocation(
           lat: latLng.latitude,
           long: latLng.longitude,
@@ -89,7 +90,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
           general: city,
         );
       } else {
-        LatLng latLng = selectedGeolocation!.coordinates;
+        final latLng = selectedGeolocation!.coordinates as LatLng;
         picStore.saveLocation(
           lat: latLng.latitude,
           long: latLng.longitude,
@@ -99,14 +100,13 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
       }
     }
 
-    Get.back();
+    Get.back<void>();
   }
 
-  void getUserPosition() async {
+  Future<void> getUserPosition() async {
     AppLogger.d('getting current location');
 
-    final position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.best);
+    final position = await Geolocator.getCurrentPosition();
 
     final geolocation = LatLng(position.latitude, position.longitude);
 
@@ -132,7 +132,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
     AppLogger.d('finished');
   }
 
-  void findInitialCamera() async {
+  Future<void> findInitialCamera() async {
     LatLng? latLng;
 
     if (picStore.latitude.value != null && picStore.longitude.value != null) {
@@ -185,7 +185,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
-    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    final imageProvider = AssetEntityImageProvider(picStore);
     return Scaffold(
       key: homeScaffoldKey,
       body: AnnotatedRegion<SystemUiOverlayStyle>(
@@ -193,21 +193,18 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
         child: Stack(
           children: <Widget>[
             GoogleMap(
-              padding: const EdgeInsets.only(left: 10.0, bottom: 226.0),
-              mapType: MapType.normal,
+              padding: const EdgeInsets.only(left: 10, bottom: 226),
               markers: _markers,
               initialCameraPosition: _initialCamera,
               myLocationButtonEnabled: false,
               zoomControlsEnabled: false,
-              onMapCreated: (GoogleMapController controller) {
-                _mapController.complete(controller);
-              },
+              onMapCreated: _mapController.complete,
             ),
             SafeArea(
               top: false,
               child: Padding(
                 padding: const EdgeInsets.only(
-                    left: 16.0, right: 16.0, bottom: 16.0),
+                    left: 16, right: 16, bottom: 16,),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -218,14 +215,12 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       children: <Widget>[
                         CupertinoButton(
                           padding: const EdgeInsets.all(0),
-                          onPressed: () {
-                            Get.back();
-                          },
+                          onPressed: () => Get.back<void>(),
                           child: SizedBox(
                             width: height * 0.17,
                             height: height * 0.17,
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
+                              borderRadius: BorderRadius.circular(12),
                               child: ExtendedImage(
                                 image: imageProvider,
                                 fit: BoxFit.cover,
@@ -234,7 +229,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                                   switch (state.extendedImageLoadState) {
                                     case LoadState.loading:
                                       loader = const ColoredBox(
-                                          color: kGreyPlaceholder);
+                                          color: kGreyPlaceholder,);
                                       break;
                                     case LoadState.completed:
                                       loader = FadeImageBuilder(
@@ -263,12 +258,10 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         ),
                         CupertinoButton(
                           padding: const EdgeInsets.only(
-                              left: 14.0, right: 0, bottom: 0.0, top: 14.0),
-                          onPressed: () {
-                            getUserPosition();
-                          },
+                              left: 14, top: 14,),
+                          onPressed: getUserPosition,
                           child: Image.asset(
-                              'lib/images/getcurrentlocationico.png'),
+                              'lib/images/getcurrentlocationico.png',),
                         ),
                       ],
                     ),
@@ -279,17 +272,17 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                         saveLocation(context);
                       },
                       child: Container(
-                        margin: const EdgeInsets.only(top: 16.0),
+                        margin: const EdgeInsets.only(top: 16),
                         decoration: BoxDecoration(
                           gradient: kPrimaryGradient,
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        height: 44.0,
+                        height: 44,
                         child: Center(
                           child: Obx(
                             () => Text(
                               LangControl.to.S.value.save_location,
-                              textScaler: TextScaler.linear(1.0),
+                              textScaler: const TextScaler.linear(1),
                               style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: kWhiteColor,
@@ -307,7 +300,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                 ),
               ),
             ),
-            Container(
+            ColoredBox(
               color: kWhiteColor,
               child: SafeArea(
                 child: Obx(
@@ -328,7 +321,7 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                           ),
                           'lib/images/pin.png',
                         ),
-                        position: geolocation.coordinates,
+                        position: geolocation.coordinates as LatLng,
                       );
 
                       final controller = await _mapController.future;
@@ -338,9 +331,9 @@ class _AddLocationScreenState extends State<AddLocationScreen> {
                       });
 
                       await controller.animateCamera(
-                          CameraUpdate.newLatLng(geolocation.coordinates));
+                          CameraUpdate.newLatLng(geolocation.coordinates as LatLng),);
                       await controller.animateCamera(
-                          CameraUpdate.newLatLngBounds(geolocation.bounds, 0));
+                          CameraUpdate.newLatLngBounds(geolocation.bounds as LatLngBounds, 0),);
                     },
                   ),
                 ),

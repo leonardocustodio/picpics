@@ -10,7 +10,7 @@ class Geocoding {
     final url =
         'https://maps.googleapis.com/maps/api/geocode/json?address=$trimmedAdress&key=$apiKey&language=$language';
     final response = await http.get(Uri.parse(url));
-    final json = JSON.jsonDecode(response.body);
+    final json = jsonDecode(response.body) as Map<String, dynamic>;
     if (json['error_message'] == null) {
       return Geolocation.fromJSON(json);
     } else {

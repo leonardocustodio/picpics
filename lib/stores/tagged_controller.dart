@@ -1,17 +1,17 @@
 import 'dart:async';
+
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/stores/percentage_dialog_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/widgets/confirm_pic_delete.dart';
-
-import 'tabs_controller.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/stores/percentage_dialog_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/widgets/confirm_pic_delete.dart';
 
 class TaggedController extends GetxController {
   static TaggedController get to => Get.find();
@@ -38,7 +38,7 @@ class TaggedController extends GetxController {
 
   late ScrollController scrollControllerThirdTab;
 
-  double offsetThirdTab = 0.0;
+  double offsetThirdTab = 0;
 
   final selectedMultiBarPics = <String, bool>{}.obs;
   final isScrolling = false.obs;
@@ -86,7 +86,7 @@ class TaggedController extends GetxController {
     //setIsLoading(true);
     await sharePics(
         picKeys: selectedMultiBarPics.keys
-            .toList() /* picsStores: GalleryStore.to.selectedPics.toList() */);
+            .toList(), /* picsStores: GalleryStore.to.selectedPics.toList() */);
     //setIsLoading(false);
   }
 
@@ -145,7 +145,7 @@ class TaggedController extends GetxController {
 
   Future<void> untagPicsFromTag(
       {Map<String, Map<String, String>>? tagKeyMapToPicId,
-      Map<String, Map<String, String>>? picIdMapToTagKey}) async {
+      Map<String, Map<String, String>>? picIdMapToTagKey,}) async {
     assert(picIdMapToTagKey != null || tagKeyMapToPicId != null);
 
     final percentageController = Get.find<PercentageDialogController>();
@@ -154,7 +154,7 @@ class TaggedController extends GetxController {
       picIdMapToTagKey = <String, Map<String, String>>{};
 
       tagKeyMapToPicId!.forEach((tagKey, picMaps) {
-        for (var picId in picMaps.keys) {
+        for (final picId in picMaps.keys) {
           if (picIdMapToTagKey![picId] == null) {
             picIdMapToTagKey[picId] = <String, String>{tagKey: ''};
           } else {
@@ -166,7 +166,7 @@ class TaggedController extends GetxController {
       tagKeyMapToPicId = <String, Map<String, String>>{};
 
       picIdMapToTagKey.forEach((picId, tagMaps) {
-        for (var tagKey in tagMaps.keys) {
+        for (final tagKey in tagMaps.keys) {
           if (tagKeyMapToPicId![tagKey] == null) {
             tagKeyMapToPicId[tagKey] = <String, String>{picId: ''};
           } else {
@@ -177,7 +177,6 @@ class TaggedController extends GetxController {
     }
     await showDialog<void>(
         context: Get.context!,
-        barrierDismissible: true,
         builder: (_) {
           return ConfirmationDialog(
             headingText: 'Untag',
@@ -186,13 +185,13 @@ class TaggedController extends GetxController {
             okText: 'Untag',
             cancelText: 'Cancel',
             onPressedOk: () async {
-              Get.back();
+              Get.back<void>();
               tabsController.setMultiPicBar(false);
               tabsController.setMultiTagSheet(false);
               tabsController.selectedMultiBarPics.clear();
               await Future.delayed(Duration.zero, () async {
                 percentageController.start(
-                    picIdMapToTagKey!.keys.length + .0, 'Un-tagging...');
+                    picIdMapToTagKey!.keys.length + .0, 'Un-tagging...',);
                 await tagsController.removeTagsFromPicsMainFunction(
                   picIdMapToTagKey: picIdMapToTagKey,
                   tagKeyMapToPicId: tagKeyMapToPicId!,
@@ -201,10 +200,10 @@ class TaggedController extends GetxController {
               });
             },
           );
-        });
+        },);
   }
 
-  void setTabIndexAllTaggedKeys(int idx) async {
+  Future<void> setTabIndexAllTaggedKeys(int idx) async {
     bottomOptionsBar.value = idx;
     final tabsController = Get.find<TabsController>();
 
@@ -231,7 +230,7 @@ class TaggedController extends GetxController {
             percentageController.value.value += 1.0;
           });
         }).then((_) async {
-          for (var picId in map.keys) {
+          for (final picId in map.keys) {
             tabsController.picStoreMap[picId]?.value.isStarred.value =
                 map[picId]!;
           }
@@ -257,7 +256,7 @@ class TaggedController extends GetxController {
           return;
         }
         await sharePics(
-            picKeys: tabsController.selectedMultiBarPics.keys.toList());
+            picKeys: tabsController.selectedMultiBarPics.keys.toList(),);
         return;
       case 4:
 
@@ -267,14 +266,13 @@ class TaggedController extends GetxController {
         }
         await showDialog<void>(
           context: Get.context!,
-          barrierDismissible: true,
           builder: (_) {
             return ConfirmPicDelete(onPressedDelete: () async {
               await Analytics.sendEvent(Event.deleted_photo);
-              Get.back();
+              Get.back<void>();
               isTaggedPicsLoaded.value = false;
               await TabsController.to.trashMultiplePics(
-                  tabsController.selectedMultiBarPics.keys.toList().toSet());
+                  tabsController.selectedMultiBarPics.keys.toList().toSet(),);
               await refreshTaggedPhotos();
               isTaggedPicsLoaded.value = true;
               /* 
@@ -283,10 +281,10 @@ class TaggedController extends GetxController {
                 /// let's go back to previous screen
                 WidgetsBinding.instance?.addPostFrameCallback((_) {
                   AppLogger.d('going back');
-                  Get.back();
+                  Get.back<void>();
                 });
               } */
-            });
+            },);
           },
         );
         return;
@@ -295,7 +293,7 @@ class TaggedController extends GetxController {
     }
   }
 
-  void setTabIndexParticularTagKey(int idx, String? tagKey) async {
+  Future<void> setTabIndexParticularTagKey(int idx, String? tagKey) async {
     bottomOptionsBar.value = idx;
 
     switch (bottomOptionsBar.value) {
@@ -332,14 +330,13 @@ class TaggedController extends GetxController {
         }
         await showDialog<void>(
           context: Get.context!,
-          barrierDismissible: true,
           builder: (_) {
             return ConfirmPicDelete(onPressedDelete: () async {
               await Analytics.sendEvent(Event.deleted_photo);
-              Get.back();
+              Get.back<void>();
               isTaggedPicsLoaded.value = false;
               await TabsController.to.trashMultiplePics(
-                  selectedMultiBarPics.keys.toList().toSet());
+                  selectedMultiBarPics.keys.toList().toSet(),);
               await refreshTaggedPhotos();
               isTaggedPicsLoaded.value = true;
               if (taggedPicId[tagKey]?.keys.isEmpty ?? true) {
@@ -347,10 +344,10 @@ class TaggedController extends GetxController {
                 /// let's go back to previous screen
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   AppLogger.d('going back');
-                  Get.back();
+                  Get.back<void>();
                 });
               }
-            });
+            },);
           },
         );
         return;
@@ -373,9 +370,7 @@ class TaggedController extends GetxController {
     });
     scrollControllerThirdTab =
         ScrollController(initialScrollOffset: offsetThirdTab);
-    scrollControllerThirdTab.addListener(() {
-      refreshGridPositionThirdTab();
-    });
+    scrollControllerThirdTab.addListener(refreshGridPositionThirdTab);
     refreshTaggedPhotos();
     refreshGridPositionThirdTab();
   }
@@ -389,7 +384,7 @@ class TaggedController extends GetxController {
   }
 
   void refreshGridPositionThirdTab() {
-    var offset = scrollControllerThirdTab.hasClients
+    final offset = scrollControllerThirdTab.hasClients
         ? scrollControllerThirdTab.offset
         : scrollControllerThirdTab.initialScrollOffset;
 
@@ -437,11 +432,11 @@ class TaggedController extends GetxController {
     /// Sorting the photo-ids on basis of their creation datetime
 
     taggedPhotoIdList.sort((a, b) {
-      var year = b.createdAt.year.compareTo(a.createdAt.year);
+      final year = b.createdAt.year.compareTo(a.createdAt.year);
       if (year == 0) {
-        var month = b.createdAt.month.compareTo(a.createdAt.month);
+        final month = b.createdAt.month.compareTo(a.createdAt.month);
         if (month == 0) {
-          var day = b.createdAt.day.compareTo(a.createdAt.day);
+          final day = b.createdAt.day.compareTo(a.createdAt.day);
           return day;
         }
         return month;
@@ -457,8 +452,8 @@ class TaggedController extends GetxController {
       if (photo.tags.isNotEmpty) {
         /// Iterating and checking whether the picId is not a tagged pic or it's not a private pic
 
-        var dateTime = DateTime.utc(
-            photo.createdAt.year, photo.createdAt.month, photo.createdAt.day);
+        final dateTime = DateTime.utc(
+            photo.createdAt.year, photo.createdAt.month, photo.createdAt.day,);
         if (previousMonth == null) {
           previousMonth = dateTime;
 
@@ -497,6 +492,11 @@ class TaggedController extends GetxController {
 }
 
 class ConfirmationDialog extends StatelessWidget {
+
+  const ConfirmationDialog({
+    required this.headingText, required this.titleText, required this.okText, required this.cancelText, required this.onPressedOk, super.key,
+    this.onPressedClose,
+  });
   final String titleText;
   final String cancelText;
   final String okText;
@@ -504,34 +504,24 @@ class ConfirmationDialog extends StatelessWidget {
   final Function()? onPressedClose;
   final Function() onPressedOk;
 
-  const ConfirmationDialog({
-    super.key,
-    required this.headingText,
-    required this.titleText,
-    required this.okText,
-    required this.cancelText,
-    this.onPressedClose,
-    required this.onPressedOk,
-  });
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: Get.width < 360
-          ? const EdgeInsets.symmetric(horizontal: 20.0)
-          : const EdgeInsets.symmetric(horizontal: 40.0),
+          ? const EdgeInsets.symmetric(horizontal: 20)
+          : const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
         clipBehavior: Clip.antiAlias,
         decoration: const BoxDecoration(
           color: Color(0xFFF1F3F5),
           borderRadius: BorderRadius.vertical(
             top: Radius.circular(14),
-            bottom: Radius.circular(19.0),
+            bottom: Radius.circular(19),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
@@ -562,7 +552,7 @@ class ConfirmationDialog extends StatelessWidget {
                     child: CupertinoButton(
                       onPressed: () {
                         onPressedClose?.call();
-                        Get.back();
+                        Get.back<void>();
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
                     ),
@@ -574,7 +564,7 @@ class ConfirmationDialog extends StatelessWidget {
                 child: Image.asset('lib/images/lockmodalico.png'),
               ), */
               Padding(
-                padding: const EdgeInsets.only(top: 10.0),
+                padding: const EdgeInsets.only(top: 10),
                 child: Text(
                   titleText,
                   textAlign: TextAlign.center,
@@ -590,10 +580,9 @@ class ConfirmationDialog extends StatelessWidget {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 5.0, top: 25.0),
+                padding: const EdgeInsets.only(bottom: 5, top: 25),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(
                       child: CupertinoButton(
@@ -603,19 +592,19 @@ class ConfirmationDialog extends StatelessWidget {
                             UserController.to.setKeepAskingToDelete(false);
                           } */
                           onPressedClose?.call();
-                          Get.back();
+                          Get.back<void>();
                         },
                         child: Container(
-                          height: 44.0,
+                          height: 44,
                           decoration: BoxDecoration(
                             border:
-                                Border.all(color: kSecondaryColor, width: 1.0),
-                            borderRadius: BorderRadius.circular(8.0),
+                                Border.all(color: kSecondaryColor),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: Text(
                               cancelText,
-                              textScaler: TextScaler.linear(1.0),
+                              textScaler: const TextScaler.linear(1),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: const TextStyle(
@@ -623,7 +612,7 @@ class ConfirmationDialog extends StatelessWidget {
                                 fontWeight: FontWeight.w700,
                                 fontFamily: 'Lato',
                                 fontStyle: FontStyle.normal,
-                                fontSize: 16.0,
+                                fontSize: 16,
                               ),
                             ),
                           ),
@@ -631,27 +620,22 @@ class ConfirmationDialog extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      constraints: const BoxConstraints(maxWidth: 16.0),
+                      constraints: const BoxConstraints(maxWidth: 16),
                     ),
                     Expanded(
                       child: CupertinoButton(
                         padding: const EdgeInsets.all(0),
-                        onPressed: () {
-                          /* if (keepAsking == false) {
-                            UserController.to.setKeepAskingToDelete(false);
-                          } */
-                          onPressedOk();
-                        },
+                        onPressed: onPressedOk,
                         child: Container(
-                          height: 44.0,
+                          height: 44,
                           decoration: BoxDecoration(
                             gradient: kPrimaryGradient,
-                            borderRadius: BorderRadius.circular(8.0),
+                            borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
                             child: Text(
                               okText,
-                              textScaler: TextScaler.linear(1.0),
+                              textScaler: const TextScaler.linear(1),
                               overflow: TextOverflow.ellipsis,
                               maxLines: 1,
                               style: kLoginButtonTextStyle,

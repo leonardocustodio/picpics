@@ -107,7 +107,7 @@ class _CustomBottomNavigationTile extends StatelessWidget {
                 height: 48.0,
                 decoration: BoxDecoration(
                     color: selected
-                        ? item.backgroundColor.withOpacity(opacity)
+                        ? item.backgroundColor.withValues(alpha: opacity)
                         : Colors.transparent,
                     borderRadius: BorderRadius.horizontal(
                       right: Radius.circular(50),

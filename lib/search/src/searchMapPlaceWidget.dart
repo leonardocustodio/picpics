@@ -1,6 +1,25 @@
 part of search_map_place;
 
 class SearchMapPlaceWidget extends StatefulWidget {
+
+  const SearchMapPlaceWidget({
+    required this.apiKey,
+    required this.onSelected, this.placeholder,
+    this.icon = Icons.search,
+    this.hasClearButton = true,
+    this.clearIcon = Icons.clear,
+    this.iconColor = kSecondaryColor,
+    this.onSearch,
+    this.language = 'pt',
+    this.location,
+    this.radius,
+    this.strictBounds = false,
+    this.placeType,
+    this.darkMode = false,
+    this.key,
+  })  : assert((location == null && radius == null) ||
+            (location != null && radius != null),),
+        super(key: key);
   @override
   final Key? key;
 
@@ -54,26 +73,6 @@ class SearchMapPlaceWidget extends StatefulWidget {
   /// Enables Dark Mode when set to `true`. Default value is `false`.
   final bool darkMode;
 
-  const SearchMapPlaceWidget({
-    required this.apiKey,
-    this.placeholder,
-    this.icon = Icons.search,
-    this.hasClearButton = true,
-    this.clearIcon = Icons.clear,
-    this.iconColor = kSecondaryColor,
-    required this.onSelected,
-    this.onSearch,
-    this.language = 'pt',
-    this.location,
-    this.radius,
-    this.strictBounds = false,
-    this.placeType,
-    this.darkMode = false,
-    this.key,
-  })  : assert((location == null && radius == null) ||
-            (location != null && radius != null)),
-        super(key: key);
-
   @override
   _SearchMapPlaceWidgetState createState() => _SearchMapPlaceWidgetState();
 }
@@ -102,10 +101,10 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   void initState() {
     geocode = Geocoding(apiKey: widget.apiKey, language: widget.language);
     _animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _containerHeight = Tween<double>(begin: 48, end: 420).animate(
       CurvedAnimation(
-        curve: Interval(0.0, 0.5, curve: Curves.easeInOut),
+        curve: const Interval(0, 0.5, curve: Curves.easeInOut),
         parent: _animationController,
       ),
     );
@@ -114,7 +113,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
       end: 1,
     ).animate(
       CurvedAnimation(
-        curve: Interval(0.5, 1.0, curve: Curves.easeInOut),
+        curve: const Interval(0.5, 1, curve: Curves.easeInOut),
         parent: _animationController,
       ),
     );
@@ -153,17 +152,17 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
         builder: (context, _) {
           return Container(
             color: kWhiteColor,
-            height: _containerHeight.value,
+            height: _containerHeight.value as double?,
 //            decoration: _containerDecoration(),
             child: Column(
               children: <Widget>[
                 child,
                 if (_placePredictions.isNotEmpty)
                   Opacity(
-                    opacity: _listOpacity.value,
+                    opacity: _listOpacity.value as double,
                     child: Column(
                       children: <Widget>[
-                        for (var prediction in _placePredictions)
+                        for (final prediction in _placePredictions)
                           _placeOption(Place.fromJSON(prediction, geocode)),
                       ],
                     ),
@@ -171,38 +170,33 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
               ],
             ),
           );
-        });
+        },);
   }
 
   Widget _searchInput(BuildContext context) {
     return Container(
       child: Padding(
-        padding: const EdgeInsets.only(right: 10.0),
+        padding: const EdgeInsets.only(right: 10),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             CupertinoButton(
-              padding: const EdgeInsets.only(left: 5.0, right: 10.0),
-              onPressed: () {
-                Get.back();
-              },
+              padding: const EdgeInsets.only(left: 5, right: 10),
+              onPressed: () => Get.back<void>(),
               child: Image.asset('lib/images/backarrowgray.png'),
             ),
             Image.asset('lib/images/searchico.png'),
-            SizedBox(
-              width: 10.0,
+            const SizedBox(
+              width: 10,
             ),
             Expanded(
               child: TextField(
                 controller: _textEditingController,
                 onSubmitted: (_) => _selectPlace(),
                 onEditingComplete: _selectPlace,
-                autofocus: false,
                 focusNode: _fn,
                 textAlignVertical: TextAlignVertical.center,
-                maxLines: 1,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Lato',
                   color: Color(0xff606566),
                   fontSize: 16,
@@ -212,13 +206,13 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
                 ),
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.all(0),
-                  border: OutlineInputBorder(borderSide: BorderSide.none),
+                  border: const OutlineInputBorder(borderSide: BorderSide.none),
                   enabledBorder:
-                      OutlineInputBorder(borderSide: BorderSide.none),
+                      const OutlineInputBorder(borderSide: BorderSide.none),
                   focusedBorder:
-                      OutlineInputBorder(borderSide: BorderSide.none),
+                      const OutlineInputBorder(borderSide: BorderSide.none),
                   hintText: widget.placeholder,
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                     fontFamily: 'Lato',
                     color: kGrayColor,
                     fontSize: 16,
@@ -229,7 +223,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
                 ),
               ),
             ),
-            Container(width: 15.0),
+            Container(width: 15),
             if (widget.hasClearButton)
               GestureDetector(
                 onTap: () {
@@ -240,12 +234,12 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
                 // child: Icon(_inputIcon, color: this.widget.iconColor),
                 child: AnimatedCrossFade(
                   crossFadeState: _crossFadeState,
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   firstChild: Container(),
                   secondChild: Icon(Icons.clear, color: widget.iconColor),
                 ),
               ),
-            if (!widget.hasClearButton) Container()
+            if (!widget.hasClearButton) Container(),
           ],
         ),
       ),
@@ -253,10 +247,10 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   }
 
   Widget _placeOption(Place prediction) {
-    var place = prediction.description;
+    final place = prediction.description;
 
     return MaterialButton(
-      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 3),
       onPressed: () => _selectPlace(prediction: prediction),
       child: ListTile(
         title: Text(
@@ -269,9 +263,8 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
           ),
           maxLines: 1,
         ),
-        contentPadding: EdgeInsets.symmetric(
+        contentPadding: const EdgeInsets.symmetric(
           horizontal: 10,
-          vertical: 0,
         ),
       ),
     );
@@ -284,7 +277,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
     return InputDecoration(
       hintText: widget.placeholder,
       border: InputBorder.none,
-      contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+      contentPadding: const EdgeInsets.symmetric(vertical: 0),
       hintStyle: TextStyle(
         color: widget.darkMode ? Colors.grey[100] : Colors.grey[850],
       ),
@@ -294,9 +287,9 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   BoxDecoration _containerDecoration() {
     return BoxDecoration(
       color: widget.darkMode ? Colors.grey[800] : Colors.white,
-      borderRadius: BorderRadius.all(Radius.circular(6.0)),
-      boxShadow: [
-        BoxShadow(color: Colors.black12, blurRadius: 20, spreadRadius: 10)
+      borderRadius: const BorderRadius.all(Radius.circular(6)),
+      boxShadow: const [
+        BoxShadow(color: Colors.black12, blurRadius: 20, spreadRadius: 10),
       ],
     );
   }
@@ -307,7 +300,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
 
   /// Will be called everytime the input changes. Making callbacks to the Places
   /// Api and giving the user Place options
-  void _autocompletePlace() async {
+  Future<void> _autocompletePlace() async {
     if (_fn.hasFocus) {
       setState(() {
         _currentInput = _textEditingController.text;
@@ -325,14 +318,14 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
       if (_currentInput == _tempInput) {
         final predictions = await _makeRequest(_currentInput);
         await _animationController.animateTo(0.5);
-        setState(() => _placePredictions = predictions);
+        setState(() => _placePredictions = predictions as List<dynamic>);
         await _animationController.forward();
 
         _textEditingController.addListener(_autocompletePlace);
         return;
       }
 
-      Future.delayed(Duration(milliseconds: 500), () {
+      Future.delayed(const Duration(milliseconds: 500), () {
         _textEditingController.addListener(_autocompletePlace);
         if (_isEditing == true) _autocompletePlace();
       });
@@ -355,7 +348,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
     }
 
     final response = await http.get(Uri.parse(url));
-    final json = JSON.jsonDecode(response.body);
+    final json = jsonDecode(response.body);
 
     if (json['error_message'] != null) {
       var error = json['error_message'];
@@ -371,7 +364,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   }
 
   /// Will be called when a user selects one of the Place options
-  void _selectPlace({Place? prediction}) async {
+  Future<void> _selectPlace({Place? prediction}) async {
     if (prediction != null) {
       _textEditingController.value = TextEditingValue(
         text: prediction.description,
@@ -380,7 +373,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
         ),
       );
     } else {
-      await Future.delayed(Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 500));
     }
 
     // Makes animation
@@ -391,7 +384,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
   }
 
   /// Closes the expanded search box with predictions
-  void _closeSearch() async {
+  Future<void> _closeSearch() async {
     if (!_animationController.isDismissed) {
       await _animationController.animateTo(0.5);
     }
@@ -406,7 +399,7 @@ class _SearchMapPlaceWidgetState extends State<SearchMapPlaceWidget>
 
   /// Will listen for input changes every 0.5 seconds, allowing us to make API requests only when the user stops typing.
   void customListener() {
-    Future.delayed(Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       setState(() => _tempInput = _textEditingController.text);
       customListener();
     });

@@ -1,4 +1,4 @@
-name: picPics
+name: picpics
 description: picPics Application
 publish_to: 'none'
 version: 2.0.0+3
@@ -57,6 +57,7 @@ dependencies:
   rate_my_app: ^2.3.2
   url_launcher: ^6.3.2
   share_plus: ^11.1.0
+  intl: ^0.20.2
   percent_indicator: ^4.2.5
   auto_size_text: ^3.0.0
   convert: ^3.1.2

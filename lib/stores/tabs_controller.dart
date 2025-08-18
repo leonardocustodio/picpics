@@ -1,32 +1,32 @@
+import 'dart:async';
 import 'dart:io';
+
 import 'package:background_fetch/background_fetch.dart';
+import 'package:drift/drift.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:get/get.dart';
 import 'package:mime/mime.dart';
-import 'package:drift/drift.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/push_notifications_manager.dart';
-import 'package:picPics/managers/widget_manager.dart';
-import 'package:picPics/stores/percentage_dialog_controller.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/swiper_tab_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/refresh_everything.dart';
-import 'package:picPics/widgets/confirm_pic_delete.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/managers/push_notifications_manager.dart';
+import 'package:picpics/managers/widget_manager.dart';
+import 'package:picpics/stores/percentage_dialog_controller.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/swiper_tab_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/utils/refresh_everything.dart';
+import 'package:picpics/widgets/confirm_pic_delete.dart';
 import 'package:share_plus/share_plus.dart';
-import 'dart:async';
-
-import '../constants.dart';
-import 'private_photos_controller.dart';
-import 'package:picPics/utils/app_logger.dart';
 
 /* class Debouncer {
   final int milliseconds;
@@ -57,7 +57,7 @@ class TabsController extends GetxController {
   final isLoading = false.obs;
   final isUntaggedPicsLoaded = false.obs;
   final modalCard = false.obs;
-  final status = Status.Loading.obs;
+  final status = Status.loading.obs;
 
   final untaggedScrollControllerMonth = ScrollController();
   final untaggedScrollControllerDay = ScrollController();
@@ -89,8 +89,8 @@ class TabsController extends GetxController {
   @override
   void onReady() {
     /// I know below line is redundant but it is used to kickstart initialization of the tags list.
-    var _ = TagsController.to.allTags;
-    var __ = TaggedController.to.taggedPicId;
+    final _ = TagsController.to.allTags;
+    final __ = TaggedController.to.taggedPicId;
     initialization();
 
     /* Future.delayed(Duration(seconds: 5), () {
@@ -179,41 +179,41 @@ class TabsController extends GetxController {
 //        showDeleteSecretModal(context);
       }
     }); */
-    var ___ = Get.put(UserController());
+    final ___ = Get.put(UserController());
     if (UserController.to.tutorialCompleted.value == true &&
         UserController.to.notifications.value == true) {
-      var push = PushNotificationsManager();
+      final push = PushNotificationsManager();
       await push.init();
     }
 
     // Added for the case of buying premium from appstore
     /* WidgetsBinding.instance?.addPostFrameCallback((_) async {
       if (UserController.to.tryBuyId != null) {
-        await Get.to(() => PremiumScreen());
+        await Get.to<void>(() => PremiumScreen());
       }
     }); */
   }
 
   Future<void> loadEntities(List<AssetPathEntity> assetsPath) async {
     if (assetsPath.isEmpty) {
-      status.value = Status.DeviceHasNoPics;
+      status.value = Status.deviceHasNoPics;
       return;
     }
 
-    var assetPathEntity = assetsPath[0];
+    final assetPathEntity = assetsPath[0];
 
     final assetCount = await assetPathEntity.assetCountAsync;
     assetEntityList = List<AssetEntity>.from(
-        await assetPathEntity.getAssetListRange(start: 0, end: assetCount));
+        await assetPathEntity.getAssetListRange(start: 0, end: assetCount),);
     await refreshUntaggedList();
   }
 
   void sortAssetEntityList() {
     assetEntityList.sort((a, b) {
       return DateTime(b.createDateTime.year, b.createDateTime.month,
-              b.createDateTime.day)
+              b.createDateTime.day,)
           .compareTo(DateTime(a.createDateTime.year, a.createDateTime.month,
-              a.createDateTime.day));
+              a.createDateTime.day,),);
     });
   }
 
@@ -225,8 +225,8 @@ class TabsController extends GetxController {
     DateTime? previousDay;
     DateTime? previousMonth;
 
-    var previousMonthPicIdList = <String>[];
-    var previousDayPicIdList = <String>[];
+    final previousMonthPicIdList = <String>[];
+    final previousDayPicIdList = <String>[];
 
     /// clear the map as this function will be used to refresh from the tagging done via expandable or the swiper tags
 
@@ -239,8 +239,8 @@ class TabsController extends GetxController {
       /// Iterating and checking whether the picId is not a tagged pic or it's not a private pic
       if (TaggedController.to.allTaggedPicIdList[entity.id] == null &&
           PrivatePhotosController.to.privateMap[entity.id] == null) {
-        var dateTime = DateTime.utc(entity.createDateTime.year,
-            entity.createDateTime.month, entity.createDateTime.day);
+        final dateTime = DateTime.utc(entity.createDateTime.year,
+            entity.createDateTime.month, entity.createDateTime.day,);
         if (previousDay == null || previousMonth == null) {
           previousDay = dateTime;
           previousMonth = dateTime;
@@ -298,7 +298,7 @@ class TabsController extends GetxController {
       if (null == entity) {
         /// TODO: In worst case scenario this is telling that the asset map is not update
         /// and does not contain the image
-        refresh_everything();
+        refreshEverything();
       }
       entity = assetMap[picId];
 
@@ -310,7 +310,7 @@ class TabsController extends GetxController {
         photoId: picId,
         photoPath: '',
         thumbPath: '',
-      ));
+      ),);
     }
     return picStoreValue!;
   }
@@ -319,21 +319,19 @@ class TabsController extends GetxController {
     /// we are asking permission here because the PhotoManager will surely ask for permission
     /// in the below code and then we will not have acknowledgement whether the user has approved or not.
     /// and thus we can't again as the user whether he or she wants to give permission or not !!
-    var permitted = await UserController.to.requestGalleryPermission();
+    final permitted = await UserController.to.requestGalleryPermission();
     if (permitted == false) {
       return;
     }
     isUntaggedPicsLoaded.value = false;
-    var filterOptionGroup = FilterOptionGroup()
+    final filterOptionGroup = FilterOptionGroup()
       ..addOrderOption(
         const OrderOption(
-          type: OrderOptionType.createDate,
-          asc: false,
+          
         ),
       );
 
     final assets = await PhotoManager.getAssetPathList(
-      hasAll: true,
       type: RequestType.image,
       onlyAll: true,
       filterOption: filterOptionGroup,
@@ -354,9 +352,9 @@ class TabsController extends GetxController {
             requiresCharging: false,
             requiresStorageNotLow: false,
             requiresDeviceIdle: false,
-            requiredNetworkType: NetworkType.NONE), (String taskId) async {
+            requiredNetworkType: NetworkType.NONE,), (String taskId) async {
       // This is the fetch-event callback.
-      AppLogger.d("[BackgroundFetch] Event received $taskId");
+      AppLogger.d('[BackgroundFetch] Event received $taskId');
 
       await WidgetManager.sendAndUpdate();
 
@@ -410,7 +408,7 @@ class TabsController extends GetxController {
 
   void setTutorialIndex(int value) => tutorialIndex.value = value;
 
-  double offsetFirstTab = 0.0;
+  double offsetFirstTab = 0;
 
   void setTopOffsetFirstTab(double value) {
     if (value == topOffsetFirstTab.value) {
@@ -477,7 +475,7 @@ class TabsController extends GetxController {
     selectedMultiBarPics.clear();
   }
 
-  void setTabIndex(int index) async {
+  Future<void> setTabIndex(int index) async {
     if (!deviceHasPics || selectedMultiBarPics.isEmpty) {
       if (index == 0) {
         if (multiPicBar.value == true && currentTab.value == 2) {
@@ -526,7 +524,6 @@ class TabsController extends GetxController {
         setMultiTagSheet(false);
         await showDialog<void>(
           context: Get.context!,
-          barrierDismissible: true,
           builder: (context) {
             return ConfirmPicDelete(
               onPressedDelete: () async {
@@ -569,13 +566,13 @@ class TabsController extends GetxController {
         if (null != picStore) {
           removePicFromUI(picId);
 
-          var pic = await database.getPhotoByPhotoId(picStore.photoId.value);
+          final pic = await database.getPhotoByPhotoId(picStore.photoId.value);
 
           if (pic != null && pic.tags.isNotEmpty) {
             // AppLogger.d('pic is in db... removing it from db!');
-            var picTags = List<String>.from(pic.tags.keys);
+            final picTags = List<String>.from(pic.tags.keys);
             await Future.forEach(picTags, (String tagKey) async {
-              var tag = await database.getLabelByLabelKey(tagKey);
+              final tag = await database.getLabelByLabelKey(tagKey);
               if (tag != null) {
                 if (picStore != null) {
                   tag.photoId.remove(picStore.photoId);
@@ -615,7 +612,7 @@ class TabsController extends GetxController {
   void removePicFromUI(String picId) {
     assetMap.remove(picId);
     assetEntityList.removeWhere((element) => element.id == picId);
-    var index = SwiperTabController.to.swipeIndex.value;
+    final index = SwiperTabController.to.swipeIndex.value;
     SwiperTabController.to.swiperPicIdList.remove(picId);
     if (SwiperTabController.to.swiperPicIdList.isNotEmpty) {
       SwiperTabController.to.swipeIndex.value = index + 1;
@@ -649,7 +646,7 @@ class TabsController extends GetxController {
 Future<void> sharePics({required List<String> picKeys}) async {
   var imageList = <String>[], mimeList = <String>[];
 
-  for (var picKey in picKeys) {
+  for (final picKey in picKeys) {
     if (TabsController.to.assetMap[picKey] == null) {
       continue;
     }
@@ -668,7 +665,7 @@ Future<void> sharePics({required List<String> picKeys}) async {
       //   format: ThumbFormat.jpeg,
       // );
       // String path = await _writeByteToImageFile(bytes);
-      var path = (await data.file)?.path;
+      final path = (await data.file)?.path;
       if (path != null) {
         final mime = lookupMimeType(path);
         if (mime != null) {
@@ -698,7 +695,7 @@ Future<void> sharePics({required List<String> picKeys}) async {
   await Analytics.sendEvent(Event.shared_photos);
 
   await Share.shareXFiles(
-    imageList.map((path) => XFile(path)).toList(),
+    imageList.map(XFile.new).toList(),
   );
 
 //    setSharedPic(true);
@@ -750,9 +747,9 @@ Future<void> sharePics({required List<String> picKeys}) async {
 } */
 
 Future<String> _writeByteToImageFile(Uint8List byteData) async {
-  var tempDir = await getTemporaryDirectory();
-  var imageFile = File(
-      '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+  final tempDir = await getTemporaryDirectory();
+  final imageFile = File(
+      '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg',);
   imageFile.createSync(recursive: true);
   imageFile.writeAsBytesSync(byteData);
   return imageFile.path;

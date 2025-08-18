@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/widgets/top_bar.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/widgets/top_bar.dart';
 
 class NoTaggedPicsInDevice extends StatelessWidget {
   const NoTaggedPicsInDevice({
@@ -26,12 +26,12 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                 child: Image.asset('lib/images/notaggedphotos.png'),
               ),
               const SizedBox(
-                height: 21.0,
+                height: 21,
               ),
               Obx(
                 () => Text(
                   LangControl.to.S.value.no_tagged_photos,
-                  textScaler: TextScaler.linear(1.0),
+                  textScaler: const TextScaler.linear(1),
                   textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontFamily: 'Lato',
@@ -43,14 +43,14 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: 17.0,
+                height: 17,
               ),
               CupertinoButton(
                 padding: const EdgeInsets.all(0),
                 onPressed: () => TabsController.to.setCurrentTab(1),
                 child: Container(
-                  width: 201.0,
-                  height: 44.0,
+                  width: 201,
+                  height: 44,
                   decoration: BoxDecoration(
                     gradient: kPrimaryGradient,
                     borderRadius: BorderRadius.circular(8),
@@ -59,7 +59,7 @@ class NoTaggedPicsInDevice extends StatelessWidget {
                     child: Obx(
                       () => Text(
                         LangControl.to.S.value.start_tagging,
-                        textScaler: TextScaler.linear(1.0),
+                        textScaler: const TextScaler.linear(1),
                         style: const TextStyle(
                           fontFamily: 'Lato',
                           color: kWhiteColor,

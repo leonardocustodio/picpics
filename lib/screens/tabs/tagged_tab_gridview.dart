@@ -2,22 +2,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/custom_scroll_physics.dart';
-import 'package:picPics/fade_image_builder.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/custom_scroll_physics.dart';
+import 'package:picpics/fade_image_builder.dart';
 
-import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/stores/pic_store.dart';
+import 'package:picpics/screens/photo_screen.dart';
+import 'package:picpics/stores/pic_store.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/widgets/top_bar.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/widgets/top_bar.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class TaggedTabGridView extends GetWidget<TaggedController> {
   final String tagKey;
@@ -31,7 +31,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
         shadowColor: Colors.transparent,
         foregroundColor: Colors.black,
         leading: GestureDetector(
-          onTap: () => Get.back(),
+          onTap: () => Get.back<void>(),
           child: Icon(
             Icons.arrow_back_ios_rounded,
             color: Colors.black,
@@ -240,7 +240,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                           }
                           return;
                         }
-                        Get.to(() => PhotoScreen(
+                        Get.to<void>(() => PhotoScreen(
                               picId: picId,
                               picIdList: controller.taggedPicId[tagKey]?.keys
                                   ?.toList(),
@@ -366,7 +366,7 @@ class TaggedTabGridView extends GetWidget<TaggedController> {
                       AppLogger.d('Selected photo: ${picStore.photoId}');
                       /* GalleryStore.to.setCurrentPic(picStore);
                       GalleryStore.to.setInitialSelectedThumbnail(picStore); */
-                      Get.to(() => PhotoScreen(
+                      Get.to<void>(() => PhotoScreen(
                             picId: picId,
                             picIdList:
                                 controller.taggedPicId[tagKey]?.keys?.toList(),

@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/stores/tabs_controller.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/stores/tabs_controller.dart';
 
 class SwiperTabController extends GetxController {
   static SwiperTabController get to => Get.find();

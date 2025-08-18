@@ -1,10 +1,34 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-
-import 'package:picPics/components/circular_menu_item.dart';
+import 'package:picpics/components/circular_menu_item.dart';
 
 class CircularMenu extends StatefulWidget {
+
+  /// creates a circular menu with specific [radius] and [alignment] .
+  /// [toggleButtonElevation] ,[toggleButtonPadding] and [toggleButtonMargin] must be
+  /// equal or greater than zero.
+  /// [items] must not be null and it must contains two elements at least.
+  const CircularMenu({
+    required this.items,
+    required this.toggleButtonBoxShadow, this.alignment = Alignment.bottomCenter,
+    this.radius = 100,
+    this.backgroundWidget,
+    this.animationDuration = const Duration(milliseconds: 500),
+    this.curve = Curves.bounceOut,
+    this.reverseCurve = Curves.fastOutSlowIn,
+    this.toggleButtonOnPressed,
+    this.toggleButtonColor,
+    this.toggleButtonMargin = 10,
+    this.toggleButtonPadding = 10,
+    this.toggleButtonSize = 40,
+    this.toggleButtonIconColor,
+    this.useInHorizontal = false,
+    this.isExpanded = false,
+    this.key,
+  })  : //assert(items != null, 'items can not be empty list'),
+        assert(items.length > 1, 'if you have one item no need to use a Menu'),
+        super(key: key);
   /// use global key to control animation anywhere in the code
   @override
   final GlobalKey<CircularMenuState>? key;
@@ -42,32 +66,6 @@ class CircularMenu extends StatefulWidget {
   final bool useInHorizontal;
   final bool isExpanded;
 
-  /// creates a circular menu with specific [radius] and [alignment] .
-  /// [toggleButtonElevation] ,[toggleButtonPadding] and [toggleButtonMargin] must be
-  /// equal or greater than zero.
-  /// [items] must not be null and it must contains two elements at least.
-  const CircularMenu({
-    required this.items,
-    this.alignment = Alignment.bottomCenter,
-    this.radius = 100,
-    this.backgroundWidget,
-    this.animationDuration = const Duration(milliseconds: 500),
-    this.curve = Curves.bounceOut,
-    this.reverseCurve = Curves.fastOutSlowIn,
-    this.toggleButtonOnPressed,
-    this.toggleButtonColor,
-    required this.toggleButtonBoxShadow,
-    this.toggleButtonMargin = 10,
-    this.toggleButtonPadding = 10,
-    this.toggleButtonSize = 40,
-    this.toggleButtonIconColor,
-    this.useInHorizontal = false,
-    this.isExpanded = false,
-    this.key,
-  })  : //assert(items != null, 'items can not be empty list'),
-        assert(items.length > 1, 'if you have one item no need to use a Menu'),
-        super(key: key);
-
   @override
   CircularMenuState createState() => CircularMenuState();
 }
@@ -98,17 +96,17 @@ class CircularMenuState extends State<CircularMenu>
       });
     _animation = Tween(
             begin: widget.isExpanded ? 1.0 : 0.0,
-            end: widget.isExpanded ? 0.0 : 1.0)
+            end: widget.isExpanded ? 0.0 : 1.0,)
         .animate(
       CurvedAnimation(
           parent: _animationController,
           curve: widget.curve,
-          reverseCurve: widget.reverseCurve),
+          reverseCurve: widget.reverseCurve,),
     );
   }
 
   List<Widget> _buildMenuItems() {
-    var items = <Widget>[];
+    final items = <Widget>[];
     widget.items.asMap().forEach((index, item) {
       items.add(
         Positioned.fill(
@@ -119,11 +117,11 @@ class CircularMenuState extends State<CircularMenu>
                   ? Offset.fromDirection(
                       -1.0 * math.pi,
                       _animation.value * widget.radius +
-                          (index * widget.radius))
+                          (index * widget.radius),)
                   : Offset.fromDirection(
                       -0.5 * math.pi,
                       _animation.value * widget.radius +
-                          (index * widget.radius)),
+                          (index * widget.radius),),
               child: Transform.scale(
                 scale: _animation.value,
                 child: item,
@@ -141,14 +139,13 @@ class CircularMenuState extends State<CircularMenu>
       child: Align(
         alignment: widget.alignment,
         child: CircularMenuItem(
-          image: null,
           margin: widget.toggleButtonMargin,
           color: widget.toggleButtonColor ?? Theme.of(context).primaryColor,
 //          padding: (-_animation.value * widget.toggleButtonPadding * 0.5) + widget.toggleButtonPadding,
           onTap: () {
             _animationController.status == AnimationStatus.dismissed
-                ? (_animationController).forward()
-                : (_animationController).reverse();
+                ? _animationController.forward()
+                : _animationController.reverse();
             widget.toggleButtonOnPressed?.call();
           },
           boxShadow: widget.toggleButtonBoxShadow,

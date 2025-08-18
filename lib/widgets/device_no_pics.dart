@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:flutter/material.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class DeviceHasNoPics extends StatelessWidget {
-  final String message;
 
-  const DeviceHasNoPics({super.key, required this.message});
+  const DeviceHasNoPics({required this.message, super.key});
+  final String message;
 
   @override
   Widget build(BuildContext context) {
@@ -21,18 +21,18 @@ class DeviceHasNoPics extends StatelessWidget {
               maxHeight: height / 2,
             ),
             child: Padding(
-              padding: const EdgeInsets.only(right: 30.0),
+              padding: const EdgeInsets.only(right: 30),
               child: Image.asset('lib/images/nogalleryauth.png'),
             ),
           ),
           const SizedBox(
-            height: 21.0,
+            height: 21,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Text(
               message,
-              textScaler: TextScaler.linear(1.0),
+              textScaler: const TextScaler.linear(1),
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontFamily: 'Lato',

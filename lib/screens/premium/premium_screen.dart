@@ -1,20 +1,20 @@
 /* import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/components/arrow_painter.dart';
-import 'package:picPics/constants.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/components/arrow_painter.dart';
+import 'package:picpics/constants.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/screens/premium/premium_background.dart';
-import 'package:picPics/stores/user_controller.dart';
+import 'package:picpics/screens/premium/premium_background.dart';
+import 'package:picpics/stores/user_controller.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:platform_alert_dialog/platform_alert_dialog.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:picPics/screens/tabs_screen.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/screens/tabs_screen.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class PremiumScreen extends StatefulWidget {
   static const id = 'premium_screen';
@@ -124,9 +124,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
     if (/* kDebugMode */ true) {
       await UserController.to.setIsPremium(true);
       await UserController.to.setTutorialCompleted(true);
-      await Get.offNamedUntil(TabsScreen.id, (route) => false);
+      await Get.offNamedUntil<void>(TabsScreen.id, (route) => false);
       //Navigator.pushNamedAndRemoveUntil(context, TabsScreen.id, (route) => false);
-      // Get.back();
+      // Get.back<void>();
       //return;
     } else {
       setState(() {
@@ -152,7 +152,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               price: package.product.price,
             );
             await UserController.to.setIsPremium(true);
-            // Get.back();
+            // Get.back<void>();
             await Navigator.pushNamedAndRemoveUntil(
                 context, TabsScreen.id, (route) => false);
             return;
@@ -188,7 +188,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
           // Unlock that great "pro" content
           AppLogger.d('now you are fucking pro!');
           await UserController.to.setIsPremium(true);
-          // Get.back();
+          // Get.back<void>();
           await Navigator.pushNamedAndRemoveUntil(
               context, TabsScreen.id, (route) => false);
           return;
@@ -802,7 +802,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     children: <Widget>[
                       CupertinoButton(
                         onPressed: () {
-                          Get.back();
+                          Get.back<void>();
                         },
                         child: Image.asset('lib/images/backarrowgray.png'),
                       ),
@@ -969,7 +969,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             ),
             if (isLoading)
               Container(
-                color: Colors.black.withOpacity(0.7),
+                color: Colors.black.withValues(alpha: 0.7),
                 child: Center(
                   child: SpinKitChasingDots(
                     color: kPrimaryColor,

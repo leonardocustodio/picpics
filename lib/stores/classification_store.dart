@@ -1,7 +1,7 @@
 /* import 'dart:async';
 import 'dart:io';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class ClassificationStore {
   /* ClassificationStore() {

@@ -1,6 +1,22 @@
 import 'package:flutter/material.dart';
 
 class CircularMenuItem extends StatelessWidget {
+
+  /// creates a menu item .
+  /// [onTap] must not be null.
+  /// [padding] and [margin]  must be equal or greater than zero.
+  const CircularMenuItem({
+    required this.onTap, super.key,
+    this.image,
+    this.color,
+    this.iconSize = 30,
+    this.boxShadow,
+    //this.iconColor,
+    this.animatedIcon,
+    this.padding = 8.0,
+    this.margin = 12.0,
+  })  : assert(padding >= 0.0),
+        assert(margin >= 0.0);
   /// if icon and animatedIcon are passed, icon will be ignored
   final Image? image;
   final Color? color;
@@ -13,23 +29,6 @@ class CircularMenuItem extends StatelessWidget {
 
   /// if animatedIcon and icon are passed, icon will be ignored
   final AnimatedIcon? animatedIcon;
-
-  /// creates a menu item .
-  /// [onTap] must not be null.
-  /// [padding] and [margin]  must be equal or greater than zero.
-  const CircularMenuItem({
-    super.key,
-    required this.onTap,
-    this.image,
-    this.color,
-    this.iconSize = 30,
-    this.boxShadow,
-    //this.iconColor,
-    this.animatedIcon,
-    this.padding = 8.0,
-    this.margin = 12.0,
-  })  : assert(padding >= 0.0),
-        assert(margin >= 0.0);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,9 +38,8 @@ class CircularMenuItem extends StatelessWidget {
         boxShadow: boxShadow ??
             [
               BoxShadow(
-                color: Colors.black.withOpacity(0.25),
-                blurRadius: 4.0,
-                spreadRadius: 0.0,
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
             ],
@@ -56,7 +54,7 @@ class CircularMenuItem extends StatelessWidget {
               padding: EdgeInsets.all(padding),
               child: animatedIcon ??
                   Padding(
-                    padding: const EdgeInsets.only(right: 1.0, bottom: 1.0),
+                    padding: const EdgeInsets.only(right: 1, bottom: 1),
                     child: SizedBox(
                       height: iconSize,
                       width: iconSize,

@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/utils/helpers.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/utils/helpers.dart';
 
 class DateHeaderWidget extends StatelessWidget {
-  final DateTime date;
-  final bool isSelected;
-  final bool isMonth;
   const DateHeaderWidget(
       {required this.date,
       required this.isSelected,
       required this.isMonth,
-      super.key});
+      super.key,});
+  final DateTime date;
+  final bool isSelected;
+  final bool isMonth;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      height: 40.0,
+      padding: const EdgeInsets.only(left: 8, right: 8),
+      height: 40,
       child: Row(
         children: [
           if (TabsController.to.multiPicBar.value)
@@ -28,22 +28,22 @@ class DateHeaderWidget extends StatelessWidget {
               decoration: isSelected
                   ? BoxDecoration(
                       gradient: kSecondaryGradient,
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(10),
                     )
                   : BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      border: Border.all(color: Colors.grey, width: 1.0)),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey),),
               child: isSelected
                   ? Image.asset('lib/images/checkwhiteico.png')
                   : null,
             ),
           Text(
             Helpers.dateFormat(date, isMonth: isMonth),
-            textScaler: TextScaler.linear(1.0),
+            textScaler: const TextScaler.linear(1),
             style: const TextStyle(
               fontFamily: 'Lato',
               color: Color(0xff606566),
-              fontSize: 14.0,
+              fontSize: 14,
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.normal,
               letterSpacing: -0.4099999964237213,

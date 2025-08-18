@@ -1,32 +1,31 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_animator/flutter_animator.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-
-import 'package:picPics/screens/email_screen.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/pin_controller.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/widgets/color_animated_background.dart';
-import 'package:flutter_animator/flutter_animator.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/email_screen.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/pin_controller.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/widgets/color_animated_background.dart';
 
 // ignore_for_file: must_be_immutable
 class PinScreen extends GetWidget<PinController> {
+
+  PinScreen({super.key});
   static const String id = 'pin_screen';
 
   CarouselSliderController carouselController = CarouselSliderController();
   // late GlobalKey<AnimatorWidgetState> animatorKey;
 
   int carouselPage = 0;
-
-  PinScreen({super.key});
 
 /*   @override
   void initState() {
@@ -62,12 +61,10 @@ class PinScreen extends GetWidget<PinController> {
 
     return Padding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 24.0,
-        vertical: 4.0,
+        horizontal: 24,
+        vertical: 4,
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
         children: [
           const Spacer(),
           Text(
@@ -75,7 +72,7 @@ class PinScreen extends GetWidget<PinController> {
             style: const TextStyle(
               fontFamily: 'Lato',
               color: kSecondaryColor,
-              fontSize: 24.0,
+              fontSize: 24,
               fontWeight: FontWeight.w400,
               fontStyle: FontStyle.normal,
               letterSpacing: -0.4099999964237213,
@@ -109,7 +106,6 @@ class PinScreen extends GetWidget<PinController> {
 
               return PinPlaceholder(
                 filledPositions: filledPositions,
-                totalPositions: 6,
               );
             }),
           ),
@@ -141,19 +137,19 @@ class PinScreen extends GetWidget<PinController> {
             const Spacer(
               flex: 2,
             ),
-          ]
+          ],
         ],
       ),
     );
   }
 
-  void pinTapped(String value, bool backspace) async {
+  Future<void> pinTapped(String value, bool backspace) async {
     AppLogger.d('Value: ${controller.recoveryCode}$value');
     if (controller.isWaitingRecoveryKey.value == true) {
       if (carouselPage == 0) {
         if (backspace) {
           controller.setRecoveryCode(
-              Helpers.removeLastCharacter(controller.recoveryCode.value));
+              Helpers.removeLastCharacter(controller.recoveryCode.value),);
           return;
         }
         controller.setRecoveryCode('${controller.recoveryCode.value}$value');
@@ -178,7 +174,7 @@ class PinScreen extends GetWidget<PinController> {
       if (carouselPage == 1) {
         if (backspace) {
           controller.setPinTemp(
-              Helpers.removeLastCharacter(controller.pinTemp.value));
+              Helpers.removeLastCharacter(controller.pinTemp.value),);
           return;
         }
         controller.setPinTemp('${controller.pinTemp.value}$value');
@@ -192,7 +188,7 @@ class PinScreen extends GetWidget<PinController> {
 
       if (backspace) {
         controller.setConfirmPinTemp(
-            Helpers.removeLastCharacter(controller.confirmPinTemp.value));
+            Helpers.removeLastCharacter(controller.confirmPinTemp.value),);
         return;
       }
       controller.setConfirmPinTemp('${controller.confirmPinTemp.value}$value');
@@ -203,7 +199,7 @@ class PinScreen extends GetWidget<PinController> {
           carouselPage = 0;
           controller.pin = controller.pinTemp.value;
           await UserController.to.setEmail(controller.email
-              .value); // Tem que deixar antes pois é utilizado quando salva o pin
+              .value,); // Tem que deixar antes pois é utilizado quando salva o pin
 
           await controller.saveNewPin(UserController.to);
 
@@ -215,7 +211,7 @@ class PinScreen extends GetWidget<PinController> {
           UserController.to.setWaitingAccessCode(false);
           await carouselController.animateToPage(0);
 
-          Get.back();
+          Get.back<void>();
         } else {
           controller.shakeKeyConfirm.currentState?.forward();
           Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
@@ -249,7 +245,7 @@ class PinScreen extends GetWidget<PinController> {
 
             controller.setPinTemp('');
             controller.setConfirmPinTemp('');
-            Get.back();
+            Get.back<void>();
             return;
           }
 
@@ -258,7 +254,7 @@ class PinScreen extends GetWidget<PinController> {
 
           controller.setPinTemp('');
           controller.setConfirmPinTemp('');
-          Get.back();
+          Get.back<void>();
           return;
         }
 
@@ -272,7 +268,7 @@ class PinScreen extends GetWidget<PinController> {
     if (UserController.to.waitingAccessCode.value == true) {
       if (backspace) {
         controller.setAccessCode(
-            Helpers.removeLastCharacter(controller.accessCode.value));
+            Helpers.removeLastCharacter(controller.accessCode.value),);
         return;
       }
       controller.setAccessCode('${controller.accessCode.value}$value');
@@ -300,7 +296,7 @@ class PinScreen extends GetWidget<PinController> {
 
     if (backspace) {
       controller.setConfirmPinTemp(
-          Helpers.removeLastCharacter(controller.confirmPinTemp.value));
+          Helpers.removeLastCharacter(controller.confirmPinTemp.value),);
       return;
     }
 
@@ -313,7 +309,7 @@ class PinScreen extends GetWidget<PinController> {
         controller.setPinTemp('');
         controller.setConfirmPinTemp('');
         await carouselController.animateToPage(0);
-        await Get.toNamed(EmailScreen.id);
+        await Get.toNamed<void>(EmailScreen.id);
       } else {
         controller.shakeKeyConfirm.currentState?.forward();
         Future.delayed(const Duration(seconds: 1, milliseconds: 300), () {
@@ -335,8 +331,8 @@ class PinScreen extends GetWidget<PinController> {
           () => Stack(
             children: <Widget>[
               const ColorAnimatedBackground(
-                moveByX: 60.0,
-                moveByY: 40.0,
+                moveByX: 60,
+                moveByY: 40,
               ),
               SafeArea(
                 bottom: false,
@@ -347,15 +343,15 @@ class PinScreen extends GetWidget<PinController> {
                       children: <Widget>[
                         CupertinoButton(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 5.0, vertical: 10.0),
+                              horizontal: 5, vertical: 10,),
                           onPressed: () {
                             if (controller.isWaitingRecoveryKey.value == true) {
                               controller.setIsWaitingRecoveryKey(false);
                             }
-                            Get.back();
+                            Get.back<void>();
                           },
                           child: Image.asset(
-                              'lib/images/backarrowwithdropshadow.png'),
+                              'lib/images/backarrowwithdropshadow.png',),
                         ),
                         /*  CupertinoButton(
                             onPressed: () {
@@ -388,10 +384,9 @@ class PinScreen extends GetWidget<PinController> {
                               return _buildPinPad(context, index);
                             },
                             options: CarouselOptions(
-                              initialPage: 0,
                               enableInfiniteScroll: false,
                               height: double.maxFinite,
-                              viewportFraction: 1.0,
+                              viewportFraction: 1,
                               scrollPhysics:
                                   const NeverScrollableScrollPhysics(),
                             ),
@@ -457,7 +452,7 @@ class PinScreen extends GetWidget<PinController> {
                                   style: const TextStyle(
                                     fontFamily: 'Lato',
                                     color: kSecondaryColor,
-                                    fontSize: 24.0,
+                                    fontSize: 24,
                                     fontWeight: FontWeight.w400,
                                     fontStyle: FontStyle.normal,
                                     letterSpacing: -0.4099999964237213,
@@ -470,12 +465,11 @@ class PinScreen extends GetWidget<PinController> {
                               Shake(
                                 key: controller.shakeKey,
                                 preferences: const AnimationPreferences(
-                                    autoPlay: AnimationPlayStates.None),
+                                    autoPlay: AnimationPlayStates.None,),
                                 child: Obx(() {
                                   return PinPlaceholder(
                                     filledPositions:
                                         controller.pinTemp.value.length,
-                                    totalPositions: 6,
                                   );
                                 }),
                               ),
@@ -527,10 +521,9 @@ class PinScreen extends GetWidget<PinController> {
                               return _buildPinPad(context, index);
                             },
                             options: CarouselOptions(
-                              initialPage: 0,
                               enableInfiniteScroll: false,
                               height: double.maxFinite,
-                              viewportFraction: 1.0,
+                              viewportFraction: 1,
                               scrollPhysics:
                                   const NeverScrollableScrollPhysics(),
                             ),
@@ -547,7 +540,7 @@ class PinScreen extends GetWidget<PinController> {
                                 style: const TextStyle(
                                   fontFamily: 'Lato',
                                   color: kSecondaryColor,
-                                  fontSize: 24.0,
+                                  fontSize: 24,
                                   fontWeight: FontWeight.w400,
                                   fontStyle: FontStyle.normal,
                                   letterSpacing: -0.4099999964237213,
@@ -555,18 +548,18 @@ class PinScreen extends GetWidget<PinController> {
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(top: 16.0),
+                              padding: const EdgeInsets.only(top: 16),
                               child: Obx(
                                 () => Text(
                                   LangControl.to.S.value.access_code_sent(
                                       controller.email.value.isEmpty
                                           ? 'user@email.com'
-                                          : controller.email.value),
+                                          : controller.email.value,),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontFamily: 'Lato',
                                     color: kWhiteColor,
-                                    fontSize: 15.0,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.w400,
                                     fontStyle: FontStyle.normal,
                                   ),
@@ -577,13 +570,12 @@ class PinScreen extends GetWidget<PinController> {
                             Shake(
                               key: controller.shakeKey,
                               preferences: const AnimationPreferences(
-                                  autoPlay: AnimationPlayStates.None),
+                                  autoPlay: AnimationPlayStates.None,),
                               child: Obx(
                                 () {
                                   return PinPlaceholder(
                                     filledPositions:
                                         controller.accessCode.value.length,
-                                    totalPositions: 6,
                                   );
                                 },
                               ),
@@ -601,12 +593,12 @@ class PinScreen extends GetWidget<PinController> {
                 ),
               ),
               if (controller.isLoading.value)
-                Container(
-                  color: Colors.black.withOpacity(0.7),
+                ColoredBox(
+                  color: Colors.black.withValues(alpha: 0.7),
                   child: const Center(
                     child: SpinKitChasingDots(
                       color: kPrimaryColor,
-                      size: 80.0,
+                      size: 80,
                     ),
                   ),
                 ),
@@ -619,14 +611,14 @@ class PinScreen extends GetWidget<PinController> {
 }
 
 class PinPlaceholder extends StatelessWidget {
-  final int totalPositions;
-  final int filledPositions;
 
   const PinPlaceholder({
     super.key,
     this.totalPositions = 6,
     this.filledPositions = 0,
   });
+  final int totalPositions;
+  final int filledPositions;
 
   List<Widget> _buildPinPlaceholders() {
     final items = <Widget>[];
@@ -634,15 +626,15 @@ class PinPlaceholder extends StatelessWidget {
     for (var x = 0; x < totalPositions; x++) {
       items.add(
         Container(
-          width: 16.0,
-          height: 16.0,
-          margin: const EdgeInsets.symmetric(horizontal: 12.0),
+          width: 16,
+          height: 16,
+          margin: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             color: x < filledPositions ? kWhiteColor : Colors.transparent,
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(8),
             border: Border.all(
               color: kWhiteColor,
-              width: 2.0,
+              width: 2,
             ),
           ),
         ),
@@ -661,12 +653,11 @@ class PinPlaceholder extends StatelessWidget {
 }
 
 class NumberPad extends StatelessWidget {
-  final Function(String, bool) onPinTapped;
 
   const NumberPad({
-    super.key,
-    required this.onPinTapped,
+    required this.onPinTapped, super.key,
   });
+  final void Function(String, bool) onPinTapped;
 
   List<Widget> _buildPinNumbers() {
     final items = <Widget>[];
@@ -674,7 +665,7 @@ class NumberPad extends StatelessWidget {
     for (var x = 1; x < 13; (x += 3)) {
       final number = <Widget>[];
       for (var y = 0; y < 3; y++) {
-        var pin = x + y;
+        final pin = x + y;
         if (pin == 10) {
           number.add(
             Expanded(
@@ -695,7 +686,7 @@ class NumberPad extends StatelessWidget {
           number.add(Expanded(
               child: Container(
             margin: const EdgeInsets.all(2),
-          )));
+          ),),);
           continue;
         }
         number.add(
@@ -731,7 +722,6 @@ class NumberPad extends StatelessWidget {
         Expanded(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.max,
             children: number,
           ),
         ),
@@ -744,10 +734,9 @@ class NumberPad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 304.0,
+      height: 304,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        mainAxisSize: MainAxisSize.max,
         children: _buildPinNumbers(),
       ),
     );

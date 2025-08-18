@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:picPics/constants.dart';
+import 'package:picpics/constants.dart';
 
 class SelectAllWidget extends StatelessWidget {
-  final bool isSelected;
   const SelectAllWidget({required this.isSelected, super.key});
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class SelectAllWidget extends StatelessWidget {
                   )
                 : BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.grey, width: 1)),
+                    border: Border.all(color: Colors.grey),),
             child:
                 isSelected ? Image.asset('lib/images/checkwhiteico.png') : null,
           ),

@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'exception.dart';
+import 'package:picpics/third_party_lib/src/exception.dart';
 
 int decode83(String text, int from, int to) {
   assert(from >= 0 && to <= text.length);
@@ -113,5 +113,5 @@ const _encoding = <String, int>{
   '{': 79,
   '|': 80,
   '}': 81,
-  '~': 82
+  '~': 82,
 };

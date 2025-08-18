@@ -1,8 +1,8 @@
 part of search_map_place;
 
 class PlaceType {
-  final String apiString;
   const PlaceType(this.apiString);
+  final String apiString;
 
   static const geocode = PlaceType('geocode');
   static const address = PlaceType('address');

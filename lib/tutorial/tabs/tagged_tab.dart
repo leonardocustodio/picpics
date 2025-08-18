@@ -2,25 +2,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/custom_scroll_physics.dart';
-import 'package:picPics/fade_image_builder.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/custom_scroll_physics.dart';
+import 'package:picpics/fade_image_builder.dart';
 
-import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/stores/tabs_store.dart';
-import 'package:picPics/stores/tagged_pics_store.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/widgets/device_no_pics.dart';
-import 'package:picPics/widgets/toggle_bar.dart';
+import 'package:picpics/screens/photo_screen.dart';
+import 'package:picpics/stores/app_store.dart';
+import 'package:picpics/stores/gallery_store.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/tabs_store.dart';
+import 'package:picpics/stores/tagged_pics_store.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/widgets/device_no_pics.dart';
+import 'package:picpics/widgets/toggle_bar.dart';
 
-import 'package:picPics/widgets/top_bar.dart';
-import 'package:picPics/widgets/tags_list.dart';
+import 'package:picpics/widgets/top_bar.dart';
+import 'package:picpics/widgets/tags_list.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 class TutsTaggedTab extends StatefulWidget {
   static const id = 'tuts_tagged_tab';
@@ -398,7 +398,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                         AppLogger.d('Selected photo: ${picStore.photoId}');
                         galleryStore.setCurrentPic(picStore);
                         galleryStore.setInitialSelectedThumbnail(picStore);
-                        Get.to(() =>  PhotoScreen());
+                        Get.to<void>(() =>  PhotoScreen());
                       },
                       child: Observer(builder: (_) {
                         Widget image = Positioned.fill(
@@ -415,7 +415,7 @@ class _TutsTaggedTabState extends State<TutsTaggedTab> {
                               Container(
                                 constraints: BoxConstraints.expand(),
                                 decoration: BoxDecoration(
-                                  color: kSecondaryColor.withOpacity(0.3),
+                                  color: kSecondaryColor.withValues(alpha: 0.3),
                                   border: Border.all(
                                     color: kSecondaryColor,
                                     width: 2.0,

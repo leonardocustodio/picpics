@@ -1,5 +1,5 @@
 /* import 'package:flutter/material.dart';
-import 'package:picPics/screens/premium/premium_colorful.dart';
+import 'package:picpics/screens/premium/premium_colorful.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:lottie/lottie.dart';
 

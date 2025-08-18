@@ -1,15 +1,15 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/stores/pic_store.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/stores/pic_store.dart';
 
 class PhotoWidget extends StatelessWidget {
+  const PhotoWidget({required this.picStore, this.hash, super.key});
   final PicStore? picStore;
   final String? hash;
-  const PhotoWidget({required this.picStore, this.hash, super.key});
 
   @override
   Widget build(BuildContext context) {

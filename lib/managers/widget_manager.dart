@@ -1,13 +1,12 @@
 import 'package:home_widget/home_widget.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/stores/pic_store.dart';
 
 class WidgetManager {
   static AppDatabase appDatabase = AppDatabase();
   static Future<void> saveData(
-      {List<PicStore> picsStores = const <PicStore>[]}) async {
-    for (var store in picsStores) {
+      {List<PicStore> picsStores = const <PicStore>[],}) async {
+    for (final store in picsStores) {
       await store.switchIsStarred();
     }
     //AppLogger.d('Setted is starred to true');

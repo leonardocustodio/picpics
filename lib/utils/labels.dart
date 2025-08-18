@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-
-import 'package:picPics/stores/language_controller.dart';
+import 'package:picpics/stores/language_controller.dart';
 
 class PredefinedLabels {
   static String labelTranslation(String label, BuildContext context) {

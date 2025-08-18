@@ -18,7 +18,7 @@ class ArrowPainter extends CustomPainter {
       ..style = paintingStyle;
 
     var path = getTrianglePath(size.width, size.height);
-    canvas.drawShadow(path, strokeColor.withOpacity(0.5), 1.0, false);
+    canvas.drawShadow(path, strokeColor.withValues(alpha: 0.5), 1.0, false);
     canvas.drawPath(path, paint);
   }
 

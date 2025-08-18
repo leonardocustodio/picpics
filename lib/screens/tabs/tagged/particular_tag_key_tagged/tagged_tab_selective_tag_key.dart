@@ -1,22 +1,21 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-
-import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key_grid.dart';
-import 'package:picPics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_option_bar.dart';
-import 'package:picPics/widgets/percentage_dialog.dart';
-import 'package:picPics/widgets/select_all_widget.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/widgets/device_no_pics.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_key_grid.dart';
+import 'package:picpics/screens/tabs/tagged/particular_tag_key_tagged/tagged_tab_selective_tag_option_bar.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/widgets/device_no_pics.dart';
+import 'package:picpics/widgets/percentage_dialog.dart';
+import 'package:picpics/widgets/select_all_widget.dart';
 
 // ignore: must_be_immutable
 class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
-  final String tagKey;
   const TaggedTabSelectiveTagKey(this.tagKey, {super.key});
+  final String tagKey;
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +37,8 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                     await controller.untagPicsFromTag(
                         tagKeyMapToPicId: <String, Map<String, String>>{
                           tagKey: controller.selectedMultiBarPics
-                              .map((key, _) => MapEntry(key, ''))
-                        });
+                              .map((key, _) => MapEntry(key, '')),
+                        },);
                   },
                   child: const Text('Untag'),
                 ),
@@ -47,12 +46,12 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
             leading: GestureDetector(
               onTap: () async {
                 if (await controller.shouldPopOut()) {
-                  Get.back();
+                  Get.back<void>();
                 }
               },
               child: Icon(
                 Icons.arrow_back_ios_rounded,
-                color: Colors.black.withOpacity(.5),
+                color: Colors.black.withValues(alpha: .5),
                 size: 24,
               ),
             ),
@@ -60,11 +59,11 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
             title: Text(
               '${TagsController.to.allTags[tagKey]?.value.title ?? ''} (${controller.taggedPicId[tagKey]?.keys.length ?? 0})',
               style: TextStyle(
-                color: Colors.black.withOpacity(.5),
+                color: Colors.black.withValues(alpha: .5),
               ),
             ),
           ),
-          body: Container(
+          body: ColoredBox(
             //constraints: BoxConstraints.expand(),
             color: kWhiteColor,
             child: SafeArea(
@@ -77,7 +76,7 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                   ///
                   /// Device has pics
                   ///
-                  var hasTaggedPics =
+                  final hasTaggedPics =
                       controller.taggedPicId[tagKey]?.isNotEmpty ?? false;
                   if (hasTaggedPics) {
                     ///
@@ -85,7 +84,7 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                     ///
                     var isSelected = true;
                     if (controller.multiPicBar.value) {
-                      for (var picId in controller.taggedPicId[tagKey]!.keys) {
+                      for (final picId in controller.taggedPicId[tagKey]!.keys) {
                         if (controller.selectedMultiBarPics[picId] == null) {
                           isSelected = false;
                           break;
@@ -102,13 +101,13 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                                 GestureDetector(
                                     onTap: () {
                                       if (isSelected) {
-                                        for (var picId in controller
+                                        for (final picId in controller
                                             .taggedPicId[tagKey]!.keys) {
                                           controller.selectedMultiBarPics
                                               .remove(picId);
                                         }
                                       } else {
-                                        for (var picId in controller
+                                        for (final picId in controller
                                             .taggedPicId[tagKey]!.keys) {
                                           controller
                                                   .selectedMultiBarPics[picId] =
@@ -117,9 +116,9 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                                       }
                                     },
                                     child: SelectAllWidget(
-                                        isSelected: isSelected)),
+                                        isSelected: isSelected,),),
                               Expanded(
-                                  child: TaggedTabSelectiveTagKeyGrid(tagKey)),
+                                  child: TaggedTabSelectiveTagKeyGrid(tagKey),),
                             ],
                           ),
                         ),
@@ -133,14 +132,14 @@ class TaggedTabSelectiveTagKey extends GetWidget<TaggedController> {
                   ///
                   return Obx(
                     () => DeviceHasNoPics(
-                        message: LangControl.to.S.value.no_photos_were_tagged),
+                        message: LangControl.to.S.value.no_photos_were_tagged,),
                   );
                 }
 
                 /// Device has no Pics
                 return Obx(
                   () => DeviceHasNoPics(
-                      message: LangControl.to.S.value.device_has_no_pics),
+                      message: LangControl.to.S.value.device_has_no_pics,),
                 );
               }),
             ),

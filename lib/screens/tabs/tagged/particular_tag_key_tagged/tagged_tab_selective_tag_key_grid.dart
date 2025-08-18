@@ -1,17 +1,17 @@
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/screens/photo_screen.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:picPics/stores/blur_hash_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/widgets/photo_widget.dart';
+import 'package:get/get.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/photo_screen.dart';
+import 'package:picpics/stores/blur_hash_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/widgets/photo_widget.dart';
 
 // ignore: must_be_immutable
 class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
-  final String tagKey;
   const TaggedTabSelectiveTagKeyGrid(this.tagKey, {super.key});
+  final String tagKey;
   @override
   Widget build(BuildContext context) {
     return Obx(() {
@@ -23,8 +23,6 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
           key: Key(tagKey),
           padding: const EdgeInsets.only(top: 2),
           crossAxisCount: 4,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
           itemCount: taggedPicIds.length,
           staggeredTileBuilder: (_) {
             return const StaggeredTile.count(1, 1);
@@ -33,7 +31,7 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
             return Obx(() {
               final picId = taggedPicIds[index];
 
-              var blurHash = BlurHashController.to.blurHash[picId];
+              final blurHash = BlurHashController.to.blurHash[picId];
               final picStore = TabsController.to.picStoreMap[picId]!.value;
               return Padding(
                 padding: const EdgeInsets.all(4),
@@ -50,8 +48,8 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
                         }
                         return;
                       }
-                      await Get.to(() =>
-                          PhotoScreen(picId: picId, picIdList: taggedPicIds));
+                      await Get.to<dynamic>(() =>
+                          PhotoScreen(picId: picId, picIdList: taggedPicIds),);
                     },
                     child: GestureDetector(
                       onLongPress: () {
@@ -74,22 +72,22 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
                             Container(
                               constraints: const BoxConstraints.expand(),
                               decoration: BoxDecoration(
-                                color: kSecondaryColor.withOpacity(0.3),
+                                color: kSecondaryColor.withValues(alpha: 0.3),
                                 border: Border.all(
                                   color: kSecondaryColor,
-                                  width: 2.0,
+                                  width: 2,
                                 ),
                               ),
                             ),
                             Positioned(
-                              left: 8.0,
-                              top: 6.0,
+                              left: 8,
+                              top: 6,
                               child: Container(
                                 height: 20,
                                 width: 20,
                                 decoration: BoxDecoration(
                                   gradient: kSecondaryGradient,
-                                  borderRadius: BorderRadius.circular(10.0),
+                                  borderRadius: BorderRadius.circular(10),
                                 ),
                                 child:
                                     Image.asset('lib/images/checkwhiteico.png'),
@@ -103,7 +101,7 @@ class TaggedTabSelectiveTagKeyGrid extends GetWidget<TaggedController> {
                 ),
               );
             });
-          });
+          },);
     });
   }
 }

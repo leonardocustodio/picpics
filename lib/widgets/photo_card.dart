@@ -1,35 +1,40 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_blurhash/flutter_blurhash.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:get/get.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/constants.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:picPics/screens/all_tags_screen.dart';
-import 'package:picPics/screens/photo_screen.dart';
-import 'package:picPics/stores/blur_hash_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/functions.dart';
-import 'package:picPics/utils/refresh_everything.dart';
-import 'package:picPics/widgets/tags_list.dart';
-
 import 'package:intl/intl.dart';
-import 'package:picPics/components/circular_menu.dart';
-import 'package:picPics/components/circular_menu_item.dart';
-import 'package:flutter/services.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/components/circular_menu.dart';
+import 'package:picpics/components/circular_menu_item.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/screens/all_tags_screen.dart';
+import 'package:picpics/screens/photo_screen.dart';
+import 'package:picpics/stores/blur_hash_controller.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/utils/functions.dart';
+import 'package:picpics/utils/refresh_everything.dart';
+import 'package:picpics/widgets/tags_list.dart';
 
 //typedef EditTagModalTypeDef = dynamic Function(String tagKey);
 
 class PhotoCard extends StatefulWidget {
+
+  const PhotoCard({
+    required this.picStore, //this.showEditTagModal,
+    //this.showDeleteSecretModal,
+    required this.picsInThumbnails, required this.picsInThumbnailIndex, super.key,
+  });
   final PicStore picStore;
 
   //final EditTagModalTypeDef showEditTagModal;
@@ -37,20 +42,11 @@ class PhotoCard extends StatefulWidget {
   final PicSource picsInThumbnails;
   final int picsInThumbnailIndex;
 
-  const PhotoCard({
-    super.key,
-    required this.picStore,
-    //this.showEditTagModal,
-    //this.showDeleteSecretModal,
-    required this.picsInThumbnails,
-    required this.picsInThumbnailIndex,
-  });
-
   @override
-  _PhotoCardState createState() => _PhotoCardState();
+  PhotoCardState createState() => PhotoCardState();
 }
 
-class _PhotoCardState extends State<PhotoCard> {
+class PhotoCardState extends State<PhotoCard> {
   final GlobalKey _photoSpaceKey = GlobalKey();
 
   //TabsController tabsStore;
@@ -64,7 +60,7 @@ class _PhotoCardState extends State<PhotoCard> {
   late FocusNode tagsFocusNode;
 
   String dateFormat(DateTime dateTime) {
-    var formatter = DateFormat.yMMMEd();
+    final formatter = DateFormat.yMMMEd();
     return formatter.format(dateTime);
   }
 
@@ -73,7 +69,7 @@ class _PhotoCardState extends State<PhotoCard> {
         picStore.generalLocation.value != null) {
       return [
         picStore.specificLocation.value!,
-        '  ${picStore.generalLocation.value}'
+        '  ${picStore.generalLocation.value}',
       ];
     }
 
@@ -82,15 +78,15 @@ class _PhotoCardState extends State<PhotoCard> {
         (picStore.originalLatitude == 0 && picStore.originalLongitude == 0)) {
       return [
         LangControl.to.S.value.photo_location,
-        '  ${LangControl.to.S.value.country}'
+        '  ${LangControl.to.S.value.country}',
       ];
     }
 
-    var placemark = await placemarkFromCoordinates(
-        picStore.originalLatitude!, picStore.originalLongitude!);
+    final placemark = await placemarkFromCoordinates(
+        picStore.originalLatitude!, picStore.originalLongitude!,);
 
     AppLogger.d('Placemark: ${placemark.length}');
-    for (var place in placemark) {
+    for (final place in placemark) {
       AppLogger.d('${place.name} - ${place.locality} - ${place.country}');
     }
 
@@ -107,15 +103,15 @@ class _PhotoCardState extends State<PhotoCard> {
 
     return [
       LangControl.to.S.value.photo_location,
-      '  ${LangControl.to.S.value.country}'
+      '  ${LangControl.to.S.value.country}',
     ];
   }
 
   void focusTagsEditingController() {}
 
   void getSizeAndPosition() {
-    var cardBox =
-        _photoSpaceKey.currentContext?.findRenderObject() as RenderBox;
+    final cardBox =
+        _photoSpaceKey.currentContext!.findRenderObject()! as RenderBox;
     AppLogger.d('Card Box Size: ${cardBox.size.height}');
     UserController.to.setPhotoHeightInCardWidget(cardBox.size.height);
   }
@@ -158,19 +154,18 @@ class _PhotoCardState extends State<PhotoCard> {
     // var secretBox = Hive.box('secrets');
     // Secret secret = secretBox.get(picStore.photoId);
     /* AppLogger.d('In secret db: ${secret.photoId} - ${secret.photoPath}'); */
-    var imageProvider = AssetEntityImageProvider(picStore,
-        thumbSize: kDefaultPhotoSize, isOriginal: false);
+    final imageProvider = AssetEntityImageProvider(picStore,
+        thumbSize: kDefaultPhotoSize, isOriginal: false,);
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+      margin: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       decoration: BoxDecoration(
         color: kWhiteColor,
-        borderRadius: BorderRadius.circular(12.0),
+        borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             offset: const Offset(0, 2),
             blurRadius: 8,
-            spreadRadius: 0,
           ),
         ],
       ),
@@ -187,8 +182,8 @@ class _PhotoCardState extends State<PhotoCard> {
                   ),
                 ClipRRect(
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(12.0),
-                    topRight: Radius.circular(12.0),
+                    topLeft: Radius.circular(12),
+                    topRight: Radius.circular(12),
                   ),
                   child: RepaintBoundary(
                     child: ExtendedImage(
@@ -251,14 +246,15 @@ class _PhotoCardState extends State<PhotoCard> {
                   toggleButtonOnPressed: () {
                     UserController.to.switchIsMenuExpanded();
                   },
-                  toggleButtonColor: const Color(0xFF979A9B).withOpacity(0.5),
+                  toggleButtonColor:
+                      const Color(0xFF979A9B).withValues(alpha: 0.5),
                   toggleButtonBoxShadow: const [
                     BoxShadow(
-                        color: Colors.black12, blurRadius: 3, spreadRadius: 3),
+                        color: Colors.black12, blurRadius: 3, spreadRadius: 3,),
                   ],
                   toggleButtonIconColor: Colors.white,
-                  toggleButtonMargin: 12.0,
-                  toggleButtonPadding: 8.0,
+                  toggleButtonMargin: 12,
+                  toggleButtonPadding: 8,
                   toggleButtonSize: 19.2,
                   items: [
                     CircularMenuItem(
@@ -299,11 +295,11 @@ class _PhotoCardState extends State<PhotoCard> {
                       onTap: () {
                         /* GalleryStore.to
                                 .setInitialSelectedThumbnail(picStore); */
-                        var result = Get.to(() => PhotoScreen(
+                        final result = Get.to<dynamic>(() => PhotoScreen(
                             picIdList: const [],
-                            picId: picStore.photoId.value));
+                            picId: picStore.photoId.value,),);
                         if (null == result) {
-                          refresh_everything();
+                          refreshEverything();
                         }
                       },
                     ),
@@ -315,7 +311,7 @@ class _PhotoCardState extends State<PhotoCard> {
           ),
           Padding(
             padding:
-                const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 16.0),
+                const EdgeInsets.only(left: 16, right: 16, bottom: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -325,7 +321,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     // CupertinoButton(
                     //   padding: const EdgeInsets.all(0),
                     //   onPressed: () {
-                    //     Get.to(() => AddLocationScreen(picStore));
+                    //     Get.to<void>(() => AddLocationScreen(picStore));
                     //   },
                     //   child: Obx(() {
                     //     return RichText(
@@ -367,7 +363,7 @@ class _PhotoCardState extends State<PhotoCard> {
                       padding: const EdgeInsets.all(0),
                       child: Text(
                         dateFormat(picStore.createdAt),
-                        textScaler: TextScaler.linear(1.0),
+                        textScaler: const TextScaler.linear(1),
                         style: const TextStyle(
                           fontFamily: 'Lato',
                           color: Color(0xff606566),
@@ -382,10 +378,10 @@ class _PhotoCardState extends State<PhotoCard> {
                 ),
                 Obx(() {
                   return TagsList(
-                    tagStyle: TagStyle.MultiColored,
+                    tagStyle: TagStyle.multiColored,
                     tagsKeyList: TaggedController
                             .to
-                            .picWiseTags[picStore.photoId.value.toString()]
+                            .picWiseTags[picStore.photoId.value]
                             ?.keys
                             .toList() ??
                         <String>[],
@@ -396,7 +392,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     shouldChangeToSwipeMode: true,
                     aiButtonTitle: LangControl.to.S.value.allTags,
                     onAiButtonTap: () {
-                      Get.to(() => AllTagsScreen(picStore: picStore));
+                      Get.to<void>(() => AllTagsScreen(picStore: picStore));
                       AppLogger.d('ai button tapped');
                       // picStore.switchAiTags(context);
                     },
@@ -408,8 +404,8 @@ class _PhotoCardState extends State<PhotoCard> {
                     },
                     onPanEnd: (String selectedTagKey) async {
                       await TagsController.to.removeTagFromPic(
-                          picId: picStore.photoId.value.toString(),
-                          tagKey: selectedTagKey);
+                          picId: picStore.photoId.value,
+                          tagKey: selectedTagKey,);
 
                       /* await GalleryStore.to.removeTagFromPic(
                           picStore: picStore, tagKey: selectedTagKey); */
@@ -426,9 +422,9 @@ class _PhotoCardState extends State<PhotoCard> {
                       AppLogger.d('return');
 
                       if (text != '') {
-                        var tagKey = await TagsController.to.createTag(text);
+                        final tagKey = await TagsController.to.createTag(text);
                         await picStore.addMultipleTagsToPic(
-                            acceptedTagKeys: {tagKey: ''});
+                            acceptedTagKeys: {tagKey: ''},);
 
                         HapticFeedback.lightImpact();
                         tagsEditingController.clear();
@@ -441,7 +437,7 @@ class _PhotoCardState extends State<PhotoCard> {
                   );
                 }),
                 Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
+                  padding: const EdgeInsets.only(top: 8),
                   child: Obx(() {
                     String suggestionsTitle;
 
@@ -452,7 +448,7 @@ class _PhotoCardState extends State<PhotoCard> {
                           children: [
                             Text(
                               LangControl.to.S.value.suggestions,
-                              textScaler: TextScaler.linear(1.0),
+                              textScaler: const TextScaler.linear(1),
                               style: const TextStyle(
                                 fontFamily: 'Lato',
                                 color: Color(0xff979a9b),
@@ -465,10 +461,10 @@ class _PhotoCardState extends State<PhotoCard> {
                             const Center(
                               child: Padding(
                                 padding:
-                                    EdgeInsets.only(top: 32.0, bottom: 32.0),
+                                    EdgeInsets.only(top: 32, bottom: 32),
                                 child: CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation<Color>(
-                                      kSecondaryColor),
+                                      kSecondaryColor,),
                                 ),
                               ),
                             ),
@@ -484,7 +480,7 @@ class _PhotoCardState extends State<PhotoCard> {
                     }
 
                     AppLogger.d(
-                        '$suggestionsTitle : ${picStore.aiTags} : suggestionsTitle');
+                        '$suggestionsTitle : ${picStore.aiTags} : suggestionsTitle',);
                     TagsController.to.tagsSuggestionsCalculate();
                     return Obx(
                       () => TagsList(
@@ -499,10 +495,10 @@ class _PhotoCardState extends State<PhotoCard> {
                                 .toList()
                                 .where((tagKey) {
                           if (TaggedController.to.picWiseTags[
-                                      picStore.photoId.value.toString()] !=
+                                      picStore.photoId.value] !=
                                   null &&
                               TaggedController.to.picWiseTags[
-                                          picStore.photoId.value.toString()]
+                                          picStore.photoId.value]
                                       ?[tagKey] !=
                                   null) {
                             return false;
@@ -510,21 +506,21 @@ class _PhotoCardState extends State<PhotoCard> {
 
                           return true;
                         }).toList(),
-                        tagStyle: TagStyle.GrayOutlined,
+                        tagStyle: TagStyle.grayOutlined,
                         //showEditTagModal: widget.showEditTagModal,
                         onTap: (tagKey) async {
                           await picStore.addMultipleTagsToPic(
-                              acceptedTagKeys: {tagKey: ''});
+                              acceptedTagKeys: {tagKey: ''},);
                           await TagsController.to
                               .tagsSuggestionsCalculate()
                               .then((value) async {
                             await TaggedController.to.refreshTaggedPhotos();
-                            var newList = value.where((element) {
+                            final newList = value.where((element) {
                               if (TaggedController.to.picWiseTags[
-                                          picStore.photoId.value.toString()] !=
+                                          picStore.photoId.value] !=
                                       null &&
                                   TaggedController.to.picWiseTags[
-                                              picStore.photoId.value.toString()]
+                                              picStore.photoId.value]
                                           ?[element.key] ==
                                       null) {
                                 return true;

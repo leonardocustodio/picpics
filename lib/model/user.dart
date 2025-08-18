@@ -1,21 +1,4 @@
 class User {
-  final String id;
-  final List<String> recentTags;
-  String email, password, appLanguage, appVersion, defaultWidgetImage;
-  int goal, hourOfDay, minutesOfDay, picsTaggedToday;
-  bool hasGalleryPermission,
-      loggedIn,
-      secretPhotos,
-      isPinRegistered,
-      keepAskingToDelete,
-      shouldDeleteOnPrivate,
-      tourCompleted,
-      isBiometricActivated,
-      notifications,
-      dailyChallenges,
-      tutorialCompleted;
-  DateTime lastTaggedPicDate;
-  Map<String, String> starredPhotos;
   User({
     required this.id,
     required this.email,
@@ -42,4 +25,21 @@ class User {
     required this.starredPhotos,
     required this.defaultWidgetImage,
   });
+  final String id;
+  final List<String> recentTags;
+  String email, password, appLanguage, appVersion, defaultWidgetImage;
+  int goal, hourOfDay, minutesOfDay, picsTaggedToday;
+  bool hasGalleryPermission,
+      loggedIn,
+      secretPhotos,
+      isPinRegistered,
+      keepAskingToDelete,
+      shouldDeleteOnPrivate,
+      tourCompleted,
+      isBiometricActivated,
+      notifications,
+      dailyChallenges,
+      tutorialCompleted;
+  DateTime lastTaggedPicDate;
+  Map<String, String> starredPhotos;
 }

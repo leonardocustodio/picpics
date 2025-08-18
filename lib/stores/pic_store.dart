@@ -1,30 +1,45 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:convert/convert.dart';
+import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:drift/drift.dart' as drift;
 import 'package:googleapis/translate/v3.dart';
 import 'package:googleapis_auth/auth_io.dart';
 /* import 'package:metadata/metadata.dart' as md; */
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/model/tag_model.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/managers/crypto_manager.dart';
+import 'package:picpics/model/tag_model.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/utils/labels.dart';
 import 'package:share_plus/share_plus.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/labels.dart';
-
-import 'tags_controller.dart';
-import 'package:picPics/utils/app_logger.dart';
 
 class PicStore extends GetxController {
+
+  PicStore({
+    required AssetEntity entityValue,
+    required this.photoPath,
+    required this.thumbPath,
+    required String photoId,
+    required this.createdAt,
+    this.originalLatitude,
+    this.originalLongitude,
+    this.deletedFromCameraRoll = false,
+  }) {
+    this.photoId.value = photoId;
+    entity.value = entityValue;
+    isStar();
+  }
   final DateTime createdAt;
   final double? originalLatitude;
   final double? originalLongitude;
@@ -32,7 +47,7 @@ class PicStore extends GetxController {
   final AppDatabase database = AppDatabase();
 
   //ObservableMap<String, tagModel> tags = ObservableMap<String, tagModel>();
-  var tags = <String, Rx<TagModel>>{}.obs;
+  RxMap<String, Rx<TagModel>> tags = <String, Rx<TagModel>>{}.obs;
 
   //var aiSuggestions = <tagModel>[];
 
@@ -46,16 +61,16 @@ class PicStore extends GetxController {
   final searchText = ''.obs;
 
   // @observable
-  final latitude = RxnDouble(null);
+  final latitude = RxnDouble();
 
   // @observable
-  final longitude = RxnDouble(null);
+  final longitude = RxnDouble();
 
   // @observable
-  final specificLocation = RxnString(null);
+  final specificLocation = RxnString();
 
   // @observable
-  final generalLocation = RxnString(null);
+  final generalLocation = RxnString();
 
   String nonce = '';
 
@@ -72,21 +87,6 @@ class PicStore extends GetxController {
   final entity = Rxn<AssetEntity>();
 
   final tagsSuggestions = <TagModel>[].obs;
-
-  PicStore({
-    required AssetEntity entityValue,
-    required this.photoPath,
-    required this.thumbPath,
-    required String photoId,
-    required this.createdAt,
-    this.originalLatitude,
-    this.originalLongitude,
-    this.deletedFromCameraRoll = false,
-  }) {
-    this.photoId.value = photoId;
-    entity.value = entityValue;
-    isStar();
-  }
   /*  {
     AppLogger.d('loading pic info......');
     tagsSuggestionsCalculate();
@@ -100,14 +100,14 @@ class PicStore extends GetxController {
   }
 
   Future<bool?> switchIsStarred() async {
-    var pic = await database.getPhotoByPhotoId(photoId.value);
+    final pic = await database.getPhotoByPhotoId(photoId.value);
     if (pic == null) {
       return null;
     }
     await database.updatePhoto(
       pic.copyWith(isStarred: !isStarred.value),
     );
-    return await isStar();
+    return isStar();
     //pic.isStarred = value;
     /* String? base64encoded;
     AppLogger.d('teste');
@@ -134,7 +134,7 @@ class PicStore extends GetxController {
   Future<void> setChangePhotoId(String value) async {
     //var tagsBox = Hive.box('tags');
 
-    var tagKeys = tags.keys.toList();
+    final tagKeys = tags.keys.toList();
     tagKeys.forEach((tKeys) async {
       final getTag = await database.getLabelByLabelKey(tKeys);
       if (getTag != null) {
@@ -154,10 +154,10 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //Pic picOld = picsBox.get(photoId);
-    var picOld = await database.getPhotoByPhotoId(photoId.value);
+    final picOld = await database.getPhotoByPhotoId(photoId.value);
 
     if (picOld != null) {
-      var createPic = Photo(
+      final createPic = Photo(
         id: picEntity.id,
         createdAt: picOld.createdAt,
         originalLatitude: picOld.originalLatitude,
@@ -190,21 +190,21 @@ class PicStore extends GetxController {
     if (UserController.to.encryptionKey == null) {
       return null;
     }
-    return await Crypto.decryptImage(
-        photoPath, UserController.to.encryptionKey!, hex.decode(nonce));
+    return Crypto.decryptImage(
+        photoPath, UserController.to.encryptionKey!, hex.decode(nonce),);
   }
 
   Future<Uint8List?> get assetThumbBytes async {
     if (isPrivate.value == false) {
       return await entity.value?.thumbnailDataWithSize(ThumbnailSize(
-          kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1]));
+          kDefaultPreviewThumbSize[0], kDefaultPreviewThumbSize[1],),);
     }
     AppLogger.d('Returning decrypt image in privatePath: $photoPath');
     if (UserController.to.encryptionKey == null) {
       return null;
     }
-    return await Crypto.decryptImage(
-        thumbPath, UserController.to.encryptionKey!, hex.decode(nonce));
+    return Crypto.decryptImage(
+        thumbPath, UserController.to.encryptionKey!, hex.decode(nonce),);
   }
 
   String photoPath;
@@ -217,7 +217,7 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //Pic pic = picsBox.get(photoId);
-    var pic = await database.getPhotoByPhotoId(photoId.value);
+    final pic = await database.getPhotoByPhotoId(photoId.value);
     //pic.deletedFromCameraRoll = value;
     //pic.save();
 
@@ -226,9 +226,9 @@ class PicStore extends GetxController {
 
   //@action
   Future<bool?> setPrivatePath(
-      String picPath, String thumbnailPath, String picNonce) async {
+      String picPath, String thumbnailPath, String picNonce,) async {
     //var secretBox = Hive.box('secrets');
-    var secret = Private(
+    final secret = Private(
       id: photoId.value,
       path: picPath,
       thumbPath: thumbnailPath,
@@ -269,7 +269,7 @@ class PicStore extends GetxController {
 
     //var secretBox = Hive.box('secrets');
     //Secret secretPic = secretBox.get(photoId);
-    var secretPic = await database.getPrivateByPhotoId(photoId.value);
+    final secretPic = await database.getPrivateByPhotoId(photoId.value);
 
     if (secretPic != null) {
       //secretPic.delete();
@@ -286,7 +286,7 @@ class PicStore extends GetxController {
 
     if (copyToCameraRoll == true && deletedFromCameraRoll == true) {
       AppLogger.d('Pic has entity? ${true}');
-      var picData = await assetOriginBytes;
+      final picData = await assetOriginBytes;
 
       /// TODO: returning is picData is null
       if (null == picData) {
@@ -300,10 +300,10 @@ class PicStore extends GetxController {
       await changeAssetEntity(imageEntity);
       AppLogger.d('copied image back to gallery with id: ${imageEntity.id}');
     }
-    var appDocumentsDir = await getApplicationDocumentsDirectory();
+    final appDocumentsDir = await getApplicationDocumentsDirectory();
 
-    var photoFile = File(p.join(appDocumentsDir.path, photoPath));
-    var thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
+    final photoFile = File(p.join(appDocumentsDir.path, photoPath));
+    final thumbFile = File(p.join(appDocumentsDir.path, thumbPath));
 
     await photoFile.delete();
     await thumbFile.delete();
@@ -324,7 +324,7 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //var secretBox = Hive.box('secrets');
-    var pic = await database.getPhotoByPhotoId(photoId.value);
+    final pic = await database.getPhotoByPhotoId(photoId.value);
     if (pic != null) {
       AppLogger.d('pic $photoId exists, loading data....');
       //Pic pic = picsBox.get(photoId);
@@ -339,19 +339,19 @@ class PicStore extends GetxController {
 
       AppLogger.d('Is private: $isPrivate');
       if (isPrivate.value == true) {
-        var secretPic = await database.getPrivateByPhotoId(photoId.value);
+        final secretPic = await database.getPrivateByPhotoId(photoId.value);
 
         if (secretPic != null) {
           photoPath = secretPic.path;
           thumbPath = secretPic.thumbPath!;
           nonce = secretPic.nonce;
           AppLogger.d(
-              'Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce');
+              'Setting private path to: $photoPath - Thumb: $thumbPath - Nonce: $nonce',);
         }
       }
 
-      for (var tagKey in pic.tags.keys) {
-        var tagModel = TagsController.to.allTags[tagKey];
+      for (final tagKey in pic.tags.keys) {
+        final tagModel = TagsController.to.allTags[tagKey];
         if (tagModel == null) {
           AppLogger.d('&&&&##### DID NOT FIND TAG: $tagKey');
           continue;
@@ -379,7 +379,7 @@ class PicStore extends GetxController {
     AppLogger.d('Photo Id: $photoId - Entity Id: ${entity.value?.id}');
 
     //var picsBox = Hive.box('pics');
-    var getPic = await database.getPhotoByPhotoId(photoId.value);
+    final getPic = await database.getPhotoByPhotoId(photoId.value);
     //getPic.isPrivate = value;
     //picsBox.put(photoId, getPic);
     if (getPic != null) {
@@ -397,7 +397,7 @@ class PicStore extends GetxController {
 
   Future<void> removeSecretTagFromPic() async {
     await removeMultipleTagFromPic(
-        acceptedTags: <String, String>{kSecretTagKey: ''});
+        acceptedTags: <String, String>{kSecretTagKey: ''},);
     await tagsSuggestionsCalculate();
     AppLogger.d('Added secret tag to pic!');
   }
@@ -411,17 +411,17 @@ class PicStore extends GetxController {
 
   Future<List<TagModel>> tagsSuggestionsCalculate() async {
     //var tagsBox = Hive.box('tags');
-    var tagsBox = await database.getAllLabel();
-    var tagsBoxKeys = tagsBox.map((e) => e.key).toSet().toList();
+    final tagsBox = await database.getAllLabel();
+    final tagsBoxKeys = tagsBox.map((e) => e.key).toSet().toList();
     tagsSuggestions.clear();
     searchText.value = searchText.trim();
 
     if (searchText.value == '') {
-      var suggestions = <TagModel>[];
-      var suggestionTags = <String>[];
-      var tagsKeys = tags.keys.toList();
+      final suggestions = <TagModel>[];
+      final suggestionTags = <String>[];
+      final tagsKeys = tags.keys.toList();
 
-      for (var recent in UserController.to.recentTags) {
+      for (final recent in UserController.to.recentTags) {
         if (tagsKeys.contains(recent) ||
             suggestionTags.contains(recent) ||
             (PrivatePhotosController.to.showPrivate.value == false &&
@@ -432,7 +432,7 @@ class PicStore extends GetxController {
       }
 
       if (suggestionTags.length < kMaxNumOfSuggestions) {
-        for (var tagKey in tagsBoxKeys) {
+        for (final tagKey in tagsBoxKeys) {
           if (tagsKeys.contains(tagKey) ||
               suggestionTags.contains(tagKey) ||
               (PrivatePhotosController.to.showPrivate.value == false &&
@@ -446,7 +446,7 @@ class PicStore extends GetxController {
         }
       }
 
-      for (var tagId in suggestionTags) {
+      for (final tagId in suggestionTags) {
         if (TagsController.to.allTags[tagId] != null) {
           suggestions.add(TagsController.to.allTags[tagId]!.value);
         }
@@ -454,8 +454,8 @@ class PicStore extends GetxController {
 
       tagsSuggestions.value = suggestions;
     } else {
-      var listOfLetters = searchText.toLowerCase().split('');
-      for (var tagKey in tagsBoxKeys) {
+      final listOfLetters = searchText.toLowerCase().split('');
+      for (final tagKey in tagsBoxKeys) {
         /// check whether it is a kSecretTagKey
         if (tagKey == kSecretTagKey) {
           ///
@@ -470,7 +470,7 @@ class PicStore extends GetxController {
           tagsSuggestions.add(TagsController.to.allTags[tagKey]!.value);
           continue;
         }
-        var tagName = Helpers.decryptTag(tagKey);
+        final tagName = Helpers.decryptTag(tagKey);
         doCustomisedSearching(
           tagName,
           listOfLetters,
@@ -527,7 +527,7 @@ class PicStore extends GetxController {
 
   /// Will remove the photoId from the labels Table
   Future<String> _removePhotoIdFromLabel(
-      Map<String, String> selectedTags) async {
+      Map<String, String> selectedTags,) async {
     final list = <String>[];
     selectedTags.forEach((tagKey, _) async {
       final getTag = await database.getLabelByLabelKey(tagKey);
@@ -548,10 +548,6 @@ class PicStore extends GetxController {
       createdAt: createdAt,
       originalLatitude: originalLatitude,
       originalLongitude: originalLongitude,
-      latitude: null,
-      longitude: null,
-      specificLocation: null,
-      generalLocation: null,
       tags: tagsMap,
       isStarred: false,
       deletedFromCameraRoll: false,
@@ -561,8 +557,8 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> removeMultipleTagsFromPicsForwadFromTagsController(
-      {required Map<String, String> acceptedTagKeys, String? name}) async {
-    var getPic = await database.getPhotoByPhotoId(photoId.value);
+      {required Map<String, String> acceptedTagKeys, String? name,}) async {
+    final getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic == null) {
       return;
@@ -587,8 +583,8 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> addMultipleTagsToPic(
-      {required Map<String, String> acceptedTagKeys, String? name}) async {
-    var getPic = await database.getPhotoByPhotoId(photoId.value);
+      {required Map<String, String> acceptedTagKeys, String? name,}) async {
+    final getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
       AppLogger.d('this picture is in db going to update');
@@ -614,7 +610,7 @@ class PicStore extends GetxController {
     AppLogger.d('this picture is not in db, adding it...');
     AppLogger.d('Photo Id: $photoId');
 
-    var pic =
+    final pic =
         photoObject(acceptedTagKeys, acceptedTagKeys[kSecretTagKey] != null);
 
     await database.createPhoto(pic);
@@ -631,9 +627,9 @@ class PicStore extends GetxController {
     if (byteData == null) {
       return null;
     }
-    var tempDir = await getTemporaryDirectory();
-    var imageFile = File(
-        '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg');
+    final tempDir = await getTemporaryDirectory();
+    final imageFile = File(
+        '${tempDir.path}/picpics/${DateTime.now().millisecondsSinceEpoch}.jpg',);
     imageFile.createSync(recursive: true);
     imageFile.writeAsBytesSync(byteData);
     return imageFile.path;
@@ -646,15 +642,15 @@ class PicStore extends GetxController {
     if (Platform.isAndroid) {
       path = await _writeByteToImageFile(entity.value == null
           ? await assetOriginBytes
-          : await entity.value!.originBytes);
+          : await entity.value!.originBytes,);
     } else {
       if (entity.value == null) {
-        var bytes = await assetOriginBytes;
+        final bytes = await assetOriginBytes;
         path = await _writeByteToImageFile(bytes);
       } else {
-        var bytes = await entity.value!.thumbnailDataWithSize(ThumbnailSize(
+        final bytes = await entity.value!.thumbnailDataWithSize(ThumbnailSize(
             entity.value!.size.width.toInt(),
-            entity.value!.size.height.toInt()));
+            entity.value!.size.height.toInt(),),);
         path = await _writeByteToImageFile(bytes);
       }
     }
@@ -687,12 +683,12 @@ class PicStore extends GetxController {
 
     //var picsBox = Hive.box('pics');
     //Pic pic = picsBox.get(photoId);
-    var pic = await database.getPhotoByPhotoId(photoId.value);
+    final pic = await database.getPhotoByPhotoId(photoId.value);
 
     if (pic != null) {
       AppLogger.d('pic is in db... removing it from db!');
-      var picTags = List<String>.from(pic.tags.keys);
-      for (var tagKey in picTags) {
+      final picTags = List<String>.from(pic.tags.keys);
+      for (final tagKey in picTags) {
         await removeMultipleTagFromPic(
           acceptedTags: <String, String>{tagKey: ''},
         );
@@ -711,10 +707,10 @@ class PicStore extends GetxController {
 
   //@action
   Future<void> removeMultipleTagFromPic(
-      {required Map<String, String> acceptedTags}) async {
-    var title = await _removePhotoIdFromLabel(acceptedTags);
+      {required Map<String, String> acceptedTags,}) async {
+    final title = await _removePhotoIdFromLabel(acceptedTags);
 
-    var getPic = await database.getPhotoByPhotoId(photoId.value);
+    final getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
       getPic.tags.removeWhere((key, _) => acceptedTags[key] != null);
@@ -739,11 +735,11 @@ class PicStore extends GetxController {
       {required double lat,
       required double long,
       String? specific,
-      String? general}) async {
+      String? general,}) async {
     //var picsBox = Hive.box('pics');
 
     //Pic getPic = picsBox.get(photoId);
-    var getPic = await database.getPhotoByPhotoId(photoId.value);
+    final getPic = await database.getPhotoByPhotoId(photoId.value);
 
     if (getPic != null) {
       AppLogger.d('found pic');
@@ -758,11 +754,11 @@ class PicStore extends GetxController {
         longitude: drift.Value(long),
         specificLocation: drift.Value(specific),
         generalLocation: drift.Value(general),
-      ));
+      ),);
       AppLogger.d('updated pic with new values');
     } else {
       AppLogger.d('Did not found pic!');
-      var createPic = Photo(
+      final createPic = Photo(
         id: photoId.value,
         createdAt: createdAt,
         originalLatitude: originalLatitude,
@@ -803,8 +799,8 @@ class PicStore extends GetxController {
   void setAiTagsLoaded(bool value) => aiTagsLoaded.value = value;
 
   Future<List<String>> translateTags(
-      List<String> tagsText, BuildContext context) async {
-    var lang = UserController.to.appLanguage.split('_')[0];
+      List<String> tagsText, BuildContext context,) async {
+    final lang = UserController.to.appLanguage.split('_')[0];
     if (lang == 'pt' || lang == 'es' || lang == 'de' || lang == 'ja') {
       AppLogger.d('Offline translating it...');
       return tagsText
@@ -828,11 +824,11 @@ class PicStore extends GetxController {
 ''');
 
     final SCOPES = [TranslateApi.cloudTranslationScope];
-    var translatedStrings = <String>[];
+    final translatedStrings = <String>[];
 
     await clientViaServiceAccount(credentials, SCOPES).then((httpClient) async {
-      var translate = TranslateApi(httpClient);
-      var request = TranslateTextRequest();
+      final translate = TranslateApi(httpClient);
+      final request = TranslateTextRequest();
       request.contents = tagsText;
       request.mimeType = 'text/plain';
       request.sourceLanguageCode = 'en-US';
@@ -840,11 +836,11 @@ class PicStore extends GetxController {
           UserController.to.appLanguage.replaceAll('_', '-');
       request.model = 'projects/picpics/locations/global/models/general/nmt';
 
-      var response =
+      final response =
           await translate.projects.translateText(request, 'projects/picpics');
-      var translations = response.translations;
+      final translations = response.translations;
       if (translations != null) {
-        for (var element in translations) {
+        for (final element in translations) {
           if (element.translatedText != null) {
             // TODO: Removed this to compile
             // translatedStrings.add(Strings.properCase(element.translatedText!));

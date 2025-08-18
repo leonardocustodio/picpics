@@ -1,9 +1,6 @@
-import 'package:picPics/utils/app_logger.dart';
-
 part of search_map_place;
 
 class Place {
-  Geocoding geocode;
 
   Place(
     this.geocode, {
@@ -14,14 +11,15 @@ class Place {
 
   Place.fromJSON(place, this.geocode) {
     try {
-      description = place['description'];
-      placeId = place['place_id'];
-      types = place['types'];
+      description = place['description'] as String;
+      placeId = place['place_id'] as String?;
+      types = place['types'] as List<dynamic>?;
       fullJSON = place;
     } catch (e) {
-      AppLogger.d("The argument you passed for Place is not compatible.");
+      AppLogger.d('The argument you passed for Place is not compatible.');
     }
   }
+  Geocoding geocode;
 
   /// Contains the human-readable name for the returned result. For establishment results, this is usually the business name.
   String description = '';
@@ -55,7 +53,7 @@ class Place {
   /// Learn more at [Geolocation docs](https://developers.google.com/maps/documentation/geolocation/intro)
   Future<Geolocation> get geolocation async {
     if (_geolocation == null) {
-      _geolocation = await geocode.getGeolocation(description);
+      _geolocation = await geocode.getGeolocation(description) as Geolocation?;
       return _geolocation!;
     }
     return _geolocation!;

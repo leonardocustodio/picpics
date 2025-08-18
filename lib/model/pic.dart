@@ -1,11 +1,4 @@
 class Pic {
-  final String photoId;
-  final DateTime createdAt;
-  final double originalLatitude, originalLongitude;
-  double latitude, longitude;
-  String specificLocation, generalLocation, base64encoded;
-  final List<String> tags;
-  bool isPrivate, deletedFromCameraRoll, isStarred;
 
   Pic({
     required this.photoId,
@@ -22,4 +15,11 @@ class Pic {
     required this.isStarred,
     required this.base64encoded,
   });
+  final String photoId;
+  final DateTime createdAt;
+  final double originalLatitude, originalLongitude;
+  double latitude, longitude;
+  String specificLocation, generalLocation, base64encoded;
+  final List<String> tags;
+  bool isPrivate, deletedFromCameraRoll, isStarred;
 }

@@ -3,18 +3,18 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/constants.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/constants.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/search/search_map_place.dart';
+import 'package:picpics/search/search_map_place.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'package:picPics/stores/app_store.dart';
-import 'package:picPics/stores/gallery_store.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/stores/app_store.dart';
+import 'package:picpics/stores/gallery_store.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/utils/app_logger.dart';
 
 const kGoogleApiKey = 'AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw';
 final homeScaffoldKey = GlobalKey<ScaffoldState>();
@@ -98,7 +98,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
       }
     }
 
-    Get.back();
+    Get.back<void>();
   }
 
   void getUserPosition() async {
@@ -221,7 +221,7 @@ class _TutsAddLocationScreenState extends State<TutsAddLocationScreen> {
                         CupertinoButton(
                           padding: const EdgeInsets.all(0),
                           onPressed: () {
-                            Get.back();
+                            Get.back<void>();
                           },
                           child: Container(
                             width: height * 0.17,

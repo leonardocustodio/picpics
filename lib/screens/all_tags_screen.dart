@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/stores/pic_store.dart';
-import 'package:picPics/model/tag_model.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/widgets/customised_tags_list.dart';
-import '../constants.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/model/tag_model.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/pic_store.dart';
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/widgets/customised_tags_list.dart';
 
 // ignore_for_file: invalid_use_of_protected_member
 class AllTagsController extends GetxController {
@@ -29,8 +29,8 @@ class AllTagsController extends GetxController {
       tempTags = Map<String, TagModel>.from(searchedTags.value);
     } */
     searchedTags.value.clear();
-    var listOfLetters = searchedText.value.toLowerCase().split('');
-    (/* !doFullSearching.value ? tempTags : */ TagsController.to.allTags)
+    final listOfLetters = searchedText.value.toLowerCase().split('');
+    /* !doFullSearching.value ? tempTags : */ TagsController.to.allTags
         .forEach(
       (key, value) => doCustomisedSearching(
         value.value,
@@ -49,17 +49,17 @@ class AllTagsController extends GetxController {
 
 // ignore_for_file: must_be_immutable, unused_field, prefer_final_fields
 class AllTagsScreen extends GetWidget<AllTagsController> {
-  static const id = 'all_tags_screen';
-  final PicStore? picStore;
-
-  var _ = Get.put(AllTagsController());
   AllTagsScreen({
     this.picStore,
     super.key,
   });
+  static const id = 'all_tags_screen';
+  final PicStore? picStore;
+
+  var _ = Get.put(AllTagsController());
 
   FocusNode focusNode = FocusNode();
-  var searchEditingController = TextEditingController();
+  TextEditingController searchEditingController = TextEditingController();
 
 /* 
   @override
@@ -82,14 +82,14 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
     });
   } */
 
-  var loadTagsFromPicStore = true;
+  bool loadTagsFromPicStore = true;
 
   @override
   Widget build(BuildContext context) {
     if (loadTagsFromPicStore) {
       //WidgetsBinding.instance.addPostFrameCallback((_) {
       controller.selectedTags.value = Map<String, TagModel>.from(
-          picStore!.tags.value.map((key, value) => MapEntry(key, value.value)));
+          picStore!.tags.value.map((key, value) => MapEntry(key, value.value)),);
       loadTagsFromPicStore = false;
       // });
     }
@@ -106,16 +106,9 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                     child: Padding(
                       padding: const EdgeInsets.only(right: 10),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
                           GestureDetector(
-                            onTap: () {
-                              //TabsController.to.refreshUntaggedList();
-                              //TaggedController.to.refreshTaggedPhotos();
-                              Get.back();
-                              /* completionHandler?.call(); */
-                            },
+                            onTap: () => Get.back<void>(),
                             child: Padding(
                               padding:
                                   const EdgeInsets.only(left: 5, right: 10),
@@ -227,11 +220,11 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                         decoration: const InputDecoration(
                                           contentPadding: EdgeInsets.all(0),
                                           border: OutlineInputBorder(
-                                              borderSide: BorderSide.none),
+                                              borderSide: BorderSide.none,),
                                           enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide.none),
+                                              borderSide: BorderSide.none,),
                                           focusedBorder: OutlineInputBorder(
-                                              borderSide: BorderSide.none),
+                                              borderSide: BorderSide.none,),
                                           hintText: 'Search...',
                                           hintStyle: TextStyle(
                                             fontFamily: 'Lato',
@@ -260,7 +253,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                                         },
                                         child: const SizedBox(
                                             width: 60,
-                                            child: Icon(Icons.clear))),
+                                            child: Icon(Icons.clear),),),
                                 ],
                               ),
                             ),
@@ -306,7 +299,7 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                               controller.searchedTags.value.keys.toList(),
                           selectedTags: controller.selectedTags.value,
                           onTap: (String tagId, String tagName, int count,
-                                  DateTime time) async =>
+                                  DateTime time,) async =>
                               doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
                             AppLogger.d('do nothing');
@@ -338,8 +331,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                               TagsController.to.mostUsedTags.keys.toList(),
                           selectedTags: controller.selectedTags.value,
                           onTap: (String tagId, String tagName, int count,
-                                  DateTime time) async =>
-                              await doTagging(tagId, tagName, count, time),
+                                  DateTime time,) async =>
+                              doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
                             AppLogger.d('do nothing');
                           },
@@ -374,8 +367,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                               TagsController.to.lastWeekUsedTags.keys.toList(),
                           selectedTags: controller.selectedTags.value,
                           onTap: (String tagId, String tagName, int count,
-                                  DateTime time) async =>
-                              await doTagging(tagId, tagName, count, time),
+                                  DateTime time,) async =>
+                              doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
                             AppLogger.d('do nothing');
                           },
@@ -411,8 +404,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                               .toList(),
                           selectedTags: controller.selectedTags.value,
                           onTap: (String tagId, String tagName, int count,
-                                  DateTime time) async =>
-                              await doTagging(tagId, tagName, count, time),
+                                  DateTime time,) async =>
+                              doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
                             AppLogger.d('do nothing');
                           },
@@ -446,8 +439,8 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
                           tagsKeyList: TagsController.to.allTags.keys.toList(),
                           selectedTags: controller.selectedTags.value,
                           onTap: (String tagId, String tagName, int count,
-                                  DateTime time) async =>
-                              await doTagging(tagId, tagName, count, time),
+                                  DateTime time,) async =>
+                              doTagging(tagId, tagName, count, time),
                           onDoubleTap: () {
                             AppLogger.d('do nothing');
                           },
@@ -465,14 +458,14 @@ class AllTagsScreen extends GetWidget<AllTagsController> {
   }
 
   Future<void> doTagging(
-      String tagId, String tagName, int count, DateTime time) async {
+      String tagId, String tagName, int count, DateTime time,) async {
     AppLogger.d('do nothing');
 
     if (controller.selectedTags.value[tagId] != null) {
       controller.selectedTags.value.remove(tagId);
       //
       await TagsController.to.removeTagFromPic(
-          picId: picStore!.photoId.value.toString(), tagKey: tagId);
+          picId: picStore!.photoId.value, tagKey: tagId,);
     } else {
       controller.selectedTags.value[tagId] =
           TagModel(key: tagId, title: tagName, count: count, time: time);

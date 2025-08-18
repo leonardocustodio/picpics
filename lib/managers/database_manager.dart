@@ -1,14 +1,15 @@
+import 'dart:io';
+
+import 'package:drift/drift.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
-import 'package:drift/drift.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'dart:io';
-import 'package:picPics/utils/languages.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/languages.dart';
 /* import 'package:purchases_flutter/purchases_flutter.dart'; */
 
 class DatabaseManager extends ChangeNotifier {
@@ -26,7 +27,7 @@ class DatabaseManager extends ChangeNotifier {
   String currentPhotoCity = '';
   String currentPhotoState = '';
 
-  double scale = 1.0;
+  double scale = 1;
 
   //String selectedTagKey;
   late MoorUser userSettings;
@@ -37,7 +38,7 @@ class DatabaseManager extends ChangeNotifier {
   /* bool adsIsLoaded = false;
   bool showShowAdAfterReload = false; */
 
-  void requestNotification() async {
+  Future<void> requestNotification() async {
     // TODO: commented below line
     //var userBox = Hive.box('user');
 
@@ -49,7 +50,7 @@ class DatabaseManager extends ChangeNotifier {
     if (Platform.isIOS) {
       final firebaseMessaging = FirebaseMessaging.instance;
       await firebaseMessaging.requestPermission(
-          sound: true, badge: true, alert: true);
+          );
 
       // _firebaseMessaging.onIosSettingsRegistered.listen((IosNotificationSettings settings) {
       // });
@@ -163,7 +164,7 @@ AppLogger.d('got token this mean it did accept notification');
   }
  */
   Future<void> changeUserLanguage(String appLanguage,
-      {bool notify = true}) async {
+      {bool notify = true,}) async {
     await database.updateMoorUser(
       userSettings.copyWith(
         appLanguage: Value(appLanguage),
@@ -182,7 +183,7 @@ AppLogger.d('got token this mean it did accept notification');
 
   String getUserLanguage() {
     final appLanguage = userSettings.appLanguage?.split('_')[0];
-    var language = LanguageLocal();
+    final language = LanguageLocal();
     return '${language.getDisplayLanguage(appLanguage)['nativeName']}';
   }
 
@@ -191,7 +192,7 @@ AppLogger.d('got token this mean it did accept notification');
     AppLogger.d('new scale value: $scale');
   }
 
-  Future findLocation(double latitude, double longitude) async {
+  Future<void> findLocation(double latitude, double longitude) async {
     AppLogger.d('Finding location...');
     final placemarks = await placemarkFromCoordinates(latitude, longitude);
     AppLogger.d('Placemark: ${placemarks.first.locality}');

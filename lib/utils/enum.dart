@@ -1,19 +1,19 @@
 enum TagStyle {
-  MultiColored,
-  RedFilled,
-  GrayOutlined,
+  multiColored,
+  redFilled,
+  grayOutlined,
 }
 
 enum Status {
-  Loaded,
-  Loading,
-  DeviceHasNoPics,
-  InsufficientPermission,
+  loaded,
+  loading,
+  deviceHasNoPics,
+  insufficientPermission,
 }
 
 enum PicSource {
-  UNTAGGED,
-  SWIPE,
-  TAGGED,
-  FILTERED,
+  untagged,
+  swipe,
+  tagged,
+  filtered,
 }

@@ -1,13 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:picPics/managers/database_manager.dart';
+import 'package:picpics/managers/database_manager.dart';
+import 'package:picpics/utils/app_logger.dart';
 import 'package:timezone/timezone.dart' as tz;
-import 'package:picPics/utils/app_logger.dart';
 
 class PushNotificationsManager {
-  PushNotificationsManager._();
 
   factory PushNotificationsManager() => _instance;
+  PushNotificationsManager._();
 
   static final PushNotificationsManager _instance =
       PushNotificationsManager._();
@@ -25,9 +25,9 @@ class PushNotificationsManager {
       // _firebaseMessaging.configure();
 
       // For testing purposes print the Firebase Messaging token
-      var token = await _firebaseMessaging.getToken();
+      final token = await _firebaseMessaging.getToken();
 
-      AppLogger.d("FirebaseMessaging token: $token");
+      AppLogger.d('FirebaseMessaging token: $token');
 
       _initialized = true;
 /* 
@@ -41,14 +41,14 @@ class PushNotificationsManager {
       }); 
 */
 
-      var initializationSettingsAndroid =
-          const AndroidInitializationSettings('ic_launcher');
-      var initializationSettingsIOS = const DarwinInitializationSettings(
+      const initializationSettingsAndroid =
+          AndroidInitializationSettings('ic_launcher');
+      const initializationSettingsIOS = DarwinInitializationSettings(
           requestAlertPermission: false,
           requestBadgePermission: false,
-          requestSoundPermission: false);
+          requestSoundPermission: false,);
 
-      var initializationSettings = InitializationSettings(
+      const initializationSettings = InitializationSettings(
         android: initializationSettingsAndroid,
         iOS: initializationSettingsIOS,
       );
@@ -58,11 +58,11 @@ class PushNotificationsManager {
     }
   }
 
-  void register(
+  Future<void> register(
       {int hourOfDay = 0,
       int minutesOfDay = 0,
       String? title,
-      String? description}) async {
+      String? description,}) async {
     if (!_initialized) {
       await init();
       AppLogger.d('subscribed');
@@ -71,7 +71,7 @@ class PushNotificationsManager {
 
     await _firebaseMessaging.requestPermission();
     final token = await _firebaseMessaging.getToken();
-    AppLogger.d("FirebaseMessaging token: $token");
+    AppLogger.d('FirebaseMessaging token: $token');
     AppLogger.d('subscribed');
 
     scheduleNotification(
@@ -87,7 +87,7 @@ class PushNotificationsManager {
 AppLogger.d('subscribed to topic: all_users');
   } */
 
-  void deregister() async {
+  Future<void> deregister() async {
     try {
       await _firebaseMessaging.deleteToken();
       AppLogger.d('unsubscribed');
@@ -101,7 +101,7 @@ AppLogger.d('subscribed to topic: all_users');
       );
 
       AppLogger.d(
-          'User settings: notification: ${DatabaseManager.instance.userSettings.notification} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}');
+          'User settings: notification: ${DatabaseManager.instance.userSettings.notification} - dailyChallenges ${DatabaseManager.instance.userSettings.dailyChallenges}',);
 
       await _flutterLocalNotificationsPlugin.cancelAll();
     } catch (error) {
@@ -112,18 +112,18 @@ AppLogger.d('subscribed to topic: all_users');
   tz.TZDateTime _nextInstanceOfTime(tz.TZDateTime time) {
     final now = tz.TZDateTime.now(tz.local);
     var scheduledDate = tz.TZDateTime(
-        tz.local, now.year, now.month, now.day, time.hour, time.minute);
+        tz.local, now.year, now.month, now.day, time.hour, time.minute,);
     if (scheduledDate.isBefore(now)) {
       scheduledDate = scheduledDate.add(const Duration(days: 1));
     }
     return scheduledDate;
   }
 
-  void scheduleNotification(
+  Future<void> scheduleNotification(
       {int hourOfDay = 0,
       int minutesOfDay = 0,
       String? title,
-      String? description}) async {
+      String? description,}) async {
     await _flutterLocalNotificationsPlugin.cancelAll();
 
     // TODO: Check this
@@ -133,7 +133,7 @@ AppLogger.d('subscribed to topic: all_users');
     //   0,
     // );
     // This is not right just to pass
-    var time = tz.TZDateTime.utc(2023);
+    final time = tz.TZDateTime.utc(2023);
 
     await _flutterLocalNotificationsPlugin.zonedSchedule(
       0,

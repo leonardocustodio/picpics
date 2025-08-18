@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:picPics/stores/percentage_dialog_controller.dart';
+import 'package:picpics/stores/percentage_dialog_controller.dart';
 
 // ignore: must_be_immutable
 class PercentageDialog extends GetWidget<PercentageDialogController> {
@@ -22,14 +22,13 @@ class PercentageDialog extends GetWidget<PercentageDialogController> {
         child: Stack(
           children: [
             Positioned.fill(
-                child: Container(color: Colors.black.withOpacity(.7))),
+                child: Container(color: Colors.black.withValues(alpha: .7)),),
             Align(
-              alignment: Alignment.center,
               child: Container(
                 width: 80,
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(50)),
+                    borderRadius: BorderRadius.circular(50),),
                 height: 80,
                 child: Stack(
                   children: [
@@ -38,15 +37,14 @@ class PercentageDialog extends GetWidget<PercentageDialogController> {
                           radius: 70,
                           percent: percentage,
                           progressColor: Colors.green,
-                          backgroundColor: Colors.grey.withOpacity(.4)),
+                          backgroundColor: Colors.grey.withValues(alpha: .4),),
                     ),
                     Align(
-                      alignment: Alignment.center,
                       child: Text(
                         '$textPercent%',
                         textAlign: TextAlign.center,
                         style: const TextStyle(
-                            inherit: false, color: Colors.black, fontSize: 17),
+                            inherit: false, color: Colors.black, fontSize: 17,),
                       ),
                     ),
                   ],
@@ -55,17 +53,16 @@ class PercentageDialog extends GetWidget<PercentageDialogController> {
             ),
             if (controller.text.value != null)
               Align(
-                alignment: Alignment.center,
                 child: Container(
                   margin: const EdgeInsets.only(top: 130),
                   child: Text(
                     '${textPercent > 98 ? "Finishing..." : controller.text.value}',
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                        inherit: false, color: Colors.white, fontSize: 17),
+                        inherit: false, color: Colors.white, fontSize: 17,),
                   ),
                 ),
-              )
+              ),
           ],
         ),
       );

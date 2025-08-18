@@ -5,20 +5,18 @@ import 'package:supercharged/supercharged.dart';
 enum _AniProps { opacity, translateY }
 
 class FadeIn extends StatelessWidget {
-  final double delay;
-  final Widget child;
 
   const FadeIn({
-    super.key,
-    required this.delay,
-    required this.child,
+    required this.delay, required this.child, super.key,
   });
+  final double delay;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final tween = MovieTween()
-      ..tween(_AniProps.opacity, 0.0.tweenTo(1.0))
-      ..tween(_AniProps.translateY, 0.0.tweenTo(76.0));
+      ..tween(_AniProps.opacity, 0.0.tweenTo(1))
+      ..tween(_AniProps.translateY, 0.0.tweenTo(76));
 
     return PlayAnimationBuilder<Movie>(
       delay: (300 * delay).round().milliseconds,

@@ -53,9 +53,9 @@ ColorTriplet decodeAc(int value, double maxVal) {
   final b = value % 19.0;
 
   return ColorTriplet(
-    signPow((r - 9.0) / 9.0, 2.0) * maxVal,
-    signPow((g - 9.0) / 9.0, 2.0) * maxVal,
-    signPow((b - 9.0) / 9.0, 2.0) * maxVal,
+    signPow((r - 9.0) / 9.0, 2) * maxVal,
+    signPow((g - 9.0) / 9.0, 2) * maxVal,
+    signPow((b - 9.0) / 9.0, 2) * maxVal,
   );
 }
 

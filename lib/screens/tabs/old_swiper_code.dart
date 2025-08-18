@@ -1,5 +1,3 @@
-import 'package:picPics/utils/app_logger.dart';
-
 /*                            Swiper(
                               controller: swiperController,
                               loop: true,

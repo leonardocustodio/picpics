@@ -1,17 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
-import 'dart:io';
-import 'package:picPics/model/pic.dart';
-import 'package:picPics/model/secret.dart';
-import 'package:picPics/model/user.dart';
-import 'package:picPics/model/user_key.dart';
-import 'package:picPics/stores/database_controller.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:picpics/model/pic.dart';
+import 'package:picpics/model/secret.dart';
+import 'package:picpics/model/user.dart';
+import 'package:picpics/model/user_key.dart';
+import 'package:picpics/stores/database_controller.dart';
 import 'package:uuid/uuid.dart';
-import 'package:picPics/utils/app_logger.dart';
 
 part 'app_database.g.dart';
 
@@ -151,33 +150,33 @@ class MoorUsers extends Table {
 class MapStringConvertor extends TypeConverter<Map<String, String>, String> {
   @override
   Map<String, String> fromSql(String fromDb) {
-    var r = json.decode(fromDb);
+    final r = json.decode(fromDb);
     if (r is List) {
       return <String, String>{};
     }
 
-    return Map<String, String>.from(r);
+    return Map<String, String>.from(r as Map<dynamic, dynamic>);
   }
 
   @override
   String toSql(Map<String, String> value) {
-    return json.encode(value ?? <String, String>{});
+    return json.encode(value);
   }
 }
 
 class ListStringConvertor extends TypeConverter<List<String>, String> {
   @override
   List<String> fromSql(String fromDb) {
-    var r = json.decode(fromDb);
+    final r = json.decode(fromDb);
     if (r is List) {
       return r.toList().map((e) => e.toString()).toList();
     }
-    return r;
+    return <String>[];
   }
 
   @override
   String toSql(List<String> value) {
-    return json.encode(value ?? <String>[]);
+    return json.encode(value);
   }
 }
 
@@ -192,18 +191,18 @@ LazyDatabase _openConnection() {
     final file = File(p.join(dbFolder.path, 'db.sqlite'));
     return NativeDatabase(file, setup: (rawDb) {
       rawDb.execute("PRAGMA key = 'Leonardo';");
-    });
+    },);
   });
 }
 
 @DriftDatabase(tables: [Photos, PicBlurHashs, Privates, Labels, MoorUsers])
 class AppDatabase extends _$AppDatabase {
-  static final AppDatabase _singleton = AppDatabase._internal();
 
   factory AppDatabase() {
     return _singleton;
   }
   AppDatabase._internal() : super(_openConnection());
+  static final AppDatabase _singleton = AppDatabase._internal();
 
   @override
   int get schemaVersion => 1;
@@ -213,16 +212,16 @@ class AppDatabase extends _$AppDatabase {
   ///Blur Hash operations Start
   ///
   ///
-  Future createBlurHash(PicBlurHash newBlurHash) =>
+  Future<int> createBlurHash(PicBlurHash newBlurHash) =>
       into(picBlurHashs).insert(newBlurHash);
 
   Future<List<PicBlurHash>> getAllPicBlurHash() => select(picBlurHashs).get();
 
   Future<PicBlurHash?> getSinglePicBlurHash(
-          String photoId) =>
+          String photoId,) =>
       (select(picBlurHashs)
             ..where((l) =>
-                l.photoId.equals(photoId) /* ?? const Constant(false) */))
+                l.photoId.equals(photoId), /* ?? const Constant(false) */))
           .getSingleOrNull();
 
   ///
@@ -230,27 +229,27 @@ class AppDatabase extends _$AppDatabase {
   ///Labels CRUD operations Start
   ///
   ///
-  Future createLabel(Label newLabel) => into(labels).insert(newLabel);
+  Future<int> createLabel(Label newLabel) => into(labels).insert(newLabel);
 
   Future<Label?> getLabelByLabelKey(String labelKey) => (select(labels)
         ..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */))
       .getSingleOrNull();
 
   Future<void> incrementLabelByKey(String labelKey) async {
-    var label = await getLabelByLabelKey(labelKey);
+    final label = await getLabelByLabelKey(labelKey);
     if (label != null) {
-      var updatedLabel = label.copyWith(
-          counter: label.counter + 1, lastUsedAt: DateTime.now());
+      final updatedLabel = label.copyWith(
+          counter: label.counter + 1, lastUsedAt: DateTime.now(),);
       await updateLabel(updatedLabel);
     }
   }
 
   Future<void> decrementLabelByKey(String labelKey) async {
-    var label = await getLabelByLabelKey(labelKey);
+    final label = await getLabelByLabelKey(labelKey);
     if (label != null) {
-      var count = (label.counter - 1);
+      var count = label.counter - 1;
       if (count < 1) count = 1;
-      var updatedLabel =
+      final updatedLabel =
           label.copyWith(counter: count, lastUsedAt: DateTime.now());
       await updateLabel(updatedLabel);
     }
@@ -258,29 +257,29 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Label>> getAllLabel() => select(labels).get();
 
-  Future deleteLabelByLabelId(String labelKey) => (delete(labels)
+  Future<int> deleteLabelByLabelId(String labelKey) => (delete(labels)
         ..where((l) => l.key.equals(labelKey) /* ?? const Constant(false) */))
       .go();
 
-  Future updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
+  Future<bool> updateLabel(Label oldLabel) => update(labels).replace(oldLabel);
 
-  Future deleteLabel(Label oldLabel) => delete(labels).delete(oldLabel);
+  Future<int> deleteLabel(Label oldLabel) => delete(labels).delete(oldLabel);
 
   Future<List<Label>> getAllLabelsInAscendingOrder() => (select(labels)
         ..orderBy([
-          (u) => OrderingTerm(expression: u.title, mode: OrderingMode.asc),
+          (u) => OrderingTerm(expression: u.title),
         ]))
       .get();
 
   Future<List<Label>> fetchMostUsedLabels() => (select(labels)
         ..orderBy([
           (u) => OrderingTerm(expression: u.counter, mode: OrderingMode.desc),
-          (u) => OrderingTerm(expression: u.title, mode: OrderingMode.asc),
+          (u) => OrderingTerm(expression: u.title),
         ]))
       .get();
 
   Future<List<Label>> fetchLastWeekUsedLabels() {
-    var sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
     return (select(labels)
           ..where((tbl) => tbl.lastUsedAt.isBiggerOrEqualValue(sevenDaysAgo))
           ..orderBy([
@@ -290,7 +289,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<List<Label>> fetchLastMonthUsedLabels() {
-    var thirty1Days = DateTime.now().subtract(const Duration(days: 31));
+    final thirty1Days = DateTime.now().subtract(const Duration(days: 31));
     return (select(labels)
           ..where((tbl) => tbl.lastUsedAt.isBiggerOrEqualValue(thirty1Days))
           ..orderBy([
@@ -310,7 +309,7 @@ class AppDatabase extends _$AppDatabase {
   ///Photos CRUD operations Start
   ///
   ///
-  Future createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
+  Future<int> createPhoto(Photo newPhoto) => into(photos).insert(newPhoto);
 
   Future<Photo?> getPhotoByPhotoId(String photoId) => (select(photos)
         ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
@@ -334,14 +333,14 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Photo>> getAllPhoto() => select(photos).get();
 
-  Future updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
+  Future<bool> updatePhoto(Photo oldPhoto) => update(photos).replace(oldPhoto);
 
-  Future deletePhotoByPhotoId(String photoId) => (delete(photos)
+  Future<int> deletePhotoByPhotoId(String photoId) => (delete(photos)
         ..where((picture) =>
-            picture.id.equals(photoId) /* ?? const Constant(false) */))
+            picture.id.equals(photoId), /* ?? const Constant(false) */))
       .go();
 
-  Future deletePhoto(Photo oldPhoto) => delete(photos).delete(oldPhoto);
+  Future<int> deletePhoto(Photo oldPhoto) => delete(photos).delete(oldPhoto);
 
   ///
   ///
@@ -354,7 +353,7 @@ class AppDatabase extends _$AppDatabase {
   ///Private CRUD operations Start
   ///
   ///
-  Future createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
+  Future<int> createPrivate(Private newPrivate) => into(privates).insert(newPrivate);
 
   Future<Private?> getPrivateByPhotoId(String photoId) => (select(privates)
         ..where((pri) => pri.id.equals(photoId) /* ?? const Constant(false) */))
@@ -362,10 +361,10 @@ class AppDatabase extends _$AppDatabase {
 
   Future<List<Private>> getAllPrivate() => select(privates).get();
 
-  Future updatePrivate(Private oldPrivate) =>
+  Future<bool> updatePrivate(Private oldPrivate) =>
       update(privates).replace(oldPrivate);
 
-  Future deletePrivate(Private oldPrivate) =>
+  Future<int> deletePrivate(Private oldPrivate) =>
       delete(privates).delete(oldPrivate);
 
   ///
@@ -379,27 +378,27 @@ class AppDatabase extends _$AppDatabase {
   ///MoorUser CRUD operations Start
   ///
   ///
-  Future createMoorUser(MoorUser newMoorUser) =>
+  Future<int> createMoorUser(MoorUser newMoorUser) =>
       into(moorUsers).insert(newMoorUser, mode: InsertMode.insertOrReplace);
 
   //Future<List<MoorUser>> getAllMoorUser() => select(moorUsers).get();
 
   Future<MoorUser?> getSingleMoorUser({bool createIfNotExist = true}) async {
-    var moorUserReturn = await select(moorUsers).getSingleOrNull();
+    final moorUserReturn = await select(moorUsers).getSingleOrNull();
     if (createIfNotExist && moorUserReturn == null) {
       await createMoorUser(getDefaultMoorUser());
-      return await select(moorUsers).getSingle();
+      return select(moorUsers).getSingle();
     } else {
       return moorUserReturn;
     }
   }
 
-  Future updateMoorUser(MoorUser newMoorUser) =>
+  Future<bool> updateMoorUser(MoorUser newMoorUser) =>
       update(moorUsers).replace(newMoorUser.copyWith(customPrimaryKey: 0));
 
-  Future deleteMoorUser(MoorUser newMoorUser) => (delete(moorUsers)
+  Future<int> deleteMoorUser(MoorUser newMoorUser) => (delete(moorUsers)
         ..where(
-            (u) => u.customPrimaryKey.equals(0) /* ?? const Constant(false) */))
+            (u) => u.customPrimaryKey.equals(0), /* ?? const Constant(false) */))
       .delete(newMoorUser);
 
   ///
@@ -414,7 +413,7 @@ class AppDatabase extends _$AppDatabase {
   ///
   ///
 
-  Future createPicBlurHash(PicBlurHash newPicBlurHash) =>
+  Future<int> createPicBlurHash(PicBlurHash newPicBlurHash) =>
       into(picBlurHashs).insert(
         newPicBlurHash,
         mode: InsertMode.insertOrReplace,
@@ -423,9 +422,9 @@ class AppDatabase extends _$AppDatabase {
   Future<void> insertAllPicBlurHash(List<PicBlurHash> blurHashes) async {
     final blurHashedCompanion = <PicBlurHashsCompanion>[];
 
-    for (var blurHash in blurHashes) {
+    for (final blurHash in blurHashes) {
       blurHashedCompanion.add(PicBlurHashsCompanion.insert(
-          photoId: blurHash.photoId, blurHash: blurHash.blurHash));
+          photoId: blurHash.photoId, blurHash: blurHash.blurHash,),);
     }
 
     await batch((Batch batch) {
@@ -452,7 +451,7 @@ class AppDatabase extends _$AppDatabase {
   Future<void> insertAllPrivates(List<Secret> secretPhotos) async {
     final privatesCompanions = <PrivatesCompanion>[];
 
-    for (var secret in secretPhotos) {
+    for (final secret in secretPhotos) {
       privatesCompanions.add(
         PrivatesCompanion.insert(
           id: secret.photoId,
@@ -528,9 +527,9 @@ class AppDatabase extends _$AppDatabase {
 
   Future<void> insertAllPhotos(List<Photo> pics) async {
     final photosCompanions = <PhotosCompanion>[];
-    var photosTags = <String, Map<String, String>>{};
+    final photosTags = <String, Map<String, String>>{};
 
-    for (var pic in pics) {
+    for (final pic in pics) {
       photosTags[pic.id] = pic.tags;
       photosCompanions.add(
         PhotosCompanion.insert(
@@ -561,9 +560,9 @@ class AppDatabase extends _$AppDatabase {
   ///
   Future<void> insertAllPics(List<Pic> pics) async {
     final photosCompanions = <PhotosCompanion>[];
-    var photosTags = <String, List<String>>{};
+    final photosTags = <String, List<String>>{};
 
-    for (var pic in pics) {
+    for (final pic in pics) {
       photosTags[pic.photoId] = pic.tags;
       photosCompanions.add(
         PhotosCompanion.insert(
@@ -580,8 +579,8 @@ class AppDatabase extends _$AppDatabase {
             isStarred: pic.isStarred.moorValue,
             base64encoded: pic.base64encoded.moorValue,
             tags: <String, String>{
-              for (var t in pic.tags) t: '',
-            }),
+              for (final t in pic.tags) t: '',
+            },),
       );
     }
 

@@ -1,26 +1,26 @@
-import 'package:picPics/utils/app_logger.dart';
 import 'dart:async';
 import 'dart:convert';
-import 'package:drift/drift.dart' as drift;
+
 import 'package:cryptography/cryptography.dart' as cryptography;
-import 'package:flutter/cupertino.dart';
 import 'package:devicelocale/devicelocale.dart';
-import 'package:get/get.dart';
+import 'package:drift/drift.dart' as drift;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:picPics/stores/language_controller.dart';
+import 'package:get/get.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picPics/constants.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/managers/push_notifications_manager.dart';
-import 'package:picPics/stores/database_controller.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/languages.dart';
-import 'package:local_auth/local_auth.dart';
-
-import 'tags_controller.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/managers/crypto_manager.dart';
+import 'package:picpics/managers/push_notifications_manager.dart';
+import 'package:picpics/stores/database_controller.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/utils/languages.dart';
 
 class UserController extends GetxController {
   static UserController get to => Get.find();
@@ -62,7 +62,7 @@ class UserController extends GetxController {
   final appLocale = RxString('en');
 
   @override
-  void onReady() async {
+  Future<void> onReady() async {
     deviceLocale.value = (await Devicelocale.currentLocale) ?? 'en';
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
       appVersion.value = packageInfo.version;
@@ -81,18 +81,19 @@ class UserController extends GetxController {
     appLocale.value = lang;
     LangControl.to.changeLanguageTo(lang);
 
-    var local = LanguageLocal();
+    final local = LanguageLocal();
     currentLanguage.value = '${local.getDisplayLanguage(lang)['nativeName']}';
   }
 
   Future initialize() async {
     AppLogger.i('[UserController] Starting initialization...');
-    var user =
+    final user =
         await DatabaseController.to.getUser(deviceLocale: deviceLocale.value);
 
     AppLogger.i('[UserController] User loaded from database:');
     AppLogger.d('  - tutorialCompleted: ${user.tutorialCompleted}');
-    AppLogger.d('  - hasGalleryPermission (from DB): ${user.hasGalleryPermission}');
+    AppLogger.d(
+        '  - hasGalleryPermission (from DB): ${user.hasGalleryPermission}',);
     AppLogger.d('  - isPinRegistered: ${user.isPinRegistered}');
     AppLogger.d('  - appLanguage: ${user.appLanguage}');
 
@@ -119,40 +120,46 @@ class UserController extends GetxController {
     //createDefaultTags(Get.context);
 
     //TagsController.to.loadAllTags();
-    for (var tagKey in user.recentTags) {
+    for (final tagKey in user.recentTags) {
       TagsController.to.addRecentTag(tagKey);
     }
 
     // Check actual gallery permission status on startup
-    AppLogger.i('[UserController] Checking actual gallery permission status...');
+    AppLogger.i(
+        '[UserController] Checking actual gallery permission status...',);
     AppLogger.d('  - Tutorial completed: ${user.tutorialCompleted}');
-    
+
     if (user.tutorialCompleted) {
-      AppLogger.i('[UserController] Tutorial is completed, checking PhotoManager permission...');
-      var permissionStatus = await PhotoManager.requestPermissionExtend();
+      AppLogger.i(
+          '[UserController] Tutorial is completed, checking PhotoManager permission...',);
+      final permissionStatus = await PhotoManager.requestPermissionExtend();
       AppLogger.i('[UserController] PhotoManager permission status:');
       AppLogger.d('  - isAuth: ${permissionStatus.isAuth}');
       AppLogger.d('  - hasAccess: ${permissionStatus.hasAccess}');
-      
+
       // Check for either isAuth OR hasAccess - on Android 13+ hasAccess means limited permission
       if (permissionStatus.isAuth || permissionStatus.hasAccess) {
-        AppLogger.i('[UserController] Permission granted (isAuth: ${permissionStatus.isAuth}, hasAccess: ${permissionStatus.hasAccess})! Setting hasGalleryPermission to true');
+        AppLogger.i(
+            '[UserController] Permission granted (isAuth: ${permissionStatus.isAuth}, hasAccess: ${permissionStatus.hasAccess})! Setting hasGalleryPermission to true',);
         hasGalleryPermission.value = true;
         // Update database if permission status changed
         if (!user.hasGalleryPermission) {
-          AppLogger.i('[UserController] Updating database with new permission status...');
+          AppLogger.i(
+              '[UserController] Updating database with new permission status...',);
           await database.updateMoorUser(user.copyWith(
             hasGalleryPermission: true,
-          ));
+          ),);
         }
       } else {
         AppLogger.i('[UserController] Permission NOT authorized.');
       }
     } else {
-      AppLogger.i('[UserController] Tutorial not completed, skipping permission check');
+      AppLogger.i(
+          '[UserController] Tutorial not completed, skipping permission check',);
     }
-    
-    AppLogger.i('[UserController] Final hasGalleryPermission value: ${hasGalleryPermission.value}');
+
+    AppLogger.i(
+        '[UserController] Final hasGalleryPermission value: ${hasGalleryPermission.value}',);
 
     // Executa primeira vez para ver se ainda tem permissão
     await checkNotificationPermission();
@@ -166,18 +173,18 @@ class UserController extends GetxController {
   }
 
   Future<void> setDefaultWidgetImage(AssetEntity entity) async {
-    var bytes =
+    final bytes =
         await entity.thumbnailDataWithSize(const ThumbnailSize.square(300));
 
     /// TODO: I wants to know what to do in this case scenario
     if (bytes == null) {
       return;
     }
-    var encoded = base64.encode(bytes);
+    final encoded = base64.encode(bytes);
 
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(
-        currentUser!.copyWith(defaultWidgetImage: drift.Value(encoded)));
+        currentUser!.copyWith(defaultWidgetImage: drift.Value(encoded)),);
   }
 
   /* Future<void> addToStarredPhotos(String photoId) async {
@@ -217,7 +224,7 @@ class UserController extends GetxController {
   } */
 
   Future<void> requestNotificationPermission() async {
-    var push = PushNotificationsManager();
+    final push = PushNotificationsManager();
     await push.init();
 
     // if (Platform.isAndroid) {
@@ -232,11 +239,11 @@ class UserController extends GetxController {
 
   //@action
   Future<void> checkNotificationPermission(
-      {bool firstPermissionCheck = false}) async {
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      {bool firstPermissionCheck = false,}) async {
+    final flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
 
-    final bool? granted = await flutterLocalNotificationsPlugin
+    final granted = await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
             IOSFlutterLocalNotificationsPlugin>()
         ?.requestPermissions(
@@ -245,14 +252,14 @@ class UserController extends GetxController {
           sound: true,
         );
 
-    final bool hasPermission = granted ?? false;
+    final hasPermission = granted ?? false;
 
     final currentUser = await database.getSingleMoorUser();
 
     if (!hasPermission) {
       await database.updateMoorUser(currentUser!.copyWith(
         notification: false,
-      ));
+      ),);
     } else {
       var tempDailyChallenges = currentUser!.dailyChallenges;
       if (firstPermissionCheck) {
@@ -261,7 +268,7 @@ class UserController extends GetxController {
       await database.updateMoorUser(currentUser.copyWith(
         notification: true,
         dailyChallenges: tempDailyChallenges,
-      ));
+      ),);
     }
 
     notifications.value = currentUser.notification;
@@ -269,14 +276,14 @@ class UserController extends GetxController {
   }
 
   Future<void> switchDailyChallenges(
-      {String? notificationTitle, String? notificationDescription}) async {
+      {String? notificationTitle, String? notificationDescription,}) async {
     dailyChallenges.value = !dailyChallenges.value;
 
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(
-        currentUser!.copyWith(dailyChallenges: dailyChallenges.value));
+        currentUser!.copyWith(dailyChallenges: dailyChallenges.value),);
 
-    var push = PushNotificationsManager();
+    final push = PushNotificationsManager();
     if (dailyChallenges.value) {
       push.deregister();
     } else {
@@ -327,7 +334,7 @@ class UserController extends GetxController {
     await database.updateMoorUser(currentUser!.copyWith(
       hourOfDay: hour,
       minuteOfDay: minute,
-    ));
+    ),);
 
     await Analytics.sendEvent(Event.notification_time);
 
@@ -373,10 +380,10 @@ class UserController extends GetxController {
     User currentUser = userBox.getAt(0); */
     final currentUser = await database.getSingleMoorUser();
 
-    var lastTaggedPicDate = currentUser!.lastTaggedPicDate;
-    var dateNow = DateTime.now();
-    var picsTaggedToday = currentUser.picsTaggedToday;
-    var lastTaggedPicNewDate = dateNow;
+    final lastTaggedPicDate = currentUser!.lastTaggedPicDate;
+    final dateNow = DateTime.now();
+    final picsTaggedToday = currentUser.picsTaggedToday;
+    final lastTaggedPicNewDate = dateNow;
 
     // TODO: Check this comment as this lib was removed for compatibility
     // if (DateUtils.isSameDay(lastTaggedPicDate, dateNow)) {
@@ -390,25 +397,28 @@ class UserController extends GetxController {
     await database.updateMoorUser(currentUser.copyWith(
       picsTaggedToday: picsTaggedToday,
       lastTaggedPicDate: lastTaggedPicNewDate,
-    ));
+    ),);
   }
 
   //@action
   Future<bool> requestGalleryPermission() async {
-    AppLogger.d('[UserController.requestGalleryPermission] Requesting permission...');
-    var result = await PhotoManager.requestPermissionExtend();
+    AppLogger.d(
+        '[UserController.requestGalleryPermission] Requesting permission...',);
+    final result = await PhotoManager.requestPermissionExtend();
     AppLogger.d('[UserController.requestGalleryPermission] Permission result:');
     AppLogger.d('  - isAuth: ${result.isAuth}');
     AppLogger.d('  - hasAccess: ${result.hasAccess}');
-    
+
     // Check for either isAuth OR hasAccess - on Android 13+ hasAccess means limited permission
-    bool hasPermission = result.isAuth || result.hasAccess;
-    
+    final hasPermission = result.isAuth || result.hasAccess;
+
     if (hasPermission) {
-      AppLogger.d('[UserController.requestGalleryPermission] Permission granted (isAuth: ${result.isAuth}, hasAccess: ${result.hasAccess}), updating state');
+      AppLogger.d(
+          '[UserController.requestGalleryPermission] Permission granted (isAuth: ${result.isAuth}, hasAccess: ${result.hasAccess}), updating state',);
       hasGalleryPermission.value = true;
     } else {
-      AppLogger.d('[UserController.requestGalleryPermission] Permission denied');
+      AppLogger.d(
+          '[UserController.requestGalleryPermission] Permission denied',);
       hasGalleryPermission.value = false;
     }
 
@@ -417,10 +427,11 @@ class UserController extends GetxController {
     currentUser.hasGalleryPermission = hasGalleryPermission;
     currentUser.save(); */
     final currentUser = await database.getSingleMoorUser();
-    AppLogger.d('[UserController.requestGalleryPermission] Updating database with permission: $hasPermission');
+    AppLogger.d(
+        '[UserController.requestGalleryPermission] Updating database with permission: $hasPermission',);
     await database.updateMoorUser(currentUser!.copyWith(
       hasGalleryPermission: hasPermission,
-    ));
+    ),);
 
     return hasPermission;
   }
@@ -437,14 +448,14 @@ class UserController extends GetxController {
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
       appLanguage: drift.Value(language),
-    ));
+    ),);
 
     await Analytics.sendEvent(Event.changed_language);
   }
 
   //@action
   Future<void> createDefaultTags(BuildContext? context) async {
-    var tagsBox = await database.getAllLabel();
+    final tagsBox = await database.getAllLabel();
 
     if (tagsBox.length > 1 || context == null) {
       // Criada a secret tag aqui por isso 1
@@ -453,68 +464,68 @@ class UserController extends GetxController {
     }
 
     AppLogger.d('adding default tags...');
-    var tag1 = Label(
+    final tag1 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.family_tag),
         title: LangControl.to.S.value.family_tag,
-        photoId: <String, String>{});
-    var tag2 = Label(
+        photoId: <String, String>{},);
+    final tag2 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.travel_tag),
         title: LangControl.to.S.value.travel_tag,
-        photoId: <String, String>{});
-    var tag3 = Label(
+        photoId: <String, String>{},);
+    final tag3 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.pets_tag),
         title: LangControl.to.S.value.pets_tag,
-        photoId: <String, String>{});
-    var tag4 = Label(
+        photoId: <String, String>{},);
+    final tag4 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.work_tag),
         title: LangControl.to.S.value.work_tag,
-        photoId: <String, String>{});
-    var tag5 = Label(
+        photoId: <String, String>{},);
+    final tag5 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.selfies_tag),
         title: LangControl.to.S.value.selfies_tag,
-        photoId: <String, String>{});
-    var tag6 = Label(
+        photoId: <String, String>{},);
+    final tag6 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.parties_tag),
         title: LangControl.to.S.value.parties_tag,
-        photoId: <String, String>{});
-    var tag7 = Label(
+        photoId: <String, String>{},);
+    final tag7 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.sports_tag),
         title: LangControl.to.S.value.sports_tag,
-        photoId: <String, String>{});
-    var tag8 = Label(
+        photoId: <String, String>{},);
+    final tag8 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.home_tag),
         title: LangControl.to.S.value.home_tag,
-        photoId: <String, String>{});
-    var tag9 = Label(
+        photoId: <String, String>{},);
+    final tag9 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.foods_tag),
         title: LangControl.to.S.value.foods_tag,
-        photoId: <String, String>{});
-    var tag10 = Label(
+        photoId: <String, String>{},);
+    final tag10 = Label(
         counter: 1,
         lastUsedAt: DateTime.now(),
         key: Helpers.encryptTag(LangControl.to.S.value.screenshots_tag),
         title: LangControl.to.S.value.screenshots_tag,
-        photoId: <String, String>{});
+        photoId: <String, String>{},);
 
-    var entries = <Label>[
+    final entries = <Label>[
       tag1,
       tag2,
       tag3,
@@ -527,7 +538,7 @@ class UserController extends GetxController {
       tag10,
     ];
     await Future.forEach(
-            entries, (Label newLabel) => database.createLabel(newLabel))
+            entries, (Label newLabel) => database.createLabel(newLabel),)
         .then((_) => TagsController.to.loadAllTags());
   }
 
@@ -601,7 +612,7 @@ class UserController extends GetxController {
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
       email: drift.Value(value),
-    ));
+    ),);
 
     email = value;
   }
@@ -625,7 +636,7 @@ class UserController extends GetxController {
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
       isBiometricActivated: value,
-    ));
+    ),);
 
     isBiometricActivated.value = value;
   }
@@ -656,7 +667,7 @@ class UserController extends GetxController {
     final currentUser = await database.getSingleMoorUser();
     await database.updateMoorUser(currentUser!.copyWith(
       secretKey: drift.Value(value),
-    ));
+    ),);
   }
 
   Future<String?> getSecretKey() async {
@@ -681,7 +692,7 @@ class UserController extends GetxController {
 }
 
 enum PopPinScreenTo {
-  TabsScreen,
-  SettingsScreen,
-  PhotoScreen,
+  tabsScreen,
+  settingsScreen,
+  photoScreen,
 }

@@ -1,26 +1,25 @@
 import 'dart:ui';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:picPics/asset_entity_image_provider.dart';
-import 'package:picPics/fade_image_builder.dart';
-import 'package:picPics/managers/analytics_manager.dart';
-import 'package:picPics/constants.dart';
-/* import 'package:picPics/stores/gallery_store.dart'; */
-import 'package:picPics/stores/tabs_controller.dart';
-/* import 'package:picPics/stores/tabs_controller.dart'; */
-import 'package:picPics/stores/tagged_controller.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/widgets/tags_list.dart';
+import 'package:intl/intl.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:flutter/services.dart';
-
-import 'package:intl/intl.dart';
-import 'package:extended_image/extended_image.dart';
-
-import 'all_tags_screen.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/asset_entity_image_provider.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/fade_image_builder.dart';
+import 'package:picpics/managers/analytics_manager.dart';
+import 'package:picpics/screens/all_tags_screen.dart';
+/* import 'package:picpics/stores/gallery_store.dart'; */
+import 'package:picpics/stores/tabs_controller.dart';
+/* import 'package:picpics/stores/tabs_controller.dart'; */
+import 'package:picpics/stores/tagged_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/widgets/tags_list.dart';
 
 class PhotoScreenController extends GetxController {
   final overlay = true.obs;
@@ -37,6 +36,19 @@ class PhotoScreenController extends GetxController {
 
 // ignore_for_file: must_be_immutable,prefer_final_fields, unused_field
 class PhotoScreen extends GetWidget<PhotoScreenController> {
+
+  PhotoScreen({required this.picId, required this.picIdList, super.key}) {
+    if (picIdList.isNotEmpty) {
+      idList.addAll(picIdList);
+    }
+    final index = getPicIdList().indexOf(picId);
+    if (index != -1) {
+      PhotoScreenController.to.selectedIndex.value = index;
+    }
+    galleryPageController = PageController(
+        initialPage: PhotoScreenController.to.selectedIndex
+            .value, /* GalleryStore.to.selectedThumbnail.value */);
+  }
   static const id = 'photo_screen';
 
   final String picId;
@@ -46,19 +58,6 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   final idList = <String>[];
 
   final List<String> picIdList;
-
-  PhotoScreen({super.key, required this.picId, required this.picIdList}) {
-    if (picIdList.isNotEmpty) {
-      idList.addAll(picIdList);
-    }
-    var index = getPicIdList().indexOf(picId);
-    if (index != -1) {
-      PhotoScreenController.to.selectedIndex.value = index;
-    }
-    galleryPageController = PageController(
-        initialPage: PhotoScreenController.to.selectedIndex
-            .value /* GalleryStore.to.selectedThumbnail.value */);
-  }
 
   final _ = Get.put(PhotoScreenController());
 
@@ -102,7 +101,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
   }
 
   String dateFormat(DateTime dateTime) {
-    var formatter = DateFormat.yMMMEd();
+    final formatter = DateFormat.yMMMEd();
     return formatter.format(dateTime);
   }
 
@@ -116,7 +115,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
         child: const ColoredBox(color: kGreyPlaceholder),
       );
     }
-    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    final imageProvider = AssetEntityImageProvider(picStore);
 
     return PhotoViewGalleryPageOptions.customChild(
       child: Container(
@@ -179,7 +178,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
     if (picStore == null) {
       return const ColoredBox(color: kGreyPlaceholder);
     }
-    final imageProvider = AssetEntityImageProvider(picStore, isOriginal: true);
+    final imageProvider = AssetEntityImageProvider(picStore);
 
     return CupertinoButton(
       padding: const EdgeInsets.all(0),
@@ -190,7 +189,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
       child: Container(
         height: 98,
         width: 98,
-        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+        margin: const EdgeInsets.symmetric(horizontal: 4),
         child: ExtendedImage(
           image: imageProvider,
           fit: BoxFit.cover,
@@ -244,8 +243,8 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                   itemCount: getPicIdList().length,
                   loadingBuilder: (context, event) => Center(
                     child: SizedBox(
-                      width: 20.0,
-                      height: 20.0,
+                      width: 20,
+                      height: 20,
                       child: CircularProgressIndicator(
                         value: event == null || event.expectedTotalBytes == null
                             ? 0
@@ -262,7 +261,6 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                     controller.selectedIndex.value = index;
                     //GalleryStore.to.setSelectedThumbnail(index);
                   },
-                  scrollDirection: Axis.horizontal,
                 ),
               ),
               if (controller.overlay.value)
@@ -272,23 +270,18 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                     ClipRect(
                       child: BackdropFilter(
                         filter: ImageFilter.blur(
-                          sigmaX: 2.0,
-                          sigmaY: 2.0,
+                          sigmaX: 2,
+                          sigmaY: 2,
                         ),
-                        child: Container(
+                        child: DecoratedBox(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.black
-                                    .withOpacity(0.7)
-                                    .withOpacity(0.37)
-                                    .withOpacity(0.3),
-                                Colors.black
-                                    .withOpacity(1.0)
-                                    .withOpacity(0.37)
-                                    .withOpacity(0.3)
+                                    .withValues(alpha: 0.7 * 0.37 * 0.3),
+                                Colors.black.withValues(alpha: 1.0 * 0.37 * 0.3),
                               ],
                               stops: const [0, 0.40625],
                             ),
@@ -300,18 +293,16 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                               children: <Widget>[
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 5.0, vertical: 10.0),
-                                  onPressed: () {
-                                    Get.back();
-                                  },
+                                      horizontal: 5, vertical: 10,),
+                                  onPressed: () => Get.back<void>(),
                                   child: Image.asset(
-                                      'lib/images/backarrowwithdropshadow.png'),
+                                      'lib/images/backarrowwithdropshadow.png',),
                                 ),
                                 CupertinoButton(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 5.0, vertical: 10.0),
+                                      horizontal: 5, vertical: 10,),
                                   onPressed: () {
-                                    var picIdValue = getPicIdList().toList()[
+                                    final picIdValue = getPicIdList().toList()[
                                         controller.selectedIndex.value];
                                     var shareAblePicStore = TabsController
                                         .to.picStoreMap[picIdValue]?.value;
@@ -321,7 +312,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     shareAblePicStore?.sharePic();
                                   },
                                   child: Image.asset(
-                                      'lib/images/sharebuttonwithdropshadow.png'),
+                                      'lib/images/sharebuttonwithdropshadow.png',),
                                 ),
                               ],
                             ),
@@ -334,12 +325,12 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                       ClipRect(
                         child: BackdropFilter(
                           filter: ImageFilter.blur(
-                            sigmaX: 2.0,
-                            sigmaY: 2.0,
+                            sigmaX: 2,
+                            sigmaY: 2,
                           ),
                           child: Container(
                             constraints: const BoxConstraints(
-                              minHeight: 184.0,
+                              minHeight: 184,
                             ),
                             decoration: BoxDecoration(
                               gradient: LinearGradient(
@@ -347,13 +338,13 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                 end: Alignment.bottomCenter,
                                 colors: [
                                   Colors.black
-                                      .withOpacity(0.7)
-                                      .withOpacity(0.37)
-                                      .withOpacity(0.3),
+                                      .withValues(alpha: 0.7)
+                                      .withValues(alpha: 0.37)
+                                      .withValues(alpha: 0.3),
                                   Colors.black
-                                      .withOpacity(1.0)
-                                      .withOpacity(0.37)
-                                      .withOpacity(0.3)
+                                      .withValues(alpha: 1)
+                                      .withValues(alpha: 0.37)
+                                      .withValues(alpha: 0.3),
                                 ],
                                 stops: const [0, 0.40625],
                               ),
@@ -361,7 +352,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                             child: SafeArea(
                               top: false,
                               child: Padding(
-                                padding: const EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(16),
                                 child: Column(
                                   crossAxisAlignment:
                                       CrossAxisAlignment.stretch,
@@ -423,8 +414,8 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                                               .value]]
                                                   ?.value
                                                   .createdAt ??
-                                              DateTime.now()),
-                                          textScaler: TextScaler.linear(1.0),
+                                              DateTime.now(),),
+                                          textScaler: const TextScaler.linear(1),
                                           style: const TextStyle(
                                             fontFamily: 'Lato',
                                             color: kWhiteColor,
@@ -438,7 +429,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                     ),
                                     BottomTabsListWidget(
                                         picId: getPicIdList().toList()[
-                                            controller.selectedIndex.value]),
+                                            controller.selectedIndex.value],),
                                   ],
                                 ),
                               ),
@@ -448,20 +439,15 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                       ),
                     if (controller.showSlideshow.value)
                       ClipRect(
-                        child: Container(
+                        child: DecoratedBox(
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.black
-                                    .withOpacity(0.7)
-                                    .withOpacity(0.37)
-                                    .withOpacity(0.3),
-                                Colors.black
-                                    .withOpacity(1.0)
-                                    .withOpacity(0.37)
-                                    .withOpacity(0.3)
+                                    .withValues(alpha: 0.7 * 0.37 * 0.3),
+                                Colors.black.withValues(alpha: 1.0 * 0.37 * 0.3),
                               ],
                               stops: const [0, 0.40625],
                             ),
@@ -469,7 +455,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                           child: SafeArea(
                             top: false,
                             child: Padding(
-                              padding: const EdgeInsets.only(top: 8.0),
+                              padding: const EdgeInsets.only(top: 8),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: <Widget>[
@@ -479,7 +465,7 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
                                       scrollDirection: Axis.horizontal,
                                       itemBuilder: _buildThumbnails,
                                       itemCount: getPicIdList().length,
-                                      padding: const EdgeInsets.only(left: 8.0),
+                                      padding: const EdgeInsets.only(left: 8),
                                     ),
                                   ),
                                 ],
@@ -499,24 +485,24 @@ class PhotoScreen extends GetWidget<PhotoScreenController> {
 }
 
 class BottomTabsListWidget extends GetWidget<TaggedController> {
-  final String picId;
   const BottomTabsListWidget({required this.picId, super.key});
+  final String picId;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 16.0),
+      padding: const EdgeInsets.only(top: 16),
       child: Obx(
         () => (controller.picWiseTags[picId]?.keys.toList().isEmpty ?? true)
             ? TagsList(
                 tagsKeyList: const <String>[],
-                tagStyle: TagStyle.MultiColored,
+                tagStyle: TagStyle.multiColored,
                 addTagButton: () async {
-                  var picStore = TabsController.to.picStoreMap[picId]?.value;
+                  final picStore = TabsController.to.picStoreMap[picId]?.value;
 
                   if (picStore != null) {
-                    var result =
-                        Get.to(() => AllTagsScreen(picStore: picStore));
+                    final result =
+                        Get.to<void>(() => AllTagsScreen(picStore: picStore));
                     if (result == null) {
                       await TaggedController.to.refreshTaggedPhotos();
                       await TabsController.to.refreshUntaggedList();
@@ -524,7 +510,7 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                     return;
                   }
 
-                  Get.back();
+                  Get.back<void>();
                 },
                 onTap: (String tagKey) {
                   AppLogger.d('ignore click');
@@ -542,7 +528,7 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
             : TagsList(
                 tagsKeyList:
                     controller.picWiseTags[picId]?.keys.toList() ?? <String>[],
-                tagStyle: TagStyle.MultiColored,
+                tagStyle: TagStyle.multiColored,
                 addTagButton: () async {
                   /* GalleryStore.to.setCurrentPic(
                                                       TabsController_
@@ -552,11 +538,11 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                                                     controller.setModalCard(true);
                                                   } */
 
-                  var picStore = TabsController.to.picStoreMap[picId]?.value;
+                  final picStore = TabsController.to.picStoreMap[picId]?.value;
 
                   if (picStore != null) {
-                    var result =
-                        Get.to(() => AllTagsScreen(picStore: picStore));
+                    final result =
+                        Get.to<void>(() => AllTagsScreen(picStore: picStore));
                     if (result == null) {
                       await TaggedController.to.refreshTaggedPhotos();
                       await TabsController.to.refreshUntaggedList();
@@ -564,7 +550,7 @@ class BottomTabsListWidget extends GetWidget<TaggedController> {
                     return;
                   }
 
-                  Get.back();
+                  Get.back<void>();
                 },
                 onTap: (String tagKey) {
                   AppLogger.d('ignore click');

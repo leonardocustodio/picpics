@@ -1,19 +1,20 @@
 import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animator/flutter_animator.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
-import 'package:picPics/managers/crypto_manager.dart';
-import 'package:picPics/screens/tabs_screen.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/widgets/cupertino_input_dialog.dart';
-import 'package:picPics/widgets/general_modal.dart';
-import 'package:picPics/utils/app_logger.dart';
+import 'package:picpics/managers/crypto_manager.dart';
+import 'package:picpics/screens/tabs_screen.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/widgets/cupertino_input_dialog.dart';
+import 'package:picpics/widgets/general_modal.dart';
 
 class PinController extends GetxController {
   static PinController get to => Get.find();
@@ -86,8 +87,8 @@ class PinController extends GetxController {
         FirebaseFunctions.instance.httpsCallable('requestRecoveryKey');
     //..timeout = const Duration(seconds: 30);
 
-    var rand = Random();
-    var randomNumber = rand.nextInt(900000) + 100000;
+    final rand = Random();
+    final randomNumber = rand.nextInt(900000) + 100000;
     setGeneratedIv('$randomNumber');
 
     try {
@@ -102,7 +103,7 @@ class PinController extends GetxController {
 
       if (result.data != false) {
         AppLogger.d('Recovery Key Encrypted: ${result.data}');
-        encryptedRecoveryKey = result.data;
+        encryptedRecoveryKey = result.data as String;
         setIsWaitingRecoveryKey(true);
         AppLogger.d('Saving ${result.data} with access ');
         AppLogger.d('code $accessCode and pin $pin');
@@ -111,9 +112,10 @@ class PinController extends GetxController {
         return true;
       }
 
-      return result.data;
+      return false;
     } on FirebaseFunctionsException catch (e) {
-      AppLogger.d('caught firebase functions exception: ${e.message}:${e.details}');
+      AppLogger.d(
+          'caught firebase functions exception: ${e.message}:${e.details}',);
     } catch (e) {
       AppLogger.d('caught generic exception: $e');
     }
@@ -125,8 +127,8 @@ class PinController extends GetxController {
   Future<bool> isRecoveryCodeValid(UserController appStore) async {
     AppLogger.d('Typed Recovery Code: $recoveryCode');
 
-    var valid = await Crypto.checkRecoveryKey(
-        encryptedRecoveryKey, recoveryCode.value, generatedIv, appStore);
+    final valid = await Crypto.checkRecoveryKey(
+        encryptedRecoveryKey, recoveryCode.value, generatedIv, appStore,);
     if (valid == true) {
       return true;
     }
@@ -146,7 +148,7 @@ class PinController extends GetxController {
   Future<Map<String, dynamic>> register() async {
     AppLogger.d('Email: $email - Pin: $pin');
 
-    var result = <String, dynamic>{};
+    final result = <String, dynamic>{};
 
     final auth = FirebaseAuth.instance;
     User? user;
@@ -181,10 +183,10 @@ class PinController extends GetxController {
         FirebaseFunctions.instance.httpsCallable('validateAccessCode');
     //. = const Duration(seconds: 30);
 
-    var rand = Random();
-    var randomNumber = rand.nextInt(900000) + 100000;
-    var accessKey = await Crypto.encryptAccessKey(
-        accessCode.value, email.value, '$randomNumber');
+    final rand = Random();
+    final randomNumber = rand.nextInt(900000) + 100000;
+    final accessKey = await Crypto.encryptAccessKey(
+        accessCode.value, email.value, '$randomNumber',);
 
     try {
       final result = await callable.call(
@@ -200,11 +202,11 @@ class PinController extends GetxController {
         AppLogger.d('$accessCode and pin $pin');
         await Crypto.saveSaltKey();
         await Crypto.saveSpKey(
-            accessCode.value, result.data, pin, email.value, appStore);
+            accessCode.value, result.data as String, pin, email.value, appStore,);
         return true;
       }
 
-      return result.data;
+      return false;
     } on FirebaseFunctionsException catch (e) {
       AppLogger.d('caught firebase functions exception');
       AppLogger.d(e.code);
@@ -220,7 +222,7 @@ class PinController extends GetxController {
 
   //@action
   Future<bool> isPinValid() async {
-    var valid = await Crypto.checkIsPinValid(pinTemp.value);
+    final valid = await Crypto.checkIsPinValid(pinTemp.value);
     return valid;
   }
 
@@ -231,13 +233,13 @@ class PinController extends GetxController {
 
   //@action
   Future<bool> isBiometricValidated() async {
-    var pin = await Crypto.getEncryptedPin();
+    final pin = await Crypto.getEncryptedPin();
     if (pin == null) {
       return false;
     }
 
     pinTemp.value = pin;
-    var valid = await isPinValid();
+    final valid = await isPinValid();
     if (valid == false) {
       return false;
     }
@@ -245,14 +247,14 @@ class PinController extends GetxController {
     return true;
   }
 
-  void cancelAuthentication() async {
+  Future<void> cancelAuthentication() async {
     await UserController.to.biometricAuth.stopAuthentication();
   }
 
   Future<void> validateAccessCode() async {
     isLoading.value = true;
 
-    var valid = await _validateAccessCode(UserController.to);
+    final valid = await _validateAccessCode(UserController.to);
 
     setAccessCode('');
 
@@ -268,15 +270,14 @@ class PinController extends GetxController {
     }
   }
 
-  void askEmail() async {
+  Future<void> askEmail() async {
     AppLogger.d('asking email');
 
-    var alertInputController = TextEditingController();
+    final alertInputController = TextEditingController();
 
     AppLogger.d('showModal');
     await showDialog<void>(
       context: Get.context!,
-      barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return Obx(
           () => CupertinoInputDialog(
@@ -284,12 +285,12 @@ class PinController extends GetxController {
             title: 'Type your email',
             destructiveButtonTitle: LangControl.to.S.value.cancel,
             onPressedDestructive: () {
-              Get.back();
+              Get.back<void>();
             },
             defaultButtonTitle: LangControl.to.S.value.ok,
             onPressedDefault: () {
               setEmail(alertInputController.text);
-              Get.back();
+              Get.back<void>();
               recoverPin();
             },
           ),
@@ -301,7 +302,7 @@ class PinController extends GetxController {
   Future<void> recoverPin() async {
     isLoading.value = true;
 
-    var request =
+    final request =
         await requestRecoveryKey(UserController.to.email ?? email.value);
 
     isLoading.value = false;
@@ -314,50 +315,48 @@ class PinController extends GetxController {
     showErrorModal('An error has occurred, please try again!');
   }
 
-  void setPinAndPop() async {
+  Future<void> setPinAndPop() async {
     await UserController.to.setEmail(email.value);
     await UserController.to.setIsPinRegistered(true);
     await PrivatePhotosController.to.switchSecretPhotos();
     UserController.to.setWaitingAccessCode(false);
 
     if (UserController.to.popPinScreenToId != null) {
-      await Get.offNamedUntil(UserController.to.popPinScreenToId!,
-          ModalRoute.withName(UserController.to.popPinScreenToId!));
+      await Get.offNamedUntil<void>(UserController.to.popPinScreenToId!,
+          ModalRoute.withName(UserController.to.popPinScreenToId!),);
     } else {
-      await Get.offAllNamed(TabsScreen.id);
+      await Get.offAllNamed<void>(TabsScreen.id);
     }
   }
 
-  void showErrorModal(String message) async {
+  Future<void> showErrorModal(String message) async {
     await showDialog<void>(
       context: Get.context!,
-      barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return GeneralModal(
           message: message,
           onPressedDelete: () {
-            Get.back();
+            Get.back<void>();
           },
           onPressedOk: () {
-            Get.back();
+            Get.back<void>();
           },
         );
       },
     );
   }
 
-  void showCreatedKeyModal() async {
+  Future<void> showCreatedKeyModal() async {
     await showDialog<void>(
       context: Get.context!,
-      barrierDismissible: true,
       builder: (BuildContext buildContext) {
         return GeneralModal(
           message: 'Secret Key successfully created!',
           onPressedDelete: () {
-            Get.back();
+            Get.back<void>();
           },
           onPressedOk: () {
-            Get.back();
+            Get.back<void>();
           },
         );
       },
@@ -368,24 +367,23 @@ class PinController extends GetxController {
 
   Future<void> authenticate() async {
     try {
-      var authenticated = await UserController.to.biometricAuth.authenticate(
+      final authenticated = await UserController.to.biometricAuth.authenticate(
         localizedReason: 'Scan your fingerprint to authenticate',
         options: const AuthenticationOptions(
-          useErrorDialogs: true,
           biometricOnly: true,
           stickyAuth: true,
         ),
       );
 
       if (authenticated == true) {
-        var valid = await isBiometricValidated();
+        final valid = await isBiometricValidated();
 
         if (valid == true) {
           await PrivatePhotosController.to.switchSecretPhotos();
           //GalleryStore.to.checkIsLibraryUpdated();
           setPinTemp('');
           setConfirmPinTemp('');
-          Get.back();
+          Get.back<void>();
           return;
         }
 

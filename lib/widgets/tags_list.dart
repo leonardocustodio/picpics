@@ -1,24 +1,45 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
-import 'package:flutter/services.dart';
+import 'dart:math';
 
-import 'package:picPics/stores/private_photos_controller.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/tags_controller.dart';
-import 'package:picPics/utils/enum.dart';
-import 'package:picPics/utils/helpers.dart';
-import 'package:picPics/utils/show_edit_label_dialog.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/private_photos_controller.dart';
+import 'package:picpics/stores/tags_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/utils/enum.dart';
+import 'package:picpics/utils/helpers.dart';
+import 'package:picpics/utils/show_edit_label_dialog.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
-import 'dart:math';
-import 'package:picPics/utils/app_logger.dart';
 
 typedef OnString = Function(String);
 typedef OnEmptyTap = Function();
 
 class TagsList extends StatefulWidget {
+
+  const TagsList({
+    required this.tagsKeyList,
+    required this.tagStyle,
+    this.onTap,
+    this.onDoubleTap,
+    this.onPanEnd,
+    this.textEditingController,
+    this.textFocusNode,
+    this.addTagField = false,
+    this.addButtonVisible = true,
+    this.addTagButton,
+    this.onSubmitted,
+    this.onChanged,
+    this.title,
+    this.aiButtonTitle,
+    this.onAiButtonTap,
+    //required this.showEditTagModal,
+    this.shouldChangeToSwipeMode = false,
+    super.key,
+  });
   final List<String> tagsKeyList;
   final TextEditingController? textEditingController;
   final FocusNode? textFocusNode;
@@ -37,44 +58,23 @@ class TagsList extends StatefulWidget {
   final Function()? onAiButtonTap;
   final bool shouldChangeToSwipeMode;
 
-  const TagsList({
-    super.key,
-    required this.tagsKeyList,
-    required this.tagStyle, //= TagStyle.MultiColored,
-    this.textEditingController,
-    this.textFocusNode,
-    this.addTagField = false,
-    this.addButtonVisible = true,
-    this.addTagButton,
-    required this.onTap,
-    required this.onDoubleTap,
-    required this.onPanEnd,
-    this.onSubmitted,
-    this.onChanged,
-    this.title,
-    this.aiButtonTitle,
-    this.onAiButtonTap,
-    //required this.showEditTagModal,
-    this.shouldChangeToSwipeMode = false,
-  });
-
   @override
-  _TagsListState createState() => _TagsListState();
+  TagsListState createState() => TagsListState();
 }
 
-class _TagsListState extends State<TagsList> {
+class TagsListState extends State<TagsList> {
   int? showSwiperInIndex;
   String? tagBeingPanned;
   bool swipedRightDirection = false;
 
   Widget _buildTagsWidget(BuildContext context, List<String> tags) {
-    var tagsWidgets = <Widget>[];
+    final tagsWidgets = <Widget>[];
     AppLogger.d('Tags in TagsList: $tags');
 
-    if (tags.isEmpty && widget.tagStyle == TagStyle.GrayOutlined) {
+    if (tags.isEmpty && widget.tagStyle == TagStyle.grayOutlined) {
       tagsWidgets.add(
         Container(
-          padding: const EdgeInsets.only(top: 10.0, left: 18.0, bottom: 8.0),
+          padding: const EdgeInsets.only(top: 10, left: 18, bottom: 8),
           child: Obx(
             () => Text(
               LangControl.to.S.value.no_tags_found,
@@ -93,7 +93,7 @@ class _TagsListState extends State<TagsList> {
     }
 
     for (var i = 0; i < tags.length; i++) {
-      var tagKey = tags[i];
+      final tagKey = tags[i];
 
       /// We'll have to avoid the tags whose tag name is null and
       ///
@@ -176,37 +176,36 @@ class _TagsListState extends State<TagsList> {
               widget.onTap(tag.key, tag.title); 
             },
             child: */
-              Container(
-            decoration: widget.tagStyle == TagStyle.MultiColored
+              DecoratedBox(
+            decoration: widget.tagStyle == TagStyle.multiColored
                 ? BoxDecoration(
                     gradient: getGradient(i % 4),
-                    borderRadius: BorderRadius.circular(19.0))
+                    borderRadius: BorderRadius.circular(19),)
                 : kGrayBoxDecoration,
             child: showSwiperInIndex != i
                 ? tagKey != kSecretTagKey
                     ? Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 16.0),
+                            vertical: 8, horizontal: 16,),
                         child: Text(
                           TagsController.to.allTags[tagKey]!.value.title,
-                          textScaler: TextScaler.linear(1.0),
-                          style: widget.tagStyle == TagStyle.MultiColored
+                          textScaler: const TextScaler.linear(1),
+                          style: widget.tagStyle == TagStyle.multiColored
                               ? kWhiteTextStyle
                               : kGrayTextStyle,
                         ),
                       )
                     : Padding(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 5.2, horizontal: 19.0),
-                        child: widget.tagStyle == TagStyle.MultiColored
+                            vertical: 5.2, horizontal: 19,),
+                        child: widget.tagStyle == TagStyle.multiColored
                             ? Image.asset('lib/images/locktagwhite.png')
                             : Image.asset('lib/images/locktaggray.png'),
                       )
                 : CustomAnimationBuilder<double>(
                     control: Control.loop,
-                    tween: 0.0.tweenTo(600.0),
+                    tween: 0.0.tweenTo(600),
                     duration: 7.seconds,
-                    startPosition: 0.0,
                     builder: (context, value, _) {
                       var firstOpct = 0.0;
                       var secondOpct = 0.0;
@@ -255,11 +254,11 @@ class _TagsListState extends State<TagsList> {
                             opacity: firstOpct,
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0, horizontal: 16.0),
+                                  vertical: 8, horizontal: 16,),
                               child: Text(
                                 TagsController.to.allTags[tagKey]!.value.title,
-                                textScaler: TextScaler.linear(1.0),
-                                style: widget.tagStyle == TagStyle.MultiColored
+                                textScaler: const TextScaler.linear(1),
+                                style: widget.tagStyle == TagStyle.multiColored
                                     ? kWhiteTextStyle
                                     : kGrayTextStyle,
                               ),
@@ -268,8 +267,8 @@ class _TagsListState extends State<TagsList> {
                           Opacity(
                             opacity: secondOpct,
                             child: SizedBox(
-                              height: 30.0,
-                              width: 30.0,
+                              height: 30,
+                              width: 30,
                               child: Transform.rotate(
                                 angle: pi / 2,
                                 child: const Icon(
@@ -285,8 +284,8 @@ class _TagsListState extends State<TagsList> {
                             child: Obx(
                               () => Text(
                                 LangControl.to.S.value.delete,
-                                textScaler: TextScaler.linear(1.0),
-                                style: widget.tagStyle == TagStyle.MultiColored
+                                textScaler: const TextScaler.linear(1),
+                                style: widget.tagStyle == TagStyle.multiColored
                                     ? kWhiteTextStyle
                                     : kGrayTextStyle,
                               ),
@@ -305,26 +304,27 @@ class _TagsListState extends State<TagsList> {
     if (widget.addTagButton != null) {
       tagsWidgets.add(CupertinoButton(
         padding: const EdgeInsets.all(0),
-        onPressed: widget.addTagButton, minimumSize: Size(30, 30),
+        onPressed: widget.addTagButton,
+        minimumSize: const Size(30, 30),
         child: Container(
-          height: 30.0,
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          height: 30,
+          padding: const EdgeInsets.symmetric(horizontal: 10),
           decoration: BoxDecoration(
             color: const Color(0xFFF1F3F5),
-            border: Border.all(color: kLightGrayColor, width: 1.0),
-            borderRadius: BorderRadius.circular(12.0),
+            border: Border.all(color: kLightGrayColor),
+            borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Image.asset('lib/images/smalladdtag.png'),
               const SizedBox(
-                width: 4.0,
+                width: 4,
               ),
               Obx(
                 () => Text(
                   LangControl.to.S.value.add_tag,
-                  textScaler: TextScaler.linear(1.0),
+                  textScaler: const TextScaler.linear(1),
                   style: const TextStyle(
                     fontFamily: 'Lato',
                     color: kGrayColor,
@@ -338,13 +338,13 @@ class _TagsListState extends State<TagsList> {
             ],
           ),
         ),
-      ));
+      ),);
     }
 
     if (widget.addTagField) {
       tagsWidgets.add(
         Container(
-          margin: const EdgeInsets.only(top: 10.0),
+          margin: const EdgeInsets.only(top: 10),
           child: Row(
             children: [
               Expanded(
@@ -353,11 +353,10 @@ class _TagsListState extends State<TagsList> {
                   height: 34,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF1F3F5),
-                    border: Border.all(color: kLightGrayColor, width: 1),
+                    border: Border.all(color: kLightGrayColor),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
                       Image.asset('lib/images/smalladdtag.png'),
                       Expanded(
@@ -369,7 +368,6 @@ class _TagsListState extends State<TagsList> {
                             onSubmitted: widget.onSubmitted,
                             keyboardType: TextInputType.text,
                             textAlignVertical: TextAlignVertical.center,
-                            maxLines: 1,
                             style: const TextStyle(
                               fontFamily: 'Lato',
                               color: Color(0xff606566),
@@ -379,13 +377,13 @@ class _TagsListState extends State<TagsList> {
                               letterSpacing: -0.4099999964237213,
                             ),
                             decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(left: 6.0),
+                              contentPadding: const EdgeInsets.only(left: 6),
                               enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none),
+                                  borderSide: BorderSide.none,),
                               focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none),
+                                  borderSide: BorderSide.none,),
                               border: const OutlineInputBorder(
-                                  borderSide: BorderSide.none),
+                                  borderSide: BorderSide.none,),
                               hintText: LangControl.to.S.value.add_tags,
                               hintStyle: const TextStyle(
                                 fontFamily: 'Lato',
@@ -405,9 +403,10 @@ class _TagsListState extends State<TagsList> {
                           onPressed: () {
                             if (widget.onSubmitted != null) {
                               widget.onSubmitted!(
-                                  widget.textEditingController!.text);
+                                  widget.textEditingController!.text,);
                             }
-                          }, minimumSize: Size(30, 30),
+                          },
+                          minimumSize: const Size(30, 30),
                           child: const Icon(
                             Icons.add,
                             color: Colors.grey,
@@ -426,11 +425,11 @@ class _TagsListState extends State<TagsList> {
                     children: [
                       Text(
                         widget.aiButtonTitle!,
-                        textScaler: TextScaler.linear(1.0),
+                        textScaler: const TextScaler.linear(1),
                         style: kGrayTextStyle.copyWith(fontSize: 15),
                       ),
                       const Icon(Icons.arrow_forward_ios_rounded,
-                          size: 18, color: Colors.grey),
+                          size: 18, color: Colors.grey,),
                       //Image.asset('lib/images/arrowrightgray.png'),
                     ],
                   ),
@@ -449,7 +448,7 @@ class _TagsListState extends State<TagsList> {
             padding: const EdgeInsets.only(bottom: 8),
             child: Text(
               widget.title!,
-              textScaler: TextScaler.linear(1.0),
+              textScaler: const TextScaler.linear(1),
               style: const TextStyle(
                 fontFamily: 'Lato',
                 color: Color(0xff979a9b),
@@ -461,10 +460,8 @@ class _TagsListState extends State<TagsList> {
             ),
           ),
         Wrap(
-          direction: Axis.horizontal,
           spacing: 5,
           runSpacing: 5,
-          runAlignment: WrapAlignment.start,
           children: tagsWidgets,
         ),
       ],

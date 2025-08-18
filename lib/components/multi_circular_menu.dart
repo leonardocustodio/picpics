@@ -1,6 +1,6 @@
 /* import 'package:flutter/material.dart';
 
-import 'package:picPics/components/circular_menu.dart';
+import 'package:picpics/components/circular_menu.dart';
 
 class MultiCircularMenu extends StatelessWidget {
   /// List of CircularMenu contains at least two CircularMenu objects.

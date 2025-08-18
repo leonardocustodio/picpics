@@ -1,23 +1,21 @@
 import 'package:flutter/cupertino.dart';
-import 'package:picPics/constants.dart';
+import 'package:picpics/constants.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
 class SecretSwitch extends StatefulWidget {
+
+  const SecretSwitch({
+    required this.value, required this.onChanged, super.key,
+  });
   final bool value;
   final Function onChanged;
 
-  const SecretSwitch({
-    super.key,
-    required this.value,
-    required this.onChanged,
-  });
-
   @override
-  _SecretSwitchState createState() => _SecretSwitchState();
+  SecretSwitchState createState() => SecretSwitchState();
 }
 
-class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
+class SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
   Control control = Control.play;
   bool goingRight = true;
   late bool initRight;
@@ -55,7 +53,7 @@ class _SecretSwitchState extends State<SecretSwitch> with AnimationMixin {
         ),
         CustomAnimationBuilder<double>(
           control: control,
-          tween: (-11.0).tweenTo(11.0),
+          tween: (-11.0).tweenTo(11),
           duration: 200.milliseconds,
           curve: goingRight ? Curves.easeOutCubic : Curves.easeInCubic,
           builder: (context, value, _) {

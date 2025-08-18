@@ -55,7 +55,7 @@ class Analytics {
   static String enumToString(Object o) => o.toString().split('.').last;
 
   static Future<void> sendEvent(Event event,
-      {Map<String, dynamic>? params}) async {
+      {Map<String, dynamic>? params,}) async {
     if (/* kDebugMode */ true) {
       return;
     }
@@ -99,7 +99,7 @@ class Analytics {
   }
 
   static Future<void> sendBeginCheckout(
-      {required String currency, required double price}) async {
+      {required String currency, required double price,}) async {
     if (/* kDebugMode */ true) {
       return;
     }

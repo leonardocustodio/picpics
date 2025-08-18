@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:picPics/database/app_database.dart';
-import 'package:picPics/managers/analytics_manager.dart';
+import 'package:picpics/database/app_database.dart';
+import 'package:picpics/managers/analytics_manager.dart';
 
-import 'user_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
 
 class PrivatePhotosController extends GetxController {
   static PrivatePhotosController get to => Get.find();
@@ -15,7 +15,7 @@ class PrivatePhotosController extends GetxController {
   final _appDatabase = AppDatabase();
 
   Future<void> refreshPrivatePics() async {
-    var val = await _appDatabase.getPrivatePhotoList();
+    final val = await _appDatabase.getPrivatePhotoList();
     await Future.forEach(val, (Photo photo) async {
       privateMap[photo.id] = '';
     });

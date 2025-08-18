@@ -1,24 +1,24 @@
-import 'package:picPics/utils/app_logger.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
-import 'package:picPics/constants.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:picPics/screens/settings_screen.dart';
-import 'package:picPics/screens/tabs/tabs_screen_bottom_navigation_bar.dart';
-import 'package:picPics/stores/language_controller.dart';
-import 'package:picPics/stores/tabs_controller.dart';
-import 'package:picPics/stores/user_controller.dart';
-import 'package:picPics/screens/tabs/pic_tab.dart';
-import 'package:picPics/screens/tabs/tagged_tab.dart';
-import 'package:picPics/screens/tabs/untagged_tab.dart';
-import 'package:picPics/widgets/percentage_dialog.dart';
+import 'package:get/get.dart';
+import 'package:picpics/constants.dart';
+import 'package:picpics/screens/settings_screen.dart';
+import 'package:picpics/screens/tabs/pic_tab.dart';
+import 'package:picpics/screens/tabs/tabs_screen_bottom_navigation_bar.dart';
+import 'package:picpics/screens/tabs/tagged_tab.dart';
+import 'package:picpics/screens/tabs/untagged_tab.dart';
+import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/stores/tabs_controller.dart';
+import 'package:picpics/stores/user_controller.dart';
+import 'package:picpics/utils/app_logger.dart';
+import 'package:picpics/widgets/percentage_dialog.dart';
 
 // ignore_for_file: unused_local_variable, must_be_immutable
 class TabsScreen extends GetWidget<TabsController> {
-  static const id = 'tabs_screen';
 
   const TabsScreen({super.key});
+  static const id = 'tabs_screen';
 
   //SwiperController tutorialSwiperController = SwiperController();
 
@@ -31,8 +31,8 @@ class TabsScreen extends GetWidget<TabsController> {
     final myLocale = Localizations.localeOf(context);
     AppLogger.d('Language Code: ${myLocale.languageCode}');
 
-    var bottomInsets = MediaQuery.of(context).viewInsets.bottom;
-    var height = MediaQuery.of(context).size.height;
+    final bottomInsets = MediaQuery.of(context).viewInsets.bottom;
+    final height = MediaQuery.of(context).size.height;
 
     return WillPopScope(
       onWillPop: () => controller.shouldPopOut(),
@@ -46,12 +46,14 @@ class TabsScreen extends GetWidget<TabsController> {
                 children: <Widget>[
                   GetX<UserController>(builder: (userController) {
                     AppLogger.i('[TabsScreen] Building with UserController:');
-                    AppLogger.d('  - hasGalleryPermission: ${userController.hasGalleryPermission.value}');
-                    AppLogger.d('  - tutorialCompleted: ${userController.tutorialCompleted.value}');
-                    
+                    AppLogger.d(
+                        '  - hasGalleryPermission: ${userController.hasGalleryPermission.value}',);
+                    AppLogger.d(
+                        '  - tutorialCompleted: ${userController.tutorialCompleted.value}',);
+
                     /* if (true || controller.isLoading.value) {
                         return Material(
-                          color: Colors.black.withOpacity(0.7),
+                          color: Colors.black.withValues(alpha: 0.7),
                           child: Container(
                             width: Get.width,
                             height: Get.height,
@@ -65,7 +67,8 @@ class TabsScreen extends GetWidget<TabsController> {
                         );
                       } else  */
                     if (userController.hasGalleryPermission.value == false) {
-                      AppLogger.i('[TabsScreen] Showing permission request screen');
+                      AppLogger.i(
+                          '[TabsScreen] Showing permission request screen',);
                       return Container(
                         constraints: const BoxConstraints.expand(),
                         color: kWhiteColor,
@@ -74,18 +77,18 @@ class TabsScreen extends GetWidget<TabsController> {
                             children: <Widget>[
                               Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0),
+                                    horizontal: 16,),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: <Widget>[
                                     CupertinoButton(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
+                                          vertical: 8,),
                                       onPressed: () {
-                                        Get.to(() => SettingsScreen);
+                                        Get.to<void>(() => SettingsScreen);
                                       },
                                       child: Image.asset(
-                                          'lib/images/settings.png'),
+                                          'lib/images/settings.png',),
                                     ),
                                   ],
                                 ),
@@ -96,22 +99,22 @@ class TabsScreen extends GetWidget<TabsController> {
                                   children: <Widget>[
                                     Padding(
                                       padding:
-                                          const EdgeInsets.only(right: 30.0),
+                                          const EdgeInsets.only(right: 30),
                                       child: Container(
                                         constraints: BoxConstraints(
-                                            maxHeight: height / 2),
+                                            maxHeight: height / 2,),
                                         child: Image.asset(
-                                            'lib/images/nogalleryauth.png'),
+                                            'lib/images/nogalleryauth.png',),
                                       ),
                                     ),
                                     const SizedBox(
-                                      height: 21.0,
+                                      height: 21,
                                     ),
                                     Obx(
                                       () => Text(
                                         LangControl.to.S.value
                                             .gallery_access_permission_description,
-                                        textScaler: TextScaler.linear(1.0),
+                                        textScaler: const TextScaler.linear(1),
                                         textAlign: TextAlign.center,
                                         style: const TextStyle(
                                           fontFamily: 'Lato',
@@ -123,22 +126,24 @@ class TabsScreen extends GetWidget<TabsController> {
                                       ),
                                     ),
                                     const SizedBox(
-                                      height: 17.0,
+                                      height: 17,
                                     ),
                                     CupertinoButton(
                                       padding: const EdgeInsets.all(0),
                                       onPressed: () {
-                                        AppLogger.i('[TabsScreen] User tapped permission button');
+                                        AppLogger.i(
+                                            '[TabsScreen] User tapped permission button',);
                                         userController
                                             .requestGalleryPermission()
                                             .then((hasPermission) async {
-                                          AppLogger.i('[TabsScreen] Permission request result: $hasPermission');
+                                          AppLogger.i(
+                                              '[TabsScreen] Permission request result: $hasPermission',);
                                           if (hasPermission) {
                                             await userController
                                                 .requestNotificationPermission();
                                             await userController
                                                 .checkNotificationPermission(
-                                                    firstPermissionCheck: true);
+                                                    firstPermissionCheck: true,);
                                             await userController
                                                 .setTutorialCompleted(true);
                                             await TabsController.to
@@ -147,8 +152,8 @@ class TabsScreen extends GetWidget<TabsController> {
                                         });
                                       },
                                       child: Container(
-                                        width: 201.0,
-                                        height: 44.0,
+                                        width: 201,
+                                        height: 44,
                                         decoration: BoxDecoration(
                                           gradient: kPrimaryGradient,
                                           borderRadius:
@@ -160,7 +165,7 @@ class TabsScreen extends GetWidget<TabsController> {
                                               LangControl.to.S.value
                                                   .gallery_access_permission,
                                               textScaler:
-                                                  TextScaler.linear(1.0),
+                                                  const TextScaler.linear(1),
                                               style: const TextStyle(
                                                 fontFamily: 'Lato',
                                                 color: kWhiteColor,
@@ -194,7 +199,7 @@ class TabsScreen extends GetWidget<TabsController> {
                     } else {
                       return Container();
                     }
-                  }),
+                  },),
                 ],
               ),
             ),
@@ -208,7 +213,7 @@ class TabsScreen extends GetWidget<TabsController> {
                         controller.setModalCard(false);
                       },
                       child: Container(
-                        color: Colors.black.withOpacity(0.4),
+                        color: Colors.black.withValues(alpha: 0.4),
                         child: SafeArea(
                           child: CarouselSlider.builder(
                             itemCount: controller.currentTab.value == 0
@@ -264,7 +269,7 @@ class TabsScreen extends GetWidget<TabsController> {
               : Container()), */
           /* Obx(() => controller.isLoading.value
                 ? Material(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withValues(alpha: 0.7),
                     child: Container(
                       width: Get.width,
                       height: Get.height,
