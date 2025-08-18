@@ -64,3 +64,9 @@ lib/generated_plugin_registrant.dart
 # IDE related
 .vscode
 .idea
+
+# Firebase related
+google-services.json
+firebase.json
+GoogleService-Info.plist
+firebase_options.dart
