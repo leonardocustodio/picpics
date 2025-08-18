@@ -1,3 +1,0 @@
-With picPics you can tag your photos and organize your memories and projects. It's simple to find your travel photos or find important screenshots on your phone.
-
-In this release, we made some improvements on how to delete a tag from a photo.

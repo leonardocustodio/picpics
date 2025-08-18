@@ -1,3 +1,0 @@
-Com picPics você consegue colocar tags em suas fotos e assim organizar suas memórias. Ficou simples encontrar suas fotos de viagem ou achar screenshots importantes no seu celular. 
-
-Nesta versão, melhoramos a interação para deletar tags de uma foto.
