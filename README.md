@@ -6,7 +6,7 @@
   **Organize your photos with tags and keep them safe**
   
   [![Flutter](https://img.shields.io/badge/Flutter-3.0+-blue.svg)](https://flutter.dev)
-  [![License](https://img.shields.io/badge/license-Apache-2.0-green.svg)](LICENSE)
+  [![License](https://img.shields.io/github/license/leonardocustodio/picpics)](LICENSE)
 </div>
 
 ## 📱 About picPics
