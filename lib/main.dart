@@ -16,7 +16,7 @@ import 'package:picpics/providers/tags_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/login_screen.dart';
 import 'package:picpics/screens/screens_stubs.dart';
-import 'package:picpics/screens/tabs_screen_riverpod.dart';
+import 'package:picpics/screens/tabs_screen.dart';
 import 'package:picpics/services/navigation_service.dart';
 import 'package:picpics/utils/app_logger.dart';
 
