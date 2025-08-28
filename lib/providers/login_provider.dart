@@ -28,6 +28,32 @@ class LoginState {
 
   int get totalSlides => boards.length;
 
+  List<Map<String, String>> get screensList {
+    return boards.map((board) {
+      final index = boards.indexOf(board);
+      return {
+        'title': getDescription(index) ?? '',
+        'description': getDescription(index) ?? '',
+        'image': _getImagePath(board),
+      };
+    }).toList();
+  }
+
+  String _getImagePath(Board board) {
+    switch (board) {
+      case Board.introduction:
+        return '';
+      case Board.createTags:
+        return 'lib/images/onboardtagging.png';
+      case Board.swipeRight:
+        return 'lib/images/onboardswipe.png';
+      case Board.keepSecret:
+        return 'lib/images/onboardsecret.png';
+      case Board.multiSelect:
+        return 'lib/images/onboardmultiselect.png';
+    }
+  }
+
   String? getDescription(int index) {
     if (index < 0 || index >= boards.length) return null;
     final board = boards[index];
