@@ -11,12 +11,12 @@ import 'package:picpics/firebase_options.dart';
 import 'package:picpics/generated/l10n.dart' as lang;
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/managers/widget_manager.dart';
-import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/login_screen.dart';
-import 'package:picpics/screens/tabs_screen_riverpod.dart';
 import 'package:picpics/screens/screens_stubs.dart';
+import 'package:picpics/screens/tabs_screen.dart';
 import 'package:picpics/services/navigation_service.dart';
 import 'package:picpics/utils/app_logger.dart';
 
@@ -36,11 +36,11 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  
+
   FlutterError.onError = (errorDetails) {
     FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
   };
-  
+
   PlatformDispatcher.instance.onError = (error, stack) {
     FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
     return true;
@@ -67,7 +67,8 @@ class PicPicsApp extends ConsumerStatefulWidget {
   ConsumerState<PicPicsApp> createState() => _PicPicsAppState();
 }
 
-class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObserver {
+class _PicPicsAppState extends ConsumerState<PicPicsApp>
+    with WidgetsBindingObserver {
   String initialRoute = LoginScreen.id;
   bool _initialized = false;
 
@@ -75,10 +76,10 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObse
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    
+
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-    
+
     _initializeApp();
   }
 
@@ -86,18 +87,18 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObse
     // Initialize providers
     await ref.read(userProvider.notifier).initialize();
     final userState = ref.read(userProvider);
-    
+
     // Initialize language
     await ref.read(languageProvider.notifier).initialize(userState.appLanguage);
-    
+
     // Initialize tags
     await ref.read(tagsProvider.notifier).initialize();
-    
+
     // Set initial route based on tutorial completion
     if (userState.tutorialCompleted) {
       initialRoute = TabsScreen.id;
     }
-    
+
     setState(() {
       _initialized = true;
     });
@@ -135,10 +136,10 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp> with WidgetsBindingObse
 
     final userState = ref.watch(userProvider);
     final languageState = ref.watch(languageProvider);
-    
+
     AppLogger.d('Main Build!!!');
     AppLogger.d('lang: ${userState.appLocale}');
-    
+
     return MaterialApp(
       navigatorKey: NavigationService.navigatorKey,
       localizationsDelegates: const [
