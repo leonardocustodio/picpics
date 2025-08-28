@@ -124,7 +124,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
     
     if (text.isEmpty) {
       // Add recent tags to suggestions
-      for (final recent in getUser?.recentTags ?? []) {
+      for (final String recent in getUser?.recentTags ?? <String>[]) {
         if (state.multiPicTags.containsKey(recent)) {
           continue;
         }
