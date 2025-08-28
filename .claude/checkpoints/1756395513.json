@@ -1,0 +1,1 @@
+{"tag": "checkpoint-20250828-123832", "file": "/Users/custodio/Development/Snowpine/picpics/lib/providers/blur_hash_provider.dart", "timestamp": "2025-08-28T15:38:33Z", "type": "post-edit", "branch": "master", "diff_summary": " .claude/checkpoints/task-1756395398.json | 1 +  lib/providers/blur_hash_provider.dart    | 1 +  2 files changed, 2 insertions(+) "}
