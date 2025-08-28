@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
@@ -61,7 +61,7 @@ class TagsState {
 
 class TagsNotifier extends StateNotifier<TagsState> {
   final AppDatabase _database = AppDatabase();
-  final Ref ref;
+  final ProviderRef ref;
 
   TagsNotifier(this.ref) : super(TagsState());
 
@@ -79,8 +79,8 @@ class TagsNotifier extends StateNotifier<TagsState> {
       allTagsMap[tag.key] = TagModel(
         key: tag.key,
         title: tag.title,
-        count: tag.count,
-        date: tag.date,
+        count: tag.counter,
+        date: tag.lastUsedAt,
       );
     }
     
