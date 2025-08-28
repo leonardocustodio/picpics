@@ -61,7 +61,7 @@ class TagsState {
 
 class TagsNotifier extends StateNotifier<TagsState> {
   final AppDatabase _database = AppDatabase();
-  final ProviderRef ref;
+  final StateNotifierProviderRef ref;
 
   TagsNotifier(this.ref) : super(TagsState());
 
