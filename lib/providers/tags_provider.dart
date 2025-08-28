@@ -80,7 +80,7 @@ class TagsNotifier extends StateNotifier<TagsState> {
         key: tag.key,
         title: tag.title,
         count: tag.counter,
-        date: tag.lastUsedAt,
+        time: tag.lastUsedAt,
       );
     }
     
