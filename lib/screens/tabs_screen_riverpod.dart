@@ -8,7 +8,7 @@ import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/settings_screen.dart';
 import 'package:picpics/screens/tabs/pic_tab.dart';
-import 'package:picpics/screens/tabs/tabs_screen_bottom_navigation_bar.dart';
+import 'package:picpics/screens/tabs/tabs_screen_bottom_navigation_bar_riverpod.dart';
 import 'package:picpics/screens/tabs/tagged_tab.dart';
 import 'package:picpics/screens/tabs/untagged_tab.dart';
 import 'package:picpics/utils/app_logger.dart';
