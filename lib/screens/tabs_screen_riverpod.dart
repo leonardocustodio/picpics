@@ -63,7 +63,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
       child: Stack(
         children: <Widget>[
           Scaffold(
-            bottomNavigationBar: TabsScreenBottomNavigatioBar(),
+            bottomNavigationBar: const TabsScreenBottomNavigatioBar(),
             body: AnnotatedRegion<SystemUiOverlayStyle>(
               value: SystemUiOverlayStyle.dark,
               child: Stack(
