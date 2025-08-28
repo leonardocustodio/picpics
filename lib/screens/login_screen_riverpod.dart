@@ -132,7 +132,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       _buildBottomButtons(),
                     ],
                   );
-              },
+              }),
             ),
           ],
         ),
