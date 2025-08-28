@@ -158,7 +158,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     _navigateToTabsScreen();
                   },
                   child: Text(
-                    s.skip,
+                    'Skip',
                     style: kLoginButtonTextStyle,
                   ),
                 ),
