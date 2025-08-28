@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/providers/language_provider.dart';
@@ -94,13 +94,13 @@ class LoginNotifier extends StateNotifier<LoginState> {
 
   Future<void> skipIntroduction() async {
     AppLogger.i('User skipped introduction');
-    await Analytics.sendEvent(Event.tutorial_skipped);
+    await Analytics.sendEvent(Event.tutorial_begin);
     await _completeOnboarding();
   }
 
   Future<void> completeIntroduction() async {
     AppLogger.i('User completed introduction');
-    await Analytics.sendEvent(Event.tutorial_completed);
+    await Analytics.sendEvent(Event.tutorial_complete);
     await _completeOnboarding();
   }
 
