@@ -103,7 +103,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       Text(
                                         loginState.screensList[index - 1]['title']!,
                                         textScaler: const TextScaler.linear(1),
-                                        style: kLoginTitleTextStyle,
+                                        style: kLoginDescriptionTextStyle,
                                       ),
                                       const SizedBox(
                                         height: 12,
@@ -159,7 +159,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },
                   child: Text(
                     s.skip,
-                    style: kLoginSkipStyle,
+                    style: kLoginButtonTextStyle,
                   ),
                 ),
                 CupertinoButton(
@@ -173,12 +173,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: kColorRed,
+                      color: kSecondaryColor,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       s.next,
-                      style: kLoginNextStyle,
+                      style: kLoginButtonTextStyle,
                     ),
                   ),
                 ),
@@ -196,12 +196,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   vertical: 10,
                 ),
                 decoration: BoxDecoration(
-                  color: kColorRed,
+                  color: kSecondaryColor,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   s.start,
-                  style: kLoginNextStyle,
+                  style: kLoginButtonTextStyle,
                 ),
               ),
             ),
