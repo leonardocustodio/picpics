@@ -1,11 +1,11 @@
 import 'dart:async';
-import 'package:riverpod/riverpod.dart';
 import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:devicelocale/devicelocale.dart';
 import 'package:drift/drift.dart' as drift;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:photo_manager/photo_manager.dart';
