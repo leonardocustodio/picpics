@@ -9,6 +9,8 @@
   [![License](https://img.shields.io/github/license/leonardocustodio/picpics)](LICENSE)
 </div>
 
+#### Important note: The main branch was undergoing a major refactor and is non-functional. If you are looking for the published version, you can find it [here](https://github.com/leonardocustodio/picpics/releases/tag/v1.7.0).
+
 ## 📱 About picPics
 
 picPics is a Flutter-based photo organization app that helps you manage and categorize your photos using a tag-based system. With features like secret photo protection, multiple tag support, and an intuitive swipe interface, PicPics makes photo organization effortless and enjoyable.
