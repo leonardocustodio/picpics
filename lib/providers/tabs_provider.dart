@@ -6,12 +6,16 @@ class TabsState {
   final bool isTagging;
   final bool isMultiSelecting;
   final List<String> selectedPhotos;
+  final bool multiTagSheet;
+  final bool multiPicBar;
 
   TabsState({
     this.currentIndex = 0,
     this.isTagging = false,
     this.isMultiSelecting = false,
     this.selectedPhotos = const [],
+    this.multiTagSheet = false,
+    this.multiPicBar = false,
   });
 
   TabsState copyWith({
@@ -19,12 +23,16 @@ class TabsState {
     bool? isTagging,
     bool? isMultiSelecting,
     List<String>? selectedPhotos,
+    bool? multiTagSheet,
+    bool? multiPicBar,
   }) {
     return TabsState(
       currentIndex: currentIndex ?? this.currentIndex,
       isTagging: isTagging ?? this.isTagging,
       isMultiSelecting: isMultiSelecting ?? this.isMultiSelecting,
       selectedPhotos: selectedPhotos ?? this.selectedPhotos,
+      multiTagSheet: multiTagSheet ?? this.multiTagSheet,
+      multiPicBar: multiPicBar ?? this.multiPicBar,
     );
   }
 }
@@ -33,6 +41,10 @@ class TabsNotifier extends StateNotifier<TabsState> {
   TabsNotifier() : super(TabsState());
 
   void setCurrentIndex(int index) {
+    state = state.copyWith(currentIndex: index);
+  }
+
+  void setCurrentTab(int index) {
     state = state.copyWith(currentIndex: index);
   }
 
@@ -45,6 +57,14 @@ class TabsNotifier extends StateNotifier<TabsState> {
     if (!value) {
       clearSelectedPhotos();
     }
+  }
+
+  void setMultiTagSheet(bool value) {
+    state = state.copyWith(multiTagSheet: value);
+  }
+
+  void setMultiPicBar(bool value) {
+    state = state.copyWith(multiPicBar: value);
   }
 
   void togglePhotoSelection(String photoId) {
@@ -63,6 +83,12 @@ class TabsNotifier extends StateNotifier<TabsState> {
 
   void selectAllPhotos(List<String> photoIds) {
     state = state.copyWith(selectedPhotos: photoIds);
+  }
+
+  Future<void> loadAssetPath() async {
+    // TODO: Implement asset loading from photo manager
+    // This should load photos from the device gallery
+    // For now, this is a placeholder to prevent compilation errors
   }
 }
 

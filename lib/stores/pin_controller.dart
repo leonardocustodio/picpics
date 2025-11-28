@@ -369,10 +369,6 @@ class PinController extends GetxController {
     try {
       final authenticated = await UserController.to.biometricAuth.authenticate(
         localizedReason: 'Scan your fingerprint to authenticate',
-        options: const AuthenticationOptions(
-          biometricOnly: true,
-          stickyAuth: true,
-        ),
       );
 
       if (authenticated == true) {

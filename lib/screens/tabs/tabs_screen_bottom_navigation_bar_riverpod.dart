@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/generated/l10n.dart' as language;
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/tags_provider.dart';
@@ -61,7 +62,7 @@ class _TabsScreenBottomNavigatioBarState
     BuildContext context,
     TabsState tabsState,
     TagsState tagsState,
-    S s,
+    language.S s,
   ) {
     return ExpandableNotifier(
       controller: expandableController,
@@ -144,7 +145,7 @@ class _TabsScreenBottomNavigatioBarState
     );
   }
 
-  Widget _buildMultiPicBar(BuildContext context, TabsState tabsState, S s) {
+  Widget _buildMultiPicBar(BuildContext context, TabsState tabsState, language.S s) {
     return SafeArea(
       child: Container(
         color: const Color(0xfff1f2f3),
@@ -175,7 +176,7 @@ class _TabsScreenBottomNavigatioBarState
     );
   }
 
-  Widget _buildNormalBottomBar(BuildContext context, TabsState tabsState, S s) {
+  Widget _buildNormalBottomBar(BuildContext context, TabsState tabsState, language.S s) {
     return SafeArea(
       child: Container(
         color: const Color(0xfff1f2f3),
@@ -187,19 +188,19 @@ class _TabsScreenBottomNavigatioBarState
               index: 0,
               isSelected: tabsState.currentIndex == 0,
               icon: 'lib/images/untagged_tab',
-              label: s.recent,
+              label: 'Recent', // TODO: Use localization when available
             ),
             _buildTabButton(
               index: 1,
               isSelected: tabsState.currentIndex == 1,
               icon: 'lib/images/pics_tab',
-              label: s.photos,
+              label: 'Photos', // TODO: Use localization when available
             ),
             _buildTabButton(
               index: 2,
               isSelected: tabsState.currentIndex == 2,
               icon: 'lib/images/tagged_tab',
-              label: s.tags,
+              label: 'Tags', // TODO: Use localization when available
             ),
           ],
         ),

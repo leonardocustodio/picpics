@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
+import 'package:picpics/generated/l10n.dart' as language;
 import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/tabs_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
@@ -89,7 +90,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     BuildContext context,
     UserState userState,
     TabsState tabsState,
-    S s,
+    language.S s,
     double height,
   ) {
     AppLogger.i('[TabsScreen] Building with UserState:');
@@ -116,7 +117,7 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
 
   Widget _buildPermissionRequestScreen(
     BuildContext context,
-    S s,
+    language.S s,
     double height,
   ) {
     return Container(
@@ -174,12 +175,15 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
                     padding: const EdgeInsets.all(0),
                     onPressed: () async {
                       AppLogger.i('[TabsScreen] User tapped permission button');
-                      final hasPermission = await ref
+                      await ref
                           .read(userProvider.notifier)
                           .requestGalleryPermission();
-                      
-                      AppLogger.i('[TabsScreen] Permission request result: $hasPermission');
-                      
+
+                      AppLogger.i('[TabsScreen] Permission request completed');
+
+                      // Check if permission was granted by reading the updated state
+                      final hasPermission = ref.read(userProvider).hasGalleryPermission;
+
                       if (hasPermission) {
                         // Request notification permission
                         await ref

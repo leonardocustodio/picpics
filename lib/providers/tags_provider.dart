@@ -217,6 +217,14 @@ class TagsNotifier extends StateNotifier<TagsState> {
     // Implementation for deleting a tag
     await loadAllTags(); // Reload tags after deletion
   }
+
+  Future<void> addTagsToSelectedPics() async {
+    // TODO: Implement adding tags to selected pictures
+    // This should take the multiPicTags and apply them to selected photos
+    // For now, this is a placeholder to prevent compilation errors
+    AppLogger.d('Adding tags to selected pictures (stub implementation)');
+    clearMultiPicTags();
+  }
 }
 
 // Provider

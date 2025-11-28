@@ -351,6 +351,53 @@ class UserNotifier extends StateNotifier<UserState> {
     // For now, just log that we would create default tags
     AppLogger.d('Creating default tags (stub implementation)');
   }
+
+  Future<void> requestGalleryPermission() async {
+    AppLogger.i('[UserNotifier] Requesting gallery permission...');
+    final permissionStatus = await PhotoManager.requestPermissionExtend();
+
+    if (permissionStatus.isAuth || permissionStatus.hasAccess) {
+      AppLogger.i('[UserNotifier] Gallery permission granted');
+      state = state.copyWith(hasGalleryPermission: true);
+
+      // Update database
+      final currentUser = await database.getSingleMoorUser();
+      if (currentUser != null) {
+        await database.updateMoorUser(
+          currentUser.copyWith(hasGalleryPermission: true)
+        );
+      }
+    } else {
+      AppLogger.i('[UserNotifier] Gallery permission denied');
+      state = state.copyWith(hasGalleryPermission: false);
+    }
+  }
+
+  Future<void> requestNotificationPermission() async {
+    AppLogger.i('[UserNotifier] Requesting notification permission...');
+
+    // Check if permission was granted
+    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    final granted = await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            IOSFlutterLocalNotificationsPlugin>()
+        ?.requestPermissions(
+          alert: true,
+          badge: true,
+          sound: true,
+        );
+
+    if (granted == true) {
+      AppLogger.i('[UserNotifier] Notification permission granted');
+      state = state.copyWith(notifications: true);
+    }
+  }
+
+  Future<void> checkNotificationPermission({bool firstPermissionCheck = false}) async {
+    AppLogger.i('[UserNotifier] Checking notification permission...');
+    // TODO: Implement notification permission check
+    // This is a placeholder to prevent compilation errors
+  }
 }
 
 // Providers

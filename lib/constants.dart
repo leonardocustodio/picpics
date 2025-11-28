@@ -21,6 +21,10 @@ const failedItem = Center(
 const kMaxNumOfSuggestions = 6;
 const kMaxNumOfRecentTags = 5;
 
+// Bottom bar heights
+const double kBottomBarHeight = 60.0;
+const double kMultiPicBottomBarHeight = 60.0;
+
 const kSecretTagKey = 'XXXXXXXXXYYYYYYYYYZZZZZZZZZZZZ';
 List<String> kRequireOptions = [
   'Immediately',

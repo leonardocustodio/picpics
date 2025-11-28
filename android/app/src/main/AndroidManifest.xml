@@ -1,28 +1,13 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="br.com.inovatso.picPics">
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
-    <uses-permission android:name="com.android.vending.BILLING"/>
-
-   <application
-        tools:replace="android:label"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application
         android:label="picpics"
         android:name="${applicationName}"
-        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity
-            android:showWhenLocked="true"
-            android:turnScreenOn="true"
-            android:name="MainActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
+            android:taskAffinity=""
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
@@ -35,75 +20,26 @@
               android:name="io.flutter.embedding.android.NormalTheme"
               android:resource="@style/NormalTheme"
               />
-<!--            <meta-data-->
-<!--                android:name="io.flutter.embedding.android.SplashScreenDrawable"-->
-<!--                android:resource="@drawable/launch_background"-->
-<!--                />-->
-
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-
-<!--            <intent-filter>-->
-<!--                <action android:name="FLUTTER_NOTIFICATION_CLICK" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
-
-<!--            &lt;!&ndash; Branch URI Scheme &ndash;&gt;-->
-<!--            <intent-filter>-->
-<!--                <data android:scheme="picpics" />-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-<!--            </intent-filter>-->
-
-<!--            &lt;!&ndash; Branch App Links (optional) &ndash;&gt;-->
-<!--            <intent-filter android:autoVerify="true">-->
-<!--                <action android:name="android.intent.action.VIEW" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--                <category android:name="android.intent.category.BROWSABLE" />-->
-<!--                <data android:scheme="https" android:host="picpics.link" />-->
-<!--                &lt;!&ndash; example-alternate domain is required for App Links when the Journeys/Web SDK and Deepviews are used inside your website.  &ndash;&gt;-->
-<!--                <data android:scheme="https" android:host="picpics-alternate.app.link" />-->
-<!--            </intent-filter>-->
-
         </activity>
-<!--       <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver" />-->
-<!--       <receiver android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver">-->
-<!--           <intent-filter>-->
-<!--               <action android:name="android.intent.action.BOOT_COMPLETED"/>-->
-<!--               <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>-->
-<!--           </intent-filter>-->
-<!--       </receiver>-->
-<!--       <receiver android:name="PicsWidgetProvider" >-->
-<!--           <intent-filter>-->
-<!--               <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />-->
-<!--           </intent-filter>-->
-<!--           <meta-data android:name="android.appwidget.provider"-->
-<!--               android:resource="@xml/pics_widget" />-->
-<!--       </receiver>-->
-
-
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
-
-<!--       <meta-data android:name="com.google.android.geo.API_KEY"-->
-<!--           android:value="AIzaSyCtoIN8xt9PDMmjTP5hILTzZ0XNdsojJCw"/>-->
-<!--       <meta-data-->
-<!--           android:name="com.google.android.gms.ads.APPLICATION_ID"-->
-<!--           android:value="ca-app-pub-4850390878205651~5454538550"/>-->
-<!--       <meta-data-->
-<!--           android:name="com.google.firebase.ml.vision.DEPENDENCIES"-->
-<!--           android:value="label" />-->
-<!--       &lt;!&ndash; Branch init &ndash;&gt;-->
-<!--       <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_knQ56dVonIKMG12kp8oqImolxDdnijb4" />-->
-<!--       <meta-data android:name="io.branch.sdk.BranchKey.test" android:value="key_test_lcH73hRidIOQG73jkWdU2phduxmejiDe" />-->
-<!--       <meta-data android:name="io.branch.sdk.TestMode" android:value="false" />     &lt;!&ndash; Set to true to use Branch_Test_Key (useful when simulating installs and/or switching between debug and production flavors) &ndash;&gt;-->
-<!--       <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>-->
     </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
 </manifest>
