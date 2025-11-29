@@ -268,7 +268,7 @@ class _PhotoCardState extends ConsumerState<PhotoCard> {
                           : kYellowColor,
                       iconSize: 19.2,
                       onTap: () {
-                        showDeleteSecretModal(picStore);
+                        showDeleteSecretModal(context, ref, picStore);
                       },
                     ),
                     CircularMenuItem(

@@ -124,7 +124,7 @@ class _TagsListState extends ConsumerState<TagsList> {
             widget.onDoubleTap?.call(tagKey);
           },
           onLongPress: () {
-            showEditTagModal(tagKey);
+            showEditTagModal(tagKey, context, ref);
           },
           onPanStart: (details) {
             AppLogger.d('Started pan on tag: $tagKey');

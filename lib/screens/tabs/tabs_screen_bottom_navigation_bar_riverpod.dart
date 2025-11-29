@@ -105,7 +105,7 @@ class _TabsScreenBottomNavigatioBarState
                       CupertinoButton(
                         onPressed: () async {
                           if (tagsState.multiPicTags.containsKey(kSecretTagKey)) {
-                            showDeleteSecretModalForMultiPic();
+                            showDeleteSecretModalForMultiPic(context, ref);
                             return;
                           }
 

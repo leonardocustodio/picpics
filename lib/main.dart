@@ -135,7 +135,6 @@ class _PicPicsAppState extends ConsumerState<PicPicsApp>
     }
 
     final userState = ref.watch(userProvider);
-    final languageState = ref.watch(languageProvider);
 
     AppLogger.d('Main Build!!!');
     AppLogger.d('lang: ${userState.appLocale}');

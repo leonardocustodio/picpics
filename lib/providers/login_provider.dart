@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
-import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
