@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:picpics/constants.dart';
-import 'package:picpics/stores/language_controller.dart';
+import 'package:picpics/providers/language_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
 
-class ConfirmPicDelete extends StatelessWidget {
+class ConfirmPicDelete extends ConsumerWidget {
 
   const ConfirmPicDelete({
     required this.onPressedDelete, super.key,
@@ -17,10 +17,13 @@ class ConfirmPicDelete extends StatelessWidget {
   final void Function() onPressedDelete;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final width = MediaQuery.of(context).size.width;
+    final s = ref.watch(sProvider);
+
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: Get.width < 360
+      insetPadding: width < 360
           ? const EdgeInsets.symmetric(horizontal: 20)
           : const EdgeInsets.symmetric(horizontal: 40),
       child: Container(
@@ -44,7 +47,7 @@ class ConfirmPicDelete extends StatelessWidget {
                     opacity: 0,
                     child: CupertinoButton(
                       onPressed: () {
-                        Get.back<void>();
+                        Navigator.of(context).pop();
                         AppLogger.d('teste');
                       },
                       child: Image.asset('lib/images/closegrayico.png'),
@@ -64,7 +67,7 @@ class ConfirmPicDelete extends StatelessWidget {
                   CupertinoButton(
                     onPressed: () {
                       onPressedClose?.call();
-                      Get.back<void>();
+                      Navigator.of(context).pop();
                     },
                     child: Image.asset('lib/images/closegrayico.png'),
                   ),
@@ -101,7 +104,7 @@ class ConfirmPicDelete extends StatelessWidget {
                             UserController.to.setKeepAskingToDelete(false);
                           } */
                           onPressedClose?.call();
-                          Get.back<void>();
+                          Navigator.of(context).pop();
                         },
                         child: Container(
                           height: 44,
@@ -110,12 +113,10 @@ class ConfirmPicDelete extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
-                            child: Obx(
-                              () => Text(
-                                LangControl.to.S.value.cancel,
-                                textScaler: const TextScaler.linear(1),
-                                style: kLoginButtonTextStyle,
-                              ),
+                            child: Text(
+                              s.cancel,
+                              textScaler: const TextScaler.linear(1),
+                              style: kLoginButtonTextStyle,
                             ),
                           ),
                         ),
@@ -136,17 +137,15 @@ class ConfirmPicDelete extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Center(
-                            child: Obx(
-                              () => Text(
-                                LangControl.to.S.value.delete,
-                                textScaler: const TextScaler.linear(1),
-                                style: const TextStyle(
-                                  color: kSecondaryColor,
-                                  fontWeight: FontWeight.w700,
-                                  fontFamily: 'Lato',
-                                  fontStyle: FontStyle.normal,
-                                  fontSize: 16,
-                                ),
+                            child: Text(
+                              s.delete,
+                              textScaler: const TextScaler.linear(1),
+                              style: const TextStyle(
+                                color: kSecondaryColor,
+                                fontWeight: FontWeight.w700,
+                                fontFamily: 'Lato',
+                                fontStyle: FontStyle.normal,
+                                fontSize: 16,
                               ),
                             ),
                           ),

@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:picpics/constants.dart';
 import 'package:picpics/database/app_database.dart';
-import 'package:picpics/managers/analytics_manager.dart';
 import 'package:picpics/model/tag_model.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/utils/helpers.dart';
@@ -203,19 +201,84 @@ class TagsNotifier extends StateNotifier<TagsState> {
     state = state.copyWith(multiPicTags: {});
   }
 
-  Future<void> createTag(String title) async {
-    // Implementation for creating a new tag
+  Future<String> createTag(String title) async {
+    // TODO: Full implementation for creating a new tag
+    // For now, generate a simple key
+    final key = 'tag_${DateTime.now().millisecondsSinceEpoch}';
     await loadAllTags(); // Reload tags after creation
+    return key;
   }
 
   Future<void> updateTag(String key, String newTitle) async {
-    // Implementation for updating a tag
-    await loadAllTags(); // Reload tags after update
+    try {
+      // Get the old tag
+      final oldTag = await _database.getLabelByLabelKey(key);
+      if (oldTag == null) {
+        AppLogger.w('Tag with key $key not found');
+        return;
+      }
+
+      // Create new tag key from new title
+      final newTagKey = Helpers.encryptTag(newTitle);
+
+      // Update in database
+      await _database.updateLabel(
+        oldTag.copyWith(
+          key: newTagKey,
+          title: newTitle,
+        ),
+      );
+
+      // Reload all tags to reflect changes
+      await loadAllTags();
+
+      AppLogger.d('Tag updated: $key -> $newTagKey ($newTitle)');
+    } catch (e) {
+      AppLogger.e('Error updating tag: $e');
+    }
+  }
+
+  Future<void> editTagName({
+    required String oldTagKey,
+    required String newName,
+  }) async {
+    await updateTag(oldTagKey, newName);
   }
 
   Future<void> deleteTag(String key) async {
-    // Implementation for deleting a tag
-    await loadAllTags(); // Reload tags after deletion
+    try {
+      // Get the label
+      final label = await _database.getLabelByLabelKey(key);
+      if (label == null) {
+        AppLogger.w('Tag with key $key not found');
+        return;
+      }
+
+      // Delete from database
+      await _database.deleteLabel(label);
+
+      // Reload tags
+      await loadAllTags();
+
+      AppLogger.d('Tag deleted: $key');
+    } catch (e) {
+      AppLogger.e('Error deleting tag: $e');
+    }
+  }
+
+  Future<void> deleteTagFromPic({required String tagKey}) async {
+    // For now, just delete the tag entirely
+    // In the future, this could remove the tag from specific pictures
+    await deleteTag(tagKey);
+  }
+
+  Future<void> removeTagFromPic({
+    required String picId,
+    required String tagKey,
+  }) async {
+    // TODO: Implement removing a tag from a specific picture
+    AppLogger.d('Removing tag $tagKey from pic $picId (stub implementation)');
+    await Future.delayed(Duration.zero);
   }
 
   Future<void> addTagsToSelectedPics() async {

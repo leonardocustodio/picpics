@@ -1,45 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:picpics/providers/private_photos_provider.dart';
+import 'package:picpics/providers/tabs_provider.dart';
+import 'package:picpics/providers/tags_provider.dart';
+import 'package:picpics/providers/user_provider.dart';
 import 'package:picpics/screens/pin_screen.dart';
-import 'package:picpics/screens/tabs_screen.dart';
 import 'package:picpics/stores/pic_store.dart';
-import 'package:picpics/stores/private_photos_controller.dart';
-import 'package:picpics/stores/tabs_controller.dart';
-import 'package:picpics/stores/tags_controller.dart';
-import 'package:picpics/stores/user_controller.dart';
 import 'package:picpics/utils/app_logger.dart';
 import 'package:picpics/widgets/delete_secret_modal.dart';
 import 'package:picpics/widgets/unhide_secret_modal.dart';
 
-Future<void> showDeleteSecretModalForMultiPic() async {
-  if (UserController.to.keepAskingToDelete.value == false) {
-    TabsController.to.setMultiTagSheet(false);
-    TabsController.to.setMultiPicBar(false);
-    await TagsController.to.addTagsToSelectedPics();
+Future<void> showDeleteSecretModalForMultiPic(BuildContext context, WidgetRef ref) async {
+  final userState = ref.read(userProvider);
+
+  if (userState.keepAskingToDelete == false) {
+    ref.read(tabsProvider.notifier).setMultiTagSheet(false);
+    ref.read(tabsProvider.notifier).setMultiPicBar(false);
+    await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
     return;
   }
 
   AppLogger.d('showModal');
+  if (!context.mounted) return;
+
   await showDialog<void>(
-    context: Get.context!,
+    context: context,
     builder: (BuildContext buildContext) {
       return DeleteSecretModal(
         onPressedClose: () async {
-          Get.back<void>();
+          Navigator.of(buildContext).pop();
         },
         onPressedDelete: () async {
-          await UserController.to.setShouldDeleteOnPrivate(false);
-          TabsController.to.setMultiTagSheet(false);
-          TabsController.to.setMultiPicBar(false);
-          await TagsController.to.addTagsToSelectedPics();
-          Get.back<void>();
+          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(false);
+          ref.read(tabsProvider.notifier).setMultiTagSheet(false);
+          ref.read(tabsProvider.notifier).setMultiPicBar(false);
+          await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
+          if (buildContext.mounted) Navigator.of(buildContext).pop();
         },
         onPressedOk: () async {
-          await UserController.to.setShouldDeleteOnPrivate(true);
-          TabsController.to.setMultiTagSheet(false);
-          TabsController.to.setMultiPicBar(false);
-          await TagsController.to.addTagsToSelectedPics();
-          Get.back<void>();
+          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(true);
+          ref.read(tabsProvider.notifier).setMultiTagSheet(false);
+          ref.read(tabsProvider.notifier).setMultiPicBar(false);
+          await ref.read(tagsProvider.notifier).addTagsToSelectedPics();
+          if (buildContext.mounted) Navigator.of(buildContext).pop();
         },
       );
     },
@@ -47,47 +50,56 @@ Future<void> showDeleteSecretModalForMultiPic() async {
 }
 
 Future<void> showDeleteSecretModal(
-    /* BuildContext context, */ PicStore picStore,) async {
-  if (true != PrivatePhotosController.to.showPrivate.value) {
-    UserController.to.popPinScreenToId = TabsScreen.id;
-    await Get.to<dynamic>(PinScreen.new);
+    BuildContext context, WidgetRef ref, PicStore picStore,) async {
+  final privatePhotosState = ref.read(privatePhotosProvider);
+
+  if (privatePhotosState.showPrivate != true) {
+    // TODO(Week 3D): Add popPinScreenToId property to UserState if needed
+    // For now, just navigate to PIN screen
+    if (!context.mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<dynamic>(builder: (_) => const PinScreen()),
+    );
     return;
   }
 
-  if (UserController.to.keepAskingToDelete.value == false &&
+  final userState = ref.read(userProvider);
+  if (userState.keepAskingToDelete == false &&
       picStore.isPrivate.value == false) {
     //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
     return;
   }
 
   AppLogger.d('showModal');
+  if (!context.mounted) return;
+
   await showDialog<void>(
-    context: Get.context!,
+    context: context,
     builder: (BuildContext buildContext) {
       if (picStore.isPrivate.value == true) {
         return UnhideSecretModal(
           onPressedDelete: () {
-            Get.back<void>();
+            Navigator.of(buildContext).pop();
           },
           onPressedOk: () {
             //GalleryStore.to.setPrivatePic(picStore: picStore, private: false);
-            Get.back<void>();
+            Navigator.of(buildContext).pop();
           },
         );
       }
       return DeleteSecretModal(
         onPressedClose: () {
-          Get.back<void>();
+          Navigator.of(buildContext).pop();
         },
         onPressedDelete: () async {
           //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
-          await UserController.to.setShouldDeleteOnPrivate(false);
-          Get.back<void>();
+          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(false);
+          Navigator.of(buildContext).pop();
         },
         onPressedOk: () async {
           //GalleryStore.to.setPrivatePic(picStore: picStore, private: true);
-          await UserController.to.setShouldDeleteOnPrivate(true);
-          Get.back<void>();
+          ref.read(userProvider.notifier).setShouldDeleteOnPrivate(true);
+          Navigator.of(buildContext).pop();
         },
       );
     },

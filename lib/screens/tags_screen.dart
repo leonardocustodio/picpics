@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:picpics/constants.dart';
 
 class TagsScreen_ extends StatefulWidget {
@@ -29,7 +28,7 @@ class _TagsScreen_State extends State<TagsScreen_> {
                     children: <Widget>[
                       CupertinoButton(
                         padding: const EdgeInsets.only(left: 5, right: 10),
-                        onPressed: () => Get.back<void>(),
+                        onPressed: () => Navigator.of(context).pop(),
                         child: Image.asset('lib/images/backarrowgray.png'),
                       ),
                       Image.asset('lib/images/searchico.png'),

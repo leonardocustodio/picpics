@@ -5,6 +5,9 @@ class BlurHashState {
   final Map<String, String> blurHashes;
   final bool isEnabled;
 
+  // Alias for compatibility with GetX code
+  Map<String, String> get blurHash => blurHashes;
+
   BlurHashState({
     this.blurHashes = const {},
     this.isEnabled = true,

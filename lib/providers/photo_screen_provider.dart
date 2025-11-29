@@ -1,5 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+
 class PhotoScreenState {
   final String currentPhotoId;
   final List<String> photoIds;
@@ -70,6 +70,15 @@ class PhotoScreenNotifier extends StateNotifier<PhotoScreenState> {
 
   void setEditing(bool editing) {
     state = state.copyWith(isEditing: editing);
+  }
+
+  void setSelectedIndex(int index) {
+    if (index >= 0 && index < state.photoIds.length) {
+      state = state.copyWith(
+        currentIndex: index,
+        currentPhotoId: state.photoIds[index],
+      );
+    }
   }
 }
 

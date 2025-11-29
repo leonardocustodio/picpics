@@ -1,22 +1,15 @@
 import 'dart:async';
-import 'package:cryptography/cryptography.dart' as cryptography;
 import 'package:devicelocale/devicelocale.dart';
-import 'package:drift/drift.dart' as drift;
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:photo_manager/photo_manager.dart';
-import 'package:picpics/constants.dart';
 import 'package:picpics/database/app_database.dart';
 import 'package:picpics/managers/analytics_manager.dart';
-import 'package:picpics/managers/crypto_manager.dart';
-import 'package:picpics/managers/push_notifications_manager.dart';
 import 'package:picpics/providers/database_provider.dart';
 import 'package:picpics/utils/app_logger.dart';
-import 'package:picpics/utils/helpers.dart';
 import 'package:picpics/utils/languages.dart';
 
 class UserState {
@@ -344,6 +337,14 @@ class UserNotifier extends StateNotifier<UserState> {
 
   void setAvailableBiometrics(List<BiometricType> biometrics) {
     state = state.copyWith(availableBiometrics: biometrics);
+  }
+
+  void setPhotoHeightInCardWidget(double height) {
+    state = state.copyWith(photoHeightInCardWidget: height);
+  }
+
+  void switchIsMenuExpanded() {
+    state = state.copyWith(isMenuExpanded: !state.isMenuExpanded);
   }
 
   Future<void> createDefaultTags() async {
